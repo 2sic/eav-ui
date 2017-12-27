@@ -9,8 +9,8 @@
 ## Task / Action Summary
 
 ## Steps to implement
-* [ ] step1
-* [ ] step2
-* [ ] step3
+* [ ] (pls add steps yourself as you're working on this)
+* [ ] xxx
+* [ ] xxx
 
 ## Anything you would like to add
