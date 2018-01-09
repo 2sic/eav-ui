@@ -8,9 +8,9 @@ describe('EavItemDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EavItemDialogComponent ]
+      declarations: [EavItemDialogComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('EavItemDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  /*  it('should create', () => {
     expect(component).toBeTruthy();
-  });
+   }); */
 });
