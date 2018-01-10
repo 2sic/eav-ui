@@ -37,6 +37,7 @@ export class EavItemDialogComponent implements OnInit {
     this.jsonToModelService.getJsonPackage1().subscribe((data: any) => {
       // TODO: Extract to helper
       const attributes: Attribute[] = [];
+      const ante = 'test';
       attributes.push(new Attribute('testName', 'testType', true));
 
       this.jsonPackage1 = new JsonPackage1(
