@@ -1,9 +1,11 @@
 import { TestBed, async } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { itemReducer, contentTypeReducer } from './reducers';
+import { itemReducer } from './shared/reducers';
+import { JsonToModelService } from './shared/services/json-to-model.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -13,8 +15,10 @@ describe('AppComponent', () => {
       ],
       imports: [
         EavItemDialogModule,
-        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
-      ]
+        StoreModule.forRoot({ items: itemReducer }),
+        HttpClientModule
+      ],
+      providers: [JsonToModelService]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
