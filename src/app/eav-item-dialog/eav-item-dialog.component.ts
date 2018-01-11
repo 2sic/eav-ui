@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 import * as itemActions from '../shared/actions/item.actions';
 import * as contentTypeActions from '../shared/actions/content-type.actions';
-import { JsonToModelService } from '../shared/services/json-to-model.service';
-import { JsonPackage1, JsonItem1, JsonContentType1, JsonHeader } from '../shared/models';
-import { AppState, Item, ContentType, Attribute } from '../shared/models';
+import { JsonPackage1Service } from '../shared/services/json-package1.service';
+import { JsonContentType1Service } from '../shared/services/json-content-type1.service';
+import { JsonItem1Service } from '../shared/services/json-item1.service';
+import { AppState, Item } from '../shared/models';
+import { JsonPackage1, JsonContentType1, JsonItem1, ContentType1, Attribute1, JsonHeader1 } from '../shared/models/json-format-v1';
 
 @Component({
   selector: 'app-eav-item-dialog',
@@ -19,7 +22,10 @@ export class EavItemDialogComponent implements OnInit {
   jsonItem1: JsonItem1;
   jsonContentType1: JsonContentType1;
 
-  constructor(private store: Store<AppState>, private jsonToModelService: JsonToModelService) { }
+  constructor(private store: Store<AppState>,
+    private jsonPackage1Service: JsonPackage1Service,
+    private jsonItem1Service: JsonItem1Service,
+    private jsonContentType1Service: JsonContentType1Service) { }
 
   ngOnInit() {
     // Only for testing Store
@@ -34,28 +40,14 @@ export class EavItemDialogComponent implements OnInit {
   }
 
   loadJsonPackage1FromJson() {
-    this.jsonToModelService.getJsonPackage1().subscribe((data: any) => {
-      // TODO: Extract to helper
-      const attributes: Attribute[] = [];
-      const ante = 'test';
-      attributes.push(new Attribute('testName', 'testType', true));
-
-      this.jsonPackage1 = new JsonPackage1(
-        new JsonHeader(data._.V),
-        new ContentType(
-          data.ContentType.Id,
-          data.ContentType.Name,
-          data.ContentType.Scope,
-          data.ContentType.Description,
-          attributes
-        ));
-    }, (errors: any) => {
-      console.log('errors occured in -> json-to-model.service', errors);
-    });
+    this.jsonPackage1Service.getJsonPackage1().map(data => {
+      console.log('getJsonPackage1:', data);
+      this.jsonPackage1 = data;
+    }).subscribe();
   }
 
   loadJsonItem1FromJson() {
-    this.jsonToModelService.getJsonItem1().subscribe((data: JsonItem1) => {
+    this.jsonItem1Service.getJsonItem1().subscribe((data: JsonItem1) => {
       this.jsonItem1 = data;
     }, (errors: any) => {
       console.log('errors occured in -> json-to-model.service', errors);
@@ -63,7 +55,7 @@ export class EavItemDialogComponent implements OnInit {
   }
 
   loadJsonContentType1Json() {
-    this.jsonToModelService.getJsonContentType1().subscribe((data: JsonContentType1) => {
+    this.jsonContentType1Service.getJsonContentType1().subscribe((data: JsonContentType1) => {
       this.jsonContentType1 = data;
     }, (errors: any) => {
       console.log('errors occured in -> json-to-model.service', errors);

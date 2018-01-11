@@ -1,11 +1,11 @@
 import { Attribute } from './attribute';
 
 export class ContentType {
-    public id: string;
-    public name: string;
-    public scope: string;
-    public description: string;
-    public attributes: Attribute[];
+    id: string;
+    name: string;
+    scope: string;
+    description: string;
+    attributes: Attribute[];
 
     constructor(id: string, name: string, scope: string, description: string, attributes: Attribute[]) {
         this.id = id;

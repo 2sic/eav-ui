@@ -7,7 +7,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { itemReducer } from './shared/reducers';
-import { JsonToModelService } from './shared/services/json-to-model.service';
+import { JsonPackage1Service } from './shared/services/json-package1.service';
+import { JsonContentType1Service } from './shared/services/json-content-type1.service';
+import { JsonItem1Service } from './shared/services/json-item1.service';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,7 @@ import { JsonToModelService } from './shared/services/json-to-model.service';
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule
   ],
-  providers: [JsonToModelService],
+  providers: [JsonPackage1Service, JsonItem1Service, JsonContentType1Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
