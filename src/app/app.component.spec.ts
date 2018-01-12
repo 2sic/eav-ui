@@ -1,11 +1,13 @@
 import { TestBed, async } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { itemReducer } from './shared/reducers';
-import { JsonToModelService } from './shared/services/json-to-model.service';
+import { JsonPackage1Service } from './shared/services/json-package1.service';
+import { JsonItem1Service } from './shared/services/json-item1.service';
+import { JsonContentType1Service } from './shared/services/json-content-type1.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -18,7 +20,7 @@ describe('AppComponent', () => {
         StoreModule.forRoot({ items: itemReducer }),
         HttpClientModule
       ],
-      providers: [JsonToModelService]
+      providers: [JsonPackage1Service, JsonItem1Service, JsonContentType1Service]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

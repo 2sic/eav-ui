@@ -17,6 +17,9 @@ export class JsonContentType1Service {
   * Get Json ContentType V1 from json to class JsonContentType1
   */
   public getJsonContentType1(): Observable<JsonContentType1> {
-    return this.httpClient.get<JsonContentType1>('../../../assets/data/json-content-type-v1-test.json');
+    return this.httpClient.get<JsonContentType1>('../../../assets/data/json-content-type-v1-test.json')
+      .map((item: JsonContentType1) => {
+        return JsonContentType1.create(item);
+      });
   }
 }

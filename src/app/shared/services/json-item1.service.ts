@@ -15,7 +15,7 @@ export class JsonItem1Service {
    * Get Json Entity V1 from json to class JsonItem1
    */
   public getJsonItem1(): Observable<JsonItem1> {
-    return this.httpClient.get<JsonItem1>('../../../assets/data/json-entity-v1-test.json')
+    return this.httpClient.get<JsonItem1>('../../../assets/data/json-entity-v1.json')
       .map((item: JsonItem1) => {
         return JsonItem1.create(item);
       });

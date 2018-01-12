@@ -6,7 +6,7 @@
         "Id": "|Config ToSic.Eav.DataSources.SqlDataSource",
         "Name": "|Config ToSic.Eav.DataSources.SqlDataSource",
         "Scope": "System",
-        "Description": "todo",
+        "Description": "todo description",
         "Attributes": [
             {
                 "Name": "Title",
