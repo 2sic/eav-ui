@@ -1,4 +1,4 @@
-import { ContentType } from '../models';
+/* import { ContentType } from '../models';
 import * as fromContentType from './../actions/content-type.actions';
 
 const initialState: ContentType[] = [{
@@ -19,4 +19,4 @@ export function contentTypeReducer(state = initialState, action: fromContentType
             return state;
         }
     }
-}
+} */

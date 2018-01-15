@@ -5,7 +5,13 @@
     <span>{{ item.id }}</span> {{ item.name }}
   </li>
 
-  <li *ngFor="let contentType of contentTypes$ | async">
-    <span>{{ contentType.id }}</span> {{ contentType.name }}
-  </li>
 </p>
+<div *ngIf="jsonPackage1">
+  Json package V1 JSON: {{jsonPackage1 | json}}
+</div>
+<div>
+  Json entity V1 JSON: {{jsonItem1 | json}}
+</div>
+<div>
+  Json contentType V1 JSON: {{jsonContentType1 | json}}
+</div>
