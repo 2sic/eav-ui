@@ -15,8 +15,19 @@ export class EavAttributes {
      * Create Eav Attributes model from json typed Attributes1
      * @param attributes1
      */
-    // TODO: rewrite better
     public static create(attributes1: Attributes1): EavAttributes {
+        return new EavAttributes(
+            EavAttribute.create<string>(attributes1.String),
+            EavAttribute.create<boolean>(attributes1.Boolean)
+        );
+    }
+
+    /**
+     * Create Eav Attributes model from json typed Attributes1
+     * @param attributes1
+     */
+    // TODO: rewrite better
+    /* public static create(attributes1: Attributes1): EavAttributes {
         let newEavAtributeString: EavAttribute<string>;
         let newEavAtributeBoolean: EavAttribute<boolean>;
         // TODO: others types
@@ -24,9 +35,7 @@ export class EavAttributes {
         Object.keys(attributes1).forEach(attributes1Key => {
             if (attributes1.hasOwnProperty(attributes1Key)) {
                 const attribute = attributes1[attributes1Key];
-                /**
-                 * Creates new EavAttribute for specified type
-                 */
+                // Creates new EavAttribute for specified type
                 if (attributes1Key === 'String') {
                     newEavAtributeString = new EavAttribute<string>();
                 }
@@ -37,9 +46,7 @@ export class EavAttributes {
                 Object.keys(attribute).forEach(attributeKey => {
                     if (attribute.hasOwnProperty(attributeKey)) {
                         const value = attribute[attributeKey];
-                        /**
-                        * Creates new EavValue for specified type
-                        */
+                        // Creates new EavValue for specified type
                         if (attributes1Key === 'String') {
                             newEavAtributeString[attributeKey] = new EavValue<string>('*', value['*']); // TODO: maybe lower case key???
                         }
@@ -54,5 +61,5 @@ export class EavAttributes {
         });
 
         return new EavAttributes(newEavAtributeString, newEavAtributeBoolean);
-    }
+    } */
 }
