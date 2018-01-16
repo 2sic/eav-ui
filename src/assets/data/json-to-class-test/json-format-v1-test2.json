@@ -7,28 +7,18 @@
         "Name": "|Config ToSic.Eav.DataSources.SqlDataSource",
         "Scope": "System",
         "Description": "todo",
-        "Attributes": [
-            {
-                "Name": "Title",
-                "Type": "String",
+        "Attributes": {
+            "String": {
+                "Name": "asd",
+                "Type": "asd",
                 "IsTitle": true
             },
-            {
-                "Name": "ConnectionGroup",
-                "Type": "Empty",
-                "IsTitle": false
-            },
-            {
-                "Name": "ConnectionStringName",
-                "Type": "String",
-                "IsTitle": false
-            },
-            {
-                "Name": "SelectCommand",
-                "Type": "String",
-                "IsTitle": false
+            "Ante": {
+                "Name": "sdf",
+                "Type": "dfg",
+                "IsTitle": true
             }
-        ],
+        },
         "Metadata": []
     }
 }

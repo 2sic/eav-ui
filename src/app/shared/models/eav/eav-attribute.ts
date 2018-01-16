@@ -1,7 +1,8 @@
-import { Value1 } from './value1';
+import { EavValue } from './eav-value';
+import { Attributes1 } from '../json-format-v1/attributes1';
 
-export class Attribute1<T> {
-    [key: string]: Value1<T>;
+export class EavAttribute<T> {
+    [key: string]: EavValue<T>;
 }
 
 /* "Attributes": {

@@ -18,7 +18,7 @@ export class JsonPackage1Service {
    * Get Json Package V1 from json to class JsonPackage1
    */
   public getJsonPackage1(): Observable<JsonPackage1> {
-    return this.httpClient.get<JsonPackage1>('../../../assets/data/json-format-v1.json')
+    return this.httpClient.get<JsonPackage1>('../../../assets/data/json-to-class-test/json-format-v1-test2.json')
       .map((item: JsonPackage1) => {
         return JsonPackage1.create(item);
       })

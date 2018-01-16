@@ -1,7 +1,5 @@
-import { Value1 } from './value1';
-
-export class Attribute1<T> {
-    [key: string]: Value1<T>;
+export class Value1<T> {
+    [key: string]: T;
 }
 
 /* "Attributes": {

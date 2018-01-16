@@ -1,13 +1,13 @@
-import { Attribute1 } from './attribute1';
+import { Attributes1 } from './attributes1';
 
 export class ContentType1 {
     Id: string;
     Name: string;
     Scope: string;
     Description: string;
-    Attributes: Attribute1[];
+    Attributes: Attributes1;
 
-    constructor(Id: string, Name: string, Scope: string, Description: string, Attributes: Attribute1[]) {
+    constructor(Id: string, Name: string, Scope: string, Description: string, Attributes: Attributes1) {
         this.Id = Id;
         this.Name = Name;
         this.Scope = Scope;
@@ -16,6 +16,6 @@ export class ContentType1 {
     }
 
     public static create(item: ContentType1): ContentType1 {
-        return new ContentType1(item.Id, item.Name, item.Scope, item.Description, []); // TODO Atributes
+        return new ContentType1(item.Id, item.Name, item.Scope, item.Description, item.Attributes); // TODO Atributes
     }
 }

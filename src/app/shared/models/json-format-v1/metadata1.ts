@@ -1,11 +1,9 @@
+import { Entity1 } from './entity1';
 
-// TODO: must see what are data of metadata
 export class Metadata1 {
-    Id: string;
-    Name: string;
+    items: Entity1[];
 
-    constructor(Id: string, Name: string) {
-        this.Id = Id;
-        this.Name = Name;
+    constructor(items: Entity1[]) {
+        this.items = items;
     }
 }
