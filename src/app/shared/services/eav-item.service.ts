@@ -13,8 +13,8 @@ export class EavItemService {
   constructor(private httpClient: HttpClient) { }
 
   /**
-     * Get Eav Item from Json Entity V1
-     */
+   * Get Eav Item from Json Entity V1
+   */
   public getEavItemFromJsonItem1(): Observable<EavItem> {
     return this.httpClient.get<JsonItem1>('../../../assets/data/json-entity-v1.json')
       .map((item: JsonItem1) => {

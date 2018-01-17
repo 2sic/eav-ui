@@ -31,7 +31,6 @@ export class EavEntity {
      * @param item
      */
     public static create(item: Entity1): EavEntity {
-
         const eavAttributes = EavAttributes.create(item.Attributes);
         console.log('item', item);
         console.log('item.Metadata', item.Metadata);

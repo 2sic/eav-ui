@@ -2,7 +2,7 @@ import { Value1 } from '../json-format-v1/value1';
 
 export class EavValue<T> {
     value: string;
-    dimensions: T;
+    dimensions: T; // TODO: Dictionary<string, bool> Dimensions
 
     constructor(value: string, dimensions: T) {
         this.value = value;
@@ -17,4 +17,3 @@ export class EavValue<T> {
         return new EavValue<T>('*', value['*']);
     }
 }
-

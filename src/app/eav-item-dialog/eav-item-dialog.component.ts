@@ -21,9 +21,8 @@ export class EavItemDialogComponent implements OnInit {
     private eavItemService: EavItemService) { }
 
   ngOnInit() {
-    this.loadItem();
-
     // Test
+    this.loadItem();
     this.item$ = this.store.select(state => state.items);
   }
 

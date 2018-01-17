@@ -22,4 +22,3 @@ export class ItemEffects {
                 .map(item => new itemActions.LoadEavItemsSuccessAction(item));
         });
 }
-
