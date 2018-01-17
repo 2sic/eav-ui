@@ -1,12 +1,9 @@
 <p>
-  eav-item-dialog works!
-
-  <li *ngFor="let item of items$ | async">
-    <span>{{ item.id }}</span> {{ item.name }}
-  </li>
-
+  eav-item-dialog
 </p>
 
-<div>
-  Json entity V1 JSON: {{eavEntityTest | json}}
+<div *ngIf="(item$ | async) as item">
+  <div>Eav Header: {{ item.header.v }}</div>
+  <div>Eav Item ID: {{ item.entity.id }}</div>
+  <div>Eav Item Guid: {{ item.entity.guid }}</div>
 </div>

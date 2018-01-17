@@ -4,7 +4,6 @@ import { EavType } from './eav-type';
 import { EavValue } from './eav-value';
 import { Entity1 } from '../json-format-v1/entity1';
 import { Attribute1 } from '../json-format-v1/attribute1';
-import { Metadata1 } from '../json-format-v1/metadata1';
 
 export class EavEntity {
     // appId ???
@@ -28,7 +27,7 @@ export class EavEntity {
     }
 
     /**
-     * Create new Entity from typed json
+     * Create new Eav Entity from typed json Entity1
      * @param item
      */
     public static create(item: Entity1): EavEntity {
@@ -49,7 +48,7 @@ export class EavEntity {
     }
 
     /**
-    * Create new MetaData Entity Array from json typed Metdata1
+    * Create new MetaData Entity Array from json typed metadataArray Entity1[]
     * @param item
     */
     private static createMetadata(metadataArray: Entity1[]): EavEntity[] {

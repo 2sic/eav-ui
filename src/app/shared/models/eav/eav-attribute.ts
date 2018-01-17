@@ -18,7 +18,7 @@ export class EavAttribute<T> {
         // Loop trough attribute - Description, Name ...
         Object.keys(attribute1).forEach(attribute1Key => {
             if (attribute1.hasOwnProperty(attribute1Key)) {
-                newEavAtribute[attribute1Key] = EavValue.create('*', attribute1[attribute1Key]['*']);
+                newEavAtribute[attribute1Key] = EavValue.create<T>(attribute1[attribute1Key]);
             }
         });
 

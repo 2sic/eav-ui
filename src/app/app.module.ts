@@ -6,8 +6,11 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { itemReducer } from './shared/reducers';
+import { itemReducer } from './shared/store/reducers';
+import { ItemEffects } from './shared/effects/item.effects';
+import { EffectsModule } from '@ngrx/effects';
 import { EavEntityService } from './shared/services/eav-entity.service';
+import { EavItemService } from './shared/services/eav-item.service';
 
 @NgModule({
   declarations: [
@@ -17,10 +20,11 @@ import { EavEntityService } from './shared/services/eav-entity.service';
     BrowserModule,
     EavItemDialogModule,
     StoreModule.forRoot({ items: itemReducer }),
+    EffectsModule.forRoot([ItemEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule
   ],
-  providers: [EavEntityService],
+  providers: [EavEntityService, EavItemService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

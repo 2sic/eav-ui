@@ -1,4 +1,4 @@
-import { Action } from '@ngrx/store';
+/* import { Action } from '@ngrx/store';
 
 import { ContentType } from '../models';
 
@@ -19,4 +19,4 @@ export class LoadContentTypeSuccessAction implements Action {
 
 export type Actions
     = LoadContentTypeAction
-    | LoadContentTypeSuccessAction;
+    | LoadContentTypeSuccessAction; */

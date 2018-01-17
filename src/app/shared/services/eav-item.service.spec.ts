@@ -1,16 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { JsonItem1Service } from './json-item1.service';
+import { EavItemService } from './eav-item.service';
 
-describe('JsonItem1Service', () => {
+describe('EavItemService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [JsonItem1Service]
+      providers: [EavItemService]
     });
   });
 
-  it('should be created', inject([JsonItem1Service], (service: JsonItem1Service) => {
+  it('should be created', inject([EavItemService], (service: EavItemService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -1,6 +1,5 @@
 import { Attributes1 } from './attributes1';
 import { Type1 } from './type1';
-import { Metadata1 } from './metadata1';
 
 export class Entity1 {
     Id: number;

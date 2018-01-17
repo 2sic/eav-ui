@@ -3,13 +3,10 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import * as itemActions from '../shared/actions/item.actions';
-import * as contentTypeActions from '../shared/actions/content-type.actions';
-import { JsonPackage1Service } from '../shared/services/json-package1.service';
-import { JsonContentType1Service } from '../shared/services/json-content-type1.service';
-import { EavEntityService } from '../shared/services/eav-entity.service';
-import { AppState, Item } from '../shared/models';
-import { EavEntity } from '../shared/models/eav';
+import * as itemActions from '../shared/store/actions/item.actions';
+import { EavItemService } from '../shared/services/eav-item.service';
+import { AppState } from '../shared/models';
+import { EavItem } from '../shared/models/eav';
 
 @Component({
   selector: 'app-eav-item-dialog',
@@ -17,37 +14,23 @@ import { EavEntity } from '../shared/models/eav';
   styleUrls: ['./eav-item-dialog.component.css']
 })
 export class EavItemDialogComponent implements OnInit {
-  items$: Observable<Item[]>;
-
   // Test
-  eavEntityTest: EavEntity;
+  item$: Observable<EavItem>;
 
   constructor(private store: Store<AppState>,
-    private eavEntityService: EavEntityService) { }
+    private eavItemService: EavItemService) { }
 
   ngOnInit() {
-    // Only for testing Store
-    this.loadItems();
-    this.items$ = this.store.select(state => state.items);
-    this.loadItemsSuccess();
+    this.loadItem();
 
-    this.loadJsonItem1FromJson();
+    // Test
+    this.item$ = this.store.select(state => state.items);
   }
 
-  // Testing
-  loadJsonItem1FromJson() {
-    this.eavEntityService.getEavEntityFromJsonItem1().subscribe((data: EavEntity) => {
-      this.eavEntityTest = data;
-    }, (errors: any) => {
-      console.log('errors occured in -> json-to-model.service', errors);
-    });
-  }
-
-  loadItems() {
-    this.store.dispatch(new itemActions.LoadItemsAction());
-  }
-
-  loadItemsSuccess() {
-    this.store.dispatch(new itemActions.LoadItemsSuccessAction([{ id: 100, name: 'Items success' }]));
+  /**
+   *  Call action to Load eav item to store
+   */
+  loadItem() {
+    this.store.dispatch(new itemActions.LoadEavItemsAction());
   }
 }

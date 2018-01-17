@@ -1,3 +1,5 @@
+import { Value1 } from '../json-format-v1/value1';
+
 export class EavValue<T> {
     value: string;
     dimensions: T;
@@ -7,8 +9,12 @@ export class EavValue<T> {
         this.dimensions = dimensions;
     }
 
-    public static create<T>(value: string, dimensions: T): EavValue<T> {
-        return new EavValue<T>(value, dimensions);
+    /**
+     * Create Eav Value from typed json Value1
+     * @param value
+     */
+    public static create<T>(value: Value1<T>): EavValue<T> {
+        return new EavValue<T>('*', value['*']);
     }
 }
 
