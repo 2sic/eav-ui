@@ -4,9 +4,10 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import * as itemActions from '../shared/store/actions/item.actions';
-import { EavItemService } from '../shared/services/eav-item.service';
+import * as contentTypeActions from '../shared/store/actions/content-type.actions';
+import { ContentTypeService } from '../shared/services/content-type.service';
 import { AppState } from '../shared/models';
-import { EavItem } from '../shared/models/eav';
+import { Item, ContentType } from '../shared/models/eav';
 
 @Component({
   selector: 'app-eav-item-dialog',
@@ -15,21 +16,31 @@ import { EavItem } from '../shared/models/eav';
 })
 export class EavItemDialogComponent implements OnInit {
   // Test
-  item$: Observable<EavItem>;
+  item$: Observable<Item>;
+  contentType$: Observable<ContentType>;
 
-  constructor(private store: Store<AppState>,
-    private eavItemService: EavItemService) { }
+  constructor(private store: Store<AppState>, private contentTypeService: ContentTypeService) { }
 
   ngOnInit() {
     // Test
     this.loadItem();
+    this.loadcontentType();
     this.item$ = this.store.select(state => state.items);
+    // this.contentType$ = this.contentTypeService.getContentTypeFromJsonContentType1();
+    this.contentType$ = this.store.select(state => state.contentTypes);
   }
 
   /**
-   *  Call action to Load eav item to store
+   *  Call action to Load item to store
    */
   loadItem() {
-    this.store.dispatch(new itemActions.LoadEavItemsAction());
+    this.store.dispatch(new itemActions.LoadItemsAction());
+  }
+
+  /**
+  *  Call action to Load item to store
+  */
+  loadcontentType() {
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction());
   }
 }

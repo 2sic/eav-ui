@@ -2,25 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { EavItem } from '../models/eav/eav-item';
+import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class EavItemService {
+export class ItemService {
 
   constructor(private httpClient: HttpClient) { }
 
   /**
-   * Get Eav Item from Json Entity V1
+   * Get  Item from Json Entity V1
    */
-  public getEavItemFromJsonItem1(): Observable<EavItem> {
+  public getItemFromJsonItem1(): Observable<Item> {
     return this.httpClient.get<JsonItem1>('../../../assets/data/json-entity-v1.json')
       .map((item: JsonItem1) => {
-        return EavItem.create(item);
+        return Item.create(item);
       })
-      // .do(data => console.log('getEavEntityFromJsonItem1: ', data))
+      // .do(data => console.log('getItemFromJsonItem1: ', data))
       .catch(this.handleError);
   }
 

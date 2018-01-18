@@ -1,0 +1,41 @@
+import { EavEntity } from './eav-entity';
+import { AttributeDef1 } from '../json-format-v1/attribute-def1';
+
+export class AttributeDef {
+    name: string;
+    type: string;
+    isTitle: boolean;
+    metadata: EavEntity[];
+
+    constructor(name: string, type: string, isTitle: boolean, metadata: EavEntity[]) {
+        this.name = name;
+        this.type = type;
+        this.isTitle = isTitle;
+        this.metadata = metadata;
+    }
+
+    /**
+     * Create new AttributeDef from json typed AttributeDef1
+     * @param item
+     */
+    public static create(item: AttributeDef1): AttributeDef {
+        // console.log('AttributeDef1:', item);
+        const metaDataArray = EavEntity.createArray(item.Metadata);
+
+        return new AttributeDef(item.Name, item.Type, item.IsTitle, metaDataArray);
+    }
+
+    /**
+     * Create new AttributeDef[] from json typed AttributeDef1[]
+     * @param item
+     */
+    public static createArray(attributeDef1Array: AttributeDef1[]): AttributeDef[] {
+        const attributeDefArray: AttributeDef[] = [];
+        if (attributeDef1Array !== undefined) {
+            attributeDef1Array.forEach(attributeDef1 => {
+                attributeDefArray.push(AttributeDef.create(attributeDef1));
+            });
+        }
+        return attributeDefArray;
+    }
+}

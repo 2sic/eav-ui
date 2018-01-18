@@ -6,11 +6,14 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { itemReducer } from './shared/store/reducers';
-import { ItemEffects } from './shared/effects/item.effects';
+
 import { EffectsModule } from '@ngrx/effects';
 import { EavEntityService } from './shared/services/eav-entity.service';
-import { EavItemService } from './shared/services/eav-item.service';
+import { ItemService } from './shared/services/item.service';
+import { ContentTypeService } from './shared/services/content-type.service';
+import { itemReducer, contentTypeReducer } from './shared/store/reducers';
+import { ItemEffects } from './shared/effects/item.effects';
+import { ContentTypeEffects } from './shared/effects/content-type.effects';
 
 @NgModule({
   declarations: [
@@ -19,12 +22,12 @@ import { EavItemService } from './shared/services/eav-item.service';
   imports: [
     BrowserModule,
     EavItemDialogModule,
-    StoreModule.forRoot({ items: itemReducer }),
-    EffectsModule.forRoot([ItemEffects]),
+    StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
+    EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule
   ],
-  providers: [EavEntityService, EavItemService],
+  providers: [EavEntityService, ItemService, ContentTypeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

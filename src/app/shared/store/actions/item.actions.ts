@@ -1,22 +1,22 @@
 import { Action } from '@ngrx/store';
 
-import { EavItem } from '../../models/eav/eav-item';
+import { Item } from '../../models/eav/item';
 
-export const LOAD_EAV_ITEMS = 'LOAD_EAV_ITEMS';
-export const LOAD_EAV_ITEMS_SUCCESS = 'LOAD_EAV_ITEMS_SUCCESS';
+export const LOAD_ITEMS = 'LOAD_ITEMS';
+export const LOAD_ITEMS_SUCCESS = 'LOAD_ITEMS_SUCCESS';
 
-export class LoadEavItemsAction implements Action {
-    readonly type = LOAD_EAV_ITEMS;
+export class LoadItemsAction implements Action {
+    readonly type = LOAD_ITEMS;
 
     constructor() { }
 }
 
-export class LoadEavItemsSuccessAction implements Action {
-    readonly type = LOAD_EAV_ITEMS_SUCCESS;
+export class LoadItemsSuccessAction implements Action {
+    readonly type = LOAD_ITEMS_SUCCESS;
 
-    constructor(public payload: EavItem) { }
+    constructor(public payload: Item) { }
 }
 
 export type Actions
-    = LoadEavItemsAction
-    | LoadEavItemsSuccessAction;
+    = LoadItemsAction
+    | LoadItemsSuccessAction;

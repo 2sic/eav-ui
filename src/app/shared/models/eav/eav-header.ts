@@ -1,7 +1,7 @@
 import { JsonHeader1 } from '../json-format-v1/json-header1';
 
 export class EavHeader {
-    public v: number;
+    v: number;
 
     constructor(v: number) {
         this.v = v;

@@ -7,3 +7,7 @@
   <div>Eav Item ID: {{ item.entity.id }}</div>
   <div>Eav Item Guid: {{ item.entity.guid }}</div>
 </div>
+
+<div *ngIf="(contentType$ | async) as item">
+  <div>Content type: {{ item.header.v }}</div>
+</div>

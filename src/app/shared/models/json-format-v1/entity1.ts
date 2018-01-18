@@ -20,7 +20,7 @@ export class Entity1 {
         this.Metadata = Metadata;
     }
 
-    public static create(item: Entity1): Entity1 {
+    /* public static create(item: Entity1): Entity1 {
         return new Entity1(item.Id,
             item.Version,
             item.Guid,
@@ -28,7 +28,7 @@ export class Entity1 {
             item.Attributes,
             item.Owner,
             item.Metadata);
-    }
+    } */
 }
 
 

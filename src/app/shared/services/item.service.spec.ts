@@ -1,19 +1,19 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { EavItemService } from './eav-item.service';
+import { ItemService } from './item.service';
 
-import { EavItem } from '../models/eav';
+import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';
 
 describe('EavItemService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [EavItemService]
+      providers: [ItemService]
     });
   });
 
-  it('should be created', inject([EavItemService], (service: EavItemService) => {
+  it('should be created', inject([ItemService], (service: ItemService) => {
     expect(service).toBeTruthy();
   }));
 
@@ -21,7 +21,7 @@ describe('EavItemService', () => {
     httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/json-entity-v1-test.json')
       .subscribe(data => {
         console.log('createdJsonPackage1', data);
-        const createdJsonPackage1: EavItem = EavItem.create(data);
+        const createdJsonPackage1: Item = Item.create(data);
         console.log('createdJsonPackage1', createdJsonPackage1);
         expect(createdJsonPackage1).toBeTruthy();
       });

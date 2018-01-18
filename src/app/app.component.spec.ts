@@ -5,7 +5,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { itemReducer } from './shared/store/reducers';
-import { EavItemService } from './shared/services/eav-item.service';
+import { ItemService } from './shared/services/item.service';
+import { ContentTypeService } from './shared/services/content-type.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -18,7 +19,7 @@ describe('AppComponent', () => {
         StoreModule.forRoot({ items: itemReducer }),
         HttpClientModule
       ],
-      providers: [EavItemService]
+      providers: [ItemService]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
