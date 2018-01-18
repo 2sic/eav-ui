@@ -1,5 +1,5 @@
-import { EavAttribute } from './eav-attribute';
 import { EavAttributes } from './eav-attributes';
+// import { EavAttributes } from './eav-attributes';
 import { EavType } from './eav-type';
 import { EavValue } from './eav-value';
 import { Entity1 } from '../json-format-v1/entity1';

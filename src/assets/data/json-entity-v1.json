@@ -94,7 +94,9 @@
                             "*": "3cef3168-5fe8-4417-8ee0-c47642181a1e:Default>Out:Default"
                         },
                         "TestParameters": {
-                            "*": "[Module:ModuleID]=6936"
+                            "*": "[Module:ModuleID]=6936",
+                            "hrvatski": "HrvatskaValue",
+                            "Engleski": "EngleskiValue"
                         }
                     },
                     "Boolean": {
