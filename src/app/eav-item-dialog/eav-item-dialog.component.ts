@@ -16,8 +16,8 @@ import { Item, ContentType } from '../shared/models/eav';
 })
 export class EavItemDialogComponent implements OnInit {
   // Test
-  item$: Observable<Item>;
-  contentType$: Observable<ContentType>;
+  items$: Observable<Item[]>;
+  contentTypes$: Observable<ContentType[]>;
 
   constructor(private store: Store<AppState>, private contentTypeService: ContentTypeService) { }
 
@@ -25,9 +25,8 @@ export class EavItemDialogComponent implements OnInit {
     // Test
     this.loadItem();
     this.loadcontentType();
-    this.item$ = this.store.select(state => state.items);
-    // this.contentType$ = this.contentTypeService.getContentTypeFromJsonContentType1();
-    this.contentType$ = this.store.select(state => state.contentTypes);
+    this.items$ = this.store.select(state => state.items);
+    this.contentTypes$ = this.store.select(state => state.contentTypes);
   }
 
   /**

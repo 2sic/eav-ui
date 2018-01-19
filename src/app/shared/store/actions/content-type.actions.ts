@@ -14,8 +14,8 @@ export class LoadContentTypeAction implements Action {
 export class LoadContentTypeSuccessAction implements Action {
     readonly type = LOAD_CONTENT_TYPE_SUCCESS;
 
-    constructor(public payload: ContentType) {
-        console.log('Akcija pozvana LOAD_CONTENT_TYPE_SUCCESS', payload);
+    constructor(public newContentType: ContentType) {
+        console.log('succes:', newContentType);
     }
 }
 

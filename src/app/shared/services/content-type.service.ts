@@ -19,7 +19,7 @@ export class ContentTypeService {
         console.log('Ipak pozvano ', item);
         return ContentType.create(item);
       })
-      .do(data => console.log('getEavEntityFromJsonItem1: ', data))
+      // .do(data => console.log('getEavEntityFromJsonItem1: ', data))
       .catch(this.handleError);
   }
 

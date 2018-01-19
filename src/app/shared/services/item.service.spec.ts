@@ -17,24 +17,44 @@ describe('EavItemService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('should create Eav Item object from json test 1', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/json-entity-v1-test.json')
+  /**
+   * Test simple entity with only one attribute
+   */
+  it('should create Item entity with only one attribute - Test 1', inject([HttpClient], (httpClient: HttpClient) => {
+    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
       .subscribe(data => {
-        console.log('createdJsonPackage1', data);
-        const createdJsonPackage1: Item = Item.create(data);
-        console.log('createdJsonPackage1', createdJsonPackage1);
-        expect(createdJsonPackage1).toBeTruthy();
+        const item: Item = Item.create(data);
+        console.log('Item entity with only one attribute :', item);
+        expect(item).toBeTruthy();
       });
   }));
 
-  /* it('should create Eav Item object from json test 2', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/json-format-v1-test2.json')
+  it('should create Item entity with atributes with diferent types - Test 2', inject([HttpClient], (httpClient: HttpClient) => {
+    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test2.json')
       .subscribe(data => {
-        const createdJsonPackage1: EavItem = EavItem.create(data);
-        expect(createdJsonPackage1).toBeTruthy();
+        const item: Item = Item.create(data);
+        console.log('Item entity with atributes with diferent types:', item);
+        expect(item).toBeTruthy();
       });
-  })); */
+  }));
 
+  it('should create Item entity with metadata - Test 3', inject([HttpClient], (httpClient: HttpClient) => {
+    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test3.json')
+      .subscribe(data => {
+        const item: Item = Item.create(data);
+        console.log('Item entity with metadata: ', item);
+        expect(item).toBeTruthy();
+      });
+  }));
+
+  it('should create Item entity Test 4', inject([HttpClient], (httpClient: HttpClient) => {
+    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test4.json')
+      .subscribe(data => {
+        const item: Item = Item.create(data);
+        console.log('Create Item entity test 4: ', item);
+        expect(item).toBeTruthy();
+      });
+  }));
 });
 
 

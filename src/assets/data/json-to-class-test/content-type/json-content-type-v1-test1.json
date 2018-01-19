@@ -1,0 +1,19 @@
+{
+    "_": {
+        "V": 1
+    },
+    "ContentType": {
+        "Id": "09ad77bb-66e8-4a1c-92ac-27253afb251d",
+        "Name": "Person",
+        "Scope": "2SexyContent",
+        "Description": "Person",
+        "Attributes": [
+            {
+                "Name": "FullName",
+                "Type": "String",
+                "IsTitle": true,
+                "Metadata": []
+            }
+        ]
+    }
+}

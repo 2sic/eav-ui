@@ -1,0 +1,23 @@
+{
+    "_": {
+        "V": 1
+    },
+    "Entity": {
+        "Id": 42900,
+        "Version": 6,
+        "Guid": "e8a702d2-eccd-4b0f-83bd-600d8a8449d9",
+        "Type": {
+            "Name": "DataPipeline",
+            "Id": "DataPipeline"
+        },
+        "Attributes": {
+            "String": {
+                "Description": {
+                    "*": "Retrieve full list of all zones"
+                }
+            }
+        },
+        "Owner": "dnn:userid=1",
+        "Metadata": []
+    }
+}

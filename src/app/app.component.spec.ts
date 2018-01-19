@@ -19,7 +19,7 @@ describe('AppComponent', () => {
         StoreModule.forRoot({ items: itemReducer }),
         HttpClientModule
       ],
-      providers: [ItemService]
+      providers: [ItemService, ContentTypeService]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

@@ -2,12 +2,12 @@
   eav-item-dialog
 </p>
 
-<div *ngIf="(item$ | async) as item">
+<div *ngFor="let item of items$ | async">
   <div>Eav Header: {{ item.header.v }}</div>
   <div>Eav Item ID: {{ item.entity.id }}</div>
   <div>Eav Item Guid: {{ item.entity.guid }}</div>
 </div>
 
-<div *ngIf="(contentType$ | async) as item">
-  <div>Content type: {{ item.header.v }}</div>
+<div *ngFor="let contentType of contentTypes$ | async">
+  <div>Content type: {{ contentType.header.v }}</div>
 </div>

@@ -14,7 +14,7 @@ export class LoadItemsAction implements Action {
 export class LoadItemsSuccessAction implements Action {
     readonly type = LOAD_ITEMS_SUCCESS;
 
-    constructor(public payload: Item) { }
+    constructor(public newItem: Item) { }
 }
 
 export type Actions
