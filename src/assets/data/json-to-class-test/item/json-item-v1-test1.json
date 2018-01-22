@@ -7,8 +7,8 @@
         "Version": 6,
         "Guid": "e8a702d2-eccd-4b0f-83bd-600d8a8449d9",
         "Type": {
-            "Name": "DataPipeline",
-            "Id": "DataPipeline"
+            "Name": "TypeName",
+            "Id": "TypeId"
         },
         "Attributes": {
             "String": {
