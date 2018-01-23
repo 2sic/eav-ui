@@ -1,0 +1,18 @@
+<p>
+  item-edit-form works!
+</p>
+
+<div *ngIf="item$">
+  <div>Eav Header: {{ item$.header.v }}</div>
+  <div>Eav Item ID: {{ item$.entity.id }}</div>
+  <div>Eav Item Guid: {{ item$.entity.guid }}</div>
+</div>
+
+<div *ngIf="contentType$ | async; let contentType">
+  <h3>ContentType {{contentType.header.v }} </h3>
+  <div *ngFor="let contentTypeAttribute of contentType.contentType.attributes">
+    <div>Name: {{ contentTypeAttribute.name }}</div>
+    <div>Type: {{ contentTypeAttribute.type }}</div>
+    <div>IsTitle: {{ contentTypeAttribute.isTitle }}</div>
+  </div>
+</div>
