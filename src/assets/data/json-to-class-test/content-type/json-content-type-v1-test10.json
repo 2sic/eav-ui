@@ -3,20 +3,20 @@
         "V": 1
     },
     "ContentType": {
-        "Id": "09ad77bb-66e8-4a1c-92ac-27253afb251d",
-        "Name": "Person",
+        "Id": "6f3d1eed-994e-4c93-82f0-011a4ca08f53",
+        "Name": "Album",
         "Scope": "2SexyContent",
-        "Description": "Person",
+        "Description": "Album",
         "Attributes": [
             {
-                "Name": "FullName",
+                "Name": "Title",
                 "Type": "String",
                 "IsTitle": true,
                 "Metadata": [
                     {
-                        "Id": 983,
+                        "Id": 1887,
                         "Version": 1,
-                        "Guid": "18a0726d-e161-4694-a9e0-6acdaa517a06",
+                        "Guid": "6f2e8f49-1bca-4d30-b613-1668cdb12c5a",
                         "Type": {
                             "Name": "@All",
                             "Id": "@All"
@@ -27,13 +27,13 @@
                                     "*": ""
                                 },
                                 "InputType": {
-                                    "*": ""
+                                    "*": "string-default"
                                 },
                                 "Name": {
-                                    "*": "Full name"
+                                    "*": "Title"
                                 },
                                 "Notes": {
-                                    "*": ""
+                                    "*": "<p>Enter a title for this album.</p>"
                                 },
                                 "ValidationRegExJavaScript": {
                                     "*": ""
@@ -54,9 +54,158 @@
                         "Owner": "dnn:userid=1"
                     },
                     {
-                        "Id": 984,
+                        "Id": 1888,
                         "Version": 1,
-                        "Guid": "ce04188c-80cb-4aa0-add4-a0d7b448fa86",
+                        "Guid": "90d75047-db8d-4d07-b365-7c7487745c72",
+                        "Type": {
+                            "Name": "@String",
+                            "Id": "@String"
+                        },
+                        "Attributes": {},
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1889,
+                        "Version": 1,
+                        "Guid": "1216d726-598a-4fa6-a5a5-1fadc52a09fe",
+                        "Type": {
+                            "Name": "@string-default",
+                            "Id": "@string-default"
+                        },
+                        "Attributes": {},
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "Path",
+                "Type": "String",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1890,
+                        "Version": 1,
+                        "Guid": "f6f0656f-c8e7-4785-9a32-3f7c6d78b399",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "DefaultValue": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": "string-url-path"
+                                },
+                                "Name": {
+                                    "*": "Album Link ID"
+                                },
+                                "Notes": {
+                                    "*": "<p>URL-Path for this album - needed for album direct links</p>"
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": true
+                                },
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1891,
+                        "Version": 1,
+                        "Guid": "d7f51d8f-6eac-4937-9d12-f38b67c3d5a5",
+                        "Type": {
+                            "Name": "@String",
+                            "Id": "@String"
+                        },
+                        "Attributes": {},
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1892,
+                        "Version": 1,
+                        "Guid": "cacc47e7-8468-4490-9d1a-cb6f5b675888",
+                        "Type": {
+                            "Name": "@string-url-path",
+                            "Id": "@string-url-path"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "AutoGenerateMask": {
+                                    "*": "[Title]"
+                                }
+                            },
+                            "Boolean": {
+                                "AllowSlashes": {
+                                    "*": false
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "Introduction",
+                "Type": "String",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1893,
+                        "Version": 1,
+                        "Guid": "22eff08a-29cf-421d-be35-f01e0b204ce3",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "DefaultValue": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": "string-wysiwyg"
+                                },
+                                "Name": {
+                                    "*": "Introduction"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1894,
+                        "Version": 1,
+                        "Guid": "6dae2bc3-9f32-4572-b7d4-8e1858c23440",
                         "Type": {
                             "Name": "@String",
                             "Id": "@String"
@@ -67,170 +216,34 @@
                 ]
             },
             {
-                "Name": "Position",
-                "Type": "String",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 985,
-                        "Version": 1,
-                        "Guid": "5b0f93c8-df8e-4748-afb7-7fffe0939b44",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": ""
-                                },
-                                "Name": {
-                                    "*": "Position"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 986,
-                        "Version": 1,
-                        "Guid": "e506dbd9-2f14-45f0-a0b9-df510235323b",
-                        "Type": {
-                            "Name": "@String",
-                            "Id": "@String"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
-            },
-            {
-                "Name": "Description",
-                "Type": "String",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 987,
-                        "Version": 1,
-                        "Guid": "e220e11e-77dc-40c0-8792-f44e2e1db8e1",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": ""
-                                },
-                                "Name": {
-                                    "*": "Description"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 988,
-                        "Version": 1,
-                        "Guid": "784060ed-85ff-4724-8a66-3dda9dc80655",
-                        "Type": {
-                            "Name": "@String",
-                            "Id": "@String"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DropdownValues": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": "wysiwyg"
-                                },
-                                "ValidationAutomatic": {
-                                    "*": ""
-                                },
-                                "ValidationRegEx": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Number": {
-                                "RowCount": {
-                                    "*": 1.0
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
-            },
-            {
-                "Name": "Photo",
+                "Name": "Images",
                 "Type": "Hyperlink",
                 "IsTitle": false,
                 "Metadata": [
                     {
-                        "Id": 989,
+                        "Id": 1895,
                         "Version": 1,
-                        "Guid": "3fbecd8b-39d2-47e0-ace0-79abc28f509b",
+                        "Guid": "ca12d915-fe66-4fa7-a91a-b43d59a862d0",
                         "Type": {
                             "Name": "@All",
                             "Id": "@All"
                         },
                         "Attributes": {
                             "String": {
+                                "CustomJavaScript": {
+                                    "*": ""
+                                },
                                 "DefaultValue": {
                                     "*": ""
                                 },
                                 "InputType": {
-                                    "*": ""
+                                    "*": "hyperlink-library"
                                 },
                                 "Name": {
-                                    "*": "Photo"
+                                    "*": "Images"
                                 },
                                 "Notes": {
-                                    "*": ""
+                                    "*": "<p>This is where all the images are added. Just drag them in - then add descriptions by clicking on the tag-icon inside the image.</p>"
                                 },
                                 "ValidationRegExJavaScript": {
                                     "*": ""
@@ -251,9 +264,9 @@
                         "Owner": "dnn:userid=1"
                     },
                     {
-                        "Id": 990,
+                        "Id": 1896,
                         "Version": 1,
-                        "Guid": "e0059ae3-0ee6-49d2-86cf-ca484c763481",
+                        "Guid": "9d558707-5a7f-43de-957c-5fe6a20932b7",
                         "Type": {
                             "Name": "@Hyperlink",
                             "Id": "@Hyperlink"
@@ -264,13 +277,13 @@
                                     "*": "adam,more"
                                 },
                                 "DefaultDialog": {
-                                    "*": "ImageManager"
-                                },
-                                "FileFilter": {
                                     "*": ""
                                 },
+                                "FileFilter": {
+                                    "*": "*.jpg,*.png,*.gif"
+                                },
                                 "Paths": {
-                                    "*": "/"
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
@@ -281,7 +294,121 @@
                                     "*": false
                                 },
                                 "ShowImageManager": {
+                                    "*": false
+                                },
+                                "ShowPagePicker": {
+                                    "*": false
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1897,
+                        "Version": 1,
+                        "Guid": "b56cf8a8-0f60-4e2f-9b4c-4ca662961506",
+                        "Type": {
+                            "Name": "@hyperlink-library",
+                            "Id": "@hyperlink-library"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "MetadataContentTypes": {
+                                    "*": "ImageMetadata"
+                                }
+                            },
+                            "Number": {
+                                "FolderDepth": {
+                                    "*": 0.0
+                                }
+                            },
+                            "Boolean": {
+                                "AllowAssetsInRoot": {
                                     "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "AlbumThumbnail",
+                "Type": "Hyperlink",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1898,
+                        "Version": 1,
+                        "Guid": "1c359809-7609-4058-ab8f-7c713738a2be",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "DefaultValue": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": "hyperlink-default"
+                                },
+                                "Name": {
+                                    "*": "Album Thumbnail"
+                                },
+                                "Notes": {
+                                    "*": "<p>The thumbnail shown&nbsp;in an albums overview. Not visible if you only show a single album.&nbsp;</p>"
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1899,
+                        "Version": 1,
+                        "Guid": "08c178c6-31ae-44bb-935c-33614fd072c9",
+                        "Type": {
+                            "Name": "@Hyperlink",
+                            "Id": "@Hyperlink"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "Buttons": {
+                                    "*": "adam,more"
+                                },
+                                "DefaultDialog": {
+                                    "*": ""
+                                },
+                                "FileFilter": {
+                                    "*": ""
+                                },
+                                "Paths": {
+                                    "*": ""
+                                }
+                            },
+                            "Boolean": {
+                                "ShowAdam": {
+                                    "*": true
+                                },
+                                "ShowFileManager": {
+                                    "*": false
+                                },
+                                "ShowImageManager": {
+                                    "*": false
                                 },
                                 "ShowPagePicker": {
                                     "*": false
@@ -291,273 +418,13 @@
                         "Owner": "dnn:userid=1"
                     }
                 ]
-            },
-            {
-                "Name": "ContactInfoGroup",
-                "Type": "Empty",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 991,
-                        "Version": 1,
-                        "Guid": "ebc3a89e-b162-46c3-aa04-cdad489e0f67",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": "empty-default"
-                                },
-                                "Name": {
-                                    "*": "Contact Information"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 992,
-                        "Version": 1,
-                        "Guid": "50b390e5-88f2-4e65-aa49-688544f7749b",
-                        "Type": {
-                            "Name": "@empty-default",
-                            "Id": "@empty-default"
-                        },
-                        "Attributes": {
-                            "Boolean": {
-                                "DefaultCollapsed": {
-                                    "*": false
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
-            },
-            {
-                "Name": "Phone",
-                "Type": "String",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 993,
-                        "Version": 1,
-                        "Guid": "8ac6c9e0-a367-4361-a790-ba15c2e3600c",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": ""
-                                },
-                                "Name": {
-                                    "*": "Telephone"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 994,
-                        "Version": 1,
-                        "Guid": "f788730a-b573-47fc-a129-f1cfbadbd9f9",
-                        "Type": {
-                            "Name": "@String",
-                            "Id": "@String"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
-            },
-            {
-                "Name": "Mobile",
-                "Type": "String",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 995,
-                        "Version": 1,
-                        "Guid": "c06a0a85-ae8a-4cc7-8e2d-8eb817958f08",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": ""
-                                },
-                                "Name": {
-                                    "*": "Mobile"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 996,
-                        "Version": 1,
-                        "Guid": "3fc82d79-12d5-4bfe-a275-d4f22e6911e5",
-                        "Type": {
-                            "Name": "@String",
-                            "Id": "@String"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 997,
-                        "Version": 1,
-                        "Guid": "5cd3a8c3-69ae-470c-9a00-467f86cf33d8",
-                        "Type": {
-                            "Name": "@string-default",
-                            "Id": "@string-default"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
-            },
-            {
-                "Name": "Email",
-                "Type": "String",
-                "IsTitle": false,
-                "Metadata": [
-                    {
-                        "Id": 998,
-                        "Version": 1,
-                        "Guid": "0273e548-75bd-48a6-b66e-192c6d77306d",
-                        "Type": {
-                            "Name": "@All",
-                            "Id": "@All"
-                        },
-                        "Attributes": {
-                            "String": {
-                                "DefaultValue": {
-                                    "*": ""
-                                },
-                                "InputType": {
-                                    "*": ""
-                                },
-                                "Name": {
-                                    "*": "Email"
-                                },
-                                "Notes": {
-                                    "*": ""
-                                },
-                                "ValidationRegExJavaScript": {
-                                    "*": ""
-                                }
-                            },
-                            "Boolean": {
-                                "Disabled": {
-                                    "*": false
-                                },
-                                "Required": {
-                                    "*": false
-                                },
-                                "VisibleInEditUI": {
-                                    "*": true
-                                }
-                            }
-                        },
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 999,
-                        "Version": 1,
-                        "Guid": "68c72c9a-91eb-4e01-b2e6-1fe68585caa1",
-                        "Type": {
-                            "Name": "@String",
-                            "Id": "@String"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    },
-                    {
-                        "Id": 1000,
-                        "Version": 1,
-                        "Guid": "2ecc5168-fc15-4403-a168-8e80d46e69e0",
-                        "Type": {
-                            "Name": "@string-default",
-                            "Id": "@string-default"
-                        },
-                        "Attributes": {},
-                        "Owner": "dnn:userid=1"
-                    }
-                ]
             }
         ],
         "Metadata": [
             {
-                "Id": 1055,
+                "Id": 1934,
                 "Version": 1,
-                "Guid": "63362ca8-58da-4ee6-9bef-4d2fdfc93963",
+                "Guid": "9011e2dd-60c3-49a2-b12d-6c0671ae9175",
                 "Type": {
                     "Name": "ContentType",
                     "Id": "ContentType"
@@ -565,13 +432,13 @@
                 "Attributes": {
                     "String": {
                         "Description": {
-                            "*": "Information about a person (contact)"
+                            "*": "Album with many Images"
                         },
                         "EditInstructions": {
                             "*": ""
                         },
                         "Label": {
-                            "*": "Person(s)"
+                            "*": "Album"
                         },
                         "Notes": {
                             "*": ""
@@ -579,17 +446,17 @@
                     },
                     "Hyperlink": {
                         "Icon": {
-                            "*": "file:194"
+                            "*": ""
                         },
                         "Link": {
-                            "*": "https://github.com/2sic/2sxc-content-bootstrap3/wiki/Help"
+                            "*": ""
                         }
                     }
                 },
                 "Owner": "dnn:userid=1",
                 "For": {
                     "Target": "ContentType",
-                    "String": "09ad77bb-66e8-4a1c-92ac-27253afb251d"
+                    "String": "6f3d1eed-994e-4c93-82f0-011a4ca08f53"
                 }
             }
         ]

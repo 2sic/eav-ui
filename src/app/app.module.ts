@@ -6,10 +6,14 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { itemReducer } from './shared/reducers';
-import { JsonPackage1Service } from './shared/services/json-package1.service';
-import { JsonContentType1Service } from './shared/services/json-content-type1.service';
-import { JsonItem1Service } from './shared/services/json-item1.service';
+
+import { EffectsModule } from '@ngrx/effects';
+import { EavEntityService } from './shared/services/eav-entity.service';
+import { ItemService } from './shared/services/item.service';
+import { ContentTypeService } from './shared/services/content-type.service';
+import { itemReducer, contentTypeReducer } from './shared/store/reducers';
+import { ItemEffects } from './shared/effects/item.effects';
+import { ContentTypeEffects } from './shared/effects/content-type.effects';
 
 @NgModule({
   declarations: [
@@ -18,11 +22,12 @@ import { JsonItem1Service } from './shared/services/json-item1.service';
   imports: [
     BrowserModule,
     EavItemDialogModule,
-    StoreModule.forRoot({ items: itemReducer }),
+    StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
+    EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule
   ],
-  providers: [JsonPackage1Service, JsonItem1Service, JsonContentType1Service],
+  providers: [EavEntityService, ItemService, ContentTypeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

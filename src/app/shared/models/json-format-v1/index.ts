@@ -1,4 +1,5 @@
-export { ContentType1 } from './content-type1';
+export { ContentTypeDef1 } from './content-type-def1';
+export { AttributeDef1 } from './attribute-def1';
 export { Entity1 } from './entity1';
 export { JsonContentType1 } from './json-content-type1';
 export { JsonItem1 } from './json-item1';

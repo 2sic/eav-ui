@@ -587,10 +587,42 @@
                     }
                 },
                 "Owner": "dnn:userid=1",
-                "For": {
-                    "Target": "ContentType",
-                    "String": "09ad77bb-66e8-4a1c-92ac-27253afb251d"
-                }
+                "Metadata": [
+                    {
+                        "Id": 1055,
+                        "Version": 1,
+                        "Guid": "63362ca8-58da-4ee6-9bef-4d2fdfc93963",
+                        "Type": {
+                            "Name": "ContentType",
+                            "Id": "ContentType"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "Description": {
+                                    "*": "Information about a person (contact)"
+                                },
+                                "EditInstructions": {
+                                    "*": ""
+                                },
+                                "Label": {
+                                    "*": "Person(s)"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                }
+                            },
+                            "Hyperlink": {
+                                "Icon": {
+                                    "*": "file:194"
+                                },
+                                "Link": {
+                                    "*": "https://github.com/2sic/2sxc-content-bootstrap3/wiki/Help"
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
             }
         ]
     }
