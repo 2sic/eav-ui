@@ -13,8 +13,13 @@ import { ContentTypeService } from './shared/services/content-type.service';
 import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
-
 import { Routes, RouterModule } from '@angular/router';
+
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { ReactiveFormsModule } from '@angular/forms';
+// import { FormlyModule } from '@ngx-formly/core';
+import { FormlyMaterialModule } from '@ngx-formly/material';
 
 const routes: Routes = [
   {
@@ -39,7 +44,11 @@ const routes: Routes = [
     EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    // ReactiveFormsModule,
+    // FormlyModule.forRoot(),
+    FormlyMaterialModule
   ],
   exports: [RouterModule],
   providers: [EavEntityService, ItemService, ContentTypeService],

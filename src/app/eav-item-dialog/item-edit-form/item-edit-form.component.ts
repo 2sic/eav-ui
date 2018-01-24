@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { FormGroup } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import 'rxjs/add/operator/map';
 
 import { AppState } from '../../shared/models';
@@ -16,25 +18,113 @@ export class ItemEditFormComponent implements OnInit {
   @Input() item$: Observable<Item>;
 
   // contentTypes$: Observable<ContentType[]>;
-
   contentType$: Observable<ContentType>;
+  form = new FormGroup({});
+  itemFields$: Observable<FormlyFieldConfig[]>;
+  //  = [{ // TODO: our Fields are contentTypes attributes
+  //   key: 'FullName.values[0].value',
+  //   type: 'input',
+  //   templateOptions: {
+  //     type: 'text',
+  //     label: 'FullName',
+  //     placeholder: 'Enter FullName',
+  //     required: true,
+  //   }
+  // },
+  // {
+  //   key: 'Position.values[0].value',
+  //   type: 'input',
+  //   templateOptions: {
+  //     type: 'text',
+  //     label: 'Description',
+  //     placeholder: 'Enter description',
+  //     required: true,
+  //   }
+  // },
+  // {
+  //   key: 'Description.values[0].value',
+  //   type: 'input',
+  //   templateOptions: {
+  //     type: 'text',
+  //     label: 'Description',
+  //     placeholder: 'Enter description',
+  //     required: true,
+  //   }
+  // },
+  // {
+  //   key: 'Email.values[0].value',
+  //   type: 'input',
+  //   templateOptions: {
+  //     type: 'text',
+  //     label: 'Description',
+  //     placeholder: 'Enter description',
+  //     required: true,
+  //   }
+  // }
+  // ];
+
+
 
   constructor(private store: Store<AppState>) { }
+
+  // Test
+  submit(attributes) {
+    console.log(attributes);
+  }
 
   ngOnInit() {
     this.loadContentType();
   }
 
   loadContentType() {
-    // TODO: Load content type for item$ from store
+    // Load content type for item$ from store
     // this.contentTypes$ = this.store.select(state => state.contentTypes);
 
-    this.contentType$ = this.fetchById('|Config ToSic.Eav.DataSources.SqlDataSource');
+    // TODO: place item$.entity.type.id
+    this.contentType$ = this.fetchById('09ad77bb-66e8-4a1c-92ac-27253afb251d');
+    // map content type attributes to itemFields (formlyFieldConfigArray)
+    this.itemFields$ = this.mapContentTypeFields();
   }
-  // TEST
+
+  // TEST - Load content type for item$ from store
   fetchById(id: string): Observable<ContentType> {
     return this.store
       .select(s => s.contentTypes)
-      .map(list => list.find(obj => obj.contentType.id === id));
+      .map(data => data.find(obj => obj.contentType.id === id));
+  }
+
+  /**
+   * map content type attributes to itemFields (formlyFieldConfigArray)
+   */
+  mapContentTypeFields(): Observable<FormlyFieldConfig[]> {
+    return this.contentType$
+      .switchMap((data) => {
+        const formlyFieldConfigArray: FormlyFieldConfig[] = [];
+        // loop through contentType attributes
+        data.contentType.attributes.forEach(attribute => {
+          const formlyFieldConfig: FormlyFieldConfig = this.getFormlyFieldFromAttributeDef(attribute);
+
+          formlyFieldConfigArray.push(formlyFieldConfig);
+        });
+
+        return [formlyFieldConfigArray];
+      });
+  }
+
+  /**
+   * Get FormlyField from AttributeDef
+   * @param attribute
+   */
+  getFormlyFieldFromAttributeDef(attribute: AttributeDef): FormlyFieldConfig {
+    return {
+      key: `${attribute.name}.values[0].value`,
+      type: 'input',
+      templateOptions: {
+        type: 'text',
+        label: attribute.name,
+        placeholder: `Enter ${attribute.name}`,
+        required: true,
+      }
+    };
   }
 }
