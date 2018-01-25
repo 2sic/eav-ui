@@ -1,16 +1,19 @@
 import { EavEntity } from './eav-entity';
 import { AttributeDef1 } from '../json-format-v1/attribute-def1';
+import { EavAttributes } from './eav-attributes';
 
 export class AttributeDef {
     name: string;
     type: string;
     isTitle: boolean;
+    settings: EavAttributes
     metadata: EavEntity[];
 
-    constructor(name: string, type: string, isTitle: boolean, metadata: EavEntity[]) {
+    constructor(name: string, type: string, isTitle: boolean, metadata: EavEntity[], settings: EavAttributes) {
         this.name = name;
         this.type = type;
         this.isTitle = isTitle;
+        this.settings = settings;
         this.metadata = metadata;
     }
 
@@ -21,8 +24,9 @@ export class AttributeDef {
     public static create(item: AttributeDef1): AttributeDef {
         // console.log('AttributeDef1:', item);
         const metaDataArray = EavEntity.createArray(item.Metadata);
+        const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
 
-        return new AttributeDef(item.Name, item.Type, item.IsTitle, metaDataArray);
+        return new AttributeDef(item.Name, item.Type, item.IsTitle, metaDataArray, settings);
     }
 
     /**

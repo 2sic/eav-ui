@@ -21,7 +21,7 @@ export class ItemEditFormComponent implements OnInit {
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
-  //  = [{ // TODO: our Fields are contentTypes attributes
+  // itemFieldss$: FormlyFieldConfig[] = [{ // TODO: our Fields are contentTypes attributes
   //   key: 'FullName.values[0].value',
   //   type: 'input',
   //   templateOptions: {
@@ -81,7 +81,8 @@ export class ItemEditFormComponent implements OnInit {
     // this.contentTypes$ = this.store.select(state => state.contentTypes);
 
     // TODO: place item$.entity.type.id
-    this.contentType$ = this.fetchById('09ad77bb-66e8-4a1c-92ac-27253afb251d');
+    // this.contentType$ = this.fetchById('09ad77bb-66e8-4a1c-92ac-27253afb251d'); // person
+    this.contentType$ = this.fetchById('884e65b4-8f1c-4bc9-897f-147dcabeb941'); // accordion
     // map content type attributes to itemFields (formlyFieldConfigArray)
     this.itemFields$ = this.mapContentTypeFields();
   }
@@ -119,6 +120,7 @@ export class ItemEditFormComponent implements OnInit {
     return {
       key: `${attribute.name}.values[0].value`,
       type: 'input',
+      // wrappers: ['panel'],
       templateOptions: {
         type: 'text',
         label: attribute.name,
@@ -128,3 +130,4 @@ export class ItemEditFormComponent implements OnInit {
     };
   }
 }
+

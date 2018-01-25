@@ -35,7 +35,7 @@ export class MultiItemEditFormComponent implements OnInit {
   }
 
   /**
-  *  Call action to Load item to store
+  *  Call action to Load content type to store
   */
   loadcontentType() {
     this.store.dispatch(new contentTypeActions.LoadContentTypeAction());

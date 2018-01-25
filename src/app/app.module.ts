@@ -20,6 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { ReactiveFormsModule } from '@angular/forms';
 // import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
+// import { PanelWrapperComponent } from './shared/wrappers/panel-wrapper/panel-wrapper.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent
+    // PanelWrapperComponent
   ],
   imports: [
     BrowserModule,

@@ -2,6 +2,7 @@ import { EavValues } from './eav-values';
 import { Attribute1 } from '../json-format-v1/attribute1';
 import { Attributes1 } from '../json-format-v1/attributes1';
 import { EavValue } from './eav-value';
+import { EavEntity } from './eav-entity';
 
 export class EavAttributes {
     [key: string]: EavValues<any>;
@@ -27,6 +28,24 @@ export class EavAttributes {
             }
         });
 
+        return newEavAtribute;
+    }
+
+    /**
+     * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array)
+     * Example: Settings from metadata array
+     * @param entity1Array
+     */
+    public static getFromEavEntityArray(entity1Array: EavEntity[]): EavAttributes {
+        const newEavAtribute: EavAttributes = new EavAttributes();
+        if (entity1Array !== undefined) {
+            entity1Array.forEach(entity1 => {
+                Object.keys(entity1.attributes).forEach(attribute1Key => {
+                    // TODO: Must see can attributs with same name exist
+                    newEavAtribute[attribute1Key] = EavValues.create(entity1.attributes[attribute1Key]);
+                });
+            });
+        }
         return newEavAtribute;
     }
 }

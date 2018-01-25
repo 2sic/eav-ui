@@ -1,16 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 import { Routes, RouterModule } from '@angular/router';
+import { EffectsModule } from '@ngrx/effects';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule, FieldWrapper } from '@ngx-formly/core';
 
 import { itemReducer, contentTypeReducer } from '../shared/store/reducers';
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-
 import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
-
+import { ItemEffects } from '../shared/effects/item.effects';
+import { ContentType } from '../shared/models/eav/content-type';
+// import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
 
 const routes: Routes = [
   {
@@ -28,9 +30,14 @@ const routes: Routes = [
     MatInputModule,
     ReactiveFormsModule,
     FormlyModule
-    // StoreModule.forFeature('EavItemDialog', { items: itemReducer, contentTypes: contentTypeReducer })
+    // FormlyModule.forRoot({
+    //   wrappers: [
+    //     { name: 'panel', component: PanelWrapperComponent },
+    //   ],
+    // }),
+    // StoreModule.forFeature('eav-item-dialog', { items: itemReducer, contentTypes: contentTypeReducer })
   ],
-  declarations: [MultiItemEditFormComponent, ItemEditFormComponent],
+  declarations: [MultiItemEditFormComponent, ItemEditFormComponent], // PanelWrapperComponent
   exports: [RouterModule]
 })
 export class EavItemDialogModule { }
