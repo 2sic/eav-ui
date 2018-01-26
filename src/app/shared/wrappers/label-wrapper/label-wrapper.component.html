@@ -1,8 +1,4 @@
-<div class="card">
-  <h3 class="card-header">{{ to.label }}</h3>
-  <h3 class="card-header">{{ to.ante }}</h3>
-  <div class="card-body">
-    <!-- <ng-container #fieldComponent></ng-container> -->
-    <div #fieldComponent></div>
-  </div>
+<div class="row">
+  <label [for]="to.for" class="col-1 form-control-label">{{ to.label }}</label>
+  <ng-container #fieldComponent></ng-container>
 </div>

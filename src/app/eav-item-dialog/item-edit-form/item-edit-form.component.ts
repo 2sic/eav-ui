@@ -150,7 +150,6 @@ export class ItemEditFormComponent implements OnInit {
       return {
         key: `${attribute.name}.values[0].value`,
         type: 'input',
-        // wrappers: ['panel'],
         templateOptions: {
           type: 'text',
           label: attribute.name,
@@ -164,9 +163,10 @@ export class ItemEditFormComponent implements OnInit {
     if (attribute.settings['InputType'].values[0].value === 'string-font-icon-picker') {
       return {
         key: '',
-        wrappers: ['panel'],
+        wrappers: ['collapsible'],
         templateOptions: {
-          label: `Parent wrapper Panel ${attribute.name}`
+          label: `Parent wrapper Collapsible ${attribute.name}`,
+          collapse: true
         },
         fieldGroup: [{
           key: '',
@@ -193,7 +193,8 @@ export class ItemEditFormComponent implements OnInit {
         key: '',
         wrappers: ['label'],
         templateOptions: {
-          label: `Wrapper ${attribute.name}`
+          for: `${attribute.name}.values[0].value`,
+          label: `Wrapper Label ${attribute.name}`
         },
         fieldGroup: [{
           key: `${attribute.name}.values[0].value`,
@@ -201,17 +202,23 @@ export class ItemEditFormComponent implements OnInit {
           templateOptions: {
             required: attribute.settings['Required'].values[0].value,
             type: 'text',
-            label: attribute.name,
+            label: attribute.name
           },
+          // hideExpression: '!model.name',
+          // expressionProperties: {
+          //   'templateOptions.focus': `${attribute.name}.values[0].value`,
+          //   'templateOptions.description': (model, formState) => {
+          //     return 'And look! This field magically got focus!';
+          //   },
+          // },
         }]
       };
     }
 
-    // DEFAULT
+    // DEFAULT - horizontalInput - not good: without mat-form-field
     return {
       key: `${attribute.name}.values[0].value`,
-      type: 'input',
-      // wrappers: ['panel'],
+      type: 'horizontalInput',
       templateOptions: {
         type: 'text',
         label: attribute.name,

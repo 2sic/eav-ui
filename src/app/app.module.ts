@@ -20,6 +20,11 @@ import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
 import { PanelWrapperComponent } from './shared/wrappers/panel-wrapper/panel-wrapper.component';
 import { LabelWrapperComponent } from './shared/wrappers/label-wrapper/label-wrapper.component';
+import { CollapsibleWrapperComponent } from './shared/wrappers/collapsible-wrapper/collapsible-wrapper.component';
+import { HorizontalInputWrapperComponent } from './shared/wrappers/horizontal-input-wrapper/horizontal-input-wrapper.component';
+
+import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
+
 
 const routes: Routes = [
   {
@@ -38,7 +43,9 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     PanelWrapperComponent,
-    LabelWrapperComponent
+    LabelWrapperComponent,
+    CollapsibleWrapperComponent,
+    HorizontalInputWrapperComponent
   ],
   imports: [
     BrowserModule,
@@ -50,11 +57,19 @@ const routes: Routes = [
     BrowserAnimationsModule,
     // ReactiveFormsModule,
     FormlyMaterialModule,
+
+    MatButtonModule,
+    MatInputModule,
+    MatCheckboxModule,
+
     FormlyModule.forRoot({
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },
-        { name: 'label', component: LabelWrapperComponent }
+        { name: 'label', component: LabelWrapperComponent },
+        { name: 'collapsible', component: CollapsibleWrapperComponent },
+        { name: 'horizontalWrapper', component: HorizontalInputWrapperComponent }
       ],
+      types: [{ name: 'horizontalInput', extends: 'input', wrappers: ['horizontalWrapper'] }], // 'fieldset',
     }),
   ],
   exports: [RouterModule],
