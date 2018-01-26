@@ -36,13 +36,13 @@ export class EavAttributes {
      * Example: Settings from metadata array
      * @param entity1Array
      */
-    public static getFromEavEntityArray(entity1Array: EavEntity[]): EavAttributes {
+    public static getFromEavEntityArray(eavEntityArray: EavEntity[]): EavAttributes {
         const newEavAtribute: EavAttributes = new EavAttributes();
-        if (entity1Array !== undefined) {
-            entity1Array.forEach(entity1 => {
-                Object.keys(entity1.attributes).forEach(attribute1Key => {
+        if (eavEntityArray !== undefined) {
+            eavEntityArray.forEach(eavEntity => {
+                Object.keys(eavEntity.attributes).forEach(attributeKey => {
                     // TODO: Must see can attributs with same name exist
-                    newEavAtribute[attribute1Key] = EavValues.create(entity1.attributes[attribute1Key]);
+                    newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
                 });
             });
         }

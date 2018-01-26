@@ -6,7 +6,7 @@ export class AttributeDef {
     name: string;
     type: string;
     isTitle: boolean;
-    settings: EavAttributes
+    settings: EavAttributes;
     metadata: EavEntity[];
 
     constructor(name: string, type: string, isTitle: boolean, metadata: EavEntity[], settings: EavAttributes) {

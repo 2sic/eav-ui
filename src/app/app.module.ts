@@ -4,6 +4,11 @@ import { StoreModule, Store } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
+import { FormlyModule } from '@ngx-formly/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { ReactiveFormsModule } from '@angular/forms';
+import { FormlyMaterialModule } from '@ngx-formly/material';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 // import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
@@ -13,14 +18,8 @@ import { ContentTypeService } from './shared/services/content-type.service';
 import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
-import { Routes, RouterModule } from '@angular/router';
-
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { ReactiveFormsModule } from '@angular/forms';
-// import { FormlyModule } from '@ngx-formly/core';
-import { FormlyMaterialModule } from '@ngx-formly/material';
-// import { PanelWrapperComponent } from './shared/wrappers/panel-wrapper/panel-wrapper.component';
+import { PanelWrapperComponent } from './shared/wrappers/panel-wrapper/panel-wrapper.component';
+import { LabelWrapperComponent } from './shared/wrappers/label-wrapper/label-wrapper.component';
 
 const routes: Routes = [
   {
@@ -37,8 +36,9 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
-    // PanelWrapperComponent
+    AppComponent,
+    PanelWrapperComponent,
+    LabelWrapperComponent
   ],
   imports: [
     BrowserModule,
@@ -49,8 +49,13 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     // ReactiveFormsModule,
-    // FormlyModule.forRoot(),
-    FormlyMaterialModule
+    FormlyMaterialModule,
+    FormlyModule.forRoot({
+      wrappers: [
+        { name: 'panel', component: PanelWrapperComponent },
+        { name: 'label', component: LabelWrapperComponent }
+      ],
+    }),
   ],
   exports: [RouterModule],
   providers: [EavEntityService, ItemService, ContentTypeService],

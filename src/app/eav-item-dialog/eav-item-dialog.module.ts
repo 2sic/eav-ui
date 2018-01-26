@@ -12,7 +12,7 @@ import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component
 import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentType } from '../shared/models/eav/content-type';
-// import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
+//import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
 
 const routes: Routes = [
   {
@@ -29,7 +29,7 @@ const routes: Routes = [
     MatCheckboxModule,
     MatInputModule,
     ReactiveFormsModule,
-    FormlyModule
+    FormlyModule,
     // FormlyModule.forRoot({
     //   wrappers: [
     //     { name: 'panel', component: PanelWrapperComponent },

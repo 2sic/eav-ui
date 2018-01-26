@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import { AppState } from '../../shared/models';
 import { Item, ContentType } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
+import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -42,28 +43,46 @@ export class ItemEditFormComponent implements OnInit {
   //   }
   // },
   // {
-  //   key: 'Description.values[0].value',
-  //   type: 'input',
+  //   key: '',
+  //   wrappers: ['panel'],
   //   templateOptions: {
-  //     type: 'text',
-  //     label: 'Description',
-  //     placeholder: 'Enter description',
-  //     required: true,
-  //   }
-  // },
-  // {
-  //   key: 'Email.values[0].value',
-  //   type: 'input',
-  //   templateOptions: {
-  //     type: 'text',
-  //     label: 'Description',
-  //     placeholder: 'Enter description',
-  //     required: true,
-  //   }
-  // }
-  // ];
-
-
+  //     label: 'Parent wrapper Panel'
+  //   },
+  //   fieldGroup: [{
+  //     key: 'Icon.values[0].value',
+  //     type: 'input',
+  //     templateOptions: {
+  //       required: true,
+  //       type: 'text',
+  //       label: 'Icon',
+  //     },
+  //   },
+  //   {
+  //     key: 'Title.values[0].value',
+  //     type: 'input',
+  //     templateOptions: {
+  //       required: true,
+  //       type: 'text',
+  //       label: 'Title',
+  //     },
+  //   },
+  //   {
+  //     key: 'InitiallyExpanded',
+  //     wrappers: ['label'],
+  //     templateOptions: {
+  //       label: 'Child wrapper Label'
+  //     },
+  //     fieldGroup: [{
+  //       key: 'values[0].value',
+  //       type: 'input',
+  //       templateOptions: {
+  //         required: true,
+  //         type: 'text',
+  //         label: 'Icon',
+  //       },
+  //     }]
+  //   }],
+  // }];
 
   constructor(private store: Store<AppState>) { }
 
@@ -117,6 +136,78 @@ export class ItemEditFormComponent implements OnInit {
    * @param attribute
    */
   getFormlyFieldFromAttributeDef(attribute: AttributeDef): FormlyFieldConfig {
+    // attribute.settings - are metadata attributes
+    // attribute.settings['DefaultValue']
+    // attribute.settings['InputType'] "string-default"
+    // attribute.settings['Name'] "Title"
+    // attribute.settings['Notes']
+    // attribute.settings['Disabled'] false
+    // attribute.settings['Required'] true
+    // attribute.settings['VisibleInEditUI'] true
+
+    // Example input type without wrapper
+    if (attribute.settings['InputType'].values[0].value === 'string-default') {
+      return {
+        key: `${attribute.name}.values[0].value`,
+        type: 'input',
+        // wrappers: ['panel'],
+        templateOptions: {
+          type: 'text',
+          label: attribute.name,
+          placeholder: `Enter ${attribute.name}`,
+          required: attribute.settings['Required'].values[0].value,
+        }
+      };
+    }
+
+    // Example nested wrappers
+    if (attribute.settings['InputType'].values[0].value === 'string-font-icon-picker') {
+      return {
+        key: '',
+        wrappers: ['panel'],
+        templateOptions: {
+          label: `Parent wrapper Panel ${attribute.name}`
+        },
+        fieldGroup: [{
+          key: '',
+          wrappers: ['label'],
+          templateOptions: {
+            label: `Child wrapper ${attribute.name}`
+          },
+          fieldGroup: [{
+            key: `${attribute.name}.values[0].value`,
+            type: 'input',
+            templateOptions: {
+              required: attribute.settings['Required'].values[0].value,
+              type: 'text',
+              label: attribute.name,
+            },
+          }]
+        }],
+      };
+    }
+
+    // // Example wrappers
+    if (attribute.settings['InputType'].values[0].value === 'boolean-default') {
+      return {
+        key: '',
+        wrappers: ['label'],
+        templateOptions: {
+          label: `Wrapper ${attribute.name}`
+        },
+        fieldGroup: [{
+          key: `${attribute.name}.values[0].value`,
+          type: 'input',
+          templateOptions: {
+            required: attribute.settings['Required'].values[0].value,
+            type: 'text',
+            label: attribute.name,
+          },
+        }]
+      };
+    }
+
+    // DEFAULT
     return {
       key: `${attribute.name}.values[0].value`,
       type: 'input',
@@ -125,7 +216,7 @@ export class ItemEditFormComponent implements OnInit {
         type: 'text',
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
-        required: true,
+        required: attribute.settings['Required'].values[0].value,
       }
     };
   }
