@@ -13,10 +13,11 @@ export class ContentTypeService {
   /**
    * Get Content Type from Json Content Type V1
    */
-  public getContentTypeFromJsonContentType1(): Observable<ContentType> {
+  public getContentTypeFromJsonContentType1(path: string): Observable<ContentType> {
     // return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-person.json')
     // return this.httpClient.get<JsonContentType1>('../../../assets/data/json-content-type-v1.json')
-    return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-accordion.json')
+    // return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-accordion.json')
+    return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
       .map((item: JsonContentType1) => {
         console.log('Ipak pozvano ', item);
         return ContentType.create(item);

@@ -21,8 +21,8 @@ export class MultiItemEditFormComponent implements OnInit {
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
-    this.loadItem();
-    this.loadcontentType();
+    // this.loadItem();
+    // this.loadcontentType();
     this.items$ = this.store.select(state => state.items);
     // this.contentTypes$ = this.store.select(state => state.contentTypes);
   }
@@ -31,14 +31,32 @@ export class MultiItemEditFormComponent implements OnInit {
    *  Call action to Load item to store
    */
   loadItem() {
-    this.store.dispatch(new itemActions.LoadItemsAction());
+    // this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-accordion.json'));
+    this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-person.json'));
   }
 
   /**
   *  Call action to Load content type to store
   */
   loadcontentType() {
-    this.store.dispatch(new contentTypeActions.LoadContentTypeAction());
+    // this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-accordion.json'));
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-person.json'));
+  }
+
+  // Test
+  loadAccordion() {
+    this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-accordion.json'));
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-accordion.json'));
+    this.items$ = this.store.select(state => state.items);
+    console.log('load accordion');
+  }
+
+  // Test
+  loadPerson() {
+    this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-person.json'));
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-person.json'));
+    this.items$ = this.store.select(state => state.items);
+    console.log('load persons');
   }
 }
 

@@ -1,7 +1,10 @@
 <div *ngIf="contentType$ | async">
-  <form *ngIf="itemFields$ | async; let itemFields" [formGroup]="form" (ngSubmit)="submit(item$.entity.attributes)">
-    <formly-form [model]="item$.entity.attributes" [fields]="itemFields">
-      <button mat-button type="submit" class="btn btn-default">Submit</button>
-    </formly-form>
-  </form>
+  <div *ngIf="item$ | async">
+    {{(item$ | async) | json}}
+    <form *ngIf="itemFields$ | async; let itemFields" [formGroup]="form" (ngSubmit)="submit(item.entity.attributes)">
+      <formly-form [model]="item.entity.attributes" [fields]="itemFields">
+        <button mat-button type="submit" class="btn btn-default">Submit</button>
+      </formly-form>
+    </form>
+  </div>
 </div>

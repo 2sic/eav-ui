@@ -9,7 +9,7 @@ import { FormlyModule, FieldWrapper } from '@ngx-formly/core';
 import { itemReducer, contentTypeReducer } from '../shared/store/reducers';
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-// import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentType } from '../shared/models/eav/content-type';
 // import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
@@ -27,9 +27,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    // MatButtonModule,
-    // MatCheckboxModule,
-    // MatInputModule,
+    // TODO: some of depedencies are 2 times added - need core module
+    MatButtonModule,
+    MatCheckboxModule,
+    MatInputModule,
     ReactiveFormsModule,
     FormlyModule,
     // FormlyModule.forRoot({

@@ -7,6 +7,20 @@ import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { itemReducer } from './shared/store/reducers';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
+import { Routes, RouterModule } from '@angular/router';
+import { APP_BASE_HREF } from '@angular/common';
+
+const routes: Routes = [
+  {
+    path: 'eav-item-dialog',
+    loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
+  },
+  {
+    path: '',
+    redirectTo: '',
+    pathMatch: 'full'
+  }
+];
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -17,9 +31,10 @@ describe('AppComponent', () => {
       imports: [
         EavItemDialogModule,
         StoreModule.forRoot({ items: itemReducer }),
-        HttpClientModule
+        HttpClientModule,
+        RouterModule.forRoot(routes),
       ],
-      providers: [ItemService, ContentTypeService]
+      providers: [ItemService, ContentTypeService, { provide: APP_BASE_HREF, useValue: '/' }]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

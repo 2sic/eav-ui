@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, toPayload } from '@ngrx/effects';
+import * as fromItems from '../store/actions/item.actions';
 
 import { ItemService } from '../services/item.service';
 import * as itemActions from '../store/actions/item.actions';
@@ -17,8 +18,8 @@ export class ItemEffects {
      */
     @Effect() loadItem$ = this.actions$
         .ofType(itemActions.LOAD_ITEMS)
-        .switchMap(() => {
-            return this.eavItemService.getItemFromJsonItem1()
+        .switchMap((action: fromItems.LoadItemsAction) => {
+            return this.eavItemService.getItemFromJsonItem1(action.path)
                 .map(item => new itemActions.LoadItemsSuccessAction(item));
         });
 }
