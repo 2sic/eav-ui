@@ -6,25 +6,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { FormlyModule } from '@ngx-formly/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { ReactiveFormsModule } from '@angular/forms';
-import { FormlyMaterialModule } from '@ngx-formly/material';
+import { FormlyMaterialModule, FormlyWrapperFormField, FormlyFieldInput } from '@ngx-formly/material';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-// import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { EavEntityService } from './shared/services/eav-entity.service';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
 import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
-import { PanelWrapperComponent } from './shared/wrappers/panel-wrapper/panel-wrapper.component';
-import { LabelWrapperComponent } from './shared/wrappers/label-wrapper/label-wrapper.component';
-import { CollapsibleWrapperComponent } from './shared/wrappers/collapsible-wrapper/collapsible-wrapper.component';
-import { HorizontalInputWrapperComponent } from './shared/wrappers/horizontal-input-wrapper/horizontal-input-wrapper.component';
-
-import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
-
+import { FormlyMaterialCustomModule } from './formly-material/formly-material-custom.module';
 
 const routes: Routes = [
   {
@@ -42,10 +33,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    PanelWrapperComponent,
-    LabelWrapperComponent,
-    CollapsibleWrapperComponent,
-    HorizontalInputWrapperComponent
   ],
   imports: [
     BrowserModule,
@@ -55,25 +42,12 @@ const routes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    // ReactiveFormsModule,
     FormlyMaterialModule,
-
-    MatButtonModule,
-    MatInputModule,
-    MatCheckboxModule,
-
-    FormlyModule.forRoot({
-      wrappers: [
-        { name: 'panel', component: PanelWrapperComponent },
-        { name: 'label', component: LabelWrapperComponent },
-        { name: 'collapsible', component: CollapsibleWrapperComponent },
-        { name: 'horizontalWrapper', component: HorizontalInputWrapperComponent }
-      ],
-      types: [{ name: 'horizontalInput', extends: 'input', wrappers: ['horizontalWrapper'] }], // 'fieldset',
-    }),
+    FormlyMaterialCustomModule,
+    FormlyModule
   ],
   exports: [RouterModule],
-  providers: [EavEntityService, ItemService, ContentTypeService],
+  providers: [ItemService, ContentTypeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

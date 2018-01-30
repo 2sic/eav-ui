@@ -24,67 +24,6 @@ export class ItemEditFormComponent implements OnInit {
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
-  // itemFieldss$: FormlyFieldConfig[] = [{ // TODO: our Fields are contentTypes attributes
-  //   key: 'FullName.values[0].value',
-  //   type: 'input',
-  //   templateOptions: {
-  //     type: 'text',
-  //     label: 'FullName',
-  //     placeholder: 'Enter FullName',
-  //     required: true,
-  //   }
-  // },
-  // {
-  //   key: 'Position.values[0].value',
-  //   type: 'input',
-  //   templateOptions: {
-  //     type: 'text',
-  //     label: 'Description',
-  //     placeholder: 'Enter description',
-  //     required: true,
-  //   }
-  // },
-  // {
-  //   key: '',
-  //   wrappers: ['panel'],
-  //   templateOptions: {
-  //     label: 'Parent wrapper Panel'
-  //   },
-  //   fieldGroup: [{
-  //     key: 'Icon.values[0].value',
-  //     type: 'input',
-  //     templateOptions: {
-  //       required: true,
-  //       type: 'text',
-  //       label: 'Icon',
-  //     },
-  //   },
-  //   {
-  //     key: 'Title.values[0].value',
-  //     type: 'input',
-  //     templateOptions: {
-  //       required: true,
-  //       type: 'text',
-  //       label: 'Title',
-  //     },
-  //   },
-  //   {
-  //     key: 'InitiallyExpanded',
-  //     wrappers: ['label'],
-  //     templateOptions: {
-  //       label: 'Child wrapper Label'
-  //     },
-  //     fieldGroup: [{
-  //       key: 'values[0].value',
-  //       type: 'input',
-  //       templateOptions: {
-  //         required: true,
-  //         type: 'text',
-  //         label: 'Icon',
-  //       },
-  //     }]
-  //   }],
-  // }];
 
   constructor(private store: Store<AppState>) { }
 
@@ -104,41 +43,26 @@ export class ItemEditFormComponent implements OnInit {
   // }
 
   loadContentTypeFromStore() {
-    // Load content type for item$ from store
-    // this.contentTypes$ = this.store.select(state => state.contentTypes)
-    this.contentType$ = this.fetchContentTypeById(this.item.entity.type.id); // person
-    // this.contentType$ = this.fetchContentTypeById('884e65b4-8f1c-4bc9-897f-147dcabeb941'); // accordion
-    this.itemFields$ = this.mapContentTypeFields();
-
-    this.item$ = this.getItem(this.item);
-  }
-
-  getItem(item: Item): Observable<Item> {
-    return this.store
-      .select(s => s.items)
-      .map(data => data.find(obj => obj === item));
-  }
-
-  getItemTypeId(id: string): Observable<ContentType> {
-    return this.store
-      .select(s => s.contentTypes)
-      .map(data => data.find(obj => obj.contentType.id === id));
+    // Load content type for item from store
+    this.contentType$ = this.getContentTypeById(this.item.entity.type.id);
+    // create form fields from content type
+    this.itemFields$ = this.loadContentTypeFormFields();
   }
 
   /**
-   * Load content type for item$ from store
+   * Observe content type for item type from store
    * @param id
    */
-  fetchContentTypeById(id: string): Observable<ContentType> {
+  getContentTypeById(id: string): Observable<ContentType> {
     return this.store
       .select(s => s.contentTypes)
       .map(data => data.find(obj => obj.contentType.id === id));
   }
 
   /**
-   * map content type attributes to itemFields (formlyFieldConfigArray)
+   * load content type attributes to Formly FormFields (formlyFieldConfigArray)
    */
-  mapContentTypeFields(): Observable<FormlyFieldConfig[]> {
+  loadContentTypeFormFields(): Observable<FormlyFieldConfig[]> {
     return this.contentType$
       .switchMap((data) => {
         const formlyFieldConfigArray: FormlyFieldConfig[] = new Array<FormlyFieldConfig>();
@@ -187,7 +111,7 @@ export class ItemEditFormComponent implements OnInit {
   getStringDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
     return {
       key: `${attribute.name}.values[0].value`,
-      type: 'input',
+      type: 'horizontalInput',
       templateOptions: {
         type: 'text',
         label: attribute.name,
@@ -203,7 +127,6 @@ export class ItemEditFormComponent implements OnInit {
       key: '',
       wrappers: ['label'],
       templateOptions: {
-        for: `${attribute.name}.values[0].value`,
         label: `Wrapper Label ${attribute.name}`
       },
       fieldGroup: [{
@@ -257,7 +180,7 @@ export class ItemEditFormComponent implements OnInit {
   getDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
     return {
       key: `${attribute.name}.values[0].value`,
-      type: 'input',
+      type: 'string-default', // string-default // input
       templateOptions: {
         type: 'text',
         label: attribute.name,
@@ -267,4 +190,3 @@ export class ItemEditFormComponent implements OnInit {
     };
   }
 }
-

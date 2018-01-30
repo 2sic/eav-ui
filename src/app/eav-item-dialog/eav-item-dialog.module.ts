@@ -12,9 +12,10 @@ import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component
 import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentType } from '../shared/models/eav/content-type';
+import { FormlyMaterialCustomModule } from '../formly-material/formly-material-custom.module';
 // import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
 
-import { FormlyMaterialModule } from '@ngx-formly/material';
+// import { FormlyMaterialModule } from '@ngx-formly/material';
 
 const routes: Routes = [
   {
@@ -33,6 +34,9 @@ const routes: Routes = [
     MatInputModule,
     ReactiveFormsModule,
     FormlyModule,
+
+    // FormlyMaterialCustomModule,
+
     // FormlyModule.forRoot({
     //   wrappers: [
     //     { name: 'panel', component: PanelWrapperComponent },
