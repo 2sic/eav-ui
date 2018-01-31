@@ -10,6 +10,7 @@ import { AppState } from '../../shared/models';
 import { Item, ContentType } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -27,20 +28,28 @@ export class ItemEditFormComponent implements OnInit {
 
   constructor(private store: Store<AppState>) { }
 
+  ngOnInit() {
+    this.loadContentTypeFromStore();
+
+    // Test
+    this.item$ = this.subscribeItem(this.item);
+  }
+
+  // Test
+  subscribeItem(item: Item): Observable<Item> {
+    return this.store
+      .select(s => s.items)
+      .map(data => data.find(obj => obj === item));
+  }
+
   // Test
   submit(attributes) {
     console.log(attributes);
   }
-
-  ngOnInit() {
-    this.loadContentTypeFromStore();
+  // Test
+  change(attributes) {
+    console.log(attributes);
   }
-
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (changes['item']) {
-  //     console.log('change:', this.item);
-  //   }
-  // }
 
   loadContentTypeFromStore() {
     // Load content type for item from store

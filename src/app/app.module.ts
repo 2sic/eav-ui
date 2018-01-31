@@ -15,7 +15,7 @@ import { ContentTypeService } from './shared/services/content-type.service';
 import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
-import { FormlyMaterialCustomModule } from './formly-material/formly-material-custom.module';
+import { FormlyMaterialCustomModule } from './eav-formly-material/eav-formly-material.module';
 
 const routes: Routes = [
   {

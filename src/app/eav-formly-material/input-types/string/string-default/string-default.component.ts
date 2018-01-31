@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { MatInput } from '@angular/material/input';
-import { FormlyErrorStateMatcher } from '../formly.error-state-matcher';
+import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
 @Component({
   selector: 'app-string-default',

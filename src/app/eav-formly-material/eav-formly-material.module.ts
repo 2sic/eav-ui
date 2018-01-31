@@ -11,7 +11,7 @@ import { LabelWrapperComponent } from './wrappers/label-wrapper/label-wrapper.co
 import { CollapsibleWrapperComponent } from './wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { HorizontalInputWrapperComponent } from './wrappers/horizontal-input-wrapper/horizontal-input-wrapper.component';
 import { FormlyWrapperFormField, FormlyFieldInput, FormlyMaterialModule } from '@ngx-formly/material';
-import { StringDefaultComponent } from './field-types/string-default/string-default.component';
+import { StringDefaultComponent } from './input-types/string/string-default/string-default.component';
 
 @NgModule({
   declarations: [

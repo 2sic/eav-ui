@@ -24,7 +24,6 @@ export class MultiItemEditFormComponent implements OnInit {
     // this.loadItem();
     // this.loadcontentType();
     this.items$ = this.store.select(state => state.items);
-    // this.contentTypes$ = this.store.select(state => state.contentTypes);
   }
 
   /**

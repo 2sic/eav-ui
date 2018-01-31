@@ -12,7 +12,7 @@ import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component
 import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentType } from '../shared/models/eav/content-type';
-import { FormlyMaterialCustomModule } from '../formly-material/formly-material-custom.module';
+import { FormlyMaterialCustomModule } from '../eav-formly-material/eav-formly-material.module';
 // import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
 
 // import { FormlyMaterialModule } from '@ngx-formly/material';
