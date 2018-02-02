@@ -10,7 +10,7 @@ import { AppState } from '../../shared/models';
 import { Item, ContentType } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
-import { Subscription } from 'rxjs/Subscription';
+import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -21,7 +21,7 @@ export class ItemEditFormComponent implements OnInit {
   @Input() item: Item;
 
   // contentTypes$: Observable<ContentType[]>;
-  item$: Observable<Item>;
+  // item$: Observable<Item>;
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
@@ -32,15 +32,15 @@ export class ItemEditFormComponent implements OnInit {
     this.loadContentTypeFromStore();
 
     // Test
-    this.item$ = this.subscribeItem(this.item);
+    // this.item$ = this.subscribeItem(this.item);
   }
 
   // Test
-  subscribeItem(item: Item): Observable<Item> {
-    return this.store
-      .select(s => s.items)
-      .map(data => data.find(obj => obj === item));
-  }
+  // subscribeItem(item: Item): Observable<Item> {
+  //   return this.store
+  //     .select(s => s.items)
+  //     .map(data => data.find(obj => obj === item));
+  // }
 
   // Test
   submit(attributes) {
@@ -77,7 +77,7 @@ export class ItemEditFormComponent implements OnInit {
         const formlyFieldConfigArray: FormlyFieldConfig[] = new Array<FormlyFieldConfig>();
         // loop through contentType attributes
         data.contentType.attributes.forEach(attribute => {
-          const formlyFieldConfig: FormlyFieldConfig = this.getFormlyFieldFromAttributeDef(attribute);
+          const formlyFieldConfig: FormlyFieldConfig = this.loadFieldFromDefinitionTest(attribute);
 
           formlyFieldConfigArray.push(formlyFieldConfig);
         });
@@ -87,10 +87,31 @@ export class ItemEditFormComponent implements OnInit {
   }
 
   /**
-   * Get FormlyField from AttributeDef
+   * Load formly field from AttributeDef
    * @param attribute
    */
-  getFormlyFieldFromAttributeDef(attribute: AttributeDef): FormlyFieldConfig {
+  loadFieldFromDefinition(attribute: AttributeDef): FormlyFieldConfig {
+    // console.log('attribute', attribute.settings['InputType']);
+    console.log('attribute.settings.RowCount', attribute.settings.RowCount);
+    const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
+    const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+
+    return {
+      key: `${attribute.name}.values[0].value`,
+      type: inputType,
+      templateOptions: {
+        type: 'text',
+        rowCount: rowCount,
+        label: attribute.name,
+        placeholder: `Enter ${attribute.name}`,
+        required: required,
+      }
+    };
+  }
+
+  // TEST
+  loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
     // attribute.settings - are metadata attributes
     // attribute.settings['DefaultValue']
     // attribute.settings['InputType'] "string-default"
@@ -100,36 +121,26 @@ export class ItemEditFormComponent implements OnInit {
     // attribute.settings['Required'] true
     // attribute.settings['VisibleInEditUI'] true
 
-    if (attribute.settings['InputType']) {
-      switch (attribute.settings['InputType'].values[0].value) {
-        case 'string-default':
-          return this.getStringDefaultFormlyField(attribute);
-        case 'boolean-default':
+    if (attribute.settings.InputType) {
+      switch (attribute.settings.InputType.values[0].value) {
+        case InputTypesConstants.stringDefault:
+          return this.loadFieldFromDefinition(attribute);
+        case InputTypesConstants.booleanDefault:
           return this.getBooleanDefaultFormlyField(attribute);
-        case 'string-font-icon-picker':
+        case InputTypesConstants.stringFontIconPicker:
           return this.getStringIconFontPickerFormlyField(attribute);
         default:
-          return this.getDefaultFormlyField(attribute);
+          return this.loadFieldFromDefinition(attribute);
       }
     } else {
-      return this.getDefaultFormlyField(attribute);
+      return this.loadFieldFromDefinition(attribute);
     }
   }
 
-  // Example input type without wrapper
-  getStringDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
-    return {
-      key: `${attribute.name}.values[0].value`,
-      type: 'horizontalInput',
-      templateOptions: {
-        type: 'text',
-        label: attribute.name,
-        placeholder: `Enter ${attribute.name}`,
-        required: attribute.settings['Required'].values[0].value,
-      }
-    };
-  }
 
+  // getSettingValue = (attribute: AttributeDef, settingName) => attribute.settings[settingName].values[0].value;
+
+  // TEST
   // Example wrappers
   getBooleanDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
     return {
@@ -142,7 +153,7 @@ export class ItemEditFormComponent implements OnInit {
         key: `${attribute.name}.values[0].value`,
         type: 'input',
         templateOptions: {
-          required: attribute.settings['Required'].values[0].value,
+          required: attribute.settings.Required.values[0].value,
           type: 'text',
           label: attribute.name
         },
@@ -157,6 +168,7 @@ export class ItemEditFormComponent implements OnInit {
     };
   }
 
+  // Test
   // Example nested wrappers
   getStringIconFontPickerFormlyField(attribute: AttributeDef): FormlyFieldConfig {
     return {
@@ -176,7 +188,7 @@ export class ItemEditFormComponent implements OnInit {
           key: `${attribute.name}.values[0].value`,
           type: 'input',
           templateOptions: {
-            required: attribute.settings['Required'].values[0].value,
+            required: attribute.settings.Required.values[0].value,
             type: 'text',
             label: attribute.name,
           },
@@ -185,13 +197,16 @@ export class ItemEditFormComponent implements OnInit {
     };
   }
 
+  // Test
   // DEFAULT - horizontalInput - not good: without mat-form-field
   getDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
+    console.log('rowCount: ', attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1);
     return {
       key: `${attribute.name}.values[0].value`,
-      type: 'string-default', // string-default // input
+      type: InputTypesConstants.stringDefault,
       templateOptions: {
         type: 'text',
+        rowCount: attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1,
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
         required: true,

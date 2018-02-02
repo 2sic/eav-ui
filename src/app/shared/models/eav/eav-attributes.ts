@@ -39,14 +39,27 @@ export class EavAttributes {
     public static getFromEavEntityArray(eavEntityArray: EavEntity[]): EavAttributes {
         const newEavAtribute: EavAttributes = new EavAttributes();
         if (eavEntityArray !== undefined) {
+            // First read all metadata settings witch are not @All
             eavEntityArray.forEach(eavEntity => {
-                Object.keys(eavEntity.attributes).forEach(attributeKey => {
-                    // TODO: Must see can attributs with same name exist
-                    newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
-                });
+                if (eavEntity.type.id !== '@All') {
+                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
+                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                    });
+                }
+            });
+            // Read @All metadata settings last to rewrite if same name attribute exist
+            eavEntityArray.forEach(eavEntity => {
+                if (eavEntity.type.id === '@All') {
+                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
+                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                    });
+                }
             });
         }
         return newEavAtribute;
     }
+
 }
+
+
 

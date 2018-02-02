@@ -3,6 +3,7 @@
 
 <button mat-button type="submit" class="btn btn-default" (click)="loadAccordion()">Load Accordion to store</button>
 <button mat-button type="submit" class="btn btn-default" (click)="loadPerson()">Load Person to store</button>
+<button mat-button type="submit" class="btn btn-default" (click)="loadStringInputTypes()">Load String input types</button>
 
 <div *ngFor="let selectedItem of (items$ | async)">
   <app-item-edit-form [item]="selectedItem"></app-item-edit-form>

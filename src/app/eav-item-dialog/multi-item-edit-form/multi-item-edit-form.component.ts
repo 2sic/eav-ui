@@ -46,7 +46,7 @@ export class MultiItemEditFormComponent implements OnInit {
   loadAccordion() {
     this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-accordion.json'));
     this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-accordion.json'));
-    this.items$ = this.store.select(state => state.items);
+    // this.items$ = this.store.select(state => state.items);
     console.log('load accordion');
   }
 
@@ -54,8 +54,16 @@ export class MultiItemEditFormComponent implements OnInit {
   loadPerson() {
     this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-person.json'));
     this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-person.json'));
-    this.items$ = this.store.select(state => state.items);
+    // this.items$ = this.store.select(state => state.items);
     console.log('load persons');
+  }
+
+  // Test
+  loadStringInputTypes() {
+    this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-string-input-types.json'));
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-string-input-types.json'));
+    // this.items$ = this.store.select(state => state.items);
+    console.log('load string content types');
   }
 }
 

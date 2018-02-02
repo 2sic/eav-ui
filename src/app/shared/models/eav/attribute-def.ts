@@ -25,7 +25,6 @@ export class AttributeDef {
         // console.log('AttributeDef1:', item);
         const metaDataArray = EavEntity.createArray(item.Metadata);
         const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
-
         return new AttributeDef(item.Name, item.Type, item.IsTitle, metaDataArray, settings);
     }
 

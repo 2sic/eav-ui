@@ -1,1 +1,13 @@
-<input matInput [type]="type" [id]="id" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl" [formlyAttributes]="field">
+<!-- <input matInput [type]="type" [id]="id" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl" [formlyAttributes]="field"> {{ to.rowCount }} -->
+
+<div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
+
+<ng-template #inputField>
+    <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
+        [formlyAttributes]="field">
+</ng-template>
+
+<ng-template #textareaField>
+    <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
+        [formControl]="formControl" [formlyAttributes]="field"></textarea>
+</ng-template>

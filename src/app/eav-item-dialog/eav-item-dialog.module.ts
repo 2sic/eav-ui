@@ -5,17 +5,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule, FieldWrapper } from '@ngx-formly/core';
+import { MatButtonModule, MatCheckboxModule, MatInputModule, MatSelectModule } from '@angular/material';
 
-import { itemReducer, contentTypeReducer } from '../shared/store/reducers';
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-import { MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
-import { ItemEffects } from '../shared/effects/item.effects';
-import { ContentType } from '../shared/models/eav/content-type';
-import { FormlyMaterialCustomModule } from '../eav-formly-material/eav-formly-material.module';
-// import { PanelWrapperComponent } from '../shared/wrappers/panel-wrapper/panel-wrapper.component';
-
-// import { FormlyMaterialModule } from '@ngx-formly/material';
+import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
 
 const routes: Routes = [
   {
@@ -28,23 +22,14 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    // TODO: some of depedencies are 2 times added - need core module
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
+    MatSelectModule,
     ReactiveFormsModule,
     FormlyModule,
-
-    // FormlyMaterialCustomModule,
-
-    // FormlyModule.forRoot({
-    //   wrappers: [
-    //     { name: 'panel', component: PanelWrapperComponent },
-    //   ],
-    // }),
-    // StoreModule.forFeature('eav-item-dialog', { items: itemReducer, contentTypes: contentTypeReducer })
   ],
-  declarations: [MultiItemEditFormComponent, ItemEditFormComponent], // PanelWrapperComponent
+  declarations: [MultiItemEditFormComponent, ItemEditFormComponent],
   exports: [RouterModule]
 })
 export class EavItemDialogModule { }
