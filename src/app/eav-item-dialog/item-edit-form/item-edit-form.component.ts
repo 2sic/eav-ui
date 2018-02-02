@@ -34,7 +34,6 @@ export class ItemEditFormComponent implements OnInit {
 
   selectedItem: Item;
   // Test
-  // contentTypes$: Observable<ContentType[]>;
   // item$: Observable<Item>;
 
   contentType$: Observable<ContentType>;
