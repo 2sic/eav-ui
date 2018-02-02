@@ -7,6 +7,7 @@ import * as itemActions from '../../shared/store/actions/item.actions';
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import { AppState } from '../../shared/models';
 import { Item, ContentType } from '../../shared/models/eav';
+import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -23,7 +24,10 @@ export class MultiItemEditFormComponent implements OnInit {
   ngOnInit() {
     // this.loadItem();
     // this.loadcontentType();
+
+    // this.items$ = this.store.select(state => state.items);
     this.items$ = this.store.select(state => state.items);
+    // .map(item => Object.assign({}, item));
   }
 
   /**

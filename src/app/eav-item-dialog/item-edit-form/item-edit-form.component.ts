@@ -11,6 +11,7 @@ import { Item, ContentType } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
+import * as itemActions from '../../shared/store/actions/item.actions';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -20,8 +21,10 @@ import { InputTypesConstants } from '../../shared/constants/input-types-constant
 export class ItemEditFormComponent implements OnInit {
   @Input() item: Item;
 
+  // Test
   // contentTypes$: Observable<ContentType[]>;
   // item$: Observable<Item>;
+
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
@@ -44,10 +47,12 @@ export class ItemEditFormComponent implements OnInit {
 
   // Test
   submit(attributes) {
+    this.store.dispatch(new itemActions.UpdateItem(this.item));
     console.log(attributes);
   }
   // Test
   change(attributes) {
+    this.store.dispatch(new itemActions.UpdateItem(this.item));
     console.log(attributes);
   }
 
@@ -128,7 +133,8 @@ export class ItemEditFormComponent implements OnInit {
         case InputTypesConstants.booleanDefault:
           return this.getBooleanDefaultFormlyField(attribute);
         case InputTypesConstants.stringFontIconPicker:
-          return this.getStringIconFontPickerFormlyField(attribute);
+          return this.loadFieldFromDefinition(attribute);
+        // return this.getStringIconFontPickerFormlyField(attribute);
         default:
           return this.loadFieldFromDefinition(attribute);
       }
@@ -136,9 +142,6 @@ export class ItemEditFormComponent implements OnInit {
       return this.loadFieldFromDefinition(attribute);
     }
   }
-
-
-  // getSettingValue = (attribute: AttributeDef, settingName) => attribute.settings[settingName].values[0].value;
 
   // TEST
   // Example wrappers

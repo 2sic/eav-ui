@@ -41,7 +41,6 @@ import { InputTypesConstants } from '../shared/constants';
     MatInputModule,
     MatCheckboxModule,
     MatSelectModule,
-
     FormlyModule.forRoot({
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },
