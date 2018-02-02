@@ -10,7 +10,7 @@ import 'rxjs/add/operator/switchMap';
 export class ItemEffects {
     constructor(
         private actions$: Actions,
-        private eavItemService: ItemService
+        private itemService: ItemService
     ) { }
 
     /**
@@ -19,7 +19,7 @@ export class ItemEffects {
     @Effect() loadItem$ = this.actions$
         .ofType(itemActions.LOAD_ITEMS)
         .switchMap((action: fromItems.LoadItemsAction) => {
-            return this.eavItemService.getItemFromJsonItem1(action.path)
+            return this.itemService.getItemFromJsonItem1(action.path)
                 .map(item => new itemActions.LoadItemsSuccessAction(item));
         });
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import 'rxjs/add/operator/map';
@@ -12,6 +11,8 @@ import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import * as itemActions from '../../shared/store/actions/item.actions';
+import { ItemService } from '../../shared/services/item.service';
+import { ContentTypeService } from '../../shared/services/content-type.service';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -19,8 +20,19 @@ import * as itemActions from '../../shared/store/actions/item.actions';
   styleUrls: ['./item-edit-form.component.css']
 })
 export class ItemEditFormComponent implements OnInit {
-  @Input() item: Item;
 
+  /**
+   * we copied the item because we don't want to keep the reference to store
+   * ngrx store should be changed only through despaches and reducers
+   */
+  @Input('item')
+  set item(value: Item) {
+    // this.selectedItem = Object.assign({}, value);
+    // this.selectedItem = { ...value };
+    this.selectedItem = JSON.parse(JSON.stringify(value));
+  }
+
+  selectedItem: Item;
   // Test
   // contentTypes$: Observable<ContentType[]>;
   // item$: Observable<Item>;
@@ -29,48 +41,28 @@ export class ItemEditFormComponent implements OnInit {
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) { }
 
   ngOnInit() {
     this.loadContentTypeFromStore();
 
     // Test
-    // this.item$ = this.subscribeItem(this.item);
+    // this.item$ = this.itemService.selectItemById(this.selectedItem.entity.id);
   }
 
-  // Test
-  // subscribeItem(item: Item): Observable<Item> {
-  //   return this.store
-  //     .select(s => s.items)
-  //     .map(data => data.find(obj => obj === item));
-  // }
-
-  // Test
-  submit(attributes) {
-    this.store.dispatch(new itemActions.UpdateItem(this.item));
-    console.log(attributes);
+  submitForm() {
+    this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
   }
-  // Test
-  change(attributes) {
-    this.store.dispatch(new itemActions.UpdateItem(this.item));
-    console.log(attributes);
+
+  changeForm(attributes) {
+    this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
   }
 
   loadContentTypeFromStore() {
     // Load content type for item from store
-    this.contentType$ = this.getContentTypeById(this.item.entity.type.id);
+    this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
-  }
-
-  /**
-   * Observe content type for item type from store
-   * @param id
-   */
-  getContentTypeById(id: string): Observable<ContentType> {
-    return this.store
-      .select(s => s.contentTypes)
-      .map(data => data.find(obj => obj.contentType.id === id));
   }
 
   /**

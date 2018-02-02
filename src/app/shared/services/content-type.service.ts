@@ -2,13 +2,36 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ContentType } from '../models/eav/content-type';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { JsonContentType1 } from '../models/json-format-v1/json-content-type1';
+import { AppState } from '../models/app-state';
+import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 
 @Injectable()
 export class ContentTypeService {
+  public contentTypes$: Observable<ContentType[]>;
+  constructor(private httpClient: HttpClient, private store: Store<AppState>) {
+  }
 
-  constructor(private httpClient: HttpClient) { }
+  /**
+   * Dispatch LoadItemsAction to store
+   * @param path
+   */
+  public loadContentType(path: string) {
+    this.store.dispatch(new contentTypeActions.LoadContentTypeAction(path));
+  }
+
+  /**
+   * Observe content type for item type from store
+   * @param id
+   */
+  public getContentTypeById(id: string): Observable<ContentType> {
+    return this.store
+      .select(s => s.contentTypes)
+      .map(data => data.find(obj => obj.contentType.id === id));
+  }
 
   /**
    * Get Content Type from Json Content Type V1
