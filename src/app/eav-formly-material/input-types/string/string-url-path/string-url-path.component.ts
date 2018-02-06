@@ -34,4 +34,8 @@ export class StringUrlPathComponent extends FieldType implements OnInit, AfterVi
       formControl.setValue(cleaned);
     }
   }
+
+  // TODO: add mask for other fields !!!
+
+  // TODO: change text while typing !!!
 }

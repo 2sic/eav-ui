@@ -90,11 +90,11 @@ export class ItemEditFormComponent implements OnInit {
    * @param attribute
    */
   loadFieldFromDefinition(attribute: AttributeDef): FormlyFieldConfig {
-    // console.log('attribute', attribute.settings['InputType']);
     const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
     const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-
+    const validationRegex = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : false;
+    console.log('validationRegex: ', validationRegex);
     return {
       key: `${attribute.name}.values[0].value`,
       type: inputType,
@@ -104,23 +104,24 @@ export class ItemEditFormComponent implements OnInit {
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
         required: required,
+        pattern: validationRegex,
       }
     };
   }
 
   // TEST
   loadFieldFromDefinitionStringUrlPath(attribute: AttributeDef): FormlyFieldConfig {
-    // console.log('attribute', attribute.settings['InputType']);
     const inputType = InputTypesConstants.stringUrlPath; // attribute.settings.InputType.values[0].value;
-    const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+
+    const autoGenerateMask = attribute.settings.AutoGenerateMask ? attribute.settings.AutoGenerateMask.values[0].value : '';
+    const allowSlashes = attribute.settings.AllowSlashes ? attribute.settings.AllowSlashes.values[0].value : false;
 
     return {
       key: `${attribute.name}.values[0].value`,
       type: inputType,
       templateOptions: {
         type: 'text',
-        rowCount: rowCount,
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
         required: true,
@@ -128,6 +129,35 @@ export class ItemEditFormComponent implements OnInit {
       validators: {
         validation: ['onlySimpleUrlChars'],
       },
+    };
+  }
+
+  // TEST
+  loadFieldFromDefinitionStringDropDown(attribute: AttributeDef): FormlyFieldConfig {
+    const inputType = InputTypesConstants.stringDropdown; // attribute.settings.InputType.values[0].value;
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+
+    const enableTextEntry = attribute.settings.EnableTextEntry ? attribute.settings.EnableTextEntry.values[0].value : '';
+    const dropdownValues = attribute.settings.DropdownValues ? attribute.settings.DropdownValues.values[0].value : '';
+
+    // "First\nSecond\nThird"
+    const options = dropdownValues.split('\n').map(v => ({ label: v, value: v }));
+
+    return {
+      key: `${attribute.name}.values[0].value`,
+      type: inputType,
+      templateOptions: {
+        type: 'text',
+        label: attribute.name,
+        placeholder: `Enter ${attribute.name}`,
+        required: true,
+        freeTextMode: false,
+        enableTextEntry: enableTextEntry,
+        options: options,
+      },
+      // validators: {
+      //   validation: ['onlySimpleUrlChars'],
+      // },
     };
   }
 
@@ -153,6 +183,8 @@ export class ItemEditFormComponent implements OnInit {
         case InputTypesConstants.stringFontIconPicker:
           return this.loadFieldFromDefinition(attribute);
         // return this.getStringIconFontPickerFormlyField(attribute);
+        case InputTypesConstants.stringDropdown:
+          return this.loadFieldFromDefinitionStringDropDown(attribute);
         default:
           return this.loadFieldFromDefinition(attribute);
       }

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
-import { MatInput } from '@angular/material/input';
+import { MatInput, MatSelect } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
+import { SelectOption } from '@ngx-formly/material/src/types/select';
+
 
 @Component({
   selector: 'app-string-dropdown',
@@ -10,7 +12,15 @@ import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 })
 export class StringDropdownComponent extends FieldType implements OnInit, AfterViewInit {
   @ViewChild(MatInput) matInput: MatInput;
+  @ViewChild(MatSelect) matSelect: MatSelect;
   errorStateMatcher = new FormlyErrorStateMatcher(this);
+
+  get labelProp(): string { return this.to.labelProp || 'label'; }
+  get valueProp(): string { return this.to.valueProp || 'value'; }
+  get groupProp(): string { return this.to.groupProp || 'group'; }
+
+  private _selectOptions: SelectOption[] = [];
+  private _oldOptions: SelectOption[] = [];
 
   ngOnInit() {
     super.ngOnInit();
@@ -18,7 +28,40 @@ export class StringDropdownComponent extends FieldType implements OnInit, AfterV
 
   ngAfterViewInit() {
     if (this.field['__formField__']) {
-      this.field['__formField__']._control = this.matInput;
+      if (this.to.freeTextMode) {
+        this.field['__formField__']._control = this.matInput;
+      } else {
+        this.field['__formField__']._control = this.matSelect;
+      }
     }
+  }
+
+  get selectOptions() {
+    if (this.to.options.length === this._oldOptions.length
+      && this._oldOptions.every(opt => !!this.to.options.find(o => o[this.valueProp] === opt[this.valueProp]))
+    ) {
+      return this._selectOptions;
+    }
+
+    this._oldOptions = [...this.to.options];
+    this._selectOptions = [];
+    const groups: { [key: string]: SelectOption[] } = {};
+    this.to.options.map((option: SelectOption) => {
+      if (!option[this.groupProp]) {
+        this._selectOptions.push(option);
+      } else {
+        if (groups[option[this.groupProp]]) {
+          groups[option[this.groupProp]].push(option);
+        } else {
+          groups[option[this.groupProp]] = [option];
+          this._selectOptions.push({
+            label: option[this.groupProp],
+            group: groups[option[this.groupProp]],
+          });
+        }
+      }
+    });
+
+    return this._selectOptions;
   }
 }

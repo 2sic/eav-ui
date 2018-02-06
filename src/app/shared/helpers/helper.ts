@@ -7,7 +7,6 @@ export class Helper {
      *
      */
     static stripNonUrlCharacters(control: FormControl, allowPath: boolean, trimEnd: boolean) {
-        console.log('control.value', control.value);
         const rexSeparators = allowPath ? /[^a-z0-9-_/]+/gi : /[^a-z0-9-_]+/gi;
         const latinized = this.latinizeText(control.value.toLowerCase());
         const cleanInputValue = latinized
@@ -18,7 +17,6 @@ export class Helper {
             .replace(/\/+/gi, '/') // reduce multiple slashes
             .replace(/-*\/-*/gi, '/') // reduce '-/' or '/-' combinations to a simple '/'
             .replace(trimEnd ? /^-|-+$/gi : /^-/gi, ''); // trim front and maybe end '-'
-        console.log('cleanInputValue', cleanInputValue);
         return cleanInputValue;
     }
 

@@ -3,7 +3,7 @@
 
   <!-- {{ (item$ | async) | json }} -->
 
-  <form *ngIf="itemFields$ | async; let itemFields" [formGroup]="form" (ngSubmit)="submitForm()">
+  <form *ngIf="itemFields$ | async; let itemFields" [formGroup]="form" (ngSubmit)="submitForm()" (change)="changeForm()">
     <formly-form [model]="selectedItem.entity.attributes" [fields]="itemFields" [options]="options" [form]="form">
       <button mat-button type="submit" class="btn btn-default submit-button">Submit</button>
     </formly-form>

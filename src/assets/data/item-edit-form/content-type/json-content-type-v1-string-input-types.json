@@ -47,7 +47,7 @@
                                     "*": false
                                 },
                                 "Required": {
-                                    "*": true
+                                    "*": false
                                 },
                                 "VisibleInEditUI": {
                                     "*": true
@@ -116,7 +116,7 @@
                 "Metadata": [
                     {
                         "Id": 1944,
-                        "Version": 1,
+                        "Version": 2,
                         "Guid": "4edb0b2c-7acc-4fdc-aee0-2ab8bea3b64f",
                         "Type": {
                             "Name": "@All",
@@ -124,15 +124,89 @@
                         },
                         "Attributes": {
                             "String": {
+                                "CustomJavaScript": {
+                                    "*": ""
+                                },
+                                "DefaultValue": {
+                                    "*": ""
+                                },
                                 "InputType": {
                                     "*": "string-url-path"
                                 },
                                 "Name": {
                                     "*": "StringURLPath"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
                                 "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1955,
+                        "Version": 1,
+                        "Guid": "887f2c5a-a8d6-410d-b202-13032cd737ec",
+                        "Type": {
+                            "Name": "@String",
+                            "Id": "@String"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "DropdownValues": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": ""
+                                },
+                                "ValidationAutomatic": {
+                                    "*": ""
+                                },
+                                "ValidationRegEx": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Number": {
+                                "RowCount": {
+                                    "*": 1.0
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1956,
+                        "Version": 1,
+                        "Guid": "67e3f4d6-0343-4a44-a11f-a4855ffe5de8",
+                        "Type": {
+                            "Name": "@string-url-path",
+                            "Id": "@string-url-path"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "AutoGenerateMask": {
+                                    "*": "[Title]"
+                                }
+                            },
+                            "Boolean": {
+                                "AllowSlashes": {
                                     "*": true
                                 }
                             }
@@ -180,7 +254,7 @@
                                     "*": false
                                 },
                                 "Required": {
-                                    "*": true
+                                    "*": false
                                 },
                                 "VisibleInEditUI": {
                                     "*": true

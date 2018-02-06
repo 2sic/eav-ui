@@ -1,22 +1,21 @@
-<div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
+<mat-select *ngIf="!to.freeTextMode" [id]="id" class="form-control input-material material" [formControl]="formControl" [formlyAttributes]="field"
+  [multiple]="to.multiple" (selectionChange)="to.change && to.change(field, formControl)" [errorStateMatcher]="errorStateMatcher">
+  <ng-container *ngFor="let item of selectOptions">
+    <mat-optgroup *ngIf="item.group" label="{{item.label}}">
+      <mat-option *ngFor="let child of item.group" [value]="child[valueProp]" [disabled]="child.disabled">
+        {{ child[labelProp] }}
+      </mat-option>
+    </mat-optgroup>
+    <mat-option *ngIf="!item.group" [value]="item[valueProp]" [disabled]="item.disabled">{{ item[labelProp] }}</mat-option>
+  </ng-container>
+</mat-select>
 
-<ng-template #inputField>
-  <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
-    [formlyAttributes]="field">
-</ng-template>
+<!-- TODO: formly-skip-ng-model-attrs-manipulator -->
+<input matInput *ngIf="to.freeTextMode" [type]="type" [id]="id" class="form-control input-material material" [errorStateMatcher]="errorStateMatcher"
+  [formControl]="formControl" [formlyAttributes]="field">
 
-<!-- <ng-template #textareaField>
-  <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
-    [formControl]="formControl" [formlyAttributes]="field"></textarea>
-</ng-template>
-
-<div class="input-string-dropdown-wrapper input-group">
-  <select ng-show="!freeTextMode" class="form-control input-material material" ng-model="value.Value"></select>
-  <input ng-show="freeTextMode" class="form-control input-material material" ng-model="value.Value" formly-skip-ng-model-attrs-manipulator
-    type="text">
-  <a ng-show="to.settings.merged.EnableTextEntry" class="input-group-addon icon-field-button icon-field-button-small" ng-class="{'active': freeTextMode}"
-    ng-click="freeTextMode = !freeTextMode">
-    <span ng-show="freeTextMode" class="eav-icon-down-dir"></span>
-    <span ng-show="!freeTextMode" class="eav-icon-i-cursor"></span>
-  </a>
-</div> -->
+<!-- TODO: ng-class="'active': to.freeTextMode" -->
+<a *ngIf="to.enableTextEntry" class="input-group-addon icon-field-button icon-field-button-small" (click)="to.freeTextMode = !to.freeTextMode">
+  <span *ngIf="to.freeTextMode" class="eav-icon-down-dir"></span>
+  <span *ngIf="!to.freeTextMode" class="eav-icon-i-cursor"></span>
+</a>

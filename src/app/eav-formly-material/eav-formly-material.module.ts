@@ -51,6 +51,10 @@ export function maxValidationMessage(err, field) {
   return `This value should be less than ${field.templateOptions.max}`;
 }
 
+export function maxValidationPattern(err, field) {
+  return `"${field.formControl.value}" is not a valid`;
+}
+
 @NgModule({
   declarations: [
     // wrappers
@@ -110,6 +114,19 @@ export function maxValidationMessage(err, field) {
               type: 'text',
             },
           },
+        },
+        {
+          name: InputTypesConstants.stringDropdown,
+          component: StringDropdownComponent,
+          wrappers: ['form-field'],
+          defaultOptions: {
+            templateOptions: {
+              type: 'text',
+              labelProp: 'label',
+              valueProp: 'value',
+              groupProp: 'group'
+            },
+          },
         }
       ],
       validators: [
@@ -118,10 +135,11 @@ export function maxValidationMessage(err, field) {
       validationMessages: [
         { name: 'onlySimpleUrlChars', message: onlySimpleUrlCharsValidatorMessage },
         { name: 'required', message: 'This field is required' },
-        { name: 'minlength', message: minlengthValidationMessage },
-        { name: 'maxlength', message: maxlengthValidationMessage },
-        { name: 'min', message: minValidationMessage },
-        { name: 'max', message: maxValidationMessage },
+        // { name: 'minlength', message: minlengthValidationMessage },
+        // { name: 'maxlength', message: maxlengthValidationMessage },
+        // { name: 'min', message: minValidationMessage },
+        // { name: 'max', message: maxValidationMessage },
+        { name: 'pattern', message: maxValidationPattern },
       ],
     }),
   ],
