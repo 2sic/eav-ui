@@ -16,7 +16,7 @@ export class ItemService {
   public items$: Observable<Item[]>;
 
   constructor(private httpClient: HttpClient, private store: Store<AppState>) {
-    this.items$ = store.select('items');
+    this.items$ = store.select(s => s.items);
   }
 
   public loadItem(path: string) {

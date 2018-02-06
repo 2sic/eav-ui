@@ -1,0 +1,22 @@
+<div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
+
+<ng-template #inputField>
+  <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
+    [formlyAttributes]="field">
+</ng-template>
+
+<!-- <ng-template #textareaField>
+  <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
+    [formControl]="formControl" [formlyAttributes]="field"></textarea>
+</ng-template>
+
+<div class="input-string-dropdown-wrapper input-group">
+  <select ng-show="!freeTextMode" class="form-control input-material material" ng-model="value.Value"></select>
+  <input ng-show="freeTextMode" class="form-control input-material material" ng-model="value.Value" formly-skip-ng-model-attrs-manipulator
+    type="text">
+  <a ng-show="to.settings.merged.EnableTextEntry" class="input-group-addon icon-field-button icon-field-button-small" ng-class="{'active': freeTextMode}"
+    ng-click="freeTextMode = !freeTextMode">
+    <span ng-show="freeTextMode" class="eav-icon-down-dir"></span>
+    <span ng-show="!freeTextMode" class="eav-icon-i-cursor"></span>
+  </a>
+</div> -->

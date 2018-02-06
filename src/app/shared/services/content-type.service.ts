@@ -42,7 +42,6 @@ export class ContentTypeService {
     // return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-accordion.json')
     return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
       .map((item: JsonContentType1) => {
-        console.log('Ipak pozvano ', item);
         return ContentType.create(item);
       })
       // .do(data => console.log('getEavEntityFromJsonItem1: ', data))

@@ -22,7 +22,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 export class ItemEditFormComponent implements OnInit {
 
   /**
-   * we copied the item because we don't want to keep the reference to store
+   * Item is copied because we don't want to keep the reference to store
    * ngrx store should be changed only through despaches and reducers
    */
   @Input('item')
@@ -35,7 +35,6 @@ export class ItemEditFormComponent implements OnInit {
   selectedItem: Item;
   // Test
   // item$: Observable<Item>;
-
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
@@ -44,17 +43,21 @@ export class ItemEditFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadContentTypeFromStore();
-
     // Test
     // this.item$ = this.itemService.selectItemById(this.selectedItem.entity.id);
   }
 
   submitForm() {
-    this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+    if (this.form.valid) {
+      console.log('submit');
+      this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+    }
   }
 
   changeForm(attributes) {
-    this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+    if (this.form.valid) {
+      this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+    }
   }
 
   loadContentTypeFromStore() {
@@ -88,7 +91,6 @@ export class ItemEditFormComponent implements OnInit {
    */
   loadFieldFromDefinition(attribute: AttributeDef): FormlyFieldConfig {
     // console.log('attribute', attribute.settings['InputType']);
-    console.log('attribute.settings.RowCount', attribute.settings.RowCount);
     const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
     const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
@@ -107,6 +109,29 @@ export class ItemEditFormComponent implements OnInit {
   }
 
   // TEST
+  loadFieldFromDefinitionStringUrlPath(attribute: AttributeDef): FormlyFieldConfig {
+    // console.log('attribute', attribute.settings['InputType']);
+    const inputType = InputTypesConstants.stringUrlPath; // attribute.settings.InputType.values[0].value;
+    const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+
+    return {
+      key: `${attribute.name}.values[0].value`,
+      type: inputType,
+      templateOptions: {
+        type: 'text',
+        rowCount: rowCount,
+        label: attribute.name,
+        placeholder: `Enter ${attribute.name}`,
+        required: true,
+      },
+      validators: {
+        validation: ['onlySimpleUrlChars'],
+      },
+    };
+  }
+
+  // TEST
   loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
     // attribute.settings - are metadata attributes
     // attribute.settings['DefaultValue']
@@ -121,6 +146,8 @@ export class ItemEditFormComponent implements OnInit {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
           return this.loadFieldFromDefinition(attribute);
+        case InputTypesConstants.stringUrlPath:
+          return this.loadFieldFromDefinitionStringUrlPath(attribute);
         case InputTypesConstants.booleanDefault:
           return this.getBooleanDefaultFormlyField(attribute);
         case InputTypesConstants.stringFontIconPicker:
