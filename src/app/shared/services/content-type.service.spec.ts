@@ -1,15 +1,22 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { StoreModule, Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 import { ContentTypeService } from './content-type.service';
 import { JsonContentType1 } from '../models/json-format-v1';
 import { ContentType } from '../models/eav';
+import { AppState } from '../models/app-state';
+import { itemReducer, contentTypeReducer } from '../../shared/store/reducers';
+
+// import * as exampleJson from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json';
 
 describe('ContentTypeService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule],
-      providers: [ContentTypeService]
+      imports: [HttpClientModule,
+        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer })],
+      providers: [ContentTypeService, Store]
     });
   });
 

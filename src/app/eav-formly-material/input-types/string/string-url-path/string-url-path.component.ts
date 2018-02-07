@@ -5,7 +5,6 @@ import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { FormControl } from '@angular/forms';
 import { Helper } from '../../../../shared/helpers/helper';
 
-
 @Component({
   selector: 'app-string-url-path',
   templateUrl: './string-url-path.component.html',
@@ -35,7 +34,13 @@ export class StringUrlPathComponent extends FieldType implements OnInit, AfterVi
     }
   }
 
-  // TODO: add mask for other fields !!!
+  clean(formControl: FormControl) {
+    const orig = formControl.value;
+    const cleaned = Helper.stripNonUrlCharacters(formControl, this.enableSlashes, false);
+    if (orig !== cleaned) {
+      formControl.setValue(cleaned);
+    }
+  }
 
-  // TODO: change text while typing !!!
+  // TODO: add mask for other fields !!!
 }

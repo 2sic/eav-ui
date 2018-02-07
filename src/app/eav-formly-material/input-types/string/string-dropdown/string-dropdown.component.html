@@ -16,6 +16,6 @@
 
 <!-- TODO: ng-class="'active': to.freeTextMode" -->
 <a *ngIf="to.enableTextEntry" class="input-group-addon icon-field-button icon-field-button-small" (click)="to.freeTextMode = !to.freeTextMode">
-  <span *ngIf="to.freeTextMode" class="eav-icon-down-dir"></span>
-  <span *ngIf="!to.freeTextMode" class="eav-icon-i-cursor"></span>
+  <span *ngIf="to.freeTextMode" class="eav-icon-down-dir">icon-select</span>
+  <span *ngIf="!to.freeTextMode" class="eav-icon-i-cursor">icon-free</span>
 </a>

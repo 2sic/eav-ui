@@ -5,11 +5,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule, FieldWrapper } from '@ngx-formly/core';
-import { MatButtonModule, MatCheckboxModule, MatInputModule, MatSelectModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatInputModule,
+  MatSelectModule,
+  MatDialogModule,
+  MatDialog
+} from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
+// import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
 
 const routes: Routes = [
   {
@@ -28,8 +35,10 @@ const routes: Routes = [
     MatSelectModule,
     ReactiveFormsModule,
     FormlyModule,
+    MatDialogModule
   ],
   declarations: [MultiItemEditFormComponent, ItemEditFormComponent],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [MatDialog],
 })
 export class EavItemDialogModule { }

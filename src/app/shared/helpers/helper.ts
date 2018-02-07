@@ -7,6 +7,9 @@ export class Helper {
      *
      */
     static stripNonUrlCharacters(control: FormControl, allowPath: boolean, trimEnd: boolean) {
+        if (!control.value) {
+            return '';
+        }
         const rexSeparators = allowPath ? /[^a-z0-9-_/]+/gi : /[^a-z0-9-_]+/gi;
         const latinized = this.latinizeText(control.value.toLowerCase());
         const cleanInputValue = latinized

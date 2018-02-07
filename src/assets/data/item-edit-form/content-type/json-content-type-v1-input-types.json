@@ -1,0 +1,174 @@
+{
+    "_": {
+        "V": 1
+    },
+    "ContentType": {
+        "Id": "bcb3c5d5-a9e9-495b-924f-c004d7d19ebc",
+        "Name": "TestInputTypes",
+        "Scope": "2SexyContent",
+        "Description": "TestInputTypes",
+        "Attributes": [
+            {
+                "Name": "BooleanDefault",
+                "Type": "Boolean",
+                "IsTitle": true,
+                "Metadata": [
+                    {
+                        "Id": 1957,
+                        "Version": 1,
+                        "Guid": "ddf3cbad-9dbb-46ab-b9c3-7aa899aedd52",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "boolean-default"
+                                },
+                                "Name": {
+                                    "*": "BooleanDefault"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "DateTime",
+                "Type": "DateTime",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1958,
+                        "Version": 1,
+                        "Guid": "f036c8fc-635c-45cb-87cf-20fd596c6af6",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "datetime-default"
+                                },
+                                "Name": {
+                                    "*": "DateTime"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "EmptyDefault",
+                "Type": "Empty",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1959,
+                        "Version": 1,
+                        "Guid": "74f46b94-3695-43bf-803f-101ea7c513a9",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "empty-default"
+                                },
+                                "Name": {
+                                    "*": "EmptyDefault"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "EntityDefault",
+                "Type": "Entity",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1960,
+                        "Version": 1,
+                        "Guid": "fa8dfc65-1da8-49b4-a507-f3eb0aab0a54",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "entity-default"
+                                },
+                                "Name": {
+                                    "*": "EntityDefault"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "NumberDefault",
+                "Type": "Number",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1962,
+                        "Version": 1,
+                        "Guid": "70077744-01c0-4927-9bb8-030d6661957c",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "number-default"
+                                },
+                                "Name": {
+                                    "*": "NumberDefault"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            }
+        ],
+        "Metadata": []
+    }
+}

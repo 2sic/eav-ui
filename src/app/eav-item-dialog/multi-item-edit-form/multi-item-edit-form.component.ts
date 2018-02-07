@@ -10,6 +10,8 @@ import { of } from 'rxjs/observable/of';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
@@ -20,7 +22,7 @@ export class MultiItemEditFormComponent implements OnInit {
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) {
+  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService, private dialog: MatDialog) {
     this.items$ = itemService.items$;
   }
 
@@ -68,6 +70,14 @@ export class MultiItemEditFormComponent implements OnInit {
     this.contentTypeService.loadContentType('json-content-type-v1-string-input-types.json');
     // this.items$ = this.store.select(state => state.items);
     console.log('load string content types');
+  }
+
+  // Test
+  loadInputTypes() {
+    this.itemService.loadItem('json-item-v1-input-types.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
+    // this.items$ = this.store.select(state => state.items);
+    console.log('load content types');
   }
 }
 

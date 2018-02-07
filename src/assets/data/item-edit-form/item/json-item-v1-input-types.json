@@ -1,0 +1,42 @@
+{
+    "_": {
+        "V": 1
+    },
+    "Entity": {
+        "Id": 1963,
+        "Version": 2,
+        "Guid": "d328545b-4887-4c25-8ba9-190b81b4768f",
+        "Type": {
+            "Name": "TestInputTypes",
+            "Id": "bcb3c5d5-a9e9-495b-924f-c004d7d19ebc"
+        },
+        "Attributes": {
+            "Entity": {
+                "EntityDefault": {
+                    "*": [
+                        "d86677cb-b5cf-40a3-92e4-71c6822adbc6"
+                    ]
+                },
+                "EntityQuery": {
+                    "*": []
+                }
+            },
+            "Number": {
+                "NumberDefault": {
+                    "*": 5.0
+                }
+            },
+            "DateTime": {
+                "DateTime": {
+                    "*": "2018-02-14T00:00:00Z"
+                }
+            },
+            "Boolean": {
+                "BooleanDefault": {
+                    "*": true
+                }
+            }
+        },
+        "Owner": "dnn:userid=1"
+    }
+}

@@ -1,12 +1,16 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ItemService } from './item.service';
+import { Observable } from 'rxjs/Observable';
+import { Store, StoreModule } from '@ngrx/store';
+
 import 'rxjs/add/operator/map';
 
 import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';
-import { Observable } from 'rxjs/Observable';
+import { AppState } from '../models/app-state';
+import { itemReducer, contentTypeReducer } from '../../shared/store/reducers';
+import { ItemService } from './item.service';
 
 // describe('FancyService without the TestBed', inject([HttpClient], (httpClient: HttpClient) => {
 //   let service: ItemService;
@@ -60,12 +64,67 @@ import { Observable } from 'rxjs/Observable';
 
 
 describe('EavItemService', () => {
-  beforeEach(() => {
+  let service;
+
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule],
-      providers: [ItemService]
+      imports: [HttpClientModule, HttpClientTestingModule,
+        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer })],
+      providers: [ItemService, Store]
     });
+  }));
+
+  beforeEach(inject([ItemService], s => {
+    service = s;
+  }));
+
+  it('should run a test that finishes eventually', done => {
+    // kick off an asynchronous call in the background
+    setTimeout(() => {
+      console.log('now we are done');
+      expect(false).toEqual(true);
+      done();
+    }, 4000);
   });
+
+  // it('#getValue should return real value', async(() => {
+  //   inject([HttpClient], (httpClient: HttpClient) => {
+  //     const asd = '';
+  // it('tests an async action', async(() => {
+  //   service.getItemFromJsonItem1('json-item-v1-person.json').subscribe(result => {
+  //     return result;
+  //   }).then(
+  //     (result) => {
+  //       expect(false).toEqual(true);
+  //     }
+  //     );
+  // }));
+  // it('should return available languages', async(() => {
+  //   service.getItemFromJsonItem1('json-item-v1-person.json').then((result: any) => {
+  //     expect(false).toEqual(true);
+  //   });
+
+  //   // httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
+  //   //   .subscribe(data => {
+  //   //     const item: Item = Item.create(data);
+
+  //   //     // expect(item.entity.version).toEqual(429000);
+  //   //     expect(true).toEqual(false);
+  //   //     done();
+  //   //   });
+
+  //   // const service: ItemService = new ItemService(httpClient, store);
+  //   // const asd = '';
+  //   // console.log(ItemService);
+  //   // // service.getItemFromJsonItem1('json-item-v1-person.json').subscribe(item => {
+  //   // //   // expect(item.entity.guid).toEqual('e8a702d2-eccd-4b0f-83bd-600d8a8449d9');
+  //   // //   this.asd = 'true'; // expect(true).toEqual(false);
+  //   // //   done();
+  //   // // });
+  //   //   expect(this.asd).toEqual('true');
+  //   // });
+  // }
+  // ));
 
   // it('#getValue should return real value', inject([HttpClient], (httpClient: HttpClient, done: DoneFn) => {
   //   const service: ItemService = new ItemService(httpClient);

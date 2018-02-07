@@ -1,7 +1,5 @@
 <div>
   <!-- directive : only-simple-url-chars -->
-  <!-- ng-pattern=\ "vm.regexPattern\" -->
-  <!-- ng-blur=\ "vm.finalClean()\" -->
   <input matInput [type]="type" [id]="id" [errorStateMatcher]="errorStateMatcher" class="form-control material" [formControl]="formControl"
-    [formlyAttributes]="field" (blur)="finalClean(formControl)">
+    [formlyAttributes]="field" (blur)="finalClean(formControl)" (keyup)="clean(formControl)">
 </div>

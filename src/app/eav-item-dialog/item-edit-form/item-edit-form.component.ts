@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
@@ -54,7 +55,7 @@ export class ItemEditFormComponent implements OnInit {
     }
   }
 
-  changeForm(attributes) {
+  changeForm() {
     if (this.form.valid) {
       this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
     }
@@ -145,19 +146,41 @@ export class ItemEditFormComponent implements OnInit {
 
     return {
       key: `${attribute.name}.values[0].value`,
-      type: inputType,
+      type: inputType, // select
       templateOptions: {
         type: 'text',
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
         required: true,
         freeTextMode: false,
-        enableTextEntry: enableTextEntry,
+        enableTextEntry: true, // enableTextEntry,
         options: options,
+        change: () => this.changeForm(), // this needs for 'select' to catch the changes
       },
       // validators: {
       //   validation: ['onlySimpleUrlChars'],
       // },
+    };
+  }
+
+  // Test
+  loadFieldFromDefinitionBoolean(attribute: AttributeDef): FormlyFieldConfig {
+    const inputType = InputTypesConstants.booleanDefault; // attribute.settings.InputType.values[0].value;
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    const validationRegex = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : false;
+    console.log('validationRegex: ', validationRegex);
+    return {
+      key: `${attribute.name}.values[0].value`,
+      type: inputType,
+      templateOptions: {
+        label: attribute.name,
+        placeholder: `Enter ${attribute.name}`,
+        required: required,
+        pattern: validationRegex,
+        indeterminate: false,
+        align: 'start',
+        change: () => this.changeForm(),
+      }
     };
   }
 
@@ -179,7 +202,7 @@ export class ItemEditFormComponent implements OnInit {
         case InputTypesConstants.stringUrlPath:
           return this.loadFieldFromDefinitionStringUrlPath(attribute);
         case InputTypesConstants.booleanDefault:
-          return this.getBooleanDefaultFormlyField(attribute);
+          return this.loadFieldFromDefinitionBoolean(attribute);
         case InputTypesConstants.stringFontIconPicker:
           return this.loadFieldFromDefinition(attribute);
         // return this.getStringIconFontPickerFormlyField(attribute);

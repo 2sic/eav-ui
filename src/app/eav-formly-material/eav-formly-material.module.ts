@@ -25,6 +25,7 @@ import { StringDropdownComponent } from './input-types/string/string-dropdown/st
 import { StringDropdownQueryComponent } from './input-types/string/string-dropdown-query/string-dropdown-query.component';
 import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { CustomValidators } from './validators/custom-validators';
+import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
 
 
 // export function IpValidator(control: FormControl): ValidationErrors {
@@ -69,7 +70,8 @@ export function maxValidationPattern(err, field) {
     StringUrlPathComponent,
     StringDropdownComponent,
     StringDropdownQueryComponent,
-    StringFontIconPickerComponent
+    StringFontIconPickerComponent,
+    BooleanDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -125,6 +127,17 @@ export function maxValidationPattern(err, field) {
               labelProp: 'label',
               valueProp: 'value',
               groupProp: 'group'
+            },
+          },
+        },
+        {
+          name: InputTypesConstants.booleanDefault,
+          component: BooleanDefaultComponent,
+          wrappers: ['form-field'],
+          defaultOptions: {
+            templateOptions: {
+              indeterminate: false,
+              align: 'end',
             },
           },
         }
