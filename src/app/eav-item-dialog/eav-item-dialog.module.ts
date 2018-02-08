@@ -16,7 +16,6 @@ import {
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-// import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
 
 const routes: Routes = [
   {

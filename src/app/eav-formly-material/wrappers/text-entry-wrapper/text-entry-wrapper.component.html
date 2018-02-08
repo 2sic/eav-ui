@@ -1,0 +1,7 @@
+<ng-container #fieldComponent></ng-container>
+
+<a *ngIf="to.settings.EnableTextEntry.values[0].value" class="input-group-addon icon-field-button icon-field-button-small"
+  [class]="'input-group-addon icon-field-button icon-field-button-small' + (to.freeTextMode ? ' active' : '')" (click)="to.freeTextMode=! to.freeTextMode ">
+  <span *ngIf="to.freeTextMode " class="eav-icon-down-dir ">icon-select</span>
+  <span *ngIf="!to.freeTextMode " class="eav-icon-i-cursor ">icon-free</span>
+</a>

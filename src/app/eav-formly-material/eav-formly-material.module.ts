@@ -18,44 +18,18 @@ import {
   HorizontalInputWrapperComponent,
   FormFieldWrapperComponent
 } from './wrappers';
-import { StringDefaultComponent } from './input-types';
+import {
+  StringDefaultComponent,
+  StringUrlPathComponent,
+  StringDropdownComponent,
+  StringDropdownQueryComponent,
+  StringFontIconPickerComponent,
+  BooleanDefaultComponent
+} from './input-types';
 import { InputTypesConstants } from '../shared/constants';
-import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
-import { StringDropdownComponent } from './input-types/string/string-dropdown/string-dropdown.component';
-import { StringDropdownQueryComponent } from './input-types/string/string-dropdown-query/string-dropdown-query.component';
-import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { CustomValidators } from './validators/custom-validators';
-import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
 import { ValidationMessages } from './validators/validation-messages';
-
-
-// export function IpValidator(control: FormControl): ValidationErrors {
-//   return /(\d{1,3}\.){3}\d{1,3}/.test(control.value) ? null : { 'ip': true };
-// }
-
-// export function onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
-//   return `"${field.formControl.value}" is not a valid URL`;
-// }
-
-// export function minlengthValidationMessage(err, field) {
-//   return `Should have atleast ${field.templateOptions.minLength} characters`;
-// }
-
-// export function maxlengthValidationMessage(err, field) {
-//   return `This value should be less than ${field.templateOptions.maxLength} characters`;
-// }
-
-// export function minValidationMessage(err, field) {
-//   return `This value should be more than ${field.templateOptions.min}`;
-// }
-
-// export function maxValidationMessage(err, field) {
-//   return `This value should be less than ${field.templateOptions.max}`;
-// }
-
-// export function maxValidationPattern(err, field) {
-//   return `"${field.formControl.value}" is not a valid`;
-// }
+import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +46,8 @@ import { ValidationMessages } from './validators/validation-messages';
     StringDropdownComponent,
     StringDropdownQueryComponent,
     StringFontIconPickerComponent,
-    BooleanDefaultComponent
+    BooleanDefaultComponent,
+    TextEntryWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +64,8 @@ import { ValidationMessages } from './validators/validation-messages';
         { name: 'collapsible', component: CollapsibleWrapperComponent },
         { name: 'horizontal-wrapper', component: HorizontalInputWrapperComponent },
         { name: 'form-field', component: FormlyWrapperFormField },
-        { name: 'form-field-wrapper', component: FormFieldWrapperComponent } // copy of FormlyWrapperFormField
+        { name: 'form-field-wrapper', component: FormFieldWrapperComponent }, // copy of FormlyWrapperFormField
+        { name: 'text-entry-wrapper-component', component: TextEntryWrapperComponent }
       ],
       types: [
         {
@@ -100,22 +76,12 @@ import { ValidationMessages } from './validators/validation-messages';
         {
           name: InputTypesConstants.stringDefault,
           component: StringDefaultComponent,
-          wrappers: ['form-field'],
-          // defaultOptions: {
-          //   templateOptions: {
-          //     type: 'text',
-          //     settings: {
-          //       RowCount: {
-          //         values: [{ value: 1 }]
-          //       }
-          //     }
-          //   },
-          // },
+          wrappers: ['form-field-wrapper'],
         },
         {
           name: InputTypesConstants.stringUrlPath,
           component: StringUrlPathComponent,
-          wrappers: ['form-field'],
+          wrappers: ['form-field-wrapper'],
           defaultOptions: {
             templateOptions: {
               type: 'text',
@@ -125,7 +91,7 @@ import { ValidationMessages } from './validators/validation-messages';
         {
           name: InputTypesConstants.stringDropdown,
           component: StringDropdownComponent,
-          wrappers: ['form-field'],
+          wrappers: ['form-field-wrapper', 'text-entry-wrapper-component'],
           defaultOptions: {
             templateOptions: {
               type: 'text',
@@ -138,7 +104,7 @@ import { ValidationMessages } from './validators/validation-messages';
         {
           name: InputTypesConstants.booleanDefault,
           component: BooleanDefaultComponent,
-          wrappers: ['form-field'],
+          wrappers: ['form-field-wrapper'],
           defaultOptions: {
             templateOptions: {
               indeterminate: false,
