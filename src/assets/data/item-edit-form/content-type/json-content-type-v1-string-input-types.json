@@ -47,7 +47,7 @@
                                     "*": false
                                 },
                                 "Required": {
-                                    "*": false
+                                    "*": true
                                 },
                                 "VisibleInEditUI": {
                                     "*": true
@@ -313,7 +313,7 @@
                             },
                             "Boolean": {
                                 "EnableTextEntry": {
-                                    "*": false
+                                    "*": true
                                 }
                             }
                         }

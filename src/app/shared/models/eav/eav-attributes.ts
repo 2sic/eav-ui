@@ -47,7 +47,7 @@ export class EavAttributes {
                     });
                 }
             });
-            // Read @All metadata settings last to rewrite if same name attribute exist
+            // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
             eavEntityArray.forEach(eavEntity => {
                 if (eavEntity.type.id === '@All') {
                     Object.keys(eavEntity.attributes).forEach(attributeKey => {

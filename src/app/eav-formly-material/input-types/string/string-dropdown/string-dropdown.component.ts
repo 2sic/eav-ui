@@ -34,9 +34,13 @@ export class StringDropdownComponent extends FieldType implements OnInit, AfterV
         this.field['__formField__']._control = this.matSelect;
       }
     }
+    super.ngAfterViewInit();
   }
 
   get selectOptions() {
+    this.to.options = this.setOptionsFromDropdownValues();
+
+    // This text is default code of formly material select
     if (this.to.options.length === this._oldOptions.length
       && this._oldOptions.every(opt => !!this.to.options.find(o => o[this.valueProp] === opt[this.valueProp]))
     ) {
@@ -63,5 +67,28 @@ export class StringDropdownComponent extends FieldType implements OnInit, AfterV
     });
 
     return this._selectOptions;
+  }
+
+  /**
+   * Read settings Dropdown values
+   */
+  private setOptionsFromDropdownValues(): any {
+    let options = [];
+    if (this.to.settings.DropdownValues) {
+      const dropdownValues = this.to.settings.DropdownValues.values[0].value;
+      options = dropdownValues.replace(/\r/g, '').split('\n');
+      options = options.map(e => {
+        const s = e.split(':');
+        const maybeWantedEmptyVal = s[1];
+        const key = s.shift(); // take first, shrink the array
+        const val = s.join(':');
+        return {
+          label: key,
+          value: (val || maybeWantedEmptyVal === '') ? val : key
+        };
+      });
+    }
+
+    return options;
   }
 }

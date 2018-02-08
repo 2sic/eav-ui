@@ -26,35 +26,36 @@ import { StringDropdownQueryComponent } from './input-types/string/string-dropdo
 import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { CustomValidators } from './validators/custom-validators';
 import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
+import { ValidationMessages } from './validators/validation-messages';
 
 
 // export function IpValidator(control: FormControl): ValidationErrors {
 //   return /(\d{1,3}\.){3}\d{1,3}/.test(control.value) ? null : { 'ip': true };
 // }
 
-export function onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
-  return `"${field.formControl.value}" is not a valid URL`;
-}
+// export function onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
+//   return `"${field.formControl.value}" is not a valid URL`;
+// }
 
-export function minlengthValidationMessage(err, field) {
-  return `Should have atleast ${field.templateOptions.minLength} characters`;
-}
+// export function minlengthValidationMessage(err, field) {
+//   return `Should have atleast ${field.templateOptions.minLength} characters`;
+// }
 
-export function maxlengthValidationMessage(err, field) {
-  return `This value should be less than ${field.templateOptions.maxLength} characters`;
-}
+// export function maxlengthValidationMessage(err, field) {
+//   return `This value should be less than ${field.templateOptions.maxLength} characters`;
+// }
 
-export function minValidationMessage(err, field) {
-  return `This value should be more than ${field.templateOptions.min}`;
-}
+// export function minValidationMessage(err, field) {
+//   return `This value should be more than ${field.templateOptions.min}`;
+// }
 
-export function maxValidationMessage(err, field) {
-  return `This value should be less than ${field.templateOptions.max}`;
-}
+// export function maxValidationMessage(err, field) {
+//   return `This value should be less than ${field.templateOptions.max}`;
+// }
 
-export function maxValidationPattern(err, field) {
-  return `"${field.formControl.value}" is not a valid`;
-}
+// export function maxValidationPattern(err, field) {
+//   return `"${field.formControl.value}" is not a valid`;
+// }
 
 @NgModule({
   declarations: [
@@ -100,12 +101,16 @@ export function maxValidationPattern(err, field) {
           name: InputTypesConstants.stringDefault,
           component: StringDefaultComponent,
           wrappers: ['form-field'],
-          defaultOptions: {
-            templateOptions: {
-              type: 'text',
-              rowCount: 1,
-            },
-          },
+          // defaultOptions: {
+          //   templateOptions: {
+          //     type: 'text',
+          //     settings: {
+          //       RowCount: {
+          //         values: [{ value: 1 }]
+          //       }
+          //     }
+          //   },
+          // },
         },
         {
           name: InputTypesConstants.stringUrlPath,
@@ -137,7 +142,7 @@ export function maxValidationPattern(err, field) {
           defaultOptions: {
             templateOptions: {
               indeterminate: false,
-              align: 'end',
+              align: 'start'
             },
           },
         }
@@ -146,13 +151,13 @@ export function maxValidationPattern(err, field) {
         { name: 'onlySimpleUrlChars', validation: CustomValidators.onlySimpleUrlChars(true, true) },
       ],
       validationMessages: [
-        { name: 'onlySimpleUrlChars', message: onlySimpleUrlCharsValidatorMessage },
+        { name: 'onlySimpleUrlChars', message: ValidationMessages.onlySimpleUrlCharsValidatorMessage },
         { name: 'required', message: 'This field is required' },
         // { name: 'minlength', message: minlengthValidationMessage },
         // { name: 'maxlength', message: maxlengthValidationMessage },
         // { name: 'min', message: minValidationMessage },
         // { name: 'max', message: maxValidationMessage },
-        { name: 'pattern', message: maxValidationPattern },
+        { name: 'pattern', message: ValidationMessages.maxValidationPattern },
       ],
     }),
   ],

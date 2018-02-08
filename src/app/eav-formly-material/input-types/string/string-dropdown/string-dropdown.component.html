@@ -10,12 +10,13 @@
   </ng-container>
 </mat-select>
 
-<!-- TODO: formly-skip-ng-model-attrs-manipulator -->
+<!-- TODO: formly-skip-ng-model-attrs-manipulator - i think we don't need this any more??? was angular issue for ngModel
+EXAMPLE : https://github.com/formly-js/angular-formly/issues/499 -->
 <input matInput *ngIf="to.freeTextMode" [type]="type" [id]="id" class="form-control input-material material" [errorStateMatcher]="errorStateMatcher"
   [formControl]="formControl" [formlyAttributes]="field">
 
-<!-- TODO: ng-class="'active': to.freeTextMode" -->
-<a *ngIf="to.enableTextEntry" class="input-group-addon icon-field-button icon-field-button-small" (click)="to.freeTextMode = !to.freeTextMode">
-  <span *ngIf="to.freeTextMode" class="eav-icon-down-dir">icon-select</span>
-  <span *ngIf="!to.freeTextMode" class="eav-icon-i-cursor">icon-free</span>
+<a *ngIf="to.settings.EnableTextEntry.values[0].value" class="input-group-addon icon-field-button icon-field-button-small"
+  [class]="'input-group-addon icon-field-button icon-field-button-small' + (to.freeTextMode ? ' active' : '')" (click)="to.freeTextMode=! to.freeTextMode ">
+  <span *ngIf="to.freeTextMode " class="eav-icon-down-dir ">icon-select</span>
+  <span *ngIf="!to.freeTextMode " class="eav-icon-i-cursor ">icon-free</span>
 </a>

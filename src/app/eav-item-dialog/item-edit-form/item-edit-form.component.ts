@@ -15,6 +15,14 @@ import * as itemActions from '../../shared/store/actions/item.actions';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 
+export class EavSettings {
+  [key: string]: EavSettingsValue;
+}
+
+export class EavSettingsValue {
+  value: any;
+}
+
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
@@ -71,7 +79,7 @@ export class ItemEditFormComponent implements OnInit {
   /**
    * load content type attributes to Formly FormFields (formlyFieldConfigArray)
    */
-  loadContentTypeFormFields(): Observable<FormlyFieldConfig[]> {
+  loadContentTypeFormFields = (): Observable<FormlyFieldConfig[]> => {
     return this.contentType$
       .switchMap((data) => {
         const formlyFieldConfigArray: FormlyFieldConfig[] = new Array<FormlyFieldConfig>();
@@ -86,207 +94,233 @@ export class ItemEditFormComponent implements OnInit {
       });
   }
 
+  // TEST
+  loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
+    if (attribute.settings.InputType) {
+      switch (attribute.settings.InputType.values[0].value) {
+        case InputTypesConstants.stringDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+        case InputTypesConstants.stringUrlPath:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath);
+        // return this.loadFieldFromDefinitionStringUrlPath(attribute);
+        case InputTypesConstants.booleanDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault);
+        // return this.getStringIconFontPickerFormlyField(attribute);
+        case InputTypesConstants.stringDropdown:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown);
+        // return this.loadFieldFromDefinitionStringDropDown(attribute);
+        default:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+      }
+    } else {
+      return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+    }
+  }
+
   /**
    * Load formly field from AttributeDef
    * @param attribute
    */
-  loadFieldFromDefinition(attribute: AttributeDef): FormlyFieldConfig {
-    const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
-    const rowCount = attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1;
+  loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FormlyFieldConfig {
+    // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const validationRegex = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : false;
-    console.log('validationRegex: ', validationRegex);
+    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+    // set validation for all input types
+    const validationList = this.setValidations(inputType);
+
     return {
       key: `${attribute.name}.values[0].value`,
       type: inputType,
       templateOptions: {
-        type: 'text',
-        rowCount: rowCount,
+        type: 'text', // TODO
         label: attribute.name,
         placeholder: `Enter ${attribute.name}`,
         required: required,
-        pattern: validationRegex,
-      }
-    };
-  }
-
-  // TEST
-  loadFieldFromDefinitionStringUrlPath(attribute: AttributeDef): FormlyFieldConfig {
-    const inputType = InputTypesConstants.stringUrlPath; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-
-    const autoGenerateMask = attribute.settings.AutoGenerateMask ? attribute.settings.AutoGenerateMask.values[0].value : '';
-    const allowSlashes = attribute.settings.AllowSlashes ? attribute.settings.AllowSlashes.values[0].value : false;
-
-    return {
-      key: `${attribute.name}.values[0].value`,
-      type: inputType,
-      templateOptions: {
-        type: 'text',
-        label: attribute.name,
-        placeholder: `Enter ${attribute.name}`,
-        required: true,
+        pattern: pattern,
+        settings: attribute.settings,
+        change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the changes
       },
       validators: {
-        validation: ['onlySimpleUrlChars'],
+        validation: validationList,
       },
     };
+  }
+
+  /**
+   * TODO: see can i write this in module configuration ???
+   * @param inputType
+   */
+  setValidations(inputType: string): Array<string> {
+    let validation = Array<string>();
+    if (inputType === InputTypesConstants.stringUrlPath) {
+      validation = [...['onlySimpleUrlChars']];
+    }
+
+    return validation;
   }
 
   // TEST
-  loadFieldFromDefinitionStringDropDown(attribute: AttributeDef): FormlyFieldConfig {
-    const inputType = InputTypesConstants.stringDropdown; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+  // loadFieldFromDefinitionStringUrlPath(attribute: AttributeDef): FormlyFieldConfig {
+  //   const inputType = InputTypesConstants.stringUrlPath; // attribute.settings.InputType.values[0].value;
+  //   const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
 
-    const enableTextEntry = attribute.settings.EnableTextEntry ? attribute.settings.EnableTextEntry.values[0].value : '';
-    const dropdownValues = attribute.settings.DropdownValues ? attribute.settings.DropdownValues.values[0].value : '';
+  //   const autoGenerateMask = attribute.settings.AutoGenerateMask ? attribute.settings.AutoGenerateMask.values[0].value : '';
+  //   const allowSlashes = attribute.settings.AllowSlashes ? attribute.settings.AllowSlashes.values[0].value : false;
 
-    // "First\nSecond\nThird"
-    const options = dropdownValues.split('\n').map(v => ({ label: v, value: v }));
+  //   return {
+  //     key: `${attribute.name}.values[0].value`,
+  //     type: inputType,
+  //     templateOptions: {
+  //       type: 'text',
+  //       label: attribute.name,
+  //       placeholder: `Enter ${attribute.name}`,
+  //       required: true,
+  //     },
+  //     validators: {
+  //       validation: ['onlySimpleUrlChars'],
+  //     },
+  //   };
+  // }
 
-    return {
-      key: `${attribute.name}.values[0].value`,
-      type: inputType, // select
-      templateOptions: {
-        type: 'text',
-        label: attribute.name,
-        placeholder: `Enter ${attribute.name}`,
-        required: true,
-        freeTextMode: false,
-        enableTextEntry: true, // enableTextEntry,
-        options: options,
-        change: () => this.changeForm(), // this needs for 'select' to catch the changes
-      },
-      // validators: {
-      //   validation: ['onlySimpleUrlChars'],
-      // },
-    };
-  }
+  // TEST
+  // loadFieldFromDefinitionStringDropDown(attribute: AttributeDef): FormlyFieldConfig {
+  //   const inputType = InputTypesConstants.stringDropdown; // attribute.settings.InputType.values[0].value;
+  //   const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+
+  //   const enableTextEntry = attribute.settings.EnableTextEntry ? attribute.settings.EnableTextEntry.values[0].value : '';
+  //   const dropdownValues = attribute.settings.DropdownValues ? attribute.settings.DropdownValues.values[0].value : '';
+
+  //   // "First\nSecond\nThird"
+  //   const options = dropdownValues.split('\n').map(v => ({ label: v, value: v }));
+
+  //   return {
+  //     key: `${attribute.name}.values[0].value`,
+  //     type: inputType, // select
+  //     templateOptions: {
+  //       type: 'text',
+  //       label: attribute.name,
+  //       placeholder: `Enter ${attribute.name}`,
+  //       required: true,
+  //       freeTextMode: false,
+  //       enableTextEntry: enableTextEntry,
+  //       options: options,
+  //       change: () => this.changeForm(), // this needs for 'select' to catch the changes
+  //     },
+  //     // validators: {
+  //     //   validation: ['onlySimpleUrlChars'],
+  //     // },
+  //   };
+  // }
 
   // Test
-  loadFieldFromDefinitionBoolean(attribute: AttributeDef): FormlyFieldConfig {
-    const inputType = InputTypesConstants.booleanDefault; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const validationRegex = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : false;
-    console.log('validationRegex: ', validationRegex);
-    return {
-      key: `${attribute.name}.values[0].value`,
-      type: inputType,
-      templateOptions: {
-        label: attribute.name,
-        placeholder: `Enter ${attribute.name}`,
-        required: required,
-        pattern: validationRegex,
-        indeterminate: false,
-        align: 'start',
-        change: () => this.changeForm(),
-      }
-    };
-  }
+  // loadFieldFromDefinitionBoolean(attribute: AttributeDef): FormlyFieldConfig {
+  //   const inputType = InputTypesConstants.booleanDefault; // attribute.settings.InputType.values[0].value;
+  //   const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+  //   const validationRegex = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : false;
+
+  //   return {
+  //     key: `${attribute.name}.values[0].value`,
+  //     type: inputType,
+  //     templateOptions: {
+  //       label: attribute.name,
+  //       placeholder: `Enter ${attribute.name}`,
+  //       required: required,
+  //       pattern: validationRegex,
+  //       indeterminate: false,
+  //       align: 'start',
+  //       change: () => this.changeForm(),
+  //     }
+  //   };
+  // }
 
   // TEST
-  loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
-    // attribute.settings - are metadata attributes
-    // attribute.settings['DefaultValue']
-    // attribute.settings['InputType'] "string-default"
-    // attribute.settings['Name'] "Title"
-    // attribute.settings['Notes']
-    // attribute.settings['Disabled'] false
-    // attribute.settings['Required'] true
-    // attribute.settings['VisibleInEditUI'] true
+  // readSettings(settings: EavAttributes): any {
 
-    if (attribute.settings.InputType) {
-      switch (attribute.settings.InputType.values[0].value) {
-        case InputTypesConstants.stringDefault:
-          return this.loadFieldFromDefinition(attribute);
-        case InputTypesConstants.stringUrlPath:
-          return this.loadFieldFromDefinitionStringUrlPath(attribute);
-        case InputTypesConstants.booleanDefault:
-          return this.loadFieldFromDefinitionBoolean(attribute);
-        case InputTypesConstants.stringFontIconPicker:
-          return this.loadFieldFromDefinition(attribute);
-        // return this.getStringIconFontPickerFormlyField(attribute);
-        case InputTypesConstants.stringDropdown:
-          return this.loadFieldFromDefinitionStringDropDown(attribute);
-        default:
-          return this.loadFieldFromDefinition(attribute);
-      }
-    } else {
-      return this.loadFieldFromDefinition(attribute);
-    }
-  }
+  //   const settingsValue = new EavSettings();
+
+  //   Object.keys(settings).forEach(settingKey => {
+  //     // if (settings[settingKey] && settings[settingKey].values[0].value) {
+  //     settingsValue[settingKey] = new EavSettingsValue();
+  //     settingsValue[settingKey].value = settings[settingKey].values[0].value;
+  //     // }
+  //   });
+
+  //   return settingsValue;
+  // }
+
+
 
   // TEST
   // Example wrappers
-  getBooleanDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
-    return {
-      key: '',
-      wrappers: ['label'],
-      templateOptions: {
-        label: `Wrapper Label ${attribute.name}`
-      },
-      fieldGroup: [{
-        key: `${attribute.name}.values[0].value`,
-        type: 'input',
-        templateOptions: {
-          required: attribute.settings.Required.values[0].value,
-          type: 'text',
-          label: attribute.name
-        },
-        // hideExpression: '!model.name',
-        // expressionProperties: {
-        //   'templateOptions.focus': `${attribute.name}.values[0].value`,
-        //   'templateOptions.description': (model, formState) => {
-        //     return 'And look! This field magically got focus!';
-        //   },
-        // },
-      }]
-    };
-  }
+  // getBooleanDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
+  //   return {
+  //     key: '',
+  //     wrappers: ['label'],
+  //     templateOptions: {
+  //       label: `Wrapper Label ${attribute.name}`
+  //     },
+  //     fieldGroup: [{
+  //       key: `${attribute.name}.values[0].value`,
+  //       type: 'input',
+  //       templateOptions: {
+  //         required: attribute.settings.Required.values[0].value,
+  //         type: 'text',
+  //         label: attribute.name
+  //       },
+  //       // hideExpression: '!model.name',
+  //       // expressionProperties: {
+  //       //   'templateOptions.focus': `${attribute.name}.values[0].value`,
+  //       //   'templateOptions.description': (model, formState) => {
+  //       //     return 'And look! This field magically got focus!';
+  //       //   },
+  //       // },
+  //     }]
+  //   };
+  // }
 
   // Test
   // Example nested wrappers
-  getStringIconFontPickerFormlyField(attribute: AttributeDef): FormlyFieldConfig {
-    return {
-      key: '',
-      wrappers: ['collapsible'],
-      templateOptions: {
-        label: `Parent wrapper Collapsible ${attribute.name}`,
-        collapse: true
-      },
-      fieldGroup: [{
-        key: '',
-        wrappers: ['label'],
-        templateOptions: {
-          label: `Child wrapper ${attribute.name}`
-        },
-        fieldGroup: [{
-          key: `${attribute.name}.values[0].value`,
-          type: 'input',
-          templateOptions: {
-            required: attribute.settings.Required.values[0].value,
-            type: 'text',
-            label: attribute.name,
-          },
-        }]
-      }],
-    };
-  }
+  // getStringIconFontPickerFormlyField(attribute: AttributeDef): FormlyFieldConfig {
+  //   return {
+  //     key: '',
+  //     wrappers: ['collapsible'],
+  //     templateOptions: {
+  //       label: `Parent wrapper Collapsible ${attribute.name}`,
+  //       collapse: true
+  //     },
+  //     fieldGroup: [{
+  //       key: '',
+  //       wrappers: ['label'],
+  //       templateOptions: {
+  //         label: `Child wrapper ${attribute.name}`
+  //       },
+  //       fieldGroup: [{
+  //         key: `${attribute.name}.values[0].value`,
+  //         type: 'input',
+  //         templateOptions: {
+  //           required: attribute.settings.Required.values[0].value,
+  //           type: 'text',
+  //           label: attribute.name,
+  //         },
+  //       }]
+  //     }],
+  //   };
+  // }
 
   // Test
   // DEFAULT - horizontalInput - not good: without mat-form-field
-  getDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
-    console.log('rowCount: ', attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1);
-    return {
-      key: `${attribute.name}.values[0].value`,
-      type: InputTypesConstants.stringDefault,
-      templateOptions: {
-        type: 'text',
-        rowCount: attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1,
-        label: attribute.name,
-        placeholder: `Enter ${attribute.name}`,
-        required: true,
-      }
-    };
-  }
+  // getDefaultFormlyField(attribute: AttributeDef): FormlyFieldConfig {
+  //   console.log('rowCount: ', attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1);
+  //   return {
+  //     key: `${attribute.name}.values[0].value`,
+  //     type: InputTypesConstants.stringDefault,
+  //     templateOptions: {
+  //       type: 'text',
+  //       rowCount: attribute.settings.RowCount ? attribute.settings.RowCount.values[0].value : 1,
+  //       label: attribute.name,
+  //       placeholder: `Enter ${attribute.name}`,
+  //       required: true,
+  //     }
+  //   };
+  // }
 }

@@ -1,6 +1,4 @@
-<!-- <input matInput [type]="type" [id]="id" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl" [formlyAttributes]="field"> {{ to.rowCount }} -->
-
-<div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
+<div *ngIf="to.settings.RowCount && to.settings.RowCount.values[0].value > 1; then textareaField else inputField"></div>
 
 <ng-template #inputField>
     <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
@@ -8,6 +6,6 @@
 </ng-template>
 
 <ng-template #textareaField>
-    <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
+    <textarea matInput [rows]="to.settings.RowCount.values[0].value" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
         [formControl]="formControl" [formlyAttributes]="field"></textarea>
 </ng-template>
