@@ -109,6 +109,8 @@ export class ItemEditFormComponent implements OnInit {
         case InputTypesConstants.stringDropdown:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown);
         // return this.loadFieldFromDefinitionStringDropDown(attribute);
+        case InputTypesConstants.datetimeDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }

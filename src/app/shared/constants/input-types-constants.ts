@@ -7,4 +7,6 @@ export class InputTypesConstants {
     public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
     // boolean
     public static readonly booleanDefault: string = 'boolean-default';
+    // datetime
+    public static readonly datetimeDefault: string = 'datetime-default';
 }

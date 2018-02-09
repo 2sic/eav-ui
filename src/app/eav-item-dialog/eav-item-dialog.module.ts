@@ -10,8 +10,11 @@ import {
   MatCheckboxModule,
   MatInputModule,
   MatSelectModule,
-  MatDialogModule,
-  MatDialog
+  // MatDialogModule,
+  // MatDialog,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatCardModule
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
@@ -34,10 +37,14 @@ const routes: Routes = [
     MatSelectModule,
     ReactiveFormsModule,
     FormlyModule,
-    MatDialogModule
+    // MatDialogModule
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCardModule
+
   ],
   declarations: [MultiItemEditFormComponent, ItemEditFormComponent],
   exports: [RouterModule],
-  providers: [MatDialog],
+  // providers: [MatDialog],
 })
 export class EavItemDialogModule { }

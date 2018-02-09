@@ -7,7 +7,10 @@ import {
   MatButtonModule,
   MatCheckboxModule,
   MatInputModule,
-  MatSelectModule
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatCardModule
 } from '@angular/material';
 import { FormlyWrapperFormField, FormlyFieldInput, FormlyMaterialModule } from '@ngx-formly/material';
 
@@ -24,7 +27,8 @@ import {
   StringDropdownComponent,
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
-  BooleanDefaultComponent
+  BooleanDefaultComponent,
+  DatetimeDefaultComponent
 } from './input-types';
 import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
@@ -47,7 +51,8 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
     StringDropdownQueryComponent,
     StringFontIconPickerComponent,
     BooleanDefaultComponent,
-    TextEntryWrapperComponent
+    TextEntryWrapperComponent,
+    DatetimeDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -57,6 +62,9 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
     MatInputModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCardModule,
     FormlyModule.forRoot({
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },
@@ -111,6 +119,17 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
               align: 'start'
             },
           },
+        },
+        {
+          name: InputTypesConstants.datetimeDefault,
+          component: DatetimeDefaultComponent,
+          wrappers: ['form-field-wrapper'],
+          // defaultOptions: {
+          //   templateOptions: {
+          //     indeterminate: false,
+          //     align: 'start'
+          //   },
+          // },
         }
       ],
       validators: [

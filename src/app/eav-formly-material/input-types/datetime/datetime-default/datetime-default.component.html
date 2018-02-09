@@ -1,0 +1,4 @@
+<input matInput [matDatepicker]="picker" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
+  [formlyAttributes]="field" (dateChange)="to.change(field, formControl)">
+<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+<mat-datepicker #picker></mat-datepicker>
