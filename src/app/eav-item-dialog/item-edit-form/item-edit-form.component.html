@@ -1,4 +1,7 @@
 <div *ngIf="contentType$ | async">
+  <span flex>
+    <button mat-button type="button" class="btn btn-default" (click)="deleteItem()">Close</button>
+  </span>
   <h3>Item edit form: {{ (contentType$ | async).contentType.name }}</h3>
 
   <!-- {{ (item$ | async) | json }} -->

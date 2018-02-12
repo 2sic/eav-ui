@@ -1,4 +1,10 @@
-<input matInput [matDatepicker]="picker" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
-  [formlyAttributes]="field" (dateChange)="to.change(field, formControl)">
-<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-<mat-datepicker #picker></mat-datepicker>
+<!-- <mat-form-field> -->
+<div class="date-picker-wide-suffix-right">
+  <input matInput [matDatepicker]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
+    [formlyAttributes]="field" (dateChange)="to.change(field, formControl)">
+  <div class="mat-input-suffix mat-form-field-suffix">
+    <mat-datepicker-toggle matSuffix [for]="id"></mat-datepicker-toggle>
+  </div>
+  <mat-datepicker #id></mat-datepicker>
+</div>
+<!-- </mat-form-field> -->

@@ -17,9 +17,9 @@ export class ItemEffects {
      * Efect on Action (LOAD_EAV_ITEMS) load EavItem and sent it to store with action LoadEavItemsSuccessAction
      */
     @Effect() loadItem$ = this.actions$
-        .ofType(itemActions.LOAD_ITEMS)
-        .switchMap((action: fromItems.LoadItemsAction) => {
+        .ofType(itemActions.LOAD_ITEM)
+        .switchMap((action: fromItems.LoadItemAction) => {
             return this.itemService.getItemFromJsonItem1(action.path)
-                .map(item => new itemActions.LoadItemsSuccessAction(item));
+                .map(item => new itemActions.LoadItemSuccessAction(item));
         });
 }

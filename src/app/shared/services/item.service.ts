@@ -20,11 +20,15 @@ export class ItemService {
   }
 
   public loadItem(path: string) {
-    this.store.dispatch(new itemActions.LoadItemsAction(path));
+    this.store.dispatch(new itemActions.LoadItemAction(path));
   }
 
   public updateItem(item: Item) {
-    this.store.dispatch(new itemActions.UpdateItem(item));
+    this.store.dispatch(new itemActions.UpdateItemAction(item));
+  }
+
+  public deleteItem(item: Item) {
+    this.store.dispatch(new itemActions.DeleteItemAction(item));
   }
 
   public selectItemById(id: number): Observable<Item> {
@@ -34,7 +38,7 @@ export class ItemService {
   }
 
   /**
-   * Get  Item from Json Entity V1
+   * Get Item from Json Entity V1
    */
   public getItemFromJsonItem1(path: string): Observable<Item> {
     // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
@@ -42,6 +46,18 @@ export class ItemService {
     return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
       .map((item: JsonItem1) => {
         return Item.create(item);
+      })
+      // .do(data => console.log('getItemFromJsonItem1: ', data))
+      .catch(this.handleError);
+  }
+
+  /**
+   * Get Json Entity V1
+   */
+  public getJsonItem1(path: string): Observable<JsonItem1> {
+    return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
+      .map((item: JsonItem1) => {
+        return item;
       })
       // .do(data => console.log('getItemFromJsonItem1: ', data))
       .catch(this.handleError);

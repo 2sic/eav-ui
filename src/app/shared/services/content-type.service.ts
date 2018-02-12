@@ -48,6 +48,18 @@ export class ContentTypeService {
       .catch(this.handleError);
   }
 
+  /**
+   * Get Json Content Type V1
+   */
+  public getJsonContentType1(path: string): Observable<JsonContentType1> {
+    return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
+      .map((item: JsonContentType1) => {
+        return item;
+      })
+      // .do(data => console.log('getEavEntityFromJsonItem1: ', data))
+      .catch(this.handleError);
+  }
+
   private handleError(error: any) {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';

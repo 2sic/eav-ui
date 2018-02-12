@@ -7,7 +7,7 @@ interface NodeModule {
 /**
  * We need this for import json file in code
  */
-// declare module "*.json" {
-//   const value: any;
-//   export default value;
-// }
+declare module "*.json" {
+  const value: any;
+  export default value;
+}

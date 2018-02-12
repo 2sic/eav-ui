@@ -69,6 +69,10 @@ export class ItemEditFormComponent implements OnInit {
     }
   }
 
+  deleteItem() {
+    this.itemService.deleteItem(this.selectedItem); // TODO: probably can update only attributes
+  }
+
   loadContentTypeFromStore() {
     // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
@@ -141,6 +145,7 @@ export class ItemEditFormComponent implements OnInit {
         pattern: pattern,
         settings: attribute.settings,
         change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the changes
+        ante: (inputType === InputTypesConstants.datetimeDefault) ? 'ima' : null,
       },
       validators: {
         validation: validationList,

@@ -9,7 +9,7 @@ import { AppState } from '../../models/app-state';
  */
 export function itemReducer(state: Item[] = [], action: fromItems.Actions): Item[] {
     switch (action.type) {
-        case fromItems.LOAD_ITEMS_SUCCESS: {
+        case fromItems.LOAD_ITEM_SUCCESS: {
             return [...state, action.newItem];
         }
         case fromItems.UPDATE_ITEM: {
@@ -19,8 +19,8 @@ export function itemReducer(state: Item[] = [], action: fromItems.Actions): Item
                     : item;
             });
         }
-        // case fromItems.DELETE_ITEM:
-        //     return state.filter(item => item.entity.id !== action.item.entity.id);
+        case fromItems.DELETE_ITEM:
+            return state.filter(item => item.entity.id !== action.item.entity.id);
         default: {
             return state;
         }

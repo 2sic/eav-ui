@@ -1,2 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.date-picker-wide-suffix-right .mat-input-suffix {
+	position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.date-picker-wide-suffix-right .mat-input-element {
+    box-sizing: border-box;
+    padding-right: 30px;
+}

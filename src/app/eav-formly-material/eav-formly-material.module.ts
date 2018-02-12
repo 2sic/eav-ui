@@ -123,6 +123,7 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
         {
           name: InputTypesConstants.datetimeDefault,
           component: DatetimeDefaultComponent,
+          // wrappers: ['label'],
           wrappers: ['form-field-wrapper'],
           // defaultOptions: {
           //   templateOptions: {
