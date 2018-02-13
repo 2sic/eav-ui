@@ -136,7 +136,6 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
         { name: 'required', message: 'This field is required' },
         // { name: 'minlength', message: minlengthValidationMessage },
         // { name: 'maxlength', message: maxlengthValidationMessage },
-        // { name: 'min', message: minValidationMessage },
         { name: 'pattern', message: ValidationMessages.maxValidationPattern },
       ],
     }),
