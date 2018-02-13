@@ -137,7 +137,6 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
         // { name: 'minlength', message: minlengthValidationMessage },
         // { name: 'maxlength', message: maxlengthValidationMessage },
         // { name: 'min', message: minValidationMessage },
-        // { name: 'max', message: maxValidationMessage },
         { name: 'pattern', message: ValidationMessages.maxValidationPattern },
       ],
     }),

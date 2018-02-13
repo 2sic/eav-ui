@@ -29,7 +29,6 @@ export class EavSettingsValue {
   styleUrls: ['./item-edit-form.component.css']
 })
 export class ItemEditFormComponent implements OnInit {
-
   /**
    * Item is copied because we don't want to keep the reference to store
    * ngrx store should be changed only through despaches and reducers
