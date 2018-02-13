@@ -127,12 +127,6 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
           component: DatetimeDefaultComponent,
           // wrappers: ['label'],
           wrappers: ['form-field-wrapper'],
-          // defaultOptions: {
-          //   templateOptions: {
-          //     indeterminate: false,
-          //     align: 'start'
-          //   },
-          // },
         }
       ],
       validators: [
