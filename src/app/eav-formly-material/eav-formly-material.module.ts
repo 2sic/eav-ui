@@ -134,7 +134,6 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
       validationMessages: [
         { name: 'onlySimpleUrlChars', message: ValidationMessages.onlySimpleUrlCharsValidatorMessage },
         { name: 'required', message: 'This field is required' },
-        // { name: 'minlength', message: minlengthValidationMessage },
         { name: 'pattern', message: ValidationMessages.maxValidationPattern },
       ],
     }),
