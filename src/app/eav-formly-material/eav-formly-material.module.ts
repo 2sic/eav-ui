@@ -10,7 +10,8 @@ import {
   MatSelectModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatCardModule
+  MatCardModule,
+  MatIconModule
 } from '@angular/material';
 import { FormlyWrapperFormField, FormlyFieldInput, FormlyMaterialModule } from '@ngx-formly/material';
 
@@ -65,6 +66,7 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
+    MatIconModule,
     FormlyModule.forRoot({
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },

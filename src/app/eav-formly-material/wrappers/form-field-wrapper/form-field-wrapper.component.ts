@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operator/takeUntil';
 
 /**
- * This component if copy of FormlyWrapperFormField from '@ngx-formly/material'
+ * This component is copy of FormlyWrapperFormField from '@ngx-formly/material'
  * Added here to have control over field-wrapper
  */
 

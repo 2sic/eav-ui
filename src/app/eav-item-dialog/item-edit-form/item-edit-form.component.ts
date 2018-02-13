@@ -144,8 +144,7 @@ export class ItemEditFormComponent implements OnInit {
         required: required,
         pattern: pattern,
         settings: attribute.settings,
-        change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the changes
-        ante: (inputType === InputTypesConstants.datetimeDefault) ? 'ima' : null,
+        change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
       },
       validators: {
         validation: validationList,

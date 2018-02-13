@@ -14,7 +14,8 @@ import {
   // MatDialog,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatCardModule
+  MatCardModule,
+  MatIconModule
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
@@ -40,8 +41,8 @@ const routes: Routes = [
     // MatDialogModule
     MatDatepickerModule,
     MatNativeDateModule,
-    MatCardModule
-
+    MatCardModule,
+    MatIconModule
   ],
   declarations: [MultiItemEditFormComponent, ItemEditFormComponent],
   exports: [RouterModule],
