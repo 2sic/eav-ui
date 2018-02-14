@@ -1,10 +1,27 @@
 <!-- <mat-form-field> -->
-<div class="date-picker-wide-suffix-right">
-  <input matInput [matDatepicker]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
-    [formlyAttributes]="field" (dateChange)="to.change(field, formControl)">
-  <div class="mat-input-suffix mat-form-field-suffix">
-    <mat-datepicker-toggle matSuffix [for]="id"></mat-datepicker-toggle>
+<div *ngIf="to.settings.UseTimePicker && to.settings.UseTimePicker.values[0].value === true; then useTimePickerTemplate else notUseTimePickerTemplate"></div>
+
+<ng-template #notUseTimePickerTemplate>
+  <div class="date-picker-wide-suffix-right">
+    <input matInput [matDatepicker]="picker" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
+      [formlyAttributes]="field" (dateChange)="to.change(field, formControl)">
+    <div class="mat-input-suffix mat-form-field-suffix">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    </div>
+    <mat-datepicker #picker></mat-datepicker>
   </div>
-  <mat-datepicker #id></mat-datepicker>
-</div>
+</ng-template>
+
+<ng-template #useTimePickerTemplate>
+  <div class="date-picker-wide-suffix-right">
+    <input matInput [formControl]="formControl" [formlyAttributes]="field" [owlDateTime]="picker" (dateTimeChange)="to.change(field, formControl)">
+    <!-- control from https://github.com/DanielYKPan/date-time-picker -->
+    <owl-date-time #picker></owl-date-time>
+    <div class="mat-input-suffix mat-form-field-suffix">
+      <button type="button" mat-icon-button [owlDateTimeTrigger]="picker">
+        <mat-icon class="mat-24">today</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-template>
 <!-- </mat-form-field> -->

@@ -35,6 +35,7 @@ import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessages } from './validators/validation-messages';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,8 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
     MatNativeDateModule,
     MatCardModule,
     MatIconModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     FormlyModule.forRoot({
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },
@@ -78,11 +81,11 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
         { name: 'text-entry-wrapper-component', component: TextEntryWrapperComponent }
       ],
       types: [
-        {
-          name: 'horizontalInput',
-          extends: 'input',
-          wrappers: ['form-field', 'horizontal-wrapper']
-        },
+        // {
+        //   name: 'horizontalInput',
+        //   extends: 'input',
+        //   wrappers: ['form-field', 'horizontal-wrapper']
+        // },
         {
           name: InputTypesConstants.stringDefault,
           component: StringDefaultComponent,
@@ -127,6 +130,12 @@ import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-en
           component: DatetimeDefaultComponent,
           wrappers: ['form-field-wrapper'],
         }
+        //
+        // {
+        //   name: InputTypesConstants.datetimeDefault,
+        //   component: DatetimeDefaultMomentComponent,
+        //   wrappers: ['form-field-wrapper'],
+        // }
       ],
       validators: [
         { name: 'onlySimpleUrlChars', validation: CustomValidators.onlySimpleUrlChars(true, true) },

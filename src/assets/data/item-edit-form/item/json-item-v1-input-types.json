@@ -4,7 +4,7 @@
     },
     "Entity": {
         "Id": 1963,
-        "Version": 2,
+        "Version": 5,
         "Guid": "d328545b-4887-4c25-8ba9-190b81b4768f",
         "Type": {
             "Name": "TestInputTypes",
@@ -16,9 +16,6 @@
                     "*": [
                         "d86677cb-b5cf-40a3-92e4-71c6822adbc6"
                     ]
-                },
-                "EntityQuery": {
-                    "*": []
                 }
             },
             "Number": {
@@ -29,6 +26,9 @@
             "DateTime": {
                 "DateTime": {
                     "*": "2018-02-14T00:00:00Z"
+                },
+                "DateTimeWithTime": {
+                    "*": "2018-02-07T02:03:00Z"
                 }
             },
             "Boolean": {

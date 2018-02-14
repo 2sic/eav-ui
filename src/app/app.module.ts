@@ -16,6 +16,7 @@ import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
 import { EavFormlyMaterialModule } from './eav-formly-material/eav-formly-material.module';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 
 const routes: Routes = [
@@ -45,7 +46,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     FormlyMaterialModule,
     EavFormlyMaterialModule,
-    FormlyModule
+    FormlyModule,
   ],
   exports: [RouterModule],
   providers: [ItemService, ContentTypeService],

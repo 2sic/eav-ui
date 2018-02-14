@@ -47,7 +47,7 @@
                 "Metadata": [
                     {
                         "Id": 1958,
-                        "Version": 1,
+                        "Version": 2,
                         "Guid": "f036c8fc-635c-45cb-87cf-20fd596c6af6",
                         "Type": {
                             "Name": "@All",
@@ -55,16 +55,51 @@
                         },
                         "Attributes": {
                             "String": {
+                                "CustomJavaScript": {
+                                    "*": ""
+                                },
+                                "DefaultValue": {
+                                    "*": ""
+                                },
                                 "InputType": {
                                     "*": "datetime-default"
                                 },
                                 "Name": {
                                     "*": "DateTime"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
                                 "VisibleInEditUI": {
                                     "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1965,
+                        "Version": 1,
+                        "Guid": "f2ee82c1-b436-4681-8c46-5805ed1a5133",
+                        "Type": {
+                            "Name": "@DateTime",
+                            "Id": "@DateTime"
+                        },
+                        "Attributes": {
+                            "Boolean": {
+                                "UseTimePicker": {
+                                    "*": false
                                 }
                             }
                         },
@@ -160,6 +195,73 @@
                             },
                             "Boolean": {
                                 "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    }
+                ]
+            },
+            {
+                "Name": "DateTimeWithTime",
+                "Type": "DateTime",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1966,
+                        "Version": 2,
+                        "Guid": "d9166f00-4bba-4d09-babb-0d04ee02f5d8",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "CustomJavaScript": {
+                                    "*": ""
+                                },
+                                "DefaultValue": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": "datetime-default"
+                                },
+                                "Name": {
+                                    "*": "DateTimeWithTime"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1967,
+                        "Version": 1,
+                        "Guid": "e1473251-d83b-4de6-97ae-594522191eed",
+                        "Type": {
+                            "Name": "@DateTime",
+                            "Id": "@DateTime"
+                        },
+                        "Attributes": {
+                            "Boolean": {
+                                "UseTimePicker": {
                                     "*": true
                                 }
                             }
