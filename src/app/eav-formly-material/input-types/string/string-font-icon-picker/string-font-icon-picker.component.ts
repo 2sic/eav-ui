@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
-import { MatInput } from '@angular/material/input';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FieldType } from '@ngx-formly/material';
+import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
 @Component({
@@ -8,17 +8,8 @@ import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.css']
 })
-export class StringFontIconPickerComponent extends FieldType implements OnInit, AfterViewInit {
+export class StringFontIconPickerComponent extends FieldType {
   @ViewChild(MatInput) matInput: MatInput;
-  errorStateMatcher = new FormlyErrorStateMatcher(this);
+  // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
-  ngOnInit() {
-    super.ngOnInit();
-  }
-
-  ngAfterViewInit() {
-    if (this.field['__formField__']) {
-      this.field['__formField__']._control = this.matInput;
-    }
-  }
 }

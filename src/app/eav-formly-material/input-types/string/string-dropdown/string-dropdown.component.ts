@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/material';
 import { MatInput, MatSelect } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
@@ -10,7 +10,7 @@ import { SelectOption } from '@ngx-formly/material/src/types/select';
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.css']
 })
-export class StringDropdownComponent extends FieldType implements OnInit, AfterViewInit {
+export class StringDropdownComponent extends FieldType implements OnInit {
   @ViewChild(MatInput) matInput: MatInput;
   @ViewChild(MatSelect) matSelect: MatSelect;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);

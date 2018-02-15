@@ -130,7 +130,7 @@ import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-d
         {
           name: InputTypesConstants.datetimeDefault,
           component: DatetimeDefaultComponent,
-          wrappers: ['form-field'],
+          wrappers: ['form-field-wrapper'],
           defaultOptions: {
             defaultValue: new Date(),
             templateOptions: {

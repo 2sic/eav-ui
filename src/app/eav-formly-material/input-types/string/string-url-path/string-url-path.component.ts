@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
@@ -10,15 +10,11 @@ import { Helper } from '../../../../shared/helpers/helper';
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.css']
 })
-export class StringUrlPathComponent extends FieldType implements OnInit, AfterViewInit {
+export class StringUrlPathComponent extends FieldType {
   @ViewChild(MatInput) matInput: MatInput;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   enableSlashes = true;
-
-  ngOnInit() {
-    super.ngOnInit();
-  }
 
   // ngAfterViewInit() {
   //   if (this.field['__formField__']) {
