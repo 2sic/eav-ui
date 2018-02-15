@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
-import { MatInput } from '@angular/material/input';
+import { FieldType } from '@ngx-formly/material';
+import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { FormControl } from '@angular/forms';
 import { Helper } from '../../../../shared/helpers/helper';
@@ -12,7 +12,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 })
 export class StringUrlPathComponent extends FieldType implements OnInit, AfterViewInit {
   @ViewChild(MatInput) matInput: MatInput;
-  errorStateMatcher = new FormlyErrorStateMatcher(this);
+  // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   enableSlashes = true;
 
@@ -20,11 +20,11 @@ export class StringUrlPathComponent extends FieldType implements OnInit, AfterVi
     super.ngOnInit();
   }
 
-  ngAfterViewInit() {
-    if (this.field['__formField__']) {
-      this.field['__formField__']._control = this.matInput;
-    }
-  }
+  // ngAfterViewInit() {
+  //   if (this.field['__formField__']) {
+  //     this.field['__formField__']._control = this.matInput;
+  //   }
+  // }
 
   finalClean(formControl: FormControl) {
     const orig = formControl.value;

@@ -11,7 +11,7 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
 } from '@angular/material';
 import { FormlyWrapperFormField, FormlyFieldInput, FormlyMaterialModule } from '@ngx-formly/material';
 
@@ -36,6 +36,7 @@ import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessages } from './validators/validation-messages';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-default.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     StringFontIconPickerComponent,
     BooleanDefaultComponent,
     TextEntryWrapperComponent,
-    DatetimeDefaultComponent
+    DatetimeDefaultComponent,
+    EmptyDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -128,7 +130,13 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
         {
           name: InputTypesConstants.datetimeDefault,
           component: DatetimeDefaultComponent,
-          wrappers: ['form-field-wrapper'],
+          wrappers: ['form-field'],
+          defaultOptions: {
+            defaultValue: new Date(),
+            templateOptions: {
+              datepickerOptions: {},
+            },
+          },
         }
         //
         // {

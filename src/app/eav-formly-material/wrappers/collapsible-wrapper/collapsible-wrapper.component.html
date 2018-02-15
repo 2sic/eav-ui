@@ -1,5 +1,5 @@
 <h3 class="card-header">{{ to.label }}</h3>
-<button mat-button (click)="to.collapse = !to.collapse" class="btn btn-default">Show</button>
+<button mat-button type="button" (click)="to.collapse = !to.collapse" class="btn btn-default">Show</button>
 <div [hidden]="to.collapse">
     <ng-container #fieldComponent></ng-container>
 </div>

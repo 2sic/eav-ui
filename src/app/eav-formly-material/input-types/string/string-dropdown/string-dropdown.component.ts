@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
+import { FieldType } from '@ngx-formly/material';
 import { MatInput, MatSelect } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { SelectOption } from '@ngx-formly/material/src/types/select';
@@ -13,7 +13,7 @@ import { SelectOption } from '@ngx-formly/material/src/types/select';
 export class StringDropdownComponent extends FieldType implements OnInit, AfterViewInit {
   @ViewChild(MatInput) matInput: MatInput;
   @ViewChild(MatSelect) matSelect: MatSelect;
-  errorStateMatcher = new FormlyErrorStateMatcher(this);
+  // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   get labelProp(): string { return this.to.labelProp || 'label'; }
   get valueProp(): string { return this.to.valueProp || 'value'; }
@@ -26,16 +26,16 @@ export class StringDropdownComponent extends FieldType implements OnInit, AfterV
     super.ngOnInit();
   }
 
-  ngAfterViewInit() {
-    if (this.field['__formField__']) {
-      if (this.to.freeTextMode) {
-        this.field['__formField__']._control = this.matInput;
-      } else {
-        this.field['__formField__']._control = this.matSelect;
-      }
-    }
-    super.ngAfterViewInit();
-  }
+  // ngAfterViewInit() {
+  //   if (this.field['__formField__']) {
+  //     if (this.to.freeTextMode) {
+  //       this.field['__formField__']._control = this.matInput;
+  //     } else {
+  //       this.field['__formField__']._control = this.matSelect;
+  //     }
+  //   }
+  //   super.ngAfterViewInit();
+  // }
 
   get selectOptions() {
     this.to.options = this.setOptionsFromDropdownValues();

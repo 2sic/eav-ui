@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
+import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material/input';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
@@ -10,7 +10,7 @@ import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 })
 export class StringDefaultComponent extends FieldType implements OnInit, AfterViewInit {
   @ViewChild(MatInput) matInput: MatInput;
-  errorStateMatcher = new FormlyErrorStateMatcher(this);
+  // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   get type() {
     return this.to.type || 'text';
@@ -29,9 +29,9 @@ export class StringDefaultComponent extends FieldType implements OnInit, AfterVi
     super.ngOnInit();
   }
 
-  ngAfterViewInit() {
-    if (this.field['__formField__']) {
-      this.field['__formField__']._control = this.matInput;
-    }
-  }
+  // ngAfterViewInit() {
+  //   if (this.field['__formField__']) {
+  //     this.field['__formField__']._control = this.matInput;
+  //   }
+  // }
 }

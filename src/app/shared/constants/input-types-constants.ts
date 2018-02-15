@@ -9,4 +9,6 @@ export class InputTypesConstants {
     public static readonly booleanDefault: string = 'boolean-default';
     // datetime
     public static readonly datetimeDefault: string = 'datetime-default';
+    // empty
+    public static readonly emptyDefault: string = 'empty-default';
 }

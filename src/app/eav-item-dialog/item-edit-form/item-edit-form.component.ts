@@ -85,15 +85,27 @@ export class ItemEditFormComponent implements OnInit {
   loadContentTypeFormFields = (): Observable<FormlyFieldConfig[]> => {
     return this.contentType$
       .switchMap((data) => {
-        const formlyFieldConfigArray: FormlyFieldConfig[] = new Array<FormlyFieldConfig>();
+        // const formlyFieldConfigArray: FormlyFieldConfig[] = new Array<FormlyFieldConfig>();
+        const parentFieldGroup = this.createFieldGroup();
+        let currentFieldGroup = parentFieldGroup; // = this.createFieldGroup();
+
+        // parentFieldGroup.fieldGroup.push(currentFieldGroup);
         // loop through contentType attributes
         data.contentType.attributes.forEach(attribute => {
           const formlyFieldConfig: FormlyFieldConfig = this.loadFieldFromDefinitionTest(attribute);
+          // if input type is empty-default create new field group and than continue to add fields to that group
+          if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
+            currentFieldGroup = this.createFieldGroup();
+            parentFieldGroup.fieldGroup.push(currentFieldGroup);
+          }
 
-          formlyFieldConfigArray.push(formlyFieldConfig);
+          currentFieldGroup.fieldGroup.push(formlyFieldConfig);
         });
 
-        return of(formlyFieldConfigArray);
+        // formlyFieldConfigArray.push(this.testGroup(data.contentType.attributes));
+        // formlyFieldConfigArray.push(parentFieldGroup);
+
+        return of([parentFieldGroup]);
       });
   }
 
@@ -163,6 +175,69 @@ export class ItemEditFormComponent implements OnInit {
 
     return validation;
   }
+
+
+  createFieldGroup(): FormlyFieldConfig {
+    return {
+      key: ``,
+      wrappers: ['collapsible'],
+      templateOptions: {
+        label: `Parent wrapper Collapsible`,
+        collapse: false
+      },
+      fieldGroup: [],
+    };
+  }
+
+  // testGroup(attributeList: AttributeDef[]): FormlyFieldConfig {
+  //   return {
+  //     key: ``,
+  //     wrappers: ['collapsible'],
+  //     templateOptions: {
+  //       label: `Parent wrapper Collapsible`,
+  //       collapse: false
+  //     },
+  //     // fieldGroup: [{
+  //     //   key: '',
+  //     //   wrappers: ['label'],
+  //     //   templateOptions: {
+  //     //     label: `Child wrapper`
+  //     //   },
+  //     fieldGroup: [
+  //       {
+  //         key: `${attributeList[0].name}.values[0].value`,
+  //         type: InputTypesConstants.stringDefault,
+  //         templateOptions: {
+  //           // required: true,
+  //           type: 'text',
+  //           label: 'text label',
+  //           settings: attributeList[0].settings,
+  //         }
+  //       },
+  //       {
+  //         key: `${attributeList[1].name}.values[0].value`,
+  //         type: InputTypesConstants.stringDefault,
+  //         templateOptions: {
+  //           // required: true,
+  //           type: 'text',
+  //           label: 'text label',
+  //           settings: attributeList[1].settings,
+  //         }
+  //       },
+  //       {
+  //         key: `${attributeList[2].name}.values[0].value`,
+  //         type: InputTypesConstants.stringDefault,
+  //         templateOptions: {
+  //           // required: true,
+  //           type: 'text',
+  //           label: 'text label',
+  //           settings: attributeList[2].settings,
+  //         }
+  //       }
+  //     ]
+  //     // }],
+  //   };
+  // }
 
   // TEST
   // loadFieldFromDefinitionStringUrlPath(attribute: AttributeDef): FormlyFieldConfig {
