@@ -8,7 +8,7 @@ import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.css']
 })
-export class StringDefaultComponent extends FieldType {
+export class StringDefaultComponent extends FieldType implements OnInit {
   @ViewChild(MatInput) matInput: MatInput;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 

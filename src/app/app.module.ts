@@ -46,7 +46,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     FormlyMaterialModule,
     EavFormlyMaterialModule,
-    FormlyModule,
+    // FormlyModule,
   ],
   exports: [RouterModule],
   providers: [ItemService, ContentTypeService],

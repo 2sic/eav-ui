@@ -78,7 +78,7 @@ import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-d
         { name: 'label', component: LabelWrapperComponent },
         { name: 'collapsible', component: CollapsibleWrapperComponent },
         { name: 'horizontal-wrapper', component: HorizontalInputWrapperComponent },
-        { name: 'form-field', component: FormlyWrapperFormField },
+        // { name: 'form-field', component: FormlyWrapperFormField },
         { name: 'form-field-wrapper', component: FormFieldWrapperComponent }, // copy of FormlyWrapperFormField
         { name: 'text-entry-wrapper-component', component: TextEntryWrapperComponent }
       ],
@@ -138,11 +138,11 @@ import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-d
             },
           },
         }
-        //
+        // ,
         // {
-        //   name: InputTypesConstants.datetimeDefault,
-        //   component: DatetimeDefaultMomentComponent,
-        //   wrappers: ['form-field-wrapper'],
+        //   name: InputTypesConstants.emptyDefault,
+        //   component: EmptyDefaultComponent,
+        //   wrappers: ['collapsible'],
         // }
       ],
       validators: [

@@ -4,8 +4,6 @@
   </button>
   <h3>Item edit form: {{ (contentType$ | async).contentType.name }}</h3>
 
-  <!-- {{ (item$ | async) | json }} -->
-
   <form *ngIf="itemFields$ | async; let itemFields" [formGroup]="form" (ngSubmit)="submitForm()" (change)="changeForm()">
     <formly-form [model]="selectedItem.entity.attributes" [fields]="itemFields" [options]="options" [form]="form">
       <button mat-raised-button type="submit" class="btn btn-default submit-button">Submit</button>

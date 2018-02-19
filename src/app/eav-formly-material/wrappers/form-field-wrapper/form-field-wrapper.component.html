@@ -2,7 +2,7 @@
 <mat-form-field [hideRequiredMarker]="true" [floatLabel]="to.floatLabel" [style.width]="'100%'">
   <ng-container #fieldComponent></ng-container>
 
-  <mat-label *ngIf="to.label && field.type !== 'checkbox'">
+  <mat-label *ngIf="to.label && field.type !== 'checkbox' && field.type !== 'boolean-default'">
     {{ to.label }}
     <span *ngIf="to.required" class="mat-form-field-required-marker">*</span>
   </mat-label>

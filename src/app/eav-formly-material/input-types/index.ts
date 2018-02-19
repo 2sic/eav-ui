@@ -5,3 +5,4 @@ export { StringDropdownQueryComponent } from './string/string-dropdown-query/str
 export { StringFontIconPickerComponent } from './string/string-font-icon-picker/string-font-icon-picker.component';
 export { BooleanDefaultComponent } from './boolean/boolean-default/boolean-default.component';
 export { DatetimeDefaultComponent } from './datetime/datetime-default/datetime-default.component';
+export { EmptyDefaultComponent } from './empty/empty-default/empty-default.component';
