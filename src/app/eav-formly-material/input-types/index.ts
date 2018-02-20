@@ -6,3 +6,4 @@ export { StringFontIconPickerComponent } from './string/string-font-icon-picker/
 export { BooleanDefaultComponent } from './boolean/boolean-default/boolean-default.component';
 export { DatetimeDefaultComponent } from './datetime/datetime-default/datetime-default.component';
 export { EmptyDefaultComponent } from './empty/empty-default/empty-default.component';
+export { NumberDefaultComponent } from './number/number-default/number-default.component';

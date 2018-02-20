@@ -35,7 +35,7 @@ export class ItemEditFormComponent implements OnInit {
    */
   @Input('item')
   set item(value: Item) {
-    // this.selectedItem = Object.assign({}, value);
+    this.selectedItem = Object.assign({}, value);
     // this.selectedItem = { ...value };
     this.selectedItem = JSON.parse(JSON.stringify(value));
   }
@@ -49,8 +49,7 @@ export class ItemEditFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadContentTypeFromStore();
-    // Test
-    // this.item$ = this.itemService.selectItemById(this.selectedItem.entity.id);
+    console.log('oninit');
   }
 
   submitForm() {
@@ -84,7 +83,7 @@ export class ItemEditFormComponent implements OnInit {
     return this.contentType$
       .switchMap((data) => {
         const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
-        let currentFieldGroup = parentFieldGroup; // = this.createFieldGroup();
+        let currentFieldGroup = parentFieldGroup;
         // loop through contentType attributes
         data.contentType.attributes.forEach(attribute => {
           const formlyFieldConfig: FormlyFieldConfig = this.loadFieldFromDefinitionTest(attribute);
@@ -119,6 +118,8 @@ export class ItemEditFormComponent implements OnInit {
         // return this.loadFieldFromDefinitionStringDropDown(attribute);
         case InputTypesConstants.datetimeDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault);
+        case InputTypesConstants.numberDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }
@@ -169,12 +170,12 @@ export class ItemEditFormComponent implements OnInit {
     return validation;
   }
 
-/**
- * Create title field group
- * @param title 
- * @param collapse 
- */
-  createEmptyFieldGroup(title: string, collapse: boolean): FormlyFieldConfig {
+  /**
+   * Create title field group with collapsible wrapper
+   * @param title 
+   * @param collapse 
+   */
+  createEmptyFieldGroup = (title: string, collapse: boolean): FormlyFieldConfig => {
     return {
       key: ``,
       wrappers: ['collapsible'],

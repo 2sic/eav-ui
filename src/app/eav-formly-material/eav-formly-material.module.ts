@@ -29,14 +29,15 @@ import {
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
   BooleanDefaultComponent,
-  DatetimeDefaultComponent
+  DatetimeDefaultComponent,
+  EmptyDefaultComponent,
+  NumberDefaultComponent
 } from './input-types';
 import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessages } from './validators/validation-messages';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-default.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-d
     BooleanDefaultComponent,
     TextEntryWrapperComponent,
     DatetimeDefaultComponent,
-    EmptyDefaultComponent
+    EmptyDefaultComponent,
+    NumberDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -137,7 +139,12 @@ import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-d
               datepickerOptions: {},
             },
           },
-        }
+        },
+        {
+          name: InputTypesConstants.numberDefault,
+          component: NumberDefaultComponent,
+          wrappers: ['form-field-wrapper'],
+        },
         // ,
         // {
         //   name: InputTypesConstants.emptyDefault,

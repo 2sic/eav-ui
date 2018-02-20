@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 
 import { Item } from '../../models/eav/item';
+import { EavAttributes } from '../../models/eav';
 
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';
