@@ -1,11 +1,13 @@
-<div class="date-picker-wide-suffix-right">
-  <ng-container #fieldComponent></ng-container>
+<!-- <div class="date-picker-wide-suffix-right"> -->
+<ng-container #fieldComponent></ng-container>
 
-  <div class="mat-input-suffix mat-form-field-suffix">
-    <a *ngIf="to.settings.EnableTextEntry && to.settings.EnableTextEntry.values[0].value" [class]="'input-group-addon icon-field-button icon-field-button-small' + (to.freeTextMode ? ' active' : '')"
-      (click)="to.freeTextMode=! to.freeTextMode ">
-      <mat-icon *ngIf="to.freeTextMode" class="mat-24">add</mat-icon>
-      <mat-icon *ngIf="!to.freeTextMode " class="mat-24">remove</mat-icon>
-    </a>
-  </div>
-</div>
+<!-- <div class="mat-input-suffix mat-form-field-suffix"> -->
+<ng-template #matSuffix>
+  <a *ngIf="to.settings.EnableTextEntry && to.settings.EnableTextEntry.values[0].value" [class]="'input-group-addon icon-field-button icon-field-button-small' + (to.freeTextMode ? ' active' : '')"
+    (click)="to.freeTextMode=! to.freeTextMode ">
+    <mat-icon *ngIf="to.freeTextMode" class="mat-24">add</mat-icon>
+    <mat-icon *ngIf="!to.freeTextMode " class="mat-24">remove</mat-icon>
+  </a>
+</ng-template>
+<!-- </div>
+</div> -->

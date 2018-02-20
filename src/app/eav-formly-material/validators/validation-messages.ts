@@ -22,7 +22,7 @@ export class ValidationMessages {
     return `This value should be less than ${field.templateOptions.max}`;
   }
 
-  static maxValidationPattern(err, field) {
+  static patternValidationMessage(err, field) {
     return `"${field.formControl.value}" is not a valid`;
   }
 }

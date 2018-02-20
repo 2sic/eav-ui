@@ -79,7 +79,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
         { name: 'panel', component: PanelWrapperComponent },
         { name: 'label', component: LabelWrapperComponent },
         { name: 'collapsible', component: CollapsibleWrapperComponent },
-        { name: 'horizontal-wrapper', component: HorizontalInputWrapperComponent },
+        // { name: 'horizontal-wrapper', component: HorizontalInputWrapperComponent },
         // { name: 'form-field', component: FormlyWrapperFormField },
         { name: 'form-field-wrapper', component: FormFieldWrapperComponent }, // copy of FormlyWrapperFormField
         { name: 'text-entry-wrapper-component', component: TextEntryWrapperComponent }
@@ -108,7 +108,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
         {
           name: InputTypesConstants.stringDropdown,
           component: StringDropdownComponent,
-          wrappers: ['form-field-wrapper', 'text-entry-wrapper-component'],
+          // wrappers: ['form-field-wrapper', 'text-entry-wrapper-component'],
+          wrappers: ['form-field-wrapper'],
           defaultOptions: {
             templateOptions: {
               type: 'text',
@@ -158,7 +159,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
       validationMessages: [
         { name: 'onlySimpleUrlChars', message: ValidationMessages.onlySimpleUrlCharsValidatorMessage },
         { name: 'required', message: 'This field is required' },
-        { name: 'pattern', message: ValidationMessages.maxValidationPattern },
+        { name: 'pattern', message: ValidationMessages.patternValidationMessage },
       ],
     }),
   ],
