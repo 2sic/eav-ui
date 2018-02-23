@@ -26,7 +26,7 @@ export class LoadItemSuccessAction implements Action {
  */
 export class UpdateItemAction implements Action {
     readonly type = UPDATE_ITEM;
-    constructor(public item: Item) { }
+    constructor(public attributes: EavAttributes, public id: number) { }
 }
 export class UpdateItemSuccessAction implements Action {
     readonly type = UPDATE_ITEM_SUCCESS;

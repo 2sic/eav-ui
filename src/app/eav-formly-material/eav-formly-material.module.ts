@@ -13,8 +13,11 @@ import {
   MatCardModule,
   MatIconModule,
 } from '@angular/material';
-import { FormlyWrapperFormField, FormlyFieldInput, FormlyMaterialModule } from '@ngx-formly/material';
-
+import {
+  FormlyWrapperFormField,
+  FormlyFieldInput,
+  FormlyMaterialModule
+} from '@ngx-formly/material';
 import {
   PanelWrapperComponent,
   LabelWrapperComponent,
@@ -58,7 +61,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     TextEntryWrapperComponent,
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
-    NumberDefaultComponent
+    NumberDefaultComponent,
   ],
   imports: [
     CommonModule,

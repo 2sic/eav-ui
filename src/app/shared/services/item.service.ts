@@ -7,8 +7,10 @@ import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { AppState } from '../models/app-state';
 import * as itemActions from '../../shared/store/actions/item.actions';
+import * as attributesActions from '../../shared/store/actions/attributes.action';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { EavAttributes } from '../models/eav';
 
 @Injectable()
 export class ItemService {
@@ -23,8 +25,8 @@ export class ItemService {
     this.store.dispatch(new itemActions.LoadItemAction(path));
   }
 
-  public updateItem(item: Item) {
-    this.store.dispatch(new itemActions.UpdateItemAction(item));
+  public updateItem(attributes: EavAttributes, id: number) {
+    this.store.dispatch(new itemActions.UpdateItemAction(attributes, id));
   }
 
   public deleteItem(item: Item) {

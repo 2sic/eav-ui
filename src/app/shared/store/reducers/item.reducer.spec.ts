@@ -26,7 +26,7 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult: Item[] = [newItem];
 
-            const action = new itemActions.LoadItemsSuccessAction(newItem);
+            const action = new itemActions.LoadItemSuccessAction(newItem);
             const result = itemReducer(currentItemState, action);
 
             expect(result).toEqual(expectedResult);
@@ -67,7 +67,7 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = [updatedItem];
 
-            const action = new itemActions.UpdateItem(updatedItem);
+            const action = new itemActions.UpdateItemAction(updatedItem);
             const result = itemReducer(currentItemState, action);
             // we changed attribute booleanDefault from true to false
             expect(result[0].entity.attributes['BooleanDefault'].values[0].value)

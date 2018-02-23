@@ -20,7 +20,7 @@ export class EavSettings {
 }
 
 export class EavSettingsValue {
-  value: any;
+  value: Item;
 }
 
 @Component({
@@ -28,14 +28,14 @@ export class EavSettingsValue {
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.css']
 })
-export class ItemEditFormComponent implements OnInit {
+export class ItemEditFormComponent implements OnInit, OnChanges {
   /**
    * Item is copied because we don't want to keep the reference to store
    * ngrx store should be changed only through despaches and reducers
    */
   @Input('item')
   set item(value: Item) {
-    this.selectedItem = Object.assign({}, value);
+    // this.selectedItem = Object.assign({}, value);
     // this.selectedItem = { ...value };
     this.selectedItem = JSON.parse(JSON.stringify(value));
   }
@@ -44,6 +44,7 @@ export class ItemEditFormComponent implements OnInit {
   contentType$: Observable<ContentType>;
   form = new FormGroup({});
   itemFields$: Observable<FormlyFieldConfig[]>;
+  model: EavAttributes = {};
 
   constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) { }
 
@@ -52,16 +53,30 @@ export class ItemEditFormComponent implements OnInit {
     console.log('oninit');
   }
 
+  ngOnChanges(): void {
+    //TODO: TRY catch canges
+    // this.form.valueChanges.subscribe(val => {
+    //   console.log('aha tu si', val)
+    // });
+  }
+
+  // addAttributes() {
+  //   console.log('patchValue', this.selectedItem.entity.attributes)
+  //   this.form.patchValue(this.selectedItem.entity.attributes);
+  //   // this.model = this.selectedItem.entity.attributes;
+  // }
+
   submitForm() {
     if (this.form.valid) {
       console.log('submit');
-      this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+      this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id); // TODO: probably can update only attributes
     }
   }
 
+
   changeForm() {
     if (this.form.valid) {
-      this.itemService.updateItem(this.selectedItem); // TODO: probably can update only attributes
+      this.itemService.updateItem(this.form.value, this.selectedItem.entity.id); // TODO: probably can update only attributes
     }
   }
 
@@ -140,7 +155,7 @@ export class ItemEditFormComponent implements OnInit {
     const validationList = this.setValidations(inputType);
 
     return {
-      key: `${attribute.name}.values[0].value`,
+      key: `${attribute.name}.values[0].value`,//.values[0].value
       type: inputType,
       templateOptions: {
         type: 'text', // TODO
