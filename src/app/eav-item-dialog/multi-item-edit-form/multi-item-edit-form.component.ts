@@ -79,5 +79,10 @@ export class MultiItemEditFormComponent implements OnInit {
     // this.items$ = this.store.select(state => state.items);
     console.log('load content types');
   }
+
+  identify(index, item) {
+    console.log('identify', item);
+    return item.entity.id;
+  }
 }
 

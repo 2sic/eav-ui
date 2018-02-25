@@ -36,32 +36,32 @@ export function itemReducer(state: Item[] = new Array<Item>(), action: fromItems
         case fromItems.UPDATE_ITEM: {
             console.log('action.attributes', action.attributes);
             return state.map(item => {
-                // return item.entity.id === action.id
-                //  ? { ...item, ...action }
+                return item.entity.id === action.id
+                    //  ? { ...item, ...action }
 
-                // return item.entity.id === action.id
-                //  ? { ...item, ...{ header: {... item.header}, entity: this.entityReducer(item.entity, action) } }
+                    // return item.entity.id === action.id
+                    //  ? { ...item, ...{ header: {... item.header}, entity: this.entityReducer(item.entity, action) } }
 
-                // ? {
-                //     ...item,
-                //     header: { ...item.header },
-                //     entity: {
-                //         id: item.entity.id,
-                //         version: item.entity.version,
-                //         guid: item.entity.guid,
-                //         type: { ...item.entity.type },
-                //         attributes: { ...action.attributes },
-                //         owner: item.entity.owner,
-                //         metadata: [...item.entity.metadata],
-                //     }
+                    ? {
+                        ...item,
+                        header: { ...item.header },
+                        entity: {
+                            id: item.entity.id,
+                            version: item.entity.version,
+                            guid: item.entity.guid,
+                            type: { ...item.entity.type },
+                            attributes: { ...action.attributes },
+                            owner: item.entity.owner,
+                            metadata: [...item.entity.metadata],
+                        }
+                    }
+                    : item;
+
+                // if (item.entity.id === action.id) {
+                //     item.entity.attributes = { ...action.attributes }
                 // }
-                // : item;
-
-                if (item.entity.id === action.id) {
-                    item.entity.attributes = { ...action.attributes }
-                }
-                console.log('item.entity.attributes', item.entity.attributes);
-                return item;
+                // console.log('item.entity.attributes', item.entity.attributes);
+                // return item;
             });
 
             // 'BooleanDefault': this.eavValuesReducer(state['BooleanDefault'], action)

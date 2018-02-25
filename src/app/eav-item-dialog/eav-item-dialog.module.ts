@@ -20,9 +20,6 @@ import {
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-import { EavFormlyField } from '../eav-formly-material/formly/core/eav-formly-field.component';
-import { EavFormlyForm } from '../eav-formly-material/formly/core/eav-formly-form.component';
-// import { FormlyFormExpression } from '../eav-formly-material/formly/core/formly-form-expression';
 
 const routes: Routes = [
   {
@@ -50,10 +47,8 @@ const routes: Routes = [
   declarations: [
     MultiItemEditFormComponent,
     ItemEditFormComponent,
-    EavFormlyField, //TEMP
-    EavFormlyForm //TEMP
   ],
-  exports: [RouterModule, EavFormlyForm, EavFormlyField],
+  exports: [RouterModule],
   providers: [],
 })
 export class EavItemDialogModule { }

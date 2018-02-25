@@ -5,7 +5,7 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadStringInputTypes()">Load String input types</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadInputTypes()">Load input types</button>
 
-<div *ngFor="let selectedItem of (items$ | async)">
+<div *ngFor="let selectedItem of (items$ | async); trackBy:identify">
   <mat-card class="example-card">
     <app-item-edit-form [item]="selectedItem"></app-item-edit-form>
   </mat-card>
