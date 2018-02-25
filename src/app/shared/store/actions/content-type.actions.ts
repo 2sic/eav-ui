@@ -8,14 +8,13 @@ export const LOAD_CONTENT_TYPE_SUCCESS = 'LOAD_CONTENT_TYPE_SUCCESS';
 export class LoadContentTypeAction implements Action {
     readonly type = LOAD_CONTENT_TYPE;
 
-    constructor() { }
+    constructor(public path: string) { }
 }
 
 export class LoadContentTypeSuccessAction implements Action {
     readonly type = LOAD_CONTENT_TYPE_SUCCESS;
 
     constructor(public newContentType: ContentType) {
-        console.log('succes:', newContentType);
     }
 }
 

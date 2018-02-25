@@ -2,6 +2,7 @@ import { EavValues } from './eav-values';
 import { Attribute1 } from '../json-format-v1/attribute1';
 import { Attributes1 } from '../json-format-v1/attributes1';
 import { EavValue } from './eav-value';
+import { EavEntity } from './eav-entity';
 
 export class EavAttributes {
     [key: string]: EavValues<any>;
@@ -29,5 +30,36 @@ export class EavAttributes {
 
         return newEavAtribute;
     }
+
+    /**
+     * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array)
+     * Example: Settings from metadata array
+     * @param entity1Array
+     */
+    public static getFromEavEntityArray(eavEntityArray: EavEntity[]): EavAttributes {
+        const newEavAtribute: EavAttributes = new EavAttributes();
+        if (eavEntityArray !== undefined) {
+            // First read all metadata settings witch are not @All
+            eavEntityArray.forEach(eavEntity => {
+                if (eavEntity.type.id !== '@All') {
+                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
+                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                    });
+                }
+            });
+            // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
+            eavEntityArray.forEach(eavEntity => {
+                if (eavEntity.type.id === '@All') {
+                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
+                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                    });
+                }
+            });
+        }
+        return newEavAtribute;
+    }
+
 }
+
+
 

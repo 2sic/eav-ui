@@ -1,24 +1,65 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
+import { AppState } from '../models/app-state';
+import * as itemActions from '../../shared/store/actions/item.actions';
+import * as attributesActions from '../../shared/store/actions/attributes.action';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { EavAttributes } from '../models/eav';
 
 @Injectable()
 export class ItemService {
 
-  constructor(private httpClient: HttpClient) { }
+  public items$: Observable<Item[]>;
+
+  constructor(private httpClient: HttpClient, private store: Store<AppState>) {
+    this.items$ = store.select(s => s.items);
+  }
+
+  public loadItem(path: string) {
+    this.store.dispatch(new itemActions.LoadItemAction(path));
+  }
+
+  public updateItem(attributes: EavAttributes, id: number) {
+    this.store.dispatch(new itemActions.UpdateItemAction(attributes, id));
+  }
+
+  public deleteItem(item: Item) {
+    this.store.dispatch(new itemActions.DeleteItemAction(item));
+  }
+
+  public selectItemById(id: number): Observable<Item> {
+    return this.store
+      .select(s => s.items)
+      .map(data => data.find(obj => obj.entity.id === id));
+  }
 
   /**
-   * Get  Item from Json Entity V1
+   * Get Item from Json Entity V1
    */
-  public getItemFromJsonItem1(): Observable<Item> {
-    return this.httpClient.get<JsonItem1>('../../../assets/data/json-entity-v1.json')
+  public getItemFromJsonItem1(path: string): Observable<Item> {
+    // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
+    // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
+    return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
       .map((item: JsonItem1) => {
         return Item.create(item);
+      })
+      // .do(data => console.log('getItemFromJsonItem1: ', data))
+      .catch(this.handleError);
+  }
+
+  /**
+   * Get Json Entity V1
+   */
+  public getJsonItem1(path: string): Observable<JsonItem1> {
+    return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
+      .map((item: JsonItem1) => {
+        return item;
       })
       // .do(data => console.log('getItemFromJsonItem1: ', data))
       .catch(this.handleError);

@@ -1,94 +1,179 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ItemService } from './item.service';
+import { Observable } from 'rxjs/Observable';
+import { Store, StoreModule } from '@ngrx/store';
+
+import 'rxjs/add/operator/map';
 
 import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';
-import { Observable } from 'rxjs/Observable';
+import { AppState } from '../models/app-state';
+import { itemReducer, contentTypeReducer } from '../../shared/store/reducers';
+import { ItemService } from './item.service';
 
-describe('EavItemService', () => {
-  beforeEach(() => {
+import * as test1 from '../../../assets/data/json-to-class-test/item/json-item-v1-test1.json';
+import * as test2 from '../../../assets/data/json-to-class-test/item/json-item-v1-test2.json';
+import * as test3 from '../../../assets/data/json-to-class-test/item/json-item-v1-test3.json';
+import * as test4 from '../../../assets/data/json-to-class-test/item/json-item-v1-test4.json';
+
+describe('ItemService', () => {
+  // let service;
+
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpClientTestingModule],
-      providers: [ItemService]
+      imports: [HttpClientModule, HttpClientTestingModule,
+        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer })],
+      providers: [ItemService, Store]
     });
-
-
-  });
-
-  it('field version should have expected value', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
-
-        expect(item.entity.version).toEqual(429000);
-      });
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   }));
 
-  it('field Guid should have expected value', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
+  // beforeEach(inject([ItemService], s => {
+  //   service = s;
+  //   //jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  // }));
 
+  it('should be created', inject([ItemService], (service: ItemService) => {
+    expect(service).toBeTruthy();
+  }));
+
+  it('should create Item entity',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
+        expect(item).toBeTruthy();
+      });
+
+      // here we mock return data
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+
+  it('field version should have expected value',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
+        expect(item.entity.id).toEqual(42900);
+        // console.log('jsonItem1', jsonItem1);
+        // console.log('item', item);
+      });
+
+      // here we mock return data
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+
+  it('field Guid should have expected value',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item.entity.guid).toEqual('e8a702d2-eccd-4b0f-83bd-600d8a8449d9');
       });
-  }));
 
-  it('field type id should have expected value', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
 
+      httpMock.verify();
+    }));
+
+  it('field type id should have expected value',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item.entity.type.id).toMatch('TypeId');
       });
-  }));
 
-  it('field type name should have expected value', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
-        console.log('TypeName: ', item.entity.type.id);
-        expect(item.entity.type.id).toMatch('TypeName');
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+  it('field type name should have expected value',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
+        expect(item.entity.type.name).toMatch('TypeName');
       });
-  }));
 
-  it('field owner should have expected value', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
 
+      httpMock.verify();
+    }));
+
+  it('field owner should have expected value',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test1;
+
+      itemService.getJsonItem1('json-item-v1-test1.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item.entity.owner).toEqual('dnn:userid=1');
       });
-  }));
 
-  it('should create Item entity with atributes with diferent types - Test 2', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test2.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
-        console.log('Item entity with atributes with diferent types:', item);
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+  it('should create Item entity with atributes with diferent types - Test 2',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test2;
+
+      itemService.getJsonItem1('json-item-v1-test2.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item).toBeTruthy();
       });
-  }));
 
-  it('should create Item entity with metadata - Test 3', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test3.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
-        console.log('Item entity with metadata: ', item);
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test2.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+  it('should create Item entity with metadata - Test 3',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test3;
+      itemService.getJsonItem1('json-item-v1-test3.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item).toBeTruthy();
       });
-  }));
 
-  it('should create Item entity Test 4', inject([HttpClient], (httpClient: HttpClient) => {
-    httpClient.get<JsonItem1>('../../../assets/data/json-to-class-test/item/json-item-v1-test4.json')
-      .subscribe(data => {
-        const item: Item = Item.create(data);
-        console.log('Create Item entity test 4: ', item);
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test3.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
+
+  it('should create Item entity Test 4',
+    inject([HttpTestingController, ItemService], (httpMock: HttpTestingController, itemService: ItemService) => {
+      const mockTest = test4;
+      itemService.getJsonItem1('json-item-v1-test4.json').subscribe(jsonItem1 => {
+        const item: Item = Item.create(jsonItem1);
         expect(item).toBeTruthy();
       });
-  }));
+
+      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test4.json');
+      mockReq.flush(mockTest);
+
+      httpMock.verify();
+    }));
 });
-
-
-

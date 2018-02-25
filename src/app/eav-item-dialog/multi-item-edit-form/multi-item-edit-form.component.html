@@ -1,0 +1,12 @@
+<h3>Multi-item-edit-form</h3>
+
+<button mat-button type="button" class="btn btn-default" (click)="loadAccordion()">Load Accordion to store</button>
+<!-- <button mat-button type="button" class="btn btn-default" (click)="loadPerson()">Load Person to store</button> -->
+<button mat-button type="button" class="btn btn-default" (click)="loadStringInputTypes()">Load String input types</button>
+<button mat-button type="button" class="btn btn-default" (click)="loadInputTypes()">Load input types</button>
+
+<div *ngFor="let selectedItem of (items$ | async); trackBy:identify">
+  <mat-card class="example-card">
+    <app-item-edit-form [item]="selectedItem"></app-item-edit-form>
+  </mat-card>
+</div>
