@@ -7,6 +7,7 @@
 
 <div *ngFor="let selectedItem of (items$ | async); trackBy:identify">
   <mat-card class="example-card">
-    <app-item-edit-form [item]="selectedItem"></app-item-edit-form>
+    <!-- <app-item-edit-form [item]="selectedItem"></app-item-edit-form> -->
+    <app-new-item-form></app-new-item-form>
   </mat-card>
 </div>
