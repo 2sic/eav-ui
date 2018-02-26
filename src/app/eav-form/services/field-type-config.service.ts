@@ -2,7 +2,7 @@ import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { ValidationErrors, FormGroup, FormArray } from '@angular/forms';
 // import { Field } from './../templates/field';
 // import { reverseDeepMerge } from './../utils';
-//import { FormlyFieldConfig, FormlyFormOptions } from '../model/field-config.interface';
+// import { FormlyFieldConfig, FormlyFormOptions } from '../model/field-config.interface';
 import { FieldConfig } from '../model/field-config.interface';
 //TODO: export this
 import { FormInputComponent } from '../components/inputs/form-input/form-input.component';
@@ -14,23 +14,12 @@ import { TypeOption } from '../model/type-option.interface';
 
 // export const FORMLY_CONFIG_TOKEN = new InjectionToken<FieldTypeConfig>('FORMLY_CONFIG_TOKEN');
 
-/**
- * Maintains list of formly field directive types. This can be used to register new field templates.
- */
 @Injectable()
 export class FieldTypeConfig {
     types: { [name: string]: TypeOption } = {};
     // validators: { [name: string]: ValidatorOption } = {};
     wrappers: { [name: string]: WrapperOption } = {};
     // messages: { [name: string]: string | ((error: any, field: FormlyFieldConfig) => string); } = {};
-
-    // templateManipulators: {
-    //     preWrapper: ManipulatorWrapper[];
-    //     postWrapper: ManipulatorWrapper[];
-    // } = {
-    //         preWrapper: [],
-    //         postWrapper: [],
-    //     };
 
     // TODO: export this
     configs: ConfigOption[] = [{
@@ -51,8 +40,7 @@ export class FieldTypeConfig {
         //     wrappers: ['field-parent-wrapper', 'field-wrapper'],
         // }
         // ]
-    }
-    ];
+    }];
     // extras: {
     //     // fieldTransform?: ((fields: FieldConfig[], model: any, form: FormGroup | FormArray, options: FormlyFormOptions) => 
     //     fieldTransform?: ((fields: FieldConfig[], form: FormGroup | FormArray) => FieldConfig[])[],
@@ -117,40 +105,6 @@ export class FieldTypeConfig {
 
         return this.types[name];
     }
-
-    // getMergedField(field: FieldConfig = {}): any {
-    //     let name = field.type;
-    //     if (!this.types[name]) {
-    //         throw new Error(`[Formly Error] There is no type by the name of "${name}"`);
-    //     }
-
-    //     // this.mergeExtendedType(name);
-    //     // if (this.types[name].defaultOptions) {
-    //     //     reverseDeepMerge(field, this.types[name].defaultOptions);
-    //     // }
-
-    //     // let extendDefaults = this.types[name].extends && this.getType(this.types[name].extends).defaultOptions;
-    //     // if (extendDefaults) {
-    //     //     reverseDeepMerge(field, extendDefaults);
-    //     // }
-
-    //     // if (field && field.optionsTypes) {
-    //     //     field.optionsTypes.forEach(option => {
-    //     //         let defaultOptions = this.getType(option).defaultOptions;
-    //     //         if (defaultOptions) {
-    //     //             reverseDeepMerge(field, defaultOptions);
-    //     //         }
-    //     //     });
-    //     // }
-
-    //     if (!field.component) {
-    //         field.component = this.types[name].component;
-    //     }
-
-    //     if (!field.wrappers) {
-    //         field.wrappers = this.types[name].wrappers;
-    //     }
-    // }
 
     setWrapper(options: WrapperOption) {
         this.wrappers[options.name] = options;
