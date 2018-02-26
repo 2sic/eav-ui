@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Validators } from '@angular/forms';
 
 // import { FieldConfig } from './' './dynamic-form/models/field-config.interface';
@@ -15,6 +15,9 @@ import { EavFormComponent } from '../../eav-form/components/eav-form/eav-form.co
 })
 export class NewItemFormComponent implements AfterViewInit {
   @ViewChild(EavFormComponent) form: EavFormComponent;
+
+
+  constructor(private cdRef: ChangeDetectorRef) { }
 
   config: FieldConfig[] = [
     {
@@ -43,8 +46,11 @@ export class NewItemFormComponent implements AfterViewInit {
     // });
 
     //this.form.setDisabled('submit', true);
+
     this.form.setValue('name', 'Ante');
     this.form.setValue('lastname', 'Gadzo');
+    // needed to add explicit setect changes to solve error
+    this.cdRef.detectChanges();
   }
 
   submit(value: { [name: string]: any }) {

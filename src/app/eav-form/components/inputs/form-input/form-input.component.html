@@ -1,4 +1,7 @@
 <div class="dynamic-field form-input" [formGroup]="group">
-  <label>{{ config.label }}</label>
+  <div *ngIf="config">
+    <label>{{ config.label }}</label>
+  </div>
+
   <input type="text" [formControlName]="config.name">
 </div>

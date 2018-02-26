@@ -4,7 +4,13 @@ import { ValidationErrors, FormGroup, FormArray } from '@angular/forms';
 // import { reverseDeepMerge } from './../utils';
 //import { FormlyFieldConfig, FormlyFormOptions } from '../model/field-config.interface';
 import { FieldConfig } from '../model/field-config.interface';
+//TODO: export this
 import { FormInputComponent } from '../components/inputs/form-input/form-input.component';
+//TODO: export this
+import { FieldWrapperComponent } from '../components/wrappers/field-wrapper/field-wrapper.component';
+//TODO: export this
+import { FieldParentWrapperComponent } from '../components/wrappers/field-parent-wrapper/field-parent-wrapper.component';
+import { TypeOption } from '../model/type-option.interface';
 
 // export const FORMLY_CONFIG_TOKEN = new InjectionToken<FieldTypeConfig>('FORMLY_CONFIG_TOKEN');
 
@@ -18,24 +24,33 @@ export class FieldTypeConfig {
     wrappers: { [name: string]: WrapperOption } = {};
     // messages: { [name: string]: string | ((error: any, field: FormlyFieldConfig) => string); } = {};
 
-    templateManipulators: {
-        preWrapper: ManipulatorWrapper[];
-        postWrapper: ManipulatorWrapper[];
-    } = {
-            preWrapper: [],
-            postWrapper: [],
-        };
+    // templateManipulators: {
+    //     preWrapper: ManipulatorWrapper[];
+    //     postWrapper: ManipulatorWrapper[];
+    // } = {
+    //         preWrapper: [],
+    //         postWrapper: [],
+    //     };
 
     // TODO: export this
     configs: ConfigOption[] = [{
-        wrappers: [],
-        types: [
-            {
-                name: 'input',
-                component: FormInputComponent,
-                wrappers: [],
-            }
-        ]
+        wrappers: [{
+            name: 'field-wrapper',
+            component: FieldWrapperComponent,
+            types: []
+        },
+        {
+            name: 'field-parent-wrapper',
+            component: FieldParentWrapperComponent,
+            types: []
+        }
+        ],
+        // types: [{
+        //     name: 'input',
+        //     component: FormInputComponent,
+        //     wrappers: ['field-parent-wrapper', 'field-wrapper'],
+        // }
+        // ]
     }
     ];
     // extras: {
@@ -55,9 +70,9 @@ export class FieldTypeConfig {
     }
 
     addConfig(config: ConfigOption) {
-        if (config.types) {
-            config.types.forEach(type => this.setType(type));
-        }
+        // if (config.types) {
+        //     config.types.forEach(type => this.setType(type));
+        // }
         // if (config.validators) {
         //     config.validators.forEach(validator => this.setValidator(validator));
         // }
@@ -79,6 +94,7 @@ export class FieldTypeConfig {
         if (Array.isArray(options)) {
             options.forEach((option) => this.setType(option));
         } else {
+            console.log('configuration options:', options);
             if (!this.types[options.name]) {
                 this.types[options.name] = <TypeOption>{};
             }
@@ -202,13 +218,13 @@ export class FieldTypeConfig {
     //     }
     // }
 }
-export interface TypeOption {
-    name: string;
-    component?: any;
-    wrappers?: string[];
-    // extends?: string;
-    // defaultOptions?: FieldConfig;
-}
+// export interface TypeOption {
+//     name: string;
+//     component?: any;
+//     wrappers?: string[];
+//     // extends?: string;
+//     // defaultOptions?: FieldConfig;
+// }
 
 export interface WrapperOption {
     name: string;
@@ -241,7 +257,7 @@ export interface TemplateManipulators {
 }
 
 export interface ConfigOption {
-    types?: TypeOption[];
+    //types?: TypeOption[];
     wrappers?: WrapperOption[];
     // validators?: ValidatorOption[];
     // validationMessages?: ValidationMessageOption[];

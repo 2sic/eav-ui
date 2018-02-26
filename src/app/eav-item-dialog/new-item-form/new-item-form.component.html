@@ -1,5 +1,6 @@
 <app-eav-form [config]="config" (submit)="submit($event)">
 </app-eav-form>
-{{ form.valid }} {{ form.value | json }}
-
+<div *ngIf="form">
+    {{ form.valid }} {{ form.value | json }}
+</div>
 <!-- #form="appEavForm" -->
