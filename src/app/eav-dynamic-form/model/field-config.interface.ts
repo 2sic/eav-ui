@@ -12,4 +12,9 @@ export interface FieldConfig {
 
     fieldGroup?: FieldConfig[];
     wrappers?: string[];
+
+    required?: boolean,
+    pattern?: string,
+    settings?: any,
+    collapse?: boolean
 }

@@ -8,11 +8,32 @@ import { FormInputComponent } from './components/inputs/form-input/form-input.co
 import { FieldTypeConfig } from './services/field-type-config.service';
 import { FieldWrapperComponent } from './components/wrappers/field-wrapper/field-wrapper.component';
 import { FieldParentWrapperComponent } from './components/wrappers/field-parent-wrapper/field-parent-wrapper.component';
+import {
+    MatFormFieldModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCardModule,
+    MatIconModule,
+} from '@angular/material';
 
 @NgModule({
     imports: [
         CommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+
+        MatFormFieldModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatCardModule,
+        MatIconModule,
     ],
     declarations: [
         EavFieldDirective,

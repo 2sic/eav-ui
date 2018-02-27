@@ -26,10 +26,13 @@ export class EavFormComponent implements OnChanges, OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    console.log('eav-form configuration:', this.config);
+
     this.form = this.createGroup();
   }
 
   ngOnChanges() {
+
     if (this.form) {
       const controls = Object.keys(this.form.controls);
       const configControls = this.controls.map((item) => item.name);
@@ -50,7 +53,7 @@ export class EavFormComponent implements OnChanges, OnInit {
   createGroup() {
     const group = this.formBuilder.group({});
     this.controls.forEach(control => group.addControl(control.name, this.createControl(control)));
-    console.log('Ovo kreiralo:', group);
+    console.log('Group created:', group);
     return group;
   }
 

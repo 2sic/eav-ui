@@ -14,18 +14,4 @@ import { TypeOption } from '../../../model/type-option.interface';
 export class FormInputComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
-
-  @Output()
-  aaaa: TypeOption = {
-    name: 'input',
-    component: FormInputComponent,
-    wrappers: ['field-parent-wrapper', 'field-wrapper'],
-  }
-  // public getTypeOption(): TypeOption {
-  //   return {
-  //     name: 'input',
-  //     component: FormInputComponent,
-  //     wrappers: ['field-parent-wrapper', 'field-wrapper'],
-  //   }
-  // }
 }

@@ -38,6 +38,7 @@ export class EavFieldDirective implements Field, OnChanges, OnInit {
     //   this.component.instance.config = this.config;
     //   this.component.instance.group = this.group;
     // }
+
   }
 
   ngOnInit() {
@@ -69,11 +70,12 @@ export class EavFieldDirective implements Field, OnChanges, OnInit {
       fieldComponent = wrapperRef.instance.fieldComponent;
     });
 
-    return this.createComponent(fieldComponent, 'string-default');
+    return this.createComponent(fieldComponent, 'app-string-default');
   }
 
   private createComponent(fieldComponent: ViewContainerRef, fieldType: string): ComponentRef<any> {
     let factories = Array.from(this.resolver['_factories'].values());
+    console.log('factories', factories);
     let factoryComponentType = factories.find((x: any) => x.selector === fieldType)['componentType'];
     const factory = this.resolver.resolveComponentFactory(<Type<any>>factoryComponentType);
     const ref = fieldComponent.createComponent(factory);
@@ -89,7 +91,7 @@ export class EavFieldDirective implements Field, OnChanges, OnInit {
   private createComponentWrapper(fieldComponent: ViewContainerRef, component: any): ComponentRef<any> {
     let componentFactory = this.resolver.resolveComponentFactory(component);
     let ref = <ComponentRef<FieldWrapper>>fieldComponent.createComponent(componentFactory);
-
+    console.log('component config:', this.config)
     Object.assign(ref.instance, {
       group: this.group,
       config: this.config,

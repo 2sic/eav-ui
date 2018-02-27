@@ -1,11 +1,21 @@
-<div *ngIf="to.settings.RowCount && to.settings.RowCount.values[0].value > 1; then textareaField else inputField"></div>
+<div *ngIf="config.settings.RowCount && config.settings.RowCount.values[0].value > 1; then textareaField else inputField">
+</div>
 
 <ng-template #inputField>
-    <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
-        [formlyAttributes]="field">
+    <div [formGroup]="group">
+        <input matInput type="text" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name">
+    </div>
 </ng-template>
 
 <ng-template #textareaField>
-    <textarea matInput [rows]="to.settings.RowCount.values[0].value" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
-        [formControl]="formControl" [formlyAttributes]="field"></textarea>
+    <div [formGroup]="group">
+        <mat-form-field [style.width]="'100%'">
+            <mat-label *ngIf="config.label">
+                {{config.label }}
+                <span *ngIf="config.required" class="mat-form-field-required-marker">*</span>
+            </mat-label>
+            <textarea matInput [rows]="config.settings.RowCount.values[0].value" type="text" [id]="id" class="form-control material"
+                [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name"></textarea>
+        </mat-form-field>
+    </div>
 </ng-template>
