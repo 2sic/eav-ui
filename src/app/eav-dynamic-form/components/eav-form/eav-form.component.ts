@@ -18,7 +18,8 @@ export class EavFormComponent implements OnChanges, OnInit {
 
   form: FormGroup;
 
-  get controls() { return this.config.filter(({ type }) => type !== 'button'); }
+  //get controls() { return this.config.filter(({ type }) => type !== 'button'); }
+  // get controls() { return this.config }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
@@ -26,16 +27,14 @@ export class EavFormComponent implements OnChanges, OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log('eav-form configuration:', this.config);
-
-    this.form = this.createGroup();
+    this.form = this.createControlsInFormGroup(this.config);
   }
 
   ngOnChanges() {
-
+    // TODO: see is this working
     if (this.form) {
       const controls = Object.keys(this.form.controls);
-      const configControls = this.controls.map((item) => item.name);
+      const configControls = this.config.map((item) => item.name);
 
       controls
         .filter((control) => !configControls.includes(control))
@@ -50,13 +49,28 @@ export class EavFormComponent implements OnChanges, OnInit {
     }
   }
 
-  createGroup() {
+  /**
+   * Create form from configuration
+   * @param fieldConfigArray 
+   */
+  createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
     const group = this.formBuilder.group({});
-    this.controls.forEach(control => group.addControl(control.name, this.createControl(control)));
-    console.log('Group created:', group);
+    fieldConfigArray.forEach(fieldConfig => {
+      if (fieldConfig.fieldGroup) {
+        group.addControl(fieldConfig.name, this.createControlsInFormGroup(fieldConfig.fieldGroup));
+      } else {
+        group.addControl(fieldConfig.name, this.createControl(fieldConfig))
+      }
+    }
+    );
+
     return group;
   }
 
+  /**
+   *  Create form control
+   * @param config
+   */
   createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
     return this.formBuilder.control({ disabled, value }, validation);

@@ -11,6 +11,7 @@ import { FieldWrapperComponent } from '../components/wrappers/field-wrapper/fiel
 //TODO: export this
 import { FieldParentWrapperComponent } from '../components/wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { TypeOption } from '../model/type-option.interface';
+import { FieldGroupWrapperComponent } from '../components/wrappers/field-group-wrapper/field-group-wrapper.component';
 
 // export const FORMLY_CONFIG_TOKEN = new InjectionToken<FieldTypeConfig>('FORMLY_CONFIG_TOKEN');
 
@@ -30,6 +31,16 @@ export class FieldTypeConfig {
         },
         {
             name: 'field-parent-wrapper',
+            component: FieldParentWrapperComponent,
+            types: []
+        },
+        {
+            name: 'field-group-wrapper',
+            component: FieldGroupWrapperComponent,
+            types: []
+        },
+        {
+            name: 'collapsible',
             component: FieldParentWrapperComponent,
             types: []
         }

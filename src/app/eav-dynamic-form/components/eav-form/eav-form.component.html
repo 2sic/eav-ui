@@ -1,4 +1,35 @@
+<!-- <form [formGroup]="form">
+  <div formGroupName="first empty">
+    <input formControlName="FirstValue" placeholder="First">
+    <div formGroupName="Empty">
+      <input formControlName="ThirdValue" placeholder="First">
+    </div>
+  </div>
+  <div formGroupName="third empty">
+    <input formControlName="thirdGroupValue" placeholder="Email">
+  </div>
+  <button>Submit</button>
+</form>
+
+<div *ngIf="form">
+  <div>
+    Form status: {{ form.valid }}
+  </div>
+  <div>
+    Form value: {{ form.value | json }}
+  </div>
+</div> -->
+
 <form class="dynamic-form" [formGroup]="form" (submit)="handleSubmit($event)">
-  <ng-container *ngFor="let field of config;" appEavField [config]="field" [group]="form">
+  <ng-container appEavField [config]="config" [group]="form">
   </ng-container>
 </form>
+<div *ngIf="form">
+  <div>
+    Form status: {{ form.valid }}
+  </div>
+  <div>
+    Form value: {{ form.value | json }}
+  </div>
+</div>
+<!--*ngFor="let field of config;"  -->

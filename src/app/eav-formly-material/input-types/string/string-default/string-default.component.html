@@ -2,20 +2,15 @@
 </div>
 
 <ng-template #inputField>
-    <div [formGroup]="group">
-        <input matInput type="text" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name">
-    </div>
+    <mat-form-field [formGroup]="group" [style.width]="'100%'">
+        <input matInput type="text" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name"
+            placeholder="config.label">
+    </mat-form-field>
 </ng-template>
 
 <ng-template #textareaField>
-    <div [formGroup]="group">
-        <mat-form-field [style.width]="'100%'">
-            <mat-label *ngIf="config.label">
-                {{config.label }}
-                <span *ngIf="config.required" class="mat-form-field-required-marker">*</span>
-            </mat-label>
-            <textarea matInput [rows]="config.settings.RowCount.values[0].value" type="text" [id]="id" class="form-control material"
-                [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name"></textarea>
-        </mat-form-field>
-    </div>
+    <mat-form-field [formGroup]="group" [style.width]="'100%'">
+        <textarea matInput [rows]="config.settings.RowCount.values[0].value" type="text" [id]="id" class="form-control material"
+            [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name" placeholder="config.label"></textarea>
+    </mat-form-field>
 </ng-template>

@@ -5,7 +5,6 @@ import { Field } from '../../../model/field.interface';
 import { FieldConfig } from '../../../model/field-config.interface';
 import { TypeOption } from '../../../model/type-option.interface';
 
-
 @Component({
   selector: 'string-default',
   templateUrl: './form-input.component.html',

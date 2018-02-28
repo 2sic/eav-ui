@@ -8,6 +8,7 @@ import { FormInputComponent } from './components/inputs/form-input/form-input.co
 import { FieldTypeConfig } from './services/field-type-config.service';
 import { FieldWrapperComponent } from './components/wrappers/field-wrapper/field-wrapper.component';
 import { FieldParentWrapperComponent } from './components/wrappers/field-parent-wrapper/field-parent-wrapper.component';
+import { FieldGroupWrapperComponent } from './components/wrappers/field-group-wrapper/field-group-wrapper.component';
 import {
     MatFormFieldModule,
     MatButtonModule,
@@ -19,6 +20,7 @@ import {
     MatCardModule,
     MatIconModule,
 } from '@angular/material';
+
 
 @NgModule({
     imports: [
@@ -40,7 +42,8 @@ import {
         EavFormComponent,
         FormInputComponent,
         FieldWrapperComponent,
-        FieldParentWrapperComponent
+        FieldParentWrapperComponent,
+        FieldGroupWrapperComponent
     ],
     exports: [
         EavFormComponent
@@ -48,7 +51,8 @@ import {
     entryComponents: [
         FormInputComponent,
         FieldWrapperComponent,
-        FieldParentWrapperComponent
+        FieldParentWrapperComponent,
+        FieldGroupWrapperComponent
     ],
     providers: [
         FieldTypeConfig

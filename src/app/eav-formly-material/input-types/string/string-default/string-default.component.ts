@@ -18,6 +18,8 @@ export class StringDefaultComponent implements Field, OnInit {
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   ngOnInit() {
+    console.log('alo ja imam ovo component: ', this.config);
+    console.log('alo ja imam ovo component group: ', this.group);
   }
   // get type() {
   //   return this.to.type || 'text';

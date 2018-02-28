@@ -1,0 +1,15 @@
+<!-- <div [formGroup]="group">
+  <ng-container #fieldComponent></ng-container>
+</div> -->
+<div>
+  <div class="form-ci-subtitle unhide-area" (click)="config.collapse = !config.collapse">
+    <span style="position: relative">
+      <mat-icon *ngIf="config.collapse" class="mat-24">remove</mat-icon>
+      <mat-icon *ngIf="!config.collapse" class="mat-24">add</mat-icon>
+    </span>
+    {{config.label}}
+  </div>
+  <div [hidden]="config.collapse">
+    <ng-container #fieldComponent></ng-container>
+  </div>
+</div>

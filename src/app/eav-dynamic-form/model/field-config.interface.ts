@@ -10,11 +10,12 @@ export interface FieldConfig {
     validation?: ValidatorFn[],
     value?: any
 
-    fieldGroup?: FieldConfig[];
-    wrappers?: string[];
+    wrappers?: string[],
 
     required?: boolean,
     pattern?: string,
     settings?: any,
-    collapse?: boolean
+    collapse?: boolean,
+
+    fieldGroup?: FieldConfig[]
 }

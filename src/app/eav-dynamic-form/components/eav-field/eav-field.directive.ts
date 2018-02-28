@@ -14,12 +14,13 @@ import { FieldWrapper } from '../../model/field-wrapper';
 @Directive({
   selector: '[appEavField]'
 })
-export class EavFieldDirective implements Field, OnChanges, OnInit {
+export class EavFieldDirective implements OnChanges, OnInit {
   @Input()
-  config: FieldConfig;
+  config: FieldConfig[];
 
   @Input()
   group: FormGroup;
+
 
   //typeOption: TypeOption;
 
@@ -49,52 +50,110 @@ export class EavFieldDirective implements Field, OnChanges, OnInit {
     //     Supported types: ${supportedTypes}`
     //   );
     // }
+    // let fieldComponent = this.container;
+    //if field group then create wrapper with child controls
 
-    this.createFieldComponent();
+
+    console.log('this.config', this.config);
+    console.log('this.group', this.group);
+    this.config.forEach(controlConfiguration => {
+      this.createFieldOrGroup(this.container, controlConfiguration, this.group);
+    });
   }
 
-  private createFieldComponent(): ComponentRef<Field> {
-    //todo: for field groups
-    // if (this.field.fieldGroup) {
-    //   this.field.type = this.field.type || 'formly-group';
-    // }
+  /**
+   * create all child fields and groups from fieldConfig in container
+   * @param container
+   * @param fieldConfig
+   * @param group
+   */
+  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
+    if (fieldConfig.fieldGroup) {
+      this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
+    } else {
+      this.createFieldComponent(container, fieldConfig, group);
+    }
+  }
 
-    //const type = this.fieldTypeConfig.getType(this.config.type),
-    // wrappers = this.getFieldWrappers(type);
-    const wrappers = ['field-parent-wrapper', 'field-wrapper']
-
-    let fieldComponent = this.container; // = this.component;
+  /**
+   * Create field components with wrappers in container
+   * @param container 
+   * @param fieldConfig 
+   * @param group 
+   */
+  private createFieldComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
+    const ovajTip = 'app-string-default';
+    //TODO: read wrapers from input controls
+    //const wrappers = ['field-parent-wrapper', 'field-wrapper']
+    const wrappers = []
 
     wrappers.forEach(wrapperName => {
-      let wrapperRef = this.createComponentWrapper(fieldComponent, this.fieldTypeConfig.getWrapper(wrapperName).component);
-      fieldComponent = wrapperRef.instance.fieldComponent;
+      let wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
+      container = wrapperRef.instance.fieldComponent;
     });
 
-    return this.createComponent(fieldComponent, 'app-string-default');
+    this.createComponent(container, fieldConfig, group);
   }
 
-  private createComponent(fieldComponent: ViewContainerRef, fieldType: string): ComponentRef<any> {
+  /**
+   * Create wrapper for form group and all child formControls and fomrGroups in container
+   * @param container
+   * @param fieldConfig
+   * @param group
+   */
+  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
+    const ovajTip = 'empty-default';
+    // const wrappers = ['collapsible'];  //TODO this wrapper must have formGroupName="address" 
+    const wrappers = ['field-group-wrapper'];  //TODO this wrapper must have formGroupName="address" 
+
+    wrappers.forEach(wrapperName => {
+      let wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
+      container = wrapperRef.instance.fieldComponent;
+    });
+
+    fieldConfig.fieldGroup.forEach(controlConfiguration => {
+      this.createFieldOrGroup(container, controlConfiguration, group);
+    })
+  }
+
+  /**
+   * Create component from selector (fieldType) if exist in module. 
+   * @param container  place where component is created
+   * @param fieldType  
+   * @param fieldConfig  is sent to @input config in created component
+   * @param group is sent to @input group in created component
+   */
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup): ComponentRef<any> {
+    console.log('createComponent', fieldConfig.name);
     let factories = Array.from(this.resolver['_factories'].values());
     console.log('factories', factories);
-    let factoryComponentType = factories.find((x: any) => x.selector === fieldType)['componentType'];
+    let factoryComponentType = factories.find((x: any) => x.selector === fieldConfig.type)['componentType'];
     const factory = this.resolver.resolveComponentFactory(<Type<any>>factoryComponentType);
-    const ref = fieldComponent.createComponent(factory);
+    const ref = container.createComponent(factory);
 
     Object.assign(ref.instance, {
-      group: this.group,
-      config: this.config,
+      group: group,
+      config: fieldConfig,
     });
 
     return ref;
   }
 
-  private createComponentWrapper(fieldComponent: ViewContainerRef, component: any): ComponentRef<any> {
-    let componentFactory = this.resolver.resolveComponentFactory(component);
-    let ref = <ComponentRef<FieldWrapper>>fieldComponent.createComponent(componentFactory);
-    console.log('component config:', this.config)
+  /**
+   * Create Wrapper from wrapperName in contaner
+   * @param container 
+   * @param wrapperName 
+   * @param fieldConfig 
+   * @param group 
+   */
+  private createComponentWrapper(container: ViewContainerRef, wrapperName: string, fieldConfig: FieldConfig, group: FormGroup):
+    ComponentRef<any> {
+    console.log('createComponentWrapper', fieldConfig.name);
+    let componentFactory = this.resolver.resolveComponentFactory(this.fieldTypeConfig.getWrapper(wrapperName).component);
+    let ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
     Object.assign(ref.instance, {
-      group: this.group,
-      config: this.config,
+      group: group,
+      config: fieldConfig
     });
 
     return ref;

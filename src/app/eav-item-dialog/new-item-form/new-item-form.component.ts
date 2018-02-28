@@ -70,133 +70,243 @@ export class NewItemFormComponent implements AfterViewInit {
   // ];
   config: FieldConfig[] = [
     {
-      // name: "empty-default",
-      // type: "empty-default",
-      // wrappers: [
-      //     "collapsible"
-      // ],
-      // label: "Edit item",
-      // collapse: false,
-      // fieldGroup: [
-      //      {
-      name: "app-string-default",
-      type: "app-string-default",
-      label: "StringDefault",
-      placeholder: "Enter StringDefault",
-      required: true,
-      pattern: "",
-      settings: {
-        DropdownValues: {
-          values: [
-            {
-              value: "",
-              dimensions: []
+      name: "first empty",
+      type: "empty-default",
+      wrappers: [
+        "collapsible"
+      ],
+      label: "Edit item",
+      collapse: false,
+      fieldGroup: [
+        {
+          value: "ante",
+          name: "FirstValue",
+          type: "app-string-default",
+          label: "StringDefault",
+          placeholder: "Enter StringDefault",
+          required: false,
+          pattern: "",
+          validation: [Validators.required, Validators.minLength(5)],
+          settings: {
+            InputType: {
+              values: [
+                {
+                  value: "string-default",
+                  dimensions: []
+                }
+              ]
+            },
+            RowCount: {
+              values: [
+                {
+                  value: 3,
+                  dimensions: []
+                }
+              ]
+            },
+            Name: {
+              values: [
+                {
+                  value: "StringDefault",
+                  dimensions: []
+                }
+              ]
+            },
+            Required: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
+            },
+            VisibleInEditUI: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
             }
-          ]
+          }
         },
-        InputType: {
-          values: [
-            {
-              value: "string-default",
-              dimensions: []
+        {
+          value: "ante",
+          name: "SecondValue",
+          type: "app-string-default",
+          label: "SecondValue",
+          placeholder: "Enter SecondValue",
+          required: true,
+          pattern: "",
+          validation: [Validators.required, Validators.minLength(5)],
+          settings: {
+            InputType: {
+              values: [
+                {
+                  value: "string-default",
+                  dimensions: []
+                }
+              ]
+            },
+            RowCount: {
+              values: [
+                {
+                  value: 3,
+                  dimensions: []
+                }
+              ]
+            },
+            Name: {
+              values: [
+                {
+                  value: "StringDefault",
+                  dimensions: []
+                }
+              ]
+            },
+            Required: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
+            },
+            VisibleInEditUI: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
             }
-          ]
+          },
         },
-        ValidationAutomatic: {
-          values: [
+        {
+          name: "Empty",
+          type: "app-empty-default",
+          label: "EmptyDefault",
+          placeholder: "Enter EmptyDefault",
+          collapse: false,
+          fieldGroup: [
             {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        ValidationRegEx: {
-          values: [
-            {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        ValidationRegExJavaScript: {
-          values: [
-            {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        RowCount: {
-          values: [
-            {
-              value: 3,
-              dimensions: []
-            }
-          ]
-        },
-        CustomJavaScript: {
-          values: [
-            {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        DefaultValue: {
-          values: [
-            {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        Name: {
-          values: [
-            {
-              value: "StringDefault",
-              dimensions: []
-            }
-          ]
-        },
-        Notes: {
-          values: [
-            {
-              value: "",
-              dimensions: []
-            }
-          ]
-        },
-        Disabled: {
-          values: [
-            {
-              value: false,
-              dimensions: []
-            }
-          ]
-        },
-        Required: {
-          values: [
-            {
-              value: true,
-              dimensions: []
-            }
-          ]
-        },
-        VisibleInEditUI: {
-          values: [
-            {
-              value: true,
-              dimensions: []
+              value: "new group",
+              name: "ThirdValue",
+              type: "app-string-default",
+              label: "ThirdValue",
+              placeholder: "Enter ThirdValue",
+              required: true,
+              pattern: "",
+              validation: [Validators.required, Validators.minLength(10)],
+              settings: {
+                InputType: {
+                  values: [
+                    {
+                      value: "string-default",
+                      dimensions: []
+                    }
+                  ]
+                },
+                RowCount: {
+                  values: [
+                    {
+                      value: 1,
+                      dimensions: []
+                    }
+                  ]
+                },
+                Name: {
+                  values: [
+                    {
+                      value: "StringDefault",
+                      dimensions: []
+                    }
+                  ]
+                },
+                Required: {
+                  values: [
+                    {
+                      value: true,
+                      dimensions: []
+                    }
+                  ]
+                },
+                VisibleInEditUI: {
+                  values: [
+                    {
+                      value: true,
+                      dimensions: []
+                    }
+                  ]
+                }
+              }
             }
           ]
         }
-      },
-      // validation: [
-      //   null,
-      //   null
-      // ]
-      //     }
-      // ]
+      ]
+    },
+    {
+      name: "third empty",
+      type: "empty-default",
+      wrappers: [
+        "collapsible"
+      ],
+      label: "Edit item",
+      collapse: false,
+      fieldGroup: [
+        {
+          value: "ante",
+          name: "thirdGroupValue",
+          type: "app-string-default",
+          label: "StringDefault",
+          placeholder: "Enter StringDefault",
+          required: true,
+          pattern: "",
+          validation: [Validators.required, Validators.minLength(5)],
+          settings: {
+            InputType: {
+              values: [
+                {
+                  value: "string-default",
+                  dimensions: []
+                }
+              ]
+            },
+            RowCount: {
+              values: [
+                {
+                  value: 3,
+                  dimensions: []
+                }
+              ]
+            },
+            Name: {
+              values: [
+                {
+                  value: "StringDefault",
+                  dimensions: []
+                }
+              ]
+            },
+            Required: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
+            },
+            VisibleInEditUI: {
+              values: [
+                {
+                  value: true,
+                  dimensions: []
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ];
 
@@ -214,8 +324,6 @@ export class NewItemFormComponent implements AfterViewInit {
     //this.form.setValue('app-string-default', 'Ante');
     // this.form.setValue('lastname', 'Gadzo');
     // needed to add explicit setect changes to solve error
-
-
 
     this.cdRef.detectChanges();
   }
