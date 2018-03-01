@@ -3,28 +3,41 @@ import { FieldType } from '@ngx-formly/material';
 import { MatInput, MatSelect } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { SelectOption } from '@ngx-formly/material/src/types/select';
-
+import { Field } from '../../../../eav-dynamic-form/model/field.interface';
+import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-string-dropdown',
+  selector: 'string-dropdown',
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.css']
 })
-export class StringDropdownComponent extends FieldType implements OnInit {
-  @ViewChild(MatInput) matInput: MatInput;
-  @ViewChild(MatSelect) matSelect: MatSelect;
-  // errorStateMatcher = new FormlyErrorStateMatcher(this);
+export class StringDropdownComponent implements Field, OnInit {
+  config: FieldConfig;
+  group: FormGroup;
 
-  get labelProp(): string { return this.to.labelProp || 'label'; }
-  get valueProp(): string { return this.to.valueProp || 'value'; }
-  get groupProp(): string { return this.to.groupProp || 'group'; }
+  freeTextMode = false;
 
-  private _selectOptions: SelectOption[] = [];
-  private _oldOptions: SelectOption[] = [];
+  selectOptions = [];
 
   ngOnInit() {
-    super.ngOnInit();
+    this.selectOptions = this.setOptionsFromDropdownValues();
+    console.log('this.config.settings.DropdownValues:', this.config.settings.DropdownValues);
   }
+  // @ViewChild(MatInput) matInput: MatInput;
+  // @ViewChild(MatSelect) matSelect: MatSelect;
+  // errorStateMatcher = new FormlyErrorStateMatcher(this);
+
+  // get labelProp(): string { return this.config['labelProp'] || 'label'; }
+  // get valueProp(): string { return this.config['valueProp'] || 'value'; }
+  // get groupProp(): string { return this.config['groupProp'] || 'group'; }
+
+  private _selectOptions: string[] = [];
+  private _oldOptions: string[] = [];
+
+  // ngOnInit() {
+  //   super.ngOnInit();
+  // }
 
   // ngAfterViewInit() {
   //   if (this.field['__formField__']) {
@@ -37,45 +50,48 @@ export class StringDropdownComponent extends FieldType implements OnInit {
   //   super.ngAfterViewInit();
   // }
 
-  get selectOptions() {
-    this.to.options = this.setOptionsFromDropdownValues();
+  //get selectOptions() {
 
-    // This text is default code of formly material select
-    if (this.to.options.length === this._oldOptions.length
-      && this._oldOptions.every(opt => !!this.to.options.find(o => o[this.valueProp] === opt[this.valueProp]))
-    ) {
-      return this._selectOptions;
-    }
+  // this._selectOptions = this.setOptionsFromDropdownValues();
+  // console.log("sadsad", this.config.options);
+  // This text is default code of formly material select
+  // if (this.config.options.length === this._oldOptions.length
+  //   && this._oldOptions.every(opt => !!this.config.options.find(o => o['value'] === opt['value']))
+  // ) {
+  //   return this._selectOptions;
+  // }
 
-    this._oldOptions = [...this.to.options];
-    this._selectOptions = [];
-    const groups: { [key: string]: SelectOption[] } = {};
-    this.to.options.map((option: SelectOption) => {
-      if (!option[this.groupProp]) {
-        this._selectOptions.push(option);
-      } else {
-        if (groups[option[this.groupProp]]) {
-          groups[option[this.groupProp]].push(option);
-        } else {
-          groups[option[this.groupProp]] = [option];
-          this._selectOptions.push({
-            label: option[this.groupProp],
-            group: groups[option[this.groupProp]],
-          });
-        }
-      }
-    });
+  // this._oldOptions = [...this.config.options];
+  // this._selectOptions = [];
 
-    return this._selectOptions;
-  }
+  // this.config.options.map((option: SelectOption) => {
+
+  // }
+  // const groups: { [key: string]: SelectOption[] } = {};
+  // this.config.options.map((option: SelectOption) => {
+  //   if (!option[this.groupProp]) {
+  //     this._selectOptions.push(option);
+  //   } else {
+  //     if (groups[option[this.groupProp]]) {
+  //       groups[option[this.groupProp]].push(option);
+  //     } else {
+  //       groups[option[this.groupProp]] = [option];
+  //       this._selectOptions.push({
+  //         label: option[this.groupProp],
+  //         group: groups[option[this.groupProp]],
+  //       });
+  //     }
+  //   }
+  // });
+  //}
 
   /**
    * Read settings Dropdown values
    */
   private setOptionsFromDropdownValues(): any {
     let options = [];
-    if (this.to.settings.DropdownValues) {
-      const dropdownValues = this.to.settings.DropdownValues.values[0].value;
+    if (this.config.settings.DropdownValues) {
+      const dropdownValues = this.config.settings.DropdownValues.values[0].value;
       options = dropdownValues.replace(/\r/g, '').split('\n');
       options = options.map(e => {
         const s = e.split(':');
@@ -88,7 +104,7 @@ export class StringDropdownComponent extends FieldType implements OnInit {
         };
       });
     }
-
     return options;
+
   }
 }

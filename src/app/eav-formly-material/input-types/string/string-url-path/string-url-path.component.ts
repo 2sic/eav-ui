@@ -4,16 +4,20 @@ import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { FormControl } from '@angular/forms';
 import { Helper } from '../../../../shared/helpers/helper';
+import { Field } from '../../../../eav-dynamic-form/model/field.interface';
+import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-string-url-path',
+  selector: 'string-url-path',
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.css']
 })
-export class StringUrlPathComponent extends FieldType {
-  @ViewChild(MatInput) matInput: MatInput;
+export class StringUrlPathComponent implements Field {
+  // @ViewChild(MatInput) matInput: MatInput;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
-
+  config: FieldConfig;
+  group: FormGroup;
   enableSlashes = true;
 
   // ngAfterViewInit() {

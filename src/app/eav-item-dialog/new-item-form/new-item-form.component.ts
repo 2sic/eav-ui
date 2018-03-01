@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, ChangeDetectorRef, OnInit, Input, OnChanges } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 
@@ -372,8 +372,10 @@ export class NewItemFormComponent implements AfterViewInit {
   loadContentTypeFromStore() {
     // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
+    console.log('asdsadsadadadad');
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
+
   }
 
   /**
@@ -396,7 +398,6 @@ export class NewItemFormComponent implements AfterViewInit {
             currentFieldGroup.fieldGroup.push(formlyFieldConfig);
           }
         });
-
         return of([parentFieldGroup]);
       });
   }
@@ -434,39 +435,57 @@ export class NewItemFormComponent implements AfterViewInit {
    */
   loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+
     // set validation for all input types
-    const validationList = this.setValidations(inputType);
+    const validationList: ValidatorFn[] = this.setValidations(attribute, inputType);
+    const value = this.getValueFromItem(attribute.name);
 
     return {
-      // key: `${attribute.name}.values[0].value`,//.values[0].value
-      name: inputType,
-      //templateOptions: {
-      type: 'text', // TODO
+      //valueKey: `${attribute.name}.values[0].value`,
+      value: value,
+      name: attribute.name,
+      type: inputType, // TODO see do we need this
       label: attribute.name,
-      placeholder: `Enter ${attribute.name}`,
-      required: required,
-      pattern: pattern,
+      placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
+      // required: required,
+      // pattern: pattern,
       settings: attribute.settings,
       //change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
-      //},
-      //validators: {
-      //validation: validationList,
-      validation: [Validators.required, Validators.minLength(4)]
-      //},
+
+      validation: validationList
+      //disable: //TODO see do we need this
     };
+  }
+
+  /**
+   * Get value from item by attribute name
+   */
+  getValueFromItem = (attributeName: string): ValidatorFn[] => {
+    return this.selectedItem.entity.attributes[attributeName]
+      ? this.selectedItem.entity.attributes[attributeName].values[0].value
+      : null;
   }
 
   /**
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  setValidations(inputType: string): Array<string> {
-    let validation = Array<string>();
-    if (inputType === InputTypesConstants.stringUrlPath) {
-      validation = [...['onlySimpleUrlChars']];
+  setValidations(attribute: AttributeDef, inputType: string): ValidatorFn[] {
+
+    let validation: ValidatorFn[];
+
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    if (required) {
+      validation = [...[Validators.required]];
     }
+    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+    if (pattern) {
+      validation = [...[Validators.pattern(pattern)]];
+    }
+
+    // if (inputType === InputTypesConstants.stringUrlPath) {
+    //   validation = [...['onlySimpleUrlChars']];
+    // }
 
     return validation;
   }
@@ -476,14 +495,14 @@ export class NewItemFormComponent implements AfterViewInit {
    * @param title 
    * @param collapse 
    */
-  createEmptyFieldGroup = (title: string, collapse: boolean): FieldConfig => {
+  createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
       //key: ``,
-      name: InputTypesConstants.emptyDefault,
+      name: name,
       type: InputTypesConstants.emptyDefault,
       wrappers: ['collapsible'],
       //templateOptions: {
-      label: title,
+      label: name,
       collapse: collapse,
       //},
       fieldGroup: [],

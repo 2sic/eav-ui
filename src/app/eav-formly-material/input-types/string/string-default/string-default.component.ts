@@ -7,7 +7,7 @@ import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.int
 import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-string-default',
+  selector: 'string-default',
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.css']
 })
@@ -18,8 +18,8 @@ export class StringDefaultComponent implements Field, OnInit {
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
   ngOnInit() {
-    console.log('alo ja imam ovo component: ', this.config);
-    console.log('alo ja imam ovo component group: ', this.group);
+    // console.log('alo ja imam ovo component: stringdefault', this.config);
+    // console.log('alo ja imam ovo component group stringdefault: ', this.group);
   }
   // get type() {
   //   return this.to.type || 'text';

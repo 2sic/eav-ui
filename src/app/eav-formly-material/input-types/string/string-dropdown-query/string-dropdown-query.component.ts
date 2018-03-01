@@ -4,7 +4,7 @@ import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
 @Component({
-  selector: 'app-string-dropdown-query',
+  selector: 'string-dropdown-query',
   templateUrl: './string-dropdown-query.component.html',
   styleUrls: ['./string-dropdown-query.component.css']
 })

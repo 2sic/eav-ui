@@ -28,6 +28,8 @@ export class EavFormComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     this.form = this.createControlsInFormGroup(this.config);
+    console.log('this.config sdfdsf:', JSON.stringify(this.config));
+    console.log('group evo je:', JSON.stringify(this.form.value));
   }
 
   ngOnChanges() {

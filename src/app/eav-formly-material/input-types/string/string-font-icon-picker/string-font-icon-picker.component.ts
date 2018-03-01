@@ -4,7 +4,7 @@ import { MatInput } from '@angular/material';
 import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
 @Component({
-  selector: 'app-string-font-icon-picker',
+  selector: 'string-font-icon-picker',
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.css']
 })

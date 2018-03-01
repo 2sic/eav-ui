@@ -1,2 +1,4 @@
-<input matInput type="number" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl"
-  [formlyAttributes]="field">
+<mat-form-field [formGroup]="group" [style.width]="'100%'">
+  <input matInput type="number" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControlName]="config.name"
+    placeholder="config.label">
+</mat-form-field>

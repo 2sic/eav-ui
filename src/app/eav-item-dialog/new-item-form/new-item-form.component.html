@@ -1,8 +1,8 @@
-<div *ngIf="contentType$ | async">
-    <app-eav-form [config]="config" (submit)="submit($event)">
+<div *ngIf="(contentType$ | async) && (itemFields$ | async)">
+    <app-eav-form [config]=" itemFields$ | async " (submit)="submit($event) ">
     </app-eav-form>
 
-    <!-- <div *ngIf="form">
+    <!-- <div *ngIf="form ">
         <div>
             Form status: {{ form.valid }}
         </div>
@@ -10,8 +10,8 @@
             Form value: {{ form.value | json }}
         </div>
     </div> -->
-    <!-- #form="appEavForm" -->
-    <!-- <div *ngIf="(itemFields$ | async)">
+    <!-- #form="appEavForm " -->
+    <!-- <div *ngIf="(itemFields$ | async) ">
         {{ (itemFields$ | async) | json }}
     </div> -->
 </div>

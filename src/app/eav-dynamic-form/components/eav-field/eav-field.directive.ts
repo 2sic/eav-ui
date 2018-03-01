@@ -53,9 +53,6 @@ export class EavFieldDirective implements OnChanges, OnInit {
     // let fieldComponent = this.container;
     //if field group then create wrapper with child controls
 
-
-    console.log('this.config', this.config);
-    console.log('this.group', this.group);
     this.config.forEach(controlConfiguration => {
       this.createFieldOrGroup(this.container, controlConfiguration, this.group);
     });
@@ -82,7 +79,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
    * @param group 
    */
   private createFieldComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
-    const ovajTip = 'app-string-default';
+    // const ovajTip = 'app-string-default';
     //TODO: read wrapers from input controls
     //const wrappers = ['field-parent-wrapper', 'field-wrapper']
     const wrappers = []
@@ -124,10 +121,11 @@ export class EavFieldDirective implements OnChanges, OnInit {
    * @param group is sent to @input group in created component
    */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup): ComponentRef<any> {
-    console.log('createComponent', fieldConfig.name);
+    console.log('createComponent', fieldConfig.type);
     let factories = Array.from(this.resolver['_factories'].values());
     console.log('factories', factories);
     let factoryComponentType = factories.find((x: any) => x.selector === fieldConfig.type)['componentType'];
+    console.log('uspio');
     const factory = this.resolver.resolveComponentFactory(<Type<any>>factoryComponentType);
     const ref = container.createComponent(factory);
 

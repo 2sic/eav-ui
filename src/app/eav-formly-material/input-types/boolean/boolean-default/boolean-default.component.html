@@ -1,4 +1,13 @@
-<mat-checkbox [formControl]="formControl" [id]="id" [formlyAttributes]="field" (change)="to.change && to.change(field, formControl)"
-  [indeterminate]="to.indeterminate && model[key] === undefined" [align]="to.align">
-  {{ to.label }} {{ to.required ? '*' : '' }}
-</mat-checkbox>
+<!-- <mat-form-field [formGroup]="group" [style.width]="'100%'"> -->
+<div [formGroup]="group">
+  <mat-checkbox [formControlName]="config.name" [id]="id" align="start">
+    {{config.name}}
+  </mat-checkbox>
+</div>
+<!-- </mat-form-field> -->
+
+<!-- (change)="to.change && to.change(field, formControl)" -->
+<!-- [indeterminate]="config.indeterminate && model[key] === undefined" -->
+<!-- [align]="to.align" -->
+<!--[id]="id" -->
+<!-- {{ config.required ? '*' : '' }} -->
