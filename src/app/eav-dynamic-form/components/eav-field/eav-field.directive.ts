@@ -35,6 +35,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
   ) { }
 
   ngOnChanges() {
+    console.log('izmjena');
     // if (this.component) {
     //   this.component.instance.config = this.config;
     //   this.component.instance.group = this.group;
@@ -53,6 +54,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
     // let fieldComponent = this.container;
     //if field group then create wrapper with child controls
 
+    console.log('this.config1:', this.config);
     this.config.forEach(controlConfiguration => {
       this.createFieldOrGroup(this.container, controlConfiguration, this.group);
     });

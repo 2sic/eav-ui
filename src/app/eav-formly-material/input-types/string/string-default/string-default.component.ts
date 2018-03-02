@@ -9,7 +9,8 @@ import { FormGroup } from '@angular/forms';
 @Component({
   selector: 'string-default',
   templateUrl: './string-default.component.html',
-  styleUrls: ['./string-default.component.css']
+  styleUrls: ['./string-default.component.css'],
+
 })
 export class StringDefaultComponent implements Field, OnInit {
   config: FieldConfig;

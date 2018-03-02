@@ -16,6 +16,12 @@ export class EavFormComponent implements OnChanges, OnInit {
   @Output()
   submit: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output()
+  formValueChange: EventEmitter<any> = new EventEmitter<any>();
+
+  // @Output()
+  // change: EventEmitter<any> = new EventEmitter<any>();
+
   form: FormGroup;
 
   //get controls() { return this.config.filter(({ type }) => type !== 'button'); }
@@ -30,9 +36,14 @@ export class EavFormComponent implements OnChanges, OnInit {
     this.form = this.createControlsInFormGroup(this.config);
     console.log('this.config sdfdsf:', JSON.stringify(this.config));
     console.log('group evo je:', JSON.stringify(this.form.value));
+
+    this.form.valueChanges.subscribe(val => {
+      this.formValueChange.emit(val);
+    });
   }
 
   ngOnChanges() {
+    console.log('ngOnChanges EavFormComponent');
     // TODO: see is this working
     if (this.form) {
       const controls = Object.keys(this.form.controls);
@@ -79,10 +90,21 @@ export class EavFormComponent implements OnChanges, OnInit {
   }
 
   handleSubmit(event: Event) {
+    console.log('Submit');
     event.preventDefault();
     event.stopPropagation();
     this.submit.emit(this.value);
   }
+
+  // changeForm() {
+  //   console.log('Change:', this.change);
+  //   // event.preventDefault();
+  //   // event.stopPropagation();
+
+
+  //   this.change.emit(this.changes);
+  // }
+
 
   setDisabled(name: string, disable: boolean) {
     if (this.form.controls[name]) {

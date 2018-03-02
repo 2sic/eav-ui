@@ -53,7 +53,6 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-accordion.json');
     this.contentTypeService.loadContentType('json-content-type-v1-accordion.json');
     // this.items$ = this.store.select(state => state.items);
-    console.log('load accordion');
   }
 
   // Test
@@ -61,7 +60,6 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-person.json');
     this.contentTypeService.loadContentType('json-content-type-v1-person.json');
     // this.items$ = this.store.select(state => state.items);
-    console.log('load persons');
   }
 
   // Test
@@ -69,7 +67,6 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-string-input-types.json');
     this.contentTypeService.loadContentType('json-content-type-v1-string-input-types.json');
     // this.items$ = this.store.select(state => state.items);
-    console.log('load string content types');
   }
 
   // Test
@@ -77,11 +74,14 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-input-types.json');
     this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
     // this.items$ = this.store.select(state => state.items);
-    console.log('load content types');
   }
 
   identify(index, item) {
-    console.log('identify', item);
+    // console.log('identify', item);
+
+    //if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {
+    console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
+    //}
     return item.entity.id;
   }
 }

@@ -49,266 +49,7 @@ export class NewItemFormComponent implements AfterViewInit {
   model: EavAttributes = {};
 
   constructor(private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
-    private cdRef: ChangeDetectorRef) { }
-
-  // config: FieldConfig[] = [
-  //   {
-  //     type: 'input',
-  //     label: 'Full name',
-  //     name: 'name',
-  //     placeholder: 'Enter your name',
-  //     validation: [Validators.required, Validators.minLength(4)]
-  //   },
-  //   {
-  //     type: 'input',
-  //     label: 'Last name',
-  //     name: 'lastname',
-  //     placeholder: 'Enter your name2',
-  //     validation: [Validators.required, Validators.minLength(4)]
-  //   }
-  // ];
-  config: FieldConfig[] = [
-    {
-      name: "first empty",
-      type: "empty-default",
-      wrappers: [
-        "collapsible"
-      ],
-      label: "Edit item",
-      collapse: false,
-      fieldGroup: [
-        {
-          value: "ante",
-          name: "FirstValue",
-          type: "app-string-default",
-          label: "StringDefault",
-          placeholder: "Enter StringDefault",
-          required: false,
-          pattern: "",
-          validation: [Validators.required, Validators.minLength(5)],
-          settings: {
-            InputType: {
-              values: [
-                {
-                  value: "string-default",
-                  dimensions: []
-                }
-              ]
-            },
-            RowCount: {
-              values: [
-                {
-                  value: 3,
-                  dimensions: []
-                }
-              ]
-            },
-            Name: {
-              values: [
-                {
-                  value: "StringDefault",
-                  dimensions: []
-                }
-              ]
-            },
-            Required: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            },
-            VisibleInEditUI: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            }
-          }
-        },
-        {
-          value: "ante",
-          name: "SecondValue",
-          type: "app-string-default",
-          label: "SecondValue",
-          placeholder: "Enter SecondValue",
-          required: true,
-          pattern: "",
-          validation: [Validators.required, Validators.minLength(5)],
-          settings: {
-            InputType: {
-              values: [
-                {
-                  value: "string-default",
-                  dimensions: []
-                }
-              ]
-            },
-            RowCount: {
-              values: [
-                {
-                  value: 3,
-                  dimensions: []
-                }
-              ]
-            },
-            Name: {
-              values: [
-                {
-                  value: "StringDefault",
-                  dimensions: []
-                }
-              ]
-            },
-            Required: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            },
-            VisibleInEditUI: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            }
-          },
-        },
-        {
-          name: "Empty",
-          type: "app-empty-default",
-          label: "EmptyDefault",
-          placeholder: "Enter EmptyDefault",
-          collapse: false,
-          fieldGroup: [
-            {
-              value: "new group",
-              name: "ThirdValue",
-              type: "app-string-default",
-              label: "ThirdValue",
-              placeholder: "Enter ThirdValue",
-              required: true,
-              pattern: "",
-              validation: [Validators.required, Validators.minLength(10)],
-              settings: {
-                InputType: {
-                  values: [
-                    {
-                      value: "string-default",
-                      dimensions: []
-                    }
-                  ]
-                },
-                RowCount: {
-                  values: [
-                    {
-                      value: 1,
-                      dimensions: []
-                    }
-                  ]
-                },
-                Name: {
-                  values: [
-                    {
-                      value: "StringDefault",
-                      dimensions: []
-                    }
-                  ]
-                },
-                Required: {
-                  values: [
-                    {
-                      value: true,
-                      dimensions: []
-                    }
-                  ]
-                },
-                VisibleInEditUI: {
-                  values: [
-                    {
-                      value: true,
-                      dimensions: []
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "third empty",
-      type: "empty-default",
-      wrappers: [
-        "collapsible"
-      ],
-      label: "Edit item",
-      collapse: false,
-      fieldGroup: [
-        {
-          value: "ante",
-          name: "thirdGroupValue",
-          type: "app-string-default",
-          label: "StringDefault",
-          placeholder: "Enter StringDefault",
-          required: true,
-          pattern: "",
-          validation: [Validators.required, Validators.minLength(5)],
-          settings: {
-            InputType: {
-              values: [
-                {
-                  value: "string-default",
-                  dimensions: []
-                }
-              ]
-            },
-            RowCount: {
-              values: [
-                {
-                  value: 3,
-                  dimensions: []
-                }
-              ]
-            },
-            Name: {
-              values: [
-                {
-                  value: "StringDefault",
-                  dimensions: []
-                }
-              ]
-            },
-            Required: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            },
-            VisibleInEditUI: {
-              values: [
-                {
-                  value: true,
-                  dimensions: []
-                }
-              ]
-            }
-          }
-        }
-      ]
-    }
-  ];
+    private contentTypeService: ContentTypeService) { }
 
   ngAfterViewInit() {
     // let previousValid = this.form.valid;
@@ -325,11 +66,7 @@ export class NewItemFormComponent implements AfterViewInit {
     // this.form.setValue('lastname', 'Gadzo');
     // needed to add explicit setect changes to solve error
 
-    this.cdRef.detectChanges();
-  }
-
-  submit(value: { [name: string]: any }) {
-    console.log(value);
+    // this.cdRef.detectChanges();
   }
 
   ngOnInit() {
@@ -342,7 +79,20 @@ export class NewItemFormComponent implements AfterViewInit {
     // this.form.valueChanges.subscribe(val => {
     //   console.log('aha tu si', val)
     // });
-    console.log('form:', this.form);
+    //console.log('form:', this.form);
+
+    console.log('ngOnChanges NewItemFormComponent');
+  }
+
+  formValueChange(value: { [name: string]: any }) {
+    console.log('this is working', value);
+    //TEST
+    this.selectedItem.entity.attributes.StringGroup1.values[0].value = 'this is working';
+    this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id);
+  }
+
+  submit(value: { [name: string]: any }) {
+    console.log(value);
   }
 
   // addAttributes() {
@@ -357,7 +107,6 @@ export class NewItemFormComponent implements AfterViewInit {
       this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id); // TODO: probably can update only attributes
     }
   }
-
 
   changeForm() {
     if (this.form.valid) {
@@ -375,7 +124,6 @@ export class NewItemFormComponent implements AfterViewInit {
     console.log('asdsadsadadadad');
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
-
   }
 
   /**
@@ -508,6 +256,4 @@ export class NewItemFormComponent implements AfterViewInit {
       fieldGroup: [],
     };
   }
-
-
 }
