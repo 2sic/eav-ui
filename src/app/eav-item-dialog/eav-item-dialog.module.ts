@@ -18,8 +18,9 @@ import {
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
-import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
+// import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
+import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 
 const routes: Routes = [
   {
@@ -43,7 +44,8 @@ const routes: Routes = [
     MatCardModule,
     MatIconModule,
     EavDynamicFormModule,
-    EavFormlyMaterialModule
+    // EavFormlyMaterialModule
+    EavMaterialControlsModule
   ],
   declarations: [
     MultiItemEditFormComponent,

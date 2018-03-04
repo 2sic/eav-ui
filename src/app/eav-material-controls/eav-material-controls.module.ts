@@ -167,4 +167,4 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     }),
   ],
 })
-export class EavFormlyMaterialModule { }
+export class EavMaterialControlsModule { }
