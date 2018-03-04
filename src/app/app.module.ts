@@ -4,9 +4,7 @@ import { StoreModule, Store } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
-import { FormlyModule } from '@ngx-formly/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormlyMaterialModule, FormlyWrapperFormField, FormlyFieldInput } from '@ngx-formly/material';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -15,11 +13,7 @@ import { ContentTypeService } from './shared/services/content-type.service';
 import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
-import { EavFormlyMaterialModule } from './eav-formly-material/eav-formly-material.module';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-// import { EavFormComponent } from './eav-form/containers/eav-form/eav-form.component';
-// import { EavFieldDirective } from './eav-form/containers/eav-field.directive';
-
 
 const routes: Routes = [
   {
@@ -36,9 +30,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent,
-    // EavFormComponent,
-    // EavFieldDirective,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -48,9 +40,6 @@ const routes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    FormlyMaterialModule,
-    EavFormlyMaterialModule,
-    // FormlyModule,
   ],
   exports: [RouterModule],
   providers: [ItemService, ContentTypeService],

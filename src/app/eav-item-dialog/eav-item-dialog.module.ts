@@ -10,8 +10,6 @@ import {
   MatCheckboxModule,
   MatInputModule,
   MatSelectModule,
-  // MatDialogModule,
-  // MatDialog,
   MatDatepickerModule,
   MatNativeDateModule,
   MatCardModule,
@@ -19,10 +17,9 @@ import {
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
-import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
-import { NewItemFormComponent } from './new-item-form/new-item-form.component';
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { EavFormlyMaterialModule } from '../eav-formly-material/eav-formly-material.module';
+import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 
 const routes: Routes = [
   {
@@ -41,7 +38,6 @@ const routes: Routes = [
     MatSelectModule,
     ReactiveFormsModule,
     FormlyModule,
-    // MatDialogModule
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
@@ -51,9 +47,7 @@ const routes: Routes = [
   ],
   declarations: [
     MultiItemEditFormComponent,
-    ItemEditFormComponent,
-    NewItemFormComponent,
-
+    ItemEditFormComponent
   ],
   exports: [RouterModule],
   providers: [],

@@ -1,7 +1,13 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ChangeDetectorRef, OnInit, Input, OnChanges } from '@angular/core';
+import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+
+//TODO: fix this dependency - from other module - move maybe to shared
+import { FieldConfig } from '../../eav-dynamic-form/model/field-config.interface';
+//TODO: fix this dependency 
+import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
@@ -15,24 +21,18 @@ import { InputTypesConstants } from '../../shared/constants/input-types-constant
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 
-export class EavSettings {
-  [key: string]: EavSettingsValue;
-}
-
-export class EavSettingsValue {
-  value: Item;
-}
-
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.css']
 })
-export class ItemEditFormComponent implements OnInit, OnChanges {
+export class ItemEditFormComponent implements AfterViewInit {
+  @ViewChild(EavFormComponent) form: EavFormComponent;
+
   /**
-   * Item is copied because we don't want to keep the reference to store
-   * ngrx store should be changed only through despaches and reducers
-   */
+    * Item is copied because we don't want to keep the reference to store
+    * ngrx store should be changed only through despaches and reducers
+    */
   @Input('item')
   set item(value: Item) {
     // this.selectedItem = Object.assign({}, value);
@@ -42,11 +42,30 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
 
   selectedItem: Item;
   contentType$: Observable<ContentType>;
-  form = new FormGroup({});
-  itemFields$: Observable<FormlyFieldConfig[]>;
+  // form = new FormGroup({});
+  itemFields$: Observable<FieldConfig[]>;
   model: EavAttributes = {};
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) { }
+  constructor(private itemService: ItemService,
+    private contentTypeService: ContentTypeService) { }
+
+  ngAfterViewInit() {
+    // let previousValid = this.form.valid;
+    // this.form.changes.subscribe(() => {
+    //   if (this.form.valid !== previousValid) {
+    //     previousValid = this.form.valid;
+    //     //this.form.setDisabled('submit', !previousValid);
+    //   }
+    // });
+
+    //this.form.setDisabled('submit', true);
+
+    //this.form.setValue('app-string-default', 'Ante');
+    // this.form.setValue('lastname', 'Gadzo');
+    // needed to add explicit setect changes to solve error
+
+    // this.cdRef.detectChanges();
+  }
 
   ngOnInit() {
     this.loadContentTypeFromStore();
@@ -58,6 +77,20 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
     // this.form.valueChanges.subscribe(val => {
     //   console.log('aha tu si', val)
     // });
+    //console.log('form:', this.form);
+
+    console.log('ngOnChanges NewItemFormComponent');
+  }
+
+  formValueChange(value: { [name: string]: any }) {
+    console.log('this is working', value);
+    //TEST
+    this.selectedItem.entity.attributes.StringGroup1.values[0].value = 'this is working';
+    this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id);
+  }
+
+  submit(value: { [name: string]: any }) {
+    console.log(value);
   }
 
   // addAttributes() {
@@ -73,7 +106,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
     }
   }
 
-
   changeForm() {
     if (this.form.valid) {
       this.itemService.updateItem(this.form.value, this.selectedItem.entity.id); // TODO: probably can update only attributes
@@ -87,6 +119,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
   loadContentTypeFromStore() {
     // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
+    console.log('asdsadsadadadad');
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
@@ -94,14 +127,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
   /**
    * load content type attributes to Formly FormFields (formlyFieldConfigArray)
    */
-  loadContentTypeFormFields = (): Observable<FormlyFieldConfig[]> => {
+  loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
       .switchMap((data) => {
         const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
         let currentFieldGroup = parentFieldGroup;
         // loop through contentType attributes
         data.contentType.attributes.forEach(attribute => {
-          const formlyFieldConfig: FormlyFieldConfig = this.loadFieldFromDefinitionTest(attribute);
+          const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute);
           // if input type is empty-default create new field group and than continue to add fields to that group
           if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
             const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
@@ -111,13 +144,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
             currentFieldGroup.fieldGroup.push(formlyFieldConfig);
           }
         });
-
         return of([parentFieldGroup]);
       });
   }
 
   // TEST
-  loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
+  loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
     if (attribute.settings.InputType) {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
@@ -147,40 +179,59 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
    * Load formly field from AttributeDef
    * @param attribute
    */
-  loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FormlyFieldConfig {
+  loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+
     // set validation for all input types
-    const validationList = this.setValidations(inputType);
+    const validationList: ValidatorFn[] = this.setValidations(attribute, inputType);
+    const value = this.getValueFromItem(attribute.name);
 
     return {
-      key: `${attribute.name}.values[0].value`,//.values[0].value
-      type: inputType,
-      templateOptions: {
-        type: 'text', // TODO
-        label: attribute.name,
-        // placeholder: `Enter ${attribute.name}`,
-        required: required,
-        pattern: pattern,
-        settings: attribute.settings,
-        change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
-      },
-      validators: {
-        validation: validationList,
-      },
+      //valueKey: `${attribute.name}.values[0].value`,
+      value: value,
+      name: attribute.name,
+      type: inputType, // TODO see do we need this
+      label: attribute.name,
+      placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
+      // required: required,
+      // pattern: pattern,
+      settings: attribute.settings,
+      //change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
+
+      validation: validationList
+      //disable: //TODO see do we need this
     };
+  }
+
+  /**
+   * Get value from item by attribute name
+   */
+  getValueFromItem = (attributeName: string): ValidatorFn[] => {
+    return this.selectedItem.entity.attributes[attributeName]
+      ? this.selectedItem.entity.attributes[attributeName].values[0].value
+      : null;
   }
 
   /**
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  setValidations(inputType: string): Array<string> {
-    let validation = Array<string>();
-    if (inputType === InputTypesConstants.stringUrlPath) {
-      validation = [...['onlySimpleUrlChars']];
+  setValidations(attribute: AttributeDef, inputType: string): ValidatorFn[] {
+
+    let validation: ValidatorFn[];
+
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    if (required) {
+      validation = [...[Validators.required]];
     }
+    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+    if (pattern) {
+      validation = [...[Validators.pattern(pattern)]];
+    }
+
+    // if (inputType === InputTypesConstants.stringUrlPath) {
+    //   validation = [...['onlySimpleUrlChars']];
+    // }
 
     return validation;
   }
@@ -190,14 +241,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
    * @param title 
    * @param collapse 
    */
-  createEmptyFieldGroup = (title: string, collapse: boolean): FormlyFieldConfig => {
+  createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
-      key: ``,
+      //key: ``,
+      name: name,
+      type: InputTypesConstants.emptyDefault,
       wrappers: ['collapsible'],
-      templateOptions: {
-        label: title,
-        collapse: collapse
-      },
+      //templateOptions: {
+      label: name,
+      collapse: collapse,
+      //},
       fieldGroup: [],
     };
   }
