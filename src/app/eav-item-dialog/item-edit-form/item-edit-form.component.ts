@@ -17,7 +17,6 @@ import { Item, ContentType } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
-// import * as itemActions from '../../shared/store/actions/item.actions';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 
@@ -29,96 +28,58 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 export class ItemEditFormComponent implements AfterViewInit {
   @ViewChild(EavFormComponent) form: EavFormComponent;
 
-  /**
-    * Item is copied because we don't want to keep the reference to store
-    * ngrx store should be changed only through despaches and reducers
-    */
-  @Input('item')
-  set item(value: Item) {
-    // this.selectedItem = Object.assign({}, value);
-    // this.selectedItem = { ...value };
-    this.selectedItem = JSON.parse(JSON.stringify(value));
-  }
+  @Input() item: Item
 
-  selectedItem: Item;
   contentType$: Observable<ContentType>;
-  // form = new FormGroup({});
   itemFields$: Observable<FieldConfig[]>;
-  model: EavAttributes = {};
 
   constructor(private itemService: ItemService,
     private contentTypeService: ContentTypeService) { }
-
-  ngAfterViewInit() {
-    // let previousValid = this.form.valid;
-    // this.form.changes.subscribe(() => {
-    //   if (this.form.valid !== previousValid) {
-    //     previousValid = this.form.valid;
-    //     //this.form.setDisabled('submit', !previousValid);
-    //   }
-    // });
-
-    //this.form.setDisabled('submit', true);
-
-    //this.form.setValue('app-string-default', 'Ante');
-    // this.form.setValue('lastname', 'Gadzo');
-    // needed to add explicit setect changes to solve error
-
-    // this.cdRef.detectChanges();
-  }
 
   ngOnInit() {
     this.loadContentTypeFromStore();
     console.log('oninit');
   }
 
-  ngOnChanges(): void {
-    //TODO: TRY catch canges
-    // this.form.valueChanges.subscribe(val => {
-    //   console.log('aha tu si', val)
-    // });
-    //console.log('form:', this.form);
+  ngAfterViewInit() {
 
+  }
+
+  ngOnChanges(): void {
     console.log('ngOnChanges NewItemFormComponent');
   }
 
   formValueChange(value: { [name: string]: any }) {
     console.log('this is working', value);
     //TEST
-    this.selectedItem.entity.attributes.StringGroup1.values[0].value = 'this is working';
-    this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id);
+    this.item.entity.attributes.StringGroup1.values[0].value = 'this is working';
+    this.itemService.updateItem(this.item.entity.attributes, this.item.entity.id);
   }
 
   submit(value: { [name: string]: any }) {
     console.log(value);
   }
 
-  // addAttributes() {
-  //   console.log('patchValue', this.selectedItem.entity.attributes)
-  //   this.form.patchValue(this.selectedItem.entity.attributes);
-  //   // this.model = this.selectedItem.entity.attributes;
-  // }
-
   submitForm() {
     if (this.form.valid) {
       console.log('submit');
-      this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id); // TODO: probably can update only attributes
+      this.itemService.updateItem(this.item.entity.attributes, this.item.entity.id); // TODO: probably can update only attributes
     }
   }
 
   changeForm() {
     if (this.form.valid) {
-      this.itemService.updateItem(this.form.value, this.selectedItem.entity.id); // TODO: probably can update only attributes
+      this.itemService.updateItem(this.form.value, this.item.entity.id); // TODO: probably can update only attributes
     }
   }
 
   deleteItem() {
-    this.itemService.deleteItem(this.selectedItem); // TODO: probably can update only attributes
+    this.itemService.deleteItem(this.item); // TODO: probably can update only attributes
   }
 
   loadContentTypeFromStore() {
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
+    this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
     console.log('asdsadsadadadad');
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
@@ -207,8 +168,8 @@ export class ItemEditFormComponent implements AfterViewInit {
    * Get value from item by attribute name
    */
   getValueFromItem = (attributeName: string): ValidatorFn[] => {
-    return this.selectedItem.entity.attributes[attributeName]
-      ? this.selectedItem.entity.attributes[attributeName].values[0].value
+    return this.item.entity.attributes[attributeName]
+      ? this.item.entity.attributes[attributeName].values[0].value
       : null;
   }
 

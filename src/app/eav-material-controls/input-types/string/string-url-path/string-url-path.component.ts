@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
-import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 import { FormControl } from '@angular/forms';
 import { Helper } from '../../../../shared/helpers/helper';
 import { Field } from '../../../../eav-dynamic-form/model/field.interface';

@@ -68,7 +68,8 @@ export class EavFieldDirective implements OnChanges, OnInit {
    */
   private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
     if (fieldConfig.fieldGroup) {
-      this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
+      //this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
+      this.createGroupComponents(container, fieldConfig, group);
     } else {
       this.createFieldComponent(container, fieldConfig, group);
     }
@@ -102,8 +103,8 @@ export class EavFieldDirective implements OnChanges, OnInit {
    */
   private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
     const ovajTip = 'empty-default';
-    // const wrappers = ['collapsible'];  //TODO this wrapper must have formGroupName="address" 
-    const wrappers = ['field-group-wrapper'];  //TODO this wrapper must have formGroupName="address" 
+    // const wrappers = ['collapsible'];
+    const wrappers = ['field-group-wrapper'];
 
     wrappers.forEach(wrapperName => {
       let wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);

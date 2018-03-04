@@ -22,7 +22,7 @@ export class EavFormComponent implements OnChanges, OnInit {
   // @Output()
   // change: EventEmitter<any> = new EventEmitter<any>();
 
-  form: FormGroup;
+  form: FormGroup = new FormGroup({});
 
   //get controls() { return this.config.filter(({ type }) => type !== 'button'); }
   // get controls() { return this.config }
@@ -33,7 +33,8 @@ export class EavFormComponent implements OnChanges, OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.form = this.createControlsInFormGroup(this.config);
+    //let group = this.formBuilder.group({});
+    this.createControlsInFormGroup(this.config);
     console.log('this.config sdfdsf:', JSON.stringify(this.config));
     console.log('group evo je:', JSON.stringify(this.form.value));
 
@@ -67,17 +68,23 @@ export class EavFormComponent implements OnChanges, OnInit {
    * @param fieldConfigArray 
    */
   createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
-    const group = this.formBuilder.group({});
+    // const group = this.formBuilder.group({});
+    console.log('uslo:', fieldConfigArray);
+    console.log('uslo group:', this.form);
     fieldConfigArray.forEach(fieldConfig => {
+      console.log('fieldConfig.fieldGroup:', fieldConfig.fieldGroup);
       if (fieldConfig.fieldGroup) {
-        group.addControl(fieldConfig.name, this.createControlsInFormGroup(fieldConfig.fieldGroup));
+        this.createControlsInFormGroup(fieldConfig.fieldGroup);
+        console.log('createControlsInFormGroup', fieldConfig.name);
       } else {
-        group.addControl(fieldConfig.name, this.createControl(fieldConfig))
+        this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
+        console.log('createControl', fieldConfig.name);
       }
     }
     );
 
-    return group;
+    console.log('idjem vratiti nest:', JSON.stringify(this.form.value));
+    return this.form;
   }
 
   /**
@@ -95,16 +102,6 @@ export class EavFormComponent implements OnChanges, OnInit {
     event.stopPropagation();
     this.submit.emit(this.value);
   }
-
-  // changeForm() {
-  //   console.log('Change:', this.change);
-  //   // event.preventDefault();
-  //   // event.stopPropagation();
-
-
-  //   this.change.emit(this.changes);
-  // }
-
 
   setDisabled(name: string, disable: boolean) {
     if (this.form.controls[name]) {

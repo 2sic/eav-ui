@@ -77,10 +77,12 @@ export class MultiItemEditFormComponent implements OnInit {
   }
 
   identify(index, item) {
-    // console.log('identify', item);
+    //console.log('identify', item);
 
     //if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {
-    console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
+
+    //console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
+
     //}
     return item.entity.id;
   }

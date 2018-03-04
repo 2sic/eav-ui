@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
-import { FormlyErrorStateMatcher } from '../../formly.error-state-matcher';
 
 @Component({
   selector: 'string-dropdown-query',
