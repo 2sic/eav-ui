@@ -20,8 +20,7 @@ export class FieldGroupWrapperComponent extends FieldWrapper implements OnInit {
   //   this.childForm = value;
   // }
   ngOnInit() {
-    console.log('alo ja imam ovo: ', this.config);
-    console.log('alo ja imam ovo group: ', this.group);
+
   }
 
 }

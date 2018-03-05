@@ -13,12 +13,13 @@ import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
-import { Item, ContentType } from '../../shared/models/eav';
+import { Item, ContentType, EavValue } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
+import { EavValues } from '../../shared/models/eav/eav-values';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -49,28 +50,21 @@ export class ItemEditFormComponent implements AfterViewInit {
     console.log('ngOnChanges NewItemFormComponent');
   }
 
-  formValueChange(value: { [name: string]: any }) {
-    console.log('this is working', value);
-    //TEST
-    this.item.entity.attributes.StringGroup1.values[0].value = 'this is working';
-    this.itemService.updateItem(this.item.entity.attributes, this.item.entity.id);
+  /**
+   * Update NGRX/store on form value change
+   * @param value 
+   */
+  formValueChange(values: { [name: string]: any }) {
+
+    const eavAttributes = EavAttributes.createFromDictionary(values);
+
+    if (Object.keys(eavAttributes).length > 0) {
+      this.itemService.updateItem(eavAttributes, this.item.entity.id);
+    }
   }
 
   submit(value: { [name: string]: any }) {
     console.log(value);
-  }
-
-  submitForm() {
-    if (this.form.valid) {
-      console.log('submit');
-      this.itemService.updateItem(this.item.entity.attributes, this.item.entity.id); // TODO: probably can update only attributes
-    }
-  }
-
-  changeForm() {
-    if (this.form.valid) {
-      this.itemService.updateItem(this.form.value, this.item.entity.id); // TODO: probably can update only attributes
-    }
   }
 
   deleteItem() {
@@ -80,7 +74,6 @@ export class ItemEditFormComponent implements AfterViewInit {
   loadContentTypeFromStore() {
     // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
-    console.log('asdsadsadadadad');
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }

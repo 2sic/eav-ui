@@ -6,5 +6,5 @@ import { FormGroup } from '@angular/forms';
 export abstract class FieldWrapper {
     fieldComponent: ViewContainerRef;
     config: FieldConfig;
-    group: FormGroup;
+    //group: FormGroup;
 }

@@ -153,7 +153,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
     let componentFactory = this.resolver.resolveComponentFactory(this.fieldTypeConfig.getWrapper(wrapperName).component);
     let ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
     Object.assign(ref.instance, {
-      group: group,
+      //group: group, //this only need if we have form groups
       config: fieldConfig
     });
 

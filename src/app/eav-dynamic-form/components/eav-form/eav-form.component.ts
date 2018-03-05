@@ -46,21 +46,22 @@ export class EavFormComponent implements OnChanges, OnInit {
   ngOnChanges() {
     console.log('ngOnChanges EavFormComponent');
     // TODO: see is this working
-    if (this.form) {
-      const controls = Object.keys(this.form.controls);
-      const configControls = this.config.map((item) => item.name);
+    // if (this.form) {
+    //   const controls = Object.keys(this.form.controls);
+    //   const configControls = this.config.map((item) => item.name);
 
-      controls
-        .filter((control) => !configControls.includes(control))
-        .forEach((control) => this.form.removeControl(control));
+    //   controls
+    //     .filter((control) => !configControls.includes(control))
+    //     .forEach((control) => this.form.removeControl(control));
 
-      configControls
-        .filter((control) => !controls.includes(control))
-        .forEach((name) => {
-          const config = this.config.find((control) => control.name === name);
-          this.form.addControl(name, this.createControl(config));
-        });
-    }
+    //   configControls
+    //     .filter((control) => !controls.includes(control))
+    //     .forEach((name) => {
+    //       const config = this.config.find((control) => control.name === name);
+
+    //       this.form.addControl(name, this.createControl(config));
+    //     });
+    // }
   }
 
   /**
@@ -70,12 +71,9 @@ export class EavFormComponent implements OnChanges, OnInit {
   createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
     // const group = this.formBuilder.group({});
     console.log('uslo:', fieldConfigArray);
-    console.log('uslo group:', this.form);
     fieldConfigArray.forEach(fieldConfig => {
-      console.log('fieldConfig.fieldGroup:', fieldConfig.fieldGroup);
       if (fieldConfig.fieldGroup) {
         this.createControlsInFormGroup(fieldConfig.fieldGroup);
-        console.log('createControlsInFormGroup', fieldConfig.name);
       } else {
         this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
         console.log('createControl', fieldConfig.name);
@@ -83,7 +81,6 @@ export class EavFormComponent implements OnChanges, OnInit {
     }
     );
 
-    console.log('idjem vratiti nest:', JSON.stringify(this.form.value));
     return this.form;
   }
 
