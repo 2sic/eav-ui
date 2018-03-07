@@ -4,11 +4,11 @@ import { ValidationErrors, FormGroup, FormArray } from '@angular/forms';
 // import { reverseDeepMerge } from './../utils';
 // import { FormlyFieldConfig, FormlyFormOptions } from '../model/field-config.interface';
 import { FieldConfig } from '../model/field-config.interface';
-//TODO: export this
+// TODO: export this
 import { FormInputComponent } from '../components/inputs/form-input/form-input.component';
-//TODO: export this
+// TODO: export this
 import { FieldWrapperComponent } from '../components/wrappers/field-wrapper/field-wrapper.component';
-//TODO: export this
+// TODO: export this
 import { FieldParentWrapperComponent } from '../components/wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { TypeOption } from '../model/type-option.interface';
 import { FieldGroupWrapperComponent } from '../components/wrappers/field-group-wrapper/field-group-wrapper.component';
@@ -53,13 +53,15 @@ export class FieldTypeConfig {
         // ]
     }];
     // extras: {
-    //     // fieldTransform?: ((fields: FieldConfig[], model: any, form: FormGroup | FormArray, options: FormlyFormOptions) => 
+    //     // fieldTransform?: ((fields: FieldConfig[], model: any, form: FormGroup | FormArray, options: FormlyFormOptions) =>
     //     fieldTransform?: ((fields: FieldConfig[], form: FormGroup | FormArray) => FieldConfig[])[],
     //     //     showError?: (field: Field) => boolean;
     //     // } = {
     //     //         fieldTransform: undefined,
     //     //         showError: function (field: Field) {
-    //     //             return field.formControl && field.formControl.invalid && (field.formControl.touched || (field.options.parentForm && field.options.parentForm.submitted) || (field.field.validation && field.field.validation.show));
+    //     //             return field.formControl && field.formControl.invalid &&
+    // (field.formControl.touched || (field.options.parentForm && field.options.parentForm.submitted)
+    // ||  (field.field.validation && field.field.validation.show));
     //     //         },
     // };
 
@@ -112,7 +114,7 @@ export class FieldTypeConfig {
             throw new Error(`[Formly Error] There is no type by the name of "${name}"`);
         }
 
-        //this.mergeExtendedType(name);
+        // this.mergeExtendedType(name);
 
         return this.types[name];
     }
@@ -212,17 +214,17 @@ export interface ManipulatorOption {
     method?: string;
 }
 
-export interface ManipulatorWrapper {
-    (f: FieldConfig): string;
-}
+// export interface ManipulatorWrapper {
+//     (f: FieldConfig): string;
+// }
 
-export interface TemplateManipulators {
-    preWrapper?: ManipulatorWrapper[];
-    postWrapper?: ManipulatorWrapper[];
-}
+// export interface TemplateManipulators {
+//     preWrapper?: ManipulatorWrapper[];
+//     postWrapper?: ManipulatorWrapper[];
+// }
 
 export interface ConfigOption {
-    //types?: TypeOption[];
+    // types?: TypeOption[];
     wrappers?: WrapperOption[];
     // validators?: ValidatorOption[];
     // validationMessages?: ValidationMessageOption[];

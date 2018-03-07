@@ -7,6 +7,7 @@ import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.int
 import { FormGroup } from '@angular/forms';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'string-dropdown',
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.css']
@@ -19,6 +20,9 @@ export class StringDropdownComponent implements Field, OnInit {
 
   selectOptions = [];
 
+  private _selectOptions: string[] = [];
+  private _oldOptions: string[] = [];
+
   ngOnInit() {
     this.selectOptions = this.setOptionsFromDropdownValues();
     console.log('this.config.settings.DropdownValues:', this.config.settings.DropdownValues);
@@ -30,9 +34,6 @@ export class StringDropdownComponent implements Field, OnInit {
   // get labelProp(): string { return this.config['labelProp'] || 'label'; }
   // get valueProp(): string { return this.config['valueProp'] || 'value'; }
   // get groupProp(): string { return this.config['groupProp'] || 'group'; }
-
-  private _selectOptions: string[] = [];
-  private _oldOptions: string[] = [];
 
   // ngOnInit() {
   //   super.ngOnInit();
@@ -49,7 +50,7 @@ export class StringDropdownComponent implements Field, OnInit {
   //   super.ngAfterViewInit();
   // }
 
-  //get selectOptions() {
+  // get selectOptions() {
 
   // this._selectOptions = this.setOptionsFromDropdownValues();
   // console.log("sadsad", this.config.options);
@@ -82,7 +83,7 @@ export class StringDropdownComponent implements Field, OnInit {
   //     }
   //   }
   // });
-  //}
+  // }
 
   /**
    * Read settings Dropdown values
@@ -99,7 +100,7 @@ export class StringDropdownComponent implements Field, OnInit {
         const val = s.join(':');
         return {
           label: key,
-          value: (val || maybeWantedEmptyVal === '') ? val : key
+          value: (val) ? val : key
         };
       });
     }

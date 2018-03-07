@@ -65,7 +65,7 @@ export function itemReducer(state: Item[] = new Array<Item>(), action: fromItems
             });
 
             // 'BooleanDefault': this.eavValuesReducer(state['BooleanDefault'], action)
-            // values: [{ value: state.values[0].value, dimensions: [] }] 
+            // values: [{ value: state.values[0].value, dimensions: [] }]
 
             // const ovajItem: Item = state.find(item => item.entity.id === action.item.entity.id);
             // return [{

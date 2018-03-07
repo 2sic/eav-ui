@@ -1,7 +1,11 @@
-import { Component, ViewChild, AfterViewInit, ChangeDetectorRef, OnInit, Input, OnChanges } from '@angular/core';
+import {
+  Component, ViewChild, ChangeDetectorRef,
+  OnInit, Input, OnChanges, ElementRef, OnDestroy
+} from '@angular/core';
 import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
+
 
 //TODO: fix this dependency - from other module - move maybe to shared
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config.interface';
@@ -9,6 +13,8 @@ import { FieldConfig } from '../../eav-dynamic-form/model/field-config.interface
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
@@ -20,58 +26,132 @@ import { InputTypesConstants } from '../../shared/constants/input-types-constant
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavValues } from '../../shared/models/eav/eav-values';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.css']
 })
-export class ItemEditFormComponent implements AfterViewInit {
+export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EavFormComponent) form: EavFormComponent;
 
-  @Input() item: Item
+  @Input()
+  set item(value: Item) {
+    console.log('set item');
+    this.itemBehaviorSubject$.next(value);
+  }
+  get item(): Item {
+    console.log('get item');
+    return this.itemBehaviorSubject$.getValue();
+  }
 
+  //@Input() item: Item
+  private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
 
-  constructor(private itemService: ItemService,
-    private contentTypeService: ContentTypeService) { }
+  constructor(
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
+    //private ref: ElementRef,
+  ) { }
 
   ngOnInit() {
+    this.itemBehaviorSubject$.subscribe((item: Item) => {
+      if (this.form) {
+        this.setFormValues(item)
+      }
+    });
+
     this.loadContentTypeFromStore();
+    // Observable.fromEvent(this.ref.nativeElement, 'click')
+    //   .do(ev => console.log("test 1", ev))
+    //   .subscribe();
+    // Observable.fromEvent(this.ref.nativeElement, 'changes')
+    //   .do(ev => console.log("test", ev))
+    //   .subscribe();
     console.log('oninit');
   }
 
-  ngAfterViewInit() {
-
+  ngOnDestroy(): void {
+    this.itemBehaviorSubject$.unsubscribe();
   }
 
   ngOnChanges(): void {
-    console.log('ngOnChanges NewItemFormComponent');
+    console.log('ngOnChanges change test ');
   }
 
   /**
    * Update NGRX/store on form value change
-   * @param value 
+   * @param values key:value list of fields from form
    */
-  formValueChange(values: { [name: string]: any }) {
-
+  formValueChange(values: { [key: string]: any }) {
     const eavAttributes = EavAttributes.createFromDictionary(values);
-
     if (Object.keys(eavAttributes).length > 0) {
       this.itemService.updateItem(eavAttributes, this.item.entity.id);
     }
   }
 
-  submit(value: { [name: string]: any }) {
-    console.log(value);
+  //TEMP
+  changeThis() {
+    const values = {
+      BooleanDefault: false,
+      DateTime: '2018-02-14T20:14:00Z',
+      EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
+      NumberDefault: 5,
+      DateTimeWithTime: '2018-02-07T02:03:00Z',
+      BooleanGroup1: false,
+      DropDownGroup1: '1',
+      StringGroup1: 'Ante test',
+      StringGroup2: 'ante test2',
+      StringUrlPathGroup2: 'ante'
+    }
+
+    const eavAttributes = EavAttributes.createFromDictionary(values);
+    if (Object.keys(eavAttributes).length > 0) {
+      this.itemService.updateItem(eavAttributes, this.item.entity.id);
+    }
+  }
+
+  submit(values: { [key: string]: any }) {
+    console.log(values);
   }
 
   deleteItem() {
     this.itemService.deleteItem(this.item); // TODO: probably can update only attributes
   }
 
-  loadContentTypeFromStore() {
+  /**
+    * Create formValue dictionary from EavAttributes
+    */
+  // private setFormValues = (item: Item) => { //: { [key: string]: any }
+  //   //const formValues: { [key: string]: any } = {};
+  //   console.log('minjam item', item);
+  //   Object.keys(item.entity.attributes).forEach(valueKey => {
+  //     //formValues[valueKey] = item.entity.attributes[valueKey].values[0].valuež
+  //     //if (this.form) {
+  //       this.form.setValue(valueKey, item.entity.attributes[valueKey].values[0].value, false)
+  //     //}
+  //   })
+
+  //   //return formValues;
+  // };
+
+  private setFormValues = (item: Item) => { //: { [key: string]: any }
+    const formValues: { [name: string]: any } = {};
+    console.log('minjam item', item);
+    Object.keys(item.entity.attributes).forEach(valueKey => {
+      formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
+    })
+
+    this.form.patchValue(formValues, false);
+
+    //return formValues;
+  };
+
+  private loadContentTypeFromStore() {
     // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
     // create form fields from content type
@@ -81,7 +161,7 @@ export class ItemEditFormComponent implements AfterViewInit {
   /**
    * load content type attributes to Formly FormFields (formlyFieldConfigArray)
    */
-  loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
+  private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
       .switchMap((data) => {
         const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
@@ -103,7 +183,7 @@ export class ItemEditFormComponent implements AfterViewInit {
   }
 
   // TEST
-  loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
+  private loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
     if (attribute.settings.InputType) {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
@@ -133,7 +213,7 @@ export class ItemEditFormComponent implements AfterViewInit {
    * Load formly field from AttributeDef
    * @param attribute
    */
-  loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
+  private loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
 
     // set validation for all input types
@@ -160,7 +240,7 @@ export class ItemEditFormComponent implements AfterViewInit {
   /**
    * Get value from item by attribute name
    */
-  getValueFromItem = (attributeName: string): ValidatorFn[] => {
+  private getValueFromItem = (attributeName: string): any => {
     return this.item.entity.attributes[attributeName]
       ? this.item.entity.attributes[attributeName].values[0].value
       : null;
@@ -170,7 +250,7 @@ export class ItemEditFormComponent implements AfterViewInit {
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  setValidations(attribute: AttributeDef, inputType: string): ValidatorFn[] {
+  private setValidations(attribute: AttributeDef, inputType: string): ValidatorFn[] {
 
     let validation: ValidatorFn[];
 
@@ -195,16 +275,13 @@ export class ItemEditFormComponent implements AfterViewInit {
    * @param title 
    * @param collapse 
    */
-  createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
+  private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
-      //key: ``,
       name: name,
       type: InputTypesConstants.emptyDefault,
-      wrappers: ['collapsible'],
-      //templateOptions: {
+      // wrappers: ['collapsible'],
       label: name,
       collapse: collapse,
-      //},
       fieldGroup: [],
     };
   }

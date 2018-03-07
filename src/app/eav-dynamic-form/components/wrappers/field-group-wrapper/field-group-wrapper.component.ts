@@ -10,8 +10,8 @@ import { FormGroup } from '@angular/forms';
 export class FieldGroupWrapperComponent extends FieldWrapper implements OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  //@Input('group')
-  //public 
+  // @Input('group')
+  // public
   // childForm: FormGroup;
   // @Input('group')
   // set group(value: FormGroup) {

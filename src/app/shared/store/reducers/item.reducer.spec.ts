@@ -67,7 +67,7 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = [updatedItem];
 
-            const action = new itemActions.UpdateItemAction(updatedItem);
+            const action = new itemActions.UpdateItemAction(updatedItem.entity.attributes, updatedItem.entity.id);
             const result = itemReducer(currentItemState, action);
             // we changed attribute booleanDefault from true to false
             expect(result[0].entity.attributes['BooleanDefault'].values[0].value)

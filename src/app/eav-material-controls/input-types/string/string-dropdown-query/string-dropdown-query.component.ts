@@ -3,6 +3,7 @@ import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'string-dropdown-query',
   templateUrl: './string-dropdown-query.component.html',
   styleUrls: ['./string-dropdown-query.component.css']

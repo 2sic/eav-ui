@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../model/field.interface';
 import { FieldConfig } from '../../model/field-config.interface';
 import { TypeOption } from '../../model/type-option.interface';
-import { FieldTypeConfig, TemplateManipulators } from '../../services/field-type-config.service';
+import { FieldTypeConfig } from '../../services/field-type-config.service';
 import { FieldWrapper } from '../../model/field-wrapper';
 
 @Directive({
@@ -22,10 +22,10 @@ export class EavFieldDirective implements OnChanges, OnInit {
   group: FormGroup;
 
 
-  //typeOption: TypeOption;
+  // typeOption: TypeOption;
 
-  //component: ComponentRef<Field>;  
-  //private componentRef: ComponentRef<{}>;
+  // component: ComponentRef<Field>;
+  // private componentRef: ComponentRef<{}>;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -35,7 +35,6 @@ export class EavFieldDirective implements OnChanges, OnInit {
   ) { }
 
   ngOnChanges() {
-    console.log('izmjena');
     // if (this.component) {
     //   this.component.instance.config = this.config;
     //   this.component.instance.group = this.group;
@@ -52,9 +51,8 @@ export class EavFieldDirective implements OnChanges, OnInit {
     //   );
     // }
     // let fieldComponent = this.container;
-    //if field group then create wrapper with child controls
+    // if field group then create wrapper with child controls
 
-    console.log('this.config1:', this.config);
     this.config.forEach(controlConfiguration => {
       this.createFieldOrGroup(this.container, controlConfiguration, this.group);
     });
@@ -68,7 +66,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
    */
   private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
     if (fieldConfig.fieldGroup) {
-      //this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
+      // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig, group);
     } else {
       this.createFieldComponent(container, fieldConfig, group);
@@ -77,18 +75,18 @@ export class EavFieldDirective implements OnChanges, OnInit {
 
   /**
    * Create field components with wrappers in container
-   * @param container 
-   * @param fieldConfig 
-   * @param group 
+   * @param container
+   * @param fieldConfig
+   * @param group
    */
   private createFieldComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
     // const ovajTip = 'app-string-default';
-    //TODO: read wrapers from input controls
-    //const wrappers = ['field-parent-wrapper', 'field-wrapper']
-    const wrappers = []
+    // TODO: read wrapers from input controls
+    // const wrappers = ['field-parent-wrapper', 'field-wrapper']
+    const wrappers = [];
 
     wrappers.forEach(wrapperName => {
-      let wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
+      const wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
       container = wrapperRef.instance.fieldComponent;
     });
 
@@ -102,34 +100,32 @@ export class EavFieldDirective implements OnChanges, OnInit {
    * @param group
    */
   private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup) {
-    const ovajTip = 'empty-default';
     // const wrappers = ['collapsible'];
     const wrappers = ['field-group-wrapper'];
 
     wrappers.forEach(wrapperName => {
-      let wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
+      const wrapperRef = this.createComponentWrapper(container, wrapperName, fieldConfig, group);
       container = wrapperRef.instance.fieldComponent;
     });
 
     fieldConfig.fieldGroup.forEach(controlConfiguration => {
       this.createFieldOrGroup(container, controlConfiguration, group);
-    })
+    });
   }
 
   /**
-   * Create component from selector (fieldType) if exist in module. 
+   * Create component from selector (fieldType) if exist in module.
    * @param container  place where component is created
-   * @param fieldType  
+   * @param fieldType
    * @param fieldConfig  is sent to @input config in created component
    * @param group is sent to @input group in created component
    */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup): ComponentRef<any> {
-    console.log('createComponent', fieldConfig.type);
-    let factories = Array.from(this.resolver['_factories'].values());
+    const factories = Array.from(this.resolver['_factories'].values());
     console.log('factories', factories);
-    let factoryComponentType = factories.find((x: any) => x.selector === fieldConfig.type)['componentType'];
-    console.log('uspio');
+    const factoryComponentType = factories.find((x: any) => x.selector === fieldConfig.type)['componentType'];
     const factory = this.resolver.resolveComponentFactory(<Type<any>>factoryComponentType);
+
     const ref = container.createComponent(factory);
 
     Object.assign(ref.instance, {
@@ -142,27 +138,26 @@ export class EavFieldDirective implements OnChanges, OnInit {
 
   /**
    * Create Wrapper from wrapperName in contaner
-   * @param container 
-   * @param wrapperName 
-   * @param fieldConfig 
-   * @param group 
+   * @param container
+   * @param wrapperName
+   * @param fieldConfig
+   * @param group
    */
   private createComponentWrapper(container: ViewContainerRef, wrapperName: string, fieldConfig: FieldConfig, group: FormGroup):
     ComponentRef<any> {
-    console.log('createComponentWrapper', fieldConfig.name);
-    let componentFactory = this.resolver.resolveComponentFactory(this.fieldTypeConfig.getWrapper(wrapperName).component);
-    let ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
+    const componentFactory = this.resolver.resolveComponentFactory(this.fieldTypeConfig.getWrapper(wrapperName).component);
+    const ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
     Object.assign(ref.instance, {
-      //group: group, //this only need if we have form groups
+      // group: group, //this only need if we have form groups
       config: fieldConfig
     });
 
     return ref;
   }
 
-  //----------------------------------------------------
+  // ----------------------------------------------------
   // This maybe we can use for custom types
-  //----------------------------------------------------
+  // ----------------------------------------------------
 
   // compileTemplate(): ComponentRef<any>  {
   //   let metadata = {
@@ -195,5 +190,5 @@ export class EavFieldDirective implements OnChanges, OnInit {
   //   return module.componentFactories.find(f => f.componentType === decoratedCmp);
   // }
 
-  //--------------------------------------------
+  // --------------------------------------------
 }

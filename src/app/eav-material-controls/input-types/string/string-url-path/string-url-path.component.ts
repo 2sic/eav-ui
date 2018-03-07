@@ -8,6 +8,7 @@ import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.int
 import { FormGroup } from '@angular/forms';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'string-url-path',
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.css']

@@ -21,7 +21,6 @@ import {
     MatIconModule,
 } from '@angular/material';
 
-
 @NgModule({
     imports: [
         CommonModule,
@@ -43,7 +42,7 @@ import {
         FormInputComponent,
         FieldWrapperComponent,
         FieldParentWrapperComponent,
-        FieldGroupWrapperComponent
+        FieldGroupWrapperComponent,
     ],
     exports: [
         EavFormComponent

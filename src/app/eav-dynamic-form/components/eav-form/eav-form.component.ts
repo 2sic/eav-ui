@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { FieldConfig } from '../../model/field-config.interface';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   exportAs: 'appEavForm',
@@ -9,7 +10,7 @@ import { FieldConfig } from '../../model/field-config.interface';
   selector: 'app-eav-form',
   styleUrls: ['./eav-form.component.css']
 })
-export class EavFormComponent implements OnChanges, OnInit {
+export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   @Input()
   config: FieldConfig[] = [];
 
@@ -19,12 +20,10 @@ export class EavFormComponent implements OnChanges, OnInit {
   @Output()
   formValueChange: EventEmitter<any> = new EventEmitter<any>();
 
-  // @Output()
-  // change: EventEmitter<any> = new EventEmitter<any>();
-
   form: FormGroup = new FormGroup({});
 
-  //get controls() { return this.config.filter(({ type }) => type !== 'button'); }
+  private subscriptions: Subscription[] = [];
+  // get controls() { return this.config.filter(({ type }) => type !== 'button'); }
   // get controls() { return this.config }
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
@@ -33,14 +32,13 @@ export class EavFormComponent implements OnChanges, OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    //let group = this.formBuilder.group({});
+    // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
-    console.log('this.config sdfdsf:', JSON.stringify(this.config));
-    console.log('group evo je:', JSON.stringify(this.form.value));
 
-    this.form.valueChanges.subscribe(val => {
+    this.subscriptions.push(this.form.valueChanges.subscribe(val => {
+      console.log('subscribe value change val', val);
       this.formValueChange.emit(val);
-    });
+    }));
   }
 
   ngOnChanges() {
@@ -64,19 +62,21 @@ export class EavFormComponent implements OnChanges, OnInit {
     // }
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
   /**
    * Create form from configuration
-   * @param fieldConfigArray 
+   * @param fieldConfigArray
    */
-  createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
+  private createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
     // const group = this.formBuilder.group({});
-    console.log('uslo:', fieldConfigArray);
     fieldConfigArray.forEach(fieldConfig => {
       if (fieldConfig.fieldGroup) {
         this.createControlsInFormGroup(fieldConfig.fieldGroup);
       } else {
         this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
-        console.log('createControl', fieldConfig.name);
       }
     }
     );
@@ -88,7 +88,7 @@ export class EavFormComponent implements OnChanges, OnInit {
    *  Create form control
    * @param config
    */
-  createControl(config: FieldConfig) {
+  private createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
     return this.formBuilder.control({ disabled, value }, validation);
   }
@@ -115,8 +115,46 @@ export class EavFormComponent implements OnChanges, OnInit {
     });
   }
 
-  setValue(name: string, value: any) {
-    this.form.controls[name].setValue(value, { emitEvent: true });
+  /**
+   * Set form control value
+   * @param name
+   * @param value
+   * @param emitEvent If emitEvent is true, this change will cause a valueChanges event on the FormControl
+   * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
+   */
+  setValue(name: string, value: any, emitEvent: boolean) {
+    if (value !== this.form.controls[name].value) {
+      console.log('CHANGE' + name + ' from value: ' + this.form.controls[name].value + ' to ' + value);
+      this.form.controls[name].setValue(value, { emitEvent: emitEvent });
+    }
+  }
+
+  /**
+   * Patch values to formGroup. It accepts an object with control names as keys, and will do its best to
+   * match the values to the correct controls in the group.
+   * @param values
+   * @param emitEvent If emitEvent is true, this change will cause a valueChanges event on the FormGroup
+   * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
+   */
+  patchValue(values: { [key: string]: any }, emitEvent: boolean) {
+    if (this.valueIsChanged(values)) {
+      console.log('value patchValue');
+      this.form.patchValue(values, { emitEvent: emitEvent });
+    }
+  }
+
+  /**
+   * Check is value in form is changed
+   *
+  */
+  private valueIsChanged = (values: { [key: string]: any }) => {
+    let valueIsChanged = false;
+    Object.keys(this.form.value).forEach(valueKey => {
+      if (this.form.value[valueKey] !== values[valueKey]) {
+        valueIsChanged = true;
+      }
+    });
+
+    return valueIsChanged;
   }
 }
-
