@@ -6,10 +6,9 @@ import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 
-
-//TODO: fix this dependency - from other module - move maybe to shared
+// TODO: fix this dependency - from other module - move maybe to shared
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config.interface';
-//TODO: fix this dependency 
+// TODO: fix this dependency
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 
 import 'rxjs/add/operator/map';
@@ -47,7 +46,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.itemBehaviorSubject$.getValue();
   }
 
-  //@Input() item: Item
+  // @Input() item: Item
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
@@ -55,13 +54,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    //private ref: ElementRef,
+    // private ref: ElementRef,
   ) { }
 
   ngOnInit() {
     this.itemBehaviorSubject$.subscribe((item: Item) => {
       if (this.form) {
-        this.setFormValues(item)
+        this.setFormValues(item);
       }
     });
 
@@ -94,7 +93,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  //TEMP
+  // TEMP
   changeThis() {
     const values = {
       BooleanDefault: false,
@@ -107,7 +106,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       StringGroup1: 'Ante test',
       StringGroup2: 'ante test2',
       StringUrlPathGroup2: 'ante'
-    }
+    };
 
     const eavAttributes = EavAttributes.createFromDictionary(values);
     if (Object.keys(eavAttributes).length > 0) {
@@ -139,17 +138,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   //   //return formValues;
   // };
 
-  private setFormValues = (item: Item) => { //: { [key: string]: any }
+  private setFormValues = (item: Item) => { // : { [key: string]: any }
     const formValues: { [name: string]: any } = {};
     console.log('minjam item', item);
     Object.keys(item.entity.attributes).forEach(valueKey => {
       formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
-    })
+    });
 
     this.form.patchValue(formValues, false);
 
-    //return formValues;
-  };
+    // return formValues;
+  }
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
@@ -221,7 +220,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const value = this.getValueFromItem(attribute.name);
 
     return {
-      //valueKey: `${attribute.name}.values[0].value`,
+      // valueKey: `${attribute.name}.values[0].value`,
       value: value,
       name: attribute.name,
       type: inputType, // TODO see do we need this
@@ -230,10 +229,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // required: required,
       // pattern: pattern,
       settings: attribute.settings,
-      //change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
+      // change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
 
       validation: validationList
-      //disable: //TODO see do we need this
+      // disable: //TODO see do we need this
     };
   }
 
@@ -272,8 +271,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Create title field group with collapsible wrapper
-   * @param title 
-   * @param collapse 
+   * @param title
+   * @param collapse
    */
   private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
