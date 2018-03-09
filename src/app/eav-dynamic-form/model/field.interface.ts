@@ -6,9 +6,4 @@ import { TypeOption } from './type-option.interface';
 export declare abstract class Field {
     config: FieldConfig;
     group: FormGroup;
-
-    //readonly formControl: AbstractControl;
-    // readonly showError: boolean;
-    // readonly id: string;
-    //readonly formState: any;
 }

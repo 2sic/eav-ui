@@ -20,7 +20,5 @@ export class FieldGroupWrapperComponent extends FieldWrapper implements OnInit {
   //   this.childForm = value;
   // }
   ngOnInit() {
-
   }
-
 }

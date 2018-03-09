@@ -1,6 +1,6 @@
 import {
   ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type, ViewContainerRef,
-  Component, Compiler, ComponentFactory, NgModule, ModuleWithComponentFactories,
+  Component, Compiler, NgModule, ModuleWithComponentFactories, ComponentFactory,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
@@ -121,9 +121,14 @@ export class EavFieldDirective implements OnChanges, OnInit {
    * @param group is sent to @input group in created component
    */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, group: FormGroup): ComponentRef<any> {
+    console.log('resolver', this.resolver);
     const factories = Array.from(this.resolver['_factories'].values());
     console.log('factories', factories);
     const factoryComponentType = factories.find((x: any) => x.selector === fieldConfig.type)['componentType'];
+    if (fieldConfig.type === 'string-default') {
+      const decoratorFactory = Reflect.getMetadata('annotations', factoryComponentType);
+      console.log('reading wrapper:', decoratorFactory[0].wrapper);
+    }
     const factory = this.resolver.resolveComponentFactory(<Type<any>>factoryComponentType);
 
     const ref = container.createComponent(factory);
@@ -147,6 +152,7 @@ export class EavFieldDirective implements OnChanges, OnInit {
     ComponentRef<any> {
     const componentFactory = this.resolver.resolveComponentFactory(this.fieldTypeConfig.getWrapper(wrapperName).component);
     const ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
+
     Object.assign(ref.instance, {
       // group: group, //this only need if we have form groups
       config: fieldConfig

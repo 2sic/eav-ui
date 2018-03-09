@@ -51,7 +51,7 @@ import {
         FormInputComponent,
         FieldWrapperComponent,
         FieldParentWrapperComponent,
-        FieldGroupWrapperComponent
+        FieldGroupWrapperComponent,
     ],
     providers: [
         FieldTypeConfig

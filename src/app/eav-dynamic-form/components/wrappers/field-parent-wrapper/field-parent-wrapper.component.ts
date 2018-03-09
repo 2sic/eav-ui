@@ -9,8 +9,6 @@ import { FieldWrapper } from '../../../model/field-wrapper';
 export class FieldParentWrapperComponent extends FieldWrapper implements OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-
   ngOnInit() {
   }
-
 }

@@ -12,6 +12,8 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import 'reflect-metadata';
+
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
