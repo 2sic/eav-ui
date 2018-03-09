@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { Helper } from '../../../../shared/helpers/helper';

@@ -1,10 +1,9 @@
-import { FormlyFieldConfig } from '@ngx-formly/core';
 
 export class ValidationMessages {
 
-  static onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
-    return `"${field.formControl.value}" is not a valid URL`;
-  }
+  // static onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
+  //   return `"${field.formControl.value}" is not a valid URL`;
+  // }
 
   static minlengthValidationMessage(err, field) {
     return `Should have atleast ${field.templateOptions.minLength} characters`;

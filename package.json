@@ -27,8 +27,6 @@
     "@ngrx/effects": "^4.1.1",
     "@ngrx/store": "^4.1.1",
     "@ngrx/store-devtools": "^4.1.1",
-    "@ngx-formly/core": "^2.0.0-rc.24",
-    "@ngx-formly/material": "^2.0.0-rc.24",
     "core-js": "^2.4.1",
     "ng-pick-datetime": "^5.1.6",
     "rxjs": "^5.5.6",

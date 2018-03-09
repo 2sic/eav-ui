@@ -1,11 +1,11 @@
 import { Component, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { Field } from '../../../../eav-dynamic-form/model/field.interface';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
 import { FormGroup } from '@angular/forms';
 
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.css']

@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
 
 @Component({
@@ -8,7 +7,7 @@ import { MatInput } from '@angular/material';
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.css']
 })
-export class StringFontIconPickerComponent extends FieldType {
+export class StringFontIconPickerComponent {
   @ViewChild(MatInput) matInput: MatInput;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 

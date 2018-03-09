@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FieldType } from '@ngx-formly/material';
 import { MatInput, MatSelect } from '@angular/material';
-import { SelectOption } from '@ngx-formly/material/src/types/select';
 import { Field } from '../../../../eav-dynamic-form/model/field.interface';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
 import { FormGroup } from '@angular/forms';

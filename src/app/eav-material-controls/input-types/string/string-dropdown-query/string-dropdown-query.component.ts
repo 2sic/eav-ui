@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/material';
 import { MatInput } from '@angular/material';
 
 @Component({
@@ -8,7 +7,7 @@ import { MatInput } from '@angular/material';
   templateUrl: './string-dropdown-query.component.html',
   styleUrls: ['./string-dropdown-query.component.css']
 })
-export class StringDropdownQueryComponent extends FieldType {
+export class StringDropdownQueryComponent {
   @ViewChild(MatInput) matInput: MatInput;
   // errorStateMatcher = new FormlyErrorStateMatcher(this);
 
