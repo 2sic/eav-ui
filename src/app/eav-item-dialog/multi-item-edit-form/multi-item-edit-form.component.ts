@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-
+import 'reflect-metadata';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import { AppState } from '../../shared/models';
@@ -9,10 +9,6 @@ import { Item, ContentType } from '../../shared/models/eav';
 import { of } from 'rxjs/observable/of';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
-
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
-import 'reflect-metadata';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -24,7 +20,7 @@ export class MultiItemEditFormComponent implements OnInit {
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService, private dialog: MatDialog) {
+  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) {
     this.items$ = itemService.items$;
   }
 

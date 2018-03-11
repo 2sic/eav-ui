@@ -1,14 +1,19 @@
 import { Component, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { FormGroup } from '@angular/forms';
+
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
-import { FormGroup } from '@angular/forms';
+import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.css']
+})
+@InputType({
+  wrapper: ['app-field-wrapper'],
 })
 export class BooleanDefaultComponent implements Field {
   config: FieldConfig;

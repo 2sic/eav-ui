@@ -46,49 +46,65 @@ export class EavFieldDirective implements OnInit {
     }
   }
 
+  /**
+   * Create group components with group wrappers in container
+   * @param container
+   * @param fieldConfig
+   */
   private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig) {
-    // TODO: read this wrapper from group field configuration
-    // const wrappers = ['app-field-group-wrapper'];
-
-    container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
-
+    if (fieldConfig.wrappers) {
+      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
+    }
     fieldConfig.fieldGroup.forEach(controlConfiguration => {
       this.createFieldOrGroup(container, controlConfiguration);
     });
   }
 
+  /**
+   * Create component and component wrappers if component exist
+   * @param container
+   * @param fieldConfig
+   */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
     const componentType = this.readComponentType(fieldConfig.type);
 
-    // TODO: if decoratorFactory for type exist then create component
-    if (fieldConfig.type === 'string-default') {
-      const decoratorFactory = Reflect.getMetadata('annotations', componentType);
-      console.log('reading wrapper:', decoratorFactory[0].wrapper);
+    const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
+    // console.log('reading wrapper:', inputTypeAnnotations);
 
-      if (decoratorFactory && decoratorFactory[0] && decoratorFactory[0].wrapper) {
-        container = this.createComponentWrappers(container, fieldConfig, decoratorFactory[0].wrapper);
+    // if inputTypeAnnotations of componentType exist then create component
+    if (inputTypeAnnotations) {
+      if (inputTypeAnnotations.wrapper) {
+        container = this.createComponentWrappers(container, fieldConfig, inputTypeAnnotations.wrapper);
       }
+
+      const factory = this.resolver.resolveComponentFactory(<Type<any>>componentType);
+      const ref = container.createComponent(factory);
+
+      Object.assign(ref.instance, {
+        group: this.group,
+        config: fieldConfig,
+      });
     }
-
-    const factory = this.resolver.resolveComponentFactory(<Type<any>>componentType);
-    const ref = container.createComponent(factory);
-
-    Object.assign(ref.instance, {
-      group: this.group,
-      config: fieldConfig,
-    });
   }
 
+  /**
+   * Read component type by selector with ComponentFactoryResolver
+   * @param selector
+   */
   private readComponentType(selector: string): Type<any> {
     const factories = Array.from(this.resolver['_factories'].values());
-    console.log('factories', factories);
     const componentType = factories.find((x: any) => x.selector === selector)['componentType'];
 
     return componentType;
   }
 
-  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfig, wrappers: string[]):
-    ViewContainerRef {
+  /**
+   * Create wrappers in container
+   * @param container
+   * @param fieldConfig
+   * @param wrappers
+   */
+  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfig, wrappers: string[]): ViewContainerRef {
 
     wrappers.forEach(wrapperName => {
       container = this.createWrapper(container, fieldConfig, wrapperName);
@@ -97,6 +113,12 @@ export class EavFieldDirective implements OnInit {
     return container;
   }
 
+  /**
+   * Create wrapper in container
+   * @param container
+   * @param fieldConfig
+   * @param wrapper
+   */
   private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfig, wrapper: string): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
 
@@ -105,7 +127,7 @@ export class EavFieldDirective implements OnInit {
     const ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
 
     Object.assign(ref.instance, {
-      // group: group, //this only need if we have form groups
+      // group: group, // this only need if we have form groups
       config: fieldConfig
     });
 

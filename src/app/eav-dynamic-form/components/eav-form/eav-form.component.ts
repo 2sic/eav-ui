@@ -130,7 +130,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   /**
-   * Patch values to formGroup. It accepts an object with control names as keys, and will do its best to
+   * Patch values to formGroup. It accepts an object with control names as keys, and will do it's best to
    * match the values to the correct controls in the group.
    * @param values
    * @param emitEvent If emitEvent is true, this change will cause a valueChanges event on the FormGroup
@@ -144,7 +144,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   /**
-   * Check is value in form is changed
+   * Check is value in form changed
    *
   */
   private valueIsChanged = (values: { [key: string]: any }) => {

@@ -20,6 +20,7 @@ import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.modul
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 
+
 const routes: Routes = [
   {
     path: '',
