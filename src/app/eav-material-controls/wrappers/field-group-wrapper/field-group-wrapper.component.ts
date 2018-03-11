@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, Input } from '@angular/core';
-import { FieldWrapper } from '../../../model/field-wrapper';
 import { FormGroup } from '@angular/forms';
+import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 
 @Component({
   selector: 'app-field-group-wrapper',
   templateUrl: './field-group-wrapper.component.html',
   styleUrls: ['./field-group-wrapper.component.css']
 })
-export class FieldGroupWrapperComponent extends FieldWrapper implements OnInit {
+export class FieldGroupWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  // @Input('group')
+  @Input() config;
   // public
   // childForm: FormGroup;
   // @Input('group')

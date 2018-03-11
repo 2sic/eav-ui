@@ -1,9 +1,8 @@
 import { Input } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { FieldConfig } from './field-config.interface';
-import { TypeOption } from './type-option.interface';
+import { FieldConfig } from './field-config';
 
-export declare abstract class Field {
+export interface Field {
     config: FieldConfig;
     group: FormGroup;
 }

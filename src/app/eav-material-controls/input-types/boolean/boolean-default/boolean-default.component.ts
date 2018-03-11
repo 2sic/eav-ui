@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterViewInit, Renderer2 } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { Field } from '../../../../eav-dynamic-form/model/field.interface';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
+import { Field } from '../../../../eav-dynamic-form/model/field';
+import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FormGroup } from '@angular/forms';
 
 @Component({

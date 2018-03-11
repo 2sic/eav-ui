@@ -35,7 +35,10 @@ import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessages } from './validators/validation-messages';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-
+import { FieldWrapperComponent } from './wrappers/field-wrapper/field-wrapper.component';
+import { Field } from '../eav-dynamic-form/model/field';
+import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
+import { FieldGroupWrapperComponent } from './wrappers/field-group-wrapper/field-group-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +60,9 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
+    FieldWrapperComponent,
+    FieldParentWrapperComponent,
+    FieldGroupWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -84,6 +90,9 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
+    FieldWrapperComponent,
+    FieldParentWrapperComponent,
+    FieldGroupWrapperComponent
   ]
 })
 export class EavMaterialControlsModule { }

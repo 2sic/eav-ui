@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 
 // TODO: fix this dependency - from other module - move maybe to shared
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config.interface';
+import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 // TODO: fix this dependency
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 
@@ -138,16 +138,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   //   //return formValues;
   // };
 
-  private setFormValues = (item: Item) => { // : { [key: string]: any }
+  private setFormValues = (item: Item) => {
     const formValues: { [name: string]: any } = {};
-    console.log('minjam item', item);
     Object.keys(item.entity.attributes).forEach(valueKey => {
       formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
     });
 
     this.form.patchValue(formValues, false);
-
-    // return formValues;
   }
 
   private loadContentTypeFromStore() {
@@ -278,7 +275,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return {
       name: name,
       type: InputTypesConstants.emptyDefault,
-      // wrappers: ['collapsible'],
+      wrappers: ['app-field-group-wrapper'], // 'collapsible'
       label: name,
       collapse: collapse,
       fieldGroup: [],

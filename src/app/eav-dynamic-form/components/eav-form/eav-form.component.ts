@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { FieldConfig } from '../../model/field-config.interface';
+import { FieldConfig } from '../../model/field-config';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatInput, MatSelect } from '@angular/material';
-import { Field } from '../../../../eav-dynamic-form/model/field.interface';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config.interface';
+import { Field } from '../../../../eav-dynamic-form/model/field';
+import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FormGroup } from '@angular/forms';
 
 @Component({
