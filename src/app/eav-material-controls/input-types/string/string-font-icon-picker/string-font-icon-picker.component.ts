@@ -13,6 +13,4 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 })
 export class StringFontIconPickerComponent {
   @ViewChild(MatInput) matInput: MatInput;
-  // errorStateMatcher = new FormlyErrorStateMatcher(this);
-
 }

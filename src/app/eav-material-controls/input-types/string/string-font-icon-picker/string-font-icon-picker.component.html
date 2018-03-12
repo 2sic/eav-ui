@@ -1,11 +1,12 @@
 <div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
 
 <ng-template #inputField>
-  <input matInput [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher" [formControl]="formControl">
+  <input matInput [type]="type" [id]="id" class="form-control material" [required]='config.required' [placeholder]="config.label"
+    [formControl]="formControl">
 </ng-template>
 
 <ng-template #textareaField>
-  <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [errorStateMatcher]="errorStateMatcher"
+  <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [required]='config.label' [placeholder]="config.label"
     [formControl]="formControl"></textarea>
 </ng-template>
 

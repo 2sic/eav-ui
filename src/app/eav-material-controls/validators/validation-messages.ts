@@ -1,9 +1,14 @@
+import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 
 export class ValidationMessages {
 
   // static onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
   //   return `"${field.formControl.value}" is not a valid URL`;
   // }
+
+  static requiredMessage(config: FieldConfig) {
+    return `You must enter a value`;
+  }
 
   static minlengthValidationMessage(err, field) {
     return `Should have atleast ${field.templateOptions.minLength} characters`;

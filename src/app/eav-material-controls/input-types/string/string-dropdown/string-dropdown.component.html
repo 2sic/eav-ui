@@ -2,7 +2,7 @@
 
 <ng-template #selectField>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <mat-select placeholder="Favorite animal" [formControlName]="config.name" required='config.required' [placeholder]="config.placeholder">
+    <mat-select placeholder="Favorite animal" [formControlName]="config.name" [required]='config.required' [placeholder]="config.placeholder">
       <mat-option>--</mat-option>
       <mat-option *ngFor="let item of selectOptions" [value]="item.value">
         {{item.label}}
@@ -18,7 +18,7 @@
 EXAMPLE : https://github.com/formly-js/angular-formly/issues/499 -->
 <ng-template #inputField>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material" required='config.required'
+    <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material" [required]='config.required'
       [formControlName]="config.name" [placeholder]="config.placeholder">
     <a matSuffix *ngIf="config.settings.EnableTextEntry && config.settings.EnableTextEntry.values[0].value" [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
       (click)="freeTextMode = !freeTextMode ">

@@ -24,4 +24,14 @@ export class StringDefaultComponent implements Field {
   get rowCount() {
     return this.config.settings.RowCount ? this.config.settings.RowCount.values[0].value : 1;
   }
+
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  getErrorMessage() {
+    console.log('Pozvano');
+    return this.group.controls[this.config.name].hasError('required') ? 'You must enter a value' :
+      '';
+  }
 }

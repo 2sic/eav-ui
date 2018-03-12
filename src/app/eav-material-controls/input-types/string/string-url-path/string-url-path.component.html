@@ -2,6 +2,6 @@
     <!-- directive : only-simple-url-chars -->
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
         <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" (blur)="finalClean(config.name)"
-            (keyup)="clean(config.name)" [placeholder]="config.label" required='config.required'>
+            (keyup)="clean(config.name)" [placeholder]="config.label" [required]='config.required'>
     </mat-form-field>
 </div>

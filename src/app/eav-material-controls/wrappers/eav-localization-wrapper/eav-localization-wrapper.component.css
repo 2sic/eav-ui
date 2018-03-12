@@ -1,0 +1,14 @@
+.language-field {
+    float: left;
+    width: 95%;
+}
+
+ .language-icon {
+    margin-top: 12px;
+    font-size: 18px;
+
+ }
+
+.language-wrap {
+    overflow: hidden;
+}

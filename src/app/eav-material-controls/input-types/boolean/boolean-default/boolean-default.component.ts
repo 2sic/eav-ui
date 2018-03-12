@@ -18,7 +18,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 export class BooleanDefaultComponent implements Field {
   config: FieldConfig;
   group: FormGroup;
-  // @ViewChild(MatCheckbox) matCheckbox: MatCheckbox;
+  @ViewChild(MatCheckbox) matCheckbox: MatCheckbox;
 
   // constructor(private renderer?: Renderer2) {
   //   super();

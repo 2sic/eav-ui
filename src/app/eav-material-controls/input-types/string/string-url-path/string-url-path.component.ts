@@ -18,17 +18,10 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   wrapper: ['app-eav-localization-wrapper'],
 })
 export class StringUrlPathComponent implements Field {
-  // @ViewChild(MatInput) matInput: MatInput;
-  // errorStateMatcher = new FormlyErrorStateMatcher(this);
   config: FieldConfig;
   group: FormGroup;
-  enableSlashes = true;
 
-  // ngAfterViewInit() {
-  //   if (this.field['__formField__']) {
-  //     this.field['__formField__']._control = this.matInput;
-  //   }
-  // }
+  enableSlashes = true;
 
   finalClean(formControlName: string) {
     const formControlValue = this.group.controls[formControlName].value;
