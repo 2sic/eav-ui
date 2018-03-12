@@ -13,7 +13,7 @@ export interface FieldConfig {
     wrappers?: string[];
 
     required?: boolean;
-    pattern?: string;
+    // pattern?: string;
     settings?: any;
     collapse?: boolean;
 

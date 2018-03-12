@@ -13,7 +13,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./number-default.component.css']
 })
 @InputType({
-  wrapper: ['app-field-wrapper'],
+  wrapper: ['app-eav-localization-wrapper'],
 })
 export class NumberDefaultComponent implements Field {
   config: FieldConfig;

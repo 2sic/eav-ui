@@ -1,7 +1,7 @@
 <div>
     <!-- directive : only-simple-url-chars -->
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
-        <input matInput type="text" [id]="id" [errorStateMatcher]="errorStateMatcher" class="form-control material" [formControlName]="config.name">
+        <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" (blur)="finalClean(config.name)"
+            (keyup)="clean(config.name)" [placeholder]="config.label" required='config.required'>
     </mat-form-field>
-    <!-- (blur)="finalClean(formControl)" (keyup)="clean(formControl)" -->
 </div>

@@ -9,7 +9,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./string-font-icon-picker.component.css']
 })
 @InputType({
-  wrapper: ['app-field-wrapper'],
+  wrapper: ['app-eav-localization-wrapper'],
 })
 export class StringFontIconPickerComponent {
   @ViewChild(MatInput) matInput: MatInput;

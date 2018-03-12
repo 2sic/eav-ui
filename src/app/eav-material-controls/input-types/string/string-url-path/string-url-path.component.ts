@@ -15,7 +15,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./string-url-path.component.css']
 })
 @InputType({
-  wrapper: ['app-field-wrapper'],
+  wrapper: ['app-eav-localization-wrapper'],
 })
 export class StringUrlPathComponent implements Field {
   // @ViewChild(MatInput) matInput: MatInput;
@@ -30,19 +30,21 @@ export class StringUrlPathComponent implements Field {
   //   }
   // }
 
-  finalClean(formControl: FormControl) {
-    const orig = formControl.value;
-    const cleaned = Helper.stripNonUrlCharacters(formControl, this.enableSlashes, true);
-    if (orig !== cleaned) {
-      formControl.setValue(cleaned);
+  finalClean(formControlName: string) {
+    const formControlValue = this.group.controls[formControlName].value;
+    // const orig = formControl.value;
+    const cleaned = Helper.stripNonUrlCharacters(formControlValue, this.enableSlashes, true);
+    if (formControlValue !== cleaned) {
+      this.group.patchValue({ [formControlName]: cleaned });
     }
   }
 
-  clean(formControl: FormControl) {
-    const orig = formControl.value;
-    const cleaned = Helper.stripNonUrlCharacters(formControl, this.enableSlashes, false);
-    if (orig !== cleaned) {
-      formControl.setValue(cleaned);
+  clean(formControlName: string) {
+    // const orig = formControl.value;
+    const formControlValue = this.group.controls[formControlName].value;
+    const cleaned = Helper.stripNonUrlCharacters(formControlValue, this.enableSlashes, false);
+    if (formControlValue !== cleaned) {
+      this.group.patchValue({ [formControlName]: cleaned });
     }
   }
 

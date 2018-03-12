@@ -13,7 +13,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./boolean-default.component.css']
 })
 @InputType({
-  wrapper: ['app-field-wrapper'],
+  wrapper: ['app-eav-localization-wrapper'],
 })
 export class BooleanDefaultComponent implements Field {
   config: FieldConfig;

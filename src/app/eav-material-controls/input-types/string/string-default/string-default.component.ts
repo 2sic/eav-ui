@@ -13,23 +13,15 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./string-default.component.css'],
 })
 @InputType({
-  wrapper: ['app-field-parent-wrapper', 'app-field-wrapper'],
+  wrapper: ['app-eav-localization-wrapper'],
 })
-export class StringDefaultComponent implements Field, OnInit {
+export class StringDefaultComponent implements Field {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  constructor() {
-    // console.log('ime pisem u decorator: ', this['wrapper']());
-  }
+  constructor() { }
 
-  ngOnInit() {
+  get rowCount() {
+    return this.config.settings.RowCount ? this.config.settings.RowCount.values[0].value : 1;
   }
-  // get type() {
-  //   return this.to.type || 'text';
-  // }
-
-  // get rowCount() {
-  //   return this.to.rowCount || 1;
-  // }
 }

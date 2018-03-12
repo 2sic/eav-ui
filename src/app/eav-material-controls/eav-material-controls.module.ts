@@ -35,10 +35,9 @@ import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessages } from './validators/validation-messages';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { FieldWrapperComponent } from './wrappers/field-wrapper/field-wrapper.component';
 import { Field } from '../eav-dynamic-form/model/field';
 import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
-import { FieldGroupWrapperComponent } from './wrappers/field-group-wrapper/field-group-wrapper.component';
+import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -60,9 +59,8 @@ import { FieldGroupWrapperComponent } from './wrappers/field-group-wrapper/field
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
-    FieldWrapperComponent,
-    FieldParentWrapperComponent,
-    FieldGroupWrapperComponent
+    EavLocalizationComponent,
+    FieldParentWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -90,9 +88,9 @@ import { FieldGroupWrapperComponent } from './wrappers/field-group-wrapper/field
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
-    FieldWrapperComponent,
+    EavLocalizationComponent,
     FieldParentWrapperComponent,
-    FieldGroupWrapperComponent
+    CollapsibleWrapperComponent
   ]
 })
 export class EavMaterialControlsModule { }

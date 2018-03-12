@@ -214,6 +214,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     // set validation for all input types
     const validationList: ValidatorFn[] = this.setValidations(attribute, inputType);
+    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
     const value = this.getValueFromItem(attribute.name);
 
     return {
@@ -223,7 +224,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       type: inputType, // TODO see do we need this
       label: attribute.name,
       placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
-      // required: required,
+      required: required,
       // pattern: pattern,
       settings: attribute.settings,
       // change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
@@ -275,7 +276,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return {
       name: name,
       type: InputTypesConstants.emptyDefault,
-      wrappers: ['app-field-group-wrapper'], // 'collapsible'
+      wrappers: ['app-collapsible-wrapper'],
       label: name,
       collapse: collapse,
       fieldGroup: [],
