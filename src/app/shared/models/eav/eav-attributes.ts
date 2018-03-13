@@ -67,10 +67,10 @@ export class EavAttributes {
         Object.keys(value).forEach(valueKey => {
             const eavValues: EavValue<any>[] = [];
             eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])]);
-        })
+        });
 
         return eavAttributes;
-    };
+    }
 
 }
 

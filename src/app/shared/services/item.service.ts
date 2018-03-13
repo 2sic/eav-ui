@@ -2,23 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { AppState } from '../models/app-state';
-import * as itemActions from '../../shared/store/actions/item.actions';
-import * as attributesActions from '../../shared/store/actions/attributes.action';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import { EavAttributes } from '../models/eav';
+// import { ItemState } from '../store/reducers/item.reducer';
+
+import * as itemActions from '../../shared/store/actions/item.actions';
+import * as fromStore from '../store';
 
 @Injectable()
 export class ItemService {
 
   public items$: Observable<Item[]>;
 
-  constructor(private httpClient: HttpClient, private store: Store<AppState>) {
-    this.items$ = store.select(s => s.items);
+  constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
+    this.items$ = store.select(fromStore.getItems);
   }
 
   public loadItem(path: string) {
@@ -35,7 +37,7 @@ export class ItemService {
 
   public selectItemById(id: number): Observable<Item> {
     return this.store
-      .select(s => s.items)
+      .select(fromStore.getItems)
       .map(data => data.find(obj => obj.entity.id === id));
   }
 

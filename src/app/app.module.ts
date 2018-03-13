@@ -10,7 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
-import { itemReducer, contentTypeReducer } from './shared/store/reducers';
+// import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -34,8 +34,10 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
-    StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
-    EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
+    // StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
+    StoreModule.forRoot({}),
+    // EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
+    EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule,
     RouterModule.forRoot(routes),

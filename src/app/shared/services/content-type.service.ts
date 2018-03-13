@@ -7,12 +7,14 @@ import { Store } from '@ngrx/store';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { JsonContentType1 } from '../models/json-format-v1/json-content-type1';
 import { AppState } from '../models/app-state';
+
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
+import * as fromStore from '../store';
 
 @Injectable()
 export class ContentTypeService {
-  public contentTypes$: Observable<ContentType[]>;
-  constructor(private httpClient: HttpClient, private store: Store<AppState>) {
+  // public contentTypes$: Observable<ContentType[]>;
+  constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
   }
 
   /**
@@ -29,7 +31,7 @@ export class ContentTypeService {
    */
   public getContentTypeById(id: string): Observable<ContentType> {
     return this.store
-      .select(s => s.contentTypes)
+      .select(fromStore.getContentTypes)
       .map(data => data.find(obj => obj.contentType.id === id));
   }
 
@@ -66,6 +68,5 @@ export class ContentTypeService {
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
-
 }
 

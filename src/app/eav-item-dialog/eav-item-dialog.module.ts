@@ -19,7 +19,10 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
+import { reducers } from '../shared/store';
 
+import { ItemEffects } from '../shared/effects/item.effects';
+import { ContentTypeEffects } from '../shared/effects/content-type.effects';
 
 const routes: Routes = [
   {
@@ -46,7 +49,9 @@ const routes: Routes = [
     MatCardModule,
     MatIconModule,
     EavDynamicFormModule,
-    EavMaterialControlsModule
+    EavMaterialControlsModule,
+    StoreModule.forFeature('eavItemDialog', reducers),
+    EffectsModule.forFeature([ItemEffects, ContentTypeEffects]),
   ],
   exports: [RouterModule],
   providers: [],
