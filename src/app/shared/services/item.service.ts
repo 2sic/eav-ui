@@ -31,6 +31,10 @@ export class ItemService {
     this.store.dispatch(new itemActions.UpdateItemAction(attributes, id));
   }
 
+  // public updateItem(attributes: EavAttributes, item: EavItem) {
+  //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
+  // }
+
   public deleteItem(item: Item) {
     this.store.dispatch(new itemActions.DeleteItemAction(item));
   }

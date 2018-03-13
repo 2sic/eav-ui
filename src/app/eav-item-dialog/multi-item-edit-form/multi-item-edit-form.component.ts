@@ -17,14 +17,6 @@ import { ItemState } from '../../shared/store/reducers/item.reducer';
 import * as fromStore from '../../shared/store';
 import * as itemActions from '../../shared/store/actions/item.actions';
 
-// export const geItemStateTest = (state: fromStore.EavState) => state.itemState;
-// export const getItemsTest = (state: ItemState) => state.items;
-
-// const getEav = state => state.eav;
-// const getItemState = state => state.ItemState;
-
-
-
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
@@ -35,17 +27,8 @@ export class MultiItemEditFormComponent implements OnInit {
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService, private store: Store<fromStore.EavState>) {
+  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) {
     this.items$ = itemService.items$;
-    // this.items$ = this.store.select(fromStore.getStateItems);
-
-    // this.items$ = store.select(state => {
-    //   console.log('eavState', state);
-    //   const itemState = geItemStateTest(state);
-    //   console.log('itemState', itemState);
-    //   const items = getItemsTest(itemState);
-    //   return items;
-    // });
   }
 
   ngOnInit() {
@@ -93,8 +76,7 @@ export class MultiItemEditFormComponent implements OnInit {
 
   // Test
   loadInputTypes() {
-    this.store.dispatch(new itemActions.LoadItemAction('json-item-v1-input-types.json'));
-    // this.itemService.loadItem('json-item-v1-input-types.json');
+    this.itemService.loadItem('json-item-v1-input-types.json');
     this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
     // this.items$ = this.store.select(state => state.items);
   }

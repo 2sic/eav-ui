@@ -87,7 +87,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
-    const eavAttributes = EavAttributes.createFromDictionary(values);
+    const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values);
     if (Object.keys(eavAttributes).length > 0) {
       this.itemService.updateItem(eavAttributes, this.item.entity.id);
     }

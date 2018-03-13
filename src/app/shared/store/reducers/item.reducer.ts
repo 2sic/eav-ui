@@ -1,13 +1,34 @@
 import { Item } from '../../models/eav/item';
 import * as fromItems from './../actions/item.actions';
 import { AppState } from '../../models/app-state';
+import { EavHeader } from '../../models/eav';
+import { AttributesState } from './attribute.reducer';
+
+// export interface ItemState {
+//     items: Array<{
+//         header: EavHeader,
+//         entity: {
+//             id: number,
+//             version: string,
+//             guid: string,
+//             type: string,
+//             attributes: AttributesState,
+//             owner: string,
+//             metadata: any[],
+//         }
+//     }>;
+// }
+
+// export const initialState: ItemState = {
+//     items: []
+// };
 
 export interface ItemState {
     items: Item[];
 }
 
 export const initialState: ItemState = {
-    items: new Array<Item>()
+    items: []
 };
 
 export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
@@ -19,27 +40,6 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...{ items: [...state.items, action.newItem] }
             };
         }
-        // case fromItems.UPDATE_ITEM: {
-        //     return state.map(item => {
-        //         // return item.entity.id === action.item.entity.id
-        //         //     ? { ...item, ...action.item }
-        //         //     : item;
-        //         if (item.entity.id === action.item.entity.id) {
-        //             item.entity.attributes = { ...action.item.entity.attributes }
-        //         }
-        //         return item;
-        //     });
-
-        //     // const ovajItem: Item = state.find(item => item.entity.id === action.item.entity.id);
-        //     // return [{
-        //     //     ...ovajItem,
-        //     //     entity: {
-        //     //         ...ovajItem.entity,
-        //     //         attributes: action.item.entity.attributes
-        //     //     }
-        //     // }]
-        //     // ];
-        // }
         case fromItems.UPDATE_ITEM: {
             console.log('action.attributes', action.attributes);
             return {
@@ -47,11 +47,6 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...{
                     items: state.items.map(item => {
                         return item.entity.id === action.id
-                            //  ? { ...item, ...action }
-
-                            // return item.entity.id === action.id
-                            //  ? { ...item, ...{ header: {... item.header}, entity: this.entityReducer(item.entity, action) } }
-
                             ? {
                                 ...item,
                                 header: { ...item.header },
@@ -69,19 +64,6 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                     })
                 }
             };
-
-            // 'BooleanDefault': this.eavValuesReducer(state['BooleanDefault'], action)
-            // values: [{ value: state.values[0].value, dimensions: [] }]
-
-            // const ovajItem: Item = state.find(item => item.entity.id === action.item.entity.id);
-            // return [{
-            //     ...ovajItem,
-            //     entity: {
-            //         ...ovajItem.entity,
-            //         attributes: action.item.entity.attributes
-            //     }
-            // }]
-            // ];
         }
         case fromItems.DELETE_ITEM:
             return {
