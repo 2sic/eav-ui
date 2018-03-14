@@ -1,28 +1,41 @@
-<div *ngIf="to.rowCount > 1; then textareaField else inputField"></div>
-
-<ng-template #inputField>
-  <input matInput [type]="type" [id]="id" class="form-control material" [required]='config.required' [placeholder]="config.label"
-    [formControl]="formControl">
-</ng-template>
-
-<ng-template #textareaField>
-  <textarea matInput [rows]="to.rowCount" [type]="type" [id]="id" class="form-control material" [required]='config.label' [placeholder]="config.label"
-    [formControl]="formControl"></textarea>
-</ng-template>
+<div>
+  <mat-form-field [formGroup]="group" [style.width]="'100%'">
+    <div matPrefix class="thumbnail-before-input icon-preview">
+      <!-- <i class="{{vm.previewPrefix}} {{value.Value}}" ng-show="value.Value"></i> -->
+      <i class="glyphicon {{value}}"></i>
+    </div>
+    <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
+      [required]="config.required">
+  </mat-form-field>
+</div>
+<div *ngIf="icons">
+  <ul>
+    <li *ngFor="let icn of icons">
+      <!-- xng-click="value.Value = icn.class; vm.selectorIsOpen = false;" -->
+      <a (click)="setIcon(icn.class, config.name)">
+        <i class="{{config.settings.PreviewCss.values[0].value}} {{icn.class}}"></i>
+        <!-- <span uib-tooltip="{{icn.class}}">...{{icn.class.substring(vm.prefix.length-1,25)}}</span> -->
+      </a>
+    </li>
+  </ul>
+</div>
+<!-- ng-show="icn.class.indexOf(vm.iconFilter) !== -1" -->
 
 <!-- <div>
   <div uib-dropdown uib-keyboard-nav auto-close="outsideClick" is-open="vm.selectorIsOpen">
+
     <div class="thumbnail-before-input icon-preview">
       <button type="button" class="" uib-tooltip="{{value.Value}}" uib-dropdown-toggle>
         <i class="{{vm.previewPrefix}} {{value.Value}}" ng-show="value.Value"></i>
         <span ng-show="!value.Value">&nbsp;&nbsp;</span>
       </button>
     </div>
+
     <div class="input-group" uib-dropdown-toggle>
       <input type="text" class="form-control input-lg" ng-model="value.Value" ng-disabled="false">
-    </div> -->
-<!-- the search ui -->
-<!-- <ul class="dropdown-menu icons-menu-columns" role="menu" uib-dropdown-menu>
+    </div>
+
+    <ul class="dropdown-menu icons-menu-columns" role="menu" uib-dropdown-menu>
       <li class="input-group">
         <span class="input-group-addon btn-default btn" ng-click="vm.selectorIsOpen = false; value.Value = ''">
           <i class="eav-icon-cancel"></i>
@@ -37,7 +50,9 @@
         </a>
       </li>
     </ul>
+
   </div>
+
   <div ng-if="vm.debug.on">Infos: found {{vm.icons.length}} items for prefix "{{vm.prefix}}" and will use "{{vm.previewPrefix}}" as a preview class.
     Selected is "{{value.Value}}" and files are: {{vm.files}}</div>
 </div> -->

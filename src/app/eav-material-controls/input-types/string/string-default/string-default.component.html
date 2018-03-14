@@ -4,7 +4,7 @@
 <ng-template #inputField>
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
         <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-            [required]='config.required'>
+            [required]="config.required">
         <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
 </ng-template>
@@ -12,7 +12,7 @@
 <ng-template #textareaField>
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
         <textarea matInput [rows]="rowCount" type="text" [id]="id" class="form-control material" [formControlName]="config.name"
-            [placeholder]="config.label" [required]='config.required'></textarea>
+            [placeholder]="config.label" [required]="config.required"></textarea>
         <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
 </ng-template>

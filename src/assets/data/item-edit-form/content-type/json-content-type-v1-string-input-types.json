@@ -413,13 +413,13 @@
                         "Attributes": {
                             "String": {
                                 "CssPrefix": {
-                                    "*": ".icon-sxc"
+                                    "*": ".glyphicon-"
                                 },
                                 "Files": {
                                     "*": "[App:Path]/dist/custom-icons.css"
                                 },
                                 "PreviewCss": {
-                                    "*": ""
+                                    "*": "glyphicon"
                                 }
                             }
                         },

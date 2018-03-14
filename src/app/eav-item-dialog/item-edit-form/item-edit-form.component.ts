@@ -197,6 +197,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault);
         case InputTypesConstants.numberDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
+        case InputTypesConstants.stringFontIconPicker:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }
