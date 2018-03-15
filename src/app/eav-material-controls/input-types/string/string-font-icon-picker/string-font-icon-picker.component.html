@@ -1,25 +1,20 @@
 <div>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
     <div matPrefix class="thumbnail-before-input icon-preview">
-      <!-- <i class="{{vm.previewPrefix}} {{value.Value}}" ng-show="value.Value"></i> -->
       <i class="glyphicon {{value}}"></i>
     </div>
     <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-      [required]="config.required">
+      [required]="config.required" [matAutocomplete]="auto">
   </mat-form-field>
-</div>
-<div *ngIf="icons">
-  <ul>
-    <li *ngFor="let icn of icons">
-      <!-- xng-click="value.Value = icn.class; vm.selectorIsOpen = false;" -->
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let icn of icons" [value]="icn.class">
       <a (click)="setIcon(icn.class, config.name)">
         <i class="{{config.settings.PreviewCss.values[0].value}} {{icn.class}}"></i>
-        <!-- <span uib-tooltip="{{icn.class}}">...{{icn.class.substring(vm.prefix.length-1,25)}}</span> -->
+        <span>{{icn.class}}</span>
       </a>
-    </li>
-  </ul>
+    </mat-option>
+  </mat-autocomplete>
 </div>
-<!-- ng-show="icn.class.indexOf(vm.iconFilter) !== -1" -->
 
 <!-- <div>
   <div uib-dropdown uib-keyboard-nav auto-close="outsideClick" is-open="vm.selectorIsOpen">

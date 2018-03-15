@@ -6,6 +6,8 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { Observable } from 'rxjs/Observable';
+import { startWith } from 'rxjs/operators/startWith';
+import { map } from 'rxjs/operators/map';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -22,6 +24,7 @@ export class StringFontIconPickerComponent implements Field, OnInit {
 
   // icons$: [{ rule: CSSStyleSheet, 'class': string }] = ;
   icons = [];
+  filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
 
   ngOnInit() {
     this.getIconClasses('.glyphicon-');
@@ -70,4 +73,16 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     this.icons.push(...foundList);
     // return foundList;
   }
+
+
+  // TODO: read CSS file
+  //   function loadAdditionalResources(files) {
+  //     files = files || "";
+  //     var mapped = files.replace("[App:Path]", appRoot)
+  //         .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
+  //         "$1/$2");
+  //     var fileList = mapped ? mapped.split("\n") : [];
+  //     return $ocLazyLoad.load(fileList);
+  // }
+
 }

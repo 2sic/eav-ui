@@ -11,6 +11,8 @@ import {
   MatNativeDateModule,
   MatCardModule,
   MatIconModule,
+  MatGridListModule,
+  MatAutocompleteModule
 } from '@angular/material';
 import {
   PanelWrapperComponent,
@@ -75,7 +77,9 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
     MatCardModule,
     MatIconModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    MatGridListModule,
+    MatAutocompleteModule
   ],
   entryComponents: [
     StringDefaultComponent,
