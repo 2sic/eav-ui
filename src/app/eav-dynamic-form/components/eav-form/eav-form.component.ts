@@ -90,6 +90,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    */
   private createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
+    console.log('validation', (validation) ? validation.length : '');
     return this.formBuilder.control({ disabled, value }, validation);
   }
 

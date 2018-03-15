@@ -215,7 +215,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
 
     // set validation for all input types
-    const validationList: ValidatorFn[] = this.setValidations(attribute, inputType);
+    const validationList: ValidatorFn[] = this.setValidations(attribute.settings);
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
     const value = this.getValueFromItem(attribute.name);
 
@@ -249,18 +249,30 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  private setValidations(attribute: AttributeDef, inputType: string): ValidatorFn[] {
+  private setValidations(settings: EavAttributes): ValidatorFn[] {
 
-    let validation: ValidatorFn[];
+    const validation: ValidatorFn[] = [];
 
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    const required = settings.Required ? settings.Required.values[0].value : false;
     if (required) {
-      validation = [...[Validators.required]];
+      validation.push(Validators.required);
     }
-    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+    const pattern = settings.ValidationRegex ? settings.ValidationRegex.values[0].value : '';
     if (pattern) {
-      validation = [...[Validators.pattern(pattern)]];
+      validation.push(Validators.pattern(pattern));
     }
+
+    // TODO: See do we set this here or in control
+    // const max = settings.Max ? settings.Max.values[0].value : 0;
+    // if (max > 0) {
+    //   validation.push(Validators.max(max));
+    // }
+
+    // TODO: See do we set this here or in control
+    // const min = settings.Min ? settings.Min.values[0].value : 0;
+    // if (min > 0) {
+    //   validation.push(Validators.min(min));
+    // }
 
     // if (inputType === InputTypesConstants.stringUrlPath) {
     //   validation = [...['onlySimpleUrlChars']];

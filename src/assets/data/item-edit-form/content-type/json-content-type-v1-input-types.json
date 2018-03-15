@@ -213,7 +213,7 @@
                 "Metadata": [
                     {
                         "Id": 1962,
-                        "Version": 1,
+                        "Version": 2,
                         "Guid": "70077744-01c0-4927-9bb8-030d6661957c",
                         "Type": {
                             "Name": "@All",
@@ -221,16 +221,71 @@
                         },
                         "Attributes": {
                             "String": {
+                                "CustomJavaScript": {
+                                    "*": ""
+                                },
+                                "DefaultValue": {
+                                    "*": ""
+                                },
                                 "InputType": {
                                     "*": "number-default"
                                 },
                                 "Name": {
                                     "*": "NumberDefault"
+                                },
+                                "Notes": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
+                                "Disabled": {
+                                    "*": false
+                                },
+                                "Required": {
+                                    "*": false
+                                },
                                 "VisibleInEditUI": {
                                     "*": true
+                                }
+                            }
+                        },
+                        "Owner": "dnn:userid=1"
+                    },
+                    {
+                        "Id": 1979,
+                        "Version": 1,
+                        "Guid": "3e5069cb-1f69-4441-8c1a-35e10fca28c0",
+                        "Type": {
+                            "Name": "@Number",
+                            "Id": "@Number"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "AddressMask": {
+                                    "*": ""
+                                },
+                                "InputType": {
+                                    "*": ""
+                                },
+                                "ValidationRegEx": {
+                                    "*": ""
+                                },
+                                "ValidationRegExJavaScript": {
+                                    "*": ""
+                                }
+                            },
+                            "Number": {
+                                "Decimals": {
+                                    "*": 2.0
+                                },
+                                "Max": {
+                                    "*": 10.0
+                                },
+                                "Min": {
+                                    "*": 5.0
                                 }
                             }
                         },
