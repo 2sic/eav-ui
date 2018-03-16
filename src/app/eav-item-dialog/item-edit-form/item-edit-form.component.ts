@@ -26,7 +26,6 @@ import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavValues } from '../../shared/models/eav/eav-values';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -60,6 +59,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.itemBehaviorSubject$.subscribe((item: Item) => {
       if (this.form) {
+        console.log('subscribe setFormValues');
         this.setFormValues(item);
       }
     });
@@ -79,7 +79,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
-    console.log('ngOnChanges change test ');
+    // console.log('ItemEditFormComponent');
   }
 
   /**
@@ -199,6 +199,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
         case InputTypesConstants.stringFontIconPicker:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
+        // case InputTypesConstants.entityDefault:
+        //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }
@@ -215,7 +217,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
 
     // set validation for all input types
-    const validationList: ValidatorFn[] = this.setValidations(attribute.settings);
+    const validationList: ValidatorFn[] = this.setDefaultValidations(attribute.settings);
     const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
     const value = this.getValueFromItem(attribute.name);
 
@@ -249,7 +251,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  private setValidations(settings: EavAttributes): ValidatorFn[] {
+  private setDefaultValidations(settings: EavAttributes): ValidatorFn[] {
 
     const validation: ValidatorFn[] = [];
 
@@ -263,16 +265,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // TODO: See do we set this here or in control
-    // const max = settings.Max ? settings.Max.values[0].value : 0;
-    // if (max > 0) {
-    //   validation.push(Validators.max(max));
-    // }
+    const max = settings.Max ? settings.Max.values[0].value : 0;
+    if (max > 0) {
+      validation.push(Validators.max(max));
+    }
 
     // TODO: See do we set this here or in control
-    // const min = settings.Min ? settings.Min.values[0].value : 0;
-    // if (min > 0) {
-    //   validation.push(Validators.min(min));
-    // }
+    const min = settings.Min ? settings.Min.values[0].value : 0;
+    if (min > 0) {
+      validation.push(Validators.min(min));
+    }
 
     // if (inputType === InputTypesConstants.stringUrlPath) {
     //   validation = [...['onlySimpleUrlChars']];

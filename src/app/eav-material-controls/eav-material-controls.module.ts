@@ -40,6 +40,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { Field } from '../eav-dynamic-form/model/field';
 import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
+import { EntityDefaultComponent } from './input-types/entity/entity-default/entity-default.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
     EmptyDefaultComponent,
     NumberDefaultComponent,
     EavLocalizationComponent,
-    FieldParentWrapperComponent
+    FieldParentWrapperComponent,
+    EntityDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -94,7 +96,8 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
     NumberDefaultComponent,
     EavLocalizationComponent,
     FieldParentWrapperComponent,
-    CollapsibleWrapperComponent
+    CollapsibleWrapperComponent,
+    EntityDefaultComponent
   ]
 })
 export class EavMaterialControlsModule { }

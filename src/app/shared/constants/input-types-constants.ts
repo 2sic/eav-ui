@@ -13,4 +13,6 @@ export class InputTypesConstants {
     public static readonly emptyDefault: string = 'empty-default';
     // number
     public static readonly numberDefault: string = 'number-default';
+    // entity
+    public static readonly entityDefault: string = 'entity-default';
 }

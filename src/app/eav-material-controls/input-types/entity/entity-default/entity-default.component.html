@@ -1,0 +1,68 @@
+<mat-form-field [formGroup]="group" [style.width]="'100%'">
+  <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
+    [required]="config.required">
+</mat-form-field>
+
+
+<div ng-if="!modes.freeTextMode && to.settings.merged.EnableCreate || chosenEntities.length > 0">
+  <div *ngFor="let item of chosenEntities; trackBy:identify">
+    <i title="" class="eav-icon-link pull-left eav-entityselect-icon" ng-show="!to.settings.Entity.AllowMultiValue"></i>
+    <span class="eav-entityselect-item-title" title="{{getEntityText(item) + ' (' + item + ')'}}">{{getEntityText(item)}}</span>
+    <!-- edit -->
+    <!-- remove -->
+    <!-- delete -->
+  </div>
+</div>
+
+<div class="eav-entityselect">
+  <div>
+    <div ng-if="!modes.freeTextMode" ui-tree="options" data-empty-placeholder-enabled="false" ng-show="to.settings.merged.EnableCreate || chosenEntities.length > 0">
+      <table ui-tree-nodes ng-model="chosenEntities" entity-validation ng-required="false" class="eav-entityselect-table" style="table-layout: fixed;">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <!-- important note - track by $index very important for multiple null-values in list -->
+        <tr ng-repeat="item in chosenEntities track by $index" ui-tree-node class="eav-entityselect-item">
+          <!-- <td ui-tree-handle>
+            <i title="{{ 'FieldType.Entity.DragMove' | translate }}" class="eav-icon-link pull-left eav-entityselect-icon" ng-show="to.settings.Entity.AllowMultiValue"></i>
+            <i title="" class="eav-icon-link pull-left eav-entityselect-icon" ng-show="!to.settings.Entity.AllowMultiValue"></i>
+          </td> -->
+          <td ui-tree-handle>
+            <span class="eav-entityselect-item-title" title="{{getEntityText(item) + ' (' + item + ')'}}">{{getEntityText(item)}}</span>
+          </td>
+          <!--  <td style="text-align: right;">
+           <ul class="eav-entityselect-item-actions"> -->
+          <!-- ovo je edit -->
+          <!-- <li>
+                
+                <a title="{{ 'FieldType.Entity.Edit' | translate }}" ng-click="edit(item, index)" ng-show="to.settings.merged.EnableEdit"
+                  data-nodrag>
+                  <i class="eav-icon-pencil"></i>
+                </a>
+              </li> -->
+          <!-- ovo je remove -->
+          <!-- <li>
+                
+                <a title="{{ 'FieldType.Entity.Remove' | translate }}" ng-click="removeSlot(item, $index)" class="eav-entityselect-item-remove"
+                  ng-show="to.settings.merged.EnableRemove" data-nodrag>
+                  <i ng-class="{ 'eav-icon-minus-circled': to.settings.merged.AllowMultiValue, 'eav-icon-down-dir': !to.settings.merged.AllowMultiValue  }"></i>
+                </a>
+              </li>-->
+          <!-- ovo je delete -->
+          <!-- <li> 
+                <a title="{{ 'FieldType.Entity.Delete' | translate }}" ng-click="deleteItemInSlot(item, $index)" class="eav-entityselect-item-remove"
+                  ng-show="to.settings.merged.EnableDelete" data-nodrag>
+                  <i class="eav-icon-cancel"></i>
+                </a>
+              </li> -->
+          <!-- </ul> 
+          </td>-->
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

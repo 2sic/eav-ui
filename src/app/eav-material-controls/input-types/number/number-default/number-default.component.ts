@@ -19,45 +19,48 @@ export class NumberDefaultComponent implements Field, OnInit {
   config: FieldConfig;
   group: FormGroup;
 
-  // decimal: string;
+  decimal: string;
   // max: number;
   // min: number;
 
   ngOnInit(): void {
 
-    // TODO: get default Validations
+    // TODO: get default Validations - first get default validators from settings then add field validators
+    // const validation: ValidatorFn[] = [];
+    // const decimal = this.config.settings.Decimals ? '^[0-9]+(\.[0-9]{1,' + this.config.settings.Decimals.values[0].value + '})?$' : null;
+    // if (decimal) {
+    //   validation.push(Validators.pattern(decimal));
+    // }
+    // const max = this.config.settings.Max ? this.config.settings.Max.values[0].value : 0;
+    // if (max > 0) {
+    //   validation.push(Validators.max(max));
+    // }
+    // const min = this.config.settings.Min ? this.config.settings.Min.values[0].value : 0;
+    // if (min > 0) {
+    //   validation.push(Validators.min(min));
+    // }
+    // this.group.controls[this.config.name].setValidators(validation);
 
-    const validation: ValidatorFn[] = [];
+    // TODO: see do we need this
+    // -------------------------------
+    // Remove the validator from the control in the FormGroup:
+    // this.myForm.controls['controlName'].clearValidators()
 
-    const decimal = this.config.settings.Decimals ? '^[0-9]+(\.[0-9]{1,' + this.config.settings.Decimals.values[0].value + '})?$' : null;
-    if (decimal) {
-      validation.push(Validators.pattern(decimal));
-    }
+    // Update the FormGroup once you have run either of the above lines.
+    // this.myForm.controls['controlName'].updateValueAndValidity()
+    // -------------------------------
 
-    const max = this.config.settings.Max ? this.config.settings.Max.values[0].value : 0;
-    if (max > 0) {
-      validation.push(Validators.max(max));
-    }
-
-    const min = this.config.settings.Min ? this.config.settings.Min.values[0].value : 0;
-    if (min > 0) {
-      validation.push(Validators.min(min));
-    }
-
-    this.group.controls[this.config.name].setValidators(validation);
-
-    // this.decimal = this.config.settings.Decimals ? '^[0-9]+(\.[0-9]{1,' + this.config.settings.Decimals.values[0].value + '})?$' : null;
+    this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals.values[0].value}})?$` : null;
     // this.max = this.config.settings.Max ? this.config.settings.Max.values[0].value : null;
     // this.min = this.config.settings.Min ? this.config.settings.Min.values[0].value : null;
   }
 
   // get decimal() {
-  //   console.log('this.config.settings.Decimals',
-  //     this.config.settings.Decimals ? '^[0-9]+(\.[0-9]{1,' + this.config.settings.Decimals.values[0].value + '})?$' : null);
-  //   return this.config.settings.Decimals ? '^[0-9]+(\.[0-9]{1,' + this.config.settings.Decimals.values[0].value + '})?$' : null;
+  //   return this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals.values[0].value}})?$` : null;
   // }
 
   // get max() {
+  //   console.log('Max', this.config.settings.Max.values[0].value);
   //   return this.config.settings.Max ? this.config.settings.Max.values[0].value : null;
   // }
 

@@ -35,6 +35,7 @@ export class MultiItemEditFormComponent implements OnInit {
     // this.loadItem();
     // this.loadcontentType();
     // this.items$ = this.store.select(state => state.items);
+    console.log('MultiItemEditFormComponent ngOnInit');
   }
 
   /**
@@ -79,6 +80,17 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-input-types.json');
     this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
     // this.items$ = this.store.select(state => state.items);
+  }
+
+  // Test
+  loadBooks() {
+    this.itemService.loadItem('json-item-v1-books.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  }
+  // Test
+  loadAuthors() {
+    this.itemService.loadItem('json-item-v1-authors.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-authors.json');
   }
 
   identify(index, item) {
