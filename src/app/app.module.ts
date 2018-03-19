@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { StoreModule, Store } from '@ngrx/store';
+import { StoreModule, MetaReducer, ActionReducerMap } from '@ngrx/store';
+import { storeFreeze } from 'ngrx-store-freeze';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
@@ -14,6 +15,9 @@ import { ContentTypeService } from './shared/services/content-type.service';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import * as fromStore from '../app/shared/store';
+import { environment } from '../environments/environment'; // Angular CLI environment
+import { reducers, metaReducers } from '../app/shared/store';
 
 const routes: Routes = [
   {
@@ -35,7 +39,8 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     // StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer }),
-    StoreModule.forRoot({}),
+    // StoreModule.forRoot({}),
+    StoreModule.forRoot({}, { metaReducers }),
     // EffectsModule.forRoot([ItemEffects, ContentTypeEffects]),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, toPayload } from '@ngrx/effects';
+import { Actions, Effect } from '@ngrx/effects';
 import * as fromItems from '../store/actions/item.actions';
 
 import { ItemService } from '../services/item.service';
