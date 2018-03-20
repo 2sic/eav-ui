@@ -41,7 +41,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.itemBehaviorSubject$.next(value);
   }
   get item(): Item {
-    console.log('get item');
+    // console.log('get item: ', this.itemBehaviorSubject$.getValue());
     return this.itemBehaviorSubject$.getValue();
   }
 
@@ -79,7 +79,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(): void {
-    // console.log('ItemEditFormComponent');
+    console.log('ItemEditFormComponent');
   }
 
   /**
@@ -199,8 +199,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
         case InputTypesConstants.stringFontIconPicker:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
-        // case InputTypesConstants.entityDefault:
-        //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
+        case InputTypesConstants.entityDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }

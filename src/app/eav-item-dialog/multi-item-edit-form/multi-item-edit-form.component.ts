@@ -9,6 +9,7 @@ import * as contentTypeActions from '../../shared/store/actions/content-type.act
 import { AppState } from '../../shared/models';
 import { Item, ContentType } from '../../shared/models/eav';
 import { of } from 'rxjs/observable/of';
+
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 
@@ -28,6 +29,7 @@ export class MultiItemEditFormComponent implements OnInit {
   // contentTypes$: Observable<ContentType[]>;
 
   constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) {
+    console.log('MultiItemEditFormComponent');
     this.items$ = itemService.items$;
   }
 
@@ -88,16 +90,22 @@ export class MultiItemEditFormComponent implements OnInit {
     this.contentTypeService.loadContentType('json-content-type-v1-books.json');
   }
   // Test
+  loadBooks1() {
+    this.itemService.loadItem('json-item-v1-books1.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  }
+  // Test
   loadAuthors() {
     this.itemService.loadItem('json-item-v1-authors.json');
     this.contentTypeService.loadContentType('json-content-type-v1-authors.json');
   }
 
-  identify(index, item) {
+  trackByFn(index, item) {
     // console.log('identify', item);
     // if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {
     // console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
     // }
+    console.log('trackByFn multi', item.entity.id);
     return item.entity.id;
   }
 }

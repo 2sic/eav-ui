@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
@@ -9,7 +9,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   // tslint:disable-next-line:component-selector
   selector: 'string-default',
   templateUrl: './string-default.component.html',
-  styleUrls: ['./string-default.component.css'],
+  styleUrls: ['./string-default.component.css']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

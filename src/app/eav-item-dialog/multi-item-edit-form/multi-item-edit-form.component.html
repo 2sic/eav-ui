@@ -5,9 +5,11 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadStringInputTypes()">Load String input types</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadInputTypes()">Load input types</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadBooks()">Load books</button>
+<button mat-button type="button" class="btn btn-default" (click)="loadBooks1()">Load books1</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadAuthors()">Load authors</button>
 
-<div *ngFor="let item of (items$ | async); trackBy:identify">
+<!--  -->
+<div *ngFor="let item of (items$ | async); trackBy:trackByFn">
   <mat-card class="example-card">
     <app-item-edit-form [item]="item"></app-item-edit-form>
   </mat-card>

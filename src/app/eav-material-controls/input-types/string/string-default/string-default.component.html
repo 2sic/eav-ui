@@ -1,6 +1,5 @@
 <div *ngIf="rowCount > 1; then textareaField else inputField">
 </div>
-
 <ng-template #inputField>
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
         <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"

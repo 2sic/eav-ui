@@ -45,6 +45,11 @@ export class ItemService {
       .map(data => data.find(obj => obj.entity.id === id));
   }
 
+  public selectAllItems(): Observable<Item[]> {
+    return this.store
+      .select(fromStore.getItems);
+  }
+
   /**
    * Get Item from Json Entity V1
    */

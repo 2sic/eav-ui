@@ -26,6 +26,8 @@ export class EavFieldDirective implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log('container oninit', this.container);
+    this.container.clear();
     this.config.forEach(controlConfiguration => {
       this.createFieldOrGroup(this.container, controlConfiguration);
     });
@@ -84,6 +86,8 @@ export class EavFieldDirective implements OnInit {
         group: this.group,
         config: fieldConfig,
       });
+
+      console.log('container', container);
     }
   }
 
