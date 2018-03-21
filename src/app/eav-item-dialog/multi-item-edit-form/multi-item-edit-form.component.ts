@@ -89,9 +89,15 @@ export class MultiItemEditFormComponent implements OnInit {
     this.itemService.loadItem('json-item-v1-books.json');
     this.contentTypeService.loadContentType('json-content-type-v1-books.json');
   }
+
   // Test
   loadBooks1() {
     this.itemService.loadItem('json-item-v1-books1.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  }
+  // Test
+  loadBooks2() {
+    this.itemService.loadItem('json-item-v1-books2.json');
     this.contentTypeService.loadContentType('json-content-type-v1-books.json');
   }
   // Test
@@ -105,7 +111,7 @@ export class MultiItemEditFormComponent implements OnInit {
     // if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {
     // console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
     // }
-    console.log('trackByFn multi', item.entity.id);
+    // console.log('trackByFn multi', item.entity.id);
     return item.entity.id;
   }
 }

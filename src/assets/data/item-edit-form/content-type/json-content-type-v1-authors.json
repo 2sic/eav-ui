@@ -136,7 +136,7 @@
                             },
                             "Boolean": {
                                 "AllowMultiValue": {
-                                    "en-us": false
+                                    "en-us": true
                                 },
                                 "EnableAddExisting": {
                                     "en-us": true

@@ -45,9 +45,9 @@ export class ItemService {
       .map(data => data.find(obj => obj.entity.id === id));
   }
 
+  // temp - need to change
   public selectAllItems(): Observable<Item[]> {
-    return this.store
-      .select(fromStore.getItems);
+    return this.items$;
   }
 
   /**
