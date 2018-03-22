@@ -8,9 +8,9 @@ describe('EntityDefaultComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntityDefaultComponent ]
+      declarations: [EntityDefaultComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
