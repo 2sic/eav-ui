@@ -12,7 +12,8 @@ import {
   MatCardModule,
   MatIconModule,
   MatGridListModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatListModule
 } from '@angular/material';
 import {
   PanelWrapperComponent,
@@ -81,7 +82,8 @@ import { EntityDefaultComponent } from './input-types/entity/entity-default/enti
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     MatGridListModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatListModule
   ],
   entryComponents: [
     StringDefaultComponent,

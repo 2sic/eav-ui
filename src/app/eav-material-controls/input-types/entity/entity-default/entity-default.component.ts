@@ -1,6 +1,6 @@
 import {
-  Component, OnInit, Input, ChangeDetectionStrategy,
-  DoCheck, SimpleChange, OnDestroy,
+  Component, OnInit, Input,
+  DoCheck, OnDestroy,
   AfterViewInit, ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -24,7 +24,7 @@ import { ItemService } from '../../../../shared/services/item.service';
   selector: 'entity-default',
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.css'],
-  changeDetection: ChangeDetectionStrategy.Default
+  // changeDetection: ChangeDetectionStrategy.Default
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],
@@ -48,6 +48,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   get allowMultiValue() {
     return this.config.settings.AllowMultiValue ? this.config.settings.AllowMultiValue.values[0].value : false;
+  }
+
+  get entityType() {
+    return this.config.settings.EntityType ? this.config.settings.EntityType.values[0].value : '';
   }
 
   get enableAddExisting() {
@@ -214,5 +218,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   deleteEntity(value: string) {
     console.log('TODO deleteEntity');
+  }
+
+  openNewEntityDialog() {
+    console.log('TODO openNewEntityDialog');
   }
 }

@@ -1,23 +1,25 @@
 <!-- !modes.freeTextMode && -->
-<div *ngIf="enableCreate || chosenEntities.length > 0">
-
-  <div *ngFor="let item of chosenEntities">
-    <!-- <i title="" class="eav-icon-link pull-left eav-entityselect-icon" ng-show="!to.settings.Entity.AllowMultiValue"></i> -->
-    <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
-    <!-- edit -->
-    <button mat-icon-button *ngIf='enableEdit' type="button" (click)="editEntity(item)">
-      <i class="material-icons">edit</i>
-    </button>
-    <!-- remove -->
-    <button mat-icon-button *ngIf='enableRemove' type="button" (click)="removeEntity(item)">
-      <i class="material-icons">{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</i>
-    </button>
-    <!-- delete -->
-    <button mat-icon-button *ngIf='enableDelete' type="button" (click)="deleteEntity(item)">
-      <i class="material-icons">delete</i>
-    </button>
-  </div>
-</div>
+<mat-list *ngIf="enableCreate || chosenEntities.length > 0">
+  <mat-list-item *ngFor="let item of chosenEntities">
+    <p matLine>
+      <!-- ng-show="!allowMultiValue" -->
+      <i class="material-icons">check</i>
+      <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
+      <!-- edit -->
+      <button mat-icon-button *ngIf='enableEdit' type="button" (click)="editEntity(item)">
+        <i class="material-icons">edit</i>
+      </button>
+      <!-- remove -->
+      <button mat-icon-button *ngIf='enableRemove' type="button" (click)="removeEntity(item)">
+        <i class="material-icons">{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</i>
+      </button>
+      <!-- delete -->
+      <button mat-icon-button *ngIf='enableDelete' type="button" (click)="deleteEntity(item)">
+        <i class="material-icons">delete</i>
+      </button>
+    </p>
+  </mat-list-item>
+</mat-list>
 
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
@@ -36,3 +38,20 @@
       </ui-select-no-choice>
     </ui-select> -->
 </div>
+
+<!-- create new entity to add to this list -->
+<a ng-if="to.settings.merged.EnableCreate && to.settings.merged.EntityType !== '' && (to.settings.merged.AllowMultiValue || chosenEntities.length < 1)"
+  class="input-group-addon icon-field-button icon-field-button-small" ng-click="openNewEntityDialog()">
+  <i class="material-icons">plus</i>
+</a>
+
+<!-- Do we need this ??? -->
+<!-- handle free text mode -->
+<!-- <input ng-show="modes.freeTextMode" class="form-control input-material material" ng-model="value.Value" formly-skip-ng-model-attrs-manipulator
+  type="text">
+<a ng-show="to.settings.merged.EnableTextEntry && (to.settings.merged.AllowMultiValue || chosenEntities.length < 1)" class="freetext-toggle input-group-addon icon-field-button icon-field-button-small"
+  ng-class="{'active': modes.freeTextMode}" ng-click="modes.freeTextMode = !modes.freeTextMode">
+
+  <span ng-show="modes.freeTextMode" class="eav-icon-down-dir"></span>
+  <span ng-show="!modes.freeTextMode" class="eav-icon-i-cursor"></span>
+</a> -->

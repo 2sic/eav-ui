@@ -145,7 +145,7 @@
                                     "en-us": true
                                 },
                                 "EnableDelete": {
-                                    "en-us": false
+                                    "en-us": true
                                 },
                                 "EnableEdit": {
                                     "en-us": true
