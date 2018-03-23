@@ -1,63 +1,27 @@
-<!-- <mat-form-field [formGroup]="group" [style.width]="'100%'">
-  <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-    [required]="config.required">
-</mat-form-field> -->
 <!-- !modes.freeTextMode && -->
-
 <div *ngIf="enableCreate || chosenEntities.length > 0">
-  <!-- {{chosenEntities | json}} {{getEntityText(item)}} -->
-  <!-- <span [title]="getEntityText(item)">ante</span> -->
+
   <div *ngFor="let item of chosenEntities">
     <!-- <i title="" class="eav-icon-link pull-left eav-entityselect-icon" ng-show="!to.settings.Entity.AllowMultiValue"></i> -->
     <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
     <!-- edit -->
-
+    <button mat-icon-button *ngIf='enableEdit' type="button" (click)="editEntity(item)">
+      <i class="material-icons">edit</i>
+    </button>
     <!-- remove -->
-    <button mat-icon-button (click)="removeEntity(item)">
-      <!-- <mat-icon class="mat-24">close</mat-icon> -->
-      <i class="material-icons">indeterminate_check_box</i>
+    <button mat-icon-button *ngIf='enableRemove' type="button" (click)="removeEntity(item)">
+      <i class="material-icons">{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</i>
     </button>
     <!-- delete -->
+    <button mat-icon-button *ngIf='enableDelete' type="button" (click)="deleteEntity(item)">
+      <i class="material-icons">delete</i>
+    </button>
   </div>
 </div>
 
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
 <div *ngIf="enableAddExisting && (allowMultiValue || chosenEntities.length < 1)">
-  <!-- <div class="eav-entityselect-selector-wrapper"> -->
-  <!-- <div class="eav-entityselect-action-addexisting-close" ng-show="$select.open">Close</div> -->
-
-  <!-- <ui-select theme="bootstrap" ng-model="selectedEntity" uis-open-close="selectHighlighted()" ng-required="false" on-select="addEntity($select.selected.Value)">
-      <ui-select-match placeholder="{{ $select.open ? 'search' : 'FieldType.Entity.Choose' | translate }}">
-        {{ 'FieldType.Entity.Choose' | translate }}
-      </ui-select-match>
-  
-      <ui-select-choices ng-style="{opacity: $select.open ? 1 : 0 }" repeat="item in selectEntities | filter: { Text : $select.search } track by item.Value"
-        refresh="maybeReload()" refresh-delay="0" minimum-input-length="0" ui-disable-choice="chosenEntities.indexOf(item.Value) != -1">
-        <span ng-bind="item.Text"></span>
-      </ui-select-choices>
-  
-      <ui-select-no-choice class="bg-warning">
-        <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span>
-        <span ng-if="error">{{error}}</span>
-      </ui-select-no-choice>
-    </ui-select> -->
-
-  <!-- </div> -->
-
-  <!-- <mat-form-field *ngIf="selectEntities.length > 0" [style.width]="'100%'">
-      <mat-select placeholder="Favorite animal" placeholder="placeholder" [(value)]="selectedValue" (change)="addEntity($event.value)">
-        <mat-select-trigger> -->
-  <!-- TODO: Bug with set selected - change before binding!!! -->
-  <!-- search
-        </mat-select-trigger>
-        <mat-option *ngFor="let item of selectEntities" [value]="item.entity.guid" [disabled]="isInChosenEntities(item.entity.guid)">
-          {{item.entity.attributes['Name'] ? item.entity.attributes['Name'].values[0].value : item.entity.guid}} {{value}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    {{selectedValue}} -->
-
   <mat-form-field [style.width]="'100%'">
     <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto">
   </mat-form-field>
@@ -66,5 +30,9 @@
       <span>{{item.entity.attributes['Name'] ? item.entity.attributes['Name'].values[0].value : item.entity.guid}} {{value}}</span>
     </mat-option>
   </mat-autocomplete>
-
+  <!--  <ui-select-no-choice class="bg-warning">
+        <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span>
+        <span ng-if="error">{{error}}</span>
+      </ui-select-no-choice>
+    </ui-select> -->
 </div>
