@@ -5,15 +5,12 @@
       <!-- ng-show="!allowMultiValue" -->
       <i class="material-icons">check</i>
       <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
-      <!-- edit -->
       <button mat-icon-button *ngIf="enableEdit" type="button" (click)="editEntity(item)">
         <i class="material-icons">edit</i>
       </button>
-      <!-- remove -->
       <button mat-icon-button *ngIf="enableRemove" type="button" (click)="removeEntity(item)">
         <i class="material-icons">{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</i>
       </button>
-      <!-- delete -->
       <button mat-icon-button *ngIf="enableDelete" type="button" (click)="deleteEntity(item)">
         <i class="material-icons">delete</i>
       </button>
@@ -26,7 +23,7 @@
 
 <div *ngIf="enableAddExisting && (allowMultiValue || chosenEntities.length < 1)">
   <mat-form-field [style.width]="'100%'">
-    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto">
+    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" (click)="setSelectEntitiesObservables()">
 
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
       <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.entity.guid" [disabled]="isInChosenEntities(item.entity.guid)">
@@ -46,8 +43,6 @@
   (click)="openNewEntityDialog()">
   <i class="material-icons">add_circle</i>
 </button>
-
-
 
 <!-- Do we need this ??? -->
 <!-- handle free text mode -->

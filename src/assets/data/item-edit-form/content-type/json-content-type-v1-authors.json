@@ -88,33 +88,33 @@
                         "Attributes": {
                             "String": {
                                 "CustomJavaScript": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "DefaultValue": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "InputType": {
-                                    "en-us": "entity-default"
+                                    "*": "entity-default"
                                 },
                                 "Name": {
-                                    "en-us": "Books"
+                                    "*": "Books"
                                 },
                                 "Notes": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "ValidationRegExJavaScript": {
-                                    "en-us": ""
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
                                 "Disabled": {
-                                    "en-us": false
+                                    "*": false
                                 },
                                 "Required": {
-                                    "en-us": false
+                                    "*": false
                                 },
                                 "VisibleInEditUI": {
-                                    "en-us": true
+                                    "*": true
                                 }
                             }
                         },
@@ -131,27 +131,27 @@
                         "Attributes": {
                             "String": {
                                 "EntityType": {
-                                    "en-us": "Books"
+                                    "*": "Books"
                                 }
                             },
                             "Boolean": {
                                 "AllowMultiValue": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableAddExisting": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableCreate": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableDelete": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableEdit": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableRemove": {
-                                    "en-us": true
+                                    "*": true
                                 }
                             }
                         },

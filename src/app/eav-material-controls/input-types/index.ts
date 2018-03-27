@@ -7,3 +7,5 @@ export { BooleanDefaultComponent } from './boolean/boolean-default/boolean-defau
 export { DatetimeDefaultComponent } from './datetime/datetime-default/datetime-default.component';
 export { EmptyDefaultComponent } from './empty/empty-default/empty-default.component';
 export { NumberDefaultComponent } from './number/number-default/number-default.component';
+export { EntityDefaultComponent } from './entity/entity-default/entity-default.component';
+export { HyperlinkDefaultComponent } from './hyperlink/hyperlink-default/hyperlink-default.component';

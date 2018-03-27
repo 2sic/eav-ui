@@ -13,10 +13,10 @@
         "Attributes": {
             "String": {
                 "First Name": {
-                    "en-us": "Adam"
+                    "*": "Adam"
                 },
                 "Last Name": {
-                    "en-us": "Freeman"
+                    "*": "Freeman"
                 }
             },
             "Entity": {

@@ -8,7 +8,7 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadBooks1()">Load book1</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadBooks2()">Load book2</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadAuthors()">Load authors</button>
-
+<button mat-button type="button" class="btn btn-default" (click)="loadHyperLink()">Load HyperLink</button>
 <!--  -->
 <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
   <mat-card class="example-card">

@@ -18,13 +18,13 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { EavEntity, Item } from '../../../../shared/models/eav';
 import { EavType } from '../../../../shared/models/eav/eav-type';
 import { ItemService } from '../../../../shared/services/item.service';
+import { ContentTypeService } from '../../../../shared/services/content-type.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-default',
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.css'],
-  // changeDetection: ChangeDetectionStrategy.Default
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],
@@ -35,15 +35,12 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   @Input() config: FieldConfig;
   group: FormGroup;
 
-
   chosenEntities: string[];
   // options: Item[];
-  availableEntities: Item[] = []; // text name of entity and value is guid of entity
-  selectEntities: Observable<Item[]>;
-  entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
+  selectEntities: Observable<Item[]> = null;
 
-  // private temp$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(null);
-
+  private availableEntities: Item[] = [];
+  private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
   private subscriptions: Subscription[] = [];
 
   get allowMultiValue() {
@@ -74,7 +71,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     return this.config.settings.EnableDelete ? this.config.settings.EnableDelete.values[0].value : false;
   }
 
-  constructor(private itemService: ItemService) {
+  constructor(private itemService: ItemService, private contenttypeService: ContentTypeService) {
   }
 
   // ngDoCheck() {
@@ -83,28 +80,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   // }
 
   ngOnInit() {
-
     this.setChosenEntities();
 
-    // Temp
-    this.subscriptions.push(
-      this.itemService.selectAllItems().subscribe(items => {
-        this.availableEntities = [...items];
-      })
-    );
-  }
-
-  // TODO: change temp harcoded name
-  filter(val: string): Item[] {
-    console.log('filtar:', val);
-    if (val === '') {
-      return this.availableEntities;
-    }
-
-    return this.availableEntities.filter(option =>
-      option.entity.attributes['Name'] ?
-        option.entity.attributes['Name'].values[0].value.toLowerCase().indexOf(val.toLowerCase()) === 0
-        : option.entity.guid.toLowerCase().indexOf(val.toLowerCase()) === 0);
+    this.setAvailableEntities();
   }
 
   ngAfterViewInit() {
@@ -164,23 +142,28 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     );
   }
 
-  // set selectedValue(value: string) {
-  //   if (value) {
-  //     const entityValues: string[] = [...this.group.controls[this.config.name].value];
-  //     entityValues.push(value);
-  //     this.group.patchValue({ [this.config.name]: entityValues });
-  //     this.setChosenEntities();
-  //     // this.selectedValue = null;
-  //     this.selectedValue = null;
-  //   }
-  // }
+  /**
+   * TODO: select all entities from app
+   */
+  private setAvailableEntities() {
+    // Temp
+    // TODO: need write right service - this is only for testing
+    this.subscriptions.push(
+      this.itemService.selectAllItems().subscribe(items => {
+        this.availableEntities = [...items];
+      })
+    );
+
+    // TODO: availableEntities can be title, guid and id only - map observables to that
+    // this.contenttypeService.getTitleAttribute(this.config.type)
+  }
 
   /**
    * selectEntities observe events from input autocomplete field
    */
   private setSelectEntitiesObservables() {
-    if (this.input) {
-      const eventNames = ['input', 'click'];
+    if (this.input && this.selectEntities === null) {
+      const eventNames = ['keyup', 'click'];
       // Merge all observables into one single stream:
       const eventStreams = eventNames.map((eventName) => {
         return Observable.fromEvent(this.input.nativeElement, eventName);
@@ -189,13 +172,31 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       const allEvents$ = merge(...eventStreams);
 
       this.selectEntities = allEvents$
-        .map((value: any) => this.filter(value.target.value))
-        .do(value => console.log('test selectEntities', value));
+        .map((value: any) => this.filter(value.target.value));
+      // .do(value => console.log('test selectEntities', value));
+    }
+
+    // clear this.selectEntities if input don't exist
+    // this can happen when not allowMultiValue
+    if (!this.input) {
+      this.selectEntities = null;
     }
   }
 
+  // TODO: change temp harcoded name
+  private filter(val: string): Item[] {
+    if (val === '') {
+      return this.availableEntities;
+    }
+
+    return this.availableEntities.filter(option =>
+      option.entity.attributes['Name'] ?
+        option.entity.attributes['Name'].values[0].value.toLowerCase().indexOf(val.toLowerCase()) === 0
+        : option.entity.guid.toLowerCase().indexOf(val.toLowerCase()) === 0);
+  }
+
   /**
-   * Add entity to form
+   * add entity to form
    * @param value
    */
   addEntity(value: string) {
@@ -207,17 +208,31 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     }
   }
 
+  /**
+   *  open edit eav item dialog for item
+   * @param value
+   */
   editEntity(value: string) {
-    console.log('TODO editEntity');
+    console.log('TODO editEntity', value);
   }
 
+  /**
+   * remove entity value from form
+   * @param value
+   */
   removeEntity(value: string) {
     const entityValues: string[] = [...this.group.controls[this.config.name].value];
     this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
+
+    this.setSelectEntitiesObservables();
   }
 
+  /**
+   * delete entity
+   * @param value
+   */
   deleteEntity(value: string) {
-    console.log('TODO deleteEntity');
+    console.log('TODO deleteEntity', value);
   }
 
   openNewEntityDialog() {

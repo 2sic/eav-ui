@@ -1,13 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatInput } from '@angular/material';
 import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { startWith } from 'rxjs/operators/startWith';
+import { map } from 'rxjs/operators/map';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { Observable } from 'rxjs/Observable';
-import { startWith } from 'rxjs/operators/startWith';
-import { map } from 'rxjs/operators/map';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -45,13 +45,10 @@ export class StringFontIconPickerComponent implements Field, OnInit {
       return foundList;
     }
 
-
     for (let ssSet = 0; ssSet < document.styleSheets.length; ssSet++) {
       // const classes = document.styleSheets[ssSet].rules || document.styleSheets[ssSet].cssRules;
       // TEMP: look only bootstrap-glyphicons.css
       if ((<CSSStyleSheet>document.styleSheets[ssSet]).href === 'http://localhost:4200/assets/style/bootstrap-glyphicons.css') {
-
-        console.log('aaa', (<CSSStyleSheet>document.styleSheets[ssSet]).rules);
         const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules;
 
         if (classes) {
@@ -74,7 +71,6 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     // return foundList;
   }
 
-
   // TODO: read CSS file
   //   function loadAdditionalResources(files) {
   //     files = files || "";
@@ -84,5 +80,4 @@ export class StringFontIconPickerComponent implements Field, OnInit {
   //     var fileList = mapped ? mapped.split("\n") : [];
   //     return $ocLazyLoad.load(fileList);
   // }
-
 }

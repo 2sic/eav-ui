@@ -13,7 +13,8 @@ import {
   MatIconModule,
   MatGridListModule,
   MatAutocompleteModule,
-  MatListModule
+  MatListModule,
+  MatMenuModule
 } from '@angular/material';
 import {
   PanelWrapperComponent,
@@ -31,7 +32,9 @@ import {
   BooleanDefaultComponent,
   DatetimeDefaultComponent,
   EmptyDefaultComponent,
-  NumberDefaultComponent
+  NumberDefaultComponent,
+  EntityDefaultComponent,
+  HyperlinkDefaultComponent,
 } from './input-types';
 import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
@@ -41,7 +44,8 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { Field } from '../eav-dynamic-form/model/field';
 import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
-import { EntityDefaultComponent } from './input-types/entity/entity-default/entity-default.component';
+
+
 
 @NgModule({
   declarations: [
@@ -65,7 +69,8 @@ import { EntityDefaultComponent } from './input-types/entity/entity-default/enti
     NumberDefaultComponent,
     EavLocalizationComponent,
     FieldParentWrapperComponent,
-    EntityDefaultComponent
+    EntityDefaultComponent,
+    HyperlinkDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -83,7 +88,8 @@ import { EntityDefaultComponent } from './input-types/entity/entity-default/enti
     OwlNativeDateTimeModule,
     MatGridListModule,
     MatAutocompleteModule,
-    MatListModule
+    MatListModule,
+    MatMenuModule
   ],
   entryComponents: [
     StringDefaultComponent,
@@ -99,7 +105,8 @@ import { EntityDefaultComponent } from './input-types/entity/entity-default/enti
     EavLocalizationComponent,
     FieldParentWrapperComponent,
     CollapsibleWrapperComponent,
-    EntityDefaultComponent
+    EntityDefaultComponent,
+    HyperlinkDefaultComponent
   ]
 })
 export class EavMaterialControlsModule { }

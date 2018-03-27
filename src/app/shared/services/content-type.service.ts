@@ -10,6 +10,7 @@ import { AppState } from '../models/app-state';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromStore from '../store';
+import { AttributeDef } from '../models/eav/attribute-def';
 
 @Injectable()
 export class ContentTypeService {
@@ -36,12 +37,19 @@ export class ContentTypeService {
   }
 
   /**
+   * Observe content type for item type from store
+   * @param id
+   */
+  public getTitleAttribute(id: string): Observable<AttributeDef> {
+    return this.store
+      .select(fromStore.getContentTypes)
+      .map(data => data.find(obj => obj.contentType.id === id).contentType.attributes.find(obj => obj.isTitle === true));
+  }
+
+  /**
    * Get Content Type from Json Content Type V1
    */
   public getContentTypeFromJsonContentType1(path: string): Observable<ContentType> {
-    // return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-person.json')
-    // return this.httpClient.get<JsonContentType1>('../../../assets/data/json-content-type-v1.json')
-    // return this.httpClient.get<JsonContentType1>('../../../assets/data/item-edit-form/content-type/json-content-type-v1-accordion.json')
     return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
       .map((item: JsonContentType1) => {
         return ContentType.create(item);

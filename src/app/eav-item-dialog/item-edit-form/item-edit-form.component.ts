@@ -201,6 +201,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
         case InputTypesConstants.entityDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
+        case InputTypesConstants.hyperlinkDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }

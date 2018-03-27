@@ -56,33 +56,33 @@
                         "Attributes": {
                             "String": {
                                 "CustomJavaScript": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "DefaultValue": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "InputType": {
-                                    "en-us": "entity-default"
+                                    "*": "entity-default"
                                 },
                                 "Name": {
-                                    "en-us": "Author"
+                                    "*": "Author"
                                 },
                                 "Notes": {
-                                    "en-us": ""
+                                    "*": ""
                                 },
                                 "ValidationRegExJavaScript": {
-                                    "en-us": ""
+                                    "*": ""
                                 }
                             },
                             "Boolean": {
                                 "Disabled": {
-                                    "en-us": false
+                                    "*": false
                                 },
                                 "Required": {
-                                    "en-us": false
+                                    "*": false
                                 },
                                 "VisibleInEditUI": {
-                                    "en-us": true
+                                    "*": true
                                 }
                             }
                         },
@@ -99,27 +99,27 @@
                         "Attributes": {
                             "String": {
                                 "EntityType": {
-                                    "en-us": "Authors"
+                                    "*": "Authors"
                                 }
                             },
                             "Boolean": {
                                 "AllowMultiValue": {
-                                    "en-us": false
+                                    "*": false
                                 },
                                 "EnableAddExisting": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableCreate": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableDelete": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableEdit": {
-                                    "en-us": true
+                                    "*": true
                                 },
                                 "EnableRemove": {
-                                    "en-us": true
+                                    "*": true
                                 }
                             }
                         },
