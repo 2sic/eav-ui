@@ -67,7 +67,7 @@
                         "Attributes": {
                             "String": {
                                 "Buttons": {
-                                    "*": "adam,more"
+                                    "*": "adam,more,page"
                                 },
                                 "DefaultDialog": {
                                     "*": ""
@@ -84,13 +84,13 @@
                                     "*": true
                                 },
                                 "ShowFileManager": {
-                                    "*": false
+                                    "*": true
                                 },
                                 "ShowImageManager": {
-                                    "*": false
+                                    "*": true
                                 },
                                 "ShowPagePicker": {
-                                    "*": false
+                                    "*": true
                                 }
                             }
                         },

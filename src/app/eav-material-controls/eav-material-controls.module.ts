@@ -14,7 +14,8 @@ import {
   MatGridListModule,
   MatAutocompleteModule,
   MatListModule,
-  MatMenuModule
+  MatMenuModule,
+  MatTooltipModule
 } from '@angular/material';
 import {
   PanelWrapperComponent,
@@ -89,7 +90,8 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
     MatGridListModule,
     MatAutocompleteModule,
     MatListModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule
   ],
   entryComponents: [
     StringDefaultComponent,

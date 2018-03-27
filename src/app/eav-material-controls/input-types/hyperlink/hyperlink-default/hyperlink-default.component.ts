@@ -20,6 +20,7 @@ export class HyperlinkDefaultComponent implements Field {
 
   showPreview;
   toggleAdamValue = false;
+  testLink = '/assets/images/smallImage.jpg';
 
   get value() {
     return this.group.controls[this.config.name].value;
@@ -35,5 +36,22 @@ export class HyperlinkDefaultComponent implements Field {
   openPageDialog() {
     console.log('openPageDialog');
   }
+
+  thumbnailUrl(first: number, second: boolean) {
+    return '../../../../../assets/images/smallImage.jpg';
+  }
+
+  isImage() {
+    return false;
+  }
+
+  icon() {
+    return 'eav-icon-file';
+  }
+
+  tooltipUrl(link: string) {
+    return link;
+  }
+
 
 }
