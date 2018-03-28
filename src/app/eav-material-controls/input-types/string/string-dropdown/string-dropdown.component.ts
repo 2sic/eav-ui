@@ -20,7 +20,6 @@ export class StringDropdownComponent implements Field, OnInit {
   group: FormGroup;
 
   freeTextMode = false;
-
   selectOptions = [];
 
   private _selectOptions: string[] = [];

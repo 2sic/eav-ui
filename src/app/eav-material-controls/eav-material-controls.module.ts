@@ -45,6 +45,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { Field } from '../eav-dynamic-form/model/field';
 import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
+import { FileTypeService } from '../shared/services/file-type.service';
 
 
 
@@ -109,6 +110,7 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent
-  ]
+  ],
+  providers: [FileTypeService],
 })
 export class EavMaterialControlsModule { }

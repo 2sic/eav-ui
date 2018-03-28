@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FileTypeService } from '../../../../shared/services/file-type.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -20,38 +21,110 @@ export class HyperlinkDefaultComponent implements Field {
 
   showPreview;
   toggleAdamValue = false;
-  testLink = '/assets/images/smallImage.jpg';
+  testLink = '/assets/images/smallImage.doc';
+
+  adam: any;
+
+  private adamModeConfig = {
+    usePortalRoot: false
+  };
 
   get value() {
     return this.group.controls[this.config.name].value;
   }
 
-  constructor() { }
-
-  toggleAdam(first: boolean, second: boolean) {
-    console.log('toggle addam first:', first);
-    console.log('toggle addam second:', second);
+  // ensureDefaultConfig();
+  get showAdam() {
+    return this.config.settings.ShowAdam ? this.config.settings.ShowAdam.values[0].value : true;
   }
 
+  get buttons(): string {
+    return this.config.settings.Buttons ? this.config.settings.Buttons.values[0].value : 'adam,more';
+  }
+
+  setFormValue(formControlName: string, value: any) {
+    this.group.patchValue({ [formControlName]: value });
+  }
+
+  constructor(private fileTypeService: FileTypeService) { }
+
+  isImage = () => this.fileTypeService.isImage(this.testLink);
+
+  icon = () => this.fileTypeService.getIconClass(this.testLink);
+
+  thumbnailUrl(size: number, quote: boolean) {
+    let result = this.testLink;
+    if (size === 1) {
+      result = result + '?w=64&h=64&mode=crop';
+    }
+    if (size === 2) {
+      result = result + '?w=500&h=400&mode=max';
+    }
+    const qt = quote ? '"' : '';
+    return qt + result + qt;
+  }
+
+  tooltipUrl = (str: string) => str.replace(/\//g, '/&#8203;');
+
+  // Update test-link if necessary - both when typing or if link was set by dialogs
+  //   $scope.$watch("value.Value", function(newValue, oldValue) {
+  //     if (!newValue)
+  //         return;
+
+  //     // handle short-ID links like file:17
+  //     var promise = dnnBridgeSvc.getUrlOfId(newValue);
+  //     if(promise)
+  //         promise.then(function (result) {
+  //             if (result.data)
+  //                 vm.testLink = result.data;
+  //         });
+  //     else
+  //         vm.testLink = newValue;
+  // });
+
+  //#region dnn-page picker dialog
+
+  // the callback when something was selected
+  private processResultOfPagePicker(value) {
+    // Convert to page:xyz format (if it wasn't cancelled)
+    if (value) {
+      this.setFormValue(this.config.name, `page:${value.id}`);
+    }
+  }
+
+  // open the dialog
   openPageDialog() {
     console.log('openPageDialog');
+    // dnnBridgeSvc.open(
+    //   this.value,
+    //   {
+    //     Paths: this.config.settings.Paths ? this.config.settings.Paths.values[0].value : '',
+    //     FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
+    //   },
+    //   this.processResultOfPagePicker);
   }
 
-  thumbnailUrl(first: number, second: boolean) {
-    return '../../../../../assets/images/smallImage.jpg';
+  //#endregion dnn page picker
+
+  //#region new adam: callbacks only
+  registerAdam(adam) {
+    this.adam = adam;
   }
 
-  isImage() {
-    return false;
+  setValue(fileItem) {
+    this.setFormValue(this.config.name, `File:${fileItem.id}`);
   }
 
-  icon() {
-    return 'eav-icon-file';
+  // afterUpload = setValue;   // binding for dropzone
+
+  toggleAdam(usePortalRoot, imagesOnly) {
+    console.log('toggle addam first:', usePortalRoot);
+    console.log('toggle addam second:', imagesOnly);
+    // this.adam.toggle({
+    //   showImagesOnly: imagesOnly,
+    //   usePortalRoot: usePortalRoot
+    // });
   }
 
-  tooltipUrl(link: string) {
-    return link;
-  }
-
-
+  //#endregion adam: callbacks only
 }

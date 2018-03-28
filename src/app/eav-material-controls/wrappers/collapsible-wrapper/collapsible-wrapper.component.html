@@ -1,8 +1,9 @@
 <div>
     <div class="form-ci-subtitle unhide-area" (click)="config.collapse = !config.collapse">
         <span style="position: relative">
-            <mat-icon *ngIf="config.collapse" class="mat-24">remove</mat-icon>
-            <mat-icon *ngIf="!config.collapse" class="mat-24">add</mat-icon>
+            <i class="eav-icon-side-marker"></i>
+            <i *ngIf="config.collapse" class="eav-icon-minus"></i>
+            <i *ngIf="!config.collapse" class="eav-icon-plus"></i>
         </span>
         {{config.label}}
     </div>

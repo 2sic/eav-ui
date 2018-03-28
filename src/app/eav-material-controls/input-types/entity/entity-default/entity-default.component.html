@@ -3,16 +3,18 @@
   <mat-list-item *ngFor="let item of chosenEntities">
     <p matLine>
       <!-- ng-show="!allowMultiValue" -->
-      <i class="material-icons">check</i>
+      <!-- <i class="material-icons">check</i> -->
+      <i title="FieldType.Entity.DragMove" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
+      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
       <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
       <button mat-icon-button *ngIf="enableEdit" type="button" (click)="editEntity(item)">
-        <i class="material-icons">edit</i>
+        <i class="eav-icon-pencil"></i>
       </button>
       <button mat-icon-button *ngIf="enableRemove" type="button" (click)="removeEntity(item)">
-        <i class="material-icons">{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</i>
+        <i class="{{allowMultiValue ? 'eav-icon-minus-circled' : 'eav-icon-down-dir'}}"></i>
       </button>
       <button mat-icon-button *ngIf="enableDelete" type="button" (click)="deleteEntity(item)">
-        <i class="material-icons">delete</i>
+        <i class="eav-icon-cancel"></i>
       </button>
     </p>
   </mat-list-item>
@@ -41,7 +43,7 @@
 <!-- create new entity to add to this list -->
 <button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)" type="button"
   (click)="openNewEntityDialog()">
-  <i class="material-icons">add_circle</i>
+  <i class="eav-icon-plus"></i>
 </button>
 
 <!-- Do we need this ??? -->

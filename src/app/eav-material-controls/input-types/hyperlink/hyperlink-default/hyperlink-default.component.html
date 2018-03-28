@@ -13,28 +13,28 @@
 {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
 ADAM - sponsored with ♥ by 2sic.com" -->
     <input matInput type="text" [id]="id" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
-      (focus)="showFieldHints = true" [required]="config.required" matTooltip="drop files here to auto-upload
+      (click)="showFieldHints = true" [required]="config.required" matTooltip="drop files here to auto-upload
     for help see 2sxc.org/help?tag=adam ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
     <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error> -->
     <span matSuffix class="input-group-btn">
       <div style="width: 6px;"></div>
       <!-- ng-disabled="to.disabled"  -->
-      <button mat-icon-button *ngIf="config.settings.Buttons.values[0].value.indexOf('adam') > -1" type="button" class="btn btn-default icon-field-button"
-        (click)="toggleAdam()" matTooltip="Edit.Fields.Hyperlink.Default.AdamUploadLabel">
+      <button mat-icon-button *ngIf="buttons.indexOf('adam') > -1" type="button" class="btn btn-default icon-field-button" (click)="toggleAdam()"
+        matTooltip="Edit.Fields.Hyperlink.Default.AdamUploadLabel">
         <i class="eav-icon-apple"></i>
       </button>
       <!-- ng-disabled="to.disabled"  -->
-      <button mat-icon-button *ngIf="config.settings.Buttons.values[0].value.indexOf('page') > -1" type="button" class="btn btn-default icon-field-button"
-        (click)="openPageDialog()" matTooltip="Edit.Fields.Hyperlink.Default.PageLabel">
+      <button mat-icon-button *ngIf="buttons.indexOf('page') > -1" type="button" class="btn btn-default icon-field-button" (click)="openPageDialog()"
+        matTooltip="Edit.Fields.Hyperlink.Default.PageLabel">
         <i class="eav-icon-sitemap"></i>
       </button>
       <!-- ng-disabled="to.disabled"-->
-      <button mat-icon-button *ngIf="config.settings.Buttons.values[0].value.indexOf('more') > -1" tabindex="-1" type="button"
-        class="btn btn-default icon-field-button" [matMenuTriggerFor]="menu">
+      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" type="button" class="btn btn-default icon-field-button"
+        [matMenuTriggerFor]="menu">
         <i class="eav-icon-options"></i>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="config.settings.ShowAdam.values[0].value" (click)="toggleAdam(false)">
+        <button mat-menu-item *ngIf="showAdam" (click)="toggleAdam(false)">
           <i class="eav-icon-apple"></i>
           <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuAdam"></span> -->
           <span>MenuAdam</span>
