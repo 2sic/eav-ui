@@ -21,7 +21,7 @@ export class HyperlinkDefaultComponent implements Field {
 
   showPreview;
   toggleAdamValue = false;
-  testLink = '/assets/images/smallImage.doc';
+  testLink = '/assets/images/smallImage.jpg';
 
   adam: any;
 
@@ -35,6 +35,9 @@ export class HyperlinkDefaultComponent implements Field {
 
   // ensureDefaultConfig();
   get showAdam() {
+    // this.config.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
+    // then the wrapper will enable/disable the field, depending on the dimension state\
+    // so if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
     return this.config.settings.ShowAdam ? this.config.settings.ShowAdam.values[0].value : true;
   }
 
@@ -42,11 +45,11 @@ export class HyperlinkDefaultComponent implements Field {
     return this.config.settings.Buttons ? this.config.settings.Buttons.values[0].value : 'adam,more';
   }
 
-  setFormValue(formControlName: string, value: any) {
+  constructor(private fileTypeService: FileTypeService) { }
+
+  private setFormValue(formControlName: string, value: any) {
     this.group.patchValue({ [formControlName]: value });
   }
-
-  constructor(private fileTypeService: FileTypeService) { }
 
   isImage = () => this.fileTypeService.isImage(this.testLink);
 

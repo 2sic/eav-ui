@@ -15,7 +15,8 @@ import {
   MatAutocompleteModule,
   MatListModule,
   MatMenuModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatTabsModule
 } from '@angular/material';
 import {
   PanelWrapperComponent,
@@ -46,6 +47,7 @@ import { Field } from '../eav-dynamic-form/model/field';
 import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
+import { EavLanguageSwitcherComponent } from './wrappers/eav-language-switcher/eav-language-switcher.component';
 
 
 
@@ -72,7 +74,8 @@ import { FileTypeService } from '../shared/services/file-type.service';
     EavLocalizationComponent,
     FieldParentWrapperComponent,
     EntityDefaultComponent,
-    HyperlinkDefaultComponent
+    HyperlinkDefaultComponent,
+    EavLanguageSwitcherComponent
   ],
   imports: [
     CommonModule,
@@ -92,7 +95,8 @@ import { FileTypeService } from '../shared/services/file-type.service';
     MatAutocompleteModule,
     MatListModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ],
   entryComponents: [
     StringDefaultComponent,
@@ -111,6 +115,7 @@ import { FileTypeService } from '../shared/services/file-type.service';
     EntityDefaultComponent,
     HyperlinkDefaultComponent
   ],
-  providers: [FileTypeService],
+  exports: [EavLanguageSwitcherComponent],
+  providers: [FileTypeService]
 })
 export class EavMaterialControlsModule { }

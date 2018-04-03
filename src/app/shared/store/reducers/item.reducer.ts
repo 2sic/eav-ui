@@ -49,15 +49,16 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                         return item.entity.id === action.id
                             ? {
                                 ...item,
-                                header: { ...item.header },
+                                // header: { ...item.header },
                                 entity: {
-                                    id: item.entity.id,
-                                    version: item.entity.version,
-                                    guid: item.entity.guid,
-                                    type: { ...item.entity.type },
+                                    ...item.entity,
+                                    // id: item.entity.id,
+                                    // version: item.entity.version,
+                                    // guid: item.entity.guid,
+                                    // type: { ...item.entity.type },
                                     attributes: { ...action.attributes },
-                                    owner: item.entity.owner,
-                                    metadata: [...item.entity.metadata],
+                                    // owner: item.entity.owner,
+                                    // metadata: [...item.entity.metadata],
                                 }
                             }
                             : item;

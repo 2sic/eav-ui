@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ValidationMessages } from '../../../validators/validation-messages';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,8 +30,6 @@ export class StringDefaultComponent implements Field {
   }
 
   getErrorMessage() {
-    console.log('Pozvano');
-    return this.group.controls[this.config.name].hasError('required') ? 'You must enter a value' :
-      '';
+    return this.group.controls[this.config.name].hasError('required') ? ValidationMessages.requiredMessage(this.config) : '';
   }
 }

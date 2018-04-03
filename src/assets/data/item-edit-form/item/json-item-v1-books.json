@@ -13,7 +13,11 @@
         "Attributes": {
             "String": {
                 "Name": {
-                    "en-us": "Pro Angular"
+                    "*": "default language / all languages",
+                    "en-us": "Pro Angular",
+                    "de-ch": "German swiss only",
+                    "xx-yy,fr-fr": "editable on two languages",
+                    "fr-ch,-fr-fr": "French swiss editable, read-only for french-french"
                 }
             },
             "Entity": {

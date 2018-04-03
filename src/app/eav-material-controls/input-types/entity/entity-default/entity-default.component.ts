@@ -214,6 +214,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    */
   editEntity(value: string) {
     console.log('TODO editEntity', value);
+
+    // TODO: filter entity Id from availableEntities (we have guid)
+    // Then open item edit:
+    // eavAdminDialogs.openItemEditWithEntityId(id, $scope.getAvailableEntities);
   }
 
   /**
@@ -233,9 +237,19 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    */
   deleteEntity(value: string) {
     console.log('TODO deleteEntity', value);
+
+    // TODO: filter entity Id from availableEntities (we have guid)
+    // Then delete entity item:
+    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
+    //  $scope.chosenEntities.splice(index, 1);
+    //  $scope.maybeReload(true);
+    // });
   }
 
   openNewEntityDialog() {
     console.log('TODO openNewEntityDialog');
+
+    // open the dialog for a new item
+    // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
   }
 }

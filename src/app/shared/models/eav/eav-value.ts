@@ -20,8 +20,16 @@ export class EavValue<T> {
         // Loop trough value1 - {'*', 'value'} ...
         Object.keys(value1).forEach(value1Key => {
             if (value1.hasOwnProperty(value1Key)) {
+                console.log('jezici:', value1Key);
+
+                const dimensions: EavDimensions<T>[] = [];
+
+                value1Key.split(',').forEach((language: any) => {
+                    dimensions.push(new EavDimensions<T>(language));
+                });
+                console.log('dimensions:', dimensions);
                 // Creates new EavValue for specified type and add to array
-                newEavValueArray.push(new EavValue(value1[value1Key], []));
+                newEavValueArray.push(new EavValue(value1[value1Key], dimensions));
             }
         });
 
