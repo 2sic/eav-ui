@@ -7,7 +7,7 @@ import 'reflect-metadata';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import { AppState } from '../../shared/models';
-import { Item, ContentType } from '../../shared/models/eav';
+import { Item, ContentType, Language } from '../../shared/models/eav';
 import { of } from 'rxjs/observable/of';
 
 import { ItemService } from '../../shared/services/item.service';
@@ -17,6 +17,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { ItemState } from '../../shared/store/reducers/item.reducer';
 import * as fromStore from '../../shared/store';
 import * as itemActions from '../../shared/store/actions/item.actions';
+import { LanguageService } from '../../shared/services/language.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -27,10 +28,18 @@ export class MultiItemEditFormComponent implements OnInit {
   // Test
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
+  languages$: Observable<Language[]>;
+  // languages = ['English',
+  //   'German',
+  //   'Spanish',
+  //   'French',
+  //   'Croatian'];
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) {
+  constructor(private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
+    private languageService: LanguageService) {
     console.log('MultiItemEditFormComponent');
-    this.items$ = itemService.items$;
+    this.items$ = itemService.selectAllItems();
   }
 
   ngOnInit() {
@@ -38,6 +47,9 @@ export class MultiItemEditFormComponent implements OnInit {
     // this.loadcontentType();
     // this.items$ = this.store.select(state => state.items);
     console.log('MultiItemEditFormComponent ngOnInit');
+    this.languageService.loadLanguages();
+
+    this.languages$ = this.languageService.selectAllLanguages();
   }
 
   /**

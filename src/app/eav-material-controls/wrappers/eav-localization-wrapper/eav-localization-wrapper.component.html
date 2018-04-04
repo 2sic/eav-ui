@@ -2,5 +2,5 @@
   <div class="language-field">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <mat-icon *ngIf="!config.collapse" class="mat-18 language-icon">language</mat-icon>
+  <mat-icon *ngIf="!config.collapse" class="mat-18 language-icon" (click)="enable()">language</mat-icon>
 </div>

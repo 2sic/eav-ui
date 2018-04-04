@@ -18,6 +18,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import * as fromStore from '../app/shared/store';
 import { environment } from '../environments/environment'; // Angular CLI environment
 import { reducers, metaReducers } from '../app/shared/store';
+import { LanguageService } from './shared/services/language.service';
 
 const routes: Routes = [
   {
@@ -49,7 +50,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
   ],
   exports: [RouterModule],
-  providers: [ItemService, ContentTypeService],
+  providers: [ItemService, ContentTypeService, LanguageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

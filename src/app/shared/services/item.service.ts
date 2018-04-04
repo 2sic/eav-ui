@@ -17,10 +17,10 @@ import * as fromStore from '../store';
 @Injectable()
 export class ItemService {
 
-  public items$: Observable<Item[]>;
+  // public items$  Observable<Item[]>;
 
   constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
-    this.items$ = store.select(fromStore.getItems);
+    // this.items$ = store.select(fromStore.getItems);
   }
 
   public loadItem(path: string) {
@@ -47,7 +47,7 @@ export class ItemService {
 
   // temp - need to change
   public selectAllItems(): Observable<Item[]> {
-    return this.items$;
+    return this.store.select(fromStore.getItems); // this.items$;
   }
 
   /**

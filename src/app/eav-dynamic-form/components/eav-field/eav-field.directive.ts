@@ -131,7 +131,7 @@ export class EavFieldDirective implements OnInit {
     const ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
 
     Object.assign(ref.instance, {
-      // group: group, // this only need if we have form groups
+      group: this.group, // this only need if we have form groups
       config: fieldConfig
     });
 
