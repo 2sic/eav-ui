@@ -80,6 +80,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   // }
 
   ngOnInit() {
+    console.log('ngOnInit EntityDefaultComponent');
     this.setChosenEntities();
 
     this.setAvailableEntities();

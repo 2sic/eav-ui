@@ -1,5 +1,5 @@
 <!-- !modes.freeTextMode && -->
-<mat-list *ngIf="enableCreate || chosenEntities.length > 0">
+<mat-list *ngIf="enableCreate || (chosenEntities && chosenEntities.length > 0)">
   <mat-list-item *ngFor="let item of chosenEntities">
     <p matLine>
       <!-- ng-show="!allowMultiValue" -->
@@ -23,7 +23,7 @@
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
 
-<div *ngIf="enableAddExisting && (allowMultiValue || chosenEntities.length < 1)">
+<div *ngIf="enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1))">
   <mat-form-field [style.width]="'100%'">
     <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" (click)="setSelectEntitiesObservables()">
 

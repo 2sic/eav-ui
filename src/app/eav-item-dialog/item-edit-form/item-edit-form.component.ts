@@ -141,6 +141,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private setFormValues = (item: Item) => {
     const formValues: { [name: string]: any } = {};
     Object.keys(item.entity.attributes).forEach(valueKey => {
+      // console.log('ovdje imam value', item.entity.attributes[valueKey].values);
       formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
     });
 
@@ -234,7 +235,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // pattern: pattern,
       settings: attribute.settings,
       // change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
-
       validation: validationList
       // disable: //TODO see do we need this
     };

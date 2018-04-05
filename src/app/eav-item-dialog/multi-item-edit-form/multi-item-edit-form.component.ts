@@ -38,11 +38,12 @@ export class MultiItemEditFormComponent implements OnInit {
   constructor(private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private languageService: LanguageService) {
-    console.log('MultiItemEditFormComponent');
-    this.items$ = itemService.selectAllItems();
   }
 
   ngOnInit() {
+
+    console.log('MultiItemEditFormComponent');
+    this.items$ = this.itemService.selectAllItems();
     // this.loadItem();
     // this.loadcontentType();
     // this.items$ = this.store.select(state => state.items);

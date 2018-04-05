@@ -1,4 +1,5 @@
 import { ValidatorFn } from '@angular/forms';
+import { EavAttributes } from '../../shared/models/eav';
 
 export interface FieldConfig {
     disabled?: boolean;
@@ -14,7 +15,7 @@ export interface FieldConfig {
 
     required?: boolean;
     // pattern?: string;
-    settings?: any;
+    settings?: EavAttributes;
     collapse?: boolean;
 
     fieldGroup?: FieldConfig[];

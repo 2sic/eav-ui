@@ -12,7 +12,6 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadLocalization()">Load Localization</button>
 <!--  -->
 
-
 <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)"></app-eav-language-switcher>
 
 <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
