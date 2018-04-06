@@ -34,7 +34,6 @@ export const initialState: ItemState = {
 export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
     switch (action.type) {
         case fromItems.LOAD_ITEM_SUCCESS: {
-            console.log('loadsucess item: ', action.newItem);
             return {
                 ...state,
                 ...{ items: [...state.items, action.newItem] }
@@ -56,7 +55,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                     // version: item.entity.version,
                                     // guid: item.entity.guid,
                                     // type: { ...item.entity.type },
-                                    attributes: { ...action.attributes },
+                                    attributes: { ...item.entity.attributes, ...action.attributes },
                                     // owner: item.entity.owner,
                                     // metadata: [...item.entity.metadata],
                                 }

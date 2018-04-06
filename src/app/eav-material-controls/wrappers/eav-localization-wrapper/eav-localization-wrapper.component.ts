@@ -35,7 +35,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   ngOnInit() {
-    console.log('config EavLocalizationComponent ngOnInit', this.config);
     // this.config.disabled = true;
 
     // Temp workaround
@@ -45,7 +44,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
-        this.config.label = this.translate(currentLanguage, this.config.settings.Name.values);
+        // Temp workaround (setTimeout)
+        setTimeout(() => {
+          this.config.label = this.translate(currentLanguage, this.config.settings.Name.values);
+        });
       })
     );
   }
@@ -55,7 +57,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   /**
-   * get translate value for currentLanguage
+   * get translated value for currentLanguage
    * @param currentLanguage
    * @param values
    */
@@ -76,10 +78,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   disableControl(disabled: boolean) {
     if (disabled) {
       this.disabled = true;
-      this.group.controls[this.config.name].disable();
+      this.group.controls[this.config.name].disable({ emitEvent: false });
     } else {
       this.disabled = false;
-      this.group.controls[this.config.name].enable();
+      this.group.controls[this.config.name].enable({ emitEvent: false });
     }
   }
 

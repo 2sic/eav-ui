@@ -15,7 +15,6 @@ export class EavValue<T> {
      * @param value
      */
     public static create<T>(value1: Value1<T>): EavValue<T>[] {
-
         const newEavValueArray: EavValue<T>[] = []; // = new EavValue(value1,);
         // Loop trough value1 - {'*', 'value'} ...
         Object.keys(value1).forEach(value1Key => {

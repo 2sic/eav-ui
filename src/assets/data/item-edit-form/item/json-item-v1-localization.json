@@ -25,6 +25,12 @@
                 "engBoolean": {
                     "en-us": false
                 }
+            },
+            "Number": {
+                "engNumber": {
+                    "en-us,de-de": 5.0,
+                    "es-es,fr-fr": 2.0
+                }
             }
         },
         "Owner": "dnn:userid=1"

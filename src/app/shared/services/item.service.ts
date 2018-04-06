@@ -47,7 +47,7 @@ export class ItemService {
 
   // temp - need to change
   public selectAllItems(): Observable<Item[]> {
-    return this.store.select(fromStore.getItems); // this.items$;
+    return this.store.select(fromStore.getItems);
   }
 
   /**
@@ -58,6 +58,7 @@ export class ItemService {
     // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
     return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
       .map((item: JsonItem1) => {
+        console.log('kreiran item:', Item.create(item));
         return Item.create(item);
       })
       // .do(data => console.log('getItemFromJsonItem1: ', data))

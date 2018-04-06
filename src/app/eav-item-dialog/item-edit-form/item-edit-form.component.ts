@@ -26,6 +26,7 @@ import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavValues } from '../../shared/models/eav/eav-values';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { EavDimensions } from '../../shared/models/eav/eav-dimensions';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -34,6 +35,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 })
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EavFormComponent) form: EavFormComponent;
+  // @Input() currentLanguage: string;
+  @Input()
+  set currentLanguage(value: string) {
+    console.log('set currentLanguage');
+    this.currentLanguageValue = value;
+    this.setFormValues(this.item);
+  }
+  get currentLanguage(): string {
+    // console.log('get item: ', this.itemBehaviorSubject$.getValue());
+    return this.currentLanguageValue;
+  }
 
   @Input()
   set item(value: Item) {
@@ -46,22 +58,23 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // @Input() item: Item
+  private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
 
   constructor(
     private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
+    private contentTypeService: ContentTypeService
     // private ref: ElementRef,
   ) { }
 
   ngOnInit() {
+    console.log('imamo current: ', this.currentLanguage);
+
     this.itemBehaviorSubject$.subscribe((item: Item) => {
-      if (this.form) {
-        console.log('subscribe setFormValues');
-        this.setFormValues(item);
-      }
+      console.log('subscribe setFormValues start');
+      this.setFormValues(item);
     });
 
     this.loadContentTypeFromStore();
@@ -80,14 +93,55 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     console.log('ItemEditFormComponent');
+    console.log('imamo current change: ', this.currentLanguage);
   }
 
   /**
    * Update NGRX/store on form value change
    * @param values key:value list of fields from form
    */
-  formValueChange(values: { [key: string]: any }) {
-    const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values);
+  formValueChange(values: { [key: string]: any }) { // Need to update specific language or create another dimension
+    // copy attributes from item
+    const eavAttributes: EavAttributes = new EavAttributes();
+    console.log('EavAttributes update item before1', values);
+    console.log('EavAttributes update item before', this.item.entity.attributes);
+
+    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+      const eavAttribute = this.item.entity.attributes[attributeKey];
+      // const eavValueList: EavValue<any>[] = [];
+      const newItemValue = values[attributeKey];
+
+      // if new value exist update attribute for current language
+      if (newItemValue) {
+        eavAttributes[attributeKey] = {
+          ...eavAttribute, values: eavAttribute.values.map(eavValue => {
+            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', eavValue);
+            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa1', this.currentLanguage);
+            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa2', eavValue.dimensions.find(d => d.value === this.currentLanguage));
+            return eavValue.dimensions.find(d => d.value === this.currentLanguage)
+              // Update value for current language
+              ? {
+                ...eavValue,
+                value: newItemValue,
+              }
+              : eavValue;
+            // {
+            //   ...eavValue,
+            //   value: newItemValue,
+            //   dimensions: eavValue.dimensions.concat({ value: this.currentLanguage }) //  {value: this.currentLanguage }
+            // };
+          })
+        };
+      } else { // else copy item attributes
+        eavAttributes[attributeKey] = eavAttribute;   // new EavValues(eavAttribute.values);
+      }
+    });
+
+
+
+
+    console.log('EavAttributes update', eavAttributes);
+    // const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values, this.currentLanguage);
     if (Object.keys(eavAttributes).length > 0) {
       this.itemService.updateItem(eavAttributes, this.item.entity.id);
     }
@@ -108,10 +162,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       StringUrlPathGroup2: 'ante'
     };
 
-    const eavAttributes = EavAttributes.createFromDictionary(values);
-    if (Object.keys(eavAttributes).length > 0) {
-      this.itemService.updateItem(eavAttributes, this.item.entity.id);
-    }
+    this.formValueChange(values);
+
+    // const eavAttributes = EavAttributes.createFromDictionary(values);
+    // if (Object.keys(eavAttributes).length > 0) {
+    //   this.itemService.updateItem(eavAttributes, this.item.entity.id);
+    // }
   }
 
   submit(values: { [key: string]: any }) {
@@ -139,13 +195,41 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   // };
 
   private setFormValues = (item: Item) => {
-    const formValues: { [name: string]: any } = {};
-    Object.keys(item.entity.attributes).forEach(valueKey => {
-      // console.log('ovdje imam value', item.entity.attributes[valueKey].values);
-      formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
-    });
+    if (this.form) {
+      const formValues: { [name: string]: any } = {};
+      Object.keys(item.entity.attributes).forEach(valueKey => {
 
-    this.form.patchValue(formValues, false);
+        // formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
+        console.log('setFormValues', this.currentLanguage);
+        formValues[valueKey] = this.translate(this.currentLanguage, item.entity.attributes[valueKey].values);
+      });
+
+      this.form.patchValue(formValues, false);
+    }
+  }
+
+  getAttributeValueForCurrentLanguage(currentLanguage: string, values: EavValue<any>[]): EavValue<any> {
+    const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
+
+    if (translations.length > 0) {
+      console.log('getAttributeValueForCurrentLanguage value', translations[0].value);
+      return translations[0];
+    } else {
+      console.log('getAttributeValueForCurrentLanguage value1', values[0].value);
+      return values[0]; // TODO: get default language value ???
+    }
+  }
+
+  translate(currentLanguage: string, values: EavValue<any>[]): string {
+    const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
+
+    if (translations.length > 0) {
+      console.log('setFormValues translate value', translations[0].value);
+      return translations[0].value;
+    } else {
+      console.log('setFormValues translate value1', values[0].value);
+      return values[0].value; // TODO: get default language value ???
+    }
   }
 
   private loadContentTypeFromStore() {
@@ -245,7 +329,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private getValueFromItem = (attributeName: string): any => {
     return this.item.entity.attributes[attributeName]
-      ? this.item.entity.attributes[attributeName].values[0].value
+      // ? this.item.entity.attributes[attributeName].values)0].value
+      ? this.translate(this.currentLanguage, this.item.entity.attributes[attributeName].values)
       : null;
   }
 

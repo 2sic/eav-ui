@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef, Output, EventEmitter } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 

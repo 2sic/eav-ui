@@ -35,9 +35,12 @@ export class MultiItemEditFormComponent implements OnInit {
   //   'French',
   //   'Croatian'];
 
+  currentLanguage$: Observable<string>;
+
   constructor(private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private languageService: LanguageService) {
+    this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   ngOnInit() {

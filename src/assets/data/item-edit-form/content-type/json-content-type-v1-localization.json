@@ -224,8 +224,8 @@
                                     "en-us": "number-default"
                                 },
                                 "Name": {
-                                    "de-de": "deNumber",
-                                    "en-us": "engNumber"
+                                    "en-us,de-de": "endeNumber",
+                                    "es-es,fr-fr": "esfrNumber"
                                 }
                             },
                             "Boolean": {
