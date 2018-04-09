@@ -29,12 +29,6 @@ export class MultiItemEditFormComponent implements OnInit {
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
   languages$: Observable<Language[]>;
-  // languages = ['English',
-  //   'German',
-  //   'Spanish',
-  //   'French',
-  //   'Croatian'];
-
   currentLanguage$: Observable<string>;
 
   constructor(private itemService: ItemService,
@@ -44,13 +38,10 @@ export class MultiItemEditFormComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    console.log('MultiItemEditFormComponent');
-    this.items$ = this.itemService.selectAllItems();
-    // this.loadItem();
-    // this.loadcontentType();
-    // this.items$ = this.store.select(state => state.items);
     console.log('MultiItemEditFormComponent ngOnInit');
+
+    this.items$ = this.itemService.selectAllItems();
+
     this.languageService.loadLanguages();
 
     this.languages$ = this.languageService.selectAllLanguages();

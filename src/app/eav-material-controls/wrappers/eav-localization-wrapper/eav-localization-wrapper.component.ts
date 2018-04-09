@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { EavValues } from '../../../shared/models/eav/eav-values';
-import { EavValue } from '../../../shared/models/eav';
+import { EavValue, Language } from '../../../shared/models/eav';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -28,6 +28,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   disabled = true;
 
   currentLanguage$: Observable<string>;
+  languages$: Observable<Language[]>;
+  languages: Language[];
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService) {
@@ -35,25 +37,45 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   ngOnInit() {
-    // this.config.disabled = true;
+    console.log('set EavLocalizationComponent oninit');
 
-    // Temp workaround
-    // setTimeout(() => {
-    //   this.group.controls[this.config.name].disable();
-    // });
+    this.subscribeToCurrentLanguageFromStore();
 
+    this.loadlanguagesFromStore();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  subscribeToCurrentLanguageFromStore() {
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         // Temp workaround (setTimeout)
         setTimeout(() => {
+          console.log('subscribe currentLanguage', currentLanguage);
           this.config.label = this.translate(currentLanguage, this.config.settings.Name.values);
+          // TODO: translate all settings
         });
       })
     );
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  /**
+   * Load languages from store and subscribe to languages
+   */
+  loadlanguagesFromStore() {
+    this.languages$ = this.languageService.selectAllLanguages();
+
+    this.subscriptions.push(
+      this.languages$.subscribe(languages => {
+        // Temp workaround (setTimeout)
+        // setTimeout(() => {
+        console.log('subscribe languages', languages);
+        this.languages = languages;
+        // });
+      })
+    );
   }
 
   /**
@@ -75,7 +97,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
   }
 
-  disableControl(disabled: boolean) {
+  private disableControl(disabled: boolean) {
     if (disabled) {
       this.disabled = true;
       this.group.controls[this.config.name].disable({ emitEvent: false });
@@ -92,5 +114,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     } else {
       this.disableControl(true);
     }
+  }
+
+  onClickCopyFrom(language) {
+    console.log('onClickCopyFrom language', language);
+  }
+
+  onClickUseFrom(language) {
+    console.log('onClickUseFrom language', language);
+  }
+
+  onClickShareWith(language) {
+    console.log('onClickShareWith language', language);
   }
 }

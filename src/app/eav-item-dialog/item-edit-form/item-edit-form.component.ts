@@ -57,7 +57,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.itemBehaviorSubject$.getValue();
   }
 
-  // @Input() item: Item
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
@@ -208,18 +207,20 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getAttributeValueForCurrentLanguage(currentLanguage: string, values: EavValue<any>[]): EavValue<any> {
-    const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
+  // probably dont need this
+  // getAttributeValueForCurrentLanguage(currentLanguage: string, values: EavValue<any>[]): EavValue<any> {
+  //   const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
 
-    if (translations.length > 0) {
-      console.log('getAttributeValueForCurrentLanguage value', translations[0].value);
-      return translations[0];
-    } else {
-      console.log('getAttributeValueForCurrentLanguage value1', values[0].value);
-      return values[0]; // TODO: get default language value ???
-    }
-  }
+  //   if (translations.length > 0) {
+  //     console.log('getAttributeValueForCurrentLanguage value', translations[0].value);
+  //     return translations[0];
+  //   } else {
+  //     console.log('getAttributeValueForCurrentLanguage value1', values[0].value);
+  //     return values[0]; // TODO: get default language value ???
+  //   }
+  // }
 
+  // TODO: this can go in localization helper
   translate(currentLanguage: string, values: EavValue<any>[]): string {
     const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
 

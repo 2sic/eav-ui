@@ -14,14 +14,14 @@ import { LanguageService } from '../../../shared/services/language.service';
 export class EavLanguageSwitcherComponent {
   @Input() languages: Language[];
 
-  currentLanguage$: Observable<string>;
+  @Input() currentLanguage: string;
 
   constructor(private languageService: LanguageService) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
+    // this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   /**
-   * on select tab changed update current language
+   * on select tab changed update current language in store
    * @param event
    */
   selectedTabChanged(tabChangeEvent: MatTabChangeEvent) {

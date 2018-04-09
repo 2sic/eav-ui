@@ -32,6 +32,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    console.log('OnInit EavFormComponent');
     // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
 

@@ -2,5 +2,30 @@
   <div class="language-field">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <mat-icon *ngIf="!config.collapse" class="mat-18 language-icon" (click)="enable()">language</mat-icon>
+
+  <button mat-icon-button type="button" *ngIf="!config.collapse" [matMenuTriggerFor]="rootMenu">
+    <mat-icon class="mat-18 language-icon">language</mat-icon>
+    <!-- (click)="enable()" -->
+  </button>
+
+  <mat-menu #rootMenu="matMenu">
+    <button mat-menu-item type="button">Translate (unlink)</button>
+    <button mat-menu-item type="button">Link to default</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">Share with</button>
+  </mat-menu>
+
+  <mat-menu #copyFromMenu="matMenu">
+    <!-- <button mat-menu-item (click)="onClickCopyFrom('en-us')">en-us</button> -->
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key)">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #useFromMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFrom(language.key)">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #shareWithMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWith(language.key)">{{language.key}}</button>
+  </mat-menu>
 </div>
