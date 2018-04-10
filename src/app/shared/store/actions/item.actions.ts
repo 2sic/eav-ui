@@ -2,11 +2,13 @@ import { Action } from '@ngrx/store';
 
 import { Item } from '../../models/eav/item';
 import { EavAttributes } from '../../models/eav';
+import { EavValues } from '../../models/eav/eav-values';
 
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';
 export const UPDATE_ITEM = '[Item] UPDATE_ITEM';
 export const UPDATE_ITEM_SUCCESS = '[Item] UPDATE_ITEM_SUCCESS';
+export const UPDATE_ITEM_ATTRIBUTE = '[Item] UPDATE_ITEM_ATTRIBUTE';
 export const DELETE_ITEM = '[Item] DELETE_ITEM';
 
 /**
@@ -33,6 +35,10 @@ export class UpdateItemSuccessAction implements Action {
     constructor(public item: Item) { }
 }
 
+export class UpdateItemAttributeAction implements Action {
+    readonly type = UPDATE_ITEM_ATTRIBUTE;
+    constructor(public id: number, public attribute: EavValues<any>, public attributeKey, ) { }
+}
 /**
  * Delete
  */
@@ -46,4 +52,5 @@ export type Actions
     | LoadItemSuccessAction
     | UpdateItemAction
     | UpdateItemSuccessAction
+    | UpdateItemAttributeAction
     | DeleteItemAction;

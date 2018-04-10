@@ -8,11 +8,13 @@ import 'rxjs/add/operator/catch';
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { AppState } from '../models/app-state';
-import { EavAttributes } from '../models/eav';
+import { EavAttributes, EavValue } from '../models/eav';
 // import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
 import * as fromStore from '../store';
+import { EavValues } from '../models/eav/eav-values';
+import { EavDimensions } from '../models/eav/eav-dimensions';
 
 @Injectable()
 export class ItemService {
@@ -31,6 +33,10 @@ export class ItemService {
     this.store.dispatch(new itemActions.UpdateItemAction(attributes, id));
   }
 
+  public updateItemAttribute(entityId: number, newEavAttribute: EavValues<any>, attributeKey: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributeAction(entityId, newEavAttribute, attributeKey));
+  }
+
   // public updateItem(attributes: EavAttributes, item: EavItem) {
   //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
   // }
@@ -45,10 +51,18 @@ export class ItemService {
       .map(data => data.find(obj => obj.entity.id === id));
   }
 
-  // temp - need to change
+  public selectAttributeByEntityId(entityId: number, attributeKey: string): Observable<EavValues<any>> {
+    return this.store
+      .select(fromStore.getItems)
+      .map(c => c.find(obj => obj.entity.id === entityId)
+        ? c.find(obj => obj.entity.id === entityId).entity.attributes[attributeKey]
+        : null);
+  }
+
   public selectAllItems(): Observable<Item[]> {
     return this.store.select(fromStore.getItems);
   }
+
 
   /**
    * Get Item from Json Entity V1

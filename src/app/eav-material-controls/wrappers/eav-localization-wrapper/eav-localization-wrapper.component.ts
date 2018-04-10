@@ -7,12 +7,13 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { LanguageService } from '../../../shared/services/language.service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { EavValues } from '../../../shared/models/eav/eav-values';
-import { EavValue, Language } from '../../../shared/models/eav';
+import { EavValue, Language, Item, EavAttributes } from '../../../shared/models/eav';
+import { LanguageService } from '../../../shared/services/language.service';
+import { ItemService } from '../../../shared/services/item.service';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -27,17 +28,25 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   disabled = true;
 
+  attributeValues$: Observable<EavValues<any>>;
+  attributeValues: EavValues<any>;
   currentLanguage$: Observable<string>;
+  currentLanguage: string;
   languages$: Observable<Language[]>;
   languages: Language[];
   private subscriptions: Subscription[] = [];
 
-  constructor(private languageService: LanguageService) {
+  constructor(private languageService: LanguageService, private itemService: ItemService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   ngOnInit() {
     console.log('set EavLocalizationComponent oninit');
+
+    console.log('this.config.entityId)', this.config);
+    this.attributeValues$ = this.itemService.selectAttributeByEntityId(this.config.entityId, this.config.name);
+
+    this.subscribeToAttributeValues();
 
     this.subscribeToCurrentLanguageFromStore();
 
@@ -46,6 +55,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+  /**
+   * We subscribe to item attribute values
+   */
+  subscribeToAttributeValues() {
+    this.subscriptions.push(
+      this.attributeValues$.subscribe(attributeValues => {
+        console.log('subscribe attributeValues ', attributeValues);
+        this.attributeValues = attributeValues;
+      })
+    );
   }
 
   subscribeToCurrentLanguageFromStore() {
@@ -116,15 +136,78 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
   }
 
-  onClickCopyFrom(language) {
-    console.log('onClickCopyFrom language', language);
+  translateUnlink() {
+    this.disableControl(false);
   }
 
-  onClickUseFrom(language) {
-    console.log('onClickUseFrom language', language);
+  onClickCopyFrom(languageKey) {
+    console.log('onClickCopyFrom language', languageKey);
   }
 
-  onClickShareWith(language) {
-    console.log('onClickShareWith language', language);
+  onClickUseFrom(languageKey, entityId, attributeKey, oldAttributeValues) {
+    console.log('onClickUseFrom language', languageKey);
+    const newEavAttributes: EavAttributes = new EavAttributes();
+    // if new value exist update attribute for current language
+    this.updateAttributeDimension(this.config.entityId, this.config.name, this.attributeValues, languageKey, this.currentLanguage, true);
+  }
+
+  /**
+   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
+   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
+   * @param entityId
+   * @param attributeKey
+   * @param oldAttributeValues
+   * @param useFromLanguageKey
+   * @param languageKey
+   */
+  updateAttributeDimension(
+    entityId: number,
+    attributeKey: string,
+    oldAttributeValues: EavValues<any>,
+    useFromLanguageKey: string,
+    languageKey: string,
+    isReadOnly: boolean) {
+    console.log('onClickUseFrom useFromLanguageKey', useFromLanguageKey);
+    let newValue = languageKey;
+
+    if (isReadOnly) {
+      newValue = `-${languageKey}`;
+    }
+
+    const newEavAttributes: EavAttributes = new EavAttributes();
+    newEavAttributes[attributeKey] = {
+      ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
+        return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
+          // Update dimension for current language
+          ? {
+            ...eavValue,
+            // if languageKey already exist
+            dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
+              // update languageKey with updateValue
+              ? eavValue.dimensions.map(dimension => {
+                return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
+                  ? { value: newValue }
+                  : dimension;
+              })
+              // add new dimension updateValue
+              : eavValue.dimensions.concat({ value: newValue })
+          }
+          : eavValue;
+      })
+    };
+
+    if (Object.keys(newEavAttributes).length > 0) {
+      this.itemService.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
+    }
+
+    // copy value from language and add current language with - to dimension
+  }
+
+  onClickShareWith(languageKey) {
+    console.log('onClickShareWith language', languageKey);
+  }
+
+  hasLanguage = (languageKey) => {
+    return this.attributeValues.values.filter(c => c.dimensions.find(f => f.value === languageKey)).length > 0;
   }
 }

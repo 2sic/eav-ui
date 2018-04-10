@@ -2,6 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 import { EavAttributes } from '../../shared/models/eav';
 
 export interface FieldConfig {
+    entityId?: number;
     disabled?: boolean;
     label?: string;
     name: string;

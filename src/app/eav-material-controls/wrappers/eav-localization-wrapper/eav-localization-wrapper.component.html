@@ -9,7 +9,7 @@
   </button>
 
   <mat-menu #rootMenu="matMenu">
-    <button mat-menu-item type="button">Translate (unlink)</button>
+    <button mat-menu-item type="button" (click)="translateUnlink()">Translate (unlink)</button>
     <button mat-menu-item type="button">Link to default</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
@@ -22,10 +22,10 @@
   </mat-menu>
 
   <mat-menu #useFromMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFrom(language.key)">{{language.key}}</button>
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFrom(language.key)" [disabled]="!hasLanguage(language.key)">{{language.key}}</button>
   </mat-menu>
 
   <mat-menu #shareWithMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWith(language.key)">{{language.key}}</button>
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWith(language.key)" [disabled]="!hasLanguage(language.key)">{{language.key}}</button>
   </mat-menu>
 </div>

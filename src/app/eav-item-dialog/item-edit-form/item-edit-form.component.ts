@@ -311,6 +311,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     return {
       // valueKey: `${attribute.name}.values[0].value`,
+      entityId: this.item.entity.id,
       value: value,
       name: attribute.name,
       type: inputType, // TODO see do we need this

@@ -1,7 +1,7 @@
 import { Item } from '../../models/eav/item';
 import * as fromItems from './../actions/item.actions';
 import { AppState } from '../../models/app-state';
-import { EavHeader } from '../../models/eav';
+import { EavHeader, EavAttributes } from '../../models/eav';
 import { AttributesState } from './attribute.reducer';
 
 // export interface ItemState {
@@ -65,6 +65,27 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
+        case fromItems.UPDATE_ITEM_ATTRIBUTE: {
+            console.log('action.attribute', action.attribute);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: EavAttributes.updateAttribute(item.entity.attributes,
+                                        action.attributeKey, action.attribute)
+
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
         case fromItems.DELETE_ITEM:
             return {
                 ...state,
@@ -77,5 +98,6 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
         }
     }
 }
+
 
 export const getItems = (state: ItemState) => state.items;

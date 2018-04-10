@@ -9,4 +9,3 @@ export const getItemState = createSelector(
 );
 
 export const getItems = createSelector(getItemState, fromItems.getItems);
-

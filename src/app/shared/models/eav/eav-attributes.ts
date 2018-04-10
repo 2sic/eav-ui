@@ -72,7 +72,20 @@ export class EavAttributes {
         return eavAttributes;
     }
 
+    public static updateAttribute(allAttributes: EavAttributes, attributeKey: string, attribute: EavValues<any>) {
+        // copy attributes from item
+        const eavAttributes: EavAttributes = new EavAttributes();
+
+        Object.keys(allAttributes).forEach(key => {
+            // const eavValueList: EavValue<any>[] = [];
+            if (key === attributeKey) {
+                eavAttributes[key] = { ...attribute };
+            } else {
+                eavAttributes[key] = { ...allAttributes[key] };
+            }
+        });
+
+        return eavAttributes;
+
+    }
 }
-
-
-
