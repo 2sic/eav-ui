@@ -4,11 +4,11 @@
   </div>
 
   <button mat-icon-button type="button" *ngIf="!config.collapse" [matMenuTriggerFor]="rootMenu">
-    <mat-icon class="mat-18 language-icon">language</mat-icon>
+    <mat-icon class="mat-18 language-icon" (click)="enable()">language</mat-icon>
     <!-- (click)="enable()" -->
   </button>
 
-  <mat-menu #rootMenu="matMenu">
+  <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
     <button mat-menu-item type="button" (click)="translateUnlink()">Translate (unlink)</button>
     <button mat-menu-item type="button">Link to default</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
@@ -17,7 +17,6 @@
   </mat-menu>
 
   <mat-menu #copyFromMenu="matMenu">
-    <!-- <button mat-menu-item (click)="onClickCopyFrom('en-us')">en-us</button> -->
     <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key)">{{language.key}}</button>
   </mat-menu>
 

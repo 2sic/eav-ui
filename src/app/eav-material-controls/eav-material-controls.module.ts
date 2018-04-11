@@ -19,10 +19,7 @@ import {
   MatTabsModule
 } from '@angular/material';
 import {
-  PanelWrapperComponent,
-  LabelWrapperComponent,
   CollapsibleWrapperComponent,
-  HorizontalInputWrapperComponent,
   // FormFieldWrapperComponent
 } from './wrappers';
 import {
@@ -52,10 +49,7 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
 @NgModule({
   declarations: [
     // wrappers
-    PanelWrapperComponent,
-    LabelWrapperComponent,
     CollapsibleWrapperComponent,
-    HorizontalInputWrapperComponent,
     // FormFieldWrapperComponent,
     // types
     StringDefaultComponent,

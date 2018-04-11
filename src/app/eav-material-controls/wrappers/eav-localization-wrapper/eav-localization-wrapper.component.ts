@@ -34,6 +34,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   currentLanguage: string;
   languages$: Observable<Language[]>;
   languages: Language[];
+  isFocused = false;
+
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService, private itemService: ItemService) {
@@ -56,8 +58,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
+
   /**
-   * We subscribe to item attribute values
+   * Subscribe to item attribute values
    */
   subscribeToAttributeValues() {
     this.subscriptions.push(
@@ -72,11 +75,15 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         // Temp workaround (setTimeout)
-        setTimeout(() => {
-          console.log('subscribe currentLanguage', currentLanguage);
-          this.config.label = this.translate(currentLanguage, this.config.settings.Name.values);
-          // TODO: translate all settings
-        });
+        // setTimeout(() => {
+        // Problem maybe in ExpressionChangedAfterItHasBeenCheckedError
+        // - can't change value during change detection TODO: see how to solve this
+        console.log('subscribe currentLanguage', currentLanguage);
+        this.config.label = this.translate(currentLanguage, this.config.settings.Name.values);
+
+        this.currentLanguage = currentLanguage;
+        // TODO: translate all settings
+        // });
       })
     );
   }
@@ -89,11 +96,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     this.subscriptions.push(
       this.languages$.subscribe(languages => {
-        // Temp workaround (setTimeout)
-        // setTimeout(() => {
-        console.log('subscribe languages', languages);
         this.languages = languages;
-        // });
       })
     );
   }
@@ -144,64 +147,70 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     console.log('onClickCopyFrom language', languageKey);
   }
 
-  onClickUseFrom(languageKey, entityId, attributeKey, oldAttributeValues) {
+  onClickUseFrom(languageKey) {
     console.log('onClickUseFrom language', languageKey);
     const newEavAttributes: EavAttributes = new EavAttributes();
     // if new value exist update attribute for current language
-    this.updateAttributeDimension(this.config.entityId, this.config.name, this.attributeValues, languageKey, this.currentLanguage, true);
+    console.log(`onClickUseFrom entityId ${this.config.entityId}
+    this.config.name ${this.config.name}
+    this.attributeValues: ${this.attributeValues}
+    languageKey: ${languageKey}
+    this.currentLanguage ${this.currentLanguage}`);
+    this.itemService.updateAttributeDimension(this.config.entityId, this.config.name, this.attributeValues,
+      languageKey, this.currentLanguage, true);
   }
 
-  /**
-   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
-   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
-   * @param entityId
-   * @param attributeKey
-   * @param oldAttributeValues
-   * @param useFromLanguageKey
-   * @param languageKey
-   */
-  updateAttributeDimension(
-    entityId: number,
-    attributeKey: string,
-    oldAttributeValues: EavValues<any>,
-    useFromLanguageKey: string,
-    languageKey: string,
-    isReadOnly: boolean) {
-    console.log('onClickUseFrom useFromLanguageKey', useFromLanguageKey);
-    let newValue = languageKey;
+  // /**
+  //  * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
+  //  * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
+  //  * @param entityId
+  //  * @param attributeKey
+  //  * @param oldAttributeValues
+  //  * @param useFromLanguageKey
+  //  * @param languageKey
+  //  */
+  // updateAttributeDimension(
+  //   entityId: number,
+  //   attributeKey: string,
+  //   oldAttributeValues: EavValues<any>,
+  //   useFromLanguageKey: string,
+  //   languageKey: string,
+  //   isReadOnly: boolean) {
+  //   console.log('onClickUseFrom useFromLanguageKey', useFromLanguageKey);
+  //   let newValue = languageKey;
 
-    if (isReadOnly) {
-      newValue = `-${languageKey}`;
-    }
+  //   if (isReadOnly) {
+  //     newValue = `-${languageKey}`;
+  //   }
 
-    const newEavAttributes: EavAttributes = new EavAttributes();
-    newEavAttributes[attributeKey] = {
-      ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
-        return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
-          // Update dimension for current language
-          ? {
-            ...eavValue,
-            // if languageKey already exist
-            dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
-              // update languageKey with updateValue
-              ? eavValue.dimensions.map(dimension => {
-                return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
-                  ? { value: newValue }
-                  : dimension;
-              })
-              // add new dimension updateValue
-              : eavValue.dimensions.concat({ value: newValue })
-          }
-          : eavValue;
-      })
-    };
+  //   const newEavAttributes: EavAttributes = new EavAttributes();
+  //   newEavAttributes[attributeKey] = {
+  //     ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
+  //       return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
+  //         // Update dimension for current language
+  //         ? {
+  //           ...eavValue,
+  //           // if languageKey already exist
+  //           dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
+  //             // update languageKey with newValue
+  //             ? eavValue.dimensions.map(dimension => {
+  //               return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
+  //                 ? { value: newValue }
+  //                 : dimension;
+  //             })
+  //             // add new dimension newValue
+  //             : eavValue.dimensions.concat({ value: newValue })
+  //         }
+  //         : eavValue;
+  //     })
+  //   };
 
-    if (Object.keys(newEavAttributes).length > 0) {
-      this.itemService.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
-    }
+  //   if (Object.keys(newEavAttributes).length > 0) {
+  //     this.itemService.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
+  //   }
 
-    // copy value from language and add current language with - to dimension
-  }
+  //   // copy value from language and add current language with - to dimension
+  // }
 
   onClickShareWith(languageKey) {
     console.log('onClickShareWith language', languageKey);

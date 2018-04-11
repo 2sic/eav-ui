@@ -12,8 +12,8 @@
     <!-- uib-tooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
 {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
 ADAM - sponsored with ♥ by 2sic.com" -->
-    <input matInput type="text" [id]="id" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
-      (click)="showFieldHints = true" [required]="config.required" matTooltip="drop files here to auto-upload
+    <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required" (click)="showFieldHints = true"
+      [required]="config.required" matTooltip="drop files here to auto-upload
     for help see 2sxc.org/help?tag=adam ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
     <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error> -->
     <span matSuffix class="input-group-btn">

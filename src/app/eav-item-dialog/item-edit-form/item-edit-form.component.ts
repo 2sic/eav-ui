@@ -114,9 +114,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       if (newItemValue) {
         eavAttributes[attributeKey] = {
           ...eavAttribute, values: eavAttribute.values.map(eavValue => {
-            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa', eavValue);
-            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa1', this.currentLanguage);
-            // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa2', eavValue.dimensions.find(d => d.value === this.currentLanguage));
             return eavValue.dimensions.find(d => d.value === this.currentLanguage)
               // Update value for current language
               ? {
@@ -135,9 +132,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         eavAttributes[attributeKey] = eavAttribute;   // new EavValues(eavAttribute.values);
       }
     });
-
-
-
 
     console.log('EavAttributes update', eavAttributes);
     // const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values, this.currentLanguage);

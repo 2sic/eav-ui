@@ -22,6 +22,7 @@ export class HyperlinkDefaultComponent implements Field {
   showPreview;
   toggleAdamValue = false;
   testLink = '/assets/images/smallImage.jpg';
+  showFieldHints;
 
   adam: any;
 

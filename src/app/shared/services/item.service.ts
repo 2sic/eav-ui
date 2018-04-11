@@ -41,6 +41,56 @@ export class ItemService {
   //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
   // }
 
+  /**
+    * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
+    * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
+    * @param entityId
+    * @param attributeKey
+    * @param oldAttributeValues
+    * @param useFromLanguageKey
+    * @param languageKey
+    */
+  updateAttributeDimension(
+    entityId: number,
+    attributeKey: string,
+    oldAttributeValues: EavValues<any>,
+    useFromLanguageKey: string,
+    languageKey: string,
+    isReadOnly: boolean) {
+    let newValue = languageKey;
+
+    if (isReadOnly) {
+      newValue = `-${languageKey}`;
+    }
+
+    const newEavAttributes: EavAttributes = new EavAttributes();
+    newEavAttributes[attributeKey] = {
+      ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
+        return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
+          // Update dimension for current language
+          ? {
+            ...eavValue,
+            // if languageKey already exist
+            dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
+              // update languageKey with newValue
+              ? eavValue.dimensions.map(dimension => {
+                return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
+                  ? { value: newValue }
+                  : dimension;
+              })
+              // add new dimension newValue
+              : eavValue.dimensions.concat({ value: newValue })
+          }
+          : eavValue;
+      })
+    };
+
+    if (Object.keys(newEavAttributes).length > 0) {
+      this.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
+    }
+  }
+
+
   public deleteItem(item: Item) {
     this.store.dispatch(new itemActions.DeleteItemAction(item));
   }

@@ -3,8 +3,8 @@
     <div matPrefix class="thumbnail-before-input icon-preview">
       <i class="glyphicon {{value}}"></i>
     </div>
-    <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-      [required]="config.required" [matAutocomplete]="auto">
+    <input matInput type="text" class="form-control material" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
+      [matAutocomplete]="auto">
   </mat-form-field>
   <mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let icn of icons" [value]="icn.class">
