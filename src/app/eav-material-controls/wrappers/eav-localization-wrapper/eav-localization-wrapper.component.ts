@@ -40,6 +40,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   constructor(private languageService: LanguageService, private itemService: ItemService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
+
   }
 
   ngOnInit() {
@@ -143,80 +144,48 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.disableControl(false);
   }
 
+  linkToDefault() {
+  }
+
   onClickCopyFrom(languageKey) {
     console.log('onClickCopyFrom language', languageKey);
+    const attributeValueForLanguage: EavValue<any> = EavAttributes.getAttributeValueForLanguage(this.attributeValues, languageKey);
+    const valueAlreadyExist: boolean = EavAttributes.isAttributeValueForLanguageExist(this.attributeValues, this.currentLanguage);
+
+    if (valueAlreadyExist) {
+      // Copy attribute value where language is languageKey to value where language is current langage
+      this.itemService.updateItemAttributeValue(this.config.entityId, this.config.name,
+        attributeValueForLanguage.value, this.currentLanguage, false);
+    } else {
+      // Copy attribute value where language is languageKey to new attribute with current language
+      this.itemService.addAttributeValue(this.config.entityId, this.config.name, this.attributeValues,
+        attributeValueForLanguage.value, this.currentLanguage, false);
+    }
   }
 
   onClickUseFrom(languageKey) {
     console.log('onClickUseFrom language', languageKey);
-    const newEavAttributes: EavAttributes = new EavAttributes();
-    // if new value exist update attribute for current language
-    console.log(`onClickUseFrom entityId ${this.config.entityId}
-    this.config.name ${this.config.name}
-    this.attributeValues: ${this.attributeValues}
-    languageKey: ${languageKey}
-    this.currentLanguage ${this.currentLanguage}`);
-    this.itemService.updateAttributeDimension(this.config.entityId, this.config.name, this.attributeValues,
-      languageKey, this.currentLanguage, true);
+    this.itemService.updateItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, true);
   }
-
-  // /**
-  //  * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
-  //  * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
-  //  * @param entityId
-  //  * @param attributeKey
-  //  * @param oldAttributeValues
-  //  * @param useFromLanguageKey
-  //  * @param languageKey
-  //  */
-  // updateAttributeDimension(
-  //   entityId: number,
-  //   attributeKey: string,
-  //   oldAttributeValues: EavValues<any>,
-  //   useFromLanguageKey: string,
-  //   languageKey: string,
-  //   isReadOnly: boolean) {
-  //   console.log('onClickUseFrom useFromLanguageKey', useFromLanguageKey);
-  //   let newValue = languageKey;
-
-  //   if (isReadOnly) {
-  //     newValue = `-${languageKey}`;
-  //   }
-
-  //   const newEavAttributes: EavAttributes = new EavAttributes();
-  //   newEavAttributes[attributeKey] = {
-  //     ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
-  //       return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
-  //         // Update dimension for current language
-  //         ? {
-  //           ...eavValue,
-  //           // if languageKey already exist
-  //           dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
-  //             // update languageKey with newValue
-  //             ? eavValue.dimensions.map(dimension => {
-  //               return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
-  //                 ? { value: newValue }
-  //                 : dimension;
-  //             })
-  //             // add new dimension newValue
-  //             : eavValue.dimensions.concat({ value: newValue })
-  //         }
-  //         : eavValue;
-  //     })
-  //   };
-
-  //   if (Object.keys(newEavAttributes).length > 0) {
-  //     this.itemService.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
-  //   }
-
-  //   // copy value from language and add current language with - to dimension
-  // }
 
   onClickShareWith(languageKey) {
     console.log('onClickShareWith language', languageKey);
+    this.itemService.updateItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, false);
+  }
+
+  translateUnlinkAll(languageKey) {
+  }
+  linkToDefaultAll(languageKey) {
+  }
+  onClickCopyFromAll(languageKey) {
+  }
+  onClickUseFromAll(languageKey) {
+  }
+  onClickShareWithAll(languageKey) {
   }
 
   hasLanguage = (languageKey) => {
-    return this.attributeValues.values.filter(c => c.dimensions.find(f => f.value === languageKey)).length > 0;
+    return EavAttributes.isAttributeValueForLanguageExist(this.attributeValues, languageKey);
+    // return this.attributeValues.values.filter(c => c.dimensions.find(f => f.value === languageKey)).length > 0;
   }
 }

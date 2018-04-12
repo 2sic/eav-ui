@@ -169,6 +169,39 @@ export class EavFieldDirective implements OnInit {
   //   let module: ModuleWithComponentFactories<any> = compiler.compileModuleAndAllComponentsSync(RuntimeComponentModule);
   //   return module.componentFactories.find(f => f.componentType === decoratedCmp);
   // }
+  // --------------------------------------------
+
+  // --------------------------------------------
+  // another solution
+  // https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e
+  // --------------------------------------------
+  // @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
+
+  // constructor(private _compiler: Compiler,
+  //             private _injector: Injector,
+  //             private _m: NgModuleRef<any>) {
+  // }
+
+  // ngAfterViewInit() {
+  //   const template = '<span>generated on the fly: {{name}}</span>';
+
+  //   const tmpCmp = Component(
+  //     {template: template})(
+  //       class {
+  //   });
+
+  //   const tmpModule = NgModule(
+  //     {declarations: [tmpCmp]})(
+  //       class {
+  //   });
+
+  //   this._compiler.compileModuleAndAllComponentsAsync(tmpModule)
+  //     .then((factories) => {
+  //       const f = factories.componentFactories[0];
+  //       const cmpRef = this.vc.createComponent(tmpCmp);
+  //       cmpRef.instance.name = 'dynamic';
+  //     })
+  // }
 
   // --------------------------------------------
 }

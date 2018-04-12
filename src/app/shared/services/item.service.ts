@@ -37,59 +37,48 @@ export class ItemService {
     this.store.dispatch(new itemActions.UpdateItemAttributeAction(entityId, newEavAttribute, attributeKey));
   }
 
+  public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string) {
+    this.store.dispatch(new itemActions.AddItemAttributeValueAction(entityId, newEavAttributeValue, attributeKey));
+  }
+
+  public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
+    existingDimensionValue: string, isReadOnly: boolean) {
+    this.store.dispatch(new itemActions.UpdateItemAttributeValueAction(entityId, attributeKey, newEavAttributeValue,
+      existingDimensionValue, isReadOnly));
+  }
+
+  /**
+  * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
+  * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
+  * */
+  public updateItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
+    existingDimensionValue: string, isReadOnly: boolean) {
+    this.store.dispatch(new itemActions.UpdateItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
+      existingDimensionValue, isReadOnly));
+  }
+
   // public updateItem(attributes: EavAttributes, item: EavItem) {
   //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
   // }
 
-  /**
-    * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
-    * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
-    * @param entityId
-    * @param attributeKey
-    * @param oldAttributeValues
-    * @param useFromLanguageKey
-    * @param languageKey
-    */
-  updateAttributeDimension(
+  addAttributeValue(
     entityId: number,
     attributeKey: string,
     oldAttributeValues: EavValues<any>,
-    useFromLanguageKey: string,
+    newValue: any,
     languageKey: string,
     isReadOnly: boolean) {
-    let newValue = languageKey;
+
+    let newLanguageValue = languageKey;
 
     if (isReadOnly) {
-      newValue = `-${languageKey}`;
+      newLanguageValue = `~${languageKey}`;
     }
 
-    const newEavAttributes: EavAttributes = new EavAttributes();
-    newEavAttributes[attributeKey] = {
-      ...oldAttributeValues, values: oldAttributeValues.values.map(eavValue => {
-        return eavValue.dimensions.find(d => d.value === useFromLanguageKey)
-          // Update dimension for current language
-          ? {
-            ...eavValue,
-            // if languageKey already exist
-            dimensions: (eavValue.dimensions.find(d => d.value === languageKey || d.value === `-${languageKey}`))
-              // update languageKey with newValue
-              ? eavValue.dimensions.map(dimension => {
-                return (dimension.value === languageKey || dimension.value === `-${languageKey}`)
-                  ? { value: newValue }
-                  : dimension;
-              })
-              // add new dimension newValue
-              : eavValue.dimensions.concat({ value: newValue })
-          }
-          : eavValue;
-      })
-    };
+    const newEavValue = new EavValue(newValue, [new EavDimensions(newLanguageValue)]);
 
-    if (Object.keys(newEavAttributes).length > 0) {
-      this.updateItemAttribute(entityId, newEavAttributes[attributeKey], attributeKey);
-    }
+    this.addItemAttributeValue(entityId, newEavValue, attributeKey);
   }
-
 
   public deleteItem(item: Item) {
     this.store.dispatch(new itemActions.DeleteItemAction(item));

@@ -48,16 +48,9 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                         return item.entity.id === action.id
                             ? {
                                 ...item,
-                                // header: { ...item.header },
                                 entity: {
                                     ...item.entity,
-                                    // id: item.entity.id,
-                                    // version: item.entity.version,
-                                    // guid: item.entity.guid,
-                                    // type: { ...item.entity.type },
                                     attributes: { ...item.entity.attributes, ...action.attributes },
-                                    // owner: item.entity.owner,
-                                    // metadata: [...item.entity.metadata],
                                 }
                             }
                             : item;
@@ -76,8 +69,69 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: EavAttributes.updateAttribute(item.entity.attributes,
-                                        action.attributeKey, action.attribute)
+                                    attributes: EavAttributes.updateAttribute(item.entity.attributes, action.attribute,
+                                        action.attributeKey)
+
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.UPDATE_ITEM_ATTRIBUTE_VALUE: {
+            // console.log('action.attribute', action.attribute);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: EavAttributes.updateAttributeValue(item.entity.attributes, action.attributeKey,
+                                        action.attributeValue, action.existingLanguageKey, action.isReadOnly)
+
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.ADD_ITEM_ATTRIBUTE_VALUE: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: EavAttributes.addAttributeValue(item.entity.attributes,
+                                        action.attributeValue, action.attributeKey)
+
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.UPDATE_ITEM_ATTRIBUTE_DIMENSION: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: EavAttributes.updateAttributeDimension(item.entity.attributes,
+                                        action.attributeKey, action.dimensionValue, action.existingDimensionValue, action.isReadOnly)
 
                                 }
                             }
