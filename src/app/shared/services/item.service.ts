@@ -51,9 +51,9 @@ export class ItemService {
   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
   * */
-  public updateItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
+  public addItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
     existingDimensionValue: string, isReadOnly: boolean) {
-    this.store.dispatch(new itemActions.UpdateItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
+    this.store.dispatch(new itemActions.AddItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
       existingDimensionValue, isReadOnly));
   }
 

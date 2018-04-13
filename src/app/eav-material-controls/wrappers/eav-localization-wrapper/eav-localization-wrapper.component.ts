@@ -15,6 +15,7 @@ import { EavValue, Language, Item, EavAttributes } from '../../../shared/models/
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { EavDimensions } from '../../../shared/models/eav/eav-dimensions';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -50,7 +51,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   ngOnInit() {
     console.log('set EavLocalizationComponent oninit');
 
-    console.log('this.config.entityId)', this.config);
     this.attributeValues$ = this.itemService.selectAttributeByEntityId(this.config.entityId, this.config.name);
 
     this.subscribeToAttributeValues();
@@ -128,8 +128,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.disableControl(false);
       this.infoMessage = '';
     } else if (LocalizationHelper.isReadonlyTranslationExist(this.attributeValues, currentLanguage)) {
-      this.disableControl(true);
-      this.infoMessage = 'ima';
+      console.log('ima ', currentLanguage);
+      console.log('ima1 ', this.attributeValues);
+      //  this.disableControl(true);
+      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(this.attributeValues, currentLanguage)
+        .dimensions.map(d => d.value)
+        .join(', ');
     } else {
       this.disableControl(true);
       this.infoMessage = 'auto(default)';
@@ -153,7 +157,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.translateUnlink();
     }
   }
-
 
   translateUnlink() {
     console.log('enable');
@@ -181,6 +184,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
   }
 
+  /**
+   * Copy value where language is copyFromLanguageKey to value where language is current language
+   * If value of current language don't exist then add new value
+   * @param copyFromLanguageKey
+   */
   onClickCopyFrom(copyFromLanguageKey) {
     console.log('onClickCopyFrom language', copyFromLanguageKey);
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
@@ -210,12 +218,18 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   onClickUseFrom(languageKey) {
     console.log('onClickUseFrom language', languageKey);
-    this.itemService.updateItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, true);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
+    this.itemService.addItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, true);
+
+    this.setDisableByCurrentLanguage(this.currentLanguage);
   }
 
   onClickShareWith(languageKey) {
     console.log('onClickShareWith language', languageKey);
-    this.itemService.updateItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, false);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
+    this.itemService.addItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, false);
+
+    this.setDisableByCurrentLanguage(this.currentLanguage);
   }
 
   translateUnlinkAll(languageKey) {

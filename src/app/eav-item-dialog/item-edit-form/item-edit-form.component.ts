@@ -18,7 +18,7 @@ import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
-import { Item, ContentType, EavValue } from '../../shared/models/eav';
+import { Item, ContentType, EavValue, Language } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
@@ -27,6 +27,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavValues } from '../../shared/models/eav/eav-values';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { EavDimensions } from '../../shared/models/eav/eav-dimensions';
+import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -112,9 +113,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
       // if new value exist update attribute for current language
       if (newItemValue) {
+
         eavAttributes[attributeKey] = {
           ...eavAttribute, values: eavAttribute.values.map(eavValue => {
-            return eavValue.dimensions.find(d => d.value === this.currentLanguage)
+            return eavValue.dimensions.find(d => d.value === this.currentLanguage || d.value === `~${this.currentLanguage}`)
               // Update value for current language
               ? {
                 ...eavValue,

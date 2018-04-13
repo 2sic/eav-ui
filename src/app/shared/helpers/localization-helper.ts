@@ -7,7 +7,7 @@ export class LocalizationHelper {
     /**
      * get translated value for currentLanguage,
      * if not exist return default language translation,
-     * if default also not exist return first value
+     * if default language also not exist return first value
      * @param currentLanguage
      * @param defaultLanguage
      * @param attributeValues
@@ -27,7 +27,6 @@ export class LocalizationHelper {
                 // else get first value
                 return attributeValues[0].value;
             }
-
         }
     }
 
@@ -68,9 +67,16 @@ export class LocalizationHelper {
         return eavAttributes;
     }
 
-
+    /**
+     * update attribute value, and change language readonly state if needed
+     * @param allAttributes
+     * @param attributeKey
+     * @param newValue
+     * @param existingLanguageKey
+     * @param isReadOnly
+     */
     public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, newValue: any, existingLanguageKey: string,
-        isReadOnly: boolean) {
+        isReadOnly: boolean): EavAttributes {
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         let newLanguageValue = existingLanguageKey;
@@ -98,14 +104,12 @@ export class LocalizationHelper {
             })
         };
 
-        console.log('dobio sam attrinute:', attribute);
-
         eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
 
         return eavAttributes;
     }
 
-    public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string) {
+    public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string): EavAttributes {
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
 
@@ -120,17 +124,15 @@ export class LocalizationHelper {
     }
 
     /**
-     * Add dimension to value with existing dimension. Langulage can be set to be readonly or editable.
-     * If we add editable dimension and readonly dimension exist then readonly dimension is overwritten (and vice versa)
-     * If dimension value is readonly then we add (~) tilde
+     * Add dimension to value with existing dimension.
      * @param allAttributes
      * @param attributeKey
      * @param newValue
      * @param existingLanguageKey
      * @param isReadOnly
      */
-    public static updateAttributeDimension(allAttributes: EavAttributes, attributeKey: string, newDimensionValue: any,
-        existingDimensionValue: string, isReadOnly: boolean) {
+    public static addAttributeDimension(allAttributes: EavAttributes, attributeKey: string, newDimensionValue: any,
+        existingDimensionValue: string, isReadOnly: boolean): EavAttributes {
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         let newLanguageValue = newDimensionValue;
@@ -146,22 +148,11 @@ export class LocalizationHelper {
                     ? {
                         ...eavValue,
                         // if languageKey already exist
-                        dimensions: (eavValue.dimensions.find(d => d.value === newDimensionValue
-                            || d.value === `~${newDimensionValue}`))
-                            // update languageKey with newValue
-                            ? eavValue.dimensions.map(dimension => {
-                                return (dimension.value === newDimensionValue || dimension.value === `~${newDimensionValue}`)
-                                    ? { value: newLanguageValue }
-                                    : dimension;
-                            })
-                            // else add new dimension newValue
-                            : eavValue.dimensions.concat({ value: newLanguageValue })
+                        dimensions: eavValue.dimensions.concat({ value: newLanguageValue })
                     }
                     : eavValue;
             })
         };
-
-        console.log('dobili smo attribute:', attribute);
 
         eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
 
@@ -170,18 +161,23 @@ export class LocalizationHelper {
 
     /**
      * Remove language
+     * if more dimension (languages) exist delete only dimension, else delete value and dimension
      * @param allAttributesValues
      * @param attributeKey
      * @param languageKey
      */
-    public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string) {
+    public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         const value: EavValue<any> = this.getAttributeValueTranslation(allAttributes[attributeKey], languageKey);
         let attribute: EavValues<any> = null;
 
+        if (!value) {
+            return { ...allAttributes };
+        }
+
         // if more dimension exist delete only dimension
-        if (value && value.dimensions.length > 1) {
+        if (value.dimensions.length > 1) {
             attribute = {
                 ...allAttributes[attributeKey], values: allAttributes[attributeKey].values.map(eavValue => {
                     return eavValue.dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
@@ -197,7 +193,7 @@ export class LocalizationHelper {
             };
         }
         // if only one dimension exist delete value and dimension
-        if (value && value.dimensions.length === 1) {
+        if (value.dimensions.length === 1) {
             attribute = {
                 // delete dimension and value
                 ...allAttributes[attributeKey], values: allAttributes[attributeKey].values.filter(eavValue => {

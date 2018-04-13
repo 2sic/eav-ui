@@ -121,7 +121,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
-        case fromItems.UPDATE_ITEM_ATTRIBUTE_DIMENSION: {
+        case fromItems.ADD_ITEM_ATTRIBUTE_DIMENSION: {
             return {
                 ...state,
                 ...{
@@ -131,7 +131,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: LocalizationHelper.updateAttributeDimension(item.entity.attributes,
+                                    attributes: LocalizationHelper.addAttributeDimension(item.entity.attributes,
                                         action.attributeKey, action.dimensionValue, action.existingDimensionValue, action.isReadOnly)
 
                                 }

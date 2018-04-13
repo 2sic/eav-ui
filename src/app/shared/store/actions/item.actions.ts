@@ -50,7 +50,8 @@ export class AddItemAttributeValueAction implements Action {
 
 export class AddItemAttributeDimensionAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
-    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey) { }
+    constructor(public id: number, public attributeKey: string, public dimensionValue: string,
+        public existingDimensionValue: string, public isReadOnly: boolean) { }
 }
 
 /**
@@ -76,11 +77,11 @@ export class UpdateItemAttributeValueAction implements Action {
         public existingLanguageKey: string, public isReadOnly: boolean) { }
 }
 
-export class UpdateItemAttributeDimensionAction implements Action {
-    readonly type = UPDATE_ITEM_ATTRIBUTE_DIMENSION;
-    constructor(public id: number, public attributeKey: string, public dimensionValue: string,
-        public existingDimensionValue: string, public isReadOnly: boolean) { }
-}
+// export class UpdateItemAttributeDimensionAction implements Action {
+//     readonly type = UPDATE_ITEM_ATTRIBUTE_DIMENSION;
+//     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
+//         public existingDimensionValue: string, public isReadOnly: boolean) { }
+// }
 
 export class RemoveItemAttributeDimensionAction implements Action {
     readonly type = REMOVE_ITEM_ATTRIBUTE_DIMENSION;
@@ -103,7 +104,7 @@ export type Actions
     | UpdateItemAction
     | UpdateItemAttributeAction
     | UpdateItemAttributeValueAction
-    | UpdateItemAttributeDimensionAction
+    // | UpdateItemAttributeDimensionAction
     | UpdateItemSuccessAction
     | UpdateItemAttributeAction
     | RemoveItemAttributeDimensionAction
