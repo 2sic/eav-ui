@@ -2,9 +2,10 @@
   <div class="language-field">
     <ng-container #fieldComponent></ng-container>
   </div>
-
-  <button mat-icon-button type="button" *ngIf="!config.collapse" [matMenuTriggerFor]="rootMenu">
-    <mat-icon class="mat-18 language-icon" (click)="enable()">language</mat-icon>
+  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu"
+    title="ante">
+    {{infoMessage}}
+    <mat-icon (click)="languageIconClick()" class="mat-18 language-icon">language</mat-icon>
     <!-- (click)="enable()" -->
   </button>
 

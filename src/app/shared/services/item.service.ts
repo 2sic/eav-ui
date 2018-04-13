@@ -57,6 +57,10 @@ export class ItemService {
       existingDimensionValue, isReadOnly));
   }
 
+  public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string) {
+    this.store.dispatch(new itemActions.RemoveItemAttributeDimensionAction(entityId, attributeKey, dimensionValue));
+  }
+
   // public updateItem(attributes: EavAttributes, item: EavItem) {
   //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
   // }

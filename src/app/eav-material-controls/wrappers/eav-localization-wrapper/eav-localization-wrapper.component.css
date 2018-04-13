@@ -1,14 +1,22 @@
 .language-field {
     float: left;
-    width: 92%;
+    width: 100%;
 }
 
- .language-icon {
-    margin-top: 12px;
-    font-size: 18px;
+ .language-button {
+    position: absolute;
+    top: -5px;
+    right: 0;
+    z-index: 1;
+    width: auto;
+ }
 
+ .language-icon {
+   /* margin-top: 12px; */
+    font-size: 12px;
  }
 
 .language-wrap {
     overflow: hidden;
+    position: relative;
 }

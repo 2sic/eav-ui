@@ -18,6 +18,7 @@ export const UPDATE_ITEM_ATTRIBUTE_VALUE = '[Item] UPDATE_ITEM_ATTRIBUTE_VALUE';
 
 export const ADD_ITEM_ATTRIBUTE_DIMENSION = '[Item] ADD_ITEM_ATTRIBUTE_DIMENSION';
 export const UPDATE_ITEM_ATTRIBUTE_DIMENSION = '[Item] UPDATE_ITEM_ATTRIBUTE_DIMENSION';
+export const REMOVE_ITEM_ATTRIBUTE_DIMENSION = '[Item] REMOVE_ITEM_ATTRIBUTE_DIMENSION';
 
 export const DELETE_ITEM = '[Item] DELETE_ITEM';
 
@@ -80,6 +81,11 @@ export class UpdateItemAttributeDimensionAction implements Action {
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
         public existingDimensionValue: string, public isReadOnly: boolean) { }
 }
+
+export class RemoveItemAttributeDimensionAction implements Action {
+    readonly type = REMOVE_ITEM_ATTRIBUTE_DIMENSION;
+    constructor(public id: number, public attributeKey: string, public dimensionValue: string) { }
+}
 /**
  * Delete
  */
@@ -100,4 +106,5 @@ export type Actions
     | UpdateItemAttributeDimensionAction
     | UpdateItemSuccessAction
     | UpdateItemAttributeAction
+    | RemoveItemAttributeDimensionAction
     | DeleteItemAction;

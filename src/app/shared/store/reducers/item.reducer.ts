@@ -3,6 +3,7 @@ import * as fromItems from './../actions/item.actions';
 import { AppState } from '../../models/app-state';
 import { EavHeader, EavAttributes } from '../../models/eav';
 import { AttributesState } from './attribute.reducer';
+import { LocalizationHelper } from '../../helpers/localization-helper';
 
 // export interface ItemState {
 //     items: Array<{
@@ -69,7 +70,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: EavAttributes.updateAttribute(item.entity.attributes, action.attribute,
+                                    attributes: LocalizationHelper.updateAttribute(item.entity.attributes, action.attribute,
                                         action.attributeKey)
 
                                 }
@@ -90,7 +91,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: EavAttributes.updateAttributeValue(item.entity.attributes, action.attributeKey,
+                                    attributes: LocalizationHelper.updateAttributeValue(item.entity.attributes, action.attributeKey,
                                         action.attributeValue, action.existingLanguageKey, action.isReadOnly)
 
                                 }
@@ -110,7 +111,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: EavAttributes.addAttributeValue(item.entity.attributes,
+                                    attributes: LocalizationHelper.addAttributeValue(item.entity.attributes,
                                         action.attributeValue, action.attributeKey)
 
                                 }
@@ -130,8 +131,28 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 ...item,
                                 entity: {
                                     ...item.entity,
-                                    attributes: EavAttributes.updateAttributeDimension(item.entity.attributes,
+                                    attributes: LocalizationHelper.updateAttributeDimension(item.entity.attributes,
                                         action.attributeKey, action.dimensionValue, action.existingDimensionValue, action.isReadOnly)
+
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.REMOVE_ITEM_ATTRIBUTE_DIMENSION: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.removeAttributeDimension(item.entity.attributes,
+                                        action.attributeKey, action.dimensionValue)
 
                                 }
                             }
