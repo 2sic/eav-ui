@@ -1,8 +1,20 @@
 import { FormControl } from '@angular/forms';
-import { EavValue, EavAttributes } from '../models/eav';
+import { EavValue, EavAttributes, Item } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
+import { EavDimensions } from '../models/eav/eav-dimensions';
 
 export class LocalizationHelper {
+
+    // public static updateItemAttribute(item: Item, attributes: EavAttributes) {
+    //     return {
+    //         ...item,
+    //         entity: {
+    //             ...item.entity,
+    //             attributes: attributes,
+    //         }
+    //     };
+    // }
+
 
     /**
      * get translated value for currentLanguage,
@@ -63,6 +75,60 @@ export class LocalizationHelper {
                 eavAttributes[key] = { ...allAttributes[key] };
             }
         });
+
+        return eavAttributes;
+    }
+
+    /**
+     * Update value for languageKey
+     * @param allAttributes
+     * @param updateValues
+     * @param languageKey
+     */
+    public static updateAttributeValues(allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string):
+        EavAttributes {
+        // copy attributes from item
+        const eavAttributes: EavAttributes = new EavAttributes();
+        console.log('saveAttributeValues attributes before ', allAttributes);
+        Object.keys(allAttributes).forEach(attributeKey => {
+            const newItemValue = updateValues[attributeKey];
+            console.log('saveAttributeValues newItemValues ', newItemValue);
+            // if new value exist update attribute for languageKey
+            if (newItemValue !== null && newItemValue !== undefined) {
+                const valueWithLanguageExist = this.isEditableOrReadonlyTranslationExist(allAttributes[attributeKey], languageKey);
+
+                // if valueWithLanguageExist update value for languageKey
+                if (valueWithLanguageExist) {
+                    console.log('saveAttributeValues update values ', newItemValue);
+                    eavAttributes[attributeKey] = {
+                        ...allAttributes[attributeKey], values: allAttributes[attributeKey].values.map(eavValue => {
+                            return eavValue.dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
+                                // Update value for languageKey
+                                ? {
+                                    ...eavValue,
+                                    value: newItemValue,
+                                }
+                                : eavValue;
+                        })
+                    };
+                } else {
+                    eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
+                }
+                // else { // else add new value with dimension languageKey
+                //     console.log('saveAttributeValues add values ', newItemValue);
+                //     const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
+                //     eavAttributes[attributeKey] = {
+                //         ...allAttributes[attributeKey],
+                //         values: [...allAttributes[attributeKey].values, newEavValue]
+                //     };
+                // }
+            } else { // else copy item attributes
+                console.log('saveAttributeValues update values else ', newItemValue);
+                eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
+            }
+        });
+
+        console.log('saveAttributeValues attributes after ', eavAttributes);
 
         return eavAttributes;
     }

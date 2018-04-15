@@ -123,7 +123,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    */
   patchValue(values: { [key: string]: any }, emitEvent: boolean) {
     if (this.valueIsChanged(values)) {
-      console.log('value patchValue');
+      // console.log('value patchValue');
       this.form.patchValue(values, { emitEvent: emitEvent });
     }
   }

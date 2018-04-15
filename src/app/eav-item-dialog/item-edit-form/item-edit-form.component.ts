@@ -102,44 +102,46 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) { // Need to update specific language or create another dimension
     // copy attributes from item
-    const eavAttributes: EavAttributes = new EavAttributes();
+    // const eavAttributes: EavAttributes = new EavAttributes();
     console.log('EavAttributes update item before1', values);
     console.log('EavAttributes update item before', this.item.entity.attributes);
 
-    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
-      const eavAttribute = this.item.entity.attributes[attributeKey];
-      // const eavValueList: EavValue<any>[] = [];
-      const newItemValue = values[attributeKey];
+    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage);
 
-      // if new value exist update attribute for current language
-      if (newItemValue) {
+    // Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+    //   const eavAttribute = this.item.entity.attributes[attributeKey];
+    //   // const eavValueList: EavValue<any>[] = [];
+    //   const newItemValue = values[attributeKey];
 
-        eavAttributes[attributeKey] = {
-          ...eavAttribute, values: eavAttribute.values.map(eavValue => {
-            return eavValue.dimensions.find(d => d.value === this.currentLanguage || d.value === `~${this.currentLanguage}`)
-              // Update value for current language
-              ? {
-                ...eavValue,
-                value: newItemValue,
-              }
-              : eavValue;
-            // {
-            //   ...eavValue,
-            //   value: newItemValue,
-            //   dimensions: eavValue.dimensions.concat({ value: this.currentLanguage }) //  {value: this.currentLanguage }
-            // };
-          })
-        };
-      } else { // else copy item attributes
-        eavAttributes[attributeKey] = eavAttribute;   // new EavValues(eavAttribute.values);
-      }
-    });
+    //   // if new value exist update attribute for current language
+    //   if (newItemValue) {
 
-    console.log('EavAttributes update', eavAttributes);
-    // const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values, this.currentLanguage);
-    if (Object.keys(eavAttributes).length > 0) {
-      this.itemService.updateItem(eavAttributes, this.item.entity.id);
-    }
+    //     eavAttributes[attributeKey] = {
+    //       ...eavAttribute, values: eavAttribute.values.map(eavValue => {
+    //         return eavValue.dimensions.find(d => d.value === this.currentLanguage || d.value === `~${this.currentLanguage}`)
+    //           // Update value for current language
+    //           ? {
+    //             ...eavValue,
+    //             value: newItemValue,
+    //           }
+    //           : eavValue;
+    //         // {
+    //         //   ...eavValue,
+    //         //   value: newItemValue,
+    //         //   dimensions: eavValue.dimensions.concat({ value: this.currentLanguage }) //  {value: this.currentLanguage }
+    //         // };
+    //       })
+    //     };
+    //   } else { // else copy item attributes
+    //     eavAttributes[attributeKey] = eavAttribute;   // new EavValues(eavAttribute.values);
+    //   }
+    // });
+
+    // console.log('EavAttributes update', eavAttributes);
+    // // const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values, this.currentLanguage);
+    // if (Object.keys(eavAttributes).length > 0) {
+    //   this.itemService.updateItem(eavAttributes, this.item.entity.id);
+    // }
   }
 
   // TEMP
@@ -192,13 +194,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private setFormValues = (item: Item) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
-      Object.keys(item.entity.attributes).forEach(valueKey => {
+      Object.keys(item.entity.attributes).forEach(attributeKey => {
 
         // formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
         console.log('setFormValues', this.currentLanguage);
-        formValues[valueKey] = this.translate(this.currentLanguage, item.entity.attributes[valueKey].values);
+        // TODO: set default language
+        formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage, 'en-us', item.entity.attributes[attributeKey].values);
       });
-
+      console.log('setFormValues translate', formValues);
       this.form.patchValue(formValues, false);
     }
   }
@@ -217,17 +220,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   // }
 
   // TODO: this can go in localization helper
-  translate(currentLanguage: string, values: EavValue<any>[]): string {
-    const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
+  // translate(currentLanguage: string, values: EavValue<any>[]): string {
+  //   const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
 
-    if (translations.length > 0) {
-      console.log('setFormValues translate value', translations[0].value);
-      return translations[0].value;
-    } else {
-      console.log('setFormValues translate value1', values[0].value);
-      return values[0].value; // TODO: get default language value ???
-    }
-  }
+  //   if (translations.length > 0) {
+  //     console.log('setFormValues translate value', translations[0].value);
+  //     return translations[0].value;
+  //   } else {
+  //     console.log('setFormValues translate value1', values[0].value);
+  //     return values[0].value; // TODO: get default language value ???
+  //   }
+  // }
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
@@ -325,10 +328,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Get value from item by attribute name
    */
-  private getValueFromItem = (attributeName: string): any => {
-    return this.item.entity.attributes[attributeName]
+  private getValueFromItem = (attributeKey: string): any => {
+    return this.item.entity.attributes[attributeKey]
       // ? this.item.entity.attributes[attributeName].values)0].value
-      ? this.translate(this.currentLanguage, this.item.entity.attributes[attributeName].values)
+      ? LocalizationHelper.translate(this.currentLanguage, 'en-us', this.item.entity.attributes[attributeKey].values)
+      // this.translate(this.currentLanguage, this.item.entity.attributes[attributeName].values)
       : null;
   }
 

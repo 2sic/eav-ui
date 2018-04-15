@@ -15,6 +15,7 @@ export const UPDATE_ITEM_ATTRIBUTE = '[Item] UPDATE_ITEM_ATTRIBUTE';
 
 export const ADD_ITEM_ATTRIBUTE_VALUE = '[Item] ADD_ITEM_ATTRIBUTE_VALUE';
 export const UPDATE_ITEM_ATTRIBUTE_VALUE = '[Item] UPDATE_ITEM_ATTRIBUTE_VALUE';
+export const UPDATE_ITEM_ATTRIBUTES_VALUES = '[Item] UPDATE_ITEM_ATTRIBUTES_VALUES';
 
 export const ADD_ITEM_ATTRIBUTE_DIMENSION = '[Item] ADD_ITEM_ATTRIBUTE_DIMENSION';
 export const UPDATE_ITEM_ATTRIBUTE_DIMENSION = '[Item] UPDATE_ITEM_ATTRIBUTE_DIMENSION';
@@ -77,6 +78,11 @@ export class UpdateItemAttributeValueAction implements Action {
         public existingLanguageKey: string, public isReadOnly: boolean) { }
 }
 
+export class UpdateItemAttributesValuesAction implements Action {
+    readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
+    constructor(public id: number, public updateValues: { [key: string]: any }, public existingLanguageKey: string) { }
+}
+
 // export class UpdateItemAttributeDimensionAction implements Action {
 //     readonly type = UPDATE_ITEM_ATTRIBUTE_DIMENSION;
 //     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
@@ -104,6 +110,7 @@ export type Actions
     | UpdateItemAction
     | UpdateItemAttributeAction
     | UpdateItemAttributeValueAction
+    | UpdateItemAttributesValuesAction
     // | UpdateItemAttributeDimensionAction
     | UpdateItemSuccessAction
     | UpdateItemAttributeAction

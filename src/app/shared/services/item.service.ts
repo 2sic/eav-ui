@@ -47,6 +47,9 @@ export class ItemService {
       existingDimensionValue, isReadOnly));
   }
 
+  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey));
+  }
   /**
   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"

@@ -71,7 +71,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToAttributeValues() {
     this.subscriptions.push(
       this.attributeValues$.subscribe(attributeValues => {
-        console.log('subscribe attributeValues1 ', attributeValues);
+        // console.log('subscribe attributeValues1 ', attributeValues);
         this.attributeValues = attributeValues;
       })
     );
@@ -84,7 +84,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         // setTimeout(() => {
         // Problem maybe in ExpressionChangedAfterItHasBeenCheckedError
         // - can't change value during change detection TODO: see how to solve this
-        console.log('subscribe currentLanguage1', currentLanguage);
+        // console.log('subscribe currentLanguage1', currentLanguage);
 
         this.translateAllConfiguration(currentLanguage);
         this.setDisableByCurrentLanguage(currentLanguage);
@@ -99,7 +99,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(
       this.defaultLanguage$.subscribe(defaultLanguage => {
-        console.log('subscribe defaultLanguage1', defaultLanguage);
+        // console.log('subscribe defaultLanguage1', defaultLanguage);
         this.defaultLanguage = defaultLanguage;
       })
     );
@@ -130,7 +130,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     } else if (LocalizationHelper.isReadonlyTranslationExist(this.attributeValues, currentLanguage)) {
       console.log('ima ', currentLanguage);
       console.log('ima1 ', this.attributeValues);
-      //  this.disableControl(true);
+      this.disableControl(true);
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(this.attributeValues, currentLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
@@ -141,6 +141,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   private disableControl(disabled: boolean) {
+    console.log('disable control: ', this.config.name);
+    console.log('disable control for language: ', this.currentLanguage);
     if (disabled) {
       this.enableTranslate = false;
       this.group.controls[this.config.name].disable({ emitEvent: false });
