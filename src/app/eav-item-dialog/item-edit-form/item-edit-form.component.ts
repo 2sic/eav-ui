@@ -198,6 +198,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
         // formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
         console.log('setFormValues', this.currentLanguage);
+        console.log('attributeKey: ', attributeKey);
+        console.log('item.entity.attributes[attributeKey].values: ', item.entity.attributes[attributeKey].values);
         // TODO: set default language
         formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage, 'en-us', item.entity.attributes[attributeKey].values);
       });
@@ -205,32 +207,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       this.form.patchValue(formValues, false);
     }
   }
-
-  // probably dont need this
-  // getAttributeValueForCurrentLanguage(currentLanguage: string, values: EavValue<any>[]): EavValue<any> {
-  //   const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
-
-  //   if (translations.length > 0) {
-  //     console.log('getAttributeValueForCurrentLanguage value', translations[0].value);
-  //     return translations[0];
-  //   } else {
-  //     console.log('getAttributeValueForCurrentLanguage value1', values[0].value);
-  //     return values[0]; // TODO: get default language value ???
-  //   }
-  // }
-
-  // TODO: this can go in localization helper
-  // translate(currentLanguage: string, values: EavValue<any>[]): string {
-  //   const translations: EavValue<any>[] = values.filter(c => c.dimensions.find(f => f.value === currentLanguage));
-
-  //   if (translations.length > 0) {
-  //     console.log('setFormValues translate value', translations[0].value);
-  //     return translations[0].value;
-  //   } else {
-  //     console.log('setFormValues translate value1', values[0].value);
-  //     return values[0].value; // TODO: get default language value ???
-  //   }
-  // }
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
@@ -332,7 +308,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.item.entity.attributes[attributeKey]
       // ? this.item.entity.attributes[attributeName].values)0].value
       ? LocalizationHelper.translate(this.currentLanguage, 'en-us', this.item.entity.attributes[attributeKey].values)
-      // this.translate(this.currentLanguage, this.item.entity.attributes[attributeName].values)
       : null;
   }
 

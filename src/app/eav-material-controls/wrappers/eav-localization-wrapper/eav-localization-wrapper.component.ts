@@ -3,6 +3,7 @@ import {
   OnInit, EventEmitter, OnDestroy
 } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { FormGroup } from '@angular/forms';
 
@@ -17,6 +18,7 @@ import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { EavDimensions } from '../../../shared/models/eav/eav-dimensions';
 
+
 @Component({
   selector: 'app-eav-localization-wrapper',
   templateUrl: './eav-localization-wrapper.component.html',
@@ -24,6 +26,7 @@ import { EavDimensions } from '../../../shared/models/eav/eav-dimensions';
 })
 export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
   @Input() config: FieldConfig;
   group: FormGroup;
@@ -44,13 +47,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService, private itemService: ItemService) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
-    this.defaultLanguage$ = languageService.getDefaultLanguage();
+    this.currentLanguage$ = this.languageService.getCurrentLanguage();
+    this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }
 
   ngOnInit() {
     console.log('set EavLocalizationComponent oninit');
-
     this.attributeValues$ = this.itemService.selectAttributeByEntityId(this.config.entityId, this.config.name);
 
     this.subscribeToAttributeValues();
@@ -85,11 +87,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         // Problem maybe in ExpressionChangedAfterItHasBeenCheckedError
         // - can't change value during change detection TODO: see how to solve this
         // console.log('subscribe currentLanguage1', currentLanguage);
-
+        this.currentLanguage = currentLanguage;
         this.translateAllConfiguration(currentLanguage);
         this.setDisableByCurrentLanguage(currentLanguage);
 
-        this.currentLanguage = currentLanguage;
         // TODO: translate all settings
         // });
       })
@@ -141,10 +142,18 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   private disableControl(disabled: boolean) {
+    // Some problem with disable. Need test this
     console.log('disable control: ', this.config.name);
     console.log('disable control for language: ', this.currentLanguage);
     if (disabled) {
       this.enableTranslate = false;
+
+      // this.group.controls[this.config.name].setValue(
+      //   LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, this.attributeValues[this.config.name]),
+      //   { emitEvent: false });
+      // console.log('Prevedenoooooooo1: ', this.attributeValues[this.config.name]);
+      // console.log('Prevedenoooooooo: ', LocalizationHelper.translate(this.currentLanguage,
+      //   this.defaultLanguage, this.attributeValues[this.config.name]));
       this.group.controls[this.config.name].disable({ emitEvent: false });
     } else {
       this.enableTranslate = true;
@@ -152,7 +161,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
   }
 
-  languageIconClick() {
+  toggleTranslate() {
     if (this.enableTranslate) {
       this.linkToDefault();
     } else {
@@ -249,4 +258,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     return LocalizationHelper.isEditableOrReadonlyTranslationExist(this.attributeValues, languageKey);
     // return this.attributeValues.values.filter(c => c.dimensions.find(f => f.value === languageKey)).length > 0;
   }
+
+  openMenu() {
+    this.trigger.openMenu();
+  }
+
 }

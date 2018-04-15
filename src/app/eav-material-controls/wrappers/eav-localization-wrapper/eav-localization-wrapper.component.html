@@ -2,11 +2,11 @@
   <div class="language-field">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu"
-    title="ante">
+  <button *ngIf="(currentLanguage !== defaultLanguage)" (mouseenter)="openMenu()" class="language-button" mat-icon-button type="button"
+    [matMenuTriggerFor]="rootMenu">
     {{infoMessage}}
-    <mat-icon (click)="languageIconClick()" class="mat-18 language-icon">language</mat-icon>
-    <!-- (click)="enable()" -->
+    <mat-icon class="mat-18 language-icon">language</mat-icon>
+    <!-- (click)="toggleTranslate()" -->
   </button>
 
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">

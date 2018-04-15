@@ -1,6 +1,6 @@
 <div (mouseleave)="showFieldHints = false">
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseover)="showPreview = true" (mouseleave)="showPreview = false"
+    <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseenter)="showPreview = true" (mouseleave)="showPreview = false"
       [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
     </div>
     <div matPrefix *ngIf="value && !isImage()" class="thumbnail-before-input icon-before-input">
