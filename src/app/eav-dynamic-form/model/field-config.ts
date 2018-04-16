@@ -16,8 +16,8 @@ export interface FieldConfig {
 
     required?: boolean;
     // pattern?: string;
-    // settings?: EavAttributes;
     settings?: EavAttributesTranslated;
+    fullSettings?: EavAttributes;
     collapse?: boolean;
 
     fieldGroup?: FieldConfig[];

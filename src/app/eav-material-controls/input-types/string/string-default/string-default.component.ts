@@ -23,7 +23,7 @@ export class StringDefaultComponent implements Field {
   constructor() { }
 
   get rowCount() {
-    return this.config.settings.RowCount ? this.config.settings.RowCount.value : 1;
+    return this.config.settings.RowCount ? this.config.settings.RowCount : 1;
   }
 
   get inputInvalid() {

@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { EavValue, EavAttributes, Item } from '../models/eav';
+import { EavValue, EavAttributes, Item, EavAttributesTranslated } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
 
@@ -279,5 +279,15 @@ export class LocalizationHelper {
         eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
 
         return eavAttributes;
+    }
+
+    public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): EavAttributesTranslated {
+        const settingsTranslated: EavAttributesTranslated = new EavAttributesTranslated;
+        Object.keys(settings).forEach(attributesKey => {
+            settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
+                defaultLanguage, settings[attributesKey], false);
+        });
+
+        return settingsTranslated;
     }
 }

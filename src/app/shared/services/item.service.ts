@@ -105,6 +105,14 @@ export class ItemService {
         : null);
   }
 
+  public selectAttributesByEntityId(entityId: number): Observable<EavAttributes> {
+    return this.store
+      .select(fromStore.getItems)
+      .map(c => c.find(obj => obj.entity.id === entityId)
+        ? c.find(obj => obj.entity.id === entityId).entity.attributes
+        : null);
+  }
+
   public selectAllItems(): Observable<Item[]> {
     return this.store.select(fromStore.getItems);
   }
