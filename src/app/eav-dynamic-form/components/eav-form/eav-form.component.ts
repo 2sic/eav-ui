@@ -85,10 +85,17 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     this.submit.emit(this.value);
   }
 
-  setDisabled(name: string, disable: boolean) {
+  setDisabled(name: string, disable: boolean, emitEvent: boolean) {
     if (this.form.controls[name]) {
-      const method = disable ? 'disable' : 'enable';
-      this.form.controls[name][method]();
+      // const method = disable ? 'disable' : 'enable';
+      // this.form.controls[name][method]();
+
+      if (disable) {
+        this.form.controls[name].disable({ emitEvent: emitEvent });
+      } else {
+        this.form.controls[name].enable({ emitEvent: emitEvent });
+      }
+
       return;
     }
 
@@ -122,24 +129,31 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
    */
   patchValue(values: { [key: string]: any }, emitEvent: boolean) {
-    if (this.valueIsChanged(values)) {
-      // console.log('value patchValue');
-      this.form.patchValue(values, { emitEvent: emitEvent });
-    }
+    // if (this.valueIsChanged(values)) {
+    // console.log('value patchValue');
+    this.form.patchValue(values, { emitEvent: emitEvent });
+    // }
   }
 
   /**
    * Check is value in form changed
    *
   */
-  private valueIsChanged = (values: { [key: string]: any }) => {
+  public valueIsChanged = (values: { [key: string]: any }) => {
     let valueIsChanged = false;
+    console.log('[Test Disabled] VALUECHANGED values', values);
+    console.log('[Test Disabled] VALUECHANGED form values', this.form.value);
     Object.keys(this.form.value).forEach(valueKey => {
       if (this.form.value[valueKey] !== values[valueKey]) {
         valueIsChanged = true;
       }
     });
 
+    // if (Object.keys(values).length > Object.keys(this.form.value).length) {
+    //   console.log('[Test Disabled] VALUECHANGED USLO', valueIsChanged);
+    //   valueIsChanged = true;
+    // }
+    console.log('[Test Disabled] VALUECHANGED', valueIsChanged);
     return valueIsChanged;
   }
 }

@@ -1,4 +1,4 @@
-<div *ngIf="config.settings.UseTimePicker && config.settings.UseTimePicker.values[0].value === true; then useTimePickerTemplate else notUseTimePickerTemplate"></div>
+<div *ngIf="config.settings.UseTimePicker && config.settings.UseTimePicker === true; then useTimePickerTemplate else notUseTimePickerTemplate"></div>
 
 <ng-template #notUseTimePickerTemplate>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">

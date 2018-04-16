@@ -24,25 +24,29 @@ export class LocalizationHelper {
      * @param defaultLanguage
      * @param attributeValues
      */
-    public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValue<any>[]): string {
-        const translations: EavValue<any>[] = attributeValues.filter(c =>
-            c.dimensions.find(d =>
-                d.value === currentLanguage || d.value === `~${currentLanguage}`));
-
-        // if translation exist then return translation
-        if (translations.length > 0) {
-            return translations[0].value;
-        } else {
-            const translationsDefault: EavValue<any>[] = attributeValues.filter(c =>
+    public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
+        if (attributeValues) {
+            const translations: EavValue<any>[] = attributeValues.values.filter(c =>
                 c.dimensions.find(d =>
-                    d.value === defaultLanguage || d.value === `~${defaultLanguage}`));
-            // if default language translation exist then return translation
-            if (translationsDefault.length > 0) {
-                return translationsDefault[0].value;
+                    d.value === currentLanguage || d.value === `~${currentLanguage}`));
+
+            // if translation exist then return translation
+            if (translations.length > 0) {
+                return translations[0].value;
             } else {
-                // else get first value
-                return attributeValues[0].value;
+                const translationsDefault: EavValue<any>[] = attributeValues.values.filter(c =>
+                    c.dimensions.find(d =>
+                        d.value === defaultLanguage || d.value === `~${defaultLanguage}`));
+                // if default language translation exist then return translation
+                if (translationsDefault.length > 0) {
+                    return translationsDefault[0].value;
+                } else {
+                    // else get first value
+                    return attributeValues.values[0].value;
+                }
             }
+        } else {
+            return defaultValue;
         }
     }
 

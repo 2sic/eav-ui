@@ -36,7 +36,7 @@ export class StringDropdownComponent implements Field, OnInit {
   private setOptionsFromDropdownValues(): any {
     let options = [];
     if (this.config.settings.DropdownValues) {
-      const dropdownValues = this.config.settings.DropdownValues.values[0].value;
+      const dropdownValues = this.config.settings.DropdownValues.value;
       options = dropdownValues.replace(/\r/g, '').split('\n');
       options = options.map(e => {
         const s = e.split(':');

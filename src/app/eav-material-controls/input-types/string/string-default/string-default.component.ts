@@ -5,6 +5,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessages } from '../../../validators/validation-messages';
+import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -22,7 +23,7 @@ export class StringDefaultComponent implements Field {
   constructor() { }
 
   get rowCount() {
-    return this.config.settings.RowCount ? this.config.settings.RowCount.values[0].value : 1;
+    return this.config.settings.RowCount ? this.config.settings.RowCount.value : 1;
   }
 
   get inputInvalid() {

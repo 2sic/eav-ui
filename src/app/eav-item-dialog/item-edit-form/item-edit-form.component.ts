@@ -18,7 +18,7 @@ import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
-import { Item, ContentType, EavValue, Language } from '../../shared/models/eav';
+import { Item, ContentType, EavValue, Language, EavAttributesTranslated } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
@@ -41,10 +41,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   set currentLanguage(value: string) {
     console.log('set currentLanguage');
     this.currentLanguageValue = value;
-    this.setFormValues(this.item);
+    this.setFormValues(this.item, true);
   }
   get currentLanguage(): string {
-    // console.log('get item: ', this.itemBehaviorSubject$.getValue());
     return this.currentLanguageValue;
   }
 
@@ -54,10 +53,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.itemBehaviorSubject$.next(value);
   }
   get item(): Item {
-    // console.log('get item: ', this.itemBehaviorSubject$.getValue());
     return this.itemBehaviorSubject$.getValue();
   }
 
+  // TODO: read default language
+  private defaultLanguage = 'en-us';
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
@@ -70,11 +70,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log('imamo current: ', this.currentLanguage);
+    console.log('oninit');
 
     this.itemBehaviorSubject$.subscribe((item: Item) => {
       console.log('subscribe setFormValues start');
-      this.setFormValues(item);
+      this.setFormValues(item, false);
     });
 
     this.loadContentTypeFromStore();
@@ -84,7 +84,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // Observable.fromEvent(this.ref.nativeElement, 'changes')
     //   .do(ev => console.log("test", ev))
     //   .subscribe();
-    console.log('oninit');
   }
 
   ngOnDestroy(): void {
@@ -100,48 +99,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * Update NGRX/store on form value change
    * @param values key:value list of fields from form
    */
-  formValueChange(values: { [key: string]: any }) { // Need to update specific language or create another dimension
-    // copy attributes from item
-    // const eavAttributes: EavAttributes = new EavAttributes();
-    console.log('EavAttributes update item before1', values);
-    console.log('EavAttributes update item before', this.item.entity.attributes);
-
+  formValueChange(values: { [key: string]: any }) {
     this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage);
-
-    // Object.keys(this.item.entity.attributes).forEach(attributeKey => {
-    //   const eavAttribute = this.item.entity.attributes[attributeKey];
-    //   // const eavValueList: EavValue<any>[] = [];
-    //   const newItemValue = values[attributeKey];
-
-    //   // if new value exist update attribute for current language
-    //   if (newItemValue) {
-
-    //     eavAttributes[attributeKey] = {
-    //       ...eavAttribute, values: eavAttribute.values.map(eavValue => {
-    //         return eavValue.dimensions.find(d => d.value === this.currentLanguage || d.value === `~${this.currentLanguage}`)
-    //           // Update value for current language
-    //           ? {
-    //             ...eavValue,
-    //             value: newItemValue,
-    //           }
-    //           : eavValue;
-    //         // {
-    //         //   ...eavValue,
-    //         //   value: newItemValue,
-    //         //   dimensions: eavValue.dimensions.concat({ value: this.currentLanguage }) //  {value: this.currentLanguage }
-    //         // };
-    //       })
-    //     };
-    //   } else { // else copy item attributes
-    //     eavAttributes[attributeKey] = eavAttribute;   // new EavValues(eavAttribute.values);
-    //   }
-    // });
-
-    // console.log('EavAttributes update', eavAttributes);
-    // // const eavAttributes: EavAttributes = EavAttributes.createFromDictionary(values, this.currentLanguage);
-    // if (Object.keys(eavAttributes).length > 0) {
-    //   this.itemService.updateItem(eavAttributes, this.item.entity.id);
-    // }
   }
 
   // TEMP
@@ -160,11 +119,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     this.formValueChange(values);
-
-    // const eavAttributes = EavAttributes.createFromDictionary(values);
-    // if (Object.keys(eavAttributes).length > 0) {
-    //   this.itemService.updateItem(eavAttributes, this.item.entity.id);
-    // }
   }
 
   submit(values: { [key: string]: any }) {
@@ -172,39 +126,31 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   deleteItem() {
-    this.itemService.deleteItem(this.item); // TODO: probably can update only attributes
+    this.itemService.deleteItem(this.item);
   }
 
-  /**
-    * Create formValue dictionary from EavAttributes
-    */
-  // private setFormValues = (item: Item) => { //: { [key: string]: any }
-  //   //const formValues: { [key: string]: any } = {};
-  //   console.log('minjam item', item);
-  //   Object.keys(item.entity.attributes).forEach(valueKey => {
-  //     //formValues[valueKey] = item.entity.attributes[valueKey].values[0].valuež
-  //     //if (this.form) {
-  //       this.form.setValue(valueKey, item.entity.attributes[valueKey].values[0].value, false)
-  //     //}
-  //   })
-
-  //   //return formValues;
-  // };
-
-  private setFormValues = (item: Item) => {
+  private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
       Object.keys(item.entity.attributes).forEach(attributeKey => {
-
-        // formValues[valueKey] = item.entity.attributes[valueKey].values[0].value;
-        console.log('setFormValues', this.currentLanguage);
-        console.log('attributeKey: ', attributeKey);
-        console.log('item.entity.attributes[attributeKey].values: ', item.entity.attributes[attributeKey].values);
-        // TODO: set default language
-        formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage, 'en-us', item.entity.attributes[attributeKey].values);
+        formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage,
+          this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
-      console.log('setFormValues translate', formValues);
-      this.form.patchValue(formValues, false);
+
+      // Important - We need to enable all controls for new language before patchValue and before is determined which control is disabled
+      if (currentLanguageChanged) {
+        this.enableAllControls(item.entity.attributes);
+      }
+
+      if (this.form.valueIsChanged(formValues)) {
+        // set new values to form
+        this.form.patchValue(formValues, false);
+      }
+
+      if (currentLanguageChanged) {
+        // loop trough all controls and set disable control if needed
+        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage);
+      }
     }
   }
 
@@ -278,11 +224,22 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
-
+    const settingsTranslated = this.translateSettings(attribute.settings);
     // set validation for all input types
-    const validationList: ValidatorFn[] = this.setDefaultValidations(attribute.settings);
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const value = this.getValueFromItem(attribute.name);
+    const validationList: ValidatorFn[] = this.setDefaultValidations(settingsTranslated);
+    const required = settingsTranslated.Required ? settingsTranslated.Required : false;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Required, false);
+    // attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
+      this.item.entity.attributes[attribute.name], null);
+
+    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage,
+      this.item.entity.attributes[attribute.name], attribute.name);
+
+    const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
+
+
 
     return {
       // valueKey: `${attribute.name}.values[0].value`,
@@ -290,52 +247,101 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       value: value,
       name: attribute.name,
       type: inputType, // TODO see do we need this
-      label: attribute.name,
+      label: label,
       placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
       required: required,
       // pattern: pattern,
-      settings: attribute.settings,
-      // change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
-      validation: validationList
-      // disable: //TODO see do we need this
+      settings: settingsTranslated,
+      validation: validationList,
+      disabled: disabled
     };
   }
 
+  translateSettings(settings: EavAttributes): EavAttributesTranslated {
+    const settingsTranslated: EavAttributesTranslated = new EavAttributesTranslated;
+    Object.keys(settings).forEach(attributesKey => {
+      console.log('aaaaaaaaaaaaaaaaaaa settingsTranslated[attributesKey]', settingsTranslated[attributesKey]);
+      settingsTranslated[attributesKey] = LocalizationHelper.translate(this.currentLanguage,
+        this.defaultLanguage, settings[attributesKey], false);
+    });
+
+    return settingsTranslated;
+  }
+
   /**
-   * Get value from item by attribute name
+   * Determines is control disabled
+   * @param currentLanguage
+   * @param attributeValues
+   * @param attributeKey
    */
-  private getValueFromItem = (attributeKey: string): any => {
-    return this.item.entity.attributes[attributeKey]
-      // ? this.item.entity.attributes[attributeName].values)0].value
-      ? LocalizationHelper.translate(this.currentLanguage, 'en-us', this.item.entity.attributes[attributeKey].values)
-      : null;
+  private isControlDisabledForCurrentLanguage(currentLanguage, attributeValues: EavValues<any>, attributeKey: string): boolean {
+    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage)) {
+      return false;
+    } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+      return true;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * Enables all controls in form
+   * @param allAttributes
+   */
+  private enableAllControls(allAttributes: EavAttributes) {
+    Object.keys(allAttributes).forEach(attributeKey => {
+      if (this.form.value[attributeKey] === undefined) {
+        this.form.setDisabled(attributeKey, false, false);
+      }
+    });
+  }
+
+  /**
+   * loop trough all controls and set disable control if needed
+   * @param allAttributes
+   * @param currentLanguage
+   */
+  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string) {
+    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage,
+        this.item.entity.attributes[attributeKey], attributeKey);
+      this.form.setDisabled(attributeKey, disabled, false);
+    });
   }
 
   /**
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-  private setDefaultValidations(settings: EavAttributes): ValidatorFn[] {
+  private setDefaultValidations(settings: EavAttributesTranslated): ValidatorFn[] {
 
     const validation: ValidatorFn[] = [];
 
-    const required = settings.Required ? settings.Required.values[0].value : false;
+    const required = settings.Required ? settings.Required.value : false;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Required, false);
+    // settings.Required ? settings.Required.values[0].value : false;
     if (required) {
       validation.push(Validators.required);
     }
-    const pattern = settings.ValidationRegex ? settings.ValidationRegex.values[0].value : '';
+    const pattern = settings.ValidationRegex ? settings.ValidationRegex.value : '';
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.ValidationRegex, '');
+    // settings.ValidationRegex ? settings.ValidationRegex.values[0].value : '';
     if (pattern) {
       validation.push(Validators.pattern(pattern));
     }
 
     // TODO: See do we set this here or in control
-    const max = settings.Max ? settings.Max.values[0].value : 0;
+    const max = settings.Max ? settings.Max.value : 0;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Max, 0);
+    // settings.Max ? settings.Max.values[0].value : 0;
     if (max > 0) {
       validation.push(Validators.max(max));
     }
 
     // TODO: See do we set this here or in control
-    const min = settings.Min ? settings.Min.values[0].value : 0;
+    const min = settings.Min ? settings.Min.value : 0;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Min, 0);
+    // settings.Min ? settings.Min.values[0].value : 0;
     if (min > 0) {
       validation.push(Validators.min(min));
     }

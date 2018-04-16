@@ -44,31 +44,31 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   private subscriptions: Subscription[] = [];
 
   get allowMultiValue() {
-    return this.config.settings.AllowMultiValue ? this.config.settings.AllowMultiValue.values[0].value : false;
+    return this.config.settings.AllowMultiValue ? this.config.settings.AllowMultiValue.value : false;
   }
 
   get entityType() {
-    return this.config.settings.EntityType ? this.config.settings.EntityType.values[0].value : '';
+    return this.config.settings.EntityType ? this.config.settings.EntityType.value : '';
   }
 
   get enableAddExisting() {
-    return this.config.settings.EnableAddExisting ? this.config.settings.EnableAddExisting.values[0].value : false;
+    return this.config.settings.EnableAddExisting ? this.config.settings.EnableAddExisting.value : false;
   }
 
   get enableCreate() {
-    return this.config.settings.EnableCreate ? this.config.settings.EnableCreate.values[0].value : false;
+    return this.config.settings.EnableCreate ? this.config.settings.EnableCreate.value : false;
   }
 
   get enableEdit() {
-    return this.config.settings.EnableEdit ? this.config.settings.EnableEdit.values[0].value : false;
+    return this.config.settings.EnableEdit ? this.config.settings.EnableEdit.value : false;
   }
 
   get enableRemove() {
-    return this.config.settings.EnableRemove ? this.config.settings.EnableRemove.values[0].value : false;
+    return this.config.settings.EnableRemove ? this.config.settings.EnableRemove.value : false;
   }
 
   get enableDelete() {
-    return this.config.settings.EnableDelete ? this.config.settings.EnableDelete.values[0].value : false;
+    return this.config.settings.EnableDelete ? this.config.settings.EnableDelete.value : false;
   }
 
   constructor(private itemService: ItemService, private contenttypeService: ContentTypeService) {

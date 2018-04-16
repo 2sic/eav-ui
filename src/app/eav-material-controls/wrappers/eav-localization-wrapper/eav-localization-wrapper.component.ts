@@ -1,30 +1,29 @@
 import {
   Component, Input, ViewChild, ViewContainerRef,
-  OnInit, EventEmitter, OnDestroy
+  OnInit, EventEmitter, OnDestroy, AfterViewInit
 } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { EavValues } from '../../../shared/models/eav/eav-values';
-import { EavValue, Language, Item, EavAttributes } from '../../../shared/models/eav';
+import { EavValue, Language, Item, EavAttributes, EavAttributesTranslated } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { EavDimensions } from '../../../shared/models/eav/eav-dimensions';
-
 
 @Component({
   selector: 'app-eav-localization-wrapper',
   templateUrl: './eav-localization-wrapper.component.html',
   styleUrls: ['./eav-localization-wrapper.component.css']
 })
-export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
+export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
@@ -52,12 +51,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   ngOnInit() {
-    console.log('set EavLocalizationComponent oninit');
     this.attributeValues$ = this.itemService.selectAttributeByEntityId(this.config.entityId, this.config.name);
 
     this.subscribeToAttributeValues();
 
-    // subscribe to language data
+    // subscribe to language dataw
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.loadlanguagesFromStore();
@@ -67,13 +65,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
+  ngAfterViewInit() {
+
+  }
+
   /**
   * Subscribe to item attribute values
   */
   private subscribeToAttributeValues() {
     this.subscriptions.push(
       this.attributeValues$.subscribe(attributeValues => {
-        // console.log('subscribe attributeValues1 ', attributeValues);
+        console.log('subscribe attributeValues1 ', attributeValues);
         this.attributeValues = attributeValues;
       })
     );
@@ -86,11 +88,15 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         // setTimeout(() => {
         // Problem maybe in ExpressionChangedAfterItHasBeenCheckedError
         // - can't change value during change detection TODO: see how to solve this
-        // console.log('subscribe currentLanguage1', currentLanguage);
+        console.log('subscribe currentLanguage1', currentLanguage);
         this.currentLanguage = currentLanguage;
+        // if (this.config) {
+        // console.log('ajmoooooooooooooooooooooooooooooooooooooooooooooooooooooo');
         this.translateAllConfiguration(currentLanguage);
-        this.setDisableByCurrentLanguage(currentLanguage);
+        // }
+        // this.setDisableByCurrentLanguage(currentLanguage);
 
+        this.setInfoMessageForCurrentLanguage(currentLanguage);
         // TODO: translate all settings
         // });
       })
@@ -121,43 +127,70 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   private translateAllConfiguration(currentLanguage: string) {
-    this.config.label = LocalizationHelper.translate(currentLanguage, this.defaultLanguage, this.config.settings.Name.values);
+    // TODO set translation of settings
+
+    console.log('this.config.settings.Name', this.config.settings.Name);
+    this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
+    // LocalizationHelper.translate(currentLanguage, this.defaultLanguage, this.config.settings.Name, null);
+    // TODO: transver to helper
+    this.config.validation = this.setDefaultValidations(this.config.settings);
+    this.config.required = this.config.settings.Required ? this.config.settings.Required : false;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, this.config.settings.Required, false);
   }
 
-  private setDisableByCurrentLanguage(currentLanguage) {
+  /**
+   * TODO: see can i write this in module configuration ???
+   * @param inputType
+   */
+  private setDefaultValidations(settings: EavAttributesTranslated): ValidatorFn[] {
+
+    const validation: ValidatorFn[] = [];
+
+    const required = settings.Required ? settings.Required : false;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Required, false);
+    // settings.Required ? settings.Required.values[0].value : false;
+    if (required) {
+      validation.push(Validators.required);
+    }
+    const pattern = settings.ValidationRegex ? settings.ValidationRegex : '';
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.ValidationRegex, '');
+    // settings.ValidationRegex ? settings.ValidationRegex.values[0].value : '';
+    if (pattern) {
+      validation.push(Validators.pattern(pattern));
+    }
+
+    // TODO: See do we set this here or in control
+    const max = settings.Max ? settings.Max : 0;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Max, 0);
+    // settings.Max ? settings.Max.values[0].value : 0;
+    if (max > 0) {
+      validation.push(Validators.max(max));
+    }
+
+    // TODO: See do we set this here or in control
+    const min = settings.Min ? settings.Min : 0;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, settings.Min, 0);
+    // settings.Min ? settings.Min.values[0].value : 0;
+    if (min > 0) {
+      validation.push(Validators.min(min));
+    }
+
+    // if (inputType === InputTypesConstants.stringUrlPath) {
+    //   validation = [...['onlySimpleUrlChars']];
+    // }
+
+    return validation;
+  }
+
+  private setInfoMessageForCurrentLanguage(currentLanguage) {
     if (LocalizationHelper.isEditableTranslationExist(this.attributeValues, currentLanguage)) {
-      this.disableControl(false);
       this.infoMessage = '';
     } else if (LocalizationHelper.isReadonlyTranslationExist(this.attributeValues, currentLanguage)) {
-      console.log('ima ', currentLanguage);
-      console.log('ima1 ', this.attributeValues);
-      this.disableControl(true);
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(this.attributeValues, currentLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
     } else {
-      this.disableControl(true);
       this.infoMessage = 'auto(default)';
-    }
-  }
-
-  private disableControl(disabled: boolean) {
-    // Some problem with disable. Need test this
-    console.log('disable control: ', this.config.name);
-    console.log('disable control for language: ', this.currentLanguage);
-    if (disabled) {
-      this.enableTranslate = false;
-
-      // this.group.controls[this.config.name].setValue(
-      //   LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, this.attributeValues[this.config.name]),
-      //   { emitEvent: false });
-      // console.log('Prevedenoooooooo1: ', this.attributeValues[this.config.name]);
-      // console.log('Prevedenoooooooo: ', LocalizationHelper.translate(this.currentLanguage,
-      //   this.defaultLanguage, this.attributeValues[this.config.name]));
-      this.group.controls[this.config.name].disable({ emitEvent: false });
-    } else {
-      this.enableTranslate = true;
-      this.group.controls[this.config.name].enable({ emitEvent: false });
     }
   }
 
@@ -170,9 +203,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   translateUnlink() {
-    console.log('enable');
-    this.disableControl(false);
-
     this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
 
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
@@ -189,9 +219,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   linkToDefault() {
-    console.log('disable');
-    this.disableControl(true);
-
     this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
   }
 
@@ -232,15 +259,16 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
     this.itemService.addItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, true);
 
-    this.setDisableByCurrentLanguage(this.currentLanguage);
+    this.setInfoMessageForCurrentLanguage(this.currentLanguage);
   }
 
   onClickShareWith(languageKey) {
     console.log('onClickShareWith language', languageKey);
+
     this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
     this.itemService.addItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage, languageKey, false);
 
-    this.setDisableByCurrentLanguage(this.currentLanguage);
+    this.setInfoMessageForCurrentLanguage(this.currentLanguage);
   }
 
   translateUnlinkAll(languageKey) {
