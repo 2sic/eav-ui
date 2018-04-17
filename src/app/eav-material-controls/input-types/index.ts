@@ -9,3 +9,4 @@ export { EmptyDefaultComponent } from './empty/empty-default/empty-default.compo
 export { NumberDefaultComponent } from './number/number-default/number-default.component';
 export { EntityDefaultComponent } from './entity/entity-default/entity-default.component';
 export { HyperlinkDefaultComponent } from './hyperlink/hyperlink-default/hyperlink-default.component';
+export { CustomDefaultComponent } from './custom/custom-default/custom-default.component';

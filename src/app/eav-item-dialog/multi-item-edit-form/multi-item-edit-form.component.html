@@ -10,6 +10,7 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadAuthors()">Load authors</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadHyperLink()">Load HyperLink</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadLocalization()">Load Localization</button>
+<button mat-button type="button" class="btn btn-default" (click)="loadCustom()">Load Custom</button>
 
 <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 

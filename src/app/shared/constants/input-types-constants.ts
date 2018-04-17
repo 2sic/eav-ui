@@ -17,4 +17,6 @@ export class InputTypesConstants {
     public static readonly entityDefault: string = 'entity-default';
     // hyperlink/files
     public static readonly hyperlinkDefault: string = 'hyperlink-default';
+    // custom/files
+    public static readonly customDefault: string = 'custom-default';
 }

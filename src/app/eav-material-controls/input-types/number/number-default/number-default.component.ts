@@ -50,7 +50,7 @@ export class NumberDefaultComponent implements Field, OnInit {
     // this.myForm.controls['controlName'].updateValueAndValidity()
     // -------------------------------
 
-    this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals.value}})?$` : null;
+    this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals}})?$` : null;
     // this.max = this.config.settings.Max ? this.config.settings.Max.values[0].value : null;
     // this.min = this.config.settings.Min ? this.config.settings.Min.values[0].value : null;
   }

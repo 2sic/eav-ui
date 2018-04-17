@@ -34,6 +34,7 @@ import {
   NumberDefaultComponent,
   EntityDefaultComponent,
   HyperlinkDefaultComponent,
+  CustomDefaultComponent
 } from './input-types';
 import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
@@ -67,7 +68,8 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
     FieldParentWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
-    EavLanguageSwitcherComponent
+    EavLanguageSwitcherComponent,
+    CustomDefaultComponent
   ],
   imports: [
     CommonModule,
@@ -105,7 +107,8 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
     FieldParentWrapperComponent,
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
-    HyperlinkDefaultComponent
+    HyperlinkDefaultComponent,
+    CustomDefaultComponent
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [FileTypeService]

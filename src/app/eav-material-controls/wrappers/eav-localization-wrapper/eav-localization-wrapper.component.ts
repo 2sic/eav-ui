@@ -213,6 +213,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, languageKey, true);
 
+    // TODO: investigate can only triger current language change to disable controls ???
+    // this.languageService.updateCurrentLanguage(this.currentLanguage);
     this.setControlDisableAndInfoMessage(this.attributes[this.config.name], attributeKey, this.currentLanguage, this.defaultLanguage);
   }
 
@@ -248,6 +250,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       console.log('onClickUseFromAll attributeKey', this.attributes);
       this.onClickUseFrom(languageKey, attributeKey);
     });
+
+    this.languageService.updateCurrentLanguage(this.currentLanguage);
   }
   onClickShareWithAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {

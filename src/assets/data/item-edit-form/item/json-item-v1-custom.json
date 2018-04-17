@@ -1,0 +1,32 @@
+{
+    "_": {
+        "V": 1
+    },
+    "Entity": {
+        "Id": 1520,
+        "Version": 7,
+        "Guid": "ad040a3b-3762-4216-b66b-82bb1b604614",
+        "Type": {
+            "Name": "testCustom",
+            "Id": "3d67c608-0d79-473f-b893-4f2984c82c75"
+        },
+        "Attributes": {
+            "String": {
+                "stringStaticName": {
+                    "de-de": "stringValueDe",
+                    "fr-fr": "stringValuefr",
+                    "hr-hr": "stringValueHr",
+                    "en-us": "stringValue"
+                }
+            },
+            "Custom": {
+                "customStaticName": {
+                    "en-us": "{\"latitude\":47.123,\"longitude\":10}",
+                    "hr-hr": "{\"latitude\":50,\"longitude\":10}",
+                    "de-de": "{\"latitude\":47,\"longitude\":10}",
+                    "fr-fr": "{\"latitude\":49,\"longitude\":10}"
+                }
+            }
+        }
+    }
+}

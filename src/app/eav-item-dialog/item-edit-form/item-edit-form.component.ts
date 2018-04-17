@@ -203,6 +203,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
         case InputTypesConstants.hyperlinkDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
+        case InputTypesConstants.customDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.customDefault);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }

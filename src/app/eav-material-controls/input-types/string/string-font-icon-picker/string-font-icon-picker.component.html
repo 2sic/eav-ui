@@ -9,7 +9,7 @@
   <mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let icn of icons" [value]="icn.class">
       <a (click)="setIcon(icn.class, config.name)">
-        <i class="{{config.settings.PreviewCss.values[0].value}} {{icn.class}}"></i>
+        <i class="{{config.settings.PreviewCss}} {{icn.class}}"></i>
         <span>{{icn.class}}</span>
       </a>
     </mat-option>

@@ -125,6 +125,12 @@ export class MultiItemEditFormComponent implements OnInit {
     this.contentTypeService.loadContentType('json-content-type-v1-localization.json');
   }
 
+  // Custom
+  loadCustom() {
+    this.itemService.loadItem('json-item-v1-custom.json');
+    this.contentTypeService.loadContentType('json-content-type-v1-custom.json');
+  }
+
   trackByFn(index, item) {
     // console.log('identify', item);
     // if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {

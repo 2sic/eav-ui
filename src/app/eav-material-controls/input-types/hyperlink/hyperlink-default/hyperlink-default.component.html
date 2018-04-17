@@ -39,17 +39,17 @@ ADAM - sponsored with ♥ by 2sic.com" -->
           <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuAdam"></span> -->
           <span>MenuAdam</span>
         </button>
-        <button mat-menu-item *ngIf="config.settings.ShowPagePicker.values[0].value" (click)="openPageDialog()">
+        <button mat-menu-item *ngIf="config.settings.ShowPagePicker" (click)="openPageDialog()">
           <i class="eav-icon-sitemap" xicon="home"></i>
           <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuPage"></span> -->
           <span>MenuPage</span>
         </button>
-        <button mat-menu-item *ngIf="config.settings.ShowImageManager.values[0].value" (click)="toggleAdam(true, true)">
+        <button mat-menu-item *ngIf="config.settings.ShowImageManager" (click)="toggleAdam(true, true)">
           <i class="eav-icon-file-image" xicon="picture"></i>
           <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuImage"></span> -->
           <span>MenuImage</span>
         </button>
-        <button mat-menu-item *ngIf="config.settings.ShowFileManager.values[0].value" (click)="toggleAdam(true, false)">
+        <button mat-menu-item *ngIf="config.settings.ShowFileManager" (click)="toggleAdam(true, false)">
           <i class="eav-icon-file" xicon="file"></i>
           <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuDocs"></span> -->
           <span>MenuDocs</span>
