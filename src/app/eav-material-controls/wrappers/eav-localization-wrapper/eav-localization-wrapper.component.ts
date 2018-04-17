@@ -140,36 +140,37 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   toggleTranslate() {
     if (this.enableTranslate) {
-      this.linkToDefault();
+      this.linkToDefault(this.config.name);
     } else {
-      this.translateUnlink();
+      this.translateUnlink(this.config.name);
     }
   }
 
-  translateUnlink() {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
+  translateUnlink(attributeKey: string) {
+    console.log('this.config.name:', attributeKey);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
 
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
-      this.attributes[this.config.name],
+      this.attributes[attributeKey],
       this.defaultLanguage
     );
 
     if (defaultValue) {
-      this.itemService.addAttributeValue(this.config.entityId, this.config.name, this.attributes[this.config.name],
+      this.itemService.addAttributeValue(this.config.entityId, attributeKey, this.attributes[attributeKey],
         defaultValue.value, this.currentLanguage, false);
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
 
-    this.setControlDisableAndInfoMessage(this.attributes[this.config.name],
-      this.config.name, this.currentLanguage, this.defaultLanguage);
+    this.setControlDisableAndInfoMessage(this.attributes[attributeKey],
+      attributeKey, this.currentLanguage, this.defaultLanguage);
   }
 
-  linkToDefault() {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, this.config.name, this.currentLanguage);
+  linkToDefault(attributeKey: string) {
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
 
-    this.setControlDisableAndInfoMessage(this.attributes[this.config.name],
-      this.config.name, this.currentLanguage, this.defaultLanguage);
+    this.setControlDisableAndInfoMessage(this.attributes[attributeKey],
+      attributeKey, this.currentLanguage, this.defaultLanguage);
   }
 
   /**
@@ -177,26 +178,26 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
    * If value of current language don't exist then add new value
    * @param copyFromLanguageKey
    */
-  onClickCopyFrom(copyFromLanguageKey) {
+  onClickCopyFrom(copyFromLanguageKey: string, attributeKey: string) {
     console.log('onClickCopyFrom language', copyFromLanguageKey);
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
-      this.attributes[this.config.name],
+      this.attributes[attributeKey],
       copyFromLanguageKey
     );
 
     if (attributeValueTranslation) {
       const valueAlreadyExist: boolean = LocalizationHelper.isEditableOrReadonlyTranslationExist(
-        this.attributes[this.config.name],
+        this.attributes[attributeKey],
         this.currentLanguage
       );
 
       if (valueAlreadyExist) {
-        // Copy attribute value where language is languageKey to value where language is current langage
-        this.itemService.updateItemAttributeValue(this.config.entityId, this.config.name,
+        // Copy attribute value where language is languageKey to value where language is current language
+        this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
           attributeValueTranslation.value, this.currentLanguage, false);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.itemService.addAttributeValue(this.config.entityId, this.config.name, this.attributes[this.config.name],
+        this.itemService.addAttributeValue(this.config.entityId, attributeKey, this.attributes[attributeKey],
           attributeValueTranslation.value, this.currentLanguage, false);
       }
     } else {
@@ -225,11 +226,22 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   translateUnlinkAll(languageKey) {
-
+    Object.keys(this.attributes).forEach(attributeKey => {
+      console.log('onClickCopyFromAll attributeKey', this.attributes);
+      this.translateUnlink(attributeKey);
+    });
   }
   linkToDefaultAll(languageKey) {
+    Object.keys(this.attributes).forEach(attributeKey => {
+      console.log('onClickCopyFromAll attributeKey', this.attributes);
+      this.linkToDefault(attributeKey);
+    });
   }
   onClickCopyFromAll(languageKey) {
+    Object.keys(this.attributes).forEach(attributeKey => {
+      console.log('onClickCopyFromAll attributeKey', this.attributes);
+      this.onClickCopyFrom(languageKey, attributeKey);
+    });
   }
   onClickUseFromAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {
@@ -238,6 +250,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     });
   }
   onClickShareWithAll(languageKey) {
+    Object.keys(this.attributes).forEach(attributeKey => {
+      console.log('onClickShareWithAll attributeKey', this.attributes);
+      this.onClickShareWith(languageKey, attributeKey);
+    });
   }
 
   hasLanguage = (languageKey) => {
@@ -284,4 +300,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.infoMessage = 'auto(default)';
     }
   }
+
+
 }

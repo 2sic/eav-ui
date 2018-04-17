@@ -10,8 +10,8 @@
   </button>
 
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item type="button" (click)="translateUnlink()">Translate (unlink)</button>
-    <button mat-menu-item type="button" (click)="linkToDefault()">Link to default</button>
+    <button mat-menu-item type="button" (click)="translateUnlink(config.name)">Translate (unlink)</button>
+    <button mat-menu-item type="button" (click)="linkToDefault(config.name)">Link to default</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">Share with</button>
@@ -19,7 +19,8 @@
   </mat-menu>
 
   <mat-menu #copyFromMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key)" [title]="language.name">{{language.key}}</button>
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key, config.name)"
+      [title]="language.name">{{language.key}}</button>
   </mat-menu>
 
   <mat-menu #useFromMenu="matMenu">

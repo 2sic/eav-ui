@@ -26,7 +26,7 @@ export class LanguageService {
       { key: 'hr-hr', name: 'Croatian' },
     ];
 
-    this.store.dispatch(new languageActions.LoadLanguagesAction(languages, 'de-de', 'en-us'));
+    this.store.dispatch(new languageActions.LoadLanguagesAction(languages, 'de-de', 'en-us', 'en-us'));
   }
 
   public selectAllLanguages(): Observable<Language[]> {

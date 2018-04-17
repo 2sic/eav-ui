@@ -11,3 +11,4 @@ export const getLanguageState = createSelector(
 export const getLanguages = createSelector(getLanguageState, fromLanguage.getLanguages);
 export const getCurrentLanguage = createSelector(getLanguageState, fromLanguage.getCurrentLanguage);
 export const getDefaultLanguage = createSelector(getLanguageState, fromLanguage.getDefaultLanguage);
+export const getUILanguage = createSelector(getLanguageState, fromLanguage.getUILanguage);

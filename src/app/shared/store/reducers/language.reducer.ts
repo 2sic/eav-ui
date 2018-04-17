@@ -8,12 +8,15 @@ export interface LanguagesState {
     languages: Language[];
     currentLanguage: string;
     defaultLanguage: string;
+    uiLanguage: string;
 }
 
 export const initialState: LanguagesState = {
     languages: [],
     currentLanguage: 'en-us',
-    defaultLanguage: 'en-us'
+    defaultLanguage: 'en-us',
+    uiLanguage: 'en-us',
+
 };
 
 export function languageReducer(state = initialState, action: fromLanguages.Actions): LanguagesState {
@@ -26,6 +29,7 @@ export function languageReducer(state = initialState, action: fromLanguages.Acti
                     languages: [...action.newLanguage],
                     currentLanguage: action.currentLanguage,
                     defaultLanguage: action.defaultLanguage,
+                    uiLanguage: action.uiLanguage,
                 }
             };
         }
@@ -47,6 +51,15 @@ export function languageReducer(state = initialState, action: fromLanguages.Acti
                 }
             };
         }
+        case fromLanguages.UPDATE_UI_LANGUAGE: {
+            console.log('action.attributes', action.uiLanguage);
+            return {
+                ...state,
+                ...{
+                    uiLanguage: action.uiLanguage
+                }
+            };
+        }
         // case fromItems.DELETE_ITEM:
         //     return {
         //         ...state,
@@ -63,3 +76,4 @@ export function languageReducer(state = initialState, action: fromLanguages.Acti
 export const getLanguages = (state: LanguagesState) => state.languages;
 export const getCurrentLanguage = (state: LanguagesState) => state.currentLanguage;
 export const getDefaultLanguage = (state: LanguagesState) => state.defaultLanguage;
+export const getUILanguage = (state: LanguagesState) => state.uiLanguage;
