@@ -7,6 +7,13 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { ValidationMessages } from '../../../validators/validation-messages';
 import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/fromEvent';
+
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,20 +26,29 @@ import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/sc
 })
 export class CustomDefaultComponent implements Field, OnInit, AfterViewInit {
   @ViewChild('someVar') elReference: ElementRef;
+  @ViewChild('someVar1') elReference1: ElementRef;
   @Input() config: FieldConfig;
   group: FormGroup;
 
   loaded = false;
   template = '';
-  constructor(private scriptLoaderService: ScriptLoaderService,
+
+  html: SafeHtml;
+  constructor(private scriptLoaderService: ScriptLoaderService, private sanitized: DomSanitizer
   ) { }
   // private elementRef: ElementRef
   ngOnInit() {
 
-
+    Observable.fromEvent(this.elReference1.nativeElement, 'change')
+      .do(ev => console.log('test', this.elReference1.nativeElement.value))
+      .subscribe(c => {
+        this.group.controls[this.config.name].patchValue(this.elReference1.nativeElement.value);
+      });
   }
 
   ngAfterViewInit() {
+    // document.getElementById('demo').onchange = 'faca';
+
     const script: ScriptModel = {
       name: 'myScript',
       src: 'assets/script/myScript.js',
@@ -46,13 +62,22 @@ export class CustomDefaultComponent implements Field, OnInit, AfterViewInit {
       this.loaded = s.loaded;
       if (this.loaded) {
         // this.template = s.template;
-        // this.elReference.nativeElement.innerHTML = '<div innerHTML="DivBox(2,2)"></div>';
-        // this.elementRef.nativeElement;
         console.log('this.elementRef.nativeElement', this.elReference.nativeElement.innerHTML);
-        this.elReference.nativeElement.innerHTML = '<button type="button" onclick="myFunction()">Try it</button>';
-        // const tmp = document.createElement('div');
 
-        this.group.controls[this.config.name].patchValue('anteeea');
+        this.elReference.nativeElement.innerHTML = `
+        <input id="input1" type="text">
+        <input id="input2" type="text">
+        <button type="button" onclick="myFunction()">Try it</button>
+        <button type="button" onclick="myFunction1()">Second</button>
+         `;
+        //   this.html = this.sanitized.bypassSecurityTrustHtml(`<div ng-app="">
+        //   <p>Input something in the input box:</p>
+        //   <p>Name :
+        //     <input type="text" ng-model="name" placeholder="Enter name here">
+        //   </p>
+        //   <h1>Hello {{name}}</h1>
+        // </div>`);
+        // this.group.controls[this.config.name].patchValue('anteeea');
       }
     });
   }
@@ -63,5 +88,13 @@ export class CustomDefaultComponent implements Field, OnInit, AfterViewInit {
 
   getErrorMessage() {
     return this.group.controls[this.config.name].hasError('required') ? ValidationMessages.requiredMessage(this.config) : '';
+  }
+
+  ante() {
+    console.log('asdasddsa');
+  }
+
+  mate() {
+    console.log('change');
   }
 }

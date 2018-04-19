@@ -38,21 +38,6 @@ export class ScriptLoaderService {
       }
     });
   }
-
-  // private divBox(col, row) {
-  //   // console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
-  //   // let ret = '';
-  //   // for (let r = 0; r < row; r++) {
-  //   //   ret += '<div id="Column' + (r + 1) + '" style="float:left">';
-  //   //   for (let c = 0; c < col; c++) {
-  //   //     ret += '<div id="sq' + (r * col + c + 1) + '" style="width:40px; height:40px;">';
-  //   //     ret += (r * col + c + 1); // just for showing
-  //   //     ret += '</div>';
-  //   //   }
-  //   //   ret += '</div>';
-  //   // }
-  //   return '<button type="button" onclick="myFunction()">Try it</button>';
-  // }
 }
 
 export interface ScriptModel {
