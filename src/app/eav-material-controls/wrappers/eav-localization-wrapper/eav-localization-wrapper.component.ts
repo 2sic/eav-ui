@@ -227,13 +227,13 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.setControlDisableAndInfoMessage(this.attributes[this.config.name], attributeKey, this.currentLanguage, this.defaultLanguage);
   }
 
-  translateUnlinkAll(languageKey) {
+  translateUnlinkAll() {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickCopyFromAll attributeKey', this.attributes);
       this.translateUnlink(attributeKey);
     });
   }
-  linkToDefaultAll(languageKey) {
+  linkToDefaultAll() {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickCopyFromAll attributeKey', this.attributes);
       this.linkToDefault(attributeKey);

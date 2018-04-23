@@ -18,5 +18,5 @@ export class InputTypesConstants {
     // hyperlink/files
     public static readonly hyperlinkDefault: string = 'hyperlink-default';
     // custom/files
-    public static readonly customDefault: string = 'custom-default';
+    public static readonly external: string = 'external';
 }

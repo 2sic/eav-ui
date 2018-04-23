@@ -24,7 +24,7 @@
                         "Attributes": {
                             "String": {
                                 "InputType": {
-                                    "*": "custom-default"
+                                    "*": "external"
                                 },
                                 "Name": {
                                     "*": "customStaticName"

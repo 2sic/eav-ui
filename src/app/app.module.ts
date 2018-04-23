@@ -20,6 +20,7 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
 import { reducers, metaReducers } from '../app/shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';
+import { APP_BASE_HREF, Location } from '@angular/common';
 
 const routes: Routes = [
   {
@@ -27,8 +28,8 @@ const routes: Routes = [
     loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
   },
   {
-    path: '',
-    redirectTo: '',
+    path: './',
+    redirectTo: './',
     // redirectTo: 'eav-item-dialog',
     pathMatch: 'full'
   }
@@ -51,7 +52,12 @@ const routes: Routes = [
     BrowserAnimationsModule,
   ],
   exports: [RouterModule],
-  providers: [ItemService, ContentTypeService, LanguageService, ScriptLoaderService],
+  providers: [
+    ItemService,
+    ContentTypeService,
+    LanguageService,
+    ScriptLoaderService,
+    { provide: APP_BASE_HREF, useValue: './' }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

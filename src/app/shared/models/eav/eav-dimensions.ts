@@ -49,4 +49,8 @@ export class EavDimensions<T> {
 
         return dimensions;
     }
+
+    public static update() {
+        console.log('zovni');
+    }
 }
