@@ -8,6 +8,9 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../model/field';
 import { FieldConfig } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
+import { CustomInputType } from '../../../shared/models';
+import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
+import { InputTypesConstants } from '../../../shared/constants';
 
 @Directive({
   selector: '[appEavField]'
@@ -19,15 +22,26 @@ export class EavFieldDirective implements OnInit {
   @Input()
   group: FormGroup;
 
+  window: any = window;
+
+  addOnList = [];
+  externalCommponentRefList = [];
+
   constructor(
     private resolver: ComponentFactoryResolver,
-    private container: ViewContainerRef
-    // private compiler: Compiler
+    private container: ViewContainerRef,
+    private scriptLoaderService: ScriptLoaderService
   ) { }
 
   ngOnInit() {
+
+    // Clear lists and container
+    this.addOnList = [];
+    this.externalCommponentRefList = [];
     this.container.clear();
+
     this.config.forEach(controlConfiguration => {
+      console.log('create controlConfiguration', controlConfiguration);
       this.createFieldOrGroup(this.container, controlConfiguration);
     });
   }
@@ -42,8 +56,15 @@ export class EavFieldDirective implements OnInit {
       // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig);
     } else {
-      // this.createFieldComponent(container, fieldConfig, group);
-      this.createComponent(container, fieldConfig);
+
+      if (fieldConfig.type === InputTypesConstants.external) {
+        console.log('create external');
+        this.createExternalComponent(container, fieldConfig);
+      } else {
+        console.log('create non external', fieldConfig.type);
+        // this.createFieldComponent(container, fieldConfig, group);
+        this.createComponent(container, fieldConfig);
+      }
     }
   }
 
@@ -66,7 +87,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig): ComponentRef<any> {
     const componentType = this.readComponentType(fieldConfig.type);
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
@@ -85,7 +106,80 @@ export class EavFieldDirective implements OnInit {
         group: this.group,
         config: fieldConfig,
       });
+
+      return ref;
     }
+
+    return null;
+  }
+
+  /**
+   * Register external commponent
+   * @param container
+   * @param fieldConfig
+   */
+  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+
+    // first create component container - then load script
+    const externalComponentRef = this.createComponent(container, fieldConfig);
+
+    console.log('loaded fieldConfig.name', fieldConfig.type);
+    // TODO: read data from config
+    if (fieldConfig.name === 'customStaticName') {
+      // TODO: read data from config
+      this.externalCommponentRefList['colour-picker'] = externalComponentRef;
+    } else {
+      this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
+    }
+
+    if (this.window.addOn === undefined) {
+      this.window.addOn = [];
+      this.window.addOn = new CustomInputType(this.registerExternalComponent.bind(this));
+    }
+
+    // TODO: read data from config
+    if (fieldConfig.name === 'customStaticName') {
+      this.loadExternalnputTypeScript('colour-picker', 'assets/script/colour-picker.js');
+    } else {
+      this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
+    }
+  }
+
+  private loadExternalnputTypeScript(name: string, src: string) {
+    const script: ScriptModel = {
+      name: name,
+      src: src,
+      loaded: false
+    };
+
+    this.scriptLoaderService.load(script).subscribe(s => {
+      console.log('loaded ScriptModel: ', s);
+
+      if (s.loaded) {
+        const externalCommponentRef = this.externalCommponentRefList[s.name];
+        const factory = this.addOnList[s.name];
+        console.log('loaded name', s.name);
+        console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
+        console.log('loaded factory', factory);
+        if (externalCommponentRef && factory) {
+          console.log('loaded Object.assign', factory);
+          Object.assign(externalCommponentRef.instance, {
+            // group: externalCommponentRef.instance.group,
+            // config: externalCommponentRef.instance.config,
+            factory: factory,
+          });
+        }
+      }
+    });
+  }
+
+  private registerExternalComponent(factory) {
+    this.addOnList[factory.name] = factory;
+
+    // sent factory to componentReference  - or on script loaded ??? need to decide!!!
+
+    // this.customInputTypeFactory.initialize(this.customInputTypeHost);
+    // this.customInputTypeFactory.render(this.elReference.nativeElement);
   }
 
   /**

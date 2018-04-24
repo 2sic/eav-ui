@@ -1,6 +1,6 @@
 (function () {
 
-    class myCustomInputType {
+    class customColorPicker {
 
         constructor(name, host, options) {
             this.name = name;
@@ -12,17 +12,20 @@
             this.host = host;
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
-            this.host.update('update value');
+            // this.host.update('update value');
         }
 
         render(container) {
-            container.innerHTML = '<h1>stuff</h1><input id="myfield" type="text">';
+            container.innerHTML = `<input id="color" type="color"></input>`;
 
             // container.getElementsByTagName('input').onchange(this.changeCheck);
             console.log('myComponent render', container);
 
             var elements = container.getElementsByTagName('input');
             console.log('elem', container.getElementsByTagName('input'));
+
+            var labelElements = container.getElementsByTagName('label');
+            console.log('elements value', elements[0].value);
 
             elements[0].addEventListener('change', () => {
                 this.changeCheck(event, elements[0].value);
@@ -33,9 +36,11 @@
             console.log('changeCheck event', event);
             console.log('changeCheck value', value);
             // do validity checks
-            var ok = value.length > 7;
-            if (ok)
+            var ok = value.length > 3;
+            if (ok) {
                 this.host.update(value);
+            }
+
         }
 
         externalChange(container, newValue) {
@@ -46,10 +51,10 @@
         }
     }
 
-    function myComponentFactory(name) {
-        console.log('myComponentFactory');
-        return new myCustomInputType(name, null, null);
+    function externalComponentFactory(name) {
+        console.log('customColorPicker');
+        return new customColorPicker(name, null, null);
     }
 
-    window.addOn.register(myComponentFactory('custom-type'));
+    window.addOn.register(externalComponentFactory('colour-picker'));
 })();

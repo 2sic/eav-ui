@@ -3,7 +3,7 @@
         "V": 1
     },
     "Entity": {
-        "Id": 1520,
+        "Id": 1521,
         "Version": 7,
         "Guid": "ad040a3b-3762-4216-b66b-82bb1b604614",
         "Type": {
@@ -21,10 +21,16 @@
             },
             "Custom": {
                 "customStaticName": {
-                    "en-us": "{\"latitude\":47.123,\"longitude\":10}",
-                    "hr-hr": "{\"latitude\":50,\"longitude\":10}",
-                    "de-de": "{\"latitude\":47,\"longitude\":10}",
-                    "fr-fr": "{\"latitude\":49,\"longitude\":10}"
+                    "en-us": "#f4ad42",
+                    "hr-hr": "#7df441",
+                    "de-de": "#41f4e2",
+                    "fr-fr": "#6141f4"
+                },
+                "customStaticName2": {
+                    "en-us": "#f4ad42",
+                    "hr-hr": "#7df441",
+                    "de-de": "#41f4e2",
+                    "fr-fr": "#6141f4"
                 }
             }
         }

@@ -9,14 +9,45 @@
         "Description": "",
         "Attributes": [
             {
+                "Name": "stringStaticName",
+                "Type": "String",
+                "IsTitle": false,
+                "Metadata": [
+                    {
+                        "Id": 1519,
+                        "Version": 1,
+                        "Guid": "d3e7154c-a902-477a-839b-51f9873d2ae9",
+                        "Type": {
+                            "Name": "@All",
+                            "Id": "@All"
+                        },
+                        "Attributes": {
+                            "String": {
+                                "InputType": {
+                                    "*": "string-default"
+                                },
+                                "Name": {
+                                    "*": "stringStaticName"
+                                }
+                            },
+                            "Boolean": {
+                                "VisibleInEditUI": {
+                                    "*": true
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
                 "Name": "customStaticName",
                 "Type": "Custom",
                 "IsTitle": true,
                 "Metadata": [
                     {
-                        "Id": 1518,
+                        "Id": 1520,
                         "Version": 1,
-                        "Guid": "8062c537-529c-4756-8d01-ce9cd2b550a4",
+                        "Guid": "8062c537-529c-4756-8d01-ce9cd2b550a5",
                         "Type": {
                             "Name": "@All",
                             "Id": "@All"
@@ -40,14 +71,14 @@
                 ]
             },
             {
-                "Name": "stringStaticName",
-                "Type": "String",
-                "IsTitle": false,
+                "Name": "customStaticName2",
+                "Type": "Custom",
+                "IsTitle": true,
                 "Metadata": [
                     {
-                        "Id": 1519,
+                        "Id": 1518,
                         "Version": 1,
-                        "Guid": "d3e7154c-a902-477a-839b-51f9873d2ae9",
+                        "Guid": "8062c537-529c-4756-8d01-ce9cd2b550a4",
                         "Type": {
                             "Name": "@All",
                             "Id": "@All"
@@ -55,10 +86,10 @@
                         "Attributes": {
                             "String": {
                                 "InputType": {
-                                    "*": "string-default"
+                                    "*": "external"
                                 },
                                 "Name": {
-                                    "*": "stringStaticName"
+                                    "*": "customStaticName2"
                                 }
                             },
                             "Boolean": {

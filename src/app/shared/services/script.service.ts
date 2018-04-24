@@ -25,7 +25,6 @@ export class ScriptLoaderService {
 
         scriptElement.onload = () => {
           script.loaded = true;
-          // script.template = this.divBox(2, 2);
           observer.next(script);
           observer.complete();
         };
@@ -44,5 +43,4 @@ export interface ScriptModel {
   name: string;
   src: string;
   loaded: boolean;
-  template: string;
 }
