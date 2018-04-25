@@ -28,8 +28,8 @@ const routes: Routes = [
     loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
   },
   {
-    path: './',
-    redirectTo: './',
+    path: '',
+    redirectTo: '',
     // redirectTo: 'eav-item-dialog',
     pathMatch: 'full'
   }
@@ -57,7 +57,7 @@ const routes: Routes = [
     ContentTypeService,
     LanguageService,
     ScriptLoaderService,
-    { provide: APP_BASE_HREF, useValue: './' }],
+    { provide: APP_BASE_HREF, useValue: '' }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
