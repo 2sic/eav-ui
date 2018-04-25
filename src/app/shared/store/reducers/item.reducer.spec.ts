@@ -13,7 +13,7 @@ describe(`itemReducer`, () => {
     describe(`loadSuccesAction`, () => {
 
         it(`should load item on loadSuccesAction`, () => {
-            const currentItemState = [];
+            const currentItemState = { items: [] };
             const newItem: Item = new Item(
                 new EavHeader(1),
                 new EavEntity(42900,
@@ -49,7 +49,7 @@ describe(`itemReducer`, () => {
                     'dnn:userid=1',
                     []
                 ));
-            const currentItemState = [currentItem];
+            const currentItemState = { items: [currentItem] };
 
             const updatedValue1: any = new Value1();
             updatedValue1['BooleanDefault'] = false;
@@ -67,7 +67,7 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = [updatedItem];
 
-            const action = new itemActions.UpdateItemAction(updatedItem);
+            const action = new itemActions.UpdateItemAction(updatedItem.entity.attributes, updatedItem.entity.id);
             const result = itemReducer(currentItemState, action);
             // we changed attribute booleanDefault from true to false
             expect(result[0].entity.attributes['BooleanDefault'].values[0].value)

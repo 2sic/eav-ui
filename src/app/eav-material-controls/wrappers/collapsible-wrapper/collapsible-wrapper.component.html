@@ -1,0 +1,13 @@
+<div>
+    <div class="form-ci-subtitle unhide-area" (click)="config.collapse = !config.collapse">
+        <span style="position: relative">
+            <i class="eav-icon-side-marker"></i>
+            <i *ngIf="config.collapse" class="eav-icon-minus"></i>
+            <i *ngIf="!config.collapse" class="eav-icon-plus"></i>
+        </span>
+        {{config.label}}
+    </div>
+    <div [hidden]="config.collapse">
+        <ng-container #fieldComponent></ng-container>
+    </div>
+</div>

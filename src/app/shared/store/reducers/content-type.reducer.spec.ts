@@ -10,7 +10,7 @@ describe(`contentTypeReducer`, () => {
     describe(`loadSuccesAction`, () => {
 
         it(`should load content type on loadSuccesAction`, () => {
-            const currentContentTypeState = [];
+            const currentContentTypeState = { contentTypes: [] };
             const newContentType: ContentType = new ContentType(
                 new EavHeader(1),
                 new ContentTypeDef(

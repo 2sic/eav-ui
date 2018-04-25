@@ -30,7 +30,6 @@ export class EavAttributes {
 
         return newEavAtribute;
     }
-
     /**
      * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array)
      * Example: Settings from metadata array
@@ -59,7 +58,18 @@ export class EavAttributes {
         return newEavAtribute;
     }
 
+    /**
+     * Create EavAtributes from dictionary
+     */
+    public static createFromDictionary = (value: { [key: string]: any }): EavAttributes => {
+        const eavAttributes: EavAttributes = new EavAttributes();
+
+        Object.keys(value).forEach(valueKey => {
+            const eavValues: EavValue<any>[] = [];
+            eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])]);
+        });
+
+        return eavAttributes;
+    }
+
 }
-
-
-

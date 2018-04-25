@@ -4,14 +4,11 @@ import { StoreModule, Store } from '@ngrx/store';
 import { Routes, RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule, FieldWrapper } from '@ngx-formly/core';
 import {
   MatButtonModule,
   MatCheckboxModule,
   MatInputModule,
   MatSelectModule,
-  // MatDialogModule,
-  // MatDialog,
   MatDatepickerModule,
   MatNativeDateModule,
   MatCardModule,
@@ -19,7 +16,13 @@ import {
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
+import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
+import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
+import { reducers } from '../shared/store';
+
+import { ItemEffects } from '../shared/effects/item.effects';
+import { ContentTypeEffects } from '../shared/effects/content-type.effects';
 
 const routes: Routes = [
   {
@@ -29,6 +32,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  declarations: [
+    MultiItemEditFormComponent,
+    ItemEditFormComponent
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
@@ -37,16 +44,14 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
-    FormlyModule,
-    // MatDialogModule
     MatDatepickerModule,
     MatNativeDateModule,
     MatCardModule,
-    MatIconModule
-  ],
-  declarations: [
-    MultiItemEditFormComponent,
-    ItemEditFormComponent,
+    MatIconModule,
+    EavDynamicFormModule,
+    EavMaterialControlsModule,
+    StoreModule.forFeature('eavItemDialog', reducers),
+    EffectsModule.forFeature([ItemEffects, ContentTypeEffects]),
   ],
   exports: [RouterModule],
   providers: [],

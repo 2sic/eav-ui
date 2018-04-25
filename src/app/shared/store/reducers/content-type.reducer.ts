@@ -2,18 +2,22 @@ import { ContentType } from '../../models/eav';
 import * as fromContentType from './../actions/content-type.actions';
 import { AppState } from '../../models/app-state';
 
-/**
- * Receave ContentType and push it in ContentType[] array to store
- * @param state
- * @param action
- */
-export function contentTypeReducer(state: ContentType[] = [], action: fromContentType.Actions): ContentType[] {
+export interface ContentTypeState {
+    contentTypes: ContentType[];
+}
+
+export const initialState: ContentTypeState = {
+    contentTypes: []
+};
+
+export function contentTypeReducer(state = initialState, action: fromContentType.Actions): ContentTypeState {
     switch (action.type) {
         case fromContentType.LOAD_CONTENT_TYPE_SUCCESS: {
             // if contentType with same id exist in store don't load content
-            const contentTypes = state.filter(contentType => contentType.contentType.id === action.newContentType.contentType.id);
+            const contentTypes = state.contentTypes.filter(contentType =>
+                contentType.contentType.id === action.newContentType.contentType.id);
             if (contentTypes.length === 0) {
-                return [...state, action.newContentType];
+                return { contentTypes: [...state.contentTypes, action.newContentType] };
             } else {
                 return state;
             }
@@ -23,4 +27,6 @@ export function contentTypeReducer(state: ContentType[] = [], action: fromConten
         }
     }
 }
+
+export const getContentTypes = (state: ContentTypeState) => state.contentTypes;
 

@@ -1,4 +1,6 @@
 import { Value1 } from '../json-format-v1/value1';
+import { EavAttributes } from '.';
+import { EavValues } from './eav-values';
 
 export class EavDimensions<T> {
     value: T;
@@ -29,4 +31,26 @@ export class EavDimensions<T> {
 
         return new EavDimensions<T>('*', value['*']);
     } */
+
+    /**
+     * Get attribute dimensions for current language
+     * @param item
+     * @param attributeKey
+     * @param currentLanguage
+     */
+    public static getEavAttributeDimensionsForLanguage(attribute: EavAttributes, attributeKey: string, currentLanguage: string):
+        EavDimensions<any>[] {
+
+        const eavAttribute: EavValues<any> = attribute[attributeKey];
+
+        const dimensions = eavAttribute.values.map(eavValue => {
+            return eavValue.dimensions.find(d => d.value === currentLanguage);
+        });
+
+        return dimensions;
+    }
+
+    public static update() {
+        console.log('zovni');
+    }
 }

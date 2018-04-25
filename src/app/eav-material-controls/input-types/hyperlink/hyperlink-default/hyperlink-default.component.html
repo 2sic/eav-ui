@@ -1,0 +1,86 @@
+<div (mouseleave)="showFieldHints = false">
+  <mat-form-field [formGroup]="group" [style.width]="'100%'">
+    <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseenter)="showPreview = true" (mouseleave)="showPreview = false"
+      [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
+    </div>
+    <div matPrefix *ngIf="value && !isImage()" class="thumbnail-before-input icon-before-input">
+      <a [href]="testLink" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(testLink)}}" matTooltipPosition="right">
+      </a>
+    </div>
+    <div matPrefix *ngIf="!value" class="thumbnail-before-input empty-placeholder">
+    </div>
+    <!-- uib-tooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
+{{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
+ADAM - sponsored with ♥ by 2sic.com" -->
+    <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required" (click)="showFieldHints = true"
+      [required]="config.required" matTooltip="drop files here to auto-upload
+    for help see 2sxc.org/help?tag=adam ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
+    <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error> -->
+    <span matSuffix class="input-group-btn">
+      <div style="width: 6px;"></div>
+      <!-- ng-disabled="to.disabled"  -->
+      <button mat-icon-button *ngIf="buttons.indexOf('adam') > -1" type="button" class="btn btn-default icon-field-button" (click)="toggleAdam()"
+        matTooltip="Edit.Fields.Hyperlink.Default.AdamUploadLabel">
+        <i class="eav-icon-apple"></i>
+      </button>
+      <!-- ng-disabled="to.disabled"  -->
+      <button mat-icon-button *ngIf="buttons.indexOf('page') > -1" type="button" class="btn btn-default icon-field-button" (click)="openPageDialog()"
+        matTooltip="Edit.Fields.Hyperlink.Default.PageLabel">
+        <i class="eav-icon-sitemap"></i>
+      </button>
+      <!-- ng-disabled="to.disabled"-->
+      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" type="button" class="btn btn-default icon-field-button"
+        [matMenuTriggerFor]="menu">
+        <i class="eav-icon-options"></i>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngIf="showAdam" (click)="toggleAdam(false)">
+          <i class="eav-icon-apple"></i>
+          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuAdam"></span> -->
+          <span>MenuAdam</span>
+        </button>
+        <button mat-menu-item *ngIf="config.settings.ShowPagePicker" (click)="openPageDialog()">
+          <i class="eav-icon-sitemap" xicon="home"></i>
+          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuPage"></span> -->
+          <span>MenuPage</span>
+        </button>
+        <button mat-menu-item *ngIf="config.settings.ShowImageManager" (click)="toggleAdam(true, true)">
+          <i class="eav-icon-file-image" xicon="picture"></i>
+          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuImage"></span> -->
+          <span>MenuImage</span>
+        </button>
+        <button mat-menu-item *ngIf="config.settings.ShowFileManager" (click)="toggleAdam(true, false)">
+          <i class="eav-icon-file" xicon="file"></i>
+          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuDocs"></span> -->
+          <span>MenuDocs</span>
+        </button>
+      </mat-menu>
+    </span>
+
+    <div *ngIf="showPreview" style="position: relative">
+      <div style="position: absolute; z-index: 100; background: white; top: 10px; text-align: center; left: 0; right: 0;">
+        <img [src]="thumbnailUrl(2)" />
+      </div>
+    </div>
+  </mat-form-field>
+
+  <!-- This div is adam-hint -->
+  <div class="small pull-right" *ngIf="showFieldHints">
+    <span style="opacity: 0.5">drop files here -</span>
+    <a href="http://2sxc.org/help?tag=adam" target="_blank" matTooltip="ADAM is the Automatic Digital Assets Manager - click to discover more">
+      <i class="eav-icon-apple"></i>
+      Adam
+    </a>
+    <span style="opacity: 0.5"> is sponsored with
+      <i class="eav-icon-heart"></i> by
+      <a tabindex="-1" href="http://2sic.com/" target="_blank">
+        2sic.com
+      </a>
+    </span>
+  </div>
+  <div *ngIf="value && showFieldHints">
+    <a [href]="testLink" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(testLink)}}">
+      <span>&nbsp;... {{ testLink.substring(testLink.lastIndexOf("/"), 100) }}</span>
+    </a>
+  </div>
+</div>

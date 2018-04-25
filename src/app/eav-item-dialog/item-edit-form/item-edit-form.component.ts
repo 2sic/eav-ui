@@ -1,92 +1,155 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import {
+  Component, ViewChild, ChangeDetectorRef,
+  OnInit, Input, OnChanges, ElementRef, OnDestroy
+} from '@angular/core';
+import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+
+// TODO: fix this dependency - from other module - move maybe to shared
+import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
+// TODO: fix this dependency
+import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/switchmap';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
-import { Item, ContentType } from '../../shared/models/eav';
+import {
+  Item, ContentType, EavValue, Language, EavAttributesTranslated,
+  EavAttributes, EavValues, EavDimensions
+} from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
-import { EavAttributes } from '../../shared/models/eav/eav-attributes';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
-// import * as itemActions from '../../shared/store/actions/item.actions';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
-
-export class EavSettings {
-  [key: string]: EavSettingsValue;
-}
-
-export class EavSettingsValue {
-  value: Item;
-}
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LocalizationHelper } from '../../shared/helpers/localization-helper';
+import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.css']
 })
-export class ItemEditFormComponent implements OnInit, OnChanges {
-  /**
-   * Item is copied because we don't want to keep the reference to store
-   * ngrx store should be changed only through despaches and reducers
-   */
-  @Input('item')
-  set item(value: Item) {
-    // this.selectedItem = Object.assign({}, value);
-    // this.selectedItem = { ...value };
-    this.selectedItem = JSON.parse(JSON.stringify(value));
+export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
+  @ViewChild(EavFormComponent) form: EavFormComponent;
+
+  @Input()
+  set currentLanguage(value: string) {
+    console.log('set currentLanguage');
+    this.currentLanguageValue = value;
+    this.setFormValues(this.item, true);
+  }
+  get currentLanguage(): string {
+    return this.currentLanguageValue;
   }
 
-  selectedItem: Item;
-  contentType$: Observable<ContentType>;
-  form = new FormGroup({});
-  itemFields$: Observable<FormlyFieldConfig[]>;
-  model: EavAttributes = {};
+  @Input()
+  set item(value: Item) {
+    console.log('set item');
+    this.itemBehaviorSubject$.next(value);
+  }
+  get item(): Item {
+    return this.itemBehaviorSubject$.getValue();
+  }
 
-  constructor(private itemService: ItemService, private contentTypeService: ContentTypeService) { }
+  // TODO: read default language
+  private defaultLanguage = 'en-us';
+  private currentLanguageValue: string;
+  private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
+  contentType$: Observable<ContentType>;
+  itemFields$: Observable<FieldConfig[]>;
+
+  constructor(
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService
+  ) { }
 
   ngOnInit() {
-    this.loadContentTypeFromStore();
     console.log('oninit');
+
+    this.itemBehaviorSubject$.subscribe((item: Item) => {
+      console.log('subscribe setFormValues start');
+      this.setFormValues(item, false);
+    });
+
+    this.loadContentTypeFromStore();
+  }
+
+  ngOnDestroy(): void {
+    this.itemBehaviorSubject$.unsubscribe();
   }
 
   ngOnChanges(): void {
-    //TODO: TRY catch canges
-    // this.form.valueChanges.subscribe(val => {
-    //   console.log('aha tu si', val)
-    // });
+    console.log('ItemEditFormComponent current change: ', this.currentLanguage);
   }
 
-  // addAttributes() {
-  //   console.log('patchValue', this.selectedItem.entity.attributes)
-  //   this.form.patchValue(this.selectedItem.entity.attributes);
-  //   // this.model = this.selectedItem.entity.attributes;
-  // }
-
-  submitForm() {
-    if (this.form.valid) {
-      console.log('submit');
-      this.itemService.updateItem(this.selectedItem.entity.attributes, this.selectedItem.entity.id); // TODO: probably can update only attributes
-    }
+  /**
+   * Update NGRX/store on form value change
+   * @param values key:value list of fields from form
+   */
+  formValueChange(values: { [key: string]: any }) {
+    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage);
   }
 
+  // TEMP
+  changeThis() {
+    const values = {
+      BooleanDefault: false,
+      DateTime: '2018-02-14T20:14:00Z',
+      EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
+      NumberDefault: 5,
+      DateTimeWithTime: '2018-02-07T02:03:00Z',
+      BooleanGroup1: false,
+      DropDownGroup1: '1',
+      StringGroup1: 'Ante test',
+      StringGroup2: 'ante test2',
+      StringUrlPathGroup2: 'ante'
+    };
 
-  changeForm() {
-    if (this.form.valid) {
-      this.itemService.updateItem(this.form.value, this.selectedItem.entity.id); // TODO: probably can update only attributes
-    }
+    this.formValueChange(values);
+  }
+
+  submit(values: { [key: string]: any }) {
+    console.log(values);
   }
 
   deleteItem() {
-    this.itemService.deleteItem(this.selectedItem); // TODO: probably can update only attributes
+    this.itemService.deleteItem(this.item);
   }
 
-  loadContentTypeFromStore() {
+  private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
+    if (this.form) {
+      const formValues: { [name: string]: any } = {};
+      Object.keys(item.entity.attributes).forEach(attributeKey => {
+        formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage,
+          this.defaultLanguage, item.entity.attributes[attributeKey], null);
+      });
+
+      // Important - We need to enable all controls for new language before patchValue and before is determined which control is disabled
+      if (currentLanguageChanged) {
+        this.enableAllControls(item.entity.attributes);
+      }
+
+      if (this.form.valueIsChanged(formValues)) {
+        // set new values to form
+        this.form.patchValue(formValues, false);
+      }
+
+      if (currentLanguageChanged) {
+        // loop trough all controls and set disable control if needed
+        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage);
+      }
+    }
+  }
+
+  private loadContentTypeFromStore() {
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(this.selectedItem.entity.type.id);
+    this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
@@ -94,14 +157,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
   /**
    * load content type attributes to Formly FormFields (formlyFieldConfigArray)
    */
-  loadContentTypeFormFields = (): Observable<FormlyFieldConfig[]> => {
+  private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
       .switchMap((data) => {
         const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
         let currentFieldGroup = parentFieldGroup;
         // loop through contentType attributes
         data.contentType.attributes.forEach(attribute => {
-          const formlyFieldConfig: FormlyFieldConfig = this.loadFieldFromDefinitionTest(attribute);
+          const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute);
           // if input type is empty-default create new field group and than continue to add fields to that group
           if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
             const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
@@ -111,13 +174,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
             currentFieldGroup.fieldGroup.push(formlyFieldConfig);
           }
         });
-
         return of([parentFieldGroup]);
       });
   }
 
   // TEST
-  loadFieldFromDefinitionTest(attribute: AttributeDef): FormlyFieldConfig {
+  private loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
     if (attribute.settings.InputType) {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
@@ -135,6 +197,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault);
         case InputTypesConstants.numberDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
+        case InputTypesConstants.stringFontIconPicker:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
+        case InputTypesConstants.entityDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
+        case InputTypesConstants.hyperlinkDefault:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
+        case InputTypesConstants.external:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
       }
@@ -147,57 +217,93 @@ export class ItemEditFormComponent implements OnInit, OnChanges {
    * Load formly field from AttributeDef
    * @param attribute
    */
-  loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FormlyFieldConfig {
+  private loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
-    const required = attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const pattern = attribute.settings.ValidationRegex ? attribute.settings.ValidationRegex.values[0].value : '';
+    const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
     // set validation for all input types
-    const validationList = this.setValidations(inputType);
+    const validationList: ValidatorFn[] = ValidationHelper.setDefaultValidations(settingsTranslated);
+    const required = settingsTranslated.Required ? settingsTranslated.Required : false;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Required, false);
+    // attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
+    const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
+      this.item.entity.attributes[attribute.name], null);
+
+    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage,
+      this.item.entity.attributes[attribute.name], attribute.name);
+
+    const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
 
     return {
-      key: `${attribute.name}.values[0].value`,//.values[0].value
-      type: inputType,
-      templateOptions: {
-        type: 'text', // TODO
-        label: attribute.name,
-        // placeholder: `Enter ${attribute.name}`,
-        required: required,
-        pattern: pattern,
-        settings: attribute.settings,
-        change: () => this.changeForm(), // this needs for 'select' and 'checkbox' to catch the change
-      },
-      validators: {
-        validation: validationList,
-      },
+      // valueKey: `${attribute.name}.values[0].value`,
+      entityId: this.item.entity.id,
+      value: value,
+      name: attribute.name,
+      type: inputType, // TODO see do we need this
+      label: label,
+      placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
+      required: required,
+      // pattern: pattern,
+      settings: settingsTranslated,
+      fullSettings: attribute.settings,
+      validation: validationList,
+      disabled: disabled
     };
   }
 
   /**
-   * TODO: see can i write this in module configuration ???
-   * @param inputType
+   * Determines is control disabled
+   * @param currentLanguage
+   * @param attributeValues
+   * @param attributeKey
    */
-  setValidations(inputType: string): Array<string> {
-    let validation = Array<string>();
-    if (inputType === InputTypesConstants.stringUrlPath) {
-      validation = [...['onlySimpleUrlChars']];
+  private isControlDisabledForCurrentLanguage(currentLanguage, attributeValues: EavValues<any>, attributeKey: string): boolean {
+    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage)) {
+      return false;
+    } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+      return true;
+    } else {
+      return true;
     }
+  }
 
-    return validation;
+  /**
+   * Enables all controls in form
+   * @param allAttributes
+   */
+  private enableAllControls(allAttributes: EavAttributes) {
+    Object.keys(allAttributes).forEach(attributeKey => {
+      if (this.form.value[attributeKey] === undefined) {
+        this.form.setDisabled(attributeKey, false, false);
+      }
+    });
+  }
+
+  /**
+   * loop trough all controls and set disable control if needed
+   * @param allAttributes
+   * @param currentLanguage
+   */
+  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string) {
+    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage,
+        this.item.entity.attributes[attributeKey], attributeKey);
+      this.form.setDisabled(attributeKey, disabled, false);
+    });
   }
 
   /**
    * Create title field group with collapsible wrapper
-   * @param title 
-   * @param collapse 
+   * @param title
+   * @param collapse
    */
-  createEmptyFieldGroup = (title: string, collapse: boolean): FormlyFieldConfig => {
+  private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
-      key: ``,
-      wrappers: ['collapsible'],
-      templateOptions: {
-        label: title,
-        collapse: collapse
-      },
+      name: name,
+      type: InputTypesConstants.emptyDefault,
+      wrappers: ['app-collapsible-wrapper'],
+      label: name,
+      collapse: collapse,
       fieldGroup: [],
     };
   }

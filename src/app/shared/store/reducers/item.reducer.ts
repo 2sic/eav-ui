@@ -1,86 +1,198 @@
 import { Item } from '../../models/eav/item';
 import * as fromItems from './../actions/item.actions';
 import { AppState } from '../../models/app-state';
+import { EavHeader, EavAttributes } from '../../models/eav';
+import { AttributesState } from './attribute.reducer';
+import { LocalizationHelper } from '../../helpers/localization-helper';
 
-/**
- * Receave action.newItem and push it in Items[] array to store
- * @param state
- * @param action
- */
-export function itemReducer(state: Item[] = new Array<Item>(), action: fromItems.Actions): Item[] {
+// export interface ItemState {
+//     items: Array<{
+//         header: EavHeader,
+//         entity: {
+//             id: number,
+//             version: string,
+//             guid: string,
+//             type: string,
+//             attributes: AttributesState,
+//             owner: string,
+//             metadata: any[],
+//         }
+//     }>;
+// }
+
+// export const initialState: ItemState = {
+//     items: []
+// };
+
+export interface ItemState {
+    items: Item[];
+}
+
+export const initialState: ItemState = {
+    items: []
+};
+
+export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
     switch (action.type) {
         case fromItems.LOAD_ITEM_SUCCESS: {
-            return [...state, action.newItem];
+            return {
+                ...state,
+                ...{ items: [...state.items, action.newItem] }
+            };
         }
-        // case fromItems.UPDATE_ITEM: {
-        //     return state.map(item => {
-        //         // return item.entity.id === action.item.entity.id
-        //         //     ? { ...item, ...action.item }
-        //         //     : item;
-        //         if (item.entity.id === action.item.entity.id) {
-        //             item.entity.attributes = { ...action.item.entity.attributes }
-        //         }
-        //         return item;
-        //     });
-
-        //     // const ovajItem: Item = state.find(item => item.entity.id === action.item.entity.id);
-        //     // return [{
-        //     //     ...ovajItem,
-        //     //     entity: {
-        //     //         ...ovajItem.entity,
-        //     //         attributes: action.item.entity.attributes
-        //     //     }
-        //     // }]
-        //     // ];
-        // }
         case fromItems.UPDATE_ITEM: {
             console.log('action.attributes', action.attributes);
-            return state.map(item => {
-                return item.entity.id === action.id
-                    //  ? { ...item, ...action }
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: { ...item.entity.attributes, ...action.attributes },
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.UPDATE_ITEM_ATTRIBUTE: {
+            console.log('action.attribute', action.attribute);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.updateAttribute(item.entity.attributes, action.attribute,
+                                        action.attributeKey)
 
-                    // return item.entity.id === action.id
-                    //  ? { ...item, ...{ header: {... item.header}, entity: this.entityReducer(item.entity, action) } }
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.UPDATE_ITEM_ATTRIBUTE_VALUE: {
+            // console.log('action.attribute', action.attribute);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.updateAttributeValue(item.entity.attributes, action.attributeKey,
+                                        action.attributeValue, action.existingLanguageKey, action.isReadOnly)
 
-                    ? {
-                        ...item,
-                        header: { ...item.header },
-                        entity: {
-                            id: item.entity.id,
-                            version: item.entity.version,
-                            guid: item.entity.guid,
-                            type: { ...item.entity.type },
-                            attributes: { ...action.attributes },
-                            owner: item.entity.owner,
-                            metadata: [...item.entity.metadata],
-                        }
-                    }
-                    : item;
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.UPDATE_ITEM_ATTRIBUTES_VALUES: {
+            // console.log('action.attribute', action.attribute);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.updateAttributeValues(item.entity.attributes,
+                                        action.updateValues, action.existingLanguageKey)
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.ADD_ITEM_ATTRIBUTE_VALUE: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.addAttributeValue(item.entity.attributes,
+                                        action.attributeValue, action.attributeKey)
 
-                // if (item.entity.id === action.id) {
-                //     item.entity.attributes = { ...action.attributes }
-                // }
-                // console.log('item.entity.attributes', item.entity.attributes);
-                // return item;
-            });
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.ADD_ITEM_ATTRIBUTE_DIMENSION: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.addAttributeDimension(item.entity.attributes,
+                                        action.attributeKey, action.dimensionValue, action.existingDimensionValue, action.isReadOnly)
 
-            // 'BooleanDefault': this.eavValuesReducer(state['BooleanDefault'], action)
-            // values: [{ value: state.values[0].value, dimensions: [] }] 
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
+        case fromItems.REMOVE_ITEM_ATTRIBUTE_DIMENSION: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.removeAttributeDimension(item.entity.attributes,
+                                        action.attributeKey, action.dimensionValue)
 
-            // const ovajItem: Item = state.find(item => item.entity.id === action.item.entity.id);
-            // return [{
-            //     ...ovajItem,
-            //     entity: {
-            //         ...ovajItem.entity,
-            //         attributes: action.item.entity.attributes
-            //     }
-            // }]
-            // ];
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
         }
         case fromItems.DELETE_ITEM:
-            return state.filter(item => item.entity.id !== action.item.entity.id);
+            return {
+                ...state,
+                ...{
+                    items: state.items.filter(item => item.entity.id !== action.item.entity.id)
+                }
+            };
         default: {
             return state;
         }
     }
 }
+
+
+export const getItems = (state: ItemState) => state.items;

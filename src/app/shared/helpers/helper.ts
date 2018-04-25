@@ -6,12 +6,12 @@ export class Helper {
      * this is a helper which cleans up the url and is used in various places
      *
      */
-    static stripNonUrlCharacters(control: FormControl, allowPath: boolean, trimEnd: boolean) {
-        if (!control.value) {
+    static stripNonUrlCharacters(controlValue: string, allowPath: boolean, trimEnd: boolean) {
+        if (!controlValue) {
             return '';
         }
         const rexSeparators = allowPath ? /[^a-z0-9-_/]+/gi : /[^a-z0-9-_]+/gi;
-        const latinized = this.latinizeText(control.value.toLowerCase());
+        const latinized = this.latinizeText(controlValue.toLowerCase());
         const cleanInputValue = latinized
             .replace(`'s `, 's ') // neutralize it's, daniel's etc. but only if followed by a space, to ensure we don't kill quotes
             .replace('\\', '/') // neutralize slash representation

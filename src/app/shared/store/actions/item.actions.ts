@@ -1,12 +1,26 @@
 import { Action } from '@ngrx/store';
 
 import { Item } from '../../models/eav/item';
-import { EavAttributes } from '../../models/eav';
+import { EavAttributes, EavValue } from '../../models/eav';
+import { EavValues } from '../../models/eav/eav-values';
+import { EavDimensions } from '../../models/eav/eav-dimensions';
 
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';
 export const UPDATE_ITEM = '[Item] UPDATE_ITEM';
 export const UPDATE_ITEM_SUCCESS = '[Item] UPDATE_ITEM_SUCCESS';
+
+export const ADD_ITEM_ATTRIBUTE = '[Item] ADD_ITEM_ATTRIBUTE';
+export const UPDATE_ITEM_ATTRIBUTE = '[Item] UPDATE_ITEM_ATTRIBUTE';
+
+export const ADD_ITEM_ATTRIBUTE_VALUE = '[Item] ADD_ITEM_ATTRIBUTE_VALUE';
+export const UPDATE_ITEM_ATTRIBUTE_VALUE = '[Item] UPDATE_ITEM_ATTRIBUTE_VALUE';
+export const UPDATE_ITEM_ATTRIBUTES_VALUES = '[Item] UPDATE_ITEM_ATTRIBUTES_VALUES';
+
+export const ADD_ITEM_ATTRIBUTE_DIMENSION = '[Item] ADD_ITEM_ATTRIBUTE_DIMENSION';
+export const UPDATE_ITEM_ATTRIBUTE_DIMENSION = '[Item] UPDATE_ITEM_ATTRIBUTE_DIMENSION';
+export const REMOVE_ITEM_ATTRIBUTE_DIMENSION = '[Item] REMOVE_ITEM_ATTRIBUTE_DIMENSION';
+
 export const DELETE_ITEM = '[Item] DELETE_ITEM';
 
 /**
@@ -22,6 +36,26 @@ export class LoadItemSuccessAction implements Action {
 }
 
 /**
+ * Add
+ */
+
+export class AddItemAttributeAction implements Action {
+    readonly type = ADD_ITEM_ATTRIBUTE;
+    constructor(public id: number, public attribute: EavValues<any>, public attributeKey) { }
+}
+
+export class AddItemAttributeValueAction implements Action {
+    readonly type = ADD_ITEM_ATTRIBUTE_VALUE;
+    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey) { }
+}
+
+export class AddItemAttributeDimensionAction implements Action {
+    readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
+    constructor(public id: number, public attributeKey: string, public dimensionValue: string,
+        public existingDimensionValue: string, public isReadOnly: boolean) { }
+}
+
+/**
  * Update
  */
 export class UpdateItemAction implements Action {
@@ -33,6 +67,32 @@ export class UpdateItemSuccessAction implements Action {
     constructor(public item: Item) { }
 }
 
+export class UpdateItemAttributeAction implements Action {
+    readonly type = UPDATE_ITEM_ATTRIBUTE;
+    constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string) { }
+}
+
+export class UpdateItemAttributeValueAction implements Action {
+    readonly type = UPDATE_ITEM_ATTRIBUTE_VALUE;
+    constructor(public id: number, public attributeKey: string, public attributeValue: string,
+        public existingLanguageKey: string, public isReadOnly: boolean) { }
+}
+
+export class UpdateItemAttributesValuesAction implements Action {
+    readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
+    constructor(public id: number, public updateValues: { [key: string]: any }, public existingLanguageKey: string) { }
+}
+
+// export class UpdateItemAttributeDimensionAction implements Action {
+//     readonly type = UPDATE_ITEM_ATTRIBUTE_DIMENSION;
+//     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
+//         public existingDimensionValue: string, public isReadOnly: boolean) { }
+// }
+
+export class RemoveItemAttributeDimensionAction implements Action {
+    readonly type = REMOVE_ITEM_ATTRIBUTE_DIMENSION;
+    constructor(public id: number, public attributeKey: string, public dimensionValue: string) { }
+}
 /**
  * Delete
  */
@@ -44,6 +104,15 @@ export class DeleteItemAction implements Action {
 export type Actions
     = LoadItemAction
     | LoadItemSuccessAction
+    | AddItemAttributeAction
+    | AddItemAttributeValueAction
+    | AddItemAttributeDimensionAction
     | UpdateItemAction
+    | UpdateItemAttributeAction
+    | UpdateItemAttributeValueAction
+    | UpdateItemAttributesValuesAction
+    // | UpdateItemAttributeDimensionAction
     | UpdateItemSuccessAction
+    | UpdateItemAttributeAction
+    | RemoveItemAttributeDimensionAction
     | DeleteItemAction;

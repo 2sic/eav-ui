@@ -1,0 +1,55 @@
+<div class="language-wrap">
+  <div class="language-field">
+    <ng-container #fieldComponent></ng-container>
+  </div>
+  <button *ngIf="(currentLanguage !== defaultLanguage)" (mouseenter)="openMenu()" class="language-button" mat-icon-button type="button"
+    [matMenuTriggerFor]="rootMenu">
+    {{infoMessage}}
+    <mat-icon class="mat-18 language-icon">language</mat-icon>
+    <!-- (click)="toggleTranslate()" -->
+  </button>
+
+  <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item type="button" (click)="translateUnlink(config.name)">Translate (unlink)</button>
+    <button mat-menu-item type="button" (click)="linkToDefault(config.name)">Link to default</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">Share with</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">All fields</button>
+  </mat-menu>
+
+  <mat-menu #copyFromMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key, config.name)"
+      [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #useFromMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFrom(language.key, config.name)"
+      [disabled]="!hasLanguage(language.key)" [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #shareWithMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWith(language.key, config.name)"
+      [disabled]="!hasLanguage(language.key)" [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #allFieldsMenu="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item type="button" (click)="translateUnlinkAll()">Translate (unlink)</button>
+    <button mat-menu-item type="button" (click)="linkToDefaultAll()">Link to default</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromAllMenu">Copy From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromAllMenu">Use From</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithAllMenu">Share with</button>
+  </mat-menu>
+
+  <mat-menu #copyFromAllMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFromAll(language.key)" [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #useFromAllMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFromAll(language.key)" [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+
+  <mat-menu #shareWithAllMenu="matMenu">
+    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWithAll(language.key)" [title]="language.name">{{language.key}}</button>
+  </mat-menu>
+</div>
