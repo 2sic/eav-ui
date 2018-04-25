@@ -50,7 +50,9 @@ export class ContentTypeService {
    * Get Content Type from Json Content Type V1
    */
   public getContentTypeFromJsonContentType1(path: string): Observable<ContentType> {
-    return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
+    return this.httpClient.get<JsonContentType1>(
+      `/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/content-type/${path}`
+    )
       .map((item: JsonContentType1) => {
         return ContentType.create(item);
       })
@@ -62,7 +64,9 @@ export class ContentTypeService {
    * Get Json Content Type V1
    */
   public getJsonContentType1(path: string): Observable<JsonContentType1> {
-    return this.httpClient.get<JsonContentType1>(`../../../assets/data/item-edit-form/content-type/${path}`)
+    return this.httpClient.get<JsonContentType1>(
+      `/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/content-type/${path}`
+    )
       .map((item: JsonContentType1) => {
         return item;
       })

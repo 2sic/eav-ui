@@ -18,6 +18,7 @@ import { ItemState } from '../../shared/store/reducers/item.reducer';
 import * as fromStore from '../../shared/store';
 import * as itemActions from '../../shared/store/actions/item.actions';
 import { LanguageService } from '../../shared/services/language.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -31,9 +32,12 @@ export class MultiItemEditFormComponent implements OnInit {
   languages$: Observable<Language[]>;
   currentLanguage$: Observable<string>;
 
+  queryParams = {};
   constructor(private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    private languageService: LanguageService) {
+    private languageService: LanguageService,
+    private router: Router,
+    private route: ActivatedRoute) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
@@ -45,6 +49,37 @@ export class MultiItemEditFormComponent implements OnInit {
     this.languageService.loadLanguages();
 
     this.languages$ = this.languageService.selectAllLanguages();
+
+
+    // const currentURL = window.location.href;
+    // console.log('window.location.href', window.location.href);
+
+    const href = this.router.url;
+    console.log('this.router.url', this.router.url);
+    console.log('this.route', this.route);
+    // this.route.snapshot queryParams.subscribe(params => {
+    //   console.log('params', params);
+    // });
+
+    // const id: string = this.route.snapshot.params.id;
+    // this.route.snapshot.queryParams.forEach(x => console.log('this.route.params', x));
+
+    console.log('this.route.params fragment', this.route.snapshot.fragment);
+
+    console.log('this.route.params fragment split: ', this.route.snapshot.fragment.split('&'));
+
+    this.route.snapshot.fragment.split('&').forEach(f => {
+      this.queryParams[f.split('=')[0]] = f.split('=')[1];
+    });
+    console.log('this.route.snapshot.fragment split: ', this.queryParams);
+
+    console.log('this.route.snapshot.fragment appId:', this.queryParams['appId']);
+    console.log('this.route.snapshot.fragment cbid:', this.queryParams['cbid']);
+    console.log('this.route.snapshot.fragment mid:', this.queryParams['mid']);
+    console.log('this.route.snapshot.fragment tid:', this.queryParams['tid']);
+    console.log('this.route.snapshot.fragment zoneId:', this.queryParams['zoneId']);
+
+
   }
 
   /**

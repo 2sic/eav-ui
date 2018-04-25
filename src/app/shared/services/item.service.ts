@@ -124,7 +124,7 @@ export class ItemService {
   public getItemFromJsonItem1(path: string): Observable<Item> {
     // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
     // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
-    return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
+    return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
       .map((item: JsonItem1) => {
         console.log('kreiran item:', Item.create(item));
         return Item.create(item);
@@ -137,7 +137,7 @@ export class ItemService {
    * Get Json Entity V1
    */
   public getJsonItem1(path: string): Observable<JsonItem1> {
-    return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/${path}`)
+    return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
       .map((item: JsonItem1) => {
         return item;
       })
