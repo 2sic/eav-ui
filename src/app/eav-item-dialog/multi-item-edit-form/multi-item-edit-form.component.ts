@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -33,13 +33,15 @@ export class MultiItemEditFormComponent implements OnInit {
   currentLanguage$: Observable<string>;
 
   queryParams = {};
-  constructor(private itemService: ItemService,
+  constructor(
+    private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private languageService: LanguageService,
     private router: Router,
     private route: ActivatedRoute) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
   }
+
 
   ngOnInit() {
     // console.log('MultiItemEditFormComponent ngOnInit');
@@ -80,6 +82,14 @@ export class MultiItemEditFormComponent implements OnInit {
     console.log('this.route.snapshot.fragment zoneId:', this.queryParams['zoneId']);
 
 
+    // console.log('context:', this.context);
+    // console.log('moduleId$:', this.context.moduleId$);
+    // this.context.moduleId$.subscribe(m => console.log('subscribe moduleID:', m));
+    // this.context.sxcController$.subscribe(sc => console.log('subscribe sxcController:', sc));
+
+    this.itemService.getAllDataForForm().subscribe(s => console.log('subscribe getAllDataForForm', s));
+
+    // this.itemService.getAllData();
   }
 
   /**

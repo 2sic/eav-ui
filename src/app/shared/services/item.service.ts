@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/map';
@@ -12,6 +12,8 @@ import { EavAttributes, EavValue } from '../models/eav';
 // import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
+import * as dataActions from '../../shared/store/actions/data.actions';
+import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
@@ -24,6 +26,11 @@ export class ItemService {
   constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
     // this.items$ = store.select(fromStore.getItems);
   }
+
+  // public loadAllData(path: string) {
+  //   this.store.dispatch(new itemActions.LoadDataAction(path));
+  // }
+
 
   public loadItem(path: string) {
     this.store.dispatch(new itemActions.LoadItemAction(path));
@@ -142,6 +149,48 @@ export class ItemService {
         return item;
       })
       // .do(data => console.log('getItemFromJsonItem1: ', data))
+      .catch(this.handleError);
+  }
+
+  public getAllData() {
+    this.store.dispatch(new dataActions.LoadAllDataAction());
+  }
+
+  /**
+     * Get Item from Json Entity V1
+     */
+  public getAllDataForForm(): Observable<any> {
+    // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
+    // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
+
+    console.log('call getAllDataForForm');
+
+    const body = JSON.stringify([{ 'EntityId': 1729 }]);
+    const header = new HttpHeaders({
+      'TabId': '55',
+      'ContentBlockId': '419',
+      'ModuleId': '419',
+      'Content-Type': 'application/json;charset=UTF-8',
+      'RequestVerificationToken': 'abcdefgihjklmnop'
+    });
+    // header.append('TabId', '55');
+    // header.append('ContentBlockId', '419');
+    // header.append('ModuleId', '419');
+    // header.append('Content-Type', 'application/json;charset=UTF-8');
+    // header.append('RequestVerificationToken', 'abcdefgihjklmnop');
+    // Content-Length: 19
+    // tslint:disable-next-line:max-line-length
+    console.log('HttpHeaders', header);
+
+    return this.httpClient.post(`http://2sxc-dnn742.dnndev.me/desktopmodules/2sxc/api/eav/ui/load?appId=15`, body, { headers: header })
+      .map((data: any) => {
+        console.log('response getAllDataForForm:', data);
+        this.store.dispatch(new itemActions.LoadItemSuccessAction(data.ContentTypes));
+        this.store.dispatch(new contentTypeActions.LoadContentTypeSuccessAction(data.contentType));
+
+        return data;
+      })
+      .do(data => console.log('getAllDataForForm: ', data))
       .catch(this.handleError);
   }
 

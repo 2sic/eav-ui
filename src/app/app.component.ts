@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
+import { DnnAppComponent, Context } from '@2sic.com/dnn-sxc-angular';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
-
 }

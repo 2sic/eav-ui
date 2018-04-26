@@ -13,6 +13,7 @@ export const initialState: ContentTypeState = {
 export function contentTypeReducer(state = initialState, action: fromContentType.Actions): ContentTypeState {
     switch (action.type) {
         case fromContentType.LOAD_CONTENT_TYPE_SUCCESS: {
+            console.log('LOAD_ITEM_SUCCESS', action);
             // if contentType with same id exist in store don't load content
             const contentTypes = state.contentTypes.filter(contentType =>
                 contentType.contentType.id === action.newContentType.contentType.id);
