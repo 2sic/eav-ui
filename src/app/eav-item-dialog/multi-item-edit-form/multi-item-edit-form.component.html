@@ -9,11 +9,10 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadHyperLink()">Load HyperLink</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadLocalization()">Load Localization</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadCustom()">Load Custom</button> -->
+<mat-card class="example-card">
+  <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
-<app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
-
-<div *ngFor="let item of (items$ | async); trackBy:trackByFn">
-  <mat-card class="example-card">
+  <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
     <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)"></app-item-edit-form>
-  </mat-card>
-</div>
+  </div>
+</mat-card>

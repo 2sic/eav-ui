@@ -93,26 +93,26 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
-    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage);
+    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
   }
 
   // TEMP
-  changeThis() {
-    const values = {
-      BooleanDefault: false,
-      DateTime: '2018-02-14T20:14:00Z',
-      EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
-      NumberDefault: 5,
-      DateTimeWithTime: '2018-02-07T02:03:00Z',
-      BooleanGroup1: false,
-      DropDownGroup1: '1',
-      StringGroup1: 'Ante test',
-      StringGroup2: 'ante test2',
-      StringUrlPathGroup2: 'ante'
-    };
+  // changeThis() {
+  //   const values = {
+  //     BooleanDefault: false,
+  //     DateTime: '2018-02-14T20:14:00Z',
+  //     EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
+  //     NumberDefault: 5,
+  //     DateTimeWithTime: '2018-02-07T02:03:00Z',
+  //     BooleanGroup1: false,
+  //     DropDownGroup1: '1',
+  //     StringGroup1: 'Ante test',
+  //     StringGroup2: 'ante test2',
+  //     StringUrlPathGroup2: 'ante'
+  //   };
 
-    this.formValueChange(values);
-  }
+  //   this.formValueChange(values);
+  // }
 
   submit(values: { [key: string]: any }) {
     console.log(values);
@@ -142,7 +142,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
       if (currentLanguageChanged) {
         // loop trough all controls and set disable control if needed
-        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage);
+        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
       }
     }
   }
@@ -228,7 +228,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
 
-    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage,
+    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], attribute.name);
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
@@ -254,14 +254,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Determines is control disabled
    * @param currentLanguage
+   * @param defaultLanguage
    * @param attributeValues
    * @param attributeKey
    */
-  private isControlDisabledForCurrentLanguage(currentLanguage, attributeValues: EavValues<any>, attributeKey: string): boolean {
-    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage)) {
+  private isControlDisabledForCurrentLanguage(currentLanguage: string, defaultLanguage: string,
+    attributeValues: EavValues<any>, attributeKey: string): boolean {
+    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
       return false;
-    } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
-      return true;
+      // } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+      //   return true;
     } else {
       return true;
     }
@@ -284,9 +286,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param allAttributes
    * @param currentLanguage
    */
-  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string) {
+  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string, defaultLanguage: string) {
     Object.keys(this.item.entity.attributes).forEach(attributeKey => {
-      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage,
+      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage, defaultLanguage,
         this.item.entity.attributes[attributeKey], attributeKey);
       this.form.setDisabled(attributeKey, disabled, false);
     });

@@ -52,7 +52,7 @@ export class AddItemAttributeValueAction implements Action {
 export class AddItemAttributeDimensionAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
-        public existingDimensionValue: string, public isReadOnly: boolean) { }
+        public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean) { }
 }
 
 /**
@@ -75,12 +75,13 @@ export class UpdateItemAttributeAction implements Action {
 export class UpdateItemAttributeValueAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTE_VALUE;
     constructor(public id: number, public attributeKey: string, public attributeValue: string,
-        public existingLanguageKey: string, public isReadOnly: boolean) { }
+        public existingLanguageKey: string, public defaultLanguage: string, public isReadOnly: boolean) { }
 }
 
 export class UpdateItemAttributesValuesAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
-    constructor(public id: number, public updateValues: { [key: string]: any }, public existingLanguageKey: string) { }
+    constructor(public id: number, public updateValues: { [key: string]: any },
+        public existingLanguageKey: string, public defaultLanguage: string) { }
 }
 
 // export class UpdateItemAttributeDimensionAction implements Action {

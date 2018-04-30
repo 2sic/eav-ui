@@ -46,28 +46,16 @@ export class MultiItemEditFormComponent implements OnInit {
   ngOnInit() {
     // console.log('MultiItemEditFormComponent ngOnInit');
 
+    // set observing for items
     this.items$ = this.itemService.selectAllItems();
-
-    this.languageService.loadLanguages();
-
+    // set observing for languages
     this.languages$ = this.languageService.selectAllLanguages();
 
-
-    // const currentURL = window.location.href;
-    // console.log('window.location.href', window.location.href);
-
+    // TODO: read queryString in helper metod
     const href = this.router.url;
     console.log('this.router.url', this.router.url);
     console.log('this.route', this.route);
-    // this.route.snapshot queryParams.subscribe(params => {
-    //   console.log('params', params);
-    // });
-
-    // const id: string = this.route.snapshot.params.id;
-    // this.route.snapshot.queryParams.forEach(x => console.log('this.route.params', x));
-
     console.log('this.route.params fragment', this.route.snapshot.fragment);
-
     console.log('this.route.params fragment split: ', this.route.snapshot.fragment.split('&'));
 
     this.route.snapshot.fragment.split('&').forEach(f => {
@@ -75,19 +63,24 @@ export class MultiItemEditFormComponent implements OnInit {
     });
     console.log('this.route.snapshot.fragment split: ', this.queryParams);
 
-    console.log('this.route.snapshot.fragment appId:', this.queryParams['appId']);
-    console.log('this.route.snapshot.fragment cbid:', this.queryParams['cbid']);
-    console.log('this.route.snapshot.fragment mid:', this.queryParams['mid']);
-    console.log('this.route.snapshot.fragment tid:', this.queryParams['tid']);
-    console.log('this.route.snapshot.fragment zoneId:', this.queryParams['zoneId']);
+    // console.log('this.route.snapshot.fragment appId:', this.queryParams['appId']);
+    // console.log('this.route.snapshot.fragment cbid:', this.queryParams['cbid']);
+    // console.log('this.route.snapshot.fragment mid:', this.queryParams['mid']);
+    // console.log('this.route.snapshot.fragment tid:', this.queryParams['tid']);
+    // console.log('this.route.snapshot.fragment zoneId:', this.queryParams['zoneId']);
 
+    const appid = this.queryParams['appId'];
+    const mid = this.queryParams['mid'];
+    const cbid = this.queryParams['cbid'];
+    const tid = this.queryParams['tid'];
+    const items = this.queryParams['items'];
+    const lang = this.queryParams['lang'];
+    const langs = this.queryParams['langs'];
+    const langpri = this.queryParams['langpri'];
 
-    // console.log('context:', this.context);
-    // console.log('moduleId$:', this.context.moduleId$);
-    // this.context.moduleId$.subscribe(m => console.log('subscribe moduleID:', m));
-    // this.context.sxcController$.subscribe(sc => console.log('subscribe sxcController:', sc));
-
-    this.itemService.getAllDataForForm().subscribe(s => console.log('subscribe getAllDataForForm', s));
+    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us');
+    // TODO: destroy subscribe
+    this.itemService.getAllDataForForm(appid, tid, mid, cbid, items).subscribe();
 
     // this.itemService.getAllData();
   }

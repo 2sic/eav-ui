@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch';
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { AppState } from '../models/app-state';
-import { EavAttributes, EavValue } from '../models/eav';
+import { EavAttributes, EavValue, ContentType } from '../models/eav';
 // import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
@@ -17,6 +17,7 @@ import * as contentTypeActions from '../../shared/store/actions/content-type.act
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
+import { JsonContentType1 } from '../models/json-format-v1';
 
 @Injectable()
 export class ItemService {
@@ -49,22 +50,22 @@ export class ItemService {
   }
 
   public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
-    existingDimensionValue: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
     this.store.dispatch(new itemActions.UpdateItemAttributeValueAction(entityId, attributeKey, newEavAttributeValue,
-      existingDimensionValue, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly));
   }
 
-  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string) {
-    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey));
+  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey, defaultLanguage));
   }
   /**
   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
   * */
   public addItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
-    existingDimensionValue: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
     this.store.dispatch(new itemActions.AddItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
-      existingDimensionValue, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly));
   }
 
   public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string) {
@@ -159,17 +160,15 @@ export class ItemService {
   /**
      * Get Item from Json Entity V1
      */
-  public getAllDataForForm(): Observable<any> {
-    // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
-    // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
+  public getAllDataForForm(appId: string, tabId: string, moduleId: string, contentBlockId: string, items: string): Observable<any> {
+    console.log('call getAllDataForForm', items);
+    // console.log(`http://2sxc-dnn742.dnndev.me/desktopmodules/2sxc/api/eav/ui/load?appId=${appId}`);
 
-    console.log('call getAllDataForForm');
-
-    const body = JSON.stringify([{ 'EntityId': 1729 }]);
+    const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     const header = new HttpHeaders({
-      'TabId': '55',
-      'ContentBlockId': '419',
-      'ModuleId': '419',
+      'TabId': tabId,
+      'ContentBlockId': moduleId,
+      'ModuleId': contentBlockId,
       'Content-Type': 'application/json;charset=UTF-8',
       'RequestVerificationToken': 'abcdefgihjklmnop'
     });
@@ -182,11 +181,39 @@ export class ItemService {
     // tslint:disable-next-line:max-line-length
     console.log('HttpHeaders', header);
 
-    return this.httpClient.post(`http://2sxc-dnn742.dnndev.me/desktopmodules/2sxc/api/eav/ui/load?appId=15`, body, { headers: header })
+    return this.httpClient.post(
+      `http://2sxc-dnn742.dnndev.me/desktopmodules/2sxc/api/eav/ui/load?appId=${appId}`,
+      body,
+      // items,
+      { headers: header }
+    )
       .map((data: any) => {
         console.log('response getAllDataForForm:', data);
-        this.store.dispatch(new itemActions.LoadItemSuccessAction(data.ContentTypes));
-        this.store.dispatch(new contentTypeActions.LoadContentTypeSuccessAction(data.contentType));
+        console.log('response data.Items[0]:', data.Items[0]);
+        console.log('response data.ContentTypes[0]:', data.ContentTypes[0]);
+
+        console.log('start create item');
+        data.Items.forEach((jsonItem1: JsonItem1) => {
+          const item: Item = Item.create(jsonItem1);
+          this.store.dispatch(new itemActions.LoadItemSuccessAction(item));
+        });
+        // const item: Item = Item.create(data.Items[0]);
+        console.log('finish create item');
+
+
+        console.log('start create ContentTypes');
+        data.ContentTypes.forEach((jsonContentType1: JsonContentType1) => {
+          const contentType: ContentType = ContentType.create(jsonContentType1);
+          this.store.dispatch(new contentTypeActions.LoadContentTypeSuccessAction(contentType));
+        });
+        // const contentType: ContentType = ContentType.create(data.ContentTypes[0]);
+        console.log('finish create ContentTypes');
+
+        // console.log('create data.Items[0]:', item);
+        // console.log('create data.ContentTypes[0]:', contentType);
+
+        // this.store.dispatch(new itemActions.LoadItemSuccessAction(item));
+        // this.store.dispatch(new contentTypeActions.LoadContentTypeSuccessAction(contentType));
 
         return data;
       })

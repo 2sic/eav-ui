@@ -57,11 +57,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   ngOnInit() {
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId);
-    // this.itemService.selectAttributeByEntityId(this.config.entityId, this.config.name);
 
     this.subscribeToAttributeValues();
 
-    // subscribe to language dataw
+    // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.loadlanguagesFromStore();
@@ -97,7 +96,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         // }
         // this.setDisableByCurrentLanguage(currentLanguage);
 
-        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage);
+        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
         // TODO: translate all settings
         // });
       })
@@ -152,6 +151,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
+      this.defaultLanguage,
       this.defaultLanguage
     );
 
@@ -182,19 +182,21 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     console.log('onClickCopyFrom language', copyFromLanguageKey);
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
-      copyFromLanguageKey
+      copyFromLanguageKey,
+      this.defaultLanguage
     );
 
     if (attributeValueTranslation) {
       const valueAlreadyExist: boolean = LocalizationHelper.isEditableOrReadonlyTranslationExist(
         this.attributes[attributeKey],
-        this.currentLanguage
+        this.currentLanguage,
+        this.defaultLanguage
       );
 
       if (valueAlreadyExist) {
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, false);
+          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(this.config.entityId, attributeKey, this.attributes[attributeKey],
@@ -211,7 +213,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   onClickUseFrom(languageKey: string, attributeKey: string) {
     console.log('onClickUseFrom language', languageKey);
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
-    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, languageKey, true);
+    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, true);
 
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
@@ -222,7 +225,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     console.log('onClickShareWith language', languageKey);
 
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
-    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, languageKey, false);
+    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, false);
 
     this.setControlDisableAndInfoMessage(this.attributes[this.config.name], attributeKey, this.currentLanguage, this.defaultLanguage);
   }
@@ -233,18 +237,21 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.translateUnlink(attributeKey);
     });
   }
+
   linkToDefaultAll() {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickCopyFromAll attributeKey', this.attributes);
       this.linkToDefault(attributeKey);
     });
   }
+
   onClickCopyFromAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickCopyFromAll attributeKey', this.attributes);
       this.onClickCopyFrom(languageKey, attributeKey);
     });
   }
+
   onClickUseFromAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickUseFromAll attributeKey', this.attributes);
@@ -253,6 +260,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     this.languageService.updateCurrentLanguage(this.currentLanguage);
   }
+
   onClickShareWithAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {
       console.log('onClickShareWithAll attributeKey', this.attributes);
@@ -261,12 +269,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   hasLanguage = (languageKey) => {
-    return LocalizationHelper.isEditableOrReadonlyTranslationExist(this.attributes[this.config.name], languageKey);
-    // return this.attributes.values.filter(c => c.dimensions.find(f => f.value === languageKey)).length > 0;
+    return LocalizationHelper.isEditableOrReadonlyTranslationExist(this.attributes[this.config.name], languageKey, this.defaultLanguage);
   }
 
   openMenu() {
+    console.log('this.trigger.openMenu()');
     this.trigger.openMenu();
+  }
+
+  closeMenu() {
+    console.log('this.trigger.closeMenu()');
+    this.trigger.closeMenu();
   }
 
   private setControlDisableAndInfoMessage(attributes: EavValues<any>,
@@ -278,12 +291,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.group.controls[this.config.name].patchValue(valueTranslated);
 
     // Determine is control disabled or enabled and info message
-    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage)) {
+    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       this.group.controls[attributeKey].enable({ emitEvent: false });
       this.infoMessage = '';
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
       this.group.controls[attributeKey].disable({ emitEvent: false });
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage)
+      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
     } else {
@@ -292,18 +305,16 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
   }
 
-  private setInfoMessage(attributes: EavValues<any>, currentLanguage: string) {
+  private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
     // Determine is control disabled or enabled and info message
-    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage)) {
+    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       this.infoMessage = '';
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage)
+      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
     } else {
       this.infoMessage = 'auto(default)';
     }
   }
-
-
 }
