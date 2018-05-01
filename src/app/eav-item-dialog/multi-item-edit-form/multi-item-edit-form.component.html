@@ -10,9 +10,15 @@
 <button mat-button type="button" class="btn btn-default" (click)="loadLocalization()">Load Localization</button>
 <button mat-button type="button" class="btn btn-default" (click)="loadCustom()">Load Custom</button> -->
 <mat-card class="example-card">
+  <button mat-icon-button (click)="deleteItem()" class="button-top-right">
+    <mat-icon class="mat-24">close</mat-icon>
+  </button>
+
   <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
   <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
     <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)"></app-item-edit-form>
   </div>
+
+  <button mat-raised-button type="submit" class="btn btn-default submit-button" (click)="submitOutside()" [disabled]="!isFormValid()">Save</button>
 </mat-card>

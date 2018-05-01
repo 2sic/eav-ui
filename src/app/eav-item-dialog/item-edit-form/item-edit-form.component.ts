@@ -115,7 +115,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   // }
 
   submit(values: { [key: string]: any }) {
+    console.log('submit item edit');
     console.log(values);
+
+
   }
 
   deleteItem() {

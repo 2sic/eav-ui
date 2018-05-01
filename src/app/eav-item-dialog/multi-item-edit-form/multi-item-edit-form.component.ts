@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, QueryList, ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -19,6 +19,7 @@ import * as fromStore from '../../shared/store';
 import * as itemActions from '../../shared/store/actions/item.actions';
 import { LanguageService } from '../../shared/services/language.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -26,6 +27,8 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./multi-item-edit-form.component.css']
 })
 export class MultiItemEditFormComponent implements OnInit {
+  // @ViewChild(ItemEditFormComponent) asdasd: ItemEditFormComponent;
+  @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
   // Test
   items$: Observable<Item[]>;
   // contentTypes$: Observable<ContentType[]>;
@@ -176,6 +179,28 @@ export class MultiItemEditFormComponent implements OnInit {
     // }
     // console.log('trackByFn multi', item.entity.id);
     return item.entity.id;
+  }
+
+  /**
+   * Submit all forms
+   */
+  submitOutside() {
+    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      itemEditFormComponent.form.submitOutside();
+    });
+  }
+
+  isFormValid() {
+    let formIsValid = false;
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      formIsValid = true;
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        if (itemEditFormComponent.form.valid === false) {
+          formIsValid = false;
+        }
+      });
+    }
+    return formIsValid;
   }
 }
 

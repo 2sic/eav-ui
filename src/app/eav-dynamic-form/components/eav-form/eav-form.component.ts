@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
 import { FieldConfig } from '../../model/field-config';
 import { Subscription } from 'rxjs/Subscription';
@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./eav-form.component.css']
 })
 export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
+  @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
+
   @Input()
   config: FieldConfig[] = [];
 
@@ -36,11 +38,12 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
 
-    this.subscriptions.push(this.form.valueChanges.subscribe(val => {
-      if (this.form.valid) {
-        this.formValueChange.emit(val);
-      }
-    }));
+    this.subscriptions.push(
+      this.form.valueChanges.subscribe(val => {
+        if (this.form.valid) {
+          this.formValueChange.emit(val);
+        }
+      }));
   }
 
   ngOnChanges() {
@@ -83,6 +86,17 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     this.submit.emit(this.value);
+  }
+
+  save(event) {
+    console.log('form save', event);
+    // Use this to emit value out
+    this.submit.emit(this.value);
+  }
+
+  submitOutside() {
+    console.log('anteChild', this.dynamicForm);
+    this.dynamicForm.ngSubmit.emit(this.value);
   }
 
   setDisabled(name: string, disable: boolean, emitEvent: boolean) {
