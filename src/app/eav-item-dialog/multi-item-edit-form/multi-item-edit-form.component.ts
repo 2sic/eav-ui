@@ -1,4 +1,6 @@
-import { Component, OnInit, ElementRef, ViewChild, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -26,8 +28,7 @@ import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.componen
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.css']
 })
-export class MultiItemEditFormComponent implements OnInit {
-  // @ViewChild(ItemEditFormComponent) asdasd: ItemEditFormComponent;
+export class MultiItemEditFormComponent implements OnInit, AfterContentChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
   // Test
   items$: Observable<Item[]>;
@@ -35,20 +36,20 @@ export class MultiItemEditFormComponent implements OnInit {
   languages$: Observable<Language[]>;
   currentLanguage$: Observable<string>;
 
+  formsAreValid = false;
   queryParams = {};
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private languageService: LanguageService,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
-
   ngOnInit() {
     // console.log('MultiItemEditFormComponent ngOnInit');
-
     // set observing for items
     this.items$ = this.itemService.selectAllItems();
     // set observing for languages
@@ -88,6 +89,64 @@ export class MultiItemEditFormComponent implements OnInit {
     // this.itemService.getAllData();
   }
 
+  ngAfterContentChecked() {
+    this.setFormsAreValid();
+    // need this to detectChange this.formsAreValid after ViewChecked
+    this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * save all forms
+   */
+  saveAll(close: boolean) {
+    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      itemEditFormComponent.form.submitOutside();
+    });
+
+    if (close) {
+      this.close();
+    }
+  }
+
+  /**
+   * observe formValue changes from all child forms
+   */
+  formValueChange() {
+    this.setFormsAreValid();
+  }
+
+  /**
+   * close (remove) iframe window
+   */
+  close() {
+    // find and remove iframe
+    // TODO: this is not good - need to find better solution
+    const iframes = window.parent.frames.document.getElementsByTagName('iframe');
+    if (iframes[0] && iframes[0].parentElement) {
+      iframes[0].parentElement.remove();
+    }
+  }
+
+  trackByFn(index, item) {
+    return item.entity.id;
+  }
+
+  /**
+   * Determines whether all forms are valid and sets a this.formsAreValid depending on it
+   */
+  private setFormsAreValid() {
+    this.formsAreValid = false;
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.formsAreValid = true;
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        if (itemEditFormComponent.form.valid === false) {
+          this.formsAreValid = false;
+        }
+      });
+    }
+  }
+
+
   /**
    *  Call action to Load item to store
    */
@@ -104,103 +163,73 @@ export class MultiItemEditFormComponent implements OnInit {
   //   this.contentTypeService.loadContentType('json-content-type-v1-person.json');
   // }
 
-  // Test
-  loadAccordion() {
-    this.itemService.loadItem('json-item-v1-accordion.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-accordion.json');
-    // this.items$ = this.store.select(state => state.items);
-  }
+  // // Test
+  // loadAccordion() {
+  //   this.itemService.loadItem('json-item-v1-accordion.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-accordion.json');
+  //   // this.items$ = this.store.select(state => state.items);
+  // }
 
-  // Test
-  loadPerson() {
-    this.itemService.loadItem('json-item-v1-person.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-person.json');
-    // this.items$ = this.store.select(state => state.items);
-  }
+  // // Test
+  // loadPerson() {
+  //   this.itemService.loadItem('json-item-v1-person.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-person.json');
+  //   // this.items$ = this.store.select(state => state.items);
+  // }
 
-  // Test
-  loadStringInputTypes() {
-    this.itemService.loadItem('json-item-v1-string-input-types.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-string-input-types.json');
-    // this.items$ = this.store.select(state => state.items);
-  }
+  // // Test
+  // loadStringInputTypes() {
+  //   this.itemService.loadItem('json-item-v1-string-input-types.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-string-input-types.json');
+  //   // this.items$ = this.store.select(state => state.items);
+  // }
 
-  // Test
-  loadInputTypes() {
-    this.itemService.loadItem('json-item-v1-input-types.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
-    // this.items$ = this.store.select(state => state.items);
-  }
+  // // Test
+  // loadInputTypes() {
+  //   this.itemService.loadItem('json-item-v1-input-types.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
+  //   // this.items$ = this.store.select(state => state.items);
+  // }
 
-  // Test
-  loadBooks() {
-    this.itemService.loadItem('json-item-v1-books.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  }
+  // // Test
+  // loadBooks() {
+  //   this.itemService.loadItem('json-item-v1-books.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  // }
 
-  // Test
-  loadBooks1() {
-    this.itemService.loadItem('json-item-v1-books1.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  }
-  // Test
-  loadBooks2() {
-    this.itemService.loadItem('json-item-v1-books2.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  }
-  // Test
-  loadAuthors() {
-    this.itemService.loadItem('json-item-v1-authors.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-authors.json');
-  }
+  // // Test
+  // loadBooks1() {
+  //   this.itemService.loadItem('json-item-v1-books1.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  // }
+  // // Test
+  // loadBooks2() {
+  //   this.itemService.loadItem('json-item-v1-books2.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
+  // }
+  // // Test
+  // loadAuthors() {
+  //   this.itemService.loadItem('json-item-v1-authors.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-authors.json');
+  // }
 
-  // Link
-  loadHyperLink() {
-    this.itemService.loadItem('json-item-v1-link.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-link.json');
-  }
+  // // Link
+  // loadHyperLink() {
+  //   this.itemService.loadItem('json-item-v1-link.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-link.json');
+  // }
 
-  // Localization
-  loadLocalization() {
-    this.itemService.loadItem('json-item-v1-localization.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-localization.json');
-  }
+  // // Localization
+  // loadLocalization() {
+  //   this.itemService.loadItem('json-item-v1-localization.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-localization.json');
+  // }
 
-  // Custom
-  loadCustom() {
-    this.itemService.loadItem('json-item-v1-custom.json');
-    this.contentTypeService.loadContentType('json-content-type-v1-custom.json');
-  }
+  // // Custom
+  // loadCustom() {
+  //   this.itemService.loadItem('json-item-v1-custom.json');
+  //   this.contentTypeService.loadContentType('json-content-type-v1-custom.json');
+  // }
 
-  trackByFn(index, item) {
-    // console.log('identify', item);
-    // if (item.entity.attributes.StringGroup1.values[0].value === 'this is working') {
-    // console.log('identify change;', item.entity.attributes.StringGroup1.values[0].value)
-    // }
-    // console.log('trackByFn multi', item.entity.id);
-    return item.entity.id;
-  }
-
-  /**
-   * Submit all forms
-   */
-  submitOutside() {
-    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-      itemEditFormComponent.form.submitOutside();
-    });
-  }
-
-  isFormValid() {
-    let formIsValid = false;
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      formIsValid = true;
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        if (itemEditFormComponent.form.valid === false) {
-          formIsValid = false;
-        }
-      });
-    }
-    return formIsValid;
-  }
 }
 

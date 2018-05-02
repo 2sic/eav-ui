@@ -1,6 +1,6 @@
 import {
   Component, ViewChild, ChangeDetectorRef,
-  OnInit, Input, OnChanges, ElementRef, OnDestroy
+  OnInit, Input, OnChanges, ElementRef, OnDestroy, EventEmitter, Output
 } from '@angular/core';
 import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -38,6 +38,9 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EavFormComponent) form: EavFormComponent;
 
+  @Output()
+  itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
+
   @Input()
   set currentLanguage(value: string) {
     console.log('set currentLanguage');
@@ -64,6 +67,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
 
+  formIsValid = false;
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService
@@ -86,6 +90,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     console.log('ItemEditFormComponent current change: ', this.currentLanguage);
+    // this.formIsValid = this.form.form.valid;
   }
 
   /**
@@ -93,7 +98,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
-    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+    if (this.form.form.valid) {
+      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+    }
+
+    // emit event to perent
+    this.itemFormValueChange.emit();
   }
 
   // TEMP
@@ -118,12 +128,15 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     console.log('submit item edit');
     console.log(values);
 
+    if (this.form.form.valid) {
+      // this.itemService.submit(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+    }
 
   }
 
-  deleteItem() {
-    this.itemService.deleteItem(this.item);
-  }
+  // deleteItem() {
+  //   this.itemService.deleteItem(this.item);
+  // }
 
   private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
     if (this.form) {

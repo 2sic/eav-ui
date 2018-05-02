@@ -12,7 +12,8 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
+  MatMenuModule
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
@@ -48,6 +49,7 @@ const routes: Routes = [
     MatNativeDateModule,
     MatCardModule,
     MatIconModule,
+    MatMenuModule,
     EavDynamicFormModule,
     EavMaterialControlsModule,
     StoreModule.forFeature('eavItemDialog', reducers),

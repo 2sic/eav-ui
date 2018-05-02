@@ -102,6 +102,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
+        case fromItems.SAVE_ITEM_ATTRIBUTES_VALUES:
         case fromItems.UPDATE_ITEM_ATTRIBUTES_VALUES: {
             // console.log('action.attribute', action.attribute);
             return {

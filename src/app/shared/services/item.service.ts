@@ -18,6 +18,7 @@ import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
 import { JsonContentType1 } from '../models/json-format-v1';
+// import { Subject } from 'rxjs/Rx';
 
 @Injectable()
 export class ItemService {
@@ -219,6 +220,18 @@ export class ItemService {
       })
       .do(data => console.log('getAllDataForForm: ', data))
       .catch(this.handleError);
+  }
+
+  // TODO: Finish
+  public submit(id: number): Observable<number> {
+    // return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
+    //   .map((item: JsonItem1) => {
+    //     console.log('kreiran item:', Item.create(item));
+    //     return Item.create(item);
+    //   })
+    //   // .do(data => console.log('getItemFromJsonItem1: ', data))
+    //   .catch(this.handleError);
+    return new Observable;
   }
 
   private handleError(error: any) {
