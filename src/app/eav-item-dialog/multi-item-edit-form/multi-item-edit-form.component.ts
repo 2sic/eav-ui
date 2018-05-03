@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked
+  Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import 'reflect-metadata';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
+import * as fromItems from '../../shared/store/actions/item.actions';
 import { AppState } from '../../shared/models';
 import { Item, ContentType, Language } from '../../shared/models/eav';
 import { of } from 'rxjs/observable/of';
@@ -22,13 +23,17 @@ import * as itemActions from '../../shared/store/actions/item.actions';
 import { LanguageService } from '../../shared/services/language.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
+import { UrlHelper } from '../../shared/helpers/url-helper';
+import { EavService } from '../../shared/services/eav.service';
+import { Subscription } from 'rxjs/Subscription';
+import { Actions } from '@ngrx/effects';
 
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.css']
 })
-export class MultiItemEditFormComponent implements OnInit, AfterContentChecked {
+export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
   // Test
   items$: Observable<Item[]>;
@@ -37,62 +42,69 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked {
   currentLanguage$: Observable<string>;
 
   formsAreValid = false;
-  queryParams = {};
+  formSuccess: Subscription;
+  formError: Subscription;
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
+    private eavService: EavService,
     private languageService: LanguageService,
     private router: Router,
     private route: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef) {
+    private changeDetectorRef: ChangeDetectorRef,
+    private actions$: Actions) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   ngOnInit() {
+
     // console.log('MultiItemEditFormComponent ngOnInit');
     // set observing for items
     this.items$ = this.itemService.selectAllItems();
     // set observing for languages
     this.languages$ = this.languageService.selectAllLanguages();
 
-    // TODO: read queryString in helper metod
-    const href = this.router.url;
-    console.log('this.router.url', this.router.url);
-    console.log('this.route', this.route);
-    console.log('this.route.params fragment', this.route.snapshot.fragment);
-    console.log('this.route.params fragment split: ', this.route.snapshot.fragment.split('&'));
+    this.loadData();
 
-    this.route.snapshot.fragment.split('&').forEach(f => {
-      this.queryParams[f.split('=')[0]] = f.split('=')[1];
-    });
-    console.log('this.route.snapshot.fragment split: ', this.queryParams);
-
-    // console.log('this.route.snapshot.fragment appId:', this.queryParams['appId']);
-    // console.log('this.route.snapshot.fragment cbid:', this.queryParams['cbid']);
-    // console.log('this.route.snapshot.fragment mid:', this.queryParams['mid']);
-    // console.log('this.route.snapshot.fragment tid:', this.queryParams['tid']);
-    // console.log('this.route.snapshot.fragment zoneId:', this.queryParams['zoneId']);
-
-    const appid = this.queryParams['appId'];
-    const mid = this.queryParams['mid'];
-    const cbid = this.queryParams['cbid'];
-    const tid = this.queryParams['tid'];
-    const items = this.queryParams['items'];
-    const lang = this.queryParams['lang'];
-    const langs = this.queryParams['langs'];
-    const langpri = this.queryParams['langpri'];
-
-    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us');
-    // TODO: destroy subscribe
-    this.itemService.getAllDataForForm(appid, tid, mid, cbid, items).subscribe();
-
-    // this.itemService.getAllData();
+    this.saveFormMessagesSubscribe();
   }
+
+
+
+  private loadData() {
+    const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+    const appid = queryStringParameters['appId'];
+    const mid = queryStringParameters['mid'];
+    const cbid = queryStringParameters['cbid'];
+    const tid = queryStringParameters['tid'];
+    const items = queryStringParameters['items'];
+    const lang = queryStringParameters['lang'];
+    const langs = queryStringParameters['langs'];
+    const langpri = queryStringParameters['langpri'];
+
+    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded for future usage
+    this.subscriptions.push(
+      this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
+        this.itemService.loadItems(data.Items);
+        this.contentTypeService.loadContentTypes(data.ContentTypes);
+      })
+    );
+  }
+
+
 
   ngAfterContentChecked() {
     this.setFormsAreValid();
     // need this to detectChange this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    // this.formSuccess.unsubscribe();
+    // this.formError.unsubscribe();
   }
 
   /**
@@ -106,6 +118,52 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked {
     if (close) {
       this.close();
     }
+  }
+
+  private saveFormMessagesSubscribe() {
+
+
+    // // TODO need to add succes for all child forms
+    // this.formSuccess = this.eavEffects.saveItem$.filter((action) =>
+    //   action.type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS
+    //   // && action.data === 'todo ID'
+    // );
+    // this.subscriptions.push(
+    //   this.formSuccess.subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+    //     console.log('success: ', action.data);
+    //     // TODO show success message
+    //   })
+    // );
+
+    // this.formError = this.eavEffects.saveItem$.filter((action) =>
+    //   action.type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR
+    //   // && action.data === 'todo ID'
+    // );
+
+    // this.subscriptions.push(
+    //   this.formError.subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
+    //     console.log('error', action.error);
+    //     // TODO show success message
+    //   })
+    // );
+
+    // .filter(({ type }) => type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS);
+
+    this.formSuccess = this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
+      // .filter(({ data }) => payload.path === this.path)
+      .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+        console.log('success: ', action.data);
+        // TODO show success message
+      });
+
+    this.formError = this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
+      // .filter((action: fromItems.SaveItemAttributesValuesErrorAction) => action.id === itemID)
+      .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
+        console.log('error', action.error);
+        // TODO show error message
+      });
   }
 
   /**
@@ -230,6 +288,5 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked {
   //   this.itemService.loadItem('json-item-v1-custom.json');
   //   this.contentTypeService.loadContentType('json-content-type-v1-custom.json');
   // }
-
 }
 

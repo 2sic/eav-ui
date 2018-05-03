@@ -24,6 +24,7 @@ import { reducers } from '../shared/store';
 
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentTypeEffects } from '../shared/effects/content-type.effects';
+import { EavEffects } from '../shared/effects/eav.effects';
 
 const routes: Routes = [
   {
@@ -53,7 +54,7 @@ const routes: Routes = [
     EavDynamicFormModule,
     EavMaterialControlsModule,
     StoreModule.forFeature('eavItemDialog', reducers),
-    EffectsModule.forFeature([ItemEffects, ContentTypeEffects]),
+    EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
   ],
   exports: [RouterModule],
   providers: [],

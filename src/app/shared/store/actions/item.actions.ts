@@ -86,20 +86,19 @@ export class UpdateItemAttributesValuesAction implements Action {
         public existingLanguageKey: string, public defaultLanguage: string) { }
 }
 
-
 /**
  * Save (submit)
  */
 export class SaveItemAttributesValuesAction implements Action {
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES;
-    constructor(public id: number, public updateValues: { [key: string]: any },
+    constructor(public appId: number, public id: number, public updateValues: { [key: string]: any },
         public existingLanguageKey: string, public defaultLanguage: string) { }
 }
 
 export class SaveItemAttributesValuesSuccessAction implements Action {
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS;
     // TODO: finish this with true values
-    constructor(public id: number) { }
+    constructor(public data: any) { }
 }
 
 export class SaveItemAttributesValuesErrorAction implements Action {

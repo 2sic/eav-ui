@@ -21,6 +21,7 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
 import { reducers, metaReducers } from '../app/shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';
+import { EavService } from './shared/services/eav.service';
 // import { APP_BASE_HREF, Location } from '@angular/common';
 
 
@@ -63,7 +64,8 @@ const routes: Routes = [
     ItemService,
     ContentTypeService,
     LanguageService,
-    ScriptLoaderService
+    ScriptLoaderService,
+    EavService
     // { provide: APP_BASE_HREF, useValue: '' }
   ],
   bootstrap: [AppComponent]

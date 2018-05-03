@@ -25,12 +25,24 @@ export class ItemEffects {
                 .map(item => new itemActions.LoadItemSuccessAction(item));
         });
 
-    @Effect() saveItem$ = this.actions$
-        .ofType(itemActions.SAVE_ITEM_ATTRIBUTES_VALUES)
-        .switchMap((action: fromItems.SaveItemAttributesValuesAction) => {
-            return this.itemService.submit(action.id)
-                .map(item => new itemActions.SaveItemAttributesValuesSuccessAction(item));
-        })
-        .catch(err => (Observable.of(new itemActions.SaveItemAttributesValuesErrorAction(err))));
+
+    // @Effect() saveItem$ = this.actions$
+    //     .ofType(itemActions.SAVE_ITEM_ATTRIBUTES_VALUES)
+    //     .switchMap((action: fromItems.SaveItemAttributesValuesAction) => {
+    //         return this.itemService.submit(action.id)
+    //             .map(item => new itemActions.SaveItemAttributesValuesSuccessAction(item));
+    //     })
+    //     .catch(err => (Observable.of(new itemActions.SaveItemAttributesValuesErrorAction(err))));
+
+
+    //         @Effect() addStory$ = this.actions$
+    //   .ofType(ADD_STORY)
+    //   .switchMap(action =>
+    //     this.storyService.add(action.payload)
+    //     .switchMap(story => (Observable.from([{
+    //       type: 'ADD_STORY_SUCCESS'
+    //     }, formSuccessAction('newStory')])))
+    //     .catch(err => (Observable.of(formErrorAction('newStory', err))))
+    //   )
 }
 

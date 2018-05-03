@@ -29,6 +29,10 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
+import { EavService } from '../../shared/services/eav.service';
+import { Actions } from '@ngrx/effects';
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Component({
   selector: 'app-item-edit-form',
@@ -68,9 +72,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   itemFields$: Observable<FieldConfig[]>;
 
   formIsValid = false;
+  // formSuccess: Subscription;
+  // formError: Subscription;
+
   constructor(
     private itemService: ItemService,
-    private contentTypeService: ContentTypeService
+    private contentTypeService: ContentTypeService,
+    private eavService: EavService,
   ) { }
 
   ngOnInit() {
@@ -82,10 +90,33 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.loadContentTypeFromStore();
+
+    // this.saveFormMessagesSubscribe();
+
   }
+
+  // private saveFormMessagesSubscribe() {
+  //   this.formSuccess = this.actions$
+  //     .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
+  //     // .filter(({ data }) => payload.path === this.path)
+  //     .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+  //       console.log('success: ', action.data);
+  //       // TODO show success message
+  //     });
+
+  //   this.formError = this.actions$
+  //     .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
+  //     // .filter(({ payload }) => payload.path === this.path)
+  //     .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
+  //       console.log('error', action.error);
+  //       // TODO show error message
+  //     });
+  // }
 
   ngOnDestroy(): void {
     this.itemBehaviorSubject$.unsubscribe();
+    // this.formSuccess.unsubscribe();
+    // this.formError.unsubscribe();
   }
 
   ngOnChanges(): void {
@@ -129,9 +160,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     console.log(values);
 
     if (this.form.form.valid) {
-      // this.itemService.submit(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+      // TODO create body for submit
+      // TODO read appId
+      this.eavService.saveItem(15, this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
     }
-
   }
 
   // deleteItem() {
