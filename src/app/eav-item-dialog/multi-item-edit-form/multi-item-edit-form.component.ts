@@ -2,9 +2,14 @@ import {
   Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/do';
+// import 'rxjs/add/observable/zip';w
+import { zip } from 'rxjs/observable/zip';
 import 'reflect-metadata';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
@@ -43,6 +48,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   formsAreValid = false;
   formSuccess: Subscription;
+  formSuccess$: Observable<any>;
+  formSaveAll$: Observable<Action>[] = [];
   formError: Subscription;
   private subscriptions: Subscription[] = [];
 
@@ -68,10 +75,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.loadData();
 
-    this.saveFormMessagesSubscribe();
+
   }
-
-
 
   private loadData() {
     const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
@@ -93,8 +98,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     );
   }
 
-
-
   ngAfterContentChecked() {
     this.setFormsAreValid();
     // need this to detectChange this.formsAreValid after ViewChecked
@@ -111,9 +114,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * save all forms
    */
   saveAll(close: boolean) {
+
+    this.saveFormMessagesSubscribe();
+
     this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
       itemEditFormComponent.form.submitOutside();
     });
+
 
     if (close) {
       this.close();
@@ -122,38 +129,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private saveFormMessagesSubscribe() {
 
-
-    // // TODO need to add succes for all child forms
-    // this.formSuccess = this.eavEffects.saveItem$.filter((action) =>
-    //   action.type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS
-    //   // && action.data === 'todo ID'
-    // );
-    // this.subscriptions.push(
-    //   this.formSuccess.subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
-    //     console.log('success: ', action.data);
-    //     // TODO show success message
-    //   })
-    // );
-
-    // this.formError = this.eavEffects.saveItem$.filter((action) =>
-    //   action.type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR
-    //   // && action.data === 'todo ID'
-    // );
-
-    // this.subscriptions.push(
-    //   this.formError.subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
-    //     console.log('error', action.error);
-    //     // TODO show success message
-    //   })
-    // );
-
-    // .filter(({ type }) => type === fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS);
-
     this.formSuccess = this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
-      // .filter(({ data }) => payload.path === this.path)
+      // .filter((action: fromItems.SaveItemAttributesValuesSuccessAction) => action.path === this.path)
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
-        console.log('success: ', action.data);
+        console.log('success END: ', action.data);
         // TODO show success message
       });
 
@@ -161,9 +141,32 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
       // .filter((action: fromItems.SaveItemAttributesValuesErrorAction) => action.id === itemID)
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
-        console.log('error', action.error);
+        console.log('error END', action.error);
         // TODO show error message
       });
+
+    // this.formSaveAll$ = [];
+    console.log('this.itemEditFormComponentQueryList:', this.itemEditFormComponentQueryList);
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        this.formSaveAll$.push(itemEditFormComponent.formSaveObservable());
+      });
+    }
+
+    console.log('this.formSuccessAll$:', this.formSaveAll$);
+    if (this.formSaveAll$ && this.formSaveAll$.length > 0) {
+      zip(...this.formSaveAll$)
+        .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
+          // actions[0].updateValues - every action have data from
+          // TODO - build body from actions
+          const body = '';
+          return this.eavService.savemany(actions[0].appId, body)
+            .map(data => this.eavService.saveItemSuccess(data));
+          // .do(data => console.log('working'));
+        })
+        .catch(err => of(this.eavService.saveItemError(err)))
+        .subscribe();
+    }
   }
 
   /**

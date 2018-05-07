@@ -15,6 +15,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/switchmap';
+import { filter } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
@@ -32,6 +33,9 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
 import { Subscription } from 'rxjs/Subscription';
+import * as fromItems from '../../shared/store/actions/item.actions';
+import { Action } from '@ngrx/store';
+
 
 
 @Component({
@@ -72,13 +76,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   itemFields$: Observable<FieldConfig[]>;
 
   formIsValid = false;
-  // formSuccess: Subscription;
-  // formError: Subscription;
+  // formSave: Observable<Action>;
+  // formError: Subscription;w
 
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
+    private actions$: Actions
   ) { }
 
   ngOnInit() {
@@ -93,6 +98,29 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     // this.saveFormMessagesSubscribe();
 
+    // observe save (submit) for this item form
+    // this.formSave = this.actions$
+    //   .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
+    //   .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
+    // .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+    //   console.log('success entity: ', this.item.entity.id);
+    //   // TODO show success message
+    // });
+    // TEMP test
+
+    // this.formSave.subscribe((suc: fromItems.SaveItemAttributesValuesAction) => console.log('success1', suc.id));
+
+
+    // this.actions$
+    //   .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
+    //   .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id))
+    //   .subscribe((suc: fromItems.SaveItemAttributesValuesAction) => console.log('success without pipe 1', suc.id));
+  }
+
+  public formSaveObservable(): Observable<Action> {
+    return this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
+      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
   }
 
   // private saveFormMessagesSubscribe() {
