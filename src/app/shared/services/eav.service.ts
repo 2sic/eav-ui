@@ -38,17 +38,19 @@ export class EavService {
   public loadAllDataForForm(appId: string, tabId: string, moduleId: string, contentBlockId: string, items: string): Observable<any> {
     console.log('call getAllDataForForm', items);
 
-    const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
+    const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]);
+    // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     //  const body = items;
     const header = UrlHelper.createHeader(tabId, moduleId, contentBlockId);
-
+    console.log('body', body);
+    console.log('headers', header);
     // maybe create model for data
-    return this.httpClient.post(`http://2sxc-dnn742.dnndev.me/desktopmodules/2sxc/api/eav/ui/load?appId=${appId}`,
+    return this.httpClient.post(`/desktopmodules/2sxc/api/eav/ui/load?appId=${appId}`,
       body, { headers: header })
       .map((data: any) => {
         return data;
       })
-      .do(data => console.log('getAllDataForForm: ', data))
+      // .do(data => console.log('getAllDataForForm: ', data))
       .catch(this.handleError);
   }
 
@@ -76,7 +78,7 @@ export class EavService {
 
     // TODO: create model for data
     return this.httpClient.post(
-      `http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/eav/entities/savemany?appId=${appId}&partOfPage=${partOfPage}`,
+      `/desktopmodules/2sxc/api/eav/entities/savemany?appId=${appId}&partOfPage=${partOfPage}`,
       bodyTemp,
       { headers: header })
       .map((data: any) => {

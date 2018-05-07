@@ -34,7 +34,6 @@ export class EavFieldDirective implements OnInit {
   ) { }
 
   ngOnInit() {
-
     // Clear lists and container
     this.addOnList = [];
     this.externalCommponentRefList = [];

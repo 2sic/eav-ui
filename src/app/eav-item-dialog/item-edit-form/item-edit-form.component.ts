@@ -49,6 +49,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @Output()
   itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
 
+  @Input() defaultLanguage: string;
+
   @Input()
   set currentLanguage(value: string) {
     console.log('set currentLanguage');
@@ -69,15 +71,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // TODO: read default language
-  private defaultLanguage = 'en-us';
+  // private defaultLanguage = 'en-us';
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
 
   formIsValid = false;
-  // formSave: Observable<Action>;
-  // formError: Subscription;w
 
   constructor(
     private itemService: ItemService,

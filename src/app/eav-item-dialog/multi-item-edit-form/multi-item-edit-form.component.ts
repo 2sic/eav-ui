@@ -32,6 +32,7 @@ import { UrlHelper } from '../../shared/helpers/url-helper';
 import { EavService } from '../../shared/services/eav.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Actions } from '@ngrx/effects';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -45,11 +46,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   // contentTypes$: Observable<ContentType[]>;
   languages$: Observable<Language[]>;
   currentLanguage$: Observable<string>;
+  defaultLanguage$: Observable<string>;
 
   formsAreValid = false;
   formSuccess: Subscription;
   formSuccess$: Observable<any>;
-  formSaveAll$: Observable<Action>[] = [];
+  formSaveAllObservables$: Observable<Action>[] = [];
   formError: Subscription;
   private subscriptions: Subscription[] = [];
 
@@ -61,44 +63,25 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private router: Router,
     private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
-    private actions$: Actions) {
+    private actions$: Actions,
+    private snackBar: MatSnackBar) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
+    this.defaultLanguage$ = languageService.getDefaultLanguage();
   }
 
   ngOnInit() {
-
-    // console.log('MultiItemEditFormComponent ngOnInit');
+    this.loadData();
     // set observing for items
     this.items$ = this.itemService.selectAllItems();
     // set observing for languages
     this.languages$ = this.languageService.selectAllLanguages();
-
-    this.loadData();
-
-
-  }
-
-  private loadData() {
-    const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
-    const appid = queryStringParameters['appId'];
-    const mid = queryStringParameters['mid'];
-    const cbid = queryStringParameters['cbid'];
-    const tid = queryStringParameters['tid'];
-    const items = queryStringParameters['items'];
-    const lang = queryStringParameters['lang'];
-    const langs = queryStringParameters['langs'];
-    const langpri = queryStringParameters['langpri'];
-
-    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded for future usage
-    this.subscriptions.push(
-      this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
-        this.itemService.loadItems(data.Items);
-        this.contentTypeService.loadContentTypes(data.ContentTypes);
-      })
-    );
+    // suscribe to form submit
+    this.saveFormMessagesSubscribe();
   }
 
   ngAfterContentChecked() {
+    this.saveFormSuscribe();
+
     this.setFormsAreValid();
     // need this to detectChange this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
@@ -106,67 +89,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
-    // this.formSuccess.unsubscribe();
-    // this.formError.unsubscribe();
-  }
-
-  /**
-   * save all forms
-   */
-  saveAll(close: boolean) {
-
-    this.saveFormMessagesSubscribe();
-
-    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-      itemEditFormComponent.form.submitOutside();
-    });
-
-
-    if (close) {
-      this.close();
-    }
-  }
-
-  private saveFormMessagesSubscribe() {
-
-    this.formSuccess = this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
-      // .filter((action: fromItems.SaveItemAttributesValuesSuccessAction) => action.path === this.path)
-      .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
-        console.log('success END: ', action.data);
-        // TODO show success message
-      });
-
-    this.formError = this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
-      // .filter((action: fromItems.SaveItemAttributesValuesErrorAction) => action.id === itemID)
-      .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
-        console.log('error END', action.error);
-        // TODO show error message
-      });
-
-    // this.formSaveAll$ = [];
-    console.log('this.itemEditFormComponentQueryList:', this.itemEditFormComponentQueryList);
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        this.formSaveAll$.push(itemEditFormComponent.formSaveObservable());
-      });
-    }
-
-    console.log('this.formSuccessAll$:', this.formSaveAll$);
-    if (this.formSaveAll$ && this.formSaveAll$.length > 0) {
-      zip(...this.formSaveAll$)
-        .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
-          // actions[0].updateValues - every action have data from
-          // TODO - build body from actions
-          const body = '';
-          return this.eavService.savemany(actions[0].appId, body)
-            .map(data => this.eavService.saveItemSuccess(data));
-          // .do(data => console.log('working'));
-        })
-        .catch(err => of(this.eavService.saveItemError(err)))
-        .subscribe();
-    }
   }
 
   /**
@@ -174,6 +96,20 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   formValueChange() {
     this.setFormsAreValid();
+  }
+
+  /**
+ * save all forms
+ */
+  saveAll(close: boolean) {
+
+    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      itemEditFormComponent.form.submitOutside();
+    });
+
+    if (close) {
+      this.close();
+    }
   }
 
   /**
@@ -193,6 +129,84 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
+   * Load all data for forms
+   */
+  private loadData() {
+    const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+    const appid = queryStringParameters['appId'];
+    const mid = queryStringParameters['mid'];
+    const cbid = queryStringParameters['cbid'];
+    const tid = queryStringParameters['tid'];
+    const items = queryStringParameters['items'];
+    const lang = queryStringParameters['lang'];
+    const langs = queryStringParameters['langs'];
+    const langpri = queryStringParameters['langpri'];
+
+    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
+    this.subscriptions.push(
+      this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
+        this.itemService.loadItems(data.Items);
+        this.contentTypeService.loadContentTypes(data.ContentTypes);
+      })
+    );
+  }
+
+  /**
+   * With zip function look all forms submit observables and when all finish save all data (call savemany service)
+   */
+  private saveFormSuscribe() {
+    // important - only subscribe once
+    if (this.formSaveAllObservables$.length === 0) {
+      if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+          this.formSaveAllObservables$.push(itemEditFormComponent.formSaveObservable());
+        });
+      }
+
+      if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
+        this.subscriptions.push(
+          zip(...this.formSaveAllObservables$)
+            .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
+              // actions[0].updateValues - every action have data from
+              // TODO - build body from actions
+              const body = '';
+              return this.eavService.savemany(actions[0].appId, body)
+                .map(data => this.eavService.saveItemSuccess(data));
+              // .do(data => console.log('working'));
+            })
+            .catch(err => of(this.eavService.saveItemError(err)))
+            .subscribe()
+        );
+      }
+    }
+  }
+
+  /**
+   * display form messages on form success or form error
+   */
+  private saveFormMessagesSubscribe() {
+    this.subscriptions.push(this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
+      .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+        console.log('success END: ', action.data);
+        // TODO show success message
+        // this.snackBar.open('saved',);
+        this.snackBar.open('saved', '', {
+          duration: 2000
+        });
+      }));
+    this.subscriptions.push(this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
+      .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
+        console.log('error END', action.error);
+        // TODO show error message
+        this.snackBar.open('error', '', {
+          duration: 2000
+        });
+      }));
+  }
+
+  /**
    * Determines whether all forms are valid and sets a this.formsAreValid depending on it
    */
   private setFormsAreValid() {
@@ -206,7 +220,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       });
     }
   }
-
 
   /**
    *  Call action to Load item to store

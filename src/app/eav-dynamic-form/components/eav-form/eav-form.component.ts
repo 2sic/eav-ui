@@ -41,10 +41,43 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     this.subscriptions.push(
       this.form.valueChanges.subscribe(val => {
         // if (this.form.valid) {
+
+        // this.formErrors = this.FormService.validateForm(this.form, this.formErrors, true);
+
         this.formValueChange.emit(val);
         // }
       }));
   }
+
+
+  // check_dirty true will only emit errors if the field is touched
+  // check_dirty false will check all fields independent of
+  // being touched or not. Use this as the last check before submitting
+  // public validateForm(formToValidate: FormGroup, formErrors: any, checkDirty?: boolean) {
+  //   const form = formToValidate;
+
+  //   for (const field in formErrors) {
+  //     if (field) {
+  //       formErrors[field] = '';
+  //       const control = form.get(field);
+
+  //       const messages = this.validationMessages();
+  //       if (control && !control.valid) {
+  //         if (!checkDirty || (control.dirty || control.touched)) {
+  //           for (const key in control.errors) {
+  //             if (key && key !== 'invalid_characters') {
+  //               formErrors[field] = formErrors[field] || messages[key];
+  //             } else {
+  //               formErrors[field] = formErrors[field] || messages[key](control.errors[key]);
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   return formErrors;
+  // }
 
   ngOnChanges() {
     // console.log('ngOnChanges EavFormComponent');
@@ -162,10 +195,6 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
       }
     });
 
-    // if (Object.keys(values).length > Object.keys(this.form.value).length) {
-    //   console.log('[Test Disabled] VALUECHANGED USLO', valueIsChanged);
-    //   valueIsChanged = true;
-    // }
     console.log('[Test Disabled] VALUECHANGED', valueIsChanged);
     return valueIsChanged;
   }
