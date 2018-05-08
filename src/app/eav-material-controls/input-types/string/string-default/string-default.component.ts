@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessages } from '../../../validators/validation-messages';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
 
 @Component({
@@ -20,7 +20,7 @@ export class StringDefaultComponent implements Field {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  constructor() { }
+  constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get rowCount() {
     return this.config.settings.RowCount ? this.config.settings.RowCount : 1;
@@ -31,6 +31,6 @@ export class StringDefaultComponent implements Field {
   }
 
   getErrorMessage() {
-    return this.group.controls[this.config.name].hasError('required') ? ValidationMessages.requiredMessage(this.config) : '';
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
 }

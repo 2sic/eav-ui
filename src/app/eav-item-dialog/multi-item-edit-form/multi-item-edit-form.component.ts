@@ -33,6 +33,7 @@ import { EavService } from '../../shared/services/eav.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Actions } from '@ngrx/effects';
 import { MatSnackBar } from '@angular/material';
+import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -53,6 +54,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   formSuccess$: Observable<any>;
   formSaveAllObservables$: Observable<Action>[] = [];
   formError: Subscription;
+  formErrors: { [key: string]: any }[] = [];
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -64,7 +66,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
-    private snackBar: MatSnackBar) {
+    private snackBar: MatSnackBar,
+    private validationMessagesService: ValidationMessagesService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
   }
@@ -102,14 +105,33 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
  * save all forms
  */
   saveAll(close: boolean) {
+    if (this.formsAreValid) {
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        itemEditFormComponent.form.submitOutside();
+      });
 
-    this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-      itemEditFormComponent.form.submitOutside();
-    });
-
-    if (close) {
-      this.close();
+      if (close) {
+        this.close();
+      }
+    } else {
+      // TODO: error messages
+      this.asdsadas();
     }
+  }
+
+  asdsadas() {
+    // const formErrors = [];
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        //  itemEditFormComponent.form.form.invalid
+        if (itemEditFormComponent.form.form.invalid) {
+          console.log('ERROR LIST before', itemEditFormComponent.form.form);
+          this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
+        }
+      });
+    }
+
+    console.log('ERROR LIST: ', this.formErrors);
   }
 
   /**

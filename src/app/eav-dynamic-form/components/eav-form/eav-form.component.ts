@@ -49,36 +49,6 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
       }));
   }
 
-
-  // check_dirty true will only emit errors if the field is touched
-  // check_dirty false will check all fields independent of
-  // being touched or not. Use this as the last check before submitting
-  // public validateForm(formToValidate: FormGroup, formErrors: any, checkDirty?: boolean) {
-  //   const form = formToValidate;
-
-  //   for (const field in formErrors) {
-  //     if (field) {
-  //       formErrors[field] = '';
-  //       const control = form.get(field);
-
-  //       const messages = this.validationMessages();
-  //       if (control && !control.valid) {
-  //         if (!checkDirty || (control.dirty || control.touched)) {
-  //           for (const key in control.errors) {
-  //             if (key && key !== 'invalid_characters') {
-  //               formErrors[field] = formErrors[field] || messages[key];
-  //             } else {
-  //               formErrors[field] = formErrors[field] || messages[key](control.errors[key]);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return formErrors;
-  // }
-
   ngOnChanges() {
     // console.log('ngOnChanges EavFormComponent');
   }
