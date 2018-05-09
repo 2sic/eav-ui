@@ -38,7 +38,7 @@ import {
 } from './input-types';
 import { InputTypesConstants } from '../shared/constants';
 import { CustomValidators } from './validators/custom-validators';
-import { ValidationMessages } from './validators/validation-messages';
+import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { Field } from '../eav-dynamic-form/model/field';
@@ -46,6 +46,7 @@ import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/fie
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
+
 
 @NgModule({
   declarations: [
@@ -111,6 +112,6 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
     ExternalComponent
   ],
   exports: [EavLanguageSwitcherComponent],
-  providers: [FileTypeService]
+  providers: [FileTypeService, ValidationMessagesService]
 })
 export class EavMaterialControlsModule { }

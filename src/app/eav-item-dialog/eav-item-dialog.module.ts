@@ -12,7 +12,9 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
+  MatMenuModule,
+  MatSnackBarModule
 } from '@angular/material';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
@@ -23,6 +25,7 @@ import { reducers } from '../shared/store';
 
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentTypeEffects } from '../shared/effects/content-type.effects';
+import { EavEffects } from '../shared/effects/eav.effects';
 
 const routes: Routes = [
   {
@@ -48,10 +51,12 @@ const routes: Routes = [
     MatNativeDateModule,
     MatCardModule,
     MatIconModule,
+    MatMenuModule,
+    MatSnackBarModule,
     EavDynamicFormModule,
     EavMaterialControlsModule,
     StoreModule.forFeature('eavItemDialog', reducers),
-    EffectsModule.forFeature([ItemEffects, ContentTypeEffects]),
+    EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
   ],
   exports: [RouterModule],
   providers: [],

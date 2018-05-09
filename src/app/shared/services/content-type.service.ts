@@ -26,6 +26,13 @@ export class ContentTypeService {
     this.store.dispatch(new contentTypeActions.LoadContentTypeAction(path));
   }
 
+  public loadContentTypes(contentTypes: JsonContentType1[]) {
+    contentTypes.forEach((jsonContentType1: JsonContentType1) => {
+      const contentType: ContentType = ContentType.create(jsonContentType1);
+      this.store.dispatch(new contentTypeActions.LoadContentTypeSuccessAction(contentType));
+    });
+  }
+
   /**
    * Observe content type for item type from store
    * @param id

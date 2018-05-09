@@ -16,6 +16,9 @@ export const UPDATE_ITEM_ATTRIBUTE = '[Item] UPDATE_ITEM_ATTRIBUTE';
 export const ADD_ITEM_ATTRIBUTE_VALUE = '[Item] ADD_ITEM_ATTRIBUTE_VALUE';
 export const UPDATE_ITEM_ATTRIBUTE_VALUE = '[Item] UPDATE_ITEM_ATTRIBUTE_VALUE';
 export const UPDATE_ITEM_ATTRIBUTES_VALUES = '[Item] UPDATE_ITEM_ATTRIBUTES_VALUES';
+export const SAVE_ITEM_ATTRIBUTES_VALUES = '[Item] SAVE_ITEM_ATTRIBUTES_VALUES';
+export const SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS = '[Item] SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS';
+export const SAVE_ITEM_ATTRIBUTES_VALUES_ERROR = '[Item] SAVE_ITEM_ATTRIBUTES_VALUES_ERROR';
 
 export const ADD_ITEM_ATTRIBUTE_DIMENSION = '[Item] ADD_ITEM_ATTRIBUTE_DIMENSION';
 export const UPDATE_ITEM_ATTRIBUTE_DIMENSION = '[Item] UPDATE_ITEM_ATTRIBUTE_DIMENSION';
@@ -38,7 +41,6 @@ export class LoadItemSuccessAction implements Action {
 /**
  * Add
  */
-
 export class AddItemAttributeAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE;
     constructor(public id: number, public attribute: EavValues<any>, public attributeKey) { }
@@ -52,7 +54,7 @@ export class AddItemAttributeValueAction implements Action {
 export class AddItemAttributeDimensionAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
-        public existingDimensionValue: string, public isReadOnly: boolean) { }
+        public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean) { }
 }
 
 /**
@@ -75,12 +77,34 @@ export class UpdateItemAttributeAction implements Action {
 export class UpdateItemAttributeValueAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTE_VALUE;
     constructor(public id: number, public attributeKey: string, public attributeValue: string,
-        public existingLanguageKey: string, public isReadOnly: boolean) { }
+        public existingLanguageKey: string, public defaultLanguage: string, public isReadOnly: boolean) { }
 }
 
 export class UpdateItemAttributesValuesAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
-    constructor(public id: number, public updateValues: { [key: string]: any }, public existingLanguageKey: string) { }
+    constructor(public id: number, public updateValues: { [key: string]: any },
+        public existingLanguageKey: string, public defaultLanguage: string) { }
+}
+
+/**
+ * Save (submit)
+ */
+export class SaveItemAttributesValuesAction implements Action {
+    readonly type = SAVE_ITEM_ATTRIBUTES_VALUES;
+    constructor(public appId: number, public id: number, public updateValues: { [key: string]: any },
+        public existingLanguageKey: string, public defaultLanguage: string) { }
+}
+
+export class SaveItemAttributesValuesSuccessAction implements Action {
+    readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS;
+    // TODO: finish this with true values
+    constructor(public data: any) { }
+}
+
+export class SaveItemAttributesValuesErrorAction implements Action {
+    readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_ERROR;
+    // TODO: finish this with true values
+    constructor(public error: any) { }
 }
 
 // export class UpdateItemAttributeDimensionAction implements Action {
@@ -112,6 +136,9 @@ export type Actions
     | UpdateItemAttributeValueAction
     | UpdateItemAttributesValuesAction
     // | UpdateItemAttributeDimensionAction
+    | SaveItemAttributesValuesAction
+    | SaveItemAttributesValuesSuccessAction
+    | SaveItemAttributesValuesErrorAction
     | UpdateItemSuccessAction
     | UpdateItemAttributeAction
     | RemoveItemAttributeDimensionAction

@@ -2,20 +2,21 @@
   <div class="language-field">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <button *ngIf="(currentLanguage !== defaultLanguage)" (mouseenter)="openMenu()" class="language-button" mat-icon-button type="button"
+  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" (mouseenter)="openMenu()" mat-icon-button type="button"
     [matMenuTriggerFor]="rootMenu">
     {{infoMessage}}
     <mat-icon class="mat-18 language-icon">language</mat-icon>
-    <!-- (click)="toggleTranslate()" -->
   </button>
 
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
+    <!-- <span (mouseleave)="closeMenu()"> -->
     <button mat-menu-item type="button" (click)="translateUnlink(config.name)">Translate (unlink)</button>
     <button mat-menu-item type="button" (click)="linkToDefault(config.name)">Link to default</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">Share with</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">All fields</button>
+    <!-- </span> -->
   </mat-menu>
 
   <mat-menu #copyFromMenu="matMenu">

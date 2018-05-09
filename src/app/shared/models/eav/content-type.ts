@@ -1,6 +1,7 @@
 import { ContentTypeDef } from './content-type-def';
 import { EavHeader } from './eav-header';
 import { JsonContentType1 } from '../json-format-v1/json-content-type1';
+import { JsonHeader1 } from '../json-format-v1';
 
 export class ContentType {
     header: EavHeader;
@@ -15,10 +16,11 @@ export class ContentType {
      * Create new ContentType from json typed JsonContentType
      * @param item
      */
-    public static create(item: JsonContentType1): ContentType {
+    public static create(contentType: any): ContentType {
         return new ContentType(
-            EavHeader.create(item._),
-            ContentTypeDef.create(item.ContentType)
+            // EavHeader.create(item._),
+            EavHeader.create(new JsonHeader1(1)),
+            ContentTypeDef.create(contentType)
         );
     }
 }

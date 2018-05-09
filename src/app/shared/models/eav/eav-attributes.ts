@@ -27,7 +27,7 @@ export class EavAttributes {
                 });
             }
         });
-
+        console.log('created attributes: ', newEavAtribute);
         return newEavAtribute;
     }
     /**

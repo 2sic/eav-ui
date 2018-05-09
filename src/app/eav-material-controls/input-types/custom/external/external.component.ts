@@ -8,7 +8,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldExternal } from '../../../../eav-dynamic-form/model/field-external';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessages } from '../../../validators/validation-messages';
+// import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
 // import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 // import { Observable } from 'rxjs/Observable';

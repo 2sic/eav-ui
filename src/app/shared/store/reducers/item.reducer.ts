@@ -35,6 +35,7 @@ export const initialState: ItemState = {
 export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
     switch (action.type) {
         case fromItems.LOAD_ITEM_SUCCESS: {
+            console.log('LOAD_ITEM_SUCCESS', action);
             return {
                 ...state,
                 ...{ items: [...state.items, action.newItem] }
@@ -92,7 +93,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 entity: {
                                     ...item.entity,
                                     attributes: LocalizationHelper.updateAttributeValue(item.entity.attributes, action.attributeKey,
-                                        action.attributeValue, action.existingLanguageKey, action.isReadOnly)
+                                        action.attributeValue, action.existingLanguageKey, action.defaultLanguage, action.isReadOnly)
 
                                 }
                             }
@@ -101,8 +102,9 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
+        case fromItems.SAVE_ITEM_ATTRIBUTES_VALUES:
         case fromItems.UPDATE_ITEM_ATTRIBUTES_VALUES: {
-            // console.log('action.attribute', action.attribute);
+            console.log('action.attribute', action);
             return {
                 ...state,
                 ...{
@@ -113,7 +115,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 entity: {
                                     ...item.entity,
                                     attributes: LocalizationHelper.updateAttributeValues(item.entity.attributes,
-                                        action.updateValues, action.existingLanguageKey)
+                                        action.updateValues, action.existingLanguageKey, action.defaultLanguage)
                                 }
                             }
                             : item;
@@ -152,7 +154,8 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 entity: {
                                     ...item.entity,
                                     attributes: LocalizationHelper.addAttributeDimension(item.entity.attributes,
-                                        action.attributeKey, action.dimensionValue, action.existingDimensionValue, action.isReadOnly)
+                                        action.attributeKey, action.dimensionValue, action.existingDimensionValue,
+                                        action.defaultLanguage, action.isReadOnly)
 
                                 }
                             }

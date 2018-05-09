@@ -1,15 +1,15 @@
 <!-- (change)="changeForm()" -->
-<form class="dynamic-form" [formGroup]="form" (submit)="handleSubmit($event)">
+<!-- (submit)="handleSubmit($event)" -->
+<form class="dynamic-form" [formGroup]="form" (ngSubmit)="save($event)" #dynamicForm="ngForm">
   <ng-container appEavField [config]="config" [group]="form">
   </ng-container>
-  <button mat-raised-button type="submit" class="btn btn-default submit-button">Submit</button>
+  <!-- <button mat-raised-button type="submit" class="btn btn-default submit-button">Submit</button> -->
 </form>
-<div *ngIf="form">
+<!-- <div *ngIf="form">
   <div>
     Form status: {{ form.valid }}
   </div>
   <div>
     Form value: {{ form.value | json }}
   </div>
-</div>
-<!--*ngFor="let field of config;"  -->
+</div> -->

@@ -5,6 +5,8 @@ import * as fromItems from '../store/actions/item.actions';
 import { ItemService } from '../services/item.service';
 import * as itemActions from '../store/actions/item.actions';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ItemEffects {
@@ -22,4 +24,25 @@ export class ItemEffects {
             return this.itemService.getItemFromJsonItem1(action.path)
                 .map(item => new itemActions.LoadItemSuccessAction(item));
         });
+
+
+    // @Effect() saveItem$ = this.actions$
+    //     .ofType(itemActions.SAVE_ITEM_ATTRIBUTES_VALUES)
+    //     .switchMap((action: fromItems.SaveItemAttributesValuesAction) => {
+    //         return this.itemService.submit(action.id)
+    //             .map(item => new itemActions.SaveItemAttributesValuesSuccessAction(item));
+    //     })
+    //     .catch(err => (Observable.of(new itemActions.SaveItemAttributesValuesErrorAction(err))));
+
+
+    //         @Effect() addStory$ = this.actions$
+    //   .ofType(ADD_STORY)
+    //   .switchMap(action =>
+    //     this.storyService.add(action.payload)
+    //     .switchMap(story => (Observable.from([{
+    //       type: 'ADD_STORY_SUCCESS'
+    //     }, formSuccessAction('newStory')])))
+    //     .catch(err => (Observable.of(formErrorAction('newStory', err))))
+    //   )
 }
+

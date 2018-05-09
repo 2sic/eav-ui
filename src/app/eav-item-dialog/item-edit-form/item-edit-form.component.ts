@@ -1,6 +1,6 @@
 import {
   Component, ViewChild, ChangeDetectorRef,
-  OnInit, Input, OnChanges, ElementRef, OnDestroy
+  OnInit, Input, OnChanges, ElementRef, OnDestroy, EventEmitter, Output
 } from '@angular/core';
 import { Validators, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
@@ -15,6 +15,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/switchmap';
+import { filter } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
 import { AppState } from '../../shared/models';
@@ -29,6 +30,13 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
+import { EavService } from '../../shared/services/eav.service';
+import { Actions } from '@ngrx/effects';
+import { Subscription } from 'rxjs/Subscription';
+import * as fromItems from '../../shared/store/actions/item.actions';
+import { Action } from '@ngrx/store';
+
+
 
 @Component({
   selector: 'app-item-edit-form',
@@ -37,6 +45,11 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 })
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EavFormComponent) form: EavFormComponent;
+
+  @Output()
+  itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
+
+  @Input() defaultLanguage: string;
 
   @Input()
   set currentLanguage(value: string) {
@@ -58,15 +71,19 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // TODO: read default language
-  private defaultLanguage = 'en-us';
+  // private defaultLanguage = 'en-us';
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
 
+  formIsValid = false;
+
   constructor(
     private itemService: ItemService,
-    private contentTypeService: ContentTypeService
+    private contentTypeService: ContentTypeService,
+    private eavService: EavService,
+    private actions$: Actions
   ) { }
 
   ngOnInit() {
@@ -80,12 +97,21 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.loadContentTypeFromStore();
   }
 
+  public formSaveObservable(): Observable<Action> {
+    return this.actions$
+      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
+      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
+  }
+
   ngOnDestroy(): void {
     this.itemBehaviorSubject$.unsubscribe();
+    // this.formSuccess.unsubscribe();
+    // this.formError.unsubscribe();
   }
 
   ngOnChanges(): void {
     console.log('ItemEditFormComponent current change: ', this.currentLanguage);
+    // this.formIsValid = this.form.form.valid;
   }
 
   /**
@@ -93,34 +119,46 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
-    this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage);
+    if (this.form.form.valid) {
+      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+    }
+
+    // emit event to perent
+    this.itemFormValueChange.emit();
   }
 
-  // TEMP
-  changeThis() {
-    const values = {
-      BooleanDefault: false,
-      DateTime: '2018-02-14T20:14:00Z',
-      EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
-      NumberDefault: 5,
-      DateTimeWithTime: '2018-02-07T02:03:00Z',
-      BooleanGroup1: false,
-      DropDownGroup1: '1',
-      StringGroup1: 'Ante test',
-      StringGroup2: 'ante test2',
-      StringUrlPathGroup2: 'ante'
-    };
+  // TEMP - TEST
+  // changeThis() {
+  //   const values = {
+  //     BooleanDefault: false,
+  //     DateTime: '2018-02-14T20:14:00Z',
+  //     EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
+  //     NumberDefault: 5,
+  //     DateTimeWithTime: '2018-02-07T02:03:00Z',
+  //     BooleanGroup1: false,
+  //     DropDownGroup1: '1',
+  //     StringGroup1: 'Ante test',
+  //     StringGroup2: 'ante test2',
+  //     StringUrlPathGroup2: 'ante'
+  //   };
 
-    this.formValueChange(values);
-  }
+  //   this.formValueChange(values);
+  // }
 
   submit(values: { [key: string]: any }) {
+    console.log('submit item edit');
     console.log(values);
+
+    if (this.form.form.valid) {
+      // TODO create body for submit
+      // TODO read appId
+      this.eavService.saveItem(15, this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+    }
   }
 
-  deleteItem() {
-    this.itemService.deleteItem(this.item);
-  }
+  // deleteItem() {
+  //   this.itemService.deleteItem(this.item);
+  // }
 
   private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
     if (this.form) {
@@ -142,7 +180,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
       if (currentLanguageChanged) {
         // loop trough all controls and set disable control if needed
-        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage);
+        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
       }
     }
   }
@@ -228,7 +266,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
 
-    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage,
+    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], attribute.name);
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
@@ -254,14 +292,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Determines is control disabled
    * @param currentLanguage
+   * @param defaultLanguage
    * @param attributeValues
    * @param attributeKey
    */
-  private isControlDisabledForCurrentLanguage(currentLanguage, attributeValues: EavValues<any>, attributeKey: string): boolean {
-    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage)) {
+  private isControlDisabledForCurrentLanguage(currentLanguage: string, defaultLanguage: string,
+    attributeValues: EavValues<any>, attributeKey: string): boolean {
+    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
       return false;
-    } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
-      return true;
+      // } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+      //   return true;
     } else {
       return true;
     }
@@ -284,9 +324,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param allAttributes
    * @param currentLanguage
    */
-  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string) {
+  private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string, defaultLanguage: string) {
     Object.keys(this.item.entity.attributes).forEach(attributeKey => {
-      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage,
+      const disabled: boolean = this.isControlDisabledForCurrentLanguage(currentLanguage, defaultLanguage,
         this.item.entity.attributes[attributeKey], attributeKey);
       this.form.setDisabled(attributeKey, disabled, false);
     });

@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
+import { DnnSxcModule } from '@2sic.com/dnn-sxc-angular';
 
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
@@ -20,7 +21,9 @@ import { environment } from '../environments/environment'; // Angular CLI enviro
 import { reducers, metaReducers } from '../app/shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';
+import { EavService } from './shared/services/eav.service';
 // import { APP_BASE_HREF, Location } from '@angular/common';
+
 
 const routes: Routes = [
   {
@@ -52,6 +55,7 @@ const routes: Routes = [
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule,
+    // DnnSxcModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
   ],
@@ -60,7 +64,8 @@ const routes: Routes = [
     ItemService,
     ContentTypeService,
     LanguageService,
-    ScriptLoaderService
+    ScriptLoaderService,
+    EavService
     // { provide: APP_BASE_HREF, useValue: '' }
   ],
   bootstrap: [AppComponent]

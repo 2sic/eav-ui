@@ -17,8 +17,10 @@ export class Item {
      * @param item
      */
     public static create(item: JsonItem1): Item {
+        console.log('create item.Entity:', item.Entity);
         return new Item(
-            EavHeader.create(item._),
+            // EavHeader.create(item._),
+            EavHeader.create(new JsonHeader1(1)),
             EavEntity.create(item.Entity)
         );
     }

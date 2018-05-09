@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/map';
@@ -8,13 +8,17 @@ import 'rxjs/add/operator/catch';
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { AppState } from '../models/app-state';
-import { EavAttributes, EavValue } from '../models/eav';
+import { EavAttributes, EavValue, ContentType } from '../models/eav';
 // import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
+import * as dataActions from '../../shared/store/actions/data.actions';
+import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
+import { JsonContentType1 } from '../models/json-format-v1';
+// import { Subject } from 'rxjs/Rx';
 
 @Injectable()
 export class ItemService {
@@ -25,8 +29,21 @@ export class ItemService {
     // this.items$ = store.select(fromStore.getItems);
   }
 
+  // public loadAllData(path: string) {
+  //   this.store.dispatch(new itemActions.LoadDataAction(path));
+  // }
+
+
   public loadItem(path: string) {
     this.store.dispatch(new itemActions.LoadItemAction(path));
+  }
+
+  public loadItems(items: JsonItem1[]) {
+    console.log('start create item');
+    items.forEach((jsonItem1: JsonItem1) => {
+      const item: Item = Item.create(jsonItem1);
+      this.store.dispatch(new itemActions.LoadItemSuccessAction(item));
+    });
   }
 
   public updateItem(attributes: EavAttributes, id: number) {
@@ -42,22 +59,23 @@ export class ItemService {
   }
 
   public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
-    existingDimensionValue: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
     this.store.dispatch(new itemActions.UpdateItemAttributeValueAction(entityId, attributeKey, newEavAttributeValue,
-      existingDimensionValue, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly));
   }
 
-  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string) {
-    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey));
+  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey, defaultLanguage));
   }
+
   /**
   * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
   * */
   public addItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
-    existingDimensionValue: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
     this.store.dispatch(new itemActions.AddItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
-      existingDimensionValue, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly));
   }
 
   public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string) {

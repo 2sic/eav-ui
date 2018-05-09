@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild, SimpleChanges } from '@angular/core';
+import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
 import { FieldConfig } from '../../model/field-config';
 import { Subscription } from 'rxjs/Subscription';
@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./eav-form.component.css']
 })
 export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
+  @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
+
   @Input()
   config: FieldConfig[] = [];
 
@@ -36,11 +38,15 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
 
-    this.subscriptions.push(this.form.valueChanges.subscribe(val => {
-      if (this.form.valid) {
+    this.subscriptions.push(
+      this.form.valueChanges.subscribe(val => {
+        // if (this.form.valid) {
+
+        // this.formErrors = this.FormService.validateForm(this.form, this.formErrors, true);
+
         this.formValueChange.emit(val);
-      }
-    }));
+        // }
+      }));
   }
 
   ngOnChanges() {
@@ -78,11 +84,21 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     return this.formBuilder.control({ disabled, value }, validation);
   }
 
-  handleSubmit(event: Event) {
-    console.log('Submit');
-    event.preventDefault();
-    event.stopPropagation();
+  // handleSubmit(event: Event) {
+  //   console.log('Submit');
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   this.submit.emit(this.value);
+  // }
+
+  save(event) {
+    console.log('form save', event);
+    // Use this to emit value out
     this.submit.emit(this.value);
+  }
+
+  submitOutside() {
+    this.dynamicForm.ngSubmit.emit(this.value);
   }
 
   setDisabled(name: string, disable: boolean, emitEvent: boolean) {
@@ -149,10 +165,6 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
       }
     });
 
-    // if (Object.keys(values).length > Object.keys(this.form.value).length) {
-    //   console.log('[Test Disabled] VALUECHANGED USLO', valueIsChanged);
-    //   valueIsChanged = true;
-    // }
     console.log('[Test Disabled] VALUECHANGED', valueIsChanged);
     return valueIsChanged;
   }

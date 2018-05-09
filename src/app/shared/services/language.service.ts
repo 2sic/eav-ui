@@ -17,16 +17,8 @@ export class LanguageService {
   /**
    * Load all languages
    */
-  public loadLanguages() {
-    // TODO: read from service
-    const languages: Language[] = [
-      { key: 'en-us', name: 'English' },
-      { key: 'de-de', name: 'German' },
-      { key: 'fr-fr', name: 'French' },
-      { key: 'hr-hr', name: 'Croatian' },
-    ];
-
-    this.store.dispatch(new languageActions.LoadLanguagesAction(languages, 'de-de', 'en-us', 'en-us'));
+  public loadLanguages(languages: Language[], currentLanguage: string, defaultLanguage: string, uiLanguage: string) {
+    this.store.dispatch(new languageActions.LoadLanguagesAction(languages, currentLanguage, defaultLanguage, uiLanguage));
   }
 
   public selectAllLanguages(): Observable<Language[]> {
