@@ -95,26 +95,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.loadContentTypeFromStore();
-
-    // this.saveFormMessagesSubscribe();
-
-    // observe save (submit) for this item form
-    // this.formSave = this.actions$
-    //   .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-    //   .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
-    // .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
-    //   console.log('success entity: ', this.item.entity.id);
-    //   // TODO show success message
-    // });
-    // TEMP test
-
-    // this.formSave.subscribe((suc: fromItems.SaveItemAttributesValuesAction) => console.log('success1', suc.id));
-
-
-    // this.actions$
-    //   .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-    //   .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id))
-    //   .subscribe((suc: fromItems.SaveItemAttributesValuesAction) => console.log('success without pipe 1', suc.id));
   }
 
   public formSaveObservable(): Observable<Action> {
@@ -122,24 +102,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
       .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
   }
-
-  // private saveFormMessagesSubscribe() {
-  //   this.formSuccess = this.actions$
-  //     .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
-  //     // .filter(({ data }) => payload.path === this.path)
-  //     .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
-  //       console.log('success: ', action.data);
-  //       // TODO show success message
-  //     });
-
-  //   this.formError = this.actions$
-  //     .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
-  //     // .filter(({ payload }) => payload.path === this.path)
-  //     .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
-  //       console.log('error', action.error);
-  //       // TODO show error message
-  //     });
-  // }
 
   ngOnDestroy(): void {
     this.itemBehaviorSubject$.unsubscribe();
@@ -165,7 +127,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.itemFormValueChange.emit();
   }
 
-  // TEMP
+  // TEMP - TEST
   // changeThis() {
   //   const values = {
   //     BooleanDefault: false,

@@ -16,9 +16,11 @@
 
   <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
-  <!-- <span *ngFor="let formError of formErrors;">
-    <p *ngFor="let key of (formError | keys)">{{key}}: {{formError[key]}}</p>
-  </span> -->
+  <mat-error *ngIf="!formsAreValid">
+    <span *ngFor="let formError of formErrors;">
+      <p *ngFor="let key of Object.keys(formError)">{{key}}: {{formError[key]}}</p>
+    </span>
+  </mat-error>
 
   <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
     <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)" [defaultLanguage]="(defaultLanguage$ | async)"

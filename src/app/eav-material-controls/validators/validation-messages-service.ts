@@ -46,15 +46,12 @@ export class ValidationMessagesService {
       //   return `This value should be less than ${config.settings.MaxLength} characters`;
       // },
       min: (config: FieldConfig) => {
-        console.log('config.setting', config.settings);
         return config ? `This value should be more than ${config.settings.Min}` : `not valid`;
       },
       max: (config: FieldConfig) => {
-        console.log('config.setting', config.settings);
         return config ? `This value should be less than ${config.settings.Max}` : `not valid`;
       },
       pattern: (config: FieldConfig) => {
-        console.log('config.setting', config.settings);
         return config ? `Please match the requested format` : `not valid`;
       },
       decimals: (config: FieldConfig) => {

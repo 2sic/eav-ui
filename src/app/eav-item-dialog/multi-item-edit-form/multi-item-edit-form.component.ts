@@ -1,38 +1,32 @@
 import {
   Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Store, Action } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
+import { MatSnackBar } from '@angular/material';
 
+import 'reflect-metadata';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
-// import 'rxjs/add/observable/zip';w
 import { zip } from 'rxjs/observable/zip';
-import 'reflect-metadata';
-
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
-import * as fromItems from '../../shared/store/actions/item.actions';
-import { AppState } from '../../shared/models';
-import { Item, ContentType, Language } from '../../shared/models/eav';
 import { of } from 'rxjs/observable/of';
-
-import { ItemService } from '../../shared/services/item.service';
-import { ContentTypeService } from '../../shared/services/content-type.service';
-
-// import { EavState } from '../../shared/store';
-import { ItemState } from '../../shared/store/reducers/item.reducer';
+import { Subscription } from 'rxjs/Subscription';
 import * as fromStore from '../../shared/store';
 import * as itemActions from '../../shared/store/actions/item.actions';
-import { LanguageService } from '../../shared/services/language.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
+import * as fromItems from '../../shared/store/actions/item.actions';
+import { Item, ContentType, Language } from '../../shared/models/eav';
+import { ContentTypeService } from '../../shared/services/content-type.service';
+import { ItemState } from '../../shared/store/reducers/item.reducer';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { UrlHelper } from '../../shared/helpers/url-helper';
+import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
-import { Subscription } from 'rxjs/Subscription';
-import { Actions } from '@ngrx/effects';
-import { MatSnackBar } from '@angular/material';
+import { LanguageService } from '../../shared/services/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 
 @Component({
@@ -42,19 +36,16 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 })
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
-  // Test
+
   items$: Observable<Item[]>;
-  // contentTypes$: Observable<ContentType[]>;
   languages$: Observable<Language[]>;
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
-
-  formsAreValid = false;
-  formSuccess: Subscription;
-  formSuccess$: Observable<any>;
   formSaveAllObservables$: Observable<Action>[] = [];
-  formError: Subscription;
   formErrors: { [key: string]: any }[] = [];
+  Object = Object;
+  formsAreValid = false;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -98,6 +89,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * observe formValue changes from all child forms
    */
   formValueChange() {
+    this.formErrors = [];
     this.setFormsAreValid();
   }
 
@@ -114,24 +106,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.close();
       }
     } else {
-      // TODO: error messages
-      this.asdsadas();
+      this.displayAllValidationMessages();
     }
-  }
-
-  asdsadas() {
-    // const formErrors = [];
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        //  itemEditFormComponent.form.form.invalid
-        if (itemEditFormComponent.form.form.invalid) {
-          console.log('ERROR LIST before', itemEditFormComponent.form.form);
-          this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
-        }
-      });
-    }
-
-    console.log('ERROR LIST: ', this.formErrors);
   }
 
   /**
@@ -244,87 +220,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   *  Call action to Load item to store
+   * Fill in all error validation messages from all forms
    */
-  // loadItem() {
-  //   // this.store.dispatch(new itemActions.LoadItemsAction('json-item-v1-accordion.json'));
-  //   this.itemService.loadItem('json-item-v1-person.json');
-  // }
-
-  /**
-  *  Call action to Load content type to store
-  */
-  // loadcontentType() {
-  //   // this.store.dispatch(new contentTypeActions.LoadContentTypeAction('json-content-type-v1-accordion.json'));
-  //   this.contentTypeService.loadContentType('json-content-type-v1-person.json');
-  // }
-
-  // // Test
-  // loadAccordion() {
-  //   this.itemService.loadItem('json-item-v1-accordion.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-accordion.json');
-  //   // this.items$ = this.store.select(state => state.items);
-  // }
-
-  // // Test
-  // loadPerson() {
-  //   this.itemService.loadItem('json-item-v1-person.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-person.json');
-  //   // this.items$ = this.store.select(state => state.items);
-  // }
-
-  // // Test
-  // loadStringInputTypes() {
-  //   this.itemService.loadItem('json-item-v1-string-input-types.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-string-input-types.json');
-  //   // this.items$ = this.store.select(state => state.items);
-  // }
-
-  // // Test
-  // loadInputTypes() {
-  //   this.itemService.loadItem('json-item-v1-input-types.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-input-types.json');
-  //   // this.items$ = this.store.select(state => state.items);
-  // }
-
-  // // Test
-  // loadBooks() {
-  //   this.itemService.loadItem('json-item-v1-books.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  // }
-
-  // // Test
-  // loadBooks1() {
-  //   this.itemService.loadItem('json-item-v1-books1.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  // }
-  // // Test
-  // loadBooks2() {
-  //   this.itemService.loadItem('json-item-v1-books2.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-books.json');
-  // }
-  // // Test
-  // loadAuthors() {
-  //   this.itemService.loadItem('json-item-v1-authors.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-authors.json');
-  // }
-
-  // // Link
-  // loadHyperLink() {
-  //   this.itemService.loadItem('json-item-v1-link.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-link.json');
-  // }
-
-  // // Localization
-  // loadLocalization() {
-  //   this.itemService.loadItem('json-item-v1-localization.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-localization.json');
-  // }
-
-  // // Custom
-  // loadCustom() {
-  //   this.itemService.loadItem('json-item-v1-custom.json');
-  //   this.contentTypeService.loadContentType('json-content-type-v1-custom.json');
-  // }
+  private displayAllValidationMessages() {
+    this.formErrors = [];
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        if (itemEditFormComponent.form.form.invalid) {
+          this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
+        }
+      });
+    }
+  }
 }
 
