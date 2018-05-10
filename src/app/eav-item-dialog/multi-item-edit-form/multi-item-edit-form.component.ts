@@ -28,6 +28,7 @@ import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -58,9 +59,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
     private snackBar: MatSnackBar,
-    private validationMessagesService: ValidationMessagesService) {
+    private validationMessagesService: ValidationMessagesService,
+    private translate: TranslateService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
+
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
   }
 
   ngOnInit() {
@@ -71,6 +76,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.languages$ = this.languageService.selectAllLanguages();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
+
+
   }
 
   ngAfterContentChecked() {
@@ -131,6 +138,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private loadData() {
     const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+    console.log('queryStringParameters', queryStringParameters);
+
     const appid = queryStringParameters['appId'];
     const mid = queryStringParameters['mid'];
     const cbid = queryStringParameters['cbid'];
@@ -140,6 +149,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const langs = queryStringParameters['langs'];
     const langpri = queryStringParameters['langpri'];
 
+    this.setTranslateLanguage(lang);
+
     this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
     this.subscriptions.push(
       this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
@@ -147,6 +158,19 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.contentTypeService.loadContentTypes(data.ContentTypes);
       })
     );
+  }
+
+  /**
+   * Set translate language of all forms
+   * @param language
+   *
+   */
+  private setTranslateLanguage(language: string) {
+    if (language) {
+      // TODO: find better solution
+      const isoLangCode = language.substring(0, language.indexOf('-') > 0 ? language.indexOf('-') : 2);
+      this.translate.use(isoLangCode);
+    }
   }
 
   /**

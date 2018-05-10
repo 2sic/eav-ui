@@ -26,6 +26,9 @@ import { reducers } from '../shared/store';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentTypeEffects } from '../shared/effects/content-type.effects';
 import { EavEffects } from '../shared/effects/eav.effects';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
 
 const routes: Routes = [
   {
@@ -33,6 +36,10 @@ const routes: Routes = [
     component: MultiItemEditFormComponent
   }
 ];
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -57,6 +64,14 @@ const routes: Routes = [
     EavMaterialControlsModule,
     StoreModule.forFeature('eavItemDialog', reducers),
     EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      },
+      isolate: true
+    })
   ],
   exports: [RouterModule],
   providers: [],

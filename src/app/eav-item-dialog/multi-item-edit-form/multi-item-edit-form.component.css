@@ -7,3 +7,8 @@
     right: 0;
     top: 0;
   }
+
+  .disabled {
+  color: rgba(0,0,0,.26);
+  background-color: rgba(0,0,0,.12);
+}

@@ -18,7 +18,7 @@
 
   <mat-error *ngIf="!formsAreValid">
     <span *ngFor="let formError of formErrors;">
-      <p *ngFor="let key of Object.keys(formError)">{{key}}: {{formError[key]}}</p>
+      <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ 'ValidationMessage.' + formError[key] | translate}}</p>
     </span>
   </mat-error>
 
@@ -26,14 +26,13 @@
     <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)" [defaultLanguage]="(defaultLanguage$ | async)"
       (itemFormValueChange)="formValueChange($event)"></app-item-edit-form>
   </div>
-
-  <button mat-raised-button type="submit" class="btn btn-default submit-button" (click)="saveAll(true)" [disabled]="!formsAreValid">Save</button>
-
-  <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu">
+  <button mat-raised-button type="submit" class="btn btn-default submit-button" [ngClass]="{ 'disabled': !formsAreValid }"
+    (click)="saveAll(true)">{{ 'Button.Save' | translate}}</button>
+  <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu" [ngClass]="{ 'disabled': !formsAreValid }">
     <i class="eav-icon-down-dir"></i>
   </button>
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item type="button" (click)="saveAll(true)">Button.Save</button>
-    <button mat-menu-item type="button" (click)="saveAll(false)">Button.SaveAndKeepOpen</button>
+    <button mat-menu-item type="button" (click)="saveAll(true)">{{ 'Button.Save' | translate}}</button>
+    <button mat-menu-item type="button" (click)="saveAll(false)">{{ 'Button.SaveAndKeepOpen' | translate}}</button>
   </mat-menu>
 </mat-card>
