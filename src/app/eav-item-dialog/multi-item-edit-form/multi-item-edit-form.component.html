@@ -18,7 +18,7 @@
 
   <mat-error *ngIf="!formsAreValid">
     <span *ngFor="let formError of formErrors;">
-      <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ 'ValidationMessage.' + formError[key] | translate}}</p>
+      <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ formError[key] | translate}}</p>
     </span>
   </mat-error>
 

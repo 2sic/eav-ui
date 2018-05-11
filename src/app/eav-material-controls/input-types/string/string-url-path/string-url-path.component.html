@@ -3,5 +3,6 @@
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
         <input matInput type="text" class="form-control material" [formControlName]="config.name" (blur)="finalClean(config.name)"
             (keyup)="clean(config.name)" [placeholder]="config.label" [required]='config.required'>
+        <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
     </mat-form-field>
 </div>

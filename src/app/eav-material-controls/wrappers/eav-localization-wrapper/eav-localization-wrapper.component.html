@@ -10,12 +10,12 @@
 
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
     <!-- <span (mouseleave)="closeMenu()"> -->
-    <button mat-menu-item type="button" (click)="translateUnlink(config.name)">Translate (unlink)</button>
-    <button mat-menu-item type="button" (click)="linkToDefault(config.name)">Link to default</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">Copy From</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">Use From</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">Share with</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">All fields</button>
+    <button mat-menu-item type="button" (click)="translateUnlink(config.name)">{{ 'LangMenu.Unlink'| translate }}</button>
+    <button mat-menu-item type="button" (click)="linkToDefault(config.name)">{{ 'LangMenu.LinkDefault' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">{{ 'LangMenu.Copy' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">{{ 'LangMenu.Use' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">{{ 'LangMenu.Share' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">{{ 'LangMenu.AllFields' | translate }}</button>
     <!-- </span> -->
   </mat-menu>
 
@@ -35,11 +35,11 @@
   </mat-menu>
 
   <mat-menu #allFieldsMenu="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item type="button" (click)="translateUnlinkAll()">Translate (unlink)</button>
-    <button mat-menu-item type="button" (click)="linkToDefaultAll()">Link to default</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromAllMenu">Copy From</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromAllMenu">Use From</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithAllMenu">Share with</button>
+    <button mat-menu-item type="button" (click)="translateUnlinkAll()">{{ 'LangMenu.Unlink' | translate }}</button>
+    <button mat-menu-item type="button" (click)="linkToDefaultAll()">{{ 'LangMenu.LinkDefault' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromAllMenu">{{ 'LangMenu.Copy' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromAllMenu">{{ 'LangMenu.Use' | translate }}</button>
+    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithAllMenu">{{ 'LangMenu.Share' | translate }}</button>
   </mat-menu>
 
   <mat-menu #copyFromAllMenu="matMenu">

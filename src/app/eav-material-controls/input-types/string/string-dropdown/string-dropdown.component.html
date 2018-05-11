@@ -12,6 +12,7 @@
       (click)="freeTextMode= !freeTextMode ">
       <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
     </a>
+    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
   </mat-form-field>
 </ng-template>
 
@@ -23,5 +24,6 @@
       (click)="freeTextMode = !freeTextMode ">
       <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i>
     </a>
+    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
   </mat-form-field>
 </ng-template>

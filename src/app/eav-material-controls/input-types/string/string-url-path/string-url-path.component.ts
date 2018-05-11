@@ -7,6 +7,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -22,6 +23,12 @@ export class StringUrlPathComponent implements Field {
   group: FormGroup;
 
   enableSlashes = true;
+
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  constructor(private validationMessagesService: ValidationMessagesService) { }
 
   finalClean(formControlName: string) {
     const formControlValue = this.group.controls[formControlName].value;
@@ -39,6 +46,10 @@ export class StringUrlPathComponent implements Field {
     if (formControlValue !== cleaned) {
       this.group.patchValue({ [formControlName]: cleaned });
     }
+  }
+
+  getErrorMessage() {
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
 
   // TODO: add mask for other fields !!!

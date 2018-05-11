@@ -47,7 +47,7 @@ export class ValidationMessagesService {
 
     const messages = {
       required: (config: FieldConfig) => {
-        return config ? 'This field is required' : `ValidationMessage.Required`;
+        return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
       },
       // minLength: (config: FieldConfig) => {
       //   return `Should have atleast ${config.settings.MinLength} characters`;

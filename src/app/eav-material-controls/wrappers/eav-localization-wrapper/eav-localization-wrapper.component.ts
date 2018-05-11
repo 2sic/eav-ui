@@ -50,7 +50,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private languageService: LanguageService, private itemService: ItemService) {
+  constructor(private languageService: LanguageService,
+    private itemService: ItemService) {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }

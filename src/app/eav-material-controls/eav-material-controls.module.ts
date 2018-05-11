@@ -48,7 +48,6 @@ import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 @NgModule({
   declarations: [
     // wrappers
