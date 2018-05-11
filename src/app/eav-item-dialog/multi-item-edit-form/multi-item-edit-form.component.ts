@@ -46,6 +46,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   formErrors: { [key: string]: any }[] = [];
   Object = Object;
   formsAreValid = false;
+  closeWindow = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -76,8 +77,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.languages$ = this.languageService.selectAllLanguages();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
-
-
   }
 
   ngAfterContentChecked() {
@@ -110,7 +109,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       });
 
       if (close) {
-        this.close();
+        this.closeWindow = true;
+        // this.close();
       }
     } else {
       this.displayAllValidationMessages();
@@ -213,19 +213,34 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         console.log('success END: ', action.data);
         // TODO show success message
         // this.snackBar.open('saved',);
-        this.snackBar.open('saved', '', {
-          duration: 2000
-        });
+        this.snackBarOpen('saved', this.closeWindow);
       }));
     this.subscriptions.push(this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
         console.log('error END', action.error);
         // TODO show error message
-        this.snackBar.open('error', '', {
-          duration: 2000
-        });
+        this.snackBarOpen('error', false);
       }));
+  }
+
+  /**
+   * Open snackbar with message and after closed call function close
+   * @param message
+   * @param callClose
+   */
+  private snackBarOpen(message: string, callClose: boolean) {
+    const snackBarRef = this.snackBar.open(message, '', {
+      duration: 2000
+    });
+
+    if (callClose) {
+      this.subscriptions.push(
+        snackBarRef.afterDismissed().subscribe(null, null, () => {
+          this.close();
+        })
+      );
+    }
   }
 
   /**
