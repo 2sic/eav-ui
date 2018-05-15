@@ -16,7 +16,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatTooltipModule,
-  MatTabsModule
+  MatTabsModule,
 } from '@angular/material';
 import {
   CollapsibleWrapperComponent,

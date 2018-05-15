@@ -120,6 +120,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
+      console.log('FORM VALUE CHANGE', values);
       this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
     }
 
@@ -161,6 +162,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   // }
 
   private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
+    console.log('setFormValues: currentLanguageChanged:', currentLanguageChanged);
     if (this.form) {
       const formValues: { [name: string]: any } = {};
       Object.keys(item.entity.attributes).forEach(attributeKey => {
@@ -170,15 +172,18 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
       // Important - We need to enable all controls for new language before patchValue and before is determined which control is disabled
       if (currentLanguageChanged) {
+        console.log('[COPY ALL] setFormValues enableALL');
         this.enableAllControls(item.entity.attributes);
       }
 
       if (this.form.valueIsChanged(formValues)) {
+        console.log('[COPY ALL] setFormValues valueIsChanged');
         // set new values to form
         this.form.patchValue(formValues, false);
       }
 
       if (currentLanguageChanged) {
+        console.log('[COPY ALL] setFormValues disable all');
         // loop trough all controls and set disable control if needed
         this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
       }

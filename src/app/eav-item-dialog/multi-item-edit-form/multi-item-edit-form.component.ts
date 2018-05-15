@@ -77,6 +77,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.languages$ = this.languageService.selectAllLanguages();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
+
+    this.subscriptions.push(
+      this.currentLanguage$.subscribe(len => {
+        this.formErrors = [];
+      })
+    );
   }
 
   ngAfterContentChecked() {
@@ -95,8 +101,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * observe formValue changes from all child forms
    */
   formValueChange() {
-    this.formErrors = [];
     this.setFormsAreValid();
+
+    this.formErrors = [];
   }
 
   /**

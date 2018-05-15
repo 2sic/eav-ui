@@ -77,7 +77,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToAttributeValues() {
     this.subscriptions.push(
       this.attributes$.subscribe(attributes => {
-        console.log('subscribe attributes1 ', attributes);
+        // console.log('subscribe attributes1 ', attributes);
         this.attributes = attributes;
       })
     );
@@ -195,10 +195,14 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       );
 
       if (valueAlreadyExist) {
+        console.log('[Copy all] updateItemAttributeValue ', attributeValueTranslation.value);
+        console.log('[Copy all] for language  ', this.currentLanguage);
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
           attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false);
       } else {
+        console.log('[Copy all] addAttributeValue ', attributeValueTranslation.value);
+        console.log('[Copy all] for language  ', this.currentLanguage);
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(this.config.entityId, attributeKey, this.attributes[attributeKey],
           attributeValueTranslation.value, this.currentLanguage, false);
@@ -248,9 +252,16 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   onClickCopyFromAll(languageKey) {
     Object.keys(this.attributes).forEach(attributeKey => {
-      console.log('onClickCopyFromAll attributeKey', this.attributes);
+      console.log('[COPY ALL] onClickCopyFromAll attributeKey', this.attributes);
+      console.log('[COPY ALL] onClickUseFromAll language key', languageKey);
+      console.log('[COPY ALL] onClickUseFromAll attributeKey', attributeKey);
       this.onClickCopyFrom(languageKey, attributeKey);
     });
+
+    // TODO maybe only reselect current language to refresh form
+    // console.log('update current language');
+    // this.languageService.updateCurrentLanguage(this.currentLanguage);
+
   }
 
   onClickUseFromAll(languageKey) {
@@ -259,7 +270,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.onClickUseFrom(languageKey, attributeKey);
     });
 
-    this.languageService.updateCurrentLanguage(this.currentLanguage);
+    // this.languageService.updateCurrentLanguage(this.currentLanguage);
   }
 
   onClickShareWithAll(languageKey) {
@@ -286,10 +297,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private setControlDisableAndInfoMessage(attributes: EavValues<any>,
     attributeKey: string, currentLanguage: string, defaultLanguage: string) {
 
+    // TODO: Find solution - How to solve? !!!!!
     // Important - need to set value for disabled controls (before disable)
-    const valueTranslated = LocalizationHelper.translate(currentLanguage,
-      defaultLanguage, this.attributes[this.config.name], '');
-    this.group.controls[this.config.name].patchValue(valueTranslated);
+    // const valueTranslated = LocalizationHelper.translate(currentLanguage,
+    //   defaultLanguage, this.attributes[this.config.name], '');
+    // this.group.controls[this.config.name].patchValue(valueTranslated);
 
     // Determine is control disabled or enabled and info message
     if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {

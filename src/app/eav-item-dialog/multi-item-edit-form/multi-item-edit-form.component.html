@@ -14,7 +14,8 @@
     <mat-icon class="mat-24">close</mat-icon>
   </button>
 
-  <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
+  <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0 && (languages$ | async).length > 0" [languages]="(languages$ | async)"
+    [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
   <mat-error *ngIf="!formsAreValid">
     <span *ngFor="let formError of formErrors;">
