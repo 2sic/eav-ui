@@ -100,7 +100,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   public formSaveObservable(): Observable<Action> {
     return this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.id === this.item.entity.id));
+      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.item.entity.id === this.item.entity.id));
   }
 
   ngOnDestroy(): void {
@@ -153,7 +153,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     if (this.form.form.valid) {
       // TODO create body for submit
       // TODO read appId
-      this.eavService.saveItem(15, this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+      this.eavService.saveItem(15, this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -223,6 +223,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   // TEST
   private loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
+    console.log('loadFieldFromDefinitionTest', attribute.settings.InputType);
     if (attribute.settings.InputType) {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
@@ -247,6 +248,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.hyperlinkDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
         case InputTypesConstants.external:
+          // case 'custom-gps':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);

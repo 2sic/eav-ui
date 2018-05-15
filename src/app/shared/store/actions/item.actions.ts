@@ -91,7 +91,7 @@ export class UpdateItemAttributesValuesAction implements Action {
  */
 export class SaveItemAttributesValuesAction implements Action {
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES;
-    constructor(public appId: number, public id: number, public updateValues: { [key: string]: any },
+    constructor(public appId: number, public item: Item, public updateValues: { [key: string]: any },
         public existingLanguageKey: string, public defaultLanguage: string) { }
 }
 

@@ -49,6 +49,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   closeWindow = false;
 
   private subscriptions: Subscription[] = [];
+  private mid;
+  private cbid;
+  private tid;
 
   constructor(
     private itemService: ItemService,
@@ -156,6 +159,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const langs = queryStringParameters['langs'];
     const langpri = queryStringParameters['langpri'];
 
+    this.mid = queryStringParameters['mid'];
+    this.cbid = queryStringParameters['cbid'];
+    this.tid = queryStringParameters['tid'];
+
     this.setTranslateLanguage(lang);
 
     this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
@@ -197,9 +204,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           zip(...this.formSaveAllObservables$)
             .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
               // actions[0].updateValues - every action have data from
+              console.log('ZIP ACTIONS ITEM: ', actions[0].item);
+              const allItems = [];
+              actions.forEach(action => {
+                allItems.push(action.item);
+              });
+
               // TODO - build body from actions
-              const body = '';
-              return this.eavService.savemany(actions[0].appId, body)
+              const body = `{Items: ${JSON.stringify(allItems)}}`;
+              return this.eavService.savemany(actions[0].appId, this.tid, this.mid, this.cbid, body)
                 .map(data => this.eavService.saveItemSuccess(data));
               // .do(data => console.log('working'));
             })

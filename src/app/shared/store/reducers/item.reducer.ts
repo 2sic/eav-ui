@@ -102,7 +102,26 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
-        case fromItems.SAVE_ITEM_ATTRIBUTES_VALUES:
+        case fromItems.SAVE_ITEM_ATTRIBUTES_VALUES: {
+            console.log('action.attribute', action);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return item.entity.id === action.item.entity.id
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    attributes: LocalizationHelper.updateAttributeValues(item.entity.attributes,
+                                        action.updateValues, action.existingLanguageKey, action.defaultLanguage)
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
         case fromItems.UPDATE_ITEM_ATTRIBUTES_VALUES: {
             console.log('action.attribute', action);
             return {

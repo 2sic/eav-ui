@@ -54,8 +54,8 @@ export class EavService {
       .catch(this.handleError);
   }
 
-  public saveItem(appId: number, id: number, updateValues: { [key: string]: any }, existingLanguageKey: string, defaultLanguage: string) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, id, updateValues, existingLanguageKey, defaultLanguage));
+  public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string, defaultLanguage: string) {
+    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, item, updateValues, existingLanguageKey, defaultLanguage));
   }
 
   public saveItemSuccess(data: any) {
@@ -67,19 +67,20 @@ export class EavService {
   }
 
   // TODO: Finish return model and sent real body
-  public savemany(appId: number, body: string): Observable<any> {
+  public savemany(appId: number, tabId: string, moduleId: string, contentBlockId: string, body: string): Observable<any> {
     console.log('start submit');
     // tslint:disable-next-line:max-line-length
-    const bodyTemp = `[{"Header":{"EntityId":1722,"Guid":"07621ab2-4bdc-4fd2-9c9d-e9cc765f988c","ContentTypeName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b","Metadata":null,"Group":null,"Prefill":null,"Title":null,"DuplicateEntity":null},"Entity":{"Id":1722,"Type":{"Name":"DirectoryItem","StaticName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b"},"IsPublished":true,"IsBranch":false,"TitleAttributeName":"Title","Attributes":{"Title":{"Values":[{"Value":"2sic internet solutions","Dimensions":{"en-us":false}}]},"Industry":{"Values":[{"Value":["9e733bf4-8179-4add-a333-6cb6dbff38dc"],"Dimensions":{}}]},"Link":{"Values":[{"Value":"https://www.2sic.com","Dimensions":{"en-us":false}}]},"Logo":{"Values":[{"Value":"file:216","Dimensions":{"en-us":false}}]},"LinkText":{"Values":[{"Value":"www.2sic.com","Dimensions":{"en-us":false}}]},"Town":{"Values":[{"Value":"Buchs","Dimensions":{"en-us":false}}]},"localizationMenus":[{"all":{}},{"all":{}},{"all":{}},{"all":{}},{"all":{}}]},"AppId":15},"slotIsUsed":true}]`;
+    // const bodyTemp = `[{"Header":{"EntityId":1722,"Guid":"07621ab2-4bdc-4fd2-9c9d-e9cc765f988c","ContentTypeName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b","Metadata":null,"Group":null,"Prefill":null,"Title":null,"DuplicateEntity":null},"Entity":{"Id":1722,"Type":{"Name":"DirectoryItem","StaticName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b"},"IsPublished":true,"IsBranch":false,"TitleAttributeName":"Title","Attributes":{"Title":{"Values":[{"Value":"2sic internet solutions","Dimensions":{"en-us":false}}]},"Industry":{"Values":[{"Value":["9e733bf4-8179-4add-a333-6cb6dbff38dc"],"Dimensions":{}}]},"Link":{"Values":[{"Value":"https://www.2sic.com","Dimensions":{"en-us":false}}]},"Logo":{"Values":[{"Value":"file:216","Dimensions":{"en-us":false}}]},"LinkText":{"Values":[{"Value":"www.2sic.com","Dimensions":{"en-us":false}}]},"Town":{"Values":[{"Value":"Buchs","Dimensions":{"en-us":false}}]},"localizationMenus":[{"all":{}},{"all":{}},{"all":{}},{"all":{}},{"all":{}}]},"AppId":15},"slotIsUsed":true}]`;
 
     //  const body = items;
-    const header = UrlHelper.createHeader('55', '419', '419');
+    // const header = UrlHelper.createHeader('55', '419', '419');
+    const header = UrlHelper.createHeader(tabId, moduleId, contentBlockId);
     const partOfPage = false;
 
     // TODO: create model for data
     return this.httpClient.post(
-      `/desktopmodules/2sxc/api/eav/entities/savemany?appId=${appId}&partOfPage=${partOfPage}`,
-      bodyTemp,
+      `/desktopmodules/2sxc/api/eav/ui/save?appId=${appId}`,
+      body,
       { headers: header })
       .map((data: any) => {
         console.log('return data');
