@@ -1,9 +1,13 @@
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class ValidationMessagesService {
+
+  constructor() {
+  }
 
   // static onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
   //   return `"${field.formControl.value}" is not a valid URL`;
@@ -35,9 +39,15 @@ export class ValidationMessagesService {
 
   // return list of error messages
   public validationMessages() {
+    // this.translateService.get('ValidationMessage').subscribe(trans => {
+
+    //   this.messages['required'] = trans.Required;
+    //   // console.log('VALIDATION MESSAGES:', data)
+    // });
+
     const messages = {
       required: (config: FieldConfig) => {
-        return config ? 'This field is required' : `required`;
+        return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
       },
       // minLength: (config: FieldConfig) => {
       //   return `Should have atleast ${config.settings.MinLength} characters`;
@@ -46,16 +56,17 @@ export class ValidationMessagesService {
       //   return `This value should be less than ${config.settings.MaxLength} characters`;
       // },
       min: (config: FieldConfig) => {
-        return config ? `This value should be more than ${config.settings.Min}` : `not valid`;
+        // return config ? `This value should be more than ${config.settings.Min}` : `ValidationMessage.NotValid`;
+        return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
       },
       max: (config: FieldConfig) => {
-        return config ? `This value should be less than ${config.settings.Max}` : `not valid`;
+        return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
       },
       pattern: (config: FieldConfig) => {
-        return config ? `Please match the requested format` : `not valid`;
+        return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
       },
       decimals: (config: FieldConfig) => {
-        return config ? `This value should be less than ${config.settings.Max}` : `not valid`;
+        return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
       },
     };
 
@@ -93,7 +104,7 @@ export class ValidationMessagesService {
    * get validation error for control
    * @param control
    */
-  public getErrorMessage(control: AbstractControl, config: FieldConfig) {
+  public getErrorMessage(control: AbstractControl, config: FieldConfig): string {
     let formError = '';
     if (control) {
       const messages = this.validationMessages();

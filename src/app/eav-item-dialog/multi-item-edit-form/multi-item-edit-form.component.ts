@@ -28,6 +28,7 @@ import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -45,8 +46,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   formErrors: { [key: string]: any }[] = [];
   Object = Object;
   formsAreValid = false;
+  closeWindow = false;
 
   private subscriptions: Subscription[] = [];
+  private mid;
+  private cbid;
+  private tid;
 
   constructor(
     private itemService: ItemService,
@@ -58,9 +63,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
     private snackBar: MatSnackBar,
-    private validationMessagesService: ValidationMessagesService) {
+    private validationMessagesService: ValidationMessagesService,
+    private translate: TranslateService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
+
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
   }
 
   ngOnInit() {
@@ -71,6 +80,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.languages$ = this.languageService.selectAllLanguages();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
+
+    this.subscriptions.push(
+      this.currentLanguage$.subscribe(len => {
+        this.formErrors = [];
+      })
+    );
   }
 
   ngAfterContentChecked() {
@@ -89,8 +104,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * observe formValue changes from all child forms
    */
   formValueChange() {
-    this.formErrors = [];
     this.setFormsAreValid();
+
+    this.formErrors = [];
   }
 
   /**
@@ -103,7 +119,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       });
 
       if (close) {
-        this.close();
+        this.closeWindow = true;
+        // this.close();
       }
     } else {
       this.displayAllValidationMessages();
@@ -131,6 +148,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private loadData() {
     const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+    console.log('queryStringParameters', queryStringParameters);
+
     const appid = queryStringParameters['appId'];
     const mid = queryStringParameters['mid'];
     const cbid = queryStringParameters['cbid'];
@@ -140,6 +159,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const langs = queryStringParameters['langs'];
     const langpri = queryStringParameters['langpri'];
 
+    this.mid = queryStringParameters['mid'];
+    this.cbid = queryStringParameters['cbid'];
+    this.tid = queryStringParameters['tid'];
+
+    this.setTranslateLanguage(lang);
+
     this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
     this.subscriptions.push(
       this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
@@ -147,6 +172,19 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.contentTypeService.loadContentTypes(data.ContentTypes);
       })
     );
+  }
+
+  /**
+   * Set translate language of all forms
+   * @param language
+   *
+   */
+  private setTranslateLanguage(language: string) {
+    if (language) {
+      // TODO: find better solution
+      const isoLangCode = language.substring(0, language.indexOf('-') > 0 ? language.indexOf('-') : 2);
+      this.translate.use(isoLangCode);
+    }
   }
 
   /**
@@ -166,9 +204,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           zip(...this.formSaveAllObservables$)
             .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
               // actions[0].updateValues - every action have data from
+              console.log('ZIP ACTIONS ITEM: ', actions[0].item);
+              const allItems = [];
+              actions.forEach(action => {
+                allItems.push(action.item);
+              });
+
               // TODO - build body from actions
-              const body = '';
-              return this.eavService.savemany(actions[0].appId, body)
+              const body = `{Items: ${JSON.stringify(allItems)}}`;
+              return this.eavService.savemany(actions[0].appId, this.tid, this.mid, this.cbid, body)
                 .map(data => this.eavService.saveItemSuccess(data));
               // .do(data => console.log('working'));
             })
@@ -189,19 +233,34 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         console.log('success END: ', action.data);
         // TODO show success message
         // this.snackBar.open('saved',);
-        this.snackBar.open('saved', '', {
-          duration: 2000
-        });
+        this.snackBarOpen('saved', this.closeWindow);
       }));
     this.subscriptions.push(this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
         console.log('error END', action.error);
         // TODO show error message
-        this.snackBar.open('error', '', {
-          duration: 2000
-        });
+        this.snackBarOpen('error', false);
       }));
+  }
+
+  /**
+   * Open snackbar with message and after closed call function close
+   * @param message
+   * @param callClose
+   */
+  private snackBarOpen(message: string, callClose: boolean) {
+    const snackBarRef = this.snackBar.open(message, '', {
+      duration: 2000
+    });
+
+    if (callClose) {
+      this.subscriptions.push(
+        snackBarRef.afterDismissed().subscribe(null, null, () => {
+          this.close();
+        })
+      );
+    }
   }
 
   /**

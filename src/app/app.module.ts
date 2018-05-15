@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { StoreModule, MetaReducer, ActionReducerMap } from '@ngrx/store';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
@@ -12,7 +12,6 @@ import { DnnSxcModule } from '@2sic.com/dnn-sxc-angular';
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
-// import { itemReducer, contentTypeReducer } from './shared/store/reducers';
 import { ItemEffects } from './shared/effects/item.effects';
 import { ContentTypeEffects } from './shared/effects/content-type.effects';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -22,7 +21,8 @@ import { reducers, metaReducers } from '../app/shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';
 import { EavService } from './shared/services/eav.service';
-// import { APP_BASE_HREF, Location } from '@angular/common';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 
 const routes: Routes = [
@@ -42,6 +42,10 @@ const routes: Routes = [
   }
 ];
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 @NgModule({
   declarations: [
     AppComponent
@@ -58,6 +62,15 @@ const routes: Routes = [
     // DnnSxcModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
+    TranslateModule.forRoot()
+    //     {
+    //     loader: {
+    //       provide: TranslateLoader,
+    //       useFactory: (createTranslateLoader),
+    //       deps: [HttpClient]
+    //     }
+    //   }
+    // )
   ],
   exports: [RouterModule],
   providers: [

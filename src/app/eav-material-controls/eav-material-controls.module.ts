@@ -16,7 +16,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatTooltipModule,
-  MatTabsModule
+  MatTabsModule,
 } from '@angular/material';
 import {
   CollapsibleWrapperComponent,
@@ -46,7 +46,7 @@ import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/fie
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -91,7 +91,8 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
     MatListModule,
     MatMenuModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule.forChild()
   ],
   entryComponents: [
     StringDefaultComponent,
