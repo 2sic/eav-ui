@@ -20,7 +20,7 @@ export class Item {
         console.log('create item.Entity:', item.Entity);
         return new Item(
             // EavHeader.create(item._),
-            EavHeader.create(new JsonHeader1(1)),
+            EavHeader.create(item.Header),
             EavEntity.create(item.Entity)
         );
     }

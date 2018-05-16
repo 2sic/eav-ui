@@ -51,7 +51,8 @@ export class EavEntity {
     */
     public static createArray(entity1Array: Entity1[]): EavEntity[] {
         const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
-        if (entity1Array !== undefined) {
+        if (entity1Array !== undefined && entity1Array !== null) {
+            console.log('entity1Array:', entity1Array);
             entity1Array.forEach(entity1 => {
                 eavMetaDataArray.push(EavEntity.create(entity1));
             });

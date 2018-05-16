@@ -19,7 +19,8 @@ export class ContentType {
     public static create(contentType: any): ContentType {
         return new ContentType(
             // EavHeader.create(item._),
-            EavHeader.create(new JsonHeader1(1)),
+            // TODO: finish content type header from load
+            EavHeader.create(new JsonHeader1(1, '', '', null, null, null, '', null)),
             ContentTypeDef.create(contentType)
         );
     }

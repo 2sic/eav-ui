@@ -29,6 +29,7 @@ import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { TranslateService } from '@ngx-translate/core';
+import { JsonItem1 } from '../../shared/models/json-format-v1';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -204,14 +205,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           zip(...this.formSaveAllObservables$)
             .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
               // actions[0].updateValues - every action have data from
-              console.log('ZIP ACTIONS ITEM: ', actions[0].item);
+              console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
               const allItems = [];
               actions.forEach(action => {
-                allItems.push(action.item);
+                allItems.push(JsonItem1.create(action.item));
               });
 
               // TODO - build body from actions
-              const body = `{Items: ${JSON.stringify(allItems)}}`;
+              const body = `{"Items": ${JSON.stringify(allItems)}}`;
               return this.eavService.savemany(actions[0].appId, this.tid, this.mid, this.cbid, body)
                 .map(data => this.eavService.saveItemSuccess(data));
               // .do(data => console.log('working'));

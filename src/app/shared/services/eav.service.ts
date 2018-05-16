@@ -79,7 +79,7 @@ export class EavService {
 
     // TODO: create model for data
     return this.httpClient.post(
-      `/desktopmodules/2sxc/api/eav/ui/save?appId=${appId}`,
+      `/desktopmodules/2sxc/api/eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
       body,
       { headers: header })
       .map((data: any) => {
