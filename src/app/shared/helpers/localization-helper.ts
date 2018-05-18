@@ -101,7 +101,7 @@ export class LocalizationHelper {
      * @param updateValues
      * @param languageKey
      */
-    public static updateAttributeValues(
+    public static updateAttributesValues(
         allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string): EavAttributes {
         // copy attributes from item
         const eavAttributes: EavAttributes = new EavAttributes();
