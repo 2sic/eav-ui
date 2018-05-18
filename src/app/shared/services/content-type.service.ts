@@ -72,7 +72,7 @@ export class ContentTypeService {
    */
   public getJsonContentType1(path: string): Observable<JsonContentType1> {
     return this.httpClient.get<JsonContentType1>(
-      `/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/content-type/${path}`
+      `../../../assets/data/json-to-class-test/content-type/${path}`
     )
       .map((item: JsonContentType1) => {
         return item;

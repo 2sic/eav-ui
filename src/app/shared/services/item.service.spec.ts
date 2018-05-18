@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';
 import { AppState } from '../models/app-state';
-import { itemReducer, contentTypeReducer } from '../../shared/store/reducers';
+import { reducers } from '../../shared/store/reducers';
 import { ItemService } from './item.service';
 
 import * as test1 from '../../../assets/data/json-to-class-test/item/json-item-v1-test1.json';
@@ -23,7 +23,7 @@ describe('ItemService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, HttpClientTestingModule,
-        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer })],
+        StoreModule.forRoot(reducers)],
       providers: [ItemService, Store]
     });
     // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;

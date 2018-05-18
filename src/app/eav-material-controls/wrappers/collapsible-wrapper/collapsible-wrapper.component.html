@@ -5,8 +5,7 @@
             <i *ngIf="config.collapse" class="eav-icon-minus"></i>
             <i *ngIf="!config.collapse" class="eav-icon-plus"></i>
         </span>
-        <!--TODO: {{config.header}} {{config.header.title ? config.header.title : 'EditEntity.DefaultTitle' | translate }} -->
-        {{ 'EditEntity.DefaultTitle' | translate }}
+        {{config.header.title ? config.header.title : 'EditEntity.DefaultTitle' | translate }}
     </div>
     <div [hidden]="config.collapse">
         <ng-container #fieldComponent></ng-container>

@@ -8,7 +8,7 @@ import { ContentTypeService } from './content-type.service';
 import { JsonContentType1 } from '../models/json-format-v1';
 import { ContentType } from '../models/eav';
 import { AppState } from '../models/app-state';
-import { itemReducer, contentTypeReducer } from '../../shared/store/reducers';
+import { reducers } from '../../shared/store/reducers';
 
 import * as contentTypeTest1 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json';
 import * as contentTypeTest2 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test2.json';
@@ -27,7 +27,7 @@ describe('ContentTypeService', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule,
         HttpClientTestingModule,
-        StoreModule.forRoot({ items: itemReducer, contentTypes: contentTypeReducer })],
+        StoreModule.forRoot(reducers)],
       providers: [ContentTypeService, Store]
     });
   });
@@ -39,14 +39,15 @@ describe('ContentTypeService', () => {
   it('should create content type with only one attribute - Test 1',
     inject([HttpTestingController, ContentTypeService], (httpMock: HttpTestingController, contentTypeService: ContentTypeService) => {
       const mockTest = contentTypeTest1;
-
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       contentTypeService.getJsonContentType1('json-content-type-v1-test1.json').subscribe(jsonContentType1 => {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         const contentType: ContentType = ContentType.create(jsonContentType1);
         expect(contentType).toBeTruthy();
       });
 
       // here we mock return data
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();

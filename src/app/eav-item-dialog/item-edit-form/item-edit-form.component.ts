@@ -278,10 +278,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
-
+    console.log('aaaaaaaaaaaaaaaaaaaaaad', this.item.header);
     return {
       // valueKey: `${attribute.name}.values[0].value`,
       entityId: this.item.entity.id,
+      // header: this.item.header,
       value: value,
       name: attribute.name,
       type: inputType, // TODO see do we need this
@@ -347,6 +348,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
       name: name,
+      header: this.item.header,
       type: InputTypesConstants.emptyDefault,
       wrappers: ['app-collapsible-wrapper'],
       label: name,

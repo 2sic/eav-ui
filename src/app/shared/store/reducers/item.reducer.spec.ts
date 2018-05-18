@@ -1,4 +1,4 @@
-import { itemReducer } from './item.reducer';
+import { itemReducer, ItemState } from './item.reducer';
 import * as itemActions from '../actions/item.actions';
 import { Item, EavHeader } from '../../models/eav';
 import { EavEntity } from '../../models/eav/eav-entity';
@@ -15,7 +15,8 @@ describe(`itemReducer`, () => {
         it(`should load item on loadSuccesAction`, () => {
             const currentItemState = { items: [] };
             const newItem: Item = new Item(
-                new EavHeader(1),
+                new EavHeader(1, 42900, 'e8a702d2-eccd-4b0f-83bd-600d8a8449d9', 'DataPipeline', [],
+                    null, null, null, null),
                 new EavEntity(42900,
                     6,
                     'e8a702d2-eccd-4b0f-83bd-600d8a8449d9',
@@ -24,7 +25,7 @@ describe(`itemReducer`, () => {
                     'dnn:userid=1',
                     []
                 ));
-            const expectedResult: Item[] = [newItem];
+            const expectedResult: ItemState = { items: [newItem] };
 
             const action = new itemActions.LoadItemSuccessAction(newItem);
             const result = itemReducer(currentItemState, action);
@@ -40,7 +41,8 @@ describe(`itemReducer`, () => {
             const currentEavAtribute: EavAttributes = new EavAttributes();
             currentEavAtribute['BooleanDefault'] = EavValues.create<boolean>(currentValue1);
             const currentItem: Item = new Item(
-                new EavHeader(1),
+                new EavHeader(1, 42900, 'e8a702d2-eccd-4b0f-83bd-600d8a8449d9', 'DataPipeline', [],
+                    null, null, null, null),
                 new EavEntity(42900,
                     6,
                     'e8a702d2-eccd-4b0f-83bd-600d8a8449d9',
@@ -56,7 +58,8 @@ describe(`itemReducer`, () => {
             const updatedEavAtribute: EavAttributes = new EavAttributes();
             updatedEavAtribute['BooleanDefault'] = EavValues.create<boolean>(updatedValue1);
             const updatedItem: Item = new Item(
-                new EavHeader(1),
+                new EavHeader(1, 42900, 'e8a702d2-eccd-4b0f-83bd-600d8a8449d9', 'DataPipeline', [],
+                    null, null, null, null),
                 new EavEntity(42900,
                     6,
                     'e8a702d2-eccd-4b0f-83bd-600d8a8449d9',
