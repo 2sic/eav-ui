@@ -68,13 +68,13 @@ describe(`itemReducer`, () => {
                     'dnn:userid=1',
                     []
                 ));
-            const expectedResult = [updatedItem];
+            const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAction(updatedItem.entity.attributes, updatedItem.entity.id);
             const result = itemReducer(currentItemState, action);
             // we changed attribute booleanDefault from true to false
-            expect(result[0].entity.attributes['BooleanDefault'].values[0].value)
-                .toEqual(expectedResult[0].entity.attributes['BooleanDefault'].values[0].value);
+            expect(result.items[0].entity.attributes['BooleanDefault'].values[0].value)
+                .toEqual(expectedResult.items[0].entity.attributes['BooleanDefault'].values[0].value);
         });
     });
 });

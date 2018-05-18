@@ -48,7 +48,7 @@ describe('ItemService', () => {
       });
 
       // here we mock return data
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -67,7 +67,7 @@ describe('ItemService', () => {
       });
 
       // here we mock return data
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -83,7 +83,7 @@ describe('ItemService', () => {
         expect(item.entity.guid).toEqual('e8a702d2-eccd-4b0f-83bd-600d8a8449d9');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -98,7 +98,7 @@ describe('ItemService', () => {
         expect(item.entity.type.id).toMatch('TypeId');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -113,7 +113,7 @@ describe('ItemService', () => {
         expect(item.entity.type.name).toMatch('TypeName');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -128,7 +128,7 @@ describe('ItemService', () => {
         expect(item.entity.owner).toEqual('dnn:userid=1');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -143,7 +143,7 @@ describe('ItemService', () => {
         expect(item).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test2.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test2.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -157,7 +157,7 @@ describe('ItemService', () => {
         expect(item).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test3.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test3.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -171,7 +171,7 @@ describe('ItemService', () => {
         expect(item).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/item/json-item-v1-test4.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/item/json-item-v1-test4.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();

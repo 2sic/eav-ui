@@ -39,9 +39,7 @@ describe('ContentTypeService', () => {
   it('should create content type with only one attribute - Test 1',
     inject([HttpTestingController, ContentTypeService], (httpMock: HttpTestingController, contentTypeService: ContentTypeService) => {
       const mockTest = contentTypeTest1;
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       contentTypeService.getJsonContentType1('json-content-type-v1-test1.json').subscribe(jsonContentType1 => {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         const contentType: ContentType = ContentType.create(jsonContentType1);
         expect(contentType).toBeTruthy();
       });
@@ -59,10 +57,10 @@ describe('ContentTypeService', () => {
 
       contentTypeService.getJsonContentType1('json-content-type-v1-test1.json').subscribe(jsonContentType1 => {
         const contentType: ContentType = ContentType.create(jsonContentType1);
-        expect(contentType.contentType.id).toEqual('09ad77bb-66e8-4a1c-92ac-27253afb251d');
+        expect(contentType.contentType.id).toEqual('ab6abad9-a10e-49c3-aae4-9bfa45d9ee80');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -74,10 +72,10 @@ describe('ContentTypeService', () => {
 
       contentTypeService.getJsonContentType1('json-content-type-v1-test1.json').subscribe(jsonContentType1 => {
         const contentType: ContentType = ContentType.create(jsonContentType1);
-        expect(contentType.contentType.name).toEqual('Person');
+        expect(contentType.contentType.name).toEqual('Second');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -92,7 +90,7 @@ describe('ContentTypeService', () => {
         expect(contentType.contentType.scope).toEqual('2SexyContent');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -104,10 +102,10 @@ describe('ContentTypeService', () => {
 
       contentTypeService.getJsonContentType1('json-content-type-v1-test1.json').subscribe(jsonContentType1 => {
         const contentType: ContentType = ContentType.create(jsonContentType1);
-        expect(contentType.contentType.description).toEqual('Person');
+        expect(contentType.contentType.description).toEqual('Test');
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test1.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -122,7 +120,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test2.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test2.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -137,7 +135,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test3.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test3.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -152,7 +150,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test4.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test4.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -167,7 +165,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test5.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test5.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -182,7 +180,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test6.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test6.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -197,7 +195,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test7.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test7.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -212,7 +210,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test8.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test8.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -227,7 +225,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test9.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test9.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();
@@ -242,7 +240,7 @@ describe('ContentTypeService', () => {
         expect(contentType).toBeTruthy();
       });
 
-      const mockReq = httpMock.expectOne('../../../assets/data/item-edit-form/content-type/json-content-type-v1-test10.json');
+      const mockReq = httpMock.expectOne('../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test10.json');
       mockReq.flush(mockTest);
 
       httpMock.verify();

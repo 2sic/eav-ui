@@ -1,6 +1,14 @@
 {
-    "_": {
-        "V": 1
+    "Header": {
+        "V": 1,
+        "ContentTypeName": "09ad77bb-66e8-4a1c-92ac-27253afb251d",
+        "DuplicateEntity": null,
+        "EntityId": 42900,
+        "Group": null,
+        "Guid": "e8a702d2-eccd-4b0f-83bd-600d8a8449d9",
+        "Metadata": null,
+        "Prefill": null,
+        "Title": null
     },
     "Entity": {
         "Id": 42900,
