@@ -1,14 +1,13 @@
 <div class="language-wrap">
-  <div class="language-field">
+  <div class="language-field" (dblclick)="toggleTranslate(currentLanguage !== defaultLanguage)">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" (mouseenter)="openMenu()" mat-icon-button type="button"
-    [matMenuTriggerFor]="rootMenu">
+  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu">
     {{infoMessage}}
     <mat-icon class="mat-18 language-icon">language</mat-icon>
   </button>
 
-  <mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
+  <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
     <!-- <span (mouseleave)="closeMenu()"> -->
     <button mat-menu-item type="button" (click)="translateUnlink(config.name)">{{ 'LangMenu.Unlink'| translate }}</button>
     <button mat-menu-item type="button" (click)="linkToDefault(config.name)">{{ 'LangMenu.LinkDefault' | translate }}</button>

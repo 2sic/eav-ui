@@ -45,7 +45,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   defaultLanguage = '';
   languages$: Observable<Language[]>;
   languages: Language[];
-  isFocused = false;
   infoMessage = '';
 
   private subscriptions: Subscription[] = [];
@@ -79,6 +78,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.attributes$.subscribe(attributes => {
         // console.log('subscribe attributes1 ', attributes);
         this.attributes = attributes;
+        console.log('[toggleTranslate] attributes', attributes);
+
       })
     );
   }
@@ -138,11 +139,15 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, this.config.settings.Required, false);
   }
 
-  toggleTranslate() {
-    if (this.enableTranslate) {
-      this.linkToDefault(this.config.name);
-    } else {
-      this.translateUnlink(this.config.name);
+  toggleTranslate(isToggleEnabled: boolean) {
+    if (isToggleEnabled) {
+      if (this.group.controls[this.config.name].disabled) {
+        console.log('[toggleTranslate] translateUnlink');
+        this.translateUnlink(this.config.name);
+      } else {
+        console.log('[toggleTranslate] linkToDefault');
+        this.linkToDefault(this.config.name);
+      }
     }
   }
 
@@ -307,14 +312,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       this.group.controls[attributeKey].enable({ emitEvent: false });
       this.infoMessage = '';
+      this.enableTranslate = true;
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
       this.group.controls[attributeKey].disable({ emitEvent: false });
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
+      this.enableTranslate = false;
     } else {
       this.group.controls[attributeKey].disable({ emitEvent: false });
       this.infoMessage = 'auto(default)';
+      this.enableTranslate = false;
     }
   }
 
@@ -330,4 +338,5 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.infoMessage = 'auto(default)';
     }
   }
+
 }
