@@ -77,7 +77,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -96,7 +96,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante Gadzo',
+                        value: 'Value update',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -126,7 +126,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -145,7 +145,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante Gadzo',
+                        value: 'Value update',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -162,10 +162,9 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Ante Gadzo', 'en-us', 'en-us', false);
+                'Value update', 'en-us', 'en-us', false);
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -175,7 +174,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -194,7 +193,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante Gadzo',
+                        value: 'Value update',
                         dimensions: [
                             {
                                 value: '~en-us'
@@ -211,10 +210,9 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Ante Gadzo', 'en-us', 'en-us', true);
+                'Value update', 'en-us', 'en-us', true);
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -224,7 +222,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: '*'
@@ -243,7 +241,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante Gadzo',
+                        value: 'Value update',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -260,7 +258,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Ante Gadzo', 'en-us', 'en-us', false);
+                'Value update', 'en-us', 'en-us', false);
             const result = itemReducer(currentItemState, action);
 
             // we add 'de-de' dimension
@@ -274,7 +272,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -286,7 +284,7 @@ describe(`itemReducer`, () => {
                 'TestKey2': {
                     values: [
                         {
-                            value: 'Second',
+                            value: 'Second value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -307,7 +305,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value update',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -319,7 +317,7 @@ describe(`itemReducer`, () => {
                 'TestKey2': {
                     values: [
                         {
-                            value: 'Second Value',
+                            value: 'Second Value update',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -336,12 +334,12 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = { items: [updatedItem] };
 
-            const updateValues = { 'TestKey': 'Ante Gadzo', 'TestKey2': 'Second Value' };
+            const updateValues = { 'TestKey': 'Value update', 'TestKey2': 'Second Value update' };
 
             const action = new itemActions.UpdateItemAttributesValuesAction(updatedItem.entity.id, updateValues,
                 'en-us', 'en-us');
             const result = itemReducer(currentItemState, action);
-            // we add 'de-de' dimension
+
             expect(result.items[0].entity.attributes['TestKey'].values[0].value)
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0].value);
         });
@@ -352,7 +350,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: '*'
@@ -364,7 +362,7 @@ describe(`itemReducer`, () => {
                 'TestKey2': {
                     values: [
                         {
-                            value: 'Second',
+                            value: 'Second value',
                             dimensions: [
                                 {
                                     value: '*'
@@ -385,7 +383,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value update',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -397,7 +395,7 @@ describe(`itemReducer`, () => {
                 'TestKey2': {
                     values: [
                         {
-                            value: 'Second Value',
+                            value: 'Second Value update',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -414,12 +412,12 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = { items: [updatedItem] };
 
-            const updateValues = { 'TestKey': 'Ante Gadzo', 'TestKey2': 'Second Value' };
+            const updateValues = { 'TestKey': 'Value update', 'TestKey2': 'Second Value update' };
 
             const action = new itemActions.UpdateItemAttributesValuesAction(updatedItem.entity.id, updateValues,
                 'en-us', 'en-us');
             const result = itemReducer(currentItemState, action);
-            // we add 'de-de' dimension
+
             expect(result.items[0].entity.attributes['TestKey'].values[0].value)
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0].value);
         });
@@ -430,7 +428,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -451,7 +449,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -459,7 +457,7 @@ describe(`itemReducer`, () => {
                             ]
                         },
                         {
-                            value: 'Ante Gadzo de-de',
+                            value: 'Value de-de',
                             dimensions: [
                                 {
                                     value: 'de-de'
@@ -477,7 +475,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const newValue = {
-                value: 'Ante Gadzo de-de',
+                value: 'Value de-de',
                 dimensions: [
                     {
                         value: 'de-de'
@@ -497,7 +495,7 @@ describe(`itemReducer`, () => {
                 'TestKey': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -509,7 +507,7 @@ describe(`itemReducer`, () => {
                 'TestKey2': {
                     values: [
                         {
-                            value: 'Ante Gadzo',
+                            value: 'Value',
                             dimensions: [
                                 {
                                     value: 'en-us'
@@ -578,7 +576,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -597,7 +595,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -620,7 +618,6 @@ describe(`itemReducer`, () => {
                 'de-de', 'en-us', 'en-us', false);
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -631,7 +628,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -650,7 +647,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -673,7 +670,6 @@ describe(`itemReducer`, () => {
                 'de-de', 'en-us', 'en-us', true);
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -684,7 +680,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: '*'
@@ -703,7 +699,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: '*'
@@ -726,7 +722,6 @@ describe(`itemReducer`, () => {
                 'de-de', 'en-us', 'en-us', false);
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -737,7 +732,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -759,7 +754,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -777,7 +772,6 @@ describe(`itemReducer`, () => {
             const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -788,7 +782,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -796,7 +790,7 @@ describe(`itemReducer`, () => {
                         ]
                     },
                     {
-                        value: 'Ante De',
+                        value: 'Value De',
                         dimensions: [
                             {
                                 value: 'de-de'
@@ -815,7 +809,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -833,7 +827,6 @@ describe(`itemReducer`, () => {
             const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
             expect(result.items[0].entity.attributes['TestKey'].values[0])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
         });
@@ -844,7 +837,7 @@ describe(`itemReducer`, () => {
             currentEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -852,7 +845,7 @@ describe(`itemReducer`, () => {
                         ]
                     },
                     {
-                        value: 'Ante De',
+                        value: 'Value De',
                         dimensions: [
                             {
                                 value: '~de-de'
@@ -871,7 +864,7 @@ describe(`itemReducer`, () => {
             updatedEavAtribute['TestKey'] = {
                 values: [
                     {
-                        value: 'Ante',
+                        value: 'Value',
                         dimensions: [
                             {
                                 value: 'en-us'
@@ -889,9 +882,259 @@ describe(`itemReducer`, () => {
             const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
             const result = itemReducer(currentItemState, action);
 
-            // we add 'de-de' dimension
-            expect(result.items[0].entity.attributes['TestKey'].values[0])
-                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values[0]);
+            expect(result.items[0].entity.attributes['TestKey'].values)
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values);
+        });
+
+
+    });
+
+    describe(`Localization wrapper actions`, () => {
+
+
+        it(`should translate de-de - copy from en-us valueAlreadyExist (update)`, () => {
+
+            const currentEavAtribute: EavAttributes = new EavAttributes();
+            currentEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    },
+                    {
+                        value: 'ValueDe',
+                        dimensions: [
+                            {
+                                value: 'de-de'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const currentItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), currentEavAtribute, '', [])
+            );
+            const currentItemState = { items: [currentItem] };
+            const updatedEavAtribute: EavAttributes = new EavAttributes();
+            updatedEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    },
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'de-de'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const updatedItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
+                ));
+            const expectedResult = { items: [updatedItem] };
+            // important - ValueUpdated value get from en-us then update de-de
+            const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
+                'Value', 'de-de', 'en-us', false);
+
+            const result = itemReducer(currentItemState, action);
+            console.log('result', result);
+
+
+            expect(result.items[0].entity.attributes['TestKey'].values)
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values);
+        });
+
+        it(`should translate de-de - copy from en-us valueNotExist (add)`, () => {
+
+            const currentEavAtribute: EavAttributes = new EavAttributes();
+            currentEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const currentItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), currentEavAtribute, '', [])
+            );
+            const currentItemState = { items: [currentItem] };
+            const updatedEavAtribute: EavAttributes = new EavAttributes();
+            updatedEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    },
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'de-de'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const updatedItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
+                ));
+            const expectedResult = { items: [updatedItem] };
+
+            // copy value from en but de-de dimension
+            const eavValueCopyFromEn = {
+                value: 'Value',
+                dimensions: [
+                    {
+                        value: 'de-de'
+                    }
+                ]
+            };
+
+            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, eavValueCopyFromEn,
+                'TestKey');
+            const result = itemReducer(currentItemState, action);
+
+            expect(result.items[0].entity.attributes['TestKey'].values)
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values);
+        });
+
+        it(`should translate de-de - use from en-us`, () => {
+
+            const currentEavAtribute: EavAttributes = new EavAttributes();
+            currentEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const currentItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), currentEavAtribute, '', [])
+            );
+            const currentItemState = { items: [currentItem] };
+            const updatedEavAtribute: EavAttributes = new EavAttributes();
+            updatedEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            },
+                            {
+                                value: '~de-de'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const updatedItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
+                ));
+            const expectedResult = { items: [updatedItem] };
+
+            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const firstActionResultState = itemReducer(currentItemState, action1);
+
+            const action2 = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', 'en-us', 'en-us', true);
+            const finalResult = itemReducer(firstActionResultState, action2);
+
+            expect(finalResult.items[0].entity.attributes['TestKey'].values)
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values);
+        });
+
+        it(`should translate de-de - share with en-us`, () => {
+
+            const currentEavAtribute: EavAttributes = new EavAttributes();
+            currentEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const currentItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), currentEavAtribute, '', [])
+            );
+            const currentItemState = { items: [currentItem] };
+            const updatedEavAtribute: EavAttributes = new EavAttributes();
+            updatedEavAtribute['TestKey'] = {
+                values: [
+                    {
+                        value: 'Value',
+                        dimensions: [
+                            {
+                                value: 'en-us'
+                            },
+                            {
+                                value: 'de-de'
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const updatedItem: Item = new Item(
+                new EavHeader(1, 1, '', '', [], null, null, null, null),
+                new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
+                ));
+            const expectedResult = { items: [updatedItem] };
+
+            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const firstActionResultState = itemReducer(currentItemState, action1);
+
+            const action2 = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', 'en-us', 'en-us', false);
+            const finalResult = itemReducer(firstActionResultState, action2);
+
+            expect(finalResult.items[0].entity.attributes['TestKey'].values)
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey'].values);
         });
     });
 

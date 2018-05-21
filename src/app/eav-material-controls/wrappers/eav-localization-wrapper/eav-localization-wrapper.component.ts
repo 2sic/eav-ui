@@ -32,8 +32,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  enableTranslate = true;
-
   // attributes$: Observable<EavValues<any>>;
   // attributes: EavValues<any>;
 
@@ -78,8 +76,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.attributes$.subscribe(attributes => {
         // console.log('subscribe attributes1 ', attributes);
         this.attributes = attributes;
-        console.log('[toggleTranslate] attributes', attributes);
-
       })
     );
   }
@@ -87,20 +83,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToCurrentLanguageFromStore() {
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
-        // Temp workaround (setTimeout)
-        // setTimeout(() => {
-        // Problem maybe in ExpressionChangedAfterItHasBeenCheckedError
-        // - can't change value during change detection TODO: see how to solve this
         console.log('subscribe currentLanguage1', currentLanguage);
         this.currentLanguage = currentLanguage;
         // if (this.config) {
         this.translateAllConfiguration(currentLanguage);
         // }
-        // this.setDisableByCurrentLanguage(currentLanguage);
-
         this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
-        // TODO: translate all settings
-        // });
       })
     );
   }
@@ -200,14 +188,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       );
 
       if (valueAlreadyExist) {
-        console.log('[Copy all] updateItemAttributeValue ', attributeValueTranslation.value);
-        console.log('[Copy all] for language  ', this.currentLanguage);
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
           attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false);
       } else {
-        console.log('[Copy all] addAttributeValue ', attributeValueTranslation.value);
-        console.log('[Copy all] for language  ', this.currentLanguage);
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(this.config.entityId, attributeKey, this.attributes[attributeKey],
           attributeValueTranslation.value, this.currentLanguage, false);
@@ -312,17 +296,14 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       this.group.controls[attributeKey].enable({ emitEvent: false });
       this.infoMessage = '';
-      this.enableTranslate = true;
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
       this.group.controls[attributeKey].disable({ emitEvent: false });
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map(d => d.value)
         .join(', ');
-      this.enableTranslate = false;
     } else {
       this.group.controls[attributeKey].disable({ emitEvent: false });
       this.infoMessage = 'auto(default)';
-      this.enableTranslate = false;
     }
   }
 
