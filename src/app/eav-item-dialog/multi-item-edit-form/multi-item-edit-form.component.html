@@ -1,23 +1,9 @@
-<!-- <button mat-button type="button" class="btn btn-default" (click)="loadAccordion()">Load Accordion to store</button> -->
-<!-- <button mat-button type="button" class="btn btn-default" (click)="loadPerson()">Load Person to store</button> -->
-<!-- <button mat-button type="button" class="btn btn-default" (click)="loadStringInputTypes()">Load String input types</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadInputTypes()">Load input types</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadBooks()">Load book</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadBooks1()">Load book1</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadBooks2()">Load book2</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadAuthors()">Load authors</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadHyperLink()">Load HyperLink</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadLocalization()">Load Localization</button>
-<button mat-button type="button" class="btn btn-default" (click)="loadCustom()">Load Custom</button> -->
-
-<h1>ante</h1>
-<mat-card class="example-card">
+<mat-card class="example-card" *ngIf="(items$ | async) && (items$ | async).length">
   <button mat-icon-button (click)="close()" class="button-top-right">
     <mat-icon class="mat-24">close</mat-icon>
   </button>
 
-  <app-eav-language-switcher *ngIf="(items$ | async) && (items$ | async).length > 0 && (languages$ | async).length > 0" [languages]="(languages$ | async)"
-    [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
+  <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
   <mat-error *ngIf="!formsAreValid">
     <span *ngFor="let formError of formErrors;">
@@ -38,12 +24,11 @@
     <button mat-menu-item type="button" (click)="saveAll(true)">{{ 'Button.Save' | translate}}</button>
     <button mat-menu-item type="button" (click)="saveAll(false)">{{ 'Button.SaveAndKeepOpen' | translate}}</button>
   </mat-menu>
-
-
   <button mat-icon-button type="button" [matMenuTriggerFor]="publishModeMenu" [ngClass]="{ 'disabled': !formsAreValid }">
     <i [ngClass]="{'eav-icon-eye': publishMode === 'show', 'eav-icon-eye-close': publishMode === 'hide', 'eav-icon-git-branch': publishMode === 'branch'}"></i> {{ 'SaveMode.' + publishMode | translate }}
     <i class="eav-icon-down-dir"></i>
   </button>
+
   <mat-menu #publishModeMenu="matMenu" [overlapTrigger]="false">
     <button *ngIf="versioningOptions.show" mat-menu-item type="button" (click)="publishMode = 'show'">
       <i class="eav-icon-eye"></i>{{ 'SaveMode.show' | translate }}</button>
@@ -52,5 +37,4 @@
     <button *ngIf="versioningOptions.branch" mat-menu-item type="button" (click)="publishMode = 'branch'">
       <i class="eav-icon-git-branch"></i>{{ 'SaveMode.branch' |translate }}</button>
   </mat-menu>
-
 </mat-card>

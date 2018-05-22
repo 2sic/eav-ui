@@ -278,7 +278,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
-    console.log('aaaaaaaaaaaaaaaaaaaaaad', this.item.header);
     return {
       // valueKey: `${attribute.name}.values[0].value`,
       entityId: this.item.entity.id,

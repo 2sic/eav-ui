@@ -3,13 +3,17 @@
     width: 100%;
 }
 
- .language-button {
+ .eav-localization-lock {
     position: absolute;
     top: -5px;
     right: 0;
     z-index: 1;
     width: auto;
  }
+
+ .eav-localization-lock-open { 
+     color: #228b22; 
+}
 
  .language-icon {
    /* margin-top: 12px; */

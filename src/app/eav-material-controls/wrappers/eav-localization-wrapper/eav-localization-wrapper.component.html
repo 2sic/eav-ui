@@ -2,11 +2,11 @@
   <div class="language-field" (dblclick)="toggleTranslate(currentLanguage !== defaultLanguage)">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <button *ngIf="(currentLanguage !== defaultLanguage)" class="language-button" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu">
-    {{infoMessage}}
+  <button *ngIf="(currentLanguage !== defaultLanguage)" class="eav-localization-lock" [ngClass]="{ 'eav-localization-lock-open': !inputDisabled }"
+    mat-icon-button type="button" [matMenuTriggerFor]="rootMenu">
+    {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}
     <mat-icon class="mat-18 language-icon">language</mat-icon>
   </button>
-
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
     <!-- <span (mouseleave)="closeMenu()"> -->
     <button mat-menu-item type="button" (click)="translateUnlink(config.name)">{{ 'LangMenu.Unlink'| translate }}</button>

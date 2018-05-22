@@ -8,9 +8,7 @@
     <!-- (dateChange)="to.change(field, formControl)" -->
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-hint align="start" *ngIf="config.settings.Notes && config.settings.Notes">
-      {{config.settings.Notes}}
-    </mat-hint>
+    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
     <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
   </mat-form-field>
 </ng-template>
@@ -25,9 +23,7 @@
     <button matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
       <mat-icon class="mat-24">today</mat-icon>
     </button>
-    <mat-hint align="start" *ngIf="config.settings.Notes && config.settings.Notes">
-      {{config.settings.Notes}}
-    </mat-hint>
+    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
     <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
   </mat-form-field>
 </ng-template>

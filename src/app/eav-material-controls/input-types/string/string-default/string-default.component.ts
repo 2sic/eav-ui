@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ChangeDetectionStrategy, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
@@ -17,14 +17,16 @@ import { LocalizationHelper } from '../../../../shared/helpers/localization-help
   wrapper: ['app-eav-localization-wrapper'],
 })
 export class StringDefaultComponent implements Field {
+  @ViewChild('errorComponent', { read: ViewContainerRef }) errorComponent: ViewContainerRef;
+
   @Input() config: FieldConfig;
   group: FormGroup;
-
-  constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get rowCount() {
     return this.config.settings.RowCount ? this.config.settings.RowCount : 1;
   }
+
+  constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
