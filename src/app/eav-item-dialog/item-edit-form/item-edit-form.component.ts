@@ -55,7 +55,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   set currentLanguage(value: string) {
     console.log('set currentLanguage');
     this.currentLanguageValue = value;
-    this.setFormValues(this.item, true);
+    this.setFormValues(this.item);
   }
   get currentLanguage(): string {
     return this.currentLanguageValue;
@@ -90,8 +90,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     console.log('oninit');
 
     this.itemBehaviorSubject$.subscribe((item: Item) => {
-      console.log('subscribe setFormValues start');
-      this.setFormValues(item, false);
+      this.setFormValues(item);
     });
 
     this.loadContentTypeFromStore();
@@ -161,8 +160,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   //   this.itemService.deleteItem(this.item);
   // }
 
-  private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
-    console.log('setFormValues: currentLanguageChanged:', currentLanguageChanged);
+  private setFormValues = (item: Item) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
       Object.keys(item.entity.attributes).forEach(attributeKey => {
@@ -170,11 +168,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
-      // Important - We need to enable all controls for new language before patchValue and before is determined which control is disabled
-      if (currentLanguageChanged) {
-        console.log('[COPY ALL] setFormValues enableALL');
-        this.enableAllControls(item.entity.attributes);
-      }
+      // if (currentLanguageChanged) {
+      //   this.enableAllControls(item.entity.attributes);
+      // }
 
       if (this.form.valueIsChanged(formValues)) {
         console.log('[COPY ALL] setFormValues valueIsChanged');
@@ -182,11 +178,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         this.form.patchValue(formValues, false);
       }
 
-      if (currentLanguageChanged) {
-        console.log('[COPY ALL] setFormValues disable all');
-        // loop trough all controls and set disable control if needed
-        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
-      }
+      // if (currentLanguageChanged) {
+      //   // loop trough all controls and set disable control if needed
+      //   this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
+      // }
     }
   }
 
@@ -273,8 +268,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
 
-    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
-      this.item.entity.attributes[attribute.name], attribute.name);
+    const disabled: boolean = settingsTranslated.Disabled
+      ? settingsTranslated.Disabled : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
+        this.item.entity.attributes[attribute.name], attribute.name));
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);

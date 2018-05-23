@@ -8,14 +8,12 @@
     <mat-icon class="mat-18 language-icon">language</mat-icon>
   </button>
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
-    <!-- <span (mouseleave)="closeMenu()"> -->
     <button mat-menu-item type="button" (click)="translateUnlink(config.name)">{{ 'LangMenu.Unlink'| translate }}</button>
     <button mat-menu-item type="button" (click)="linkToDefault(config.name)">{{ 'LangMenu.LinkDefault' | translate }}</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">{{ 'LangMenu.Copy' | translate }}</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">{{ 'LangMenu.Use' | translate }}</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">{{ 'LangMenu.Share' | translate }}</button>
     <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">{{ 'LangMenu.AllFields' | translate }}</button>
-    <!-- </span> -->
   </mat-menu>
 
   <mat-menu #copyFromMenu="matMenu">

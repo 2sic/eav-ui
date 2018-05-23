@@ -245,7 +245,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
+        console.log('config on subscribeToCurrentLanguageFromStore', this.config);
         this.translateAllConfiguration(currentLanguage);
+
+        this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
         this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
       })
     );
@@ -278,6 +281,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
     this.config.validation = ValidationHelper.setDefaultValidations(this.config.settings);
     this.config.required = this.config.settings.Required ? this.config.settings.Required : false;
+
   }
 
   /**
@@ -288,15 +292,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
    * @param defaultLanguage
    */
   private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
-    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-      this.group.controls[attributeKey].enable({ emitEvent: false });
-    } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-      this.group.controls[attributeKey].disable({ emitEvent: false });
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-        .join(', ');
-    } else {
-      this.group.controls[attributeKey].disable({ emitEvent: false });
+    if (!this.config.disabled) {
+      if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+        this.group.controls[attributeKey].enable({ emitEvent: false });
+      } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+        this.group.controls[attributeKey].disable({ emitEvent: false });
+        this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+          .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
+          .join(', ');
+      } else {
+        this.group.controls[attributeKey].disable({ emitEvent: false });
+      }
     }
   }
 
