@@ -53,7 +53,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   set currentLanguage(value: string) {
-    console.log('set currentLanguage');
     this.currentLanguageValue = value;
     this.setFormValues(this.item);
   }
@@ -63,7 +62,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   set item(value: Item) {
-    console.log('set item');
     this.itemBehaviorSubject$.next(value);
   }
   get item(): Item {
@@ -87,8 +85,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log('oninit');
-
     this.itemBehaviorSubject$.subscribe((item: Item) => {
       this.setFormValues(item);
     });
@@ -168,20 +164,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
-      // if (currentLanguageChanged) {
-      //   this.enableAllControls(item.entity.attributes);
-      // }
-
       if (this.form.valueIsChanged(formValues)) {
         console.log('[COPY ALL] setFormValues valueIsChanged');
         // set new values to form
         this.form.patchValue(formValues, false);
       }
-
-      // if (currentLanguageChanged) {
-      //   // loop trough all controls and set disable control if needed
-      //   this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
-      // }
     }
   }
 
@@ -243,7 +230,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.hyperlinkDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
         case InputTypesConstants.external:
-          // case 'custom-gps':
+        case 'custom-gps':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
