@@ -5,10 +5,14 @@ import { Store } from '@ngrx/store';
 
 import * as languageActions from '../../shared/store/actions/language.actions';
 import * as fromStore from '../store';
-import { Language } from '../models/eav';
+import { Language, Item } from '../models/eav';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class LanguageService {
+
+  private localizationWrapperMenuChangeSource = new Subject<string>();
+  localizationWrapperMenuChange$ = this.localizationWrapperMenuChangeSource.asObservable();
 
   constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
     // this.items$ = store.select(fromStore.getItems);
@@ -44,5 +48,13 @@ export class LanguageService {
 
   public updateDefaultLanguage(defaultLanguage: string) {
     this.store.dispatch(new languageActions.UpdateDefaultLanguageAction(defaultLanguage));
+  }
+
+  /**
+   * Trigger info message change on all form controls
+   * @param infoMessage
+   */
+  public triggerLocalizationWrapperMenuChange() {
+    this.localizationWrapperMenuChangeSource.next();
   }
 }

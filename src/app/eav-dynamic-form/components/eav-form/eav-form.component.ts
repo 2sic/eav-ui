@@ -81,6 +81,8 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    */
   private createControl(config: FieldConfig) {
     const { disabled, validation, value } = config;
+    console.log('createControl', config);
+    console.log('createControl disabled', disabled);
     return this.formBuilder.control({ disabled, value }, validation);
   }
 
@@ -103,24 +105,12 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
 
   setDisabled(name: string, disable: boolean, emitEvent: boolean) {
     if (this.form.controls[name]) {
-      // const method = disable ? 'disable' : 'enable';
-      // this.form.controls[name][method]();
-
       if (disable) {
         this.form.controls[name].disable({ emitEvent: emitEvent });
       } else {
         this.form.controls[name].enable({ emitEvent: emitEvent });
       }
-
-      return;
     }
-
-    this.config = this.config.map((item) => {
-      if (item.name === name) {
-        item.disabled = disable;
-      }
-      return item;
-    });
   }
 
   /**

@@ -42,7 +42,7 @@ import { ValidationMessagesService } from './validators/validation-messages-serv
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { Field } from '../eav-dynamic-form/model/field';
-import { FieldParentWrapperComponent } from './wrappers/field-parent-wrapper/field-parent-wrapper.component';
+import { ErrorWrapperComponent } from './wrappers/field-parent-wrapper/error-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
@@ -66,7 +66,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EmptyDefaultComponent,
     NumberDefaultComponent,
     EavLocalizationComponent,
-    FieldParentWrapperComponent,
+    ErrorWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
     EavLanguageSwitcherComponent,
@@ -106,7 +106,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EmptyDefaultComponent,
     NumberDefaultComponent,
     EavLocalizationComponent,
-    FieldParentWrapperComponent,
+    ErrorWrapperComponent,
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,

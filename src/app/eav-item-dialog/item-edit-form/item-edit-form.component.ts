@@ -53,9 +53,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   set currentLanguage(value: string) {
-    console.log('set currentLanguage');
     this.currentLanguageValue = value;
-    this.setFormValues(this.item, true);
+    this.setFormValues(this.item);
   }
   get currentLanguage(): string {
     return this.currentLanguageValue;
@@ -63,7 +62,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   set item(value: Item) {
-    console.log('set item');
     this.itemBehaviorSubject$.next(value);
   }
   get item(): Item {
@@ -87,11 +85,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit() {
-    console.log('oninit');
-
     this.itemBehaviorSubject$.subscribe((item: Item) => {
-      console.log('subscribe setFormValues start');
-      this.setFormValues(item, false);
+      this.setFormValues(item);
     });
 
     this.loadContentTypeFromStore();
@@ -161,8 +156,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   //   this.itemService.deleteItem(this.item);
   // }
 
-  private setFormValues = (item: Item, currentLanguageChanged: boolean) => {
-    console.log('setFormValues: currentLanguageChanged:', currentLanguageChanged);
+  private setFormValues = (item: Item) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
       Object.keys(item.entity.attributes).forEach(attributeKey => {
@@ -170,22 +164,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
-      // Important - We need to enable all controls for new language before patchValue and before is determined which control is disabled
-      if (currentLanguageChanged) {
-        console.log('[COPY ALL] setFormValues enableALL');
-        this.enableAllControls(item.entity.attributes);
-      }
-
       if (this.form.valueIsChanged(formValues)) {
         console.log('[COPY ALL] setFormValues valueIsChanged');
         // set new values to form
         this.form.patchValue(formValues, false);
-      }
-
-      if (currentLanguageChanged) {
-        console.log('[COPY ALL] setFormValues disable all');
-        // loop trough all controls and set disable control if needed
-        this.disableControlsForCurrentLanguage(item.entity.attributes, this.currentLanguage, this.defaultLanguage);
       }
     }
   }
@@ -248,7 +230,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.hyperlinkDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
         case InputTypesConstants.external:
-          // case 'custom-gps':
+        case 'custom-gps':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
@@ -273,15 +255,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
 
-    const disabled: boolean = this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
-      this.item.entity.attributes[attribute.name], attribute.name);
+    const disabled: boolean = settingsTranslated.Disabled
+      ? settingsTranslated.Disabled : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
+        this.item.entity.attributes[attribute.name], attribute.name));
 
     const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
-
     return {
       // valueKey: `${attribute.name}.values[0].value`,
       entityId: this.item.entity.id,
+      // header: this.item.header,
       value: value,
       name: attribute.name,
       type: inputType, // TODO see do we need this
@@ -347,6 +330,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
       name: name,
+      header: this.item.header,
       type: InputTypesConstants.emptyDefault,
       wrappers: ['app-collapsible-wrapper'],
       label: name,

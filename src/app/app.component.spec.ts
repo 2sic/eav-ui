@@ -4,11 +4,13 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { itemReducer } from './shared/store/reducers';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
 import { Routes, RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
+import { EffectsModule } from '@ngrx/effects';
+import { EavService } from './shared/services/eav.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -30,11 +32,13 @@ describe('AppComponent', () => {
       ],
       imports: [
         EavItemDialogModule,
-        StoreModule.forRoot({ items: itemReducer }),
+        StoreModule.forRoot({}),
         HttpClientModule,
         RouterModule.forRoot(routes),
+        EffectsModule.forRoot([]),
+        TranslateModule.forRoot()
       ],
-      providers: [ItemService, ContentTypeService, { provide: APP_BASE_HREF, useValue: '/' }]
+      providers: [ItemService, ContentTypeService, EavService, { provide: APP_BASE_HREF, useValue: '/' }]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

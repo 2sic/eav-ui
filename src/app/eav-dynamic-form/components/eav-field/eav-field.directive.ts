@@ -128,7 +128,8 @@ export class EavFieldDirective implements OnInit {
       // TODO: read data from config
       this.externalCommponentRefList['colour-picker'] = externalComponentRef;
     } else {
-      this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
+      // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
+      this.externalCommponentRefList['tinymce-wysiwyg'] = externalComponentRef;
     }
 
     if (this.window.addOn === undefined) {
@@ -140,7 +141,9 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.name === 'customStaticName') {
       this.loadExternalnputTypeScript('colour-picker', 'assets/script/colour-picker.js');
     } else {
-      this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
+      // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
+
+      this.loadExternalnputTypeScript('tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
     }
   }
 
@@ -156,6 +159,7 @@ export class EavFieldDirective implements OnInit {
 
       if (s.loaded) {
         const externalCommponentRef = this.externalCommponentRefList[s.name];
+        console.log('loaded addOnList', this.addOnList);
         const factory = this.addOnList[s.name];
         console.log('loaded name', s.name);
         console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);

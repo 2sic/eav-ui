@@ -48,6 +48,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   Object = Object;
   formsAreValid = false;
   closeWindow = false;
+  willPublish = false;     // default is won't publish, but will usually be overridden
+  publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
+  enableDraft = false;
+  versioningOptions;
+  partOfPage;
 
   private subscriptions: Subscription[] = [];
   private mid;
@@ -128,6 +133,23 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
+  getVersioningOptions(partOfPage: boolean, publishing: string) {
+    if (!partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+
+    const req = publishing || '';
+    switch (req) {
+      case '':
+      case 'DraftOptional': return { show: true, hide: true, branch: true };
+      case 'DraftRequired': return { branch: true, hide: true };
+      default: {
+        console.error('invalid versioning requiremenets: ' + req.toString());
+        return {};
+      }
+    }
+  }
+
   /**
    * close (remove) iframe window
    */
@@ -166,11 +188,16 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.setTranslateLanguage(lang);
 
+    this.partOfPage = queryStringParameters['partOfPage'];
+    const publishing = queryStringParameters['publishing'];
+    this.versioningOptions = this.getVersioningOptions(this.partOfPage, publishing);
+
     this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
     this.subscriptions.push(
       this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
         this.itemService.loadItems(data.Items);
         this.contentTypeService.loadContentTypes(data.ContentTypes);
+        this.setPublishMode(data.Items);
       })
     );
   }
@@ -290,6 +317,38 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
         }
       });
+    }
+  }
+
+  // TODO: finish group and new entity ?????
+  setPublishMode(items: Item[]) {
+    items.forEach(item => {
+
+      // If the entity is null, it does not exist yet. Create a new one
+      // TODO: do we need this ???
+      // if (!item.entity && !!item.header.contentTypeName) {
+      //   // TODO: do we need this ???
+      //   item.entity = entitiesSvc.newEntity(item.header);
+      // }
+      // TODO: do we need this ???
+      // item.entity = enhanceEntity(item.entity);
+
+      ////// load more content-type metadata to show
+      //// vm.items[i].ContentType = contentTypeSvc.getDetails(vm.items[i].Header.ContentTypeName);
+      // set slot value - must be inverte for boolean-switch
+      // const grp = item.header.group;
+      // item.slotIsUsed = (grp === null || grp === undefined || grp.SlotIsEmpty !== true);
+    });
+
+    // this.willPublish = items[0].entity.IsPublished;
+    // this.enableDraft = items[0].header.entityId !== 0; // it already exists, so enable draft
+    // this.publishMode = items[0].entity.IsBranch
+    //   ? 'branch' // it's a branch, so it must have been saved as a draft-branch
+    //   : items[0].entity.IsPublished ? 'show' : 'hide';
+
+    // if publis mode is prohibited, revert to default
+    if (!this.versioningOptions[this.publishMode]) {
+      this.publishMode = Object.keys(this.versioningOptions)[0];
     }
   }
 }

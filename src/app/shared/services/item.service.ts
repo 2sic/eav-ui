@@ -155,7 +155,7 @@ export class ItemService {
    * Get Json Entity V1
    */
   public getJsonItem1(path: string): Observable<JsonItem1> {
-    return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
+    return this.httpClient.get<JsonItem1>(`../../../assets/data/json-to-class-test/item/${path}`)
       .map((item: JsonItem1) => {
         return item;
       })
