@@ -20,7 +20,7 @@ export class ScriptLoaderService {
 
         // Load the script
         const scriptElement = document.createElement('script');
-        scriptElement.type = 'text/javascript';
+        scriptElement.type = 'module';
         scriptElement.src = script.src;
 
         scriptElement.onload = () => {
