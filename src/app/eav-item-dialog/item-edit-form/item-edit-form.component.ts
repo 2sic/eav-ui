@@ -36,8 +36,6 @@ import { Subscription } from 'rxjs/Subscription';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Action } from '@ngrx/store';
 
-
-
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
