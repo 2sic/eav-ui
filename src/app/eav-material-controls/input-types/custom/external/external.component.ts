@@ -24,6 +24,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ExternalFactory } from '../../../../eav-dynamic-form/model/external-factory';
 import { Observable } from 'rxjs/Observable';
 import { LanguageService } from '../../../../shared/services/language.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 
 @Component({
@@ -59,6 +60,40 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private externalInputTypeHost = {
     update: (value) => this.update(value)
   };
+
+  constructor(private validationMessagesService: ValidationMessagesService) { }
+
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  getErrorMessage() {
+    // console.log('trigger getErrorMessage1:', this.config.name);
+    // console.log('trigger getErrorMessage:',
+
+    let formError = '';
+    const control = this.group.controls[this.config.name];
+    if (control) {
+      const messages = this.validationMessagesService.validationMessages();
+      if (control && control.invalid) {
+        // if ((control.dirty || control.touched)) {
+        Object.keys(control.errors).forEach(key => {
+          if (messages[key]) {
+            formError = messages[key](this.config);
+          }
+        });
+        // }
+      }
+    }
+    console.log('control.dirty:', control.dirty);
+    console.log('control.touched:', control.touched);
+    return formError;
+
+    // this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config));
+    // return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
+  }
+
+
 
   ngOnInit() {
 
@@ -125,7 +160,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 
     // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
-    this.writeValue(factory, this.group.controls[this.config.name].value);
+    this.writeFromFormToView(factory, this.group.controls[this.config.name].value);
 
     this.suscribeValueChanges(factory);
     // this.subscribeToCurrentLanguageFromStore(factory);
@@ -144,7 +179,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     this.subscriptions.push(
       this.group.valueChanges.subscribe((item) => {
         console.log('ExternalComponent suscribeValueChanges', item[this.config.name]);
-        this.writeValue(factory, item[this.config.name]);
+        this.writeFromFormToView(factory, item[this.config.name]);
       })
     );
   }
@@ -155,10 +190,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
    * @param factory
    * @param value
    */
-  private writeValue(factory, value) {
+  private writeFromFormToView(factory, value) {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
-      factory.writeValue(this.elReference.nativeElement, value);
+      if (value) {
+        factory.writeValue(this.elReference.nativeElement, value);
+      }
+      factory.writeOptions(this.elReference.nativeElement, this.config, this.config.name, this.group.controls[this.config.name].disabled);
     }
   }
 }

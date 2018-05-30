@@ -89,8 +89,21 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
          * @param {*} value 
          */
         validateValue(value) {
+            // if (value.length < 3) {
+            //     return false;
+            // }
             //TODO: show validate message ???
-            return value.length > 3;
+            return true;
+        }
+
+        writeOptions(container, config, name, disabled) {
+            console.log('set disable', disabled);
+            if (disabled) {
+                tinymce.get('mytextarea' + name).setMode('readonly');
+            }
+            else {
+                tinymce.get('mytextarea' + name).setMode('code');
+            }
         }
 
         /**
@@ -105,6 +118,9 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             console.log('Exernal outside newvalue:', newValue);
             if (elements[1].innerHTML !== newValue)
                 elements[1].innerHTML = newValue;
+
+            // TODO: write like this:
+            // tinymce.get('my_editor').setContent(data);
         }
 
         /**

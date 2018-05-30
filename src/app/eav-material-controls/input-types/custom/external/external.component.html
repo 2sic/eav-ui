@@ -7,5 +7,8 @@
 
 <div #container></div>
 
+<mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
+<mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+
 
 <!-- <div [innerHtml]="html"></div> -->
