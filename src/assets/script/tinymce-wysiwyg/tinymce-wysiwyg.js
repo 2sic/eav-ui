@@ -5,24 +5,31 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 
     class externalTinymceWysiwyg {
 
-        constructor(name, host, config) {
+        constructor(name, host, options, config) {
             this.name = name;
             this.host = host;
+            this.options = options;
             this.config = config;
         }
 
-        initialize(host, options) {
+        initialize(host, name) {
+            // if (!this.host) {
+            //     this.host = {};
+            // }
             this.host = host;
+            this.options = name;
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
             // this.host.update('update value');
         }
 
-        render(container) {
+        render(container, name) {
+            console.log('container.innerHTML name:', name);
+            console.log('container.innerHTML name:', container);
+
             container.innerHTML = `<div class="wrap-float-label">
-            <div id="mytextarea" class="field-string-wysiwyg-mce-box wrap-float-label">Hello, World!</div>
+            <div id="mytextarea` + name + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
             </div>`;
-            // container.innerHTML = `<div ui-tinymce="tinymceOptions"></div>`;
 
             var settings = {
                 enableContentBlocks: false
@@ -35,34 +42,21 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             // });
 
             var selectorOptions = {
-                selector: '#mytextarea',
+                selector: '#mytextarea' + name,
                 //init_instance_callback: this.tinyMceInitCallback
-                setup: this.tinyMceInitCallback,// important use .bind(this) if not arrow
-                // init_instance_callback: (editor) => {
-                //     console.log("Editor: " + editor.id + " is now initialized.");
-                //     console.log("Editor config: ", this.host);
-                //     editor.on('change', function (e) {
-                //         console.log('Editor was change', editor.getContent());
-                //         //  this.changeCheck(e, editor.getContent())
-                //     });
-                // }
+                setup: this.tinyMceInitCallback.bind(this),
             };
 
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
-            console.log('oprions: ', options);
+            console.log('options');
+            console.table(options);
 
             tinymce.init(options);
 
-            // container.getElementsByTagName('input').onchange(this.changeCheck);
-            console.log('myComponent render', container);
 
-            var elements = container.getElementsByTagName('input');
-            // console.log('elem', container.getElementsByTagName('input'));
+            // var divElements = container.getElementsByTagName('div');
+            // console.log('elements value', divElements[1].innerHTML);
 
-            var divElements = container.getElementsByTagName('div');
-            console.log('elements value', divElements[1].innerHTML);
-            // console.log('elements value', elements[0]);
-            console.log('input', divElements[1].innerHTML);
             // elements[0].addEventListener('change', () => {
             //     console.log('input clcik');
             //     // this.changeCheck(event, divElements[1].innerHTML);
@@ -74,44 +68,67 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             // })
         }
 
-        tinyMceInitCallback = (editor) => {
-            console.log("Editor1: " + editor.id + " is now initialized.");
-
-            var imgSizes = this.config.svc().imgSizes;
-            console.log("Editor1: ", this.config.svc().imgSizes);
-            addTinyMceToolbarButtons(this.host, editor, imgSizes);
-
-            editor.on('change', function (e) {
-                console.log('Editor was change', editor.getContent());
-                this.changeCheck(e, editor.getContent())
-            });
-            //TODO: this.host can call angular functions
-        }
-
+        /**
+         * function call on change
+         * @param {*} event 
+         * @param {*} value 
+         */
         changeCheck(event, value) {
             console.log('changeCheck event', event);
             console.log('changeCheck value', value);
+
             // do validity checks
-            var ok = value.length > 3;
-            if (ok) {
+            var isValid = this.validateValue(value);
+            if (isValid) {
                 this.host.update(value);
             }
-
         }
 
-        externalChange(container, newValue) {
-            var elements = container.getElementsByTagName('textarea');
+        /**
+         * For validating value
+         * @param {*} value 
+         */
+        validateValue(value) {
+            //TODO: show validate message ???
+            return value.length > 3;
+        }
 
-            if (elements[0].value !== newValue)
-                elements[0].value = newValue;
+        /**
+         * New value from the form into the view
+         * This function can be triggered from outside when value changed
+         * @param {} container 
+         * @param {*} newValue 
+         */
+        writeValue(container, newValue) {
+            var elements = container.getElementsByTagName('div');
+            console.log('Exernal outside valu:', elements[1].innerHTML);
+            console.log('Exernal outside newvalue:', newValue);
+            if (elements[1].innerHTML !== newValue)
+                elements[1].innerHTML = newValue;
+        }
+
+        /**
+         * on tinyMce setup we set toolbarButtons and change event listener
+         * @param {*} editor 
+         */
+        tinyMceInitCallback(editor) {
+            console.log("Editor1: " + editor.id + " is now initialized.");
+            console.log("Editor host: ", this.host);
+            var imgSizes = this.config.svc().imgSizes;
+            addTinyMceToolbarButtons(this.host, editor, imgSizes);
+
+            editor.on('change', e => {
+                console.log('Editor was change', editor.getContent());
+                this.changeCheck(e, editor.getContent())
+            });
         }
     }
 
-    function externalComponent2Factory(name) {
+    function externalComponentFactory(name) {
         var config = new tinymceWysiwygConfig();
         console.log('customTinymce', config);
-        return new externalTinymceWysiwyg(name, null, config);
+        return new externalTinymceWysiwyg(name, null, null, config);
     }
 
-    window.addOn.register(externalComponent2Factory('tinymce-wysiwyg'));
+    window.addOn.register(externalComponentFactory('tinymce-wysiwyg'));
 })();

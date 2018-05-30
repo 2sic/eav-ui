@@ -54,7 +54,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   set currentLanguage(value: string) {
     this.currentLanguageValue = value;
-    this.setFormValues(this.item);
+    this.setFormValues(this.item, true); // need set emit to true because of  external commponents
   }
   get currentLanguage(): string {
     return this.currentLanguageValue;
@@ -86,7 +86,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.itemBehaviorSubject$.subscribe((item: Item) => {
-      this.setFormValues(item);
+      this.setFormValues(item, false);
     });
 
     this.loadContentTypeFromStore();
@@ -156,7 +156,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   //   this.itemService.deleteItem(this.item);
   // }
 
-  private setFormValues = (item: Item) => {
+  private setFormValues = (item: Item, emit: boolean) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
       Object.keys(item.entity.attributes).forEach(attributeKey => {
@@ -165,9 +165,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       });
 
       if (this.form.valueIsChanged(formValues)) {
-        console.log('[COPY ALL] setFormValues valueIsChanged');
+        console.log('setFormValues valueIsChanged');
         // set new values to form
-        this.form.patchValue(formValues, false);
+        this.form.patchValue(formValues, emit);
       }
     }
   }

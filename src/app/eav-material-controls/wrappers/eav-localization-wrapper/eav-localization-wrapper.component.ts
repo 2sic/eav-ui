@@ -297,9 +297,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         this.group.controls[attributeKey].enable({ emitEvent: false });
       } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
         this.group.controls[attributeKey].disable({ emitEvent: false });
-        this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-          .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-          .join(', ');
+        // this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+        //   .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
+        //   .join(', ');
       } else {
         this.group.controls[attributeKey].disable({ emitEvent: false });
       }

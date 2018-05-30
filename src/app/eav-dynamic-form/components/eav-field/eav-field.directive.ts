@@ -129,7 +129,8 @@ export class EavFieldDirective implements OnInit {
       this.externalCommponentRefList['colour-picker'] = externalComponentRef;
     } else {
       // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
-      this.externalCommponentRefList['tinymce-wysiwyg'] = externalComponentRef;
+      console.log('container for script', fieldConfig.name);
+      this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
     }
 
     if (this.window.addOn === undefined) {
@@ -139,15 +140,15 @@ export class EavFieldDirective implements OnInit {
 
     // TODO: read data from config
     if (fieldConfig.name === 'customStaticName') {
-      this.loadExternalnputTypeScript('colour-picker', 'assets/script/colour-picker.js');
+      this.loadExternalnputTypeScript('colour-picker', '', 'assets/script/colour-picker.js');
     } else {
       // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
 
-      this.loadExternalnputTypeScript('tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
+      this.loadExternalnputTypeScript(fieldConfig.name, 'tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
     }
   }
 
-  private loadExternalnputTypeScript(name: string, src: string) {
+  private loadExternalnputTypeScript(name: string, type: string, src: string) {
     const script: ScriptModel = {
       name: name,
       src: src,
@@ -155,21 +156,20 @@ export class EavFieldDirective implements OnInit {
     };
 
     this.scriptLoaderService.load(script).subscribe(s => {
-      console.log('loaded ScriptModel: ', s);
+      console.log(' ScriptModel: ', s);
 
       if (s.loaded) {
         const externalCommponentRef = this.externalCommponentRefList[s.name];
         console.log('loaded addOnList', this.addOnList);
-        const factory = this.addOnList[s.name];
+        const factory = this.addOnList[type];
         console.log('loaded name', s.name);
         console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
         console.log('loaded factory', factory);
         if (externalCommponentRef && factory) {
-          console.log('loaded Object.assign', factory);
           Object.assign(externalCommponentRef.instance, {
             // group: externalCommponentRef.instance.group,
             // config: externalCommponentRef.instance.config,
-            factory: factory,
+            factory: Object.create(factory)
           });
         }
       }

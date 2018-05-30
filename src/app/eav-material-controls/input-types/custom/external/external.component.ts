@@ -22,6 +22,8 @@ import { EavEntity, EavValue, EavDimensions } from '../../../../shared/models/ea
 import { CustomInputType } from '../../../../shared/models';
 import { Subscription } from 'rxjs/Subscription';
 import { ExternalFactory } from '../../../../eav-dynamic-form/model/external-factory';
+import { Observable } from 'rxjs/Observable';
+import { LanguageService } from '../../../../shared/services/language.service';
 
 
 @Component({
@@ -59,6 +61,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
   };
 
   ngOnInit() {
+
+
     // Observable.fromEvent(this.elReference1.nativeElement, 'change')
     //   .do(ev => console.log('test', this.elReference1.nativeElement.value))
     //   .subscribe(c => {
@@ -116,18 +120,19 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
     console.log('this.customInputTypeHost', this.elReference.nativeElement);
-    factory.initialize(this.externalInputTypeHost);
-    factory.render(this.elReference.nativeElement);
+    factory.initialize(this.externalInputTypeHost, this.config.name);
+    factory.render(this.elReference.nativeElement, this.config.name);
+    console.log('factory.writeValue(', this.group.controls[this.config.name].value);
+
+    // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
+    this.writeValue(factory, this.group.controls[this.config.name].value);
 
     this.suscribeValueChanges(factory);
+    // this.subscribeToCurrentLanguageFromStore(factory);
   }
 
-  // get inputInvalid() {
-  //   return this.group.controls[this.config.name].invalid;
-  // }
-
   private update(value) {
-    console.log('update change', value);
+    console.log('ExternalComponent update change', value);
     // TODO: validate value
     this.group.controls[this.config.name].patchValue(value);
   }
@@ -138,11 +143,22 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private suscribeValueChanges(factory: any) {
     this.subscriptions.push(
       this.group.valueChanges.subscribe((item) => {
-        console.log('suscribeValueChanges', this.elReference.nativeElement);
-        if (this.elReference.nativeElement.innerHTML) {
-          factory.externalChange(this.elReference.nativeElement, item[this.config.name]);
-        }
+        console.log('ExternalComponent suscribeValueChanges', item[this.config.name]);
+        this.writeValue(factory, item[this.config.name]);
       })
     );
+  }
+
+
+  /**
+   * write value from the form into the view in external component
+   * @param factory
+   * @param value
+   */
+  private writeValue(factory, value) {
+    // if container have value
+    if (this.elReference.nativeElement.innerHTML) {
+      factory.writeValue(this.elReference.nativeElement, value);
+    }
   }
 }
