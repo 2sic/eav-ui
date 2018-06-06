@@ -162,54 +162,111 @@ export class EavFieldDirective implements OnInit {
       fieldConfig.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js']);
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
+      'css');
   }
 
-  private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[]) {
-    // first load styles (css files) - when finish call js load
-    this.loadExternalnputTypeCss(increment, name, type, styles, scripts);
-  }
-
-  private loadExternalnputTypeCss(increment: number, name: string, type: string, styles: string[], scripts: string[]) {
-    const style: ScriptModel = {
-      name: `css${name}${increment}`,
-      src: styles[increment],
+  private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
+    const file: ScriptModel = {
+      name: `${fileType}${name}${increment}`,
+      src: fileType === 'css' ? styles[increment] : scripts[increment],
       loaded: false
     };
 
-    this.scriptLoaderService.loadCss(style).subscribe(s => {
-      if (s.loaded) {
-        increment = increment + 1;
-        const nextScript = styles[increment];
-        if (nextScript) {
-          this.loadExternalnputTypeCss(increment, name, type, styles, scripts);
-        } else { // when style load is finish then call:
-          this.loadExternalnputTypeScript(0, name, type, scripts);
-        }
-      }
-    });
+    switch (fileType) {
+      case 'css':
+        this.scriptLoaderService.loadCss(file).subscribe(s => {
+          if (s.loaded) {
+            increment = increment + 1;
+            const nextScript = styles[increment];
+            if (nextScript) {
+              this.loadExternalnputType(increment, name, type, styles, scripts, 'css');
+            } else { // when style load is finish then call scripts
+              this.loadExternalnputType(0, name, type, styles, scripts, 'js');
+            }
+          }
+        });
+        break;
+      case 'js':
+        this.scriptLoaderService.load(file).subscribe(s => {
+          if (s.loaded) {
+            increment = increment + 1;
+            const nextScript = scripts[increment];
+            if (nextScript) {
+              this.loadExternalnputType(increment, name, type, styles, scripts, 'js');
+            } else { // when scripts load is finish then call registered factory
+              this.loadExternalFactoryToComponent(name, type);
+            }
+          }
+        });
+        break;
+      default:
+        console.log('Wrong file type');
+        break;
+    }
   }
 
-  private loadExternalnputTypeScript(increment: number, name: string, type: string, src: string[]) {
-    const script: ScriptModel = {
-      // name: (increment === (src.length - 1)) ? name : `${name}${increment}`, // name for last script (register script)
-      name: `${name}${increment}`, // name for last script (register script)
-      src: src[increment],
-      loaded: false
-    };
+  // private loadExternalnputTypeCss(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
+  //   const style: ScriptModel = {
+  //     name: `${fileType}${name}${increment}`,
+  //     src: styles[increment],
+  //     loaded: false
+  //   };
 
-    this.scriptLoaderService.load(script).subscribe(s => {
-      if (s.loaded) {
-        increment = increment + 1;
-        const nextScript = src[increment];
-        if (nextScript) {
-          this.loadExternalnputTypeScript(increment, name, type, src);
-        } else {
-          this.loadExternalFactoryToComponent(name, type);
-        }
-      }
-    });
-  }
+  //   this.scriptLoaderService.loadCss(style).subscribe(s => {
+  //     if (s.loaded) {
+  //       increment = increment + 1;
+  //       const nextScript = styles[increment];
+  //       if (nextScript) {
+  //         this.loadExternalnputTypeCss(increment, name, type, styles, scripts, 'css');
+  //       } else { // when style load is finish then call:
+  //         this.loadExternalnputTypeScript(0, name, type, scripts, 'js');
+  //       }
+  //     }
+  //   });
+  // }
+
+  // private loadExternalnputTypeScript(increment: number, name: string, type: string, src: string[], fileType: string) {
+  //   const script: ScriptModel = {
+  //     // name: (increment === (src.length - 1)) ? name : `${name}${increment}`, // name for last script (register script)
+  //     name: `${fileType}${name}${increment}`, // name for last script (register script)
+  //     src: src[increment],
+  //     loaded: false
+  //   };
+
+  //   switch (fileType) {
+  //     case 'js':
+  //       this.scriptLoaderService.load(script).subscribe(s => {
+  //         if (s.loaded) {
+  //           increment = increment + 1;
+  //           const nextScript = src[increment];
+  //           if (nextScript) {
+  //             this.loadExternalnputTypeScript(increment, name, type, src, 'js');
+  //           } else {
+  //             this.loadExternalFactoryToComponent(name, type);
+  //           }
+  //         }
+  //       });
+  //       break;
+  //     case 'js':
+  //       this.scriptLoaderService.loadCss(style).subscribe(s => {
+  //         if (s.loaded) {
+  //           increment = increment + 1;
+  //           const nextScript = styles[increment];
+  //           if (nextScript) {
+  //             this.loadExternalnputTypeCss(increment, name, type, styles, scripts, 'css');
+  //           } else { // when style load is finish then call:
+  //             this.loadExternalnputTypeScript(0, name, type, scripts, 'js');
+  //           }
+  //         }
+  //       });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+
+
+  // }
 
   private loadExternalFactoryToComponent(name: string, type: string) {
     const externalCommponentRef = this.externalCommponentRefList[name];
