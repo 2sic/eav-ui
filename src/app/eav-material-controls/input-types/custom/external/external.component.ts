@@ -49,7 +49,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   private subscriptions: Subscription[] = [];
-  // loaded = false;
+  loaded = true;
 
   // window: any = window;
 
@@ -85,8 +85,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
         // }
       }
     }
-    console.log('control.dirty:', control.dirty);
-    console.log('control.touched:', control.touched);
+    // console.log('control.dirty:', control.dirty);
+    // console.log('control.touched:', control.touched);
     return formError;
 
     // this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config));
@@ -164,6 +164,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
     this.suscribeValueChanges(factory);
     // this.subscribeToCurrentLanguageFromStore(factory);
+    this.loaded = false;
   }
 
   private update(value) {
@@ -194,7 +195,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
       if (value) {
-        factory.writeValue(this.elReference.nativeElement, value);
+        factory.writeValue(this.elReference.nativeElement, value, this.config.name);
       }
       factory.writeOptions(this.elReference.nativeElement, this.config, this.config.name, this.group.controls[this.config.name].disabled);
     }

@@ -5,6 +5,7 @@
 
 <!-- style="display:none;" -->
 
+<mat-spinner *ngIf="loaded"></mat-spinner>
 <div #container></div>
 
 <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>

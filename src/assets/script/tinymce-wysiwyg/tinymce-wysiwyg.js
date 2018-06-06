@@ -32,7 +32,8 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             </div>`;
 
             var settings = {
-                enableContentBlocks: false
+                enableContentBlocks: false,
+                auto_focus: false,
             };
 
             //TODO: add languages
@@ -45,6 +46,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
                 selector: '#mytextarea' + name,
                 //init_instance_callback: this.tinyMceInitCallback
                 setup: this.tinyMceInitCallback.bind(this),
+                // content_css: '/tinymce-wysiwyg.css',
             };
 
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
@@ -98,29 +100,33 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 
         writeOptions(container, config, name, disabled) {
             console.log('set disable', disabled);
-            if (disabled) {
+            console.log('set disable 1', tinymce.get('mytextarea' + name));
+            console.log('set disable 2', tinymce.get('mytextarea' + name).mode);
+            var isReadOnly = tinymce.get('mytextarea' + name).readonly;
+            if (disabled && !isReadOnly) {
                 tinymce.get('mytextarea' + name).setMode('readonly');
             }
-            else {
+            else if (!disabled && isReadOnly) {
+                tinymce.get('mytextarea' + name).setMode('code');
                 tinymce.get('mytextarea' + name).setMode('code');
             }
         }
 
-        /**
+        /**w
          * New value from the form into the view
          * This function can be triggered from outside when value changed
          * @param {} container 
          * @param {*} newValue 
          */
-        writeValue(container, newValue) {
-            var elements = container.getElementsByTagName('div');
-            console.log('Exernal outside valu:', elements[1].innerHTML);
-            console.log('Exernal outside newvalue:', newValue);
-            if (elements[1].innerHTML !== newValue)
-                elements[1].innerHTML = newValue;
+        writeValue(container, newValue, name) {
+            // var elements = container.getElementsByTagName('div');
+            // console.log('Exernal outside valu:', elements[1].innerHTML);
+            // console.log('Exernal outside newvalue:', newValue);
+            // if (elements[1].innerHTML !== newValue)
+            //     elements[1].innerHTML = newValue;
 
             // TODO: write like this:
-            // tinymce.get('my_editor').setContent(data);
+            tinymce.get('mytextarea' + name).setContent(newValue);
         }
 
         /**

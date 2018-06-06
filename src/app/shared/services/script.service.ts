@@ -25,8 +25,11 @@ export class ScriptLoaderService {
 
         scriptElement.onload = () => {
           script.loaded = true;
-          observer.next(script);
-          observer.complete();
+          // Settimeout for testing slow load of scripts
+          setTimeout(() => {
+            observer.next(script);
+            observer.complete();
+          }, 5000);
         };
 
         scriptElement.onerror = (error: any) => {
@@ -34,6 +37,41 @@ export class ScriptLoaderService {
         };
 
         document.getElementsByTagName('body')[0].appendChild(scriptElement);
+      }
+    });
+  }
+
+  public loadCss(script: ScriptModel): Observable<ScriptModel> {
+    return new Observable<ScriptModel>((observer: Observer<ScriptModel>) => {
+      const existingScript = this.scripts.find(s => s.name === script.name);
+
+      // Complete if already loaded
+      if (existingScript && existingScript.loaded) {
+        observer.next(existingScript);
+        observer.complete();
+      } else {
+        // Add the script
+        this.scripts = [...this.scripts, script];
+
+        // Load the script
+        const scriptElement = document.createElement('link');
+        scriptElement.rel = 'stylesheet';
+        scriptElement.href = script.src;
+
+        scriptElement.onload = () => {
+          script.loaded = true;
+          // Settimeout for testing slow load of scripts
+          setTimeout(() => {
+            observer.next(script);
+            observer.complete();
+          }, 5000);
+        };
+
+        scriptElement.onerror = (error: any) => {
+          observer.error('Couldnt load stylesheet ' + script.src);
+        };
+
+        document.getElementsByTagName('head')[0].appendChild(scriptElement);
       }
     });
   }

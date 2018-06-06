@@ -17,6 +17,7 @@ import {
   MatMenuModule,
   MatTooltipModule,
   MatTabsModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import {
   CollapsibleWrapperComponent,
@@ -92,6 +93,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatTooltipModule,
     MatTabsModule,
+    MatProgressSpinnerModule,
     TranslateModule.forChild()
   ],
   entryComponents: [

@@ -1,6 +1,15 @@
 import {
-  ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef,
-  Component, NgModule, ModuleWithComponentFactories, ComponentFactory,
+  ComponentFactoryResolver,
+  ComponentRef,
+  ComponentFactory,
+  Component,
+  Directive,
+  Input,
+  OnInit,
+  Type,
+  ViewContainerRef,
+  NgModule,
+  ModuleWithComponentFactories,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
@@ -122,58 +131,100 @@ export class EavFieldDirective implements OnInit {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
-    console.log('loaded fieldConfig.name', fieldConfig.type);
-    // TODO: read data from config
-    if (fieldConfig.name === 'customStaticName') {
-      // TODO: read data from config
-      this.externalCommponentRefList['colour-picker'] = externalComponentRef;
-    } else {
-      // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
-      console.log('container for script', fieldConfig.name);
-      this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
-    }
+    // console.log('loaded fieldConfig.name', fieldConfig.type);
+    // // TODO: read data from config
+    // if (fieldConfig.name === 'customStaticName') {
+    //   // TODO: read data from config
+    //   this.externalCommponentRefList['colour-picker'] = externalComponentRef;
+    // } else {
+    // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
+    console.log('container for script', fieldConfig.name);
+    this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
+    // }
 
     if (this.window.addOn === undefined) {
       this.window.addOn = [];
       this.window.addOn = new CustomInputType(this.registerExternalComponent.bind(this));
     }
 
-    // TODO: read data from config
-    if (fieldConfig.name === 'customStaticName') {
-      this.loadExternalnputTypeScript('colour-picker', '', 'assets/script/colour-picker.js');
-    } else {
-      // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
+    // // TODO: read data from config
+    // // if (fieldConfig.name === 'customStaticName') {
+    // //   this.loadExternalnputTypeScript('colour-picker', '', 'assets/script/colour-picker.js');
+    // // } else {
+    // //   // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
 
-      this.loadExternalnputTypeScript(fieldConfig.name, 'tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
-    }
+    // this.loadExternalnputTypeScript(fieldConfig.name, 'tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
+    // // }
+
+
+    this.loadExternalnputType(
+      0,
+      fieldConfig.name,
+      'tinymce-wysiwyg',
+      ['assets/script/tinymce-wysiwyg/tinymce-wysiwyg.css'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js']);
   }
 
-  private loadExternalnputTypeScript(name: string, type: string, src: string) {
+  private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[]) {
+    // first load styles (css files) - when finish call js load
+    this.loadExternalnputTypeCss(increment, name, type, styles, scripts);
+  }
+
+  private loadExternalnputTypeCss(increment: number, name: string, type: string, styles: string[], scripts: string[]) {
+    const style: ScriptModel = {
+      name: `css${name}${increment}`,
+      src: styles[increment],
+      loaded: false
+    };
+
+    this.scriptLoaderService.loadCss(style).subscribe(s => {
+      if (s.loaded) {
+        increment = increment + 1;
+        const nextScript = styles[increment];
+        if (nextScript) {
+          this.loadExternalnputTypeCss(increment, name, type, styles, scripts);
+        } else { // when style load is finish then call:
+          this.loadExternalnputTypeScript(0, name, type, scripts);
+        }
+      }
+    });
+  }
+
+  private loadExternalnputTypeScript(increment: number, name: string, type: string, src: string[]) {
     const script: ScriptModel = {
-      name: name,
-      src: src,
+      // name: (increment === (src.length - 1)) ? name : `${name}${increment}`, // name for last script (register script)
+      name: `${name}${increment}`, // name for last script (register script)
+      src: src[increment],
       loaded: false
     };
 
     this.scriptLoaderService.load(script).subscribe(s => {
-      console.log(' ScriptModel: ', s);
-
       if (s.loaded) {
-        const externalCommponentRef = this.externalCommponentRefList[s.name];
-        console.log('loaded addOnList', this.addOnList);
-        const factory = this.addOnList[type];
-        console.log('loaded name', s.name);
-        console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
-        console.log('loaded factory', factory);
-        if (externalCommponentRef && factory) {
-          Object.assign(externalCommponentRef.instance, {
-            // group: externalCommponentRef.instance.group,
-            // config: externalCommponentRef.instance.config,
-            factory: Object.create(factory)
-          });
+        increment = increment + 1;
+        const nextScript = src[increment];
+        if (nextScript) {
+          this.loadExternalnputTypeScript(increment, name, type, src);
+        } else {
+          this.loadExternalFactoryToComponent(name, type);
         }
       }
     });
+  }
+
+  private loadExternalFactoryToComponent(name: string, type: string) {
+    const externalCommponentRef = this.externalCommponentRefList[name];
+    console.log('loaded addOnList', this.addOnList);
+    const factory = this.addOnList[type];
+    console.log('loaded name', name);
+    console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
+    console.log('loaded factory', factory);
+    if (externalCommponentRef && factory) {
+      Object.assign(externalCommponentRef.instance, {
+        // group: externalCommponentRef.instance.group,
+        // config: externalCommponentRef.instance.config,
+        factory: Object.create(factory)
+      });
+    }
   }
 
   private registerExternalComponent(factory) {
