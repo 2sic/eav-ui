@@ -19,4 +19,5 @@ export interface FieldConfig {
     fullSettings?: EavAttributes;
     collapse?: boolean;
     fieldGroup?: FieldConfig[];
+    index?: number;
 }

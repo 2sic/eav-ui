@@ -5,30 +5,31 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 
     class externalTinymceWysiwyg {
 
-        constructor(name, host, options, config) {
+        constructor(name, id, host, options, config) {
             this.name = name;
+            this.id = id;
             this.host = host;
             this.options = options;
             this.config = config;
         }
 
-        initialize(host, name) {
+        initialize(host, options, id) {
             // if (!this.host) {
             //     this.host = {};
             // }
             this.host = host;
-            this.options = name;
+            this.options = options;
+            this.id = id;
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
             // this.host.update('update value');
         }
 
-        render(container, name) {
-            console.log('container.innerHTML name:', name);
-            console.log('container.innerHTML name:', container);
+        render(container) {
+            console.log('render id:', this.id);
 
             container.innerHTML = `<div class="wrap-float-label">
-            <div id="mytextarea` + name + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
+            <div id="` + this.id + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
             </div>`;
 
             var settings = {
@@ -43,7 +44,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             // });
 
             var selectorOptions = {
-                selector: '#mytextarea' + name,
+                selector: '#' + this.id,
                 //init_instance_callback: this.tinyMceInitCallback
                 setup: this.tinyMceInitCallback.bind(this),
                 // content_css: '/tinymce-wysiwyg.css',
@@ -98,27 +99,29 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             return true;
         }
 
-        writeOptions(container, config, name, disabled) {
-            console.log('set disable', disabled);
-            console.log('set disable 1', tinymce.get('mytextarea' + name));
-            console.log('set disable 2', tinymce.get('mytextarea' + name).mode);
-            var isReadOnly = tinymce.get('mytextarea' + name).readonly;
+        /**
+         * On render and change set configuration of control
+         * @param {*} container - is html container for component
+         * @param {*} disabled 
+         */
+        setOptions(container, disabled) {
+            console.log('set disable 1', tinymce.get(this.id));
+            var isReadOnly = tinymce.get(this.id).readonly;
             if (disabled && !isReadOnly) {
-                tinymce.get('mytextarea' + name).setMode('readonly');
+                tinymce.get(this.id).setMode('readonly');
             }
             else if (!disabled && isReadOnly) {
-                tinymce.get('mytextarea' + name).setMode('code');
-                tinymce.get('mytextarea' + name).setMode('code');
+                tinymce.get(this.id).setMode('code');
             }
         }
 
-        /**w
+        /**
          * New value from the form into the view
          * This function can be triggered from outside when value changed
          * @param {} container 
          * @param {*} newValue 
          */
-        writeValue(container, newValue, name) {
+        setValue(container, newValue) {
             // var elements = container.getElementsByTagName('div');
             // console.log('Exernal outside valu:', elements[1].innerHTML);
             // console.log('Exernal outside newvalue:', newValue);
@@ -126,7 +129,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             //     elements[1].innerHTML = newValue;
 
             // TODO: write like this:
-            tinymce.get('mytextarea' + name).setContent(newValue);
+            tinymce.get(this.id).setContent(newValue);
         }
 
         /**
@@ -149,7 +152,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
     function externalComponentFactory(name) {
         var config = new tinymceWysiwygConfig();
         console.log('customTinymce', config);
-        return new externalTinymceWysiwyg(name, null, null, config);
+        return new externalTinymceWysiwyg(name, null, null, null, config);
     }
 
     window.addOn.register(externalComponentFactory('tinymce-wysiwyg'));

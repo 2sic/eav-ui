@@ -67,6 +67,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
     return this.group.controls[this.config.name].invalid;
   }
 
+  get id() {
+    return `${this.config.entityId}${this.config.index}`;
+  }
+
   getErrorMessage() {
     // console.log('trigger getErrorMessage1:', this.config.name);
     // console.log('trigger getErrorMessage:',
@@ -155,12 +159,12 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
     console.log('this.customInputTypeHost', this.elReference.nativeElement);
-    factory.initialize(this.externalInputTypeHost, this.config.name);
-    factory.render(this.elReference.nativeElement, this.config.name);
+    factory.initialize(this.externalInputTypeHost, this.config, this.id);
+    factory.render(this.elReference.nativeElement);
     console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 
     // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
-    this.writeFromFormToView(factory, this.group.controls[this.config.name].value);
+    this.setExternalControlValues(factory, this.group.controls[this.config.name].value);
 
     this.suscribeValueChanges(factory);
     // this.subscribeToCurrentLanguageFromStore(factory);
@@ -180,7 +184,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     this.subscriptions.push(
       this.group.valueChanges.subscribe((item) => {
         console.log('ExternalComponent suscribeValueChanges', item[this.config.name]);
-        this.writeFromFormToView(factory, item[this.config.name]);
+        this.setExternalControlValues(factory, item[this.config.name]);
       })
     );
   }
@@ -191,13 +195,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
    * @param factory
    * @param value
    */
-  private writeFromFormToView(factory, value) {
+  private setExternalControlValues(factory, value) {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
       if (value) {
-        factory.writeValue(this.elReference.nativeElement, value, this.config.name);
+        factory.setValue(this.elReference.nativeElement, value);
       }
-      factory.writeOptions(this.elReference.nativeElement, this.config, this.config.name, this.group.controls[this.config.name].disabled);
+      factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
     }
   }
 }

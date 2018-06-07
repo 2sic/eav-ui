@@ -186,8 +186,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
         let currentFieldGroup = parentFieldGroup;
         // loop through contentType attributes
-        data.contentType.attributes.forEach(attribute => {
-          const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute);
+        data.contentType.attributes.forEach((attribute, index) => {
+          const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
           // if input type is empty-default create new field group and than continue to add fields to that group
           if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
             const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
@@ -202,39 +202,43 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // TEST
-  private loadFieldFromDefinitionTest(attribute: AttributeDef): FieldConfig {
+  private loadFieldFromDefinitionTest(attribute: AttributeDef, index: number): FieldConfig {
+    if (attribute.settings.InputType.values[0].value === 'custom-gps') {
+      console.log('loadFieldFromDefinitionTest attribute:', attribute);
+    }
+
     console.log('loadFieldFromDefinitionTest', attribute.settings.InputType);
     if (attribute.settings.InputType) {
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
         case InputTypesConstants.stringUrlPath:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath, index);
         // return this.loadFieldFromDefinitionStringUrlPath(attribute);
         case InputTypesConstants.booleanDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault, index);
         // return this.getStringIconFontPickerFormlyField(attribute);
         case InputTypesConstants.stringDropdown:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown, index);
         // return this.loadFieldFromDefinitionStringDropDown(attribute);
         case InputTypesConstants.datetimeDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault, index);
         case InputTypesConstants.numberDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault, index);
         case InputTypesConstants.stringFontIconPicker:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker, index);
         case InputTypesConstants.entityDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault, index);
         case InputTypesConstants.hyperlinkDefault:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault, index);
         case InputTypesConstants.external:
         case 'custom-gps':
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
         default:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
       }
     } else {
-      return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault);
+      return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
     }
   }
 
@@ -242,7 +246,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * Load formly field from AttributeDef
    * @param attribute
    */
-  private loadFieldFromDefinition(attribute: AttributeDef, inputType: string): FieldConfig {
+  private loadFieldFromDefinition(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
     // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
     const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
     // set validation for all input types
@@ -273,7 +277,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       settings: settingsTranslated,
       fullSettings: attribute.settings,
       validation: validationList,
-      disabled: disabled
+      disabled: disabled,
+      index: index
     };
   }
 

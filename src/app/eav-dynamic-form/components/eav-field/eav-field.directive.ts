@@ -121,7 +121,7 @@ export class EavFieldDirective implements OnInit {
   }
 
   /**
-   * Register external commponent
+   * Create and register external commponent
    * @param container
    * @param fieldConfig
    */
@@ -130,8 +130,6 @@ export class EavFieldDirective implements OnInit {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
-    //   // TODO: read data from config
-    console.log('container for script', fieldConfig.name);
     this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
 
     if (this.window.addOn === undefined) {
@@ -146,55 +144,62 @@ export class EavFieldDirective implements OnInit {
       fieldConfig.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js'],
+      // ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
       FileTypeConstants.css);
   }
 
   private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
-    const file: ScriptModel = {
+    const scriptModel: ScriptModel = {
       name: `${fileType}${name}${increment}`,
       filePath: (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment],
       loaded: false
     };
 
-    this.scriptLoaderService.load(file, fileType).subscribe(s => {
+    this.scriptLoaderService.load(scriptModel, fileType).subscribe(s => {
       if (s.loaded) {
         increment++;
         const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
         if (nextScript) {
+          console.log('nextScript', name);
           this.loadExternalnputType(increment, name, type, styles, scripts, fileType);
         } else if (fileType === FileTypeConstants.css) {
+          console.log('nextScript css', name);
           this.loadExternalnputType(0, name, type, styles, scripts, FileTypeConstants.javaScript);
         } else { // when scripts load is finish then call registered factory
+          console.log('nextScript facrory', type);
           this.loadExternalFactoryToComponent(name, type);
         }
       }
     });
   }
 
+  /**
+   * First read component reference with NAME and external component (factory) with TYPE,
+   * and then add external component (factory) to component (input type) reference.
+   * @param name
+   * @param type
+   */
   private loadExternalFactoryToComponent(name: string, type: string) {
     const externalCommponentRef = this.externalCommponentRefList[name];
-    console.log('loaded addOnList', this.addOnList);
     const factory = this.addOnList[type];
-    console.log('loaded name', name);
-    console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
-    console.log('loaded factory', factory);
+    console.log('loaded name factory', this.addOnList);
     if (externalCommponentRef && factory) {
+      console.log('loaded name', name);
+      console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
+      console.log('loaded factory', factory);
       Object.assign(externalCommponentRef.instance, {
-        // group: externalCommponentRef.instance.group,
-        // config: externalCommponentRef.instance.config,
         factory: Object.create(factory)
       });
     }
   }
 
+  /**
+   * When external component is registered on load - this method add that component to list
+   * @param factory
+   */
   private registerExternalComponent(factory) {
     this.addOnList[factory.name] = factory;
-
-    // sent factory to componentReference  - or on script loaded ??? need to decide!!!
-
-    // this.customInputTypeFactory.initialize(this.customInputTypeHost);
-    // this.customInputTypeFactory.render(this.elReference.nativeElement);
   }
 
   /**
