@@ -5,21 +5,21 @@ import {
   Component,
   Directive,
   Input,
+  NgModule,
+  ModuleWithComponentFactories,
   OnInit,
   Type,
   ViewContainerRef,
-  NgModule,
-  ModuleWithComponentFactories,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../model/field';
 import { FieldConfig } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
 import { InputTypesConstants } from '../../../shared/constants';
+import { FileTypeConstants } from '../../../shared/constants/file-type-constants';
 
 @Directive({
   selector: '[appEavField]'
@@ -32,7 +32,6 @@ export class EavFieldDirective implements OnInit {
   group: FormGroup;
 
   window: any = window;
-
   addOnList = [];
   externalCommponentRefList = [];
 
@@ -131,142 +130,47 @@ export class EavFieldDirective implements OnInit {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
-    // console.log('loaded fieldConfig.name', fieldConfig.type);
-    // // TODO: read data from config
-    // if (fieldConfig.name === 'customStaticName') {
     //   // TODO: read data from config
-    //   this.externalCommponentRefList['colour-picker'] = externalComponentRef;
-    // } else {
-    // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
     console.log('container for script', fieldConfig.name);
     this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
-    // }
 
     if (this.window.addOn === undefined) {
-      this.window.addOn = [];
+      // this.window.addOn = [];
       this.window.addOn = new CustomInputType(this.registerExternalComponent.bind(this));
     }
 
     // // TODO: read data from config
-    // // if (fieldConfig.name === 'customStaticName') {
-    // //   this.loadExternalnputTypeScript('colour-picker', '', 'assets/script/colour-picker.js');
-    // // } else {
-    // //   // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
-
-    // this.loadExternalnputTypeScript(fieldConfig.name, 'tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
-    // // }
-
-
+    // Start loading all external dependencies (start with css). This method recursively load all dependencies.
     this.loadExternalnputType(
       0,
       fieldConfig.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/tinymce-wysiwyg.css'],
       ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
-      'css');
+      FileTypeConstants.css);
   }
 
   private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
     const file: ScriptModel = {
       name: `${fileType}${name}${increment}`,
-      src: fileType === 'css' ? styles[increment] : scripts[increment],
+      filePath: (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment],
       loaded: false
     };
 
-    switch (fileType) {
-      case 'css':
-        this.scriptLoaderService.loadCss(file).subscribe(s => {
-          if (s.loaded) {
-            increment = increment + 1;
-            const nextScript = styles[increment];
-            if (nextScript) {
-              this.loadExternalnputType(increment, name, type, styles, scripts, 'css');
-            } else { // when style load is finish then call scripts
-              this.loadExternalnputType(0, name, type, styles, scripts, 'js');
-            }
-          }
-        });
-        break;
-      case 'js':
-        this.scriptLoaderService.load(file).subscribe(s => {
-          if (s.loaded) {
-            increment = increment + 1;
-            const nextScript = scripts[increment];
-            if (nextScript) {
-              this.loadExternalnputType(increment, name, type, styles, scripts, 'js');
-            } else { // when scripts load is finish then call registered factory
-              this.loadExternalFactoryToComponent(name, type);
-            }
-          }
-        });
-        break;
-      default:
-        console.log('Wrong file type');
-        break;
-    }
+    this.scriptLoaderService.load(file, fileType).subscribe(s => {
+      if (s.loaded) {
+        increment++;
+        const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
+        if (nextScript) {
+          this.loadExternalnputType(increment, name, type, styles, scripts, fileType);
+        } else if (fileType === FileTypeConstants.css) {
+          this.loadExternalnputType(0, name, type, styles, scripts, FileTypeConstants.javaScript);
+        } else { // when scripts load is finish then call registered factory
+          this.loadExternalFactoryToComponent(name, type);
+        }
+      }
+    });
   }
-
-  // private loadExternalnputTypeCss(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
-  //   const style: ScriptModel = {
-  //     name: `${fileType}${name}${increment}`,
-  //     src: styles[increment],
-  //     loaded: false
-  //   };
-
-  //   this.scriptLoaderService.loadCss(style).subscribe(s => {
-  //     if (s.loaded) {
-  //       increment = increment + 1;
-  //       const nextScript = styles[increment];
-  //       if (nextScript) {
-  //         this.loadExternalnputTypeCss(increment, name, type, styles, scripts, 'css');
-  //       } else { // when style load is finish then call:
-  //         this.loadExternalnputTypeScript(0, name, type, scripts, 'js');
-  //       }
-  //     }
-  //   });
-  // }
-
-  // private loadExternalnputTypeScript(increment: number, name: string, type: string, src: string[], fileType: string) {
-  //   const script: ScriptModel = {
-  //     // name: (increment === (src.length - 1)) ? name : `${name}${increment}`, // name for last script (register script)
-  //     name: `${fileType}${name}${increment}`, // name for last script (register script)
-  //     src: src[increment],
-  //     loaded: false
-  //   };
-
-  //   switch (fileType) {
-  //     case 'js':
-  //       this.scriptLoaderService.load(script).subscribe(s => {
-  //         if (s.loaded) {
-  //           increment = increment + 1;
-  //           const nextScript = src[increment];
-  //           if (nextScript) {
-  //             this.loadExternalnputTypeScript(increment, name, type, src, 'js');
-  //           } else {
-  //             this.loadExternalFactoryToComponent(name, type);
-  //           }
-  //         }
-  //       });
-  //       break;
-  //     case 'js':
-  //       this.scriptLoaderService.loadCss(style).subscribe(s => {
-  //         if (s.loaded) {
-  //           increment = increment + 1;
-  //           const nextScript = styles[increment];
-  //           if (nextScript) {
-  //             this.loadExternalnputTypeCss(increment, name, type, styles, scripts, 'css');
-  //           } else { // when style load is finish then call:
-  //             this.loadExternalnputTypeScript(0, name, type, scripts, 'js');
-  //           }
-  //         }
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-
-
-  // }
 
   private loadExternalFactoryToComponent(name: string, type: string) {
     const externalCommponentRef = this.externalCommponentRefList[name];
@@ -339,74 +243,4 @@ export class EavFieldDirective implements OnInit {
 
     return ref.instance.fieldComponent;
   }
-
-  // ----------------------------------------------------
-  // This maybe we can use for custom types
-  // ----------------------------------------------------
-
-  // compileTemplate(): ComponentRef<any>  {
-  //   let metadata = {
-  //     selector: `runtime-component-sample`,
-  //     template: `<div>
-  //               <h3>Template</h3>
-  //               </div>`
-  //     //wrappers: ['field-parent-wrapper', 'field-wrapper']
-  //   };
-
-  //   let factory = this.createComponentFactorySync(this.compiler, metadata, null);
-
-  //   if (this.componentRef) {
-  //     this.componentRef.destroy();
-  //     this.componentRef = null;
-  //   }
-  //   this.componentRef = this.container.createComponent(factory);
-
-  //   return this.componentRef;
-  // }
-
-  // private createComponentFactorySync(compiler: Compiler, metadata: Component, componentClass: any): ComponentFactory<any> {
-  //   const cmpClass = componentClass || class RuntimeComponent { name: string = 'Ante' };
-  //   const decoratedCmp = Component(metadata)(cmpClass);
-
-  //   @NgModule({ imports: [CommonModule], declarations: [decoratedCmp] })
-  //   class RuntimeComponentModule { }
-
-  //   let module: ModuleWithComponentFactories<any> = compiler.compileModuleAndAllComponentsSync(RuntimeComponentModule);
-  //   return module.componentFactories.find(f => f.componentType === decoratedCmp);
-  // }
-  // --------------------------------------------
-
-  // --------------------------------------------
-  // another solution
-  // https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e
-  // --------------------------------------------
-  // @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
-
-  // constructor(private _compiler: Compiler,
-  //             private _injector: Injector,
-  //             private _m: NgModuleRef<any>) {
-  // }
-
-  // ngAfterViewInit() {
-  //   const template = '<span>generated on the fly: {{name}}</span>';
-
-  //   const tmpCmp = Component(
-  //     {template: template})(
-  //       class {
-  //   });
-
-  //   const tmpModule = NgModule(
-  //     {declarations: [tmpCmp]})(
-  //       class {
-  //   });
-
-  //   this._compiler.compileModuleAndAllComponentsAsync(tmpModule)
-  //     .then((factories) => {
-  //       const f = factories.componentFactories[0];
-  //       const cmpRef = this.vc.createComponent(tmpCmp);
-  //       cmpRef.instance.name = 'dynamic';
-  //     })
-  // }
-
-  // --------------------------------------------
 }
