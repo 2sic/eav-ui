@@ -26,7 +26,6 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
         }
 
         render(container) {
-            console.log('render id:', this.id);
 
             container.innerHTML = `<div class="wrap-float-label">
             <div id="` + this.id + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
@@ -49,6 +48,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
                 setup: this.tinyMceInitCallback.bind(this),
                 // content_css: '/tinymce-wysiwyg.css',
             };
+
 
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
             console.log('options');
@@ -151,7 +151,6 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 
     function externalComponentFactory(name) {
         var config = new tinymceWysiwygConfig();
-        console.log('customTinymce', config);
         return new externalTinymceWysiwyg(name, null, null, null, config);
     }
 

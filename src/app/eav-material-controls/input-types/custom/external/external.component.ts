@@ -25,6 +25,7 @@ import { ExternalFactory } from '../../../../eav-dynamic-form/model/external-fac
 import { Observable } from 'rxjs/Observable';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EavService } from '../../../../shared/services/eav.service';
 
 
 @Component({
@@ -45,8 +46,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
     console.log('set factory', value);
     if (value) {
       this.renderExternalComponent(value);
+      this.subscribeFormChange(value);
     }
   }
+
 
   private subscriptions: Subscription[] = [];
   loaded = true;
@@ -61,7 +64,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
     update: (value) => this.update(value)
   };
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor(private validationMessagesService: ValidationMessagesService,
+    private eavService: EavService) { }
 
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
@@ -71,6 +75,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
+  // TODO: need to finish validation
   getErrorMessage() {
     // console.log('trigger getErrorMessage1:', this.config.name);
     // console.log('trigger getErrorMessage:',
@@ -100,61 +105,25 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
 
   ngOnInit() {
-
-
     // Observable.fromEvent(this.elReference1.nativeElement, 'change')
     //   .do(ev => console.log('test', this.elReference1.nativeElement.value))
     //   .subscribe(c => {
     //     this.group.controls[this.config.name].patchValue(this.elReference1.nativeElement.value);
     //   });
-
-    // TODO add distroy
-    // if (this.config.name !== 'customStaticName') {
-    //   console.log('load assets/script/colour-picker.js');
-    //   this.loadExternalnputTypeScript('assets/script/colour-picker.js');
-    // } else {
-    //   console.log('load assets/script/colour-picker2.js');
-    //   this.loadExternalnputTypeScript('assets/script/colour-picker2.js');
-    // }
-
-    // this.suscribeValueChanges();
   }
 
-  // // this is inside angular
-  // registerAddOn(factory) {
-  //   console.log('template', this.template);
-  //   console.log('call registerAddOn', factory);
-  //   this.template = 'bbbbbbbbbb';
-  //   console.log('template2', this.template);
 
-  //   // factory.initialize(this.customInputTypeHost);
-  //   // factory.render(this.elReference.nativeElement);
-  //   // this.customInputTypeFactory = factory;
-  //   console.log('call this.customInputTypeFactory', factory);
-  // }
-
-  // loadExternalnputTypeScript(name) {
-  //   const script: ScriptModel = {
-  //     name: 'myScript1',
-  //     src: name,
-  //     loaded: false,
-  //     template: ''
-  //   };
-  //   // 'assets/script/myScript.html'
-  //   this.scriptLoaderService.load(script).subscribe(s => {
-  //     console.log('loaded ScriptModel: ', s);
-
-  //     this.loaded = s.loaded;
-  //     if (this.loaded) {
-  //       console.log('template3', this.template);
-  //       console.log('call this.customInputTypeFactory1', this.customInputTypeFactory);
-  //       // this.customInputTypeFactory.initialize(this.customInputTypeHost);
-  //       // this.customInputTypeFactory.render(this.elReference.nativeElement);
-
-  //       // this.customInputTypeFactory.externalChange(this.elReference.nativeElement, '#ff00ff');
-  //     }
-  //   });
-  // }
+  //   /**
+  //  * Subscribe triggered when changing all in menu (forAllFields)
+  //  */
+  //   private subscribeMenuChange(factory: any) {
+  //     this.subscriptions.push(
+  //       this.languageService.localizationWrapperMenuChange$.subscribe(s => {
+  //         console.log('MENU CHANGE INSIDE EXTERNAlCOMPONENT');
+  //         factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
+  //       })
+  //     );
+  //   }
 
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
@@ -189,6 +158,18 @@ export class ExternalComponent implements FieldExternal, OnInit {
     );
   }
 
+  /**
+   * This is subscribe for all setforms - even if is not changing value.
+   * @param factory
+   */
+  private subscribeFormChange(factory: any) {
+    this.subscriptions.push(
+      this.eavService.formSetValueChange$.subscribe((item) => {
+        console.log('Formm CHANGEEEEEEEEEEEEEEEEEE', item);
+        this.setExternalControlValues(factory, item[this.config.name]);
+      })
+    );
+  }
 
   /**
    * write value from the form into the view in external component

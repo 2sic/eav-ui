@@ -18,12 +18,17 @@ import * as itemActions from '../../shared/store/actions/item.actions';
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import * as fromStore from '../store';
+import { Subject } from 'rxjs/Subject';
 
 
 @Injectable()
 export class EavService {
 
   // public items$  Observable<Item[]>;
+
+  // this formSetValueChangeSource observable is using in external components
+  private formSetValueChangeSource = new Subject<{ [name: string]: any }>();
+  formSetValueChange$ = this.formSetValueChangeSource.asObservable();
 
   constructor(private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
@@ -88,6 +93,13 @@ export class EavService {
       })
       .do(data => console.log('submit: ', data))
       .catch(this.handleError);
+  }
+
+  /**
+  * Trigger on form change - this is using in external components
+  */
+  public triggerFormSetValueChange(formValues: { [name: string]: any }) {
+    this.formSetValueChangeSource.next(formValues);
   }
 
   private handleError(error: any) {

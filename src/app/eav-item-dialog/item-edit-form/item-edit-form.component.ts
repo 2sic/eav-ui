@@ -52,7 +52,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   set currentLanguage(value: string) {
     this.currentLanguageValue = value;
-    this.setFormValues(this.item, true); // need set emit to true because of  external commponents
+    this.setFormValues(this.item, false); // need set emit to true because of  external commponents
   }
   get currentLanguage(): string {
     return this.currentLanguageValue;
@@ -161,6 +161,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage,
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
+
+      this.eavService.triggerFormSetValueChange(formValues);
 
       if (this.form.valueIsChanged(formValues)) {
         console.log('setFormValues valueIsChanged');
