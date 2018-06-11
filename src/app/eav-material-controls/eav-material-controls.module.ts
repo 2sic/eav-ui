@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatFormFieldModule,
   MatButtonModule,
@@ -37,12 +37,9 @@ import {
   HyperlinkDefaultComponent,
   ExternalComponent
 } from './input-types';
-import { InputTypesConstants } from '../shared/constants';
-import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { Field } from '../eav-dynamic-form/model/field';
 import { ErrorWrapperComponent } from './wrappers/field-parent-wrapper/error-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';

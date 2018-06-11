@@ -8,15 +8,11 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/throw';
 
 import { Item } from '../models/eav/item';
-import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { JsonContentType1 } from '../models/json-format-v1';
 import { ItemService } from './item.service';
 import { ContentTypeService } from './content-type.service';
 import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../../shared/store/actions/item.actions';
 // import * as eavActions from '../../shared/store/actions/eav.actions';
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
-import * as fromItems from '../../shared/store/actions/item.actions';
 import * as fromStore from '../store';
 import { Subject } from 'rxjs/Subject';
 

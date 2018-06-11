@@ -1,22 +1,17 @@
 import {
-  Component, OnInit, Input,
-  DoCheck, OnDestroy,
-  AfterViewInit, ViewChild
+  Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/fromEvent';
-import { map } from 'rxjs/operators';
 import { merge } from 'rxjs/observable/merge';
-import { of } from 'rxjs/observable/of';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EavEntity, Item } from '../../../../shared/models/eav';
-import { EavType } from '../../../../shared/models/eav/eav-type';
+import { Item } from '../../../../shared/models/eav';
 import { ItemService } from '../../../../shared/services/item.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
 

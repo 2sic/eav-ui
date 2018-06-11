@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, Input, ChangeDetectionStrategy, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, Input, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

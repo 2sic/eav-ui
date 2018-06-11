@@ -1,10 +1,8 @@
 import {
-  Component, ViewChild, ChangeDetectorRef,
-  OnInit, Input, OnChanges, ElementRef, OnDestroy, EventEmitter, Output
+  Component, ViewChild, OnInit, Input, OnChanges, OnDestroy, EventEmitter, Output
 } from '@angular/core';
-import { Validators, ValidatorFn } from '@angular/forms';
+import { ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { FormGroup } from '@angular/forms';
 
 // TODO: fix this dependency - from other module - move maybe to shared
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
@@ -18,10 +16,8 @@ import 'rxjs/add/operator/switchmap';
 import { filter } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
-import { AppState } from '../../shared/models';
 import {
-  Item, ContentType, EavValue, Language, EavAttributesTranslated,
-  EavAttributes, EavValues, EavDimensions
+  Item, ContentType, EavAttributes, EavValues
 } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
@@ -32,7 +28,6 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
-import { Subscription } from 'rxjs/Subscription';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Action } from '@ngrx/store';
 

@@ -1,9 +1,9 @@
 import {
-  Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked, OnDestroy
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { MatSnackBar } from '@angular/material';
 
@@ -15,13 +15,9 @@ import 'rxjs/add/operator/do';
 import { zip } from 'rxjs/observable/zip';
 import { of } from 'rxjs/observable/of';
 import { Subscription } from 'rxjs/Subscription';
-import * as fromStore from '../../shared/store';
-import * as itemActions from '../../shared/store/actions/item.actions';
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { Item, ContentType, Language } from '../../shared/models/eav';
+import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/services/content-type.service';
-import { ItemState } from '../../shared/store/reducers/item.reducer';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { UrlHelper } from '../../shared/helpers/url-helper';
 import { ItemService } from '../../shared/services/item.service';

@@ -1,32 +1,15 @@
 import {
-  Component, OnInit, ViewChild, Input, ChangeDetectionStrategy,
-  ElementRef, AfterViewInit, AfterContentInit
+  Component, OnInit, ViewChild, Input, ElementRef
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldExternal } from '../../../../eav-dynamic-form/model/field-external';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-// import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { LocalizationHelper } from '../../../../shared/helpers/localization-helper';
-// import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
-// import { Observable } from 'rxjs/Observable';
 
-// import 'rxjs/add/operator/map';
-// import 'rxjs/add/operator/do';
-// import 'rxjs/add/observable/fromEvent';
-
-// import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { EavEntity, EavValue, EavDimensions } from '../../../../shared/models/eav';
-import { CustomInputType } from '../../../../shared/models';
 import { Subscription } from 'rxjs/Subscription';
-import { ExternalFactory } from '../../../../eav-dynamic-form/model/external-factory';
-import { Observable } from 'rxjs/Observable';
-import { LanguageService } from '../../../../shared/services/language.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
-
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -47,25 +30,12 @@ export class ExternalComponent implements FieldExternal, OnInit {
     if (value) {
       this.renderExternalComponent(value);
       this.subscribeFormChange(value);
+      this.externalFactory = value;
     }
   }
 
-
   private subscriptions: Subscription[] = [];
   loaded = true;
-
-  // window: any = window;
-
-  // html: SafeHtml;
-
-  // customInputTypeFactory;
-
-  private externalInputTypeHost = {
-    update: (value) => this.update(value)
-  };
-
-  constructor(private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService) { }
 
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
@@ -74,6 +44,16 @@ export class ExternalComponent implements FieldExternal, OnInit {
   get id() {
     return `${this.config.entityId}${this.config.index}`;
   }
+
+  externalFactory: any;
+
+  constructor(private validationMessagesService: ValidationMessagesService,
+    private eavService: EavService) { }
+
+  private externalInputTypeHost = {
+    update: (value) => this.update(value),
+    setInitValues: (value) => this.setInitValues()
+  };
 
   // TODO: need to finish validation
   getErrorMessage() {
@@ -86,11 +66,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
       const messages = this.validationMessagesService.validationMessages();
       if (control && control.invalid) {
         // if ((control.dirty || control.touched)) {
+        // if (this.externalFactory && this.externalFactory.isDirty) {
         Object.keys(control.errors).forEach(key => {
           if (messages[key]) {
             formError = messages[key](this.config);
           }
         });
+        // }
         // }
       }
     }
@@ -102,28 +84,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
 
-
-
-  ngOnInit() {
-    // Observable.fromEvent(this.elReference1.nativeElement, 'change')
-    //   .do(ev => console.log('test', this.elReference1.nativeElement.value))
-    //   .subscribe(c => {
-    //     this.group.controls[this.config.name].patchValue(this.elReference1.nativeElement.value);
-    //   });
-  }
-
-
-  //   /**
-  //  * Subscribe triggered when changing all in menu (forAllFields)
-  //  */
-  //   private subscribeMenuChange(factory: any) {
-  //     this.subscriptions.push(
-  //       this.languageService.localizationWrapperMenuChange$.subscribe(s => {
-  //         console.log('MENU CHANGE INSIDE EXTERNAlCOMPONENT');
-  //         factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
-  //       })
-  //     );
-  //   }
+  ngOnInit() { }
 
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
@@ -133,7 +94,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 
     // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
-    this.setExternalControlValues(factory, this.group.controls[this.config.name].value);
+    // this.setExternalControlValues(factory, this.group.controls[this.config.name].value);
 
     this.suscribeValueChanges(factory);
     // this.subscribeToCurrentLanguageFromStore(factory);
@@ -144,6 +105,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
     console.log('ExternalComponent update change', value);
     // TODO: validate value
     this.group.controls[this.config.name].patchValue(value);
+  }
+
+  /**
+   * Set initial values when external component is initialized
+   */
+  private setInitValues() {
+    this.setExternalControlValues(this.externalFactory, this.group.controls[this.config.name].value);
   }
 
   /**
@@ -180,6 +148,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
       if (value) {
+        console.log('set valueeee', value);
         factory.setValue(this.elReference.nativeElement, value);
       }
       factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);

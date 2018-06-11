@@ -1,7 +1,6 @@
-import { FormControl } from '@angular/forms';
-import { EavValue, EavAttributes, Item, EavAttributesTranslated } from '../models/eav';
+
+import { EavValue, EavAttributes, EavAttributesTranslated } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
-import { EavDimensions } from '../models/eav/eav-dimensions';
 
 export class LocalizationHelper {
 

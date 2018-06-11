@@ -1,11 +1,8 @@
-import { Component, Input, ViewChild, ViewContainerRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
 
-import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-eav-language-switcher',

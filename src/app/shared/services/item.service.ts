@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import 'rxjs/add/operator/map';
@@ -7,17 +7,13 @@ import 'rxjs/add/operator/catch';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { AppState } from '../models/app-state';
-import { EavAttributes, EavValue, ContentType } from '../models/eav';
+import { EavAttributes, EavValue } from '../models/eav';
 // import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
-import * as dataActions from '../../shared/store/actions/data.actions';
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
-import { JsonContentType1 } from '../models/json-format-v1';
 // import { Subject } from 'rxjs/Rx';
 
 @Injectable()

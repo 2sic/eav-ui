@@ -1,27 +1,23 @@
 import {
   Component, Input, ViewChild, ViewContainerRef,
-  OnInit, EventEmitter, OnDestroy
+  OnInit, OnDestroy
 } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatFormFieldControl } from '@angular/material/form-field';
-import { FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import {
-  EavValue, EavValues, Language, Item, EavDimensions,
-  EavAttributes, EavAttributesTranslated
+  EavValue, EavValues, Language, EavDimensions,
+  EavAttributes
 } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { Actions } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
-import * as fromItems from '../../../shared/store/actions/item.actions';
 
 @Component({
   selector: 'app-eav-localization-wrapper',

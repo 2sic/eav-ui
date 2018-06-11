@@ -1,9 +1,7 @@
 import { EavAttributes } from './eav-attributes';
 // import { EavAttributes } from './eav-attributes';
 import { EavType } from './eav-type';
-import { EavValue } from './eav-value';
 import { Entity1 } from '../json-format-v1/entity1';
-import { Attribute1 } from '../json-format-v1/attribute1';
 
 export class EavEntity {
     // appId ???
