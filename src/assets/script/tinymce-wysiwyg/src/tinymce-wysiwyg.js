@@ -29,7 +29,8 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 
             container.innerHTML = `<div class="wrap-float-label">
             <div id="` + this.id + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
-            </div>`;
+            </div>
+            <span id="dummyfocus" tabindex="-1"></span>`;
 
             var settings = {
                 enableContentBlocks: false,

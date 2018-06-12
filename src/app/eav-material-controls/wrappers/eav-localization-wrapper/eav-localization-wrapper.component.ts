@@ -1,6 +1,5 @@
 import {
-  Component, Input, ViewChild, ViewContainerRef,
-  OnInit, OnDestroy
+  Component, Input, ViewChild, ViewContainerRef, OnInit, OnDestroy
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { FormGroup } from '@angular/forms';
@@ -10,14 +9,12 @@ import { Subscription } from 'rxjs/Subscription';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import {
-  EavValue, EavValues, Language, EavDimensions,
-  EavAttributes
+  EavValue, EavValues, Language, EavDimensions, EavAttributes
 } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../validators/validation-helper';
-import { Actions } from '@ngrx/effects';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -45,8 +42,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService,
-    private itemService: ItemService,
-    private actions$: Actions) {
+    private itemService: ItemService) {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }

@@ -45,6 +45,9 @@ import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/ea
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
+import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
+import { DropzoneComponent } from './adam/dropzone/dropzone.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +71,10 @@ import { TranslateModule } from '@ngx-translate/core';
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
     EavLanguageSwitcherComponent,
-    ExternalComponent
+    ExternalComponent,
+    AdamBrowserComponent,
+    AdamHintComponent,
+    DropzoneComponent
   ],
   imports: [
     CommonModule,
@@ -109,7 +115,8 @@ import { TranslateModule } from '@ngx-translate/core';
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
-    ExternalComponent
+    ExternalComponent,
+    DropzoneComponent
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [FileTypeService, ValidationMessagesService]

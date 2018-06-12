@@ -18,7 +18,7 @@ import { EavService } from '../../../../shared/services/eav.service';
   styleUrls: ['./external.component.css']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
 })
 export class ExternalComponent implements FieldExternal, OnInit {
   @ViewChild('container') elReference: ElementRef;
