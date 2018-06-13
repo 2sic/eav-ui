@@ -131,7 +131,6 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-
   /**
    * Get Item from Json Entity V1
    */

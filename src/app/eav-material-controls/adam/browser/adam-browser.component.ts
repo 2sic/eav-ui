@@ -62,9 +62,8 @@ export class AdamBrowserComponent implements OnInit {
   // },
 
 
-  svc;
-
-  constructor() { }
+  constructor(private adamService: AdamService) {
+  }
 
   ngOnInit() {
     this.initConfig();
@@ -141,5 +140,34 @@ export class AdamBrowserComponent implements OnInit {
 
   // load svc...
   // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
+
+
+
+  testApi() {
+
+    // const adam = new AdamService(this.httpClient, null, null, null, '', null, 'test 2sxc test', 7);
+
+    const svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+
+    console.log('svc2: ', svc);
+    // let result;
+    svc.getAll().subscribe(s =>
+      console.log('result: ', s)
+    );
+
+    // uploadUrl,
+    // addFullPath,
+    svc.addFolder('newfolderName').subscribe(s =>
+      console.log('result newfolderName: ', s)
+    );
+
+    // svc.deleteItem('').subscribe(s =>
+    //   console.log('result: ', s)
+    // );
+
+    // svc.rename().subscribe(s =>
+    //   console.log('result: ', s)
+    // );
+  }
 
 }
