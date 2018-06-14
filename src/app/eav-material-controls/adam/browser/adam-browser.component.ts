@@ -19,10 +19,11 @@ export class AdamBrowserComponent implements OnInit {
   @Input() allowAssetsInRoot;
   @Input() metadataContentTypes;
 
-  @Input() show = false;
+  // @Input() show = false;
+  @Input() show = true;
   @Input() adamModeConfig;
   appRoot;
-  @Input() disabled;
+  @Input() disabled = false;
   @Input() enableSelect;
 
   @Input() autoLoad;
@@ -69,6 +70,7 @@ export class AdamBrowserComponent implements OnInit {
     this.initConfig();
 
     if (this.autoLoad) {
+      console.log('autoload:');
       this.toggle(null);
     }
 
@@ -143,6 +145,14 @@ export class AdamBrowserComponent implements OnInit {
 
 
 
+  //   openUpload = function () {
+  //     vm.dropzone.openUpload();
+  // };
+
+
+
+
+  // TEMP
   testApi() {
 
     // const adam = new AdamService(this.httpClient, null, null, null, '', null, 'test 2sxc test', 7);
