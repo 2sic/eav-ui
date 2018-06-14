@@ -34,6 +34,7 @@
     "@ngx-translate/http-loader": "^3.0.1",
     "core-js": "^2.5.5",
     "ng-pick-datetime": "^5.2.4",
+    "ngx-dropzone-wrapper": "^6.1.0",
     "rxjs": "^5.5.10",
     "zone.js": "^0.8.26"
   },

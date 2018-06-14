@@ -48,6 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { DropzoneComponent } from './adam/dropzone/dropzone.component';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 @NgModule({
   declarations: [
@@ -74,10 +75,11 @@ import { DropzoneComponent } from './adam/dropzone/dropzone.component';
     ExternalComponent,
     AdamBrowserComponent,
     AdamHintComponent,
-    DropzoneComponent
+    DropzoneComponent,
   ],
   imports: [
     CommonModule,
+    DropzoneModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,

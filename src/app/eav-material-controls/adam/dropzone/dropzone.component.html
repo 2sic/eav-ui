@@ -1,9 +1,19 @@
 <p>
   dropzone works!
 </p>
-
-<div class="dropzone">
+<div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled" (error)="onUploadError($event)"
+  (success)="onUploadSuccess($event)">
+  <!-- <div class="dropzone"> -->
   <ng-container #fieldComponent></ng-container>
-  <adam-browser></adam-browser>
+  <adam-browser (openUpload)="openUpload()"></adam-browser>
+  <!-- ng-show="uploading" -->
+  <div class="{{'field-' + config.index}}">
+    <div class="dropzone-previews">
+    </div>
+    <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
+  </div>
+
+
   <adam-hint></adam-hint>
+  <!-- </div> -->
 </div>

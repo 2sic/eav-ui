@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AdamService } from '../adam-service.service';
 
 @Component({
@@ -27,6 +27,8 @@ export class AdamBrowserComponent implements OnInit {
   @Input() enableSelect;
 
   @Input() autoLoad;
+
+  @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
   oldConfig;
 
@@ -145,9 +147,9 @@ export class AdamBrowserComponent implements OnInit {
 
 
 
-  //   openUpload = function () {
-  //     vm.dropzone.openUpload();
-  // };
+  openUploadClick = function (event) {
+    this.openUpload.emit();
+  };
 
 
 

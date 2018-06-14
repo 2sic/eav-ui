@@ -4,7 +4,7 @@
   <div *ngIf="show" class="adam-scope-field">
     <!-- info for dropping stuff here -->
     <!-- uib-tooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}"  [disabled]="disabled"-->
-    <div class="dz-preview dropzone-adam" (click)="openUpload()">
+    <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <i class="eav-icon-up-circled2"></i>
         <div class="adam-short-label">upload to
