@@ -83,8 +83,8 @@ export function createTranslateLoader(http: HttpClient) {
     LanguageService,
     ScriptLoaderService,
     EavService,
-    AdamService,
-    SvcCreatorService,
+    // AdamService,
+    // SvcCreatorService,
     // {
     //   provide: DROPZONE_CONFIG,
     //   useValue: DEFAULT_DROPZONE_CONFIG

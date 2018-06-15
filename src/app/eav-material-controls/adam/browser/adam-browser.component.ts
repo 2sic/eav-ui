@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Injector } from '@angular/core';
 import { AdamService } from '../adam-service.service';
+import { HttpClient } from '@angular/common/http';
+import { SvcCreatorService } from '../../../shared/services/svc-creator.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,11 +28,12 @@ export class AdamBrowserComponent implements OnInit {
   @Input() disabled = false;
   @Input() enableSelect;
 
-  @Input() autoLoad;
+  @Input() autoLoad = true;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
   oldConfig;
+  clipboardPasteImageFunctionalityDisabled = true;
 
   //   link: function postLink(scope, elem, attrs, dropzoneCtrl) {
   //     // connect this adam to the dropzone
@@ -64,8 +67,19 @@ export class AdamBrowserComponent implements OnInit {
   //     ngDisabled: "="
   // },
 
+  private adamService;
+  private svcCreatorService;
+  folders;
+  items;
 
-  constructor(private adamService: AdamService) {
+  // get folders() {
+  //   return this.adamService.folders;
+  // }
+
+  constructor(private httpClient: HttpClient) {
+    // this.svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+    this.adamService = new AdamService(httpClient, null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+    this.svcCreatorService = new SvcCreatorService(this.adamService.getAll(), 'true');
   }
 
   ngOnInit() {
@@ -103,6 +117,43 @@ export class AdamBrowserComponent implements OnInit {
 
   }
 
+  addFolder() {
+    if (this.disabled) {
+      return;
+    }
+    const folderName = window.prompt('Please enter a folder name'); // todo i18n
+    if (folderName) {
+      this.adamService.addFolder(folderName).subscribe(s =>
+        console.log('addFolder: ', s)
+        // this.refresh()
+      );
+    }
+  }
+
+  get() {
+    this.items = this.svcCreatorService.liveList();
+    this.folders = this.adamService.folders;
+    // this.svc.liveListReload();
+  }
+
+  goUp = () => {
+    this.subFolder = this.adamService.goUp();
+    console.log('this.subFolder', this.subFolder);
+  }
+
+  allowCreateFolder(): boolean {
+    return this.adamService.folders.length < this.folderDepth;
+  }
+
+  // load svc...
+  // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
+
+  openUploadClick = function (event) {
+    this.openUpload.emit();
+  };
+
+  refresh = () => this.adamService.liveListReload();
+
   toggle(newConfig) {
     // Reload configuration
     this.initConfig();
@@ -136,42 +187,21 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
-  get() {
-    // this.items = vm.svc.liveList();
-    // this.folders = vm.svc.folders;
-    // this.svc.liveListReload();
-  }
-
-  // load svc...
-  // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
-
-
-
-  openUploadClick = function (event) {
-    this.openUpload.emit();
-  };
-
-
-
-
   // TEMP
   testApi() {
 
     // const adam = new AdamService(this.httpClient, null, null, null, '', null, 'test 2sxc test', 7);
 
-    const svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+    // const svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
 
-    console.log('svc2: ', svc);
+    console.log('svc2: ', this.adamService);
     // let result;
-    svc.getAll().subscribe(s =>
+    this.adamService.getAll().subscribe(s =>
       console.log('result: ', s)
     );
 
     // uploadUrl,
     // addFullPath,
-    svc.addFolder('newfolderName').subscribe(s =>
-      console.log('result newfolderName: ', s)
-    );
 
     // svc.deleteItem('').subscribe(s =>
     //   console.log('result: ', s)
@@ -181,5 +211,4 @@ export class AdamBrowserComponent implements OnInit {
     //   console.log('result: ', s)
     // );
   }
-
 }

@@ -11,7 +11,7 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) directiveRef?: DropzoneDirective;
-  @ViewChild('invisibleClickable') elReference: ElementRef;
+  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
 
   @Input() config: FieldConfig;
 
@@ -46,13 +46,11 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
 
-
-
-
   constructor() { }
 
   ngOnInit() {
   }
+
   ngAfterViewInit() {
     this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
     this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
@@ -60,7 +58,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     console.log('this.dropzoneConfig:', this.dropzoneConfig);
     console.log('config ddropzone wrapper:', this.config.index);
   }
-
 
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
@@ -70,9 +67,11 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     console.log('onUploadSuccess:', args);
   }
 
+  /**
+   * triger click on clickable element for load open
+   */
   openUpload() {
-    console.log('onUploadSuccess openUpload:');
-    this.elReference.nativeElement.click();
+    this.invisibleClickableReference.nativeElement.click();
   }
 
 }

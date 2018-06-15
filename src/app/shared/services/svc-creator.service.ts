@@ -5,76 +5,54 @@ import { FileTypeConstants } from '../constants/file-type-constants';
 
 @Injectable()
 export class SvcCreatorService {
-  // private creator = {};
-
   // construct a object which has liveListCache, liveListReload(), liveListReset(),
-  implementLiveList = (getLiveList, disableToastr) => {
+  constructor(private getLiveList, private disableToastr) { }
 
-    const disableToastrValue = !!disableToastr;
-    const liveListCache = [];                   // this is the cached list
+  disableToastrValue = !!this.disableToastr;
+  liveListCache = []; // this is the cached list
 
-    const liveListCacheIsLoaded = false;
+  liveListCacheIsLoaded = false;
+  liveListSourceRead = this.getLiveList();
 
-    const getAllLive = () => {
-      if (liveListCache.length === 0 && !liveListCacheIsLoaded) {
-        liveListReload();
-      }
-      return liveListCache;
-    };
+  getAllLive = () => {
+    if (this.liveListCache.length === 0 && !this.liveListCacheIsLoaded) {
+      this.liveListReload();
+    }
+    return this.liveListCache;
+  }
 
-    // use a promise-result to re-fill the live list of all items, return the promise again
-    // const _liveListUpdateWithResult = function
-    const updateLiveAll = (result) => {
-      // TODO:
-      // if (t.msg.isOpened) {
-      //   toastr.clear(t.msg);
-      // }
-      // else {
-      //   $timeout(300).then(function () {
-      //     toastr.clear(t.msg);
-      //   }
-      //   );
-      // }
-      t.liveListCache.length = 0; // clear
-      for (let i = 0; i < result.data.length; i++) {
-        t.liveListCache.push(result.data[i]);
-      }
-      t.liveListCacheIsLoaded = true;
-      return result;
-    };
+  liveListReload = () => {
+    // show loading - must use the promise-mode because this may be used early before the language has arrived
+    // return 'General.Messages.Loading';
+    // $translate("General.Messages.Loading").then(function (msg) {
+    //   t.msg = toastr.info(msg);
+    // });
+    return this.liveListSourceRead().subscribe(s => this.updateLiveAll(s));
+  }
 
-    const liveListSourceRead = getLiveList;
+  liveListReset = () => {
+    this.liveListCache = [];
+  }
 
-    const liveListReload = () => {
-      // show loading - must use the promise-mode because this may be used early before the language has arrived
-      return 'General.Messages.Loading';
-      // $translate("General.Messages.Loading").then(function (msg) {
-      //   t.msg = toastr.info(msg);
-      // });
-      // return t.liveListSourceRead()
-      //   .then(t._liveListUpdateWithResult);
-    };
-
-    const liveListReset = () => {
-      t.liveListCache = [];
-    };
-
-    const t = {
-      disableToastrValue,
-      liveListCache,
-      liveListCacheIsLoaded,
-      updateLiveAll,
-      liveListSourceRead,
-      liveListReload,
-    };
-
-    return t;
+  // use a promise-result to re-fill the live list of all items, return the promise again
+  // const _liveListUpdateWithResult = function
+  private updateLiveAll = (result) => {
+    // TODO:
+    // if (t.msg.isOpened) {
+    //   toastr.clear(t.msg);
+    // }
+    // else {
+    //   $timeout(300).then(function () {
+    //     toastr.clear(t.msg);
+    //   }
+    //   );
+    // }
+    this.liveListCache.length = 0; // clear
+    for (let i = 0; i < result.data.length; i++) {
+      this.liveListCache.push(result.data[i]);
+    }
+    this.liveListCacheIsLoaded = true;
+    return result;
   }
 }
 
-// export interface ListType {
-//   disableToastr: boolean;
-//   liveListCache: any;
-//   liveList: any;
-//   isLoaded: boolean;
-// }
