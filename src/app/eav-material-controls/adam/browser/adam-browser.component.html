@@ -55,29 +55,30 @@
 
     <!-- folder list - not always shown -->
     <!-- <div ng-show="vm.showFolders || vm.debug.on" class="dz-preview" ng-repeat="item in vm.items | filter: { IsFolder: true } | filter: { Name: '!2sxc' } | filter: { Name: '!adam' } | orderBy:'Name'"
-      ng-click="vm.goIntoFolder(item)">
+      ng-click="vm.goIntoFolder(item)"> -->
+    <div class="dz-preview" *ngFor="let item of (items$ | async);">
       <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i class="eav-icon-folder-empty"></i>
         <div class="short-label">{{ item.Name }}</div>
       </div>
 
       <div class="dz-details file-type-{{item.Type}}">
-        <span ng-click="vm.del(item)" stop-event="click" class="adam-delete-button">
+        <span (click)="del(item)" stop-event="click" class="adam-delete-button">
           <i class="eav-icon-cancel"></i>
         </span>
-        <span ng-click="vm.rename(item)" stop-event="click" class="adam-rename-button">
+        <span (click)="rename(item)" stop-event="click" class="adam-rename-button">
           <i class="eav-icon-pencil"></i>
         </span>
         <div class="adam-full-name-area">
           <div class="adam-full-name">{{ item.Name }}</div>
         </div>
       </div>
-
-      <span class="adam-tag" ng-class="{'metadata-exists': item.MetadataId > 0}" ng-click="vm.editMetadata(item)" ng-if="vm.getMetadataType(item)"
-        stop-event="click" uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}">
+      <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
+      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" *ngIf="getMetadataType(item)"
+        stop-event="click">
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
-    </div> -->
+    </div>
 
 
     <!-- files -->

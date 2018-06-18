@@ -2,57 +2,100 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { FileTypeConstants } from '../constants/file-type-constants';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchmap';
+import { Subject } from 'rxjs/Subject';
+import { of } from 'rxjs/observable/of';
+import { from } from 'rxjs/observable/from';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class SvcCreatorService {
   // construct a object which has liveListCache, liveListReload(), liveListReset(),
-  constructor(private getLiveList, private disableToastr) { }
+  constructor() { }
 
-  disableToastrValue = !!this.disableToastr;
-  liveListCache = []; // this is the cached list
+  implementLiveList(getLiveList$: Observable<any>, disableToastr: string) {
 
-  liveListCacheIsLoaded = false;
-  liveListSourceRead = this.getLiveList();
+    const disableToastrValue = !!disableToastr;
+    // let liveListCache = []; // this is the cached list
+    let liveListCacheIsLoaded = false;
+    const liveListSourceRead$: Observable<any> = getLiveList$;
 
-  getAllLive = () => {
-    if (this.liveListCache.length === 0 && !this.liveListCacheIsLoaded) {
-      this.liveListReload();
-    }
-    return this.liveListCache;
-  }
+    // let liveListCache = new Subject<any[]>();
+    // let liveListCache: any[] = [];
 
-  liveListReload = () => {
-    // show loading - must use the promise-mode because this may be used early before the language has arrived
-    // return 'General.Messages.Loading';
-    // $translate("General.Messages.Loading").then(function (msg) {
-    //   t.msg = toastr.info(msg);
-    // });
-    return this.liveListSourceRead().subscribe(s => this.updateLiveAll(s));
-  }
 
-  liveListReset = () => {
-    this.liveListCache = [];
-  }
+    const liveListCacheBehaviorSubject: BehaviorSubject<any[]> = new BehaviorSubject([]);
+    const liveListCache$ = liveListCacheBehaviorSubject.asObservable();
 
-  // use a promise-result to re-fill the live list of all items, return the promise again
-  // const _liveListUpdateWithResult = function
-  private updateLiveAll = (result) => {
-    // TODO:
-    // if (t.msg.isOpened) {
-    //   toastr.clear(t.msg);
-    // }
-    // else {
-    //   $timeout(300).then(function () {
-    //     toastr.clear(t.msg);
-    //   }
-    //   );
-    // }
-    this.liveListCache.length = 0; // clear
-    for (let i = 0; i < result.data.length; i++) {
-      this.liveListCache.push(result.data[i]);
-    }
-    this.liveListCacheIsLoaded = true;
-    return result;
+    const liveList = () => {
+      console.log('liveList load');
+      if (liveListCacheBehaviorSubject.getValue() && !liveListCacheIsLoaded) {
+        //  if (liveListCache.length === 0 && !liveListCacheIsLoaded) {
+        console.log('liveList reload');
+        liveListReload();
+      }
+      // return liveListCache$;
+    };
+
+    const liveListReload = () => {
+      console.log('liveList reload in');
+      // show loading - must use the promise-mode because this may be used early before the language has arrived
+      // return 'General.Messages.Loading';
+      // $translate("General.Messages.Loading").then(function (msg) {
+      //   t.msg = toastr.info(msg);
+      // });
+
+      liveListSourceRead$.subscribe(s => updateLiveAll(s));
+    };
+
+    const liveListReset = () => {
+      // liveListCache = [];
+      liveListCacheBehaviorSubject.next([]);
+    };
+
+    // use a promise-result to re-fill the live list of all items, return the promise again
+    // const _liveListUpdateWithResult = function
+    const updateLiveAll = (result) => {
+      console.log('updateLiveAll result:', result);
+      console.log('liveListCache before:', liveListCacheBehaviorSubject.getValue());
+      // TODO:
+      // if (t.msg.isOpened) {
+      //   toastr.clear(t.msg);
+      // }
+      // else {
+      //   $timeout(300).then(function () {
+      //     toastr.clear(t.msg);
+      //   }
+      //   );
+      // }
+      // liveListCache.length = 0; // clear
+      // liveListCache = [];
+      // for (let i = 0; i < result.length; i++) {
+      //   liveListCache.push(result[i]);
+      // }
+      liveListCacheBehaviorSubject.next(result);
+
+      liveListCacheIsLoaded = true;
+      console.log('liveListCache after:', liveListCacheBehaviorSubject.getValue());
+      // return result;
+    };
+
+    const svc = {
+      // aa,
+      // dodaj,
+      disableToastrValue,
+      liveListCache$,
+      liveListCacheIsLoaded,
+      liveListSourceRead$,
+      liveList,
+      // getAllLive,
+      liveListReload,
+      liveListReset,
+      updateLiveAll
+    };
+
+    return svc;
   }
 }
 

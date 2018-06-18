@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, Injector } from '@angul
 import { AdamService } from '../adam-service.service';
 import { HttpClient } from '@angular/common/http';
 import { SvcCreatorService } from '../../../shared/services/svc-creator.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -10,6 +11,9 @@ import { SvcCreatorService } from '../../../shared/services/svc-creator.service'
   styleUrls: ['./adam-browser.component.css']
 })
 export class AdamBrowserComponent implements OnInit {
+
+  // TODO: temp need change
+  @Input() eavConfig: any;
 
   @Input() contentTypeName: any;
   @Input() entityGuid: any;
@@ -22,8 +26,8 @@ export class AdamBrowserComponent implements OnInit {
   @Input() metadataContentTypes;
 
   // @Input() show = false;
-  @Input() show = true;
-  @Input() adamModeConfig;
+  @Input() show = false;
+  @Input() adamModeConfig = { usePortalRoot: false };
   appRoot;
   @Input() disabled = false;
   @Input() enableSelect;
@@ -67,22 +71,29 @@ export class AdamBrowserComponent implements OnInit {
   //     ngDisabled: "="
   // },
 
-  private adamService;
   private svcCreatorService;
   folders;
   items;
+  svc;
+
+  items$: Observable<any[]>; // = this.svc.liveList();
 
   // get folders() {
   //   return this.adamService.folders;
   // }
 
-  constructor(private httpClient: HttpClient) {
-    // this.svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
-    this.adamService = new AdamService(httpClient, null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
-    this.svcCreatorService = new SvcCreatorService(this.adamService.getAll(), 'true');
+  constructor(adamService: AdamService) {
+    this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+    // this.adamService = new AdamService(httpClient, null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+    // this.svcCreatorService = new SvcCreatorService(this.adamService.getAll(), 'true');
   }
 
   ngOnInit() {
+    // this.items$ = this.svc.liveList();
+    this.items$ = this.svc.liveListCache$;
+
+    this.svc.liveList();
+
     this.initConfig();
 
     if (this.autoLoad) {
@@ -123,36 +134,111 @@ export class AdamBrowserComponent implements OnInit {
     }
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (folderName) {
-      this.adamService.addFolder(folderName).subscribe(s =>
-        console.log('addFolder: ', s)
+      this.svc.addFolder(folderName).subscribe(s =>
         // this.refresh()
+        this.svc.liveListReload()
       );
     }
   }
 
+  allowCreateFolder(): boolean {
+    return this.svc.folders.length < this.folderDepth;
+  }
+
+  del(item) {
+    if (this.disabled) {
+      return;
+    }
+    const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
+    if (ok) {
+      this.svc.deleteItem(item);
+    }
+  }
+
+  editMetadata(item) {
+    const items = [
+      this.itemDefinition(item, this.getMetadataType(item))
+    ];
+    // TODO:
+    // eavAdminDialogs.openEditItems(items, vm.refresh);
+  }
+
+  private itemDefinition = function (item, metadataType) {
+    const title = 'EditFormTitle.Metadata'; // todo: i18n
+    return item.MetadataId !== 0
+      ? { EntityId: item.MetadataId, Title: title } // if defined, return the entity-number to edit
+      : {
+        ContentTypeName: metadataType, // otherwise the content type for new-assegnment
+        Metadata: {
+          Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
+          KeyType: 'string',
+          TargetType: this.eavConfig.metadataOfCmsObject
+        },
+        Title: title,
+        Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
+      };
+
+  };
+
   get() {
-    this.items = this.svcCreatorService.liveList();
-    this.folders = this.adamService.folders;
+    // this.items = this.svc.liveList();
+    console.log('items:', this.items);
+    this.folders = this.svc.folders;
     // this.svc.liveListReload();
   }
 
+
+
   goUp = () => {
-    this.subFolder = this.adamService.goUp();
+    this.subFolder = this.svc.goUp();
     console.log('this.subFolder', this.subFolder);
   }
 
-  allowCreateFolder(): boolean {
-    return this.adamService.folders.length < this.folderDepth;
-  }
+
+  getMetadataType = function (item) {
+    let found;
+
+    // check if it's a folder and if this has a special registration
+    if (item.Type === 'folder') {
+      found = this.metadataContentTypes.match(/^(folder)(:)([^\n]*)/im);
+      if (found) {
+        return found[3];
+      } else {
+        return null;
+      }
+    }
+
+    // check if the extension has a special registration
+    // -- not implemented yet
+
+    // check if the type "image" or "document" has a special registration
+    // -- not implemneted yet
+
+    // nothing found so far, go for the default with nothing as the prefix
+    found = this.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
+    if (found) {
+      return found[1];
+    }
+
+    // this is if we don't find anything
+    return null;
+  };
 
   // load svc...
   // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
 
-  openUploadClick = function (event) {
+  openUploadClick = (event) => {
     this.openUpload.emit();
-  };
+  }
 
-  refresh = () => this.adamService.liveListReload();
+  refresh = () => this.svc.liveListReload();
+
+  rename(item) {
+    const newName = window.prompt('Rename the file / folder to: ', item.Name);
+    if (newName) {
+      this.svc.rename(item, newName);
+    }
+  }
 
   toggle(newConfig) {
     // Reload configuration
@@ -194,9 +280,9 @@ export class AdamBrowserComponent implements OnInit {
 
     // const svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
 
-    console.log('svc2: ', this.adamService);
+    console.log('svc2: ', this.svc);
     // let result;
-    this.adamService.getAll().subscribe(s =>
+    this.svc.getAll().subscribe(s =>
       console.log('result: ', s)
     );
 
