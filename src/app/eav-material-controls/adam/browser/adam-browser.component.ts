@@ -89,10 +89,8 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.items$ = this.svc.liveList();
     this.items$ = this.svc.liveListCache$;
-
-    this.svc.liveList();
+    this.loadFileList();
 
     this.initConfig();
 
@@ -100,10 +98,6 @@ export class AdamBrowserComponent implements OnInit {
       console.log('autoload:');
       this.toggle(null);
     }
-
-    // let dsa = new AdamService()
-    // TODO:
-    // this.svc = this.adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
   }
 
   initConfig() {
@@ -135,8 +129,7 @@ export class AdamBrowserComponent implements OnInit {
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (folderName) {
       this.svc.addFolder(folderName).subscribe(s =>
-        // this.refresh()
-        this.svc.liveListReload()
+        this.refresh()
       );
     }
   }
@@ -151,7 +144,10 @@ export class AdamBrowserComponent implements OnInit {
     }
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (ok) {
-      this.svc.deleteItem(item);
+      console.log('call delete item');
+      this.svc.deleteItem(item).subscribe(s =>
+        this.refresh()
+      );
     }
   }
 
@@ -224,19 +220,18 @@ export class AdamBrowserComponent implements OnInit {
     return null;
   };
 
+
   // load svc...
   // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
 
-  openUploadClick = (event) => {
-    this.openUpload.emit();
-  }
-
-  refresh = () => this.svc.liveListReload();
+  openUploadClick = (event) => this.openUpload.emit();
 
   rename(item) {
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) {
-      this.svc.rename(item, newName);
+      this.svc.rename(item, newName).subscribe(s =>
+        this.refresh()
+      );
     }
   }
 
@@ -297,4 +292,8 @@ export class AdamBrowserComponent implements OnInit {
     //   console.log('result: ', s)
     // );
   }
+
+  private loadFileList = () => this.svc.liveListLoad();
+
+  private refresh = () => this.svc.liveListReload();
 }

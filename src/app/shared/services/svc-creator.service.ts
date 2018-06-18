@@ -17,29 +17,25 @@ export class SvcCreatorService {
   implementLiveList(getLiveList$: Observable<any>, disableToastr: string) {
 
     const disableToastrValue = !!disableToastr;
-    // let liveListCache = []; // this is the cached list
     let liveListCacheIsLoaded = false;
     const liveListSourceRead$: Observable<any> = getLiveList$;
-
-    // let liveListCache = new Subject<any[]>();
-    // let liveListCache: any[] = [];
-
 
     const liveListCacheBehaviorSubject: BehaviorSubject<any[]> = new BehaviorSubject([]);
     const liveListCache$ = liveListCacheBehaviorSubject.asObservable();
 
-    const liveList = () => {
-      console.log('liveList load');
+    /**
+     * Load live list action
+     */
+    const liveListLoad = () => {
       if (liveListCacheBehaviorSubject.getValue() && !liveListCacheIsLoaded) {
-        //  if (liveListCache.length === 0 && !liveListCacheIsLoaded) {
-        console.log('liveList reload');
         liveListReload();
       }
-      // return liveListCache$;
     };
 
+    /**
+     * Reload live list action
+     */
     const liveListReload = () => {
-      console.log('liveList reload in');
       // show loading - must use the promise-mode because this may be used early before the language has arrived
       // return 'General.Messages.Loading';
       // $translate("General.Messages.Loading").then(function (msg) {
@@ -49,6 +45,9 @@ export class SvcCreatorService {
       liveListSourceRead$.subscribe(s => updateLiveAll(s));
     };
 
+    /**
+     * Clear list
+     */
     const liveListReset = () => {
       // liveListCache = [];
       liveListCacheBehaviorSubject.next([]);
@@ -78,17 +77,14 @@ export class SvcCreatorService {
 
       liveListCacheIsLoaded = true;
       console.log('liveListCache after:', liveListCacheBehaviorSubject.getValue());
-      // return result;
     };
 
     const svc = {
-      // aa,
-      // dodaj,
       disableToastrValue,
       liveListCache$,
       liveListCacheIsLoaded,
       liveListSourceRead$,
-      liveList,
+      liveListLoad,
       // getAllLive,
       liveListReload,
       liveListReset,
