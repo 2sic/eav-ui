@@ -49,6 +49,9 @@ import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { DropzoneComponent } from './adam/dropzone/dropzone.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { FilterPipe } from '../shared/pipes/filter.pipe';
+import { OrderByPipe } from '../shared/pipes/orderby.pipe';
+import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
 
 @NgModule({
   declarations: [
@@ -76,6 +79,9 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
     AdamBrowserComponent,
     AdamHintComponent,
     DropzoneComponent,
+    FilterPipe,
+    OrderByPipe,
+    ClickStopPropagationDirective
   ],
   imports: [
     CommonModule,

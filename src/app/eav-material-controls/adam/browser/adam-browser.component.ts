@@ -3,6 +3,8 @@ import { AdamService } from '../adam-service.service';
 import { HttpClient } from '@angular/common/http';
 import { SvcCreatorService } from '../../../shared/services/svc-creator.service';
 import { Observable } from 'rxjs/Observable';
+import { AdamItem } from '../../../shared/models/adam/adam-item';
+import { FileTypeService } from '../../../shared/services/file-type.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,27 +14,34 @@ import { Observable } from 'rxjs/Observable';
 })
 export class AdamBrowserComponent implements OnInit {
 
-  // TODO: temp need change
+  // TODO: temp need to change
   @Input() eavConfig: any;
 
+  // Identity fields
   @Input() contentTypeName: any;
   @Input() entityGuid: any;
   @Input() fieldName: any;
+
+  // Configuration
   @Input() subFolder;
-  @Input() showImagesOnly;
   @Input() folderDepth;
+  @Input() metadataContentTypes;
+  @Input() showImagesOnly;
   @Input() showFolders;
   @Input() allowAssetsInRoot;
-  @Input() metadataContentTypes;
-
-  // @Input() show = false;
-  @Input() show = false;
   @Input() adamModeConfig = { usePortalRoot: false };
-  appRoot;
+  // this is configuration need change:
+  @Input() fileFilter: '*.jpg,*.pdf';
+
+  // basic functionality
   @Input() disabled = false;
   @Input() enableSelect;
 
+  @Input() show = false;
+  appRoot;
+
   @Input() autoLoad = true;
+
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
@@ -72,25 +81,30 @@ export class AdamBrowserComponent implements OnInit {
   // },
 
   private svcCreatorService;
-  folders;
-  items;
+  get folders() {
+    return this.svc ? this.svc.folders : [];
+  }
+  items: AdamItem[];
   svc;
 
-  items$: Observable<any[]>; // = this.svc.liveList();
+  items$: Observable<AdamItem[]>; // = this.svc.liveList();
+  allowedFileTypes = [];
 
-  // get folders() {
-  //   return this.adamService.folders;
-  // }
 
-  constructor(adamService: AdamService) {
-    this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
+  constructor(private adamService: AdamService, private fileTypeService: FileTypeService) {
+    this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'http://2sxc-dnn742.dnndev.me/Portals/0/', 7);
     // this.adamService = new AdamService(httpClient, null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
     // this.svcCreatorService = new SvcCreatorService(this.adamService.getAll(), 'true');
   }
 
   ngOnInit() {
+    this.setAllowedFileTypes();
+
+    // TODO: when to load folders??? Before was toggle!!!
     this.items$ = this.svc.liveListCache$;
     this.loadFileList();
+    // TODO: when set folders??? Before was toggle!!!
+    // this.folders = this.svc.folders;
 
     this.initConfig();
 
@@ -139,6 +153,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   del(item) {
+    //  event.stopPropagation();
     if (this.disabled) {
       return;
     }
@@ -149,6 +164,8 @@ export class AdamBrowserComponent implements OnInit {
         this.refresh()
       );
     }
+
+    // return false;
   }
 
   editMetadata(item) {
@@ -176,18 +193,25 @@ export class AdamBrowserComponent implements OnInit {
 
   };
 
+  fileEndingFilter(item) {
+    if (this.allowedFileTypes.length === 0) {
+      return true;
+    }
+    const extension = item.Name.match(/(?:\.([^.]+))?$/)[0];
+    return this.allowedFileTypes.indexOf(extension) !== -1;
+  }
+
   get() {
     // this.items = this.svc.liveList();
     console.log('items:', this.items);
-    this.folders = this.svc.folders;
+    // this.folders = this.svc.folders;
     // this.svc.liveListReload();
   }
 
 
-
   goUp = () => {
     this.subFolder = this.svc.goUp();
-    console.log('this.subFolder', this.subFolder);
+    this.refresh();
   }
 
 
@@ -220,6 +244,16 @@ export class AdamBrowserComponent implements OnInit {
     return null;
   };
 
+  //#region Folder Navigation
+  goIntoFolder(folder) {
+    const subFolder = this.svc.goIntoFolder(folder);
+    this.refresh();
+    this.subFolder = subFolder;
+  }
+
+  icon(item: AdamItem) {
+    return this.fileTypeService.getIconClass(item.Name);
+  }
 
   // load svc...
   // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
@@ -293,7 +327,17 @@ export class AdamBrowserComponent implements OnInit {
     // );
   }
 
+  private setAllowedFileTypes() {
+    if (this.fileFilter) {
+      this.allowedFileTypes = this.fileFilter.split(',').map(function (i) {
+        return i.replace('*', '').trim();
+      });
+    }
+  }
+
   private loadFileList = () => this.svc.liveListLoad();
 
   private refresh = () => this.svc.liveListReload();
 }
+
+

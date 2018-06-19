@@ -54,19 +54,19 @@
     </div>
 
     <!-- folder list - not always shown -->
-    <!-- <div ng-show="vm.showFolders || vm.debug.on" class="dz-preview" ng-repeat="item in vm.items | filter: { IsFolder: true } | filter: { Name: '!2sxc' } | filter: { Name: '!adam' } | orderBy:'Name'"
-      ng-click="vm.goIntoFolder(item)"> -->
-    <div class="dz-preview" *ngFor="let item of (items$ | async);">
+    <!-- <div ng-show="vm.showFolders || vm.debug.on" -->
+    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
+      (click)="goIntoFolder(item)">
       <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i class="eav-icon-folder-empty"></i>
         <div class="short-label">{{ item.Name }}</div>
       </div>
 
       <div class="dz-details file-type-{{item.Type}}">
-        <span (click)="del(item)" stop-event="click" class="adam-delete-button">
+        <span (click)="del(item)" appClickStopPropagation class="adam-delete-button">
           <i class="eav-icon-cancel"></i>
         </span>
-        <span (click)="rename(item)" stop-event="click" class="adam-rename-button">
+        <span (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
           <i class="eav-icon-pencil"></i>
         </span>
         <div class="adam-full-name-area">
@@ -74,32 +74,28 @@
         </div>
       </div>
       <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
-      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" *ngIf="getMetadataType(item)"
-        stop-event="click">
+      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" appClickStopPropagation
+        *ngIf="getMetadataType(item)">
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
     </div>
 
-
     <!-- files -->
-    <!-- <div class="dz-preview" ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'"
-      ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect">
-      <div ng-if="item.Type !== 'image'" class="dz-image adam-blur  adam-browse-background-icon adam-browse-background">
-        <i ng-class="vm.icon(item)"></i>
+    <!-- <div class="dz-preview" ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'" ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect"> -->
+    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false  | orderby : 'Name')">
+      <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
+        <i [ngClass]="icon(item)"></i>
         <div class="adam-short-label">{{ item.Name }}</div>
       </div>
-      <div ng-if="item.Type === 'image'" class="dz-image">
-        <img data-dz-thumbnail="" alt="{{ item.Id + ':' + item.Name
-}}" ng-src="{{ item.fullPath + '?w=120&h=120&mode=crop' }}">
+      <div *ngIf="item.Type === 'image'" class="dz-image">
+        <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=120&h=120&mode=crop'">
       </div>
 
-
-
       <div class="dz-details file-type-{{item.Type}}">
-        <span ng-click="vm.del(item)" stop-event="click" class="adam-delete-button">
+        <span (click)="del(item)" appClickStopPropagation class="adam-delete-button">
           <i class="eav-icon-cancel"></i>
         </span>
-        <span ng-click="vm.rename(item)" stop-event="click" class="adam-rename-button">
+        <span (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
           <i class="eav-icon-pencil"></i>
         </span>
         <div class="adam-full-name-area">
@@ -108,16 +104,15 @@
         <div class="dz-filename adam-short-label">
           <span>#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb</span>
         </div>
-        <a class="adam-link-button" target="_blank" ng-href="{{ item.fullPath }}">
+        <a class="adam-link-button" target="_blank" [href]="item.FullPath">
           <i class="eav-icon-link-ext" style="font-size: larger"></i>
         </a>
       </div>
-
-      <span class="adam-tag" ng-class="{'metadata-exists': item.MetadataId > 0}" ng-click="vm.editMetadata(item)" ng-if="vm.getMetadataType(item)"
-        stop-event="click" uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}">
+      <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
+      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" *ngIf="getMetadataType(item)"
+        appClickStopPropagation>
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
-
 
       <div class="dz-success-mark">
         <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -130,8 +125,7 @@
           </g>
         </svg>
       </div>
-    </div> -->
-
+    </div>
   </div>
 </div>
 

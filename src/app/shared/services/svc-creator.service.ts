@@ -14,11 +14,11 @@ export class SvcCreatorService {
   // construct a object which has liveListCache, liveListReload(), liveListReset(),
   constructor() { }
 
-  implementLiveList(getLiveList$: Observable<any>, disableToastr: string) {
+  implementLiveList(getLiveList$: any, disableToastr: string) {
 
     const disableToastrValue = !!disableToastr;
     let liveListCacheIsLoaded = false;
-    const liveListSourceRead$: Observable<any> = getLiveList$;
+    const liveListSourceRead$: any = getLiveList$;
 
     const liveListCacheBehaviorSubject: BehaviorSubject<any[]> = new BehaviorSubject([]);
     const liveListCache$ = liveListCacheBehaviorSubject.asObservable();
@@ -41,8 +41,8 @@ export class SvcCreatorService {
       // $translate("General.Messages.Loading").then(function (msg) {
       //   t.msg = toastr.info(msg);
       // });
-
-      liveListSourceRead$.subscribe(s => updateLiveAll(s));
+      console.log('liveListReload');
+      liveListSourceRead$().subscribe(s => updateLiveAll(s));
     };
 
     /**

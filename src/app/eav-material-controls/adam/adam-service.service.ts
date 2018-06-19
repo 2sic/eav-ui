@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { UrlHelper } from '../../shared/helpers/url-helper';
 import { SvcCreatorService } from '../../shared/services/svc-creator.service';
+import { AdamItem } from '../../shared/models/adam/adam-item';
 
 @Injectable()
 export class AdamService {
 
   // TODO:
   private url; // =  sxc.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field),
-  private folders = [];
+  // private folders = [];
   private adamRoot; // = appRoot.substr(0, appRoot.indexOf('2sxc'))
 
   private contentType;
@@ -32,8 +33,8 @@ export class AdamService {
     this.contentType = null;
     this.entityGuid = null;
     this.field = null;
-    this.subfolder = null;
-    this.serviceConfig = null;
+    // this.subfolder = '';
+    // this.serviceConfig = null;
 
     // // TEMP:
     // // tslint:disable-next-line:max-line-length
@@ -46,12 +47,16 @@ export class AdamService {
 
   createSvc(contentType, entityGuid, field, subfolder, serviceConfig, appRoot, appId) {
     // tslint:disable-next-line:max-line-length
-    const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName';
+    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName';
+    // tslint:disable-next-line:max-line-length
+    const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/7fb41a4e-e832-42f5-9ece-f37c368dd9ee/HyperLinkStaticName/';
     const folders = [];
-    const adamRoot = appRoot.substr(0, appRoot.indexOf('2sxc'));
+    // TODO: change:
+    const adamRoot = appRoot; // appRoot.substr(0, appRoot.indexOf('2sxc'));
 
-    const getAll = (): Observable<any> => {
+    const getAll = (): Observable<AdamItem[]> => {
 
+      console.log('GET ALL subfolder:', subfolder);
       // TODO:
       const header = UrlHelper.createHeader('89', '421', '421');
       // maybe create model for data
@@ -65,9 +70,12 @@ export class AdamService {
           }
         })
         .map((data: any) => {
+          console.log('geta all before', data);
+          data.forEach(addFullPath);
+          console.log('geta all after', data);
           return data;
         })
-        .do(data => console.log('items: ', data))
+        .do(data => console.log('items subfolder: ', subfolder))
         .catch(this.handleError);
     };
 
@@ -83,16 +91,18 @@ export class AdamService {
     };
 
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
-    const addFullPath = (value, key) => {
+    const addFullPath = (value: AdamItem, key) => {
       // 2dm 2018-03-29 special fix - sometimes the path already has the full path, sometimes not
       // it should actually be resolved properly, but because I don't have time
       // ATM (data comes from different web-services, which are also used in other places
       // I'll just check if it's already in there
-      value.fullPath = value.Path;
-
+      value.FullPath = value.Path;
+      console.log('geta all adamRoot', adamRoot);
       if (value.Path && value.Path.toLowerCase().indexOf(adamRoot.toLowerCase()) === -1) {
-        value.fullPath = adamRoot + value.Path;
+        console.log('geta all value.Path.toLowerCase()', value.Path.toLowerCase().indexOf(adamRoot.toLowerCase()) === -1);
+        value.FullPath = adamRoot + value.Path;
       }
+      console.log('geta all 1', value);
     };
 
     // create folder
@@ -119,11 +129,22 @@ export class AdamService {
     };
 
     const goIntoFolder = (childFolder): string => {
-      this.folders.push(childFolder);
+      folders.push(childFolder);
+      console.log('goIntoFolder childFolder: ', childFolder);
       const pathParts = childFolder.Path.split('/');
       let subPath = '';
-      for (let c = 0; c < folders.length; c++) {
-        subPath = pathParts[pathParts.length - c - 2] + '/' + subPath;
+      console.log('goIntoFolder pathParts: ', pathParts);
+      console.log('goIntoFolder folders: ', folders);
+      console.log('goIntoFolder this.folders.length: ', folders.length);
+      // for (let c = 0; c < folders.length; c++) {
+      //   subPath = pathParts[pathParts.length - c - 2] + '/' + subPath;
+      //   console.log('goIntoFolder subPath for: ', subPath);
+      // }
+
+      for (let index = 0; index < folders.length; index++) {
+        console.log('goIntoFolder start: ', subPath);
+        subPath = pathParts[pathParts.length - index - 2] + '/' + subPath;
+        console.log('goIntoFolder subPath for: ', subPath);
       }
       subPath = subPath.replace('//', '/');
       if (subPath[subPath.length - 1] === '/') {
@@ -131,9 +152,9 @@ export class AdamService {
       }
 
       childFolder.Subfolder = subPath;
-
+      console.log('goIntoFolder: ', subPath);
       // now assemble the correct subfolder based on the folders-array
-      this.subfolder = subPath;
+      subfolder = subPath;
       // TODO:
       // this.liveListReload();
 
@@ -241,15 +262,13 @@ export class AdamService {
       rename,
     };
 
-    svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll(), 'true'));
+    svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));
 
     // TODO:
     // const reload = () => svc.liveListReload();
 
     return svc;
   }
-
-
 
   private handleError(error: any) {
     // In a real world app, we might send the error to remote logging infrastructure
