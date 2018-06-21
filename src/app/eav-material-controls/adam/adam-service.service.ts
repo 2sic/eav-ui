@@ -49,7 +49,9 @@ export class AdamService {
     // tslint:disable-next-line:max-line-length
     // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName';
     // tslint:disable-next-line:max-line-length
-    const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/7fb41a4e-e832-42f5-9ece-f37c368dd9ee/HyperLinkStaticName/';
+    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/7fb41a4e-e832-42f5-9ece-f37c368dd9ee/HyperLinkStaticName/';
+    // tslint:disable-next-line:max-line-length
+    const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/';
     const folders = [];
     // TODO: change:
     const adamRoot = appRoot; // appRoot.substr(0, appRoot.indexOf('2sxc'));
@@ -70,9 +72,7 @@ export class AdamService {
           }
         })
         .map((data: any) => {
-          console.log('geta all before', data);
           data.forEach(addFullPath);
-          console.log('geta all after', data);
           return data;
         })
         .do(data => console.log('items subfolder: ', subfolder))
@@ -97,12 +97,9 @@ export class AdamService {
       // ATM (data comes from different web-services, which are also used in other places
       // I'll just check if it's already in there
       value.FullPath = value.Path;
-      console.log('geta all adamRoot', adamRoot);
       if (value.Path && value.Path.toLowerCase().indexOf(adamRoot.toLowerCase()) === -1) {
-        console.log('geta all value.Path.toLowerCase()', value.Path.toLowerCase().indexOf(adamRoot.toLowerCase()) === -1);
         value.FullPath = adamRoot + value.Path;
       }
-      console.log('geta all 1', value);
     };
 
     // create folder
@@ -122,29 +119,19 @@ export class AdamService {
           }
         })
         .map((data: any) => {
+          reload();
           return data;
         })
-        .do(data => console.log('addFolder: ', data))
+        // .do(data => console.log('addFolder: ', data))
         .catch(this.handleError);
     };
 
     const goIntoFolder = (childFolder): string => {
       folders.push(childFolder);
-      console.log('goIntoFolder childFolder: ', childFolder);
       const pathParts = childFolder.Path.split('/');
       let subPath = '';
-      console.log('goIntoFolder pathParts: ', pathParts);
-      console.log('goIntoFolder folders: ', folders);
-      console.log('goIntoFolder this.folders.length: ', folders.length);
-      // for (let c = 0; c < folders.length; c++) {
-      //   subPath = pathParts[pathParts.length - c - 2] + '/' + subPath;
-      //   console.log('goIntoFolder subPath for: ', subPath);
-      // }
-
-      for (let index = 0; index < folders.length; index++) {
-        console.log('goIntoFolder start: ', subPath);
-        subPath = pathParts[pathParts.length - index - 2] + '/' + subPath;
-        console.log('goIntoFolder subPath for: ', subPath);
+      for (let i = 0; i < folders.length; i++) {
+        subPath = pathParts[pathParts.length - i - 2] + '/' + subPath;
       }
       subPath = subPath.replace('//', '/');
       if (subPath[subPath.length - 1] === '/') {
@@ -152,11 +139,12 @@ export class AdamService {
       }
 
       childFolder.Subfolder = subPath;
-      console.log('goIntoFolder: ', subPath);
       // now assemble the correct subfolder based on the folders-array
       subfolder = subPath;
       // TODO:
       // this.liveListReload();
+
+      reload();
 
       return subPath;
     };
@@ -172,6 +160,7 @@ export class AdamService {
       }
       // TODO:
       // this.liveListReload();
+      reload();
       return subfolder;
     };
 
@@ -192,22 +181,11 @@ export class AdamService {
           }
         })
         .map((data: any) => {
+          reload();
           return data;
         })
-        .do(data => console.log('delete: ', data))
+        // .do(data => console.log('delete: ', data))
         .catch(this.handleError);
-
-      // return $http.get(this.url + '/delete',
-      //   {
-      //     params: {
-      //       subfolder: this.subfolder,
-      //       isFolder: item.IsFolder,
-      //       id: item.Id,
-      //       usePortalRoot: this.serviceConfig.usePortalRoot,
-      //       appId: this.appId
-      //     }
-      //   })
-      //   .then(this.liveListReload);
     };
 
     // rename, then reload
@@ -227,25 +205,12 @@ export class AdamService {
           }
         })
         .map((data: any) => {
+          reload();
           return data;
         })
         .do(data => console.log('rename: ', data))
         .catch(this.handleError);
-
-      // return $http.get(this.url + '/rename',
-      //   {
-      //     params: {
-      //       subfolder: this.subfolder,
-      //       isFolder: item.IsFolder,
-      //       id: item.Id,
-      //       usePortalRoot: this.serviceConfig.usePortalRoot,
-      //       newName: newName,
-      //       appId: this.appId
-      //     }
-      //   })
-      //   .then(this.liveListReload);
     };
-
 
     let svc = {
       url,
@@ -260,12 +225,13 @@ export class AdamService {
       goUp,
       deleteItem,
       rename,
+      liveListReload: null,
     };
 
     svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));
 
     // TODO:
-    // const reload = () => svc.liveListReload();
+    const reload = () => svc.liveListReload();
 
     return svc;
   }

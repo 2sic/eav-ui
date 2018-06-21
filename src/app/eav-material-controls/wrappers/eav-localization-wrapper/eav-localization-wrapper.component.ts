@@ -237,9 +237,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
-        console.log('config on subscribeToCurrentLanguageFromStore', this.config);
         this.translateAllConfiguration(currentLanguage);
-
         this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
         this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
       })

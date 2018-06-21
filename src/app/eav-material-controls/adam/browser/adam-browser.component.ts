@@ -142,9 +142,10 @@ export class AdamBrowserComponent implements OnInit {
     }
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (folderName) {
-      this.svc.addFolder(folderName).subscribe(s =>
-        this.refresh()
-      );
+      this.svc.addFolder(folderName).subscribe();
+      // s =>
+      //   this.refresh()
+      // );
     }
   }
 
@@ -159,10 +160,10 @@ export class AdamBrowserComponent implements OnInit {
     }
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (ok) {
-      console.log('call delete item');
-      this.svc.deleteItem(item).subscribe(s =>
-        this.refresh()
-      );
+      this.svc.deleteItem(item).subscribe();
+      //   s =>
+      //   this.refresh()
+      // );
     }
 
     // return false;
@@ -211,7 +212,7 @@ export class AdamBrowserComponent implements OnInit {
 
   goUp = () => {
     this.subFolder = this.svc.goUp();
-    this.refresh();
+    // this.refresh();
   }
 
 
@@ -247,7 +248,7 @@ export class AdamBrowserComponent implements OnInit {
   //#region Folder Navigation
   goIntoFolder(folder) {
     const subFolder = this.svc.goIntoFolder(folder);
-    this.refresh();
+    // this.refresh();
     this.subFolder = subFolder;
   }
 
@@ -263,9 +264,10 @@ export class AdamBrowserComponent implements OnInit {
   rename(item) {
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) {
-      this.svc.rename(item, newName).subscribe(s =>
-        this.refresh()
-      );
+      this.svc.rename(item, newName).subscribe();
+      //   s =>
+      //   this.refresh()
+      // );
     }
   }
 
@@ -300,31 +302,6 @@ export class AdamBrowserComponent implements OnInit {
     if (this.show) {
       this.get();
     }
-  }
-
-  // TEMP
-  testApi() {
-
-    // const adam = new AdamService(this.httpClient, null, null, null, '', null, 'test 2sxc test', 7);
-
-    // const svc = this.adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
-
-    console.log('svc2: ', this.svc);
-    // let result;
-    this.svc.getAll().subscribe(s =>
-      console.log('result: ', s)
-    );
-
-    // uploadUrl,
-    // addFullPath,
-
-    // svc.deleteItem('').subscribe(s =>
-    //   console.log('result: ', s)
-    // );
-
-    // svc.rename().subscribe(s =>
-    //   console.log('result: ', s)
-    // );
   }
 
   private setAllowedFileTypes() {

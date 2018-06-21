@@ -1,4 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
+import { EavConfiguration } from '../models/eav-configuration';
 
 export class UrlHelper {
 
@@ -22,4 +23,45 @@ export class UrlHelper {
         return queryParams;
     }
 
+    /**
+     * Create EavCongiguration from queryStringParams
+     */
+    static getEavConfiguration = (queryParams: { [key: string]: string }): EavConfiguration => {
+        return new EavConfiguration(
+            queryParams['zoneId'],
+            queryParams['appId'],
+            queryParams['approot'],
+            queryParams['cbid'],
+            queryParams['dialog'],
+            queryParams['items'],
+            queryParams['lang'],
+            queryParams['langpri'],
+            queryParams['langs'],
+            queryParams['mid'],
+            queryParams['mode'],
+            queryParams['partOfPage'],
+            queryParams['portalroot'],
+            queryParams['publishing'],
+            queryParams['tid'],
+            queryParams['websiteroot'],
+            UrlHelper.getVersioningOptions(queryParams['partOfPage'] === 'true', queryParams['publishing'])
+        );
+    }
+
+    private static getVersioningOptions(partOfPage: boolean, publishing: string) {
+        if (!partOfPage) {
+            return { show: true, hide: true, branch: true };
+        }
+
+        const req = publishing || '';
+        switch (req) {
+            case '':
+            case 'DraftOptional': return { show: true, hide: true, branch: true };
+            case 'DraftRequired': return { branch: true, hide: true };
+            default: {
+                console.error('invalid versioning requiremenets: ' + req.toString());
+                return {};
+            }
+        }
+    }
 }

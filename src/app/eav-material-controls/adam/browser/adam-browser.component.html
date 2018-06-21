@@ -81,7 +81,7 @@
     </div>
 
     <!-- files -->
-    <!-- <div class="dz-preview" ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'" ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect"> -->
+    <!-- <div ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'" ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect"> -->
     <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false  | orderby : 'Name')">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i [ngClass]="icon(item)"></i>
@@ -128,14 +128,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-<p>
-  browser works!
-</p>
-
-
-<button type="button" (click)="testApi()">test
-</button>

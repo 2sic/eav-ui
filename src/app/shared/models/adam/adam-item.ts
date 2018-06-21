@@ -1,13 +1,4 @@
 export class AdamItem {
-    // Id: number;
-    // IsFolder: boolean;
-    // MetadataId: number;
-    // Name: string;
-    // ParentId: number;
-    // Path: string;
-    // Size: number;
-    // Type: string;
-
     constructor(public Id: number,
         public IsFolder: boolean,
         public MetadataId: number,

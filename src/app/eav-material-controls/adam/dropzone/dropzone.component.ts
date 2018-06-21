@@ -10,7 +10,7 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 })
 export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(DropzoneDirective) directiveRef?: DropzoneDirective;
+  @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
 
   @Input() config: FieldConfig;
@@ -24,7 +24,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     errorReset: null,
     cancelReset: null,
 
-    url: 'http://2sxc-dnn742.dnndev.me/',
+    // tslint:disable-next-line:max-line-length
+    url: 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName?usePortalRoot=false&appId=7',
     // urlRoot: 'http://2sxc-dnn742.dnndev.me/',
     maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
     paramName: 'uploadfile',
@@ -65,6 +66,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
+    // Reset dropzone
+    this.dropzoneRef.reset();
   }
 
   /**
