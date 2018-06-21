@@ -27,6 +27,8 @@ export class EavService {
   private formSetValueChangeSource = new Subject<{ [name: string]: any }>();
   formSetValueChange$ = this.formSetValueChangeSource.asObservable();
 
+  private eavConfig: EavConfiguration;
+
   constructor(private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
     private itemService: ItemService,
@@ -37,9 +39,15 @@ export class EavService {
   //   this.store.dispatch(new dataActions.LoadAllDataAction());
   // }
 
-  public loadAllDataForForm(eavConfig: EavConfiguration): Observable<any> {
-    console.log('call getAllDataForForm', eavConfig.items);
+  public getEavConfiguration = () => {
+    if (this.eavConfig) {
+      return this.eavConfig;
+    } else {
+      console.log('Configuration data not setted');
+    }
+  }
 
+  public loadAllDataForForm(eavConfig: EavConfiguration): Observable<any> {
     const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]);
     // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     //  const body = items;
@@ -92,6 +100,18 @@ export class EavService {
       })
       .do(data => console.log('submit: ', data))
       .catch(this.handleError);
+  }
+
+
+
+  /**
+ * Set Eav Configuration
+ */
+  public setEavConfiguration(route) {
+    const queryStringParameters = UrlHelper.readQueryStringParameters(route.snapshot.fragment);
+    console.log('queryStringParameters', queryStringParameters);
+    // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
+    this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
   }
 
   /**

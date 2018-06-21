@@ -4,57 +4,33 @@ import { Observable } from 'rxjs/Observable';
 import { UrlHelper } from '../../shared/helpers/url-helper';
 import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
+import { EavService } from '../../shared/services/eav.service';
+import { EavConfiguration } from '../../shared/models/eav-configuration';
 
 @Injectable()
 export class AdamService {
 
-  // TODO:
-  private url; // =  sxc.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field),
-  // private folders = [];
-  private adamRoot; // = appRoot.substr(0, appRoot.indexOf('2sxc'))
+  private eavConfig: EavConfiguration;
 
-  private contentType;
-  private entityGuid;
-  private field;
-  private subfolder;
-  private serviceConfig;
-  private appRoot;
-  private appId;
+  constructor(private httpClient: HttpClient,
+    private svcCreatorService: SvcCreatorService,
+    private eavService: EavService) {
 
-  constructor(private httpClient: HttpClient, private svcCreatorService: SvcCreatorService) {
-    // private contentType: any,
-    // private entityGuid: any,
-    // private field: any,
-    // private subfolder: any,
-    // private serviceConfig: any,
-    // private appRoot: any,
-    // private appId: any)
-
-    this.contentType = null;
-    this.entityGuid = null;
-    this.field = null;
-    // this.subfolder = '';
-    // this.serviceConfig = null;
-
-    // // TEMP:
-    // // tslint:disable-next-line:max-line-length
-    // this.url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/
-    // 106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName/';
-    // sxc.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field),
-    // this.adamRoot = appRoot.substr(0, appRoot.indexOf('2sxc'));
-    // this.appId = appId;
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
-  createSvc(contentType, entityGuid, field, subfolder, serviceConfig, appRoot, appId) {
+  createSvc(subfolder, serviceConfig, url) {
     // tslint:disable-next-line:max-line-length
     // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName';
     // tslint:disable-next-line:max-line-length
     // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/7fb41a4e-e832-42f5-9ece-f37c368dd9ee/HyperLinkStaticName/';
     // tslint:disable-next-line:max-line-length
-    const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/';
+    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/';
+    // TODO: find how to solve serviceRoot
+    // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
+    // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
     const folders = [];
-    // TODO: change:
-    const adamRoot = appRoot; // appRoot.substr(0, appRoot.indexOf('2sxc'));
+    const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
 
     const getAll = (): Observable<AdamItem[]> => {
 
@@ -68,7 +44,7 @@ export class AdamService {
           params: {
             subfolder: subfolder,
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: appId
+            appId: this.eavConfig.appId
           }
         })
         .map((data: any) => {
@@ -86,7 +62,7 @@ export class AdamService {
         : url + '?subfolder=' + targetSubfolder;
       urlUpl += (urlUpl.indexOf('?') === -1 ? '?' : '&')
         + 'usePortalRoot=' + serviceConfig.usePortalRoot
-        + '&appId=' + appId;
+        + '&appId=' + this.eavConfig.appId;
       return urlUpl;
     };
 
@@ -105,7 +81,7 @@ export class AdamService {
     // create folder
     const addFolder = (newfolder) => {
       // TODO:
-      const header = UrlHelper.createHeader('89', '421', '421');
+      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       // maybe create model for data
       return this.httpClient.post(url + '/folder',
         {},
@@ -115,7 +91,7 @@ export class AdamService {
             subfolder: subfolder,
             newFolder: newfolder,
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: appId
+            appId: this.eavConfig.appId
           }
         })
         .map((data: any) => {
@@ -168,7 +144,7 @@ export class AdamService {
     // IF verb DELETE fails, so I'm using get for now
     const deleteItem = (item) => {
       // TODO:
-      const header = UrlHelper.createHeader('89', '421', '421');
+      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       return this.httpClient.get(url + '/delete',
         {
           headers: header,
@@ -177,7 +153,7 @@ export class AdamService {
             isFolder: item.IsFolder,
             id: item.Id,
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: appId
+            appId: this.eavConfig.appId
           }
         })
         .map((data: any) => {
@@ -191,7 +167,7 @@ export class AdamService {
     // rename, then reload
     const rename = (item, newName) => {
       // TODO:
-      const header = UrlHelper.createHeader('89', '421', '421');
+      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       return this.httpClient.get(url + '/rename',
         {
           headers: header,
@@ -201,7 +177,7 @@ export class AdamService {
             id: item.Id,
             usePortalRoot: serviceConfig.usePortalRoot,
             newName: newName,
-            appId: appId
+            appId: this.eavConfig.appId
           }
         })
         .map((data: any) => {

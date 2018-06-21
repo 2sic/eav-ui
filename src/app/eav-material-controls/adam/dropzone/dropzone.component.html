@@ -5,14 +5,13 @@
   (success)="onUploadSuccess($event)">
   <!-- <div class="dropzone"> -->
   <ng-container #fieldComponent></ng-container>
-  <adam-browser (openUpload)="openUpload()"></adam-browser>
+  <adam-browser (openUpload)="openUpload()" [url]="url" [config]="config"></adam-browser>
   <!-- ng-show="uploading" -->
   <div class="{{'field-' + config.index}}">
     <div class="dropzone-previews">
     </div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>
-
 
   <adam-hint></adam-hint>
   <!-- </div> -->

@@ -58,7 +58,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private languageService: LanguageService,
-    private router: Router,
     private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
@@ -70,6 +69,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
+
+    // Read configuration from queryString
+    this.eavService.setEavConfiguration(this.route);
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
@@ -150,8 +153,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private loadData() {
 
-    this.setEavConfiguration();
-
     this.setTranslateLanguage(this.eavConfig.lang);
 
     this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs),
@@ -170,12 +171,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /**
    * Read Eav Configuration
    */
-  private setEavConfiguration() {
-    const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
-    console.log('queryStringParameters', queryStringParameters);
-    // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
-    this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
-  }
+  // private setEavConfiguration() {
+  //   const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+  //   console.log('queryStringParameters', queryStringParameters);
+  //   // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
+  //   this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
+  // }
 
   /**
    * Set translate language of all forms

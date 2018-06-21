@@ -3,6 +3,8 @@ import { EavConfiguration } from '../models/eav-configuration';
 
 export class UrlHelper {
 
+    private static readonly serviceScopes = ['app', 'app-sys', 'app-api', 'app-query', 'app-content', 'eav', 'view', 'dnn'];
+
     static createHeader = (tabId: string, moduleId: string, contentBlockId: string): HttpHeaders => {
         return new HttpHeaders({
             'TabId': tabId,
@@ -64,4 +66,23 @@ export class UrlHelper {
             }
         }
     }
+
+    /**
+ * converts a short api-call path like "/app/Blog/query/xyz" to the DNN full path
+ * which varies from installation to installation like "/desktopmodules/api/2sxc/app/..."
+ * @param virtualPath
+ * @returns mapped path
+ */
+    public static resolveServiceUrl(virtualPath: string, serviceRoot: string): string {
+        const scope = virtualPath.split('/')[0].toLowerCase();
+
+        // stop if it's not one of our special paths
+        if (this.serviceScopes.indexOf(scope) === -1) {
+            return virtualPath;
+        }
+
+        return serviceRoot + scope + '/' + virtualPath.substring(virtualPath.indexOf('/') + 1);
+    }
+
+
 }

@@ -2,6 +2,10 @@ import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterContentInit
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { AdamBrowserComponent } from '../browser/adam-browser.component';
+import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { EavService } from '../../../shared/services/eav.service';
+import { UrlHelper } from '../../../shared/helpers/url-helper';
 
 @Component({
   selector: 'app-dropzone',
@@ -12,47 +16,69 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
+  @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
 
   public disabled = false;
-
-  public dropzoneConfig: DropzoneConfigInterface = {
-    // clickable: true,
-    maxFiles: 1,
-    autoReset: null,
-    errorReset: null,
-    cancelReset: null,
-
-    // tslint:disable-next-line:max-line-length
-    url: 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName?usePortalRoot=false&appId=7',
-    // urlRoot: 'http://2sxc-dnn742.dnndev.me/',
-    maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
-    paramName: 'uploadfile',
-    maxThumbnailFilesize: 10,
-    headers: {
-      'ModuleId': '421',
-      'TabId': '89',
-      'ContentBlockId': '421'
-    },
-    dictDefaultMessage: '',
-    addRemoveLinks: false,
-    // '.field-' + field.toLowerCase() + ' .dropzone-previews',
-    previewsContainer: '.dropzone-previews', // '.field-' + this.config.index + ' .dropzone-previews',
-    // we need a clickable, because otherwise the entire area is clickable. so i'm just making the preview clickable, as it's not important
-    clickable: '.dropzone-previews' // '.field-' + this.config.index + ' .invisible-clickable'  // " .dropzone-adam"
-  };
-
-  // url: 'http://2sxc-dnn742.dnndev.me/',
+  public dropzoneConfig: DropzoneConfigInterface;
+  private eavConfig: EavConfiguration;  // url: 'http://2sxc-dnn742.dnndev.me/',
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
+  url: string;
 
-  constructor() { }
+  constructor(private eavService: EavService) {
+    this.eavConfig = eavService.getEavConfiguration();
+  }
 
   ngOnInit() {
+    // TODO: read from configuration
+    const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
+    // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
+
+    console.log('dropzone config.name', this.config.name);
+    // TODO: read from configuration
+
+    const contentType = this.config.header.contentTypeName;
+    // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
+    const entityGuid = this.config.header.guid;
+    // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
+    const field = this.config.name;
+    // const field = 'HyperLinkStaticName';
+
+    this.url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
+
+    console.log('this.url', this.url);
+
+    this.dropzoneConfig = {
+      url: this.url + '?usePortalRoot=false&appId=7',
+      maxFiles: 1,
+      autoReset: null,
+      errorReset: null,
+      cancelReset: null,
+      // 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/
+      // 386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName?usePortalRoot=false&appId=7',
+      // urlRoot: 'http://2sxc-dnn742.dnndev.me/',
+      maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
+      paramName: 'uploadfile',
+      maxThumbnailFilesize: 10,
+      headers: {
+        'ModuleId': this.eavConfig.mid,
+        'TabId': this.eavConfig.tid,
+        'ContentBlockId': this.eavConfig.cbid
+      },
+      dictDefaultMessage: '',
+      addRemoveLinks: false,
+      // '.field-' + field.toLowerCase() + ' .dropzone-previews',
+      previewsContainer: '.dropzone-previews', // '.field-' + this.config.index + ' .dropzone-previews',
+      // we need a clickable, because otherwise the entire area is clickable.
+      // so i'm just making the preview clickable, as it's not important
+      clickable: '.dropzone-previews' // '.field-' + this.config.index + ' .invisible-clickable'  // " .dropzone-adam"
+    };
   }
 
   ngAfterViewInit() {
+
     this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
     this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
 
@@ -68,6 +94,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     console.log('onUploadSuccess:', args);
     // Reset dropzone
     this.dropzoneRef.reset();
+    this.adamRef.refresh();
   }
 
   /**

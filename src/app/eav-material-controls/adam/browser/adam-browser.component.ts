@@ -1,10 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injector } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Injector, AfterContentInit } from '@angular/core';
 import { AdamService } from '../adam-service.service';
 import { HttpClient } from '@angular/common/http';
 import { SvcCreatorService } from '../../../shared/services/svc-creator.service';
 import { Observable } from 'rxjs/Observable';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
+import { EavService } from '../../../shared/services/eav.service';
+import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -15,12 +18,17 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 export class AdamBrowserComponent implements OnInit {
 
   // TODO: temp need to change
-  @Input() eavConfig: any;
+  @Input() config: FieldConfig;
+  // TODO: temp need to change
+  @Input() itemConfig: any;
 
   // Identity fields
   @Input() contentTypeName: any;
   @Input() entityGuid: any;
   @Input() fieldName: any;
+
+  // New Configuration
+  @Input() url;
 
   // Configuration
   @Input() subFolder;
@@ -31,14 +39,13 @@ export class AdamBrowserComponent implements OnInit {
   @Input() allowAssetsInRoot;
   @Input() adamModeConfig = { usePortalRoot: false };
   // this is configuration need change:
-  @Input() fileFilter: '*.jpg,*.pdf';
+  @Input() fileFilter = '*.jpg,*.pdf';
 
   // basic functionality
   @Input() disabled = false;
   @Input() enableSelect;
 
   @Input() show = false;
-  appRoot;
 
   @Input() autoLoad = true;
 
@@ -90,14 +97,27 @@ export class AdamBrowserComponent implements OnInit {
   items$: Observable<AdamItem[]>; // = this.svc.liveList();
   allowedFileTypes = [];
 
+  private eavConfig: EavConfiguration;
 
-  constructor(private adamService: AdamService, private fileTypeService: FileTypeService) {
-    this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'http://2sxc-dnn742.dnndev.me/Portals/0/', 7);
-    // this.adamService = new AdamService(httpClient, null, null, null, '', { usePortalRoot: false }, 'test 2sxc test', 7);
-    // this.svcCreatorService = new SvcCreatorService(this.adamService.getAll(), 'true');
+  constructor(private adamService: AdamService,
+    private fileTypeService: FileTypeService,
+    private eavService: EavService) {
+
+    this.eavConfig = this.eavService.getEavConfiguration();
+    // tslint:disable-next-line:max-line-length
+    // this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'http://2sxc-dnn742.dnndev.me/Portals/0/',this.eavConfig.appId);
+
+    // tslint:disable-next-line:max-line-length
+    // 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/
+    // tslint:disable-next-line:max-line-length
+    // this.svc = adamService.createSvc('106ba6ed-f807-475a-b004-cd77e6b317bd', '386ec145-d884-4fea-935b-a4d8d0c68d8d', this.config.Name, '', { usePortalRoot: false }, this.eavConfig.approot, this.eavConfig.appId);
   }
 
   ngOnInit() {
+    console.log('adam ngOnInit config:', this.config);
+    this.svc = this.adamService.createSvc('', { usePortalRoot: false }, this.url);
+
+    console.log('adam ngOnInit url:', this.url);
     this.setAllowedFileTypes();
 
     // TODO: when to load folders??? Before was toggle!!!
@@ -143,9 +163,6 @@ export class AdamBrowserComponent implements OnInit {
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (folderName) {
       this.svc.addFolder(folderName).subscribe();
-      // s =>
-      //   this.refresh()
-      // );
     }
   }
 
@@ -154,19 +171,13 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   del(item) {
-    //  event.stopPropagation();
     if (this.disabled) {
       return;
     }
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (ok) {
       this.svc.deleteItem(item).subscribe();
-      //   s =>
-      //   this.refresh()
-      // );
     }
-
-    // return false;
   }
 
   editMetadata(item) {
@@ -186,7 +197,7 @@ export class AdamBrowserComponent implements OnInit {
         Metadata: {
           Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
           KeyType: 'string',
-          TargetType: this.eavConfig.metadataOfCmsObject
+          TargetType: this.itemConfig.metadataOfCmsObject
         },
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
@@ -212,7 +223,6 @@ export class AdamBrowserComponent implements OnInit {
 
   goUp = () => {
     this.subFolder = this.svc.goUp();
-    // this.refresh();
   }
 
 
@@ -265,9 +275,6 @@ export class AdamBrowserComponent implements OnInit {
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) {
       this.svc.rename(item, newName).subscribe();
-      //   s =>
-      //   this.refresh()
-      // );
     }
   }
 
@@ -304,6 +311,8 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
+  refresh = () => this.svc.liveListReload();
+
   private setAllowedFileTypes() {
     if (this.fileFilter) {
       this.allowedFileTypes = this.fileFilter.split(',').map(function (i) {
@@ -314,7 +323,7 @@ export class AdamBrowserComponent implements OnInit {
 
   private loadFileList = () => this.svc.liveListLoad();
 
-  private refresh = () => this.svc.liveListReload();
+
 }
 
 
