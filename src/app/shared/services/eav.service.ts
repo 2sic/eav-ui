@@ -39,7 +39,7 @@ export class EavService {
   //   this.store.dispatch(new dataActions.LoadAllDataAction());
   // }
 
-  public getEavConfiguration = () => {
+  public getEavConfiguration = (): EavConfiguration => {
     if (this.eavConfig) {
       return this.eavConfig;
     } else {

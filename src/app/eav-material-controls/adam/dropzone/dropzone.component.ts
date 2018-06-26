@@ -19,6 +19,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
+  @Input() adamModeImage: boolean;
 
   public disabled = false;
   public dropzoneConfig: DropzoneConfigInterface;
@@ -36,9 +37,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
 
-    console.log('dropzone config.name', this.config.name);
-    // TODO: read from configuration
-
     const contentType = this.config.header.contentTypeName;
     // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
     const entityGuid = this.config.header.guid;
@@ -46,12 +44,12 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     const field = this.config.name;
     // const field = 'HyperLinkStaticName';
 
-    this.url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
+    this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
     console.log('this.url', this.url);
 
     this.dropzoneConfig = {
-      url: this.url + '?usePortalRoot=false&appId=7',
+      url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
       maxFiles: 1,
       autoReset: null,
       errorReset: null,
@@ -78,7 +76,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
     this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
     this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
 
@@ -104,4 +101,13 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     this.invisibleClickableReference.nativeElement.click();
   }
 
+  updateCallback() {
+    console.log('update callback');
+    console.log('adamModeImage', this.adamModeImage);
+  }
+
+  registerAdam() {
+    console.log('register Adam');
+    console.log('adamModeImage', this.adamModeImage);
+  }
 }

@@ -18,7 +18,7 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 export class AdamBrowserComponent implements OnInit {
 
   // TODO: temp need to change
-  @Input() config: FieldConfig;
+  // @Input() config: FieldConfig;
   // TODO: temp need to change
   @Input() itemConfig: any;
 
@@ -37,6 +37,9 @@ export class AdamBrowserComponent implements OnInit {
   @Input() showImagesOnly;
   @Input() showFolders;
   @Input() allowAssetsInRoot;
+
+  @Input() autoLoad;
+
   @Input() adamModeConfig = { usePortalRoot: false };
   // this is configuration need change:
   @Input() fileFilter = '*.jpg,*.pdf';
@@ -47,10 +50,10 @@ export class AdamBrowserComponent implements OnInit {
 
   @Input() show = false;
 
-  @Input() autoLoad = true;
-
-
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
+  @Output() updateCallback: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() registerAdam: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() showImagesOnly: boolean;
 
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
@@ -114,7 +117,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('adam ngOnInit config:', this.config);
+    // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc('', { usePortalRoot: false }, this.url);
 
     console.log('adam ngOnInit url:', this.url);
@@ -153,7 +156,6 @@ export class AdamBrowserComponent implements OnInit {
     //       vm.clipboardPasteImageFunctionalityDisabled = (enabled === false);
     //     }
     //   });
-
   }
 
   addFolder() {
@@ -323,7 +325,8 @@ export class AdamBrowserComponent implements OnInit {
 
   private loadFileList = () => this.svc.liveListLoad();
 
-
+  // TEMP
+  // testClick = (event) => this.updateCallback.emit();
 }
 
 
