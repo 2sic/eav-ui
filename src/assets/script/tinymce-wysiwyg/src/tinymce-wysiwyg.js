@@ -148,6 +148,10 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             }
         }
 
+        setAdamValue(newValue) {
+            console.log('tinymce setAdamValue: ', newValue);
+        }
+
         // isDirty() {
         //     return tinymce.get(this.id).isDirty();
         // }

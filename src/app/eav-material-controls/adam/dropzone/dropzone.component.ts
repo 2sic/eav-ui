@@ -33,6 +33,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.config.adam = this.adamRef;
+
     // TODO: read from configuration
     const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
@@ -103,11 +105,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
 
   updateCallback() {
     console.log('update callback');
-    console.log('adamModeImage', this.adamModeImage);
-  }
-
-  registerAdam() {
-    console.log('register Adam');
     console.log('adamModeImage', this.adamModeImage);
   }
 }

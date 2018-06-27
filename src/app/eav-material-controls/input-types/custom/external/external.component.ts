@@ -10,6 +10,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { Subscription } from 'rxjs/Subscription';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
+import { Value1 } from '../../../../shared/models/json-format-v1/value1';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -52,7 +53,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
   private externalInputTypeHost = {
     update: (value) => this.update(value),
-    setInitValues: (value) => this.setInitValues()
+    setInitValues: (value) => this.setInitValues(),
+    toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
+    // attachAdam: () => this.attachAdam()
   };
 
   // TODO: need to finish validation
@@ -105,6 +108,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
     console.log('ExternalComponent update change', value);
     // TODO: validate value
     this.group.controls[this.config.name].patchValue(value);
+
+    // console.log('this.config.adam.test()', this.config);
+    // this.config.adam.test();
   }
 
   /**
@@ -112,6 +118,14 @@ export class ExternalComponent implements FieldExternal, OnInit {
    */
   private setInitValues() {
     this.setExternalControlValues(this.externalFactory, this.group.controls[this.config.name].value);
+
+    // TODO:
+    // If adam registered then attach Adam
+    console.log('setInitValues');
+    if (this.config.adam) {
+      console.log('adam is registered - adam attached updateCallback');
+      this.config.adam.updateCallback = (value) => this.externalFactory.setAdamValue(value);
+    }
   }
 
   /**
@@ -153,5 +167,12 @@ export class ExternalComponent implements FieldExternal, OnInit {
       }
       factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
     }
+  }
+
+  private toggleAdam(value1, value2) {
+    console.log('toogle adam is called', value1);
+    console.log('toogle adam is called2', value2);
+
+    this.config.adam.toggle(value1);
   }
 }

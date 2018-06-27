@@ -2,9 +2,9 @@
   (success)="onUploadSuccess($event)">
   <!-- <div class="dropzone"> -->
   <ng-container #fieldComponent></ng-container>
-  <adam-browser (openUpload)="openUpload()" [url]="url" [autoLoad]="true" [folderDepth]="2" [subFolder]="" [disabled]="false"
-    (updateCallback)="updateCallback()">
+  <adam-browser (openUpload)="openUpload()" [url]="url" [autoLoad]="true" [folderDepth]="2" [subFolder]="" [disabled]="false">
   </adam-browser>
+  <!-- (updateCallback)="updateCallback()" -->
   <!-- (showImagesOnly)="adamModeImage" (registerSelf)="registerAdam()" -->
   <!-- ng-show="uploading" -->
   <div class="{{'field-' + config.index}}">

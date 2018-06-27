@@ -42,32 +42,32 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes) {
 
     //#endregion
 
-    //// group with adam-link, dnn-link
-    //editor.addButton("linkfiles", {
-    //    type: "splitbutton",
-    //    icon: " eav-icon-file-pdf",
-    //    title: "Link.AdamFile.Tooltip",
-    //    onclick: function () {
-    //        vm.toggleAdam(false);
-    //    },
-    //    menu: [
-    //        {
-    //            text: "Link.AdamFile",
-    //            tooltip: "Link.AdamFile.Tooltip",
-    //            icon: " eav-icon-file-pdf",
-    //            onclick: function () {
-    //                vm.toggleAdam(false);
-    //            }
-    //        }, {
-    //            text: "Link.DnnFile",
-    //            tooltip: "Link.DnnFile.Tooltip",
-    //            icon: " eav-icon-file",
-    //            onclick: function () {
-    //                vm.openDnnDialog("documentmanager");
-    //            }
-    //        }
-    //    ]
-    //});
+    // group with adam-link, dnn-link
+    editor.addButton("linkfiles", {
+        type: "splitbutton",
+        icon: " eav-icon-file-pdf",
+        title: "Link.AdamFile.Tooltip",
+        onclick: function () {
+            host.toggleAdam(false);
+        },
+        menu: [
+            {
+                text: "Link.AdamFile",
+                tooltip: "Link.AdamFile.Tooltip",
+                icon: " eav-icon-file-pdf",
+                onclick: function () {
+                    host.toggleAdam(false);
+                }
+            }, {
+                text: "Link.DnnFile",
+                tooltip: "Link.DnnFile.Tooltip",
+                icon: " eav-icon-file",
+                onclick: function () {
+                    host.openDnnDialog("documentmanager");
+                }
+            }
+        ]
+    });
 
     //#region link group with web-link, page-link, unlink, anchor
     var linkgroup = {
@@ -110,12 +110,16 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes) {
                 text: "Image.AdamImage",
                 tooltip: "Image.AdamImage.Tooltip",
                 icon: "image",
-                onclick: function () { host.toggleAdam(true); }
+                onclick: function () {
+                    host.toggleAdam(true);
+                }
             }, {
                 text: "Image.DnnImage",
                 tooltip: "Image.DnnImage.Tooltip",
                 icon: "image",
-                onclick: function () { host.toggleAdam(true, true); }
+                onclick: function () {
+                    host.toggleAdam(true, true);
+                }
             }, {
                 text: "Insert\/edit image", // i18n tinyMce standard
                 icon: "image",

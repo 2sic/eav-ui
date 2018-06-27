@@ -51,9 +51,11 @@ export class AdamBrowserComponent implements OnInit {
   @Input() show = false;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
-  @Output() updateCallback: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() updateCallback: EventEmitter<any> = new EventEmitter<any>();
   // @Output() registerAdam: EventEmitter<any> = new EventEmitter<any>();
   // @Output() showImagesOnly: boolean;
+
+  updateCallback;
 
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
@@ -166,6 +168,9 @@ export class AdamBrowserComponent implements OnInit {
     if (folderName) {
       this.svc.addFolder(folderName).subscribe();
     }
+
+    // TEMP test
+    this.updateCallback('asdasd');
   }
 
   allowCreateFolder(): boolean {
@@ -325,7 +330,15 @@ export class AdamBrowserComponent implements OnInit {
 
   private loadFileList = () => this.svc.liveListLoad();
 
+
+  test() {
+    console.log('imam config');
+  }
+
+
   // TEMP
+  // testClick = (event) => this.updateCallback.emit();
+
   // testClick = (event) => this.updateCallback.emit();
 }
 
