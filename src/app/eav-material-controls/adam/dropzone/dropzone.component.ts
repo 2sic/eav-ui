@@ -19,7 +19,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
-  @Input() adamModeImage: boolean;
 
   public disabled = false;
   public dropzoneConfig: DropzoneConfigInterface;
@@ -91,9 +90,24 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
 
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
-    // Reset dropzone
-    this.dropzoneRef.reset();
-    this.adamRef.refresh();
+    const response = args[1]; // Gets the server response as second argument.
+    console.log('response:', response);
+    if (response.Success) {
+      this.adamRef.svc.addFullPath(response); // calculate additional infos
+      console.log('response after addFullPath:', response);
+      this.adamRef.afterUploadCallback(response);
+      // Reset dropzone
+      this.dropzoneRef.reset();
+      this.adamRef.refresh();
+    } else {
+      alert('Upload failed because: ' + response.Error);
+    }
+
+  }
+
+  public onDrop(args: any): void {
+    console.log('onDrop:', args);
+    // this.adamRef.updateCallback();
   }
 
   /**
@@ -103,8 +117,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
     this.invisibleClickableReference.nativeElement.click();
   }
 
-  updateCallback() {
-    console.log('update callback');
-    console.log('adamModeImage', this.adamModeImage);
-  }
+  // updateCallback() {
+  //   console.log('update callback');
+  //   console.log('adamModeImage', this.adamModeImage);
+  // }
 }

@@ -56,6 +56,7 @@ export class AdamBrowserComponent implements OnInit {
   // @Output() showImagesOnly: boolean;
 
   updateCallback;
+  afterUploadCallback;
 
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
@@ -168,9 +169,6 @@ export class AdamBrowserComponent implements OnInit {
     if (folderName) {
       this.svc.addFolder(folderName).subscribe();
     }
-
-    // TEMP test
-    this.updateCallback('asdasd');
   }
 
   allowCreateFolder(): boolean {
@@ -283,6 +281,13 @@ export class AdamBrowserComponent implements OnInit {
     if (newName) {
       this.svc.rename(item, newName).subscribe();
     }
+  }
+
+  select(fileItem) {
+    // if (vm.disabled || !vm.enableSelect)
+    //   return;
+    console.log('adam select: ', fileItem);
+    this.updateCallback(fileItem);
   }
 
   toggle(newConfig) {

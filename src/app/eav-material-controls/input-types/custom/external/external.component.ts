@@ -35,6 +35,11 @@ export class ExternalComponent implements FieldExternal, OnInit {
     }
   }
 
+  // get adamModeImage() {
+  //   console.log('get adam mode image');
+  //   return (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null;
+  // }
+
   private subscriptions: Subscription[] = [];
   loaded = true;
 
@@ -51,11 +56,15 @@ export class ExternalComponent implements FieldExternal, OnInit {
   constructor(private validationMessagesService: ValidationMessagesService,
     private eavService: EavService) { }
 
+  /**
+   * This is host methods which the external control sees
+   */
   private externalInputTypeHost = {
     update: (value) => this.update(value),
     setInitValues: (value) => this.setInitValues(),
-    toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
-    // attachAdam: () => this.attachAdam()
+    // toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
+    // adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
+    attachAdam: () => this.attachAdam()
   };
 
   // TODO: need to finish validation
@@ -122,9 +131,45 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // TODO:
     // If adam registered then attach Adam
     console.log('setInitValues');
+    // if (this.config.adam) {
+    //   console.log('adam is registered - adam attached updateCallback');
+    //   // set update callback = external method setAdamValue
+    //   this.config.adam.updateCallback = (value) => this.externalFactory.setAdamValue(value);
+
+    //   this.config.adam.afterUploadCallback = (value) => this.externalFactory.adamAfterUpload(value);
+    //   // this.externalFactory.adamModeImage =
+
+    //   // this.config.adam.showImagesOnly = () => this.externalFactory.adamModeImage;
+
+    // }
+  }
+
+  private attachAdam() {
+    // TODO:
+    // If adam registered then attach Adam
+    console.log('setInitValues');
     if (this.config.adam) {
-      console.log('adam is registered - adam attached updateCallback');
-      this.config.adam.updateCallback = (value) => this.externalFactory.setAdamValue(value);
+      console.log('adam is registered - adam attached updateCallback', this.externalFactory);
+      // set update callback = external method setAdamValue
+
+      // tslint:disable-next-line:max-line-length
+      this.config.adam.updateCallback = (value) =>
+        this.externalFactory.adamSetValue
+          ? this.externalFactory.adamSetValue(value)
+          : alert('adam attached but adamSetValue method not exist');
+
+
+      this.config.adam.afterUploadCallback = (value) =>
+        this.externalFactory.adamAfterUpload
+          ? this.externalFactory.adamAfterUpload(value)
+          : alert('adam attached but adamSetValue method not exist');
+
+
+      // this.config.adam.showImagesOnly = () => this.externalFactory.adamModeImage;
+      return {
+        toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2),
+        adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
+      };
     }
   }
 
@@ -169,10 +214,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
     }
   }
 
-  private toggleAdam(value1, value2) {
-    console.log('toogle adam is called', value1);
-    console.log('toogle adam is called2', value2);
+  // private toggleAdam(value1, value2) {
+  //   console.log('toogle adam is called', value1);
+  //   console.log('toogle adam is called2', value2);
 
-    this.config.adam.toggle(value1);
-  }
+  //   this.config.adam.toggle(value1);
+  // }
 }

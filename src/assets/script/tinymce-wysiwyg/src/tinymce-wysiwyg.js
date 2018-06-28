@@ -11,6 +11,8 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             this.host = host;
             this.options = options;
             this.config = config;
+
+            this.adam;
         }
 
         initialize(host, options, id) {
@@ -23,6 +25,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
             // this.host.update('update value');
+            this.adam = this.host.attachAdam();
         }
 
         render(container) {
@@ -65,8 +68,6 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             console.table(options);
 
             tinymce.init(options);
-
-
 
             // var divElements = container.getElementsByTagName('div');
             // console.log('elements value', divElements[1].innerHTML);
@@ -148,8 +149,38 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             }
         }
 
-        setAdamValue(newValue) {
-            console.log('tinymce setAdamValue: ', newValue);
+        adamSetValue(fileItem, modeImage) {
+            console.log('setAdamValue this.host: ', this.host)
+            console.log('setAdamValue this.host.adamModeImage: ', this.adam.adamModeImage)
+            if (modeImage === undefined) // if not supplied, use the setting in the adam
+                modeImage = this.adam.adamModeImage;
+            var fileName = fileItem.Name.substr(0, fileItem.Name.lastIndexOf('.'));
+            console.log('setAdamValue fileName', fileName);
+
+            var content = modeImage
+                ? '<img src="' + fileItem.FullPath + '" + alt="' + fileName + '">'
+                : '<a href="' + fileItem.FullPath + '">' + fileName + '</a>';
+            console.log('setAdamValue content:', content);
+            //var body = vm.editor.getBody();
+            //vm.editor.selection.setCursorLocation(body, 0);
+            //debugger;
+            //var range = window.savedRange;
+            //vm.editor.selection.setCursorLocati
+            tinymce.get(this.id).insertContent(content);
+        }
+
+        adamAfterUpload(fileItem) {
+            console.log('adamAfterUpload');
+            this.adamSetValue(fileItem, fileItem.Type === 'image');
+        }
+
+        toggleAdam(imagesOnly, usePortalRoot) {
+            console.log('tinymce toggleAdam');
+            this.adam.adamModeImage = imagesOnly;
+            this.adam.toggleAdam({
+                showImagesOnly: imagesOnly,
+                usePortalRoot: usePortalRoot
+            })
         }
 
         // isDirty() {
@@ -164,7 +195,7 @@ import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
             console.log("Editor1: " + editor.id + " is now initialized.");
             console.log("Editor host: ", this.host);
             var imgSizes = this.config.svc().imgSizes;
-            addTinyMceToolbarButtons(this.host, editor, imgSizes);
+            addTinyMceToolbarButtons(this.host, editor, imgSizes, this);
 
             editor.on('init', e => {
                 // console.log('Editor was init');

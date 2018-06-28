@@ -1,7 +1,7 @@
 
 // (function () {
 
-export function addTinyMceToolbarButtons(host, editor, imgSizes) {
+export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
     var editor = editor;
     //#region helpers like initOnPostRender(name)
 
@@ -48,7 +48,9 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes) {
         icon: " eav-icon-file-pdf",
         title: "Link.AdamFile.Tooltip",
         onclick: function () {
-            host.toggleAdam(false);
+            console.log('ante.toggleAdam')
+            ante.toggleAdam(false);
+            // host.toggleAdam(false);
         },
         menu: [
             {
@@ -56,7 +58,9 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes) {
                 tooltip: "Link.AdamFile.Tooltip",
                 icon: " eav-icon-file-pdf",
                 onclick: function () {
-                    host.toggleAdam(false);
+                    console.log('ante.toggleAdam')
+                    ante.toggleAdam(false);
+                    // host.toggleAdam(false);
                 }
             }, {
                 text: "Link.DnnFile",
