@@ -1,8 +1,7 @@
 <div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled" (error)="onUploadError($event)"
   (success)="onUploadSuccess($event)" (drop)="onDrop($event)">
-  <!-- <div class="dropzone"> -->
   <ng-container #fieldComponent></ng-container>
-  <adam-browser (openUpload)="openUpload()" [url]="url" [autoLoad]="true" [folderDepth]="2" [subFolder]="" [disabled]="false">
+  <adam-browser (openUpload)="openUpload()" [url]="url" [autoLoad]="false" [folderDepth]="0" [subFolder]="" [disabled]="config.disabled">
   </adam-browser>
   <!-- (updateCallback)="updateCallback()" -->
   <!-- (showImagesOnly)="adamModeImage" (registerSelf)="registerAdam()" -->
@@ -14,5 +13,4 @@
   </div>
 
   <adam-hint></adam-hint>
-  <!-- </div> -->
 </div>

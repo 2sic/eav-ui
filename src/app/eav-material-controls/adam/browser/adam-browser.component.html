@@ -1,24 +1,22 @@
-<!-- ng-class="'adam-scope-' + (vm.adamModeConfig.usePortalRoot ? 'site' : field)" -->
-<!-- <div *ngIf="show" (class)="'adam-scope-' + (adamModeConfig.usePortalRoot ? 'site' : field)"> -->
+<!-- TODO: this dropzone class only because css - need to change-->
 <div class="dropzone">
-  <div *ngIf="show" class="adam-scope-field">
+  <div *ngIf="show" ngClass="{{'adam-scope-' + (adamModeConfig.usePortalRoot ? 'site' : field)}}">
+
     <!-- info for dropping stuff here -->
-    <!-- uib-tooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}"  [disabled]="disabled"-->
-    <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)">
+    <!--  [disabled]="disabled"-->
+    <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)" matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <i class="eav-icon-up-circled2"></i>
         <div class="adam-short-label">upload to
-          <i class="eav-icon-apple" style="font-size: larger"></i>
-          <!-- <i ng-class="vm.adamModeConfig.usePortalRoot ? 'eav-icon-globe' : 'eav-icon-apple'" style="font-size: larger"></i> -->
+          <i ngClass="{{adamModeConfig.usePortalRoot ? 'eav-icon-globe' : 'eav-icon-apple'}}" style="font-size: larger"></i>
         </div>
       </div>
     </div>
 
     <!-- info for paste image from clipboard here -->
     <!-- ng-disabled="vm.clipboardPasteImageFunctionalityDisabled" -->
-    <!-- uib-tooltip="click here and press [Ctrl]+[V] to paste image from clipboard" -->
     <!-- TODO: disable -->
-    <div class="dz-preview dropzone-adam paste-image">
+    <div *ngIf="!clipboardPasteImageFunctionalityDisabled" class="dz-preview dropzone-adam paste-image" matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <i class="eav-icon-file-image"></i>
         <div class="adam-short-label">paste image</div>
@@ -42,43 +40,46 @@
     </div>
 
     <!-- browse up a folder - not always shown -->
-    <!-- <div ng-show="vm.showFolders || vm.debug.on" class="dz-preview" ng-disabled="vm.disabled" ng-if="vm.folders.length > 0" ng-click="vm.goUp()"> -->
-    <div *ngIf="folders.length > 0" class="dz-preview" (click)="goUp()">
-      <div class="dz-image  adam-browse-background-icon adam-browse-background">
-        <i class="eav-icon-folder-empty"></i>
-        <div class="adam-short-label">up</div>
-      </div>
-      <div class="adam-background adam-browse-background-icon">
-        <i class="eav-icon-level-up" style="font-size: 2em; top: 13px; position: relative;"></i>
-      </div>
-    </div>
-
-    <!-- folder list - not always shown -->
-    <!-- <div ng-show="vm.showFolders || vm.debug.on" -->
-    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
-      (click)="goIntoFolder(item)">
-      <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
-        <i class="eav-icon-folder-empty"></i>
-        <div class="short-label">{{ item.Name }}</div>
-      </div>
-
-      <div class="dz-details file-type-{{item.Type}}">
-        <span (click)="del(item)" appClickStopPropagation class="adam-delete-button">
-          <i class="eav-icon-cancel"></i>
-        </span>
-        <span (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
-          <i class="eav-icon-pencil"></i>
-        </span>
-        <div class="adam-full-name-area">
-          <div class="adam-full-name">{{ item.Name }}</div>
+    <!-- <div  ng-disabled="vm.disabled"> -->
+    <ng-container *ngIf="showFolders">
+      <div *ngIf="folders.length > 0" class="dz-preview" (click)="goUp()">
+        <div class="dz-image  adam-browse-background-icon adam-browse-background">
+          <i class="eav-icon-folder-empty"></i>
+          <div class="adam-short-label">up</div>
+        </div>
+        <div class="adam-background adam-browse-background-icon">
+          <i class="eav-icon-level-up" style="font-size: 2em; top: 13px; position: relative;"></i>
         </div>
       </div>
-      <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
-      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" appClickStopPropagation
-        *ngIf="getMetadataType(item)">
-        <i class="eav-icon-tag" style="font-size: larger"></i>
-      </span>
-    </div>
+    </ng-container>
+
+    <!-- folder list - not always shown -->
+    <ng-container *ngIf="showFolders">
+      <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
+        (click)="goIntoFolder(item)">
+        <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
+          <i class="eav-icon-folder-empty"></i>
+          <div class="short-label">{{ item.Name }}</div>
+        </div>
+
+        <div class="dz-details file-type-{{item.Type}}">
+          <span (click)="del(item)" appClickStopPropagation class="adam-delete-button">
+            <i class="eav-icon-cancel"></i>
+          </span>
+          <span (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
+            <i class="eav-icon-pencil"></i>
+          </span>
+          <div class="adam-full-name-area">
+            <div class="adam-full-name">{{ item.Name }}</div>
+          </div>
+        </div>
+        <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
+        <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}"
+          appClickStopPropagation *ngIf="getMetadataType(item)">
+          <i class="eav-icon-tag" style="font-size: larger"></i>
+        </span>
+      </div>
+    </ng-container>
 
     <!-- files -->
     <!-- <div ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'" ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect"> -->

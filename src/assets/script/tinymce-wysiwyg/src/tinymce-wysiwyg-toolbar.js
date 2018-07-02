@@ -1,7 +1,7 @@
 
 // (function () {
 
-export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
+export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
     var editor = editor;
     //#region helpers like initOnPostRender(name)
 
@@ -37,7 +37,7 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
 
     // call register once the editor-object is ready
     editor.on('init', function () {
-        registerTinyMceFormats(editor, host);
+        registerTinyMceFormats(editor, vm.host);
     });
 
     //#endregion
@@ -48,9 +48,7 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
         icon: " eav-icon-file-pdf",
         title: "Link.AdamFile.Tooltip",
         onclick: function () {
-            console.log('ante.toggleAdam')
-            ante.toggleAdam(false);
-            // host.toggleAdam(false);
+            vm.toggleAdam(false);
         },
         menu: [
             {
@@ -58,16 +56,14 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
                 tooltip: "Link.AdamFile.Tooltip",
                 icon: " eav-icon-file-pdf",
                 onclick: function () {
-                    console.log('ante.toggleAdam')
-                    ante.toggleAdam(false);
-                    // host.toggleAdam(false);
+                    vm.toggleAdam(false);
                 }
             }, {
                 text: "Link.DnnFile",
                 tooltip: "Link.DnnFile.Tooltip",
                 icon: " eav-icon-file",
                 onclick: function () {
-                    host.openDnnDialog("documentmanager");
+                    vm.openDnnDialog("documentmanager");
                 }
             }
         ]
@@ -90,7 +86,7 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
                 tooltip: "Link.Page.Tooltip",
                 icon: " eav-icon-sitemap",
                 onclick: function () {
-                    host.openDnnDialog("pagepicker");
+                    vm.openDnnDialog("pagepicker");
                 }
             }
         ]
@@ -107,7 +103,7 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
         text: "",
         icon: "image",
         onclick: function () {
-            host.toggleAdam(true);
+            vm.toggleAdam(true);
         },
         menu: [
             {
@@ -115,14 +111,14 @@ export function addTinyMceToolbarButtons(host, editor, imgSizes, ante) {
                 tooltip: "Image.AdamImage.Tooltip",
                 icon: "image",
                 onclick: function () {
-                    host.toggleAdam(true);
+                    vm.toggleAdam(true);
                 }
             }, {
                 text: "Image.DnnImage",
                 tooltip: "Image.DnnImage.Tooltip",
                 icon: "image",
                 onclick: function () {
-                    host.toggleAdam(true, true);
+                    vm.toggleAdam(true, true);
                 }
             }, {
                 text: "Insert\/edit image", // i18n tinyMce standard
