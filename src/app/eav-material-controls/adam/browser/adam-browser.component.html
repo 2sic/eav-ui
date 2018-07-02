@@ -14,7 +14,6 @@
     </div>
 
     <!-- info for paste image from clipboard here -->
-    <!-- ng-disabled="vm.clipboardPasteImageFunctionalityDisabled" -->
     <!-- TODO: disable -->
     <div *ngIf="!clipboardPasteImageFunctionalityDisabled" class="dz-preview dropzone-adam paste-image" matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
@@ -24,7 +23,6 @@
     </div>
 
     <!-- add folder - not always shown -->
-    <!-- <div ng-show="vm.allowCreateFolder() || vm.debug.on" class="dz-preview" ng-disabled="vm.disabled" ng-click="vm.addFolder()"> -->
     <!-- TODOD: disable -->
     <div *ngIf="allowCreateFolder()" class="dz-preview" (click)="addFolder()">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
@@ -61,7 +59,6 @@
           <i class="eav-icon-folder-empty"></i>
           <div class="short-label">{{ item.Name }}</div>
         </div>
-
         <div class="dz-details file-type-{{item.Type}}">
           <span (click)="del(item)" appClickStopPropagation class="adam-delete-button">
             <i class="eav-icon-cancel"></i>
@@ -73,7 +70,6 @@
             <div class="adam-full-name">{{ item.Name }}</div>
           </div>
         </div>
-        <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
         <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}"
           appClickStopPropagation *ngIf="getMetadataType(item)">
           <i class="eav-icon-tag" style="font-size: larger"></i>
@@ -82,8 +78,9 @@
     </ng-container>
 
     <!-- files -->
-    <!-- <div ng-class="{ 'dz-success': value.Value.toLowerCase() == 'file:' + item.Id }" ng-repeat="item in (vm.items | filter: vm.fileEndingFilter | filter: { IsFolder: false }) | filter: (vm.showImagesOnly ? {Type: 'image'} : {})  | orderBy:'Name'" ng-click="vm.select(item)" ng-disabled="vm.disabled || !vm.enableSelect"> -->
-    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false  | orderby : 'Name')" (click)="select(item)">
+    <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
+    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
+      (click)="select(item)" [ngClass]="{ 'dz-success': getValueCallback().toLowerCase() === 'file:' + item.Id }">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i [ngClass]="icon(item)"></i>
         <div class="adam-short-label">{{ item.Name }}</div>
@@ -109,9 +106,8 @@
           <i class="eav-icon-link-ext" style="font-size: larger"></i>
         </a>
       </div>
-      <!-- uib-tooltip="{{vm.getMetadataType(item)}}:{{item.MetadataId}}" -->
       <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" *ngIf="getMetadataType(item)"
-        appClickStopPropagation>
+        appClickStopPropagation matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
 

@@ -128,7 +128,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
       console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
-      // callbacks
+      // callbacks - functions called from adam
 
       this.config.adam.updateCallback = (value) =>
         this.externalFactory.adamSetValue
@@ -140,6 +140,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
         this.externalFactory.adamAfterUpload
           ? this.externalFactory.adamAfterUpload(value)
           : alert('adam attached but adamAfterUpload method not exist');
+
+      // return value from form
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
 
       return {
         toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2),

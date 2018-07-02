@@ -20,17 +20,18 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdamService } from './eav-material-controls/adam/adam-service.service';
 import { SvcCreatorService } from './shared/services/svc-creator.service';
 
-import {
-  DropzoneModule, DropzoneConfigInterface,
-  DROPZONE_CONFIG
-} from 'ngx-dropzone-wrapper';
+// import {
+//   DropzoneModule, DropzoneConfigInterface,
+//   DROPZONE_CONFIG
+// } from 'ngx-dropzone-wrapper';
+import { FeatureService } from './shared/services/feature.service';
 
-const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
-  // Change this to your upload POST address:
-  url: 'http://2sxc-dnn742.dnndev.me/',
-  acceptedFiles: 'image/*',
-  createImageThumbnails: true
-};
+// const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
+//   // Change this to your upload POST address:
+//   url: 'http://2sxc-dnn742.dnndev.me/',
+//   acceptedFiles: 'image/*',
+//   createImageThumbnails: true
+// };
 
 const routes: Routes = [
   {
@@ -85,6 +86,7 @@ export function createTranslateLoader(http: HttpClient) {
     EavService,
     AdamService,
     SvcCreatorService,
+    FeatureService
     // {
     //   provide: DROPZONE_CONFIG,
     //   useValue: DEFAULT_DROPZONE_CONFIG

@@ -83,6 +83,4 @@ export class UrlHelper {
 
         return serviceRoot + scope + '/' + virtualPath.substring(virtualPath.indexOf('/') + 1);
     }
-
-
 }

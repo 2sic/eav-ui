@@ -52,6 +52,7 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
+import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { ClickStopPropagationDirective } from '../shared/directives/click-stop-p
     DropzoneComponent,
     FilterPipe,
     OrderByPipe,
+    FileEndingFilterPipe,
     ClickStopPropagationDirective
   ],
   imports: [

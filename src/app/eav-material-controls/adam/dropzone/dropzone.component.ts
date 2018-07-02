@@ -6,6 +6,7 @@ import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-dropzone',
@@ -19,6 +20,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
+  // @Input() group: FormGroup;
 
   public disabled = false;
   public dropzoneConfig: DropzoneConfigInterface;

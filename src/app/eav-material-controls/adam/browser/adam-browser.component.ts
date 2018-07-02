@@ -8,6 +8,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FeatureService } from '../../../shared/services/feature.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -51,12 +52,10 @@ export class AdamBrowserComponent implements OnInit {
   @Input() show = false;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
-  // @Output() updateCallback: EventEmitter<any> = new EventEmitter<any>();
-  // @Output() registerAdam: EventEmitter<any> = new EventEmitter<any>();
-  // @Output() showImagesOnly: boolean;
 
   updateCallback;
   afterUploadCallback;
+  getValueCallback;
 
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
@@ -93,10 +92,10 @@ export class AdamBrowserComponent implements OnInit {
   //     ngDisabled: "="
   // },
 
-  private svcCreatorService;
   get folders() {
     return this.svc ? this.svc.folders : [];
   }
+
   items: AdamItem[];
   svc;
 
@@ -107,16 +106,10 @@ export class AdamBrowserComponent implements OnInit {
 
   constructor(private adamService: AdamService,
     private fileTypeService: FileTypeService,
-    private eavService: EavService) {
+    private eavService: EavService,
+    private featureService: FeatureService) {
 
     this.eavConfig = this.eavService.getEavConfiguration();
-    // tslint:disable-next-line:max-line-length
-    // this.svc = adamService.createSvc(null, null, null, '', { usePortalRoot: false }, 'http://2sxc-dnn742.dnndev.me/Portals/0/',this.eavConfig.appId);
-
-    // tslint:disable-next-line:max-line-length
-    // 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/
-    // tslint:disable-next-line:max-line-length
-    // this.svc = adamService.createSvc('106ba6ed-f807-475a-b004-cd77e6b317bd', '386ec145-d884-4fea-935b-a4d8d0c68d8d', this.config.Name, '', { usePortalRoot: false }, this.eavConfig.approot, this.eavConfig.appId);
   }
 
   ngOnInit() {
@@ -152,13 +145,11 @@ export class AdamBrowserComponent implements OnInit {
     // appRoot = read app root
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
 
-    // add clipboard paste image feature if enabled
-    // featuresSvc.enabled('f6b8d6da-4744-453b-9543-0de499aa2352').then(
-    //   function (enabled) {
-    //     if (enabled) {
-    //       vm.clipboardPasteImageFunctionalityDisabled = (enabled === false);
-    //     }
-    //   });
+    // if feature clipboardPasteImageFunctionality enabled
+    this.featureService.enabled('f6b8d6da-4744-453b-9543-0de499aa2352', this.eavConfig, this.url)
+      .subscribe(enabled =>
+        this.clipboardPasteImageFunctionalityDisabled = (enabled === false)
+      );
   }
 
   addFolder() {
@@ -193,31 +184,6 @@ export class AdamBrowserComponent implements OnInit {
     // eavAdminDialogs.openEditItems(items, vm.refresh);
   }
 
-  private itemDefinition = function (item, metadataType) {
-    const title = 'EditFormTitle.Metadata'; // todo: i18n
-    return item.MetadataId !== 0
-      ? { EntityId: item.MetadataId, Title: title } // if defined, return the entity-number to edit
-      : {
-        ContentTypeName: metadataType, // otherwise the content type for new-assegnment
-        Metadata: {
-          Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
-          KeyType: 'string',
-          TargetType: this.itemConfig.metadataOfCmsObject
-        },
-        Title: title,
-        Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
-      };
-
-  };
-
-  fileEndingFilter(item) {
-    if (this.allowedFileTypes.length === 0) {
-      return true;
-    }
-    const extension = item.Name.match(/(?:\.([^.]+))?$/)[0];
-    return this.allowedFileTypes.indexOf(extension) !== -1;
-  }
-
   get() {
     // this.items = this.svc.liveList();
     console.log('items:', this.items);
@@ -225,11 +191,9 @@ export class AdamBrowserComponent implements OnInit {
     // this.svc.liveListReload();
   }
 
-
   goUp = () => {
     this.subFolder = this.svc.goUp();
   }
-
 
   getMetadataType = function (item) {
     let found;
@@ -283,10 +247,14 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
+  refresh = () => this.svc.liveListReload();
+
   select(fileItem) {
     // if (vm.disabled || !vm.enableSelect)
     //   return;
     console.log('adam select: ', fileItem);
+    console.log(' temp getValueCallback().toLowerCase(): ', this.getValueCallback().toLowerCase());
+
     this.updateCallback(fileItem);
   }
 
@@ -323,7 +291,22 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
-  refresh = () => this.svc.liveListReload();
+  private itemDefinition = function (item, metadataType) {
+    const title = 'EditFormTitle.Metadata'; // todo: i18n
+    return item.MetadataId !== 0
+      ? { EntityId: item.MetadataId, Title: title } // if defined, return the entity-number to edit
+      : {
+        ContentTypeName: metadataType, // otherwise the content type for new-assegnment
+        Metadata: {
+          Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
+          KeyType: 'string',
+          TargetType: this.itemConfig.metadataOfCmsObject
+        },
+        Title: title,
+        Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
+      };
+
+  };
 
   private setAllowedFileTypes() {
     if (this.fileFilter) {
@@ -334,17 +317,6 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   private loadFileList = () => this.svc.liveListLoad();
-
-
-  test() {
-    console.log('imam config');
-  }
-
-
-  // TEMP
-  // testClick = (event) => this.updateCallback.emit();
-
-  // testClick = (event) => this.updateCallback.emit();
 }
 
 

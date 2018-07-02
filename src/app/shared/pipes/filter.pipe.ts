@@ -11,6 +11,5 @@ export class FilterPipe implements PipeTransform {
             return items.filter(it => it[field] !== value);
         }
     }
-
 }
 

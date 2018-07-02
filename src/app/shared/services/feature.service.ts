@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { UrlHelper } from '../helpers/url-helper';
 import { EavConfiguration } from '../models/eav-configuration';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class FeatureService {
@@ -11,12 +12,12 @@ export class FeatureService {
     constructor(private httpClient: HttpClient) {
     }
 
-    public getFeatures(eavConfig: EavConfiguration): Observable<any> {
+    public getFeatures(eavConfig: EavConfiguration, url: string): Observable<any> {
         console.log('GET getFeatures:');
         // TODO:
         const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
 
-        return this.httpClient.get('eav/system/features',
+        return this.httpClient.get('/desktopmodules/2sxc/api/eav/system/features',
             {
                 headers: header,
                 params: {
@@ -28,6 +29,20 @@ export class FeatureService {
             })
             .do(data => console.log('features: ', data))
             .catch(this.handleError);
+    }
+
+    private enabledNow = (list, guid): Observable<boolean> => {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === guid) {
+                return of(list[i].enabled);
+            }
+        }
+        return of(false);
+    }
+
+    enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
+        return this.getFeatures(eavConfig, url)
+            .switchMap(s => this.enabledNow(s, guid));
     }
 
     private handleError(error: any) {
