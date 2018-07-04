@@ -1,13 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injector, AfterContentInit } from '@angular/core';
-import { AdamService } from '../adam-service.service';
-import { HttpClient } from '@angular/common/http';
-import { SvcCreatorService } from '../../../shared/services/svc-creator.service';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { AdamService } from '../adam.service';
 import { Observable } from 'rxjs/Observable';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { FeatureService } from '../../../shared/services/feature.service';
 
 @Component({
@@ -19,14 +16,13 @@ import { FeatureService } from '../../../shared/services/feature.service';
 export class AdamBrowserComponent implements OnInit {
 
   // TODO: temp need to change
-  // @Input() config: FieldConfig;
-  // TODO: temp need to change
-  @Input() itemConfig: any;
+  // eavConfig.metadataOfCmsObject
+  @Input() metadataOfCmsObject: any;
 
   // Identity fields
-  @Input() contentTypeName: any;
-  @Input() entityGuid: any;
-  @Input() fieldName: any;
+  // @Input() contentTypeName: any;
+  // @Input() entityGuid: any;
+  // @Input() fieldName: any;
 
   // New Configuration
   @Input() url;
@@ -43,7 +39,7 @@ export class AdamBrowserComponent implements OnInit {
 
   @Input() adamModeConfig = { usePortalRoot: false };
   // this is configuration need change:
-  @Input() fileFilter = '*.jpg,*.pdf';
+  @Input() fileFilter;
 
   // basic functionality
   @Input() disabled = false;
@@ -53,44 +49,13 @@ export class AdamBrowserComponent implements OnInit {
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
+  // callback is set in attachAdam
   updateCallback;
   afterUploadCallback;
   getValueCallback;
 
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
-
-  //   link: function postLink(scope, elem, attrs, dropzoneCtrl) {
-  //     // connect this adam to the dropzone
-  //     dropzoneCtrl.adam = scope.vm;       // so the dropzone controller knows what path etc.
-  //     scope.vm.dropzone = dropzoneCtrl;   // so we can require an "open file browse" dialog
-  // },
-
-  // // todo: change "scope" to bindToController whenever I have time
-  // scope: {
-  //     // Identity fields
-  //     contentTypeName: "=",
-  //     entityGuid: "=",
-  //     fieldName: "=",
-
-  //     // configuration general
-  //     subFolder: "=",
-  //     folderDepth: "=",
-  //     metadataContentTypes: "=",
-  //     allowAssetsInRoot: "=",
-  //     showImagesOnly: "=?",
-  //     adamModeConfig: "=",
-  //     fileFilter: "=?",
-
-  //     // binding and cross-component communication
-  //     autoLoad: "=",
-  //     updateCallback: "=",
-  //     registerSelf: "=",
-
-  //     // basic functionality
-  //     enableSelect: "=",
-  //     ngDisabled: "="
-  // },
 
   get folders() {
     return this.svc ? this.svc.folders : [];
@@ -184,13 +149,6 @@ export class AdamBrowserComponent implements OnInit {
     // eavAdminDialogs.openEditItems(items, vm.refresh);
   }
 
-  get() {
-    // this.items = this.svc.liveList();
-    console.log('items:', this.items);
-    // this.folders = this.svc.folders;
-    // this.svc.liveListReload();
-  }
-
   goUp = () => {
     this.subFolder = this.svc.goUp();
   }
@@ -250,11 +208,9 @@ export class AdamBrowserComponent implements OnInit {
   refresh = () => this.svc.liveListReload();
 
   select(fileItem) {
-    // if (vm.disabled || !vm.enableSelect)
-    //   return;
-    console.log('adam select: ', fileItem);
-    console.log(' temp getValueCallback().toLowerCase(): ', this.getValueCallback().toLowerCase());
-
+    if (this.disabled || !this.enableSelect) {
+      return;
+    }
     this.updateCallback(fileItem);
   }
 
@@ -287,7 +243,7 @@ export class AdamBrowserComponent implements OnInit {
     }
 
     if (this.show) {
-      this.get();
+      this.refresh();
     }
   }
 
@@ -300,7 +256,7 @@ export class AdamBrowserComponent implements OnInit {
         Metadata: {
           Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
           KeyType: 'string',
-          TargetType: this.itemConfig.metadataOfCmsObject
+          TargetType: this.metadataOfCmsObject
         },
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title

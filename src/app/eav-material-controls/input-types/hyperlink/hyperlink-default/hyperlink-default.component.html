@@ -1,4 +1,5 @@
-<div (mouseleave)="showFieldHints = false">
+<!-- <div (mouseleave)="showFieldHints = false"> -->
+<div>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
     <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseenter)="showPreview = true" (mouseleave)="showPreview = false"
       [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
@@ -65,7 +66,7 @@ ADAM - sponsored with ♥ by 2sic.com" -->
   </mat-form-field>
 
   <!-- This div is adam-hint -->
-  <div class="small pull-right" *ngIf="showFieldHints">
+  <!-- <div class="small pull-right" *ngIf="showFieldHints">
     <span style="opacity: 0.5">drop files here -</span>
     <a href="http://2sxc.org/help?tag=adam" target="_blank" matTooltip="ADAM is the Automatic Digital Assets Manager - click to discover more">
       <i class="eav-icon-apple"></i>
@@ -82,5 +83,5 @@ ADAM - sponsored with ♥ by 2sic.com" -->
     <a [href]="testLink" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(testLink)}}">
       <span>&nbsp;... {{ testLink.substring(testLink.lastIndexOf("/"), 100) }}</span>
     </a>
-  </div>
+  </div> -->
 </div>

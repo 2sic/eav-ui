@@ -24,36 +24,6 @@ export class SvcCreatorService {
     const liveListCacheBehaviorSubject: BehaviorSubject<any[]> = new BehaviorSubject([]);
     const liveListCache$ = liveListCacheBehaviorSubject.asObservable();
 
-    /**
-     * Load live list action
-     */
-    const liveListLoad = () => {
-      if (liveListCacheBehaviorSubject.getValue() && !liveListCacheIsLoaded) {
-        liveListReload();
-      }
-    };
-
-    /**
-     * Reload live list action
-     */
-    const liveListReload = () => {
-      // show loading - must use the promise-mode because this may be used early before the language has arrived
-      // return 'General.Messages.Loading';
-      // $translate("General.Messages.Loading").then(function (msg) {
-      //   t.msg = toastr.info(msg);
-      // });
-      console.log('liveListReload');
-      liveListSourceRead$().subscribe(s => updateLiveAll(s));
-    };
-
-    /**
-     * Clear list
-     */
-    const liveListReset = () => {
-      // liveListCache = [];
-      liveListCacheBehaviorSubject.next([]);
-    };
-
     // use a promise-result to re-fill the live list of all items, return the promise again
     // const _liveListUpdateWithResult = function
     const updateLiveAll = (result) => {
@@ -79,6 +49,38 @@ export class SvcCreatorService {
       liveListCacheIsLoaded = true;
       console.log('liveListCache after:', liveListCacheBehaviorSubject.getValue());
     };
+
+    /**
+         * Reload live list action
+         */
+    const liveListReload = () => {
+      // show loading - must use the promise-mode because this may be used early before the language has arrived
+      // return 'General.Messages.Loading';
+      // $translate("General.Messages.Loading").then(function (msg) {
+      //   t.msg = toastr.info(msg);
+      // });
+      console.log('liveListReload');
+      liveListSourceRead$().subscribe(s => updateLiveAll(s));
+    };
+
+    /**
+     * Load live list action
+     */
+    const liveListLoad = () => {
+      if (liveListCacheBehaviorSubject.getValue() && !liveListCacheIsLoaded) {
+        liveListReload();
+      }
+    };
+
+    /**
+     * Clear list
+     */
+    const liveListReset = () => {
+      // liveListCache = [];
+      liveListCacheBehaviorSubject.next([]);
+    };
+
+
 
     const svc = {
       disableToastrValue,

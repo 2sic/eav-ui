@@ -32,40 +32,6 @@ export class AdamService {
     const folders = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
 
-    const getAll = (): Observable<AdamItem[]> => {
-
-      console.log('GET ALL subfolder:', subfolder);
-      // TODO:
-      const header = UrlHelper.createHeader('89', '421', '421');
-      // maybe create model for data
-      return this.httpClient.get(url + '/items',
-        {
-          headers: header,
-          params: {
-            subfolder: subfolder,
-            usePortalRoot: serviceConfig.usePortalRoot,
-            appId: this.eavConfig.appId
-          }
-        })
-        .map((data: any) => {
-          data.forEach(addFullPath);
-          return data;
-        })
-        .do(data => console.log('items subfolder: ', subfolder))
-        .catch(this.handleError);
-    };
-
-    // get the correct url for uploading as it is needed by external services (dropzone)
-    const uploadUrl = (targetSubfolder: string): string => {
-      let urlUpl = (targetSubfolder === '')
-        ? url
-        : url + '?subfolder=' + targetSubfolder;
-      urlUpl += (urlUpl.indexOf('?') === -1 ? '?' : '&')
-        + 'usePortalRoot=' + serviceConfig.usePortalRoot
-        + '&appId=' + this.eavConfig.appId;
-      return urlUpl;
-    };
-
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
     const addFullPath = (value: AdamItem, key) => {
       // 2dm 2018-03-29 special fix - sometimes the path already has the full path, sometimes not
@@ -140,6 +106,29 @@ export class AdamService {
       return subfolder;
     };
 
+    const getAll = (): Observable<AdamItem[]> => {
+
+      console.log('GET ALL subfolder:', subfolder);
+      // TODO:
+      const header = UrlHelper.createHeader('89', '421', '421');
+      // maybe create model for data
+      return this.httpClient.get(url + '/items',
+        {
+          headers: header,
+          params: {
+            subfolder: subfolder,
+            usePortalRoot: serviceConfig.usePortalRoot,
+            appId: this.eavConfig.appId
+          }
+        })
+        .map((data: any) => {
+          data.forEach(addFullPath);
+          return data;
+        })
+        .do(data => console.log('items subfolder: ', subfolder))
+        .catch(this.handleError);
+    };
+
     // delete, then reload
     // IF verb DELETE fails, so I'm using get for now
     const deleteItem = (item) => {
@@ -186,6 +175,17 @@ export class AdamService {
         })
         .do(data => console.log('rename: ', data))
         .catch(this.handleError);
+    };
+
+    // get the correct url for uploading as it is needed by external services (dropzone)
+    const uploadUrl = (targetSubfolder: string): string => {
+      let urlUpl = (targetSubfolder === '')
+        ? url
+        : url + '?subfolder=' + targetSubfolder;
+      urlUpl += (urlUpl.indexOf('?') === -1 ? '?' : '&')
+        + 'usePortalRoot=' + serviceConfig.usePortalRoot
+        + '&appId=' + this.eavConfig.appId;
+      return urlUpl;
     };
 
     let svc = {

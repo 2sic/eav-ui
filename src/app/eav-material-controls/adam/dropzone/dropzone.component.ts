@@ -22,7 +22,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @Input() config: FieldConfig;
   // @Input() group: FormGroup;
 
-  public disabled = false;
+  // public disabled = false;
   public dropzoneConfig: DropzoneConfigInterface;
   private eavConfig: EavConfiguration;  // url: 'http://2sxc-dnn742.dnndev.me/',
   // acceptedFiles: 'image/*',
@@ -32,6 +32,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   constructor(private eavService: EavService) {
     this.eavConfig = eavService.getEavConfiguration();
   }
+
+  tempFileFilter = '*.jpg,*.pdf';
 
   ngOnInit() {
     this.config.adam = this.adamRef;
@@ -93,10 +95,8 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   public onUploadSuccess(args: any): void {
     console.log('onUploadSuccess:', args);
     const response = args[1]; // Gets the server response as second argument.
-    console.log('response:', response);
     if (response.Success) {
       this.adamRef.svc.addFullPath(response); // calculate additional infos
-      console.log('response after addFullPath:', response);
       this.adamRef.afterUploadCallback(response);
       // Reset dropzone
       this.dropzoneRef.reset();
@@ -108,7 +108,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   }
 
   public onDrop(args: any): void {
-    console.log('onDrop:', args);
     // this.adamRef.updateCallback();
   }
 

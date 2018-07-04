@@ -145,7 +145,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
       this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
 
       return {
-        toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2),
+        toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2)
         adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
       };
     }
@@ -189,6 +189,15 @@ export class ExternalComponent implements FieldExternal, OnInit {
         factory.setValue(this.elReference.nativeElement, value);
       }
       factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
+
+      this.setAdamOptions();
+    }
+  }
+
+  private setAdamOptions() {
+    // set Adam disabled state
+    if (this.config.adam) {
+      this.config.adam.disabled = this.group.controls[this.config.name].disabled;
     }
   }
 }

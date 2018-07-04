@@ -43,7 +43,7 @@ export class EavService {
     if (this.eavConfig) {
       return this.eavConfig;
     } else {
-      console.log('Configuration data not setted');
+      console.log('Configuration data not set');
     }
   }
 

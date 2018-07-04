@@ -17,7 +17,7 @@ import { ScriptLoaderService } from './shared/services/script.service';
 import { EavService } from './shared/services/eav.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { AdamService } from './eav-material-controls/adam/adam-service.service';
+import { AdamService } from './eav-material-controls/adam/adam.service';
 import { SvcCreatorService } from './shared/services/svc-creator.service';
 
 // import {

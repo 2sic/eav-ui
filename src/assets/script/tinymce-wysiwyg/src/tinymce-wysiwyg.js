@@ -91,9 +91,6 @@ import { attachAdam } from './tinymce-adam-service.js'
          * @param {*} value 
          */
         changeCheck(event, value) {
-            console.log('changeCheck event', event);
-            console.log('changeCheck value', value);
-
             // do validity checks
             var isValid = this.validateValue(value);
             if (isValid) {

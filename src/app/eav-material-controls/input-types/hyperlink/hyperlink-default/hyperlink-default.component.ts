@@ -5,6 +5,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,9 +14,9 @@ import { FileTypeService } from '../../../../shared/services/file-type.service';
   styleUrls: ['./hyperlink-default.component.css']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
 })
-export class HyperlinkDefaultComponent implements Field {
+export class HyperlinkDefaultComponent implements Field, OnInit {
   @Input() config: FieldConfig;
   group: FormGroup;
 
@@ -24,7 +25,8 @@ export class HyperlinkDefaultComponent implements Field {
   testLink = '/assets/images/smallImage.jpg';
   showFieldHints;
 
-  adam: any;
+  // adam: any;
+  private subscriptions: Subscription[] = [];
 
   private adamModeConfig = {
     usePortalRoot: false
@@ -47,6 +49,11 @@ export class HyperlinkDefaultComponent implements Field {
   }
 
   constructor(private fileTypeService: FileTypeService) { }
+
+  ngOnInit() {
+    this.attachAdam();
+    this.suscribeValueChanges();
+  }
 
   private setFormValue(formControlName: string, value: any) {
     this.group.patchValue({ [formControlName]: value });
@@ -111,24 +118,47 @@ export class HyperlinkDefaultComponent implements Field {
   //#endregion dnn page picker
 
   //#region new adam: callbacks only
-  registerAdam(adam) {
-    this.adam = adam;
-  }
 
   setValue(fileItem) {
     this.setFormValue(this.config.name, `File:${fileItem.id}`);
   }
 
-  // afterUpload = setValue;   // binding for dropzone
-
   toggleAdam(usePortalRoot, imagesOnly) {
     console.log('toggle addam first:', usePortalRoot);
     console.log('toggle addam second:', imagesOnly);
-    // this.adam.toggle({
-    //   showImagesOnly: imagesOnly,
-    //   usePortalRoot: usePortalRoot
-    // });
+    this.config.adam.toggle({
+      showImagesOnly: imagesOnly,
+      usePortalRoot: usePortalRoot
+    });
   }
 
-  //#endregion adam: callbacks only
+  /**
+ * subscribe to form value changes
+ */
+  private suscribeValueChanges() {
+    this.subscriptions.push(
+      this.group.valueChanges.subscribe((item) => {
+        console.log('HyperLink Component suscribeValueChanges', item[this.config.name]);
+      })
+    );
+  }
+
+  private attachAdam() {
+    // TODO:
+    // If adam registered then attach Adam
+    console.log('setInitValues');
+    if (this.config.adam) {
+      // callbacks - functions called from adam
+
+      this.config.adam.updateCallback = (value) =>
+        this.setValue(value);
+
+      this.config.adam.afterUploadCallback = (value) => this.setValue(value); // binding for dropzone
+
+      // return value from form
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+    }
+  }
+
+  //#endregion
 }

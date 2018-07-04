@@ -68,6 +68,7 @@ export class LocalizationHelper {
      */
     public static isEditableTranslationExist =
         (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean => {
+            console.log('ANTE allAttributesValues: ', allAttributesValues);
             return allAttributesValues.values.filter(eavValue =>
                 eavValue.dimensions.find(d => (d.value === languageKey)
                     || (languageKey === defaultLanguage && d.value === '*'))).length > 0;

@@ -31,6 +31,11 @@ export class FeatureService {
             .catch(this.handleError);
     }
 
+    enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
+        return this.getFeatures(eavConfig, url)
+            .switchMap(s => this.enabledNow(s, guid));
+    }
+
     private enabledNow = (list, guid): Observable<boolean> => {
         for (let i = 0; i < list.length; i++) {
             if (list[i].id === guid) {
@@ -38,11 +43,6 @@ export class FeatureService {
             }
         }
         return of(false);
-    }
-
-    enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
-        return this.getFeatures(eavConfig, url)
-            .switchMap(s => this.enabledNow(s, guid));
     }
 
     private handleError(error: any) {
