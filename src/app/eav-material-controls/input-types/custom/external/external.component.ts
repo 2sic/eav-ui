@@ -152,13 +152,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   /**
-   * subscribe to form value changes
+   * subscribe to form value changes for this field
    */
   private suscribeValueChanges(factory: any) {
     this.subscriptions.push(
-      this.group.valueChanges.subscribe((item) => {
-        console.log('ExternalComponent suscribeValueChanges', item[this.config.name]);
-        this.setExternalControlValues(factory, item[this.config.name]);
+      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+        console.log('ExternalComponent suscribeValueChanges', item);
+        this.setExternalControlValues(factory, item);
       })
     );
   }

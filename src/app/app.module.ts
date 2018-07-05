@@ -25,6 +25,7 @@ import { SvcCreatorService } from './shared/services/svc-creator.service';
 //   DROPZONE_CONFIG
 // } from 'ngx-dropzone-wrapper';
 import { FeatureService } from './shared/services/feature.service';
+import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 
 // const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 //   // Change this to your upload POST address:
@@ -86,7 +87,8 @@ export function createTranslateLoader(http: HttpClient) {
     EavService,
     AdamService,
     SvcCreatorService,
-    FeatureService
+    FeatureService,
+    DnnBridgeService
     // {
     //   provide: DROPZONE_CONFIG,
     //   useValue: DEFAULT_DROPZONE_CONFIG

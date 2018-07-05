@@ -5,7 +5,7 @@
       [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
     </div>
     <div matPrefix *ngIf="value && !isImage()" class="thumbnail-before-input icon-before-input">
-      <a [href]="testLink" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(testLink)}}" matTooltipPosition="right">
+      <a [href]="link" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
       </a>
     </div>
     <div matPrefix *ngIf="!value" class="thumbnail-before-input empty-placeholder">

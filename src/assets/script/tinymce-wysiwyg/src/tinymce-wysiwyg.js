@@ -66,23 +66,8 @@ import { attachAdam } from './tinymce-adam-service.js'
                 });
             }
 
-            console.log('options');
-            console.table(options);
 
             tinymce.init(options);
-
-            // var divElements = container.getElementsByTagName('div');
-            // console.log('elements value', divElements[1].innerHTML);
-
-            // elements[0].addEventListener('change', () => {
-            //     console.log('input clcik');
-            //     // this.changeCheck(event, divElements[1].innerHTML);
-            // })
-
-            // divElements[1].addEventListener('change', () => {
-            //     console.log('divElements clcik');
-            //     this.changeCheck(event, divElements[1].innerHTML);
-            // })
         }
 
         /**
