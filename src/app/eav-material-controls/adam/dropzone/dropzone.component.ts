@@ -20,17 +20,20 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
-  // @Input() group: FormGroup;
+  group: FormGroup;
 
-  // public disabled = false;
   public dropzoneConfig: DropzoneConfigInterface;
   private eavConfig: EavConfiguration;  // url: 'http://2sxc-dnn742.dnndev.me/',
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
 
+  get disabled() {
+    return this.group.controls[this.config.name].disabled;
+  }
+
   constructor(private eavService: EavService) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   tempFileFilter = '*.jpg,*.pdf';

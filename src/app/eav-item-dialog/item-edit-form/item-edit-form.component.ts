@@ -108,7 +108,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
-      console.log('FORM VALUE CHANGE', values);
       this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
     }
 
@@ -228,6 +227,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault, index);
         case InputTypesConstants.hyperlinkDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault, index);
+        case InputTypesConstants.hyperlinkLibrary:
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkLibrary, index);
         case InputTypesConstants.external:
         case 'custom-gps':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);

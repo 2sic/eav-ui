@@ -53,6 +53,7 @@ import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
 import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
+import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
-    ClickStopPropagationDirective
+    ClickStopPropagationDirective,
+    HyperlinkLibraryComponent
   ],
   imports: [
     CommonModule,
@@ -125,6 +127,7 @@ import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
+    HyperlinkLibraryComponent,
     ExternalComponent,
     DropzoneComponent
   ],

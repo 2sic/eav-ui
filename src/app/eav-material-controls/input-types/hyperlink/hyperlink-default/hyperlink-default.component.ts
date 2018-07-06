@@ -33,12 +33,16 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   // adam: any;
   private subscriptions: Subscription[] = [];
 
-  private adamModeConfig = {
-    usePortalRoot: false
-  };
+  // private adamModeConfig = {
+  //   usePortalRoot: false
+  // };
 
   get value() {
     return this.group.controls[this.config.name].value;
+  }
+
+  get disabled() {
+    return this.group.controls[this.config.name].disabled;
   }
 
   // ensureDefaultConfig();
@@ -56,7 +60,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   constructor(private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
@@ -96,22 +100,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     return str.replace(/\//g, '/&#8203;');
   }
 
-
-  //   $scope.$watch("value.Value", function(newValue, oldValue) {
-  //     if (!newValue)
-  //         return;
-
-  //     // handle short-ID links like file:17
-  //     var promise = dnnBridgeSvc.getUrlOfId(newValue);
-  //     if(promise)
-  //         promise.then(function (result) {
-  //             if (result.data)
-  //                 vm.testLink = result.data;
-  //         });
-  //     else
-  //         vm.testLink = newValue;
-  // });
-
   //#region dnn-page picker dialog
 
   // the callback when something was selected
@@ -143,40 +131,45 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     this.setFormValue(this.config.name, `File:${fileItem.Id}`);
   }
 
-  toggleAdam(usePortalRoot, imagesOnly) {
+  toggleAdam(usePortalRoot, showImagesOnly) {
     this.config.adam.toggle({
-      showImagesOnly: imagesOnly,
+      showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot
     });
   }
 
   /**
- * subscribe to form value changes
- * Update test-link if necessary - both when typing or if link was set by dialogs
+ * subscribe to form value changes. Only this field change
+ *
  */
   private suscribeValueChanges() {
     this.subscriptions.push(
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+        console.log('suscribeValueChanges CHANGE');
         this.setLink(item);
       })
     );
   }
 
+  /**
+   * Update test-link if necessary - both when typing or if link was set by dialogs
+   * @param value
+   */
   private setLink(value: string) {
     // const oldValue = this.value;
     if (!value) {
       return null;
     }
     // handle short-ID links like file:17
-    const observable = this.dnnBridgeService.getUrlOfId(this.eavConfig,
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig,
       value,
       this.config.header.contentTypeName,
       this.config.header.guid,
       this.config.name);
 
-    if (observable) {
+    if (urlFromId$) {
       this.subscriptions.push(
-        observable.subscribe((data) => {
+        urlFromId$.subscribe((data) => {
           if (data) {
             this.link = data;
           }

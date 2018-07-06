@@ -227,7 +227,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToAttributeValues() {
     this.subscriptions.push(
       this.attributes$.subscribe(attributes => {
-        // console.log('subscribe attributes1 ', attributes);
         this.attributes = attributes;
       })
     );
@@ -239,6 +238,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         this.currentLanguage = currentLanguage;
         this.translateAllConfiguration(currentLanguage);
         this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
+        this.setAdamDisable();
         this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
       })
     );
@@ -247,7 +247,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(
       this.defaultLanguage$.subscribe(defaultLanguage => {
-        // console.log('subscribe defaultLanguage1', defaultLanguage);
         this.defaultLanguage = defaultLanguage;
       })
     );
@@ -315,6 +314,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     } else {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.UseDefault';
+    }
+  }
+
+  /**
+   * Change adam disable state
+   * @param attributeKey
+   */
+  private setAdamDisable() {
+    // set Adam disabled state
+    if (this.config.adam) {
+      this.config.adam.disabled = this.group.controls[this.config.name].disabled;
     }
   }
 }

@@ -1,6 +1,6 @@
 <!-- TODO: this dropzone class only because css - need to change-->
-<!-- *ngIf="!disabled" -->
-<div class="dropzone">
+<!--  -->
+<div class="dropzone" *ngIf="!disabled">
   <div *ngIf="show" ngClass="{{'adam-scope-' + (adamModeConfig.usePortalRoot ? 'site' : field)}}">
 
     <!-- info for dropping stuff here -->

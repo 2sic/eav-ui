@@ -20,12 +20,6 @@ export class AdamService {
   }
 
   createSvc(subfolder, serviceConfig, url) {
-    // tslint:disable-next-line:max-line-length
-    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/131d6a9c-751c-4fca-84e7-46cf67d41413/HyperLinkStaticName';
-    // tslint:disable-next-line:max-line-length
-    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/7fb41a4e-e832-42f5-9ece-f37c368dd9ee/HyperLinkStaticName/';
-    // tslint:disable-next-line:max-line-length
-    // const url = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName/';
     // TODO: find how to solve serviceRoot
     // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);

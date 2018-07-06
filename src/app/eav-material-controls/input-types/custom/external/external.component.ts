@@ -190,14 +190,15 @@ export class ExternalComponent implements FieldExternal, OnInit {
       }
       factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
 
-      this.setAdamOptions();
+      // this.setAdamOptions();
     }
   }
 
-  private setAdamOptions() {
-    // set Adam disabled state
-    if (this.config.adam) {
-      this.config.adam.disabled = this.group.controls[this.config.name].disabled;
-    }
-  }
+
+  // private setAdamOptions() {
+  //   // set Adam disabled state
+  //   if (this.config.adam) {
+  //     this.config.adam.disabled = this.group.controls[this.config.name].disabled;
+  //   }
+  // }
 }

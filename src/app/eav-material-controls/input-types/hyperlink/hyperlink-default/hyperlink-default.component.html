@@ -19,41 +19,34 @@ ADAM - sponsored with ♥ by 2sic.com" -->
     <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error> -->
     <span matSuffix class="input-group-btn">
       <div style="width: 6px;"></div>
-      <!-- ng-disabled="to.disabled"  -->
-      <button mat-icon-button *ngIf="buttons.indexOf('adam') > -1" type="button" class="btn btn-default icon-field-button" (click)="toggleAdam()"
-        matTooltip="Edit.Fields.Hyperlink.Default.AdamUploadLabel">
+      <button mat-icon-button *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled" class="btn btn-default icon-field-button"
+        (click)="toggleAdam()" matTooltip="Edit.Fields.Hyperlink.Default.AdamUploadLabel">
         <i class="eav-icon-apple"></i>
       </button>
-      <!-- ng-disabled="to.disabled"  -->
-      <button mat-icon-button *ngIf="buttons.indexOf('page') > -1" type="button" class="btn btn-default icon-field-button" (click)="openPageDialog()"
-        matTooltip="Edit.Fields.Hyperlink.Default.PageLabel">
+      <button mat-icon-button *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled" class="btn btn-default icon-field-button"
+        (click)="openPageDialog()" matTooltip="Edit.Fields.Hyperlink.Default.PageLabel">
         <i class="eav-icon-sitemap"></i>
       </button>
-      <!-- ng-disabled="to.disabled"-->
-      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" type="button" class="btn btn-default icon-field-button"
+      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button" class="btn btn-default icon-field-button"
         [matMenuTriggerFor]="menu">
         <i class="eav-icon-options"></i>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngIf="showAdam" (click)="toggleAdam(false)">
           <i class="eav-icon-apple"></i>
-          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuAdam"></span> -->
-          <span>MenuAdam</span>
+          <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="config.settings.ShowPagePicker" (click)="openPageDialog()">
           <i class="eav-icon-sitemap" xicon="home"></i>
-          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuPage"></span> -->
-          <span>MenuPage</span>
+          <span>{{'Edit.Fields.Hyperlink.Default.MenuPage' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="config.settings.ShowImageManager" (click)="toggleAdam(true, true)">
           <i class="eav-icon-file-image" xicon="picture"></i>
-          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuImage"></span> -->
-          <span>MenuImage</span>
+          <span>{{'Edit.Fields.Hyperlink.Default.MenuImage' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="config.settings.ShowFileManager" (click)="toggleAdam(true, false)">
           <i class="eav-icon-file" xicon="file"></i>
-          <!-- <span translate="Edit.Fields.Hyperlink.Default.MenuDocs"></span> -->
-          <span>MenuDocs</span>
+          <span>{{'Edit.Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
         </button>
       </mat-menu>
     </span>

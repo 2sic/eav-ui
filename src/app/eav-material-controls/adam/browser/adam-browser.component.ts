@@ -78,8 +78,10 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
-    this.svc = this.adamService.createSvc('', { usePortalRoot: false }, this.url);
+    this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
 
     console.log('adam ngOnInit url:', this.url);
     this.setAllowedFileTypes();
@@ -89,8 +91,6 @@ export class AdamBrowserComponent implements OnInit {
     this.loadFileList();
     // TODO: when set folders??? Before was toggle!!!
     // this.folders = this.svc.folders;
-
-    this.initConfig();
 
     if (this.autoLoad) {
       console.log('autoload:');
@@ -243,7 +243,10 @@ export class AdamBrowserComponent implements OnInit {
     }
 
     if (this.show) {
+
+      console.log('TOGGLE this.showImagesOnly', this.showImagesOnly);
       this.refresh();
+      console.log('TOGGLE this.items', this.items);
     }
   }
 
