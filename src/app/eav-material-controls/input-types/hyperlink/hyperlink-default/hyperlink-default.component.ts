@@ -132,6 +132,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
+    console.log('toggleAdam hdefault');
     this.config.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot

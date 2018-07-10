@@ -93,6 +93,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
 
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
     this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
   }
 
@@ -100,6 +101,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
 
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
     this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
   }
 
@@ -136,6 +138,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     }
 
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
     this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
   }
 
@@ -147,6 +150,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
     this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
   }
 
@@ -156,6 +160,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       languageKey, this.defaultLanguage, false);
 
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
     this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
   }
 
@@ -286,9 +291,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         this.group.controls[attributeKey].enable({ emitEvent: false });
       } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
         this.group.controls[attributeKey].disable({ emitEvent: false });
-        // this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        //   .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-        //   .join(', ');
       } else {
         this.group.controls[attributeKey].disable({ emitEvent: false });
       }

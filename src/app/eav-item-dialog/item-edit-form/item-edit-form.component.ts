@@ -107,6 +107,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
+
     if (this.form.form.valid) {
       this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
     }

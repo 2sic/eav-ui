@@ -21,6 +21,21 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.attachAdam();
+    // this.group.controls[this.config.name].patchValue('');
+  }
+
+  private attachAdam() {
+    if (this.config.adam) {
+      // callbacks - functions called from adam
+      this.config.adam.updateCallback = (fileItem) => { };
+
+      // binding for dropzone
+      this.config.adam.afterUploadCallback = (fileItem) => { };
+
+      // return value from form
+      // this.config.adam.getValueCallback = () =>
+    }
   }
 }
 

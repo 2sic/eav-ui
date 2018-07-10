@@ -81,7 +81,7 @@
     <!-- files -->
     <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
     <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
-      (click)="select(item)" [ngClass]="{ 'dz-success': getValueCallback().toLowerCase() === 'file:' + item.Id }">
+      (click)="select(item)" [ngClass]="{ 'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id }">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i [ngClass]="icon(item)"></i>
         <div class="adam-short-label">{{ item.Name }}</div>

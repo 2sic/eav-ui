@@ -118,6 +118,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
    * triger click on clickable element for load open
    */
   openUpload() {
+    console.log('openUpload click');
     this.invisibleClickableReference.nativeElement.click();
   }
 

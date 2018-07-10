@@ -68,7 +68,6 @@ export class LocalizationHelper {
      */
     public static isEditableTranslationExist =
         (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean => {
-            console.log('ANTE allAttributesValues: ', allAttributesValues);
             return allAttributesValues.values.filter(eavValue =>
                 eavValue.dimensions.find(d => (d.value === languageKey)
                     || (languageKey === defaultLanguage && d.value === '*'))).length > 0;
@@ -258,6 +257,7 @@ export class LocalizationHelper {
      * @param languageKey
      */
     public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
+        console.log('removeAttributeDimension: ', allAttributes);
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         const value: EavValue<any> = allAttributes[attributeKey].values.find(eavValue =>
