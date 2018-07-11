@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+
 import { FileTypeConstants } from '../constants/file-type-constants';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/do';
+import { zip } from 'rxjs/observable/zip';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class ScriptLoaderService {
@@ -56,6 +62,15 @@ export class ScriptLoaderService {
     });
   }
 
+  public loadList(scriptList: ScriptModel[], fileType: string): Observable<ScriptModel[]> {
+    const allScripts$: Observable<ScriptModel>[] = [];
+    scriptList.forEach((scriptModel: ScriptModel) => {
+      allScripts$.push(this.load(scriptModel, fileType));
+    });
+    return allScripts$.length > 0
+      ? zip(...allScripts$)
+      : null;
+  }
 }
 
 export interface ScriptModel {

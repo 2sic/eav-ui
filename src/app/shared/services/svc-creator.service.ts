@@ -27,8 +27,6 @@ export class SvcCreatorService {
     // use a promise-result to re-fill the live list of all items, return the promise again
     // const _liveListUpdateWithResult = function
     const updateLiveAll = (result) => {
-      console.log('updateLiveAll result:', result);
-      console.log('liveListCache before:', liveListCacheBehaviorSubject.getValue());
       // TODO:
       // if (t.msg.isOpened) {
       //   toastr.clear(t.msg);
@@ -51,15 +49,14 @@ export class SvcCreatorService {
     };
 
     /**
-         * Reload live list action
-         */
+     * Reload live list action
+     */
     const liveListReload = () => {
       // show loading - must use the promise-mode because this may be used early before the language has arrived
       // return 'General.Messages.Loading';
       // $translate("General.Messages.Loading").then(function (msg) {
       //   t.msg = toastr.info(msg);
       // });
-      console.log('liveListReload');
       liveListSourceRead$().subscribe(s => updateLiveAll(s));
     };
 
@@ -79,8 +76,6 @@ export class SvcCreatorService {
       // liveListCache = [];
       liveListCacheBehaviorSubject.next([]);
     };
-
-
 
     const svc = {
       disableToastrValue,

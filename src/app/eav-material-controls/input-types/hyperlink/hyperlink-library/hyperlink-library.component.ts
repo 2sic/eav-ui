@@ -22,7 +22,6 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
 
   ngOnInit() {
     this.attachAdam();
-    // this.group.controls[this.config.name].patchValue('');
   }
 
   private attachAdam() {

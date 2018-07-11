@@ -116,24 +116,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.itemFormValueChange.emit();
   }
 
-  // TEMP - TEST
-  // changeThis() {
-  //   const values = {
-  //     BooleanDefault: false,
-  //     DateTime: '2018-02-14T20:14:00Z',
-  //     EntityDefault: 'd86677cb-b5cf-40a3-92e4-71c6822adbc6',
-  //     NumberDefault: 5,
-  //     DateTimeWithTime: '2018-02-07T02:03:00Z',
-  //     BooleanGroup1: false,
-  //     DropDownGroup1: '1',
-  //     StringGroup1: 'Ante test',
-  //     StringGroup2: 'ante test2',
-  //     StringUrlPathGroup2: 'ante'
-  //   };
-
-  //   this.formValueChange(values);
-  // }
-
   submit(values: { [key: string]: any }) {
     console.log('submit item edit');
     console.log(values);

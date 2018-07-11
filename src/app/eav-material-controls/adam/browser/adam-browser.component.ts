@@ -53,7 +53,6 @@ export class AdamBrowserComponent implements OnInit {
   updateCallback;
   afterUploadCallback;
   getValueCallback;
-
   oldConfig;
   clipboardPasteImageFunctionalityDisabled = true;
 
