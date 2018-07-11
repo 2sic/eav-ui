@@ -4,10 +4,10 @@
       <i class="glyphicon {{value}}"></i>
     </div>
     <input matInput type="text" class="form-control material" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
-      [matAutocomplete]="auto">
+      [matAutocomplete]="auto" (click)="update()">
   </mat-form-field>
   <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let icn of icons" [value]="icn.class">
+    <mat-option *ngFor="let icn of filteredIcons | async" [value]="icn.class">
       <a (click)="setIcon(icn.class, config.name)">
         <i class="{{config.settings.PreviewCss}} {{icn.class}}"></i>
         <span>{{icn.class}}</span>

@@ -7,6 +7,8 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
+import { Subscription } from 'rxjs/Subscription';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,9 +23,10 @@ export class StringFontIconPickerComponent implements Field, OnInit {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  // icons$: [{ rule: CSSStyleSheet, 'class': string }] = ;
   icons = [];
-  filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
+  // filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
+  filteredIcons: Observable<any>;
+  private subscriptions: Subscription[] = [];
 
   get files(): string {
     return this.config.settings.Files ? this.config.settings.Files : '';
@@ -37,20 +40,15 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     return this.config.settings.PreviewCss ? this.config.settings.PreviewCss : '';
   }
 
-  constructor(private scriptLoaderService: ScriptLoaderService) { }
-
-  ngOnInit() {
-    //   this.getIconClasses(this.prefix);
-    console.log('loadAdditionalResources', this.files);
-    this.loadAdditionalResources(this.files);
-  }
-
   get value() {
     return this.group.controls[this.config.name].value;
   }
 
-  setIcon(iconClass: any, formControlName: string) {
-    this.group.patchValue({ [formControlName]: iconClass });
+  constructor(private scriptLoaderService: ScriptLoaderService) { }
+
+  ngOnInit() {
+    this.loadAdditionalResources(this.files);
+    this.filteredIcons = this.getFilteredIcons();
   }
 
   getIconClasses(className) {
@@ -83,22 +81,12 @@ export class StringFontIconPickerComponent implements Field, OnInit {
       }
     }
     // this.icons$ = foundList;
-    this.icons.push(...foundList);
-    // return foundList;
+    // this.icons.push(...foundList);
+    return foundList;
   }
 
-  // TODO: read CSS file
-  //     function loadAdditionalResources(files) {
-  //   files = files || "";
-  //   var mapped = files.replace("[App:Path]", appRoot)
-  //     .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
-  //       "$1/$2");
-  //   var fileList = mapped ? mapped.split("\n") : [];
-  //   return $ocLazyLoad.load(fileList);
-  // }
-
   loadAdditionalResources(files: string) {
-    // const mapped = this.files.replace('[App:Path]', appRoot)
+    // const mapped = files.replace('[App:Path]', appRoot)
     // TODO: App root read
     const mapped = files.replace('[App:Path]', 'http://2sxc-dnn742.dnndev.me/Portals/0/2sxc/QR Code')
       .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
@@ -115,12 +103,38 @@ export class StringFontIconPickerComponent implements Field, OnInit {
       scriptModelList.push(scriptModel);
     });
 
-    console.log('scriptModelList', scriptModelList);
     this.scriptLoaderService.loadList(scriptModelList, 'css').subscribe(s => {
       if (s !== null) {
-        console.log('all scripts loaded successfully', s);
-        this.getIconClasses(this.prefix);
+        this.icons = this.getIconClasses(this.prefix);
       }
     });
+  }
+
+  setIcon(iconClass: any, formControlName: string) {
+    this.group.patchValue({ [formControlName]: iconClass });
+  }
+
+  /**
+ *  with update on click trigger value change to open autocomplete
+ */
+  update() {
+    this.group.controls[this.config.name].patchValue(this.value);
+  }
+
+  private filterStates(value: string): string[] {
+    console.log('filterStates value:', value);
+    const filterValue = value.toLowerCase();
+    console.log('this.icons:', this.icons);
+    return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  private getFilteredIcons = () => {
+    return this.group.controls[this.config.name].valueChanges
+      .pipe(
+        startWith(''),
+        map(state => state ? this.filterStates(state) : this.icons.slice())
+      );
+
+    // .map(state => state ? this.filterStates(state) : this.icons.slice());
   }
 }
