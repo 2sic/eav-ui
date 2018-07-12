@@ -9,6 +9,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { Subscription } from 'rxjs/Subscription';
 import { map, startWith } from 'rxjs/operators';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,11 +45,20 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     return this.group.controls[this.config.name].value;
   }
 
-  constructor(private scriptLoaderService: ScriptLoaderService) { }
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  constructor(private scriptLoaderService: ScriptLoaderService,
+    private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.loadAdditionalResources(this.files);
     this.filteredIcons = this.getFilteredIcons();
+  }
+
+  getErrorMessage() {
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
 
   getIconClasses(className) {
@@ -59,12 +69,8 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     }
 
     for (let ssSet = 0; ssSet < document.styleSheets.length; ssSet++) {
-      // const classes = document.styleSheets[ssSet].rules || document.styleSheets[ssSet].cssRules;
-      // TEMP: look only bootstrap-glyphicons.css
-      // tslint:disable-next-line:max-line-length
-      if ((<CSSStyleSheet>document.styleSheets[ssSet]).href === 'http://2sxc-dnn742.dnndev.me/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/style/bootstrap-glyphicons.css') {
-        const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules;
-
+      try {
+        const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules || (<CSSStyleSheet>document.styleSheets[ssSet]).cssRules;
         if (classes) {
           for (let x = 0; x < classes.length; x++) {
             if ((<CSSStyleRule>classes[x]).selectorText && (<CSSStyleRule>classes[x]).selectorText.substring(0, charcount) === className) {
@@ -78,7 +84,12 @@ export class StringFontIconPickerComponent implements Field, OnInit {
             }
           }
         }
+      } catch (error) {
+        // try catch imortant because can't find CSSStyleSheet rules error
+        console.log('Icon picker CSSStyleSheet error: ', error);
       }
+      //   }
+      // }
     }
     // this.icons$ = foundList;
     // this.icons.push(...foundList);
@@ -115,16 +126,14 @@ export class StringFontIconPickerComponent implements Field, OnInit {
   }
 
   /**
- *  with update on click trigger value change to open autocomplete
- */
+  *  with update on click trigger value change to open autocomplete
+  */
   update() {
     this.group.controls[this.config.name].patchValue(this.value);
   }
 
   private filterStates(value: string): string[] {
-    console.log('filterStates value:', value);
     const filterValue = value.toLowerCase();
-    console.log('this.icons:', this.icons);
     return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) === 0);
   }
 
