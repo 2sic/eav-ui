@@ -1,6 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
-import { DnnAppComponent, Context } from '@2sic.com/dnn-sxc-angular';
-import { TranslateService } from '@ngx-translate/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
   title = 'app';
 
-  constructor(translate: TranslateService) {
+  constructor() {
+    // constructor(translate: TranslateService) {
     // // this language will be used as a fallback when a translation isn't found in the current language
     // translate.setDefaultLang('en');
 

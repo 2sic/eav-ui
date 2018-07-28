@@ -1,16 +1,25 @@
 import {
-  ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef,
-  Component, NgModule, ModuleWithComponentFactories, ComponentFactory,
+  ComponentFactoryResolver,
+  ComponentRef,
+  ComponentFactory,
+  Component,
+  Directive,
+  Input,
+  NgModule,
+  ModuleWithComponentFactories,
+  OnInit,
+  Type,
+  ViewContainerRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../model/field';
 import { FieldConfig } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
 import { InputTypesConstants } from '../../../shared/constants';
+import { FileTypeConstants } from '../../../shared/constants/file-type-constants';
 
 @Directive({
   selector: '[appEavField]'
@@ -23,7 +32,6 @@ export class EavFieldDirective implements OnInit {
   group: FormGroup;
 
   window: any = window;
-
   addOnList = [];
   externalCommponentRefList = [];
 
@@ -113,7 +121,7 @@ export class EavFieldDirective implements OnInit {
   }
 
   /**
-   * Register external commponent
+   * Create and register external commponent
    * @param container
    * @param fieldConfig
    */
@@ -122,67 +130,76 @@ export class EavFieldDirective implements OnInit {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
-    console.log('loaded fieldConfig.name', fieldConfig.type);
-    // TODO: read data from config
-    if (fieldConfig.name === 'customStaticName') {
-      // TODO: read data from config
-      this.externalCommponentRefList['colour-picker'] = externalComponentRef;
-    } else {
-      // this.externalCommponentRefList['colour-picker2'] = externalComponentRef;
-      this.externalCommponentRefList['tinymce-wysiwyg'] = externalComponentRef;
-    }
+    this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
 
     if (this.window.addOn === undefined) {
-      this.window.addOn = [];
+      // this.window.addOn = [];
       this.window.addOn = new CustomInputType(this.registerExternalComponent.bind(this));
     }
 
-    // TODO: read data from config
-    if (fieldConfig.name === 'customStaticName') {
-      this.loadExternalnputTypeScript('colour-picker', 'assets/script/colour-picker.js');
-    } else {
-      // this.loadExternalnputTypeScript('colour-picker2', 'assets/script/colour-picker2.js');
-
-      this.loadExternalnputTypeScript('tinymce-wysiwyg', 'assets/script/tinymce-wysiwyg/tinymce-wysiwyg.js');
-    }
+    // // TODO: read data from config
+    // Start loading all external dependencies (start with css). This method recursively load all dependencies.
+    this.loadExternalnputType(
+      0,
+      fieldConfig.name,
+      'tinymce-wysiwyg',
+      ['assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
+      // ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
+      FileTypeConstants.css);
   }
 
-  private loadExternalnputTypeScript(name: string, src: string) {
-    const script: ScriptModel = {
-      name: name,
-      src: src,
+  private loadExternalnputType(increment: number, name: string, type: string, styles: string[], scripts: string[], fileType: string) {
+    const scriptModel: ScriptModel = {
+      name: `${fileType}${name}${increment}`,
+      filePath: (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment],
       loaded: false
     };
 
-    this.scriptLoaderService.load(script).subscribe(s => {
-      console.log('loaded ScriptModel: ', s);
-
+    this.scriptLoaderService.load(scriptModel, fileType).subscribe(s => {
       if (s.loaded) {
-        const externalCommponentRef = this.externalCommponentRefList[s.name];
-        console.log('loaded addOnList', this.addOnList);
-        const factory = this.addOnList[s.name];
-        console.log('loaded name', s.name);
-        console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
-        console.log('loaded factory', factory);
-        if (externalCommponentRef && factory) {
-          console.log('loaded Object.assign', factory);
-          Object.assign(externalCommponentRef.instance, {
-            // group: externalCommponentRef.instance.group,
-            // config: externalCommponentRef.instance.config,
-            factory: factory,
-          });
+        increment++;
+        const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
+        if (nextScript) {
+          console.log('nextScript', name);
+          this.loadExternalnputType(increment, name, type, styles, scripts, fileType);
+        } else if (fileType === FileTypeConstants.css) {
+          console.log('nextScript css', name);
+          this.loadExternalnputType(0, name, type, styles, scripts, FileTypeConstants.javaScript);
+        } else { // when scripts load is finish then call registered factory
+          console.log('nextScript facrory', type);
+          this.loadExternalFactoryToComponent(name, type);
         }
       }
     });
   }
 
+  /**
+   * First read component reference with NAME and external component (factory) with TYPE,
+   * and then add external component (factory) to component (input type) reference.
+   * @param name
+   * @param type
+   */
+  private loadExternalFactoryToComponent(name: string, type: string) {
+    const externalCommponentRef = this.externalCommponentRefList[name];
+    const factory = this.addOnList[type];
+    console.log('loaded name factory', this.addOnList);
+    if (externalCommponentRef && factory) {
+      console.log('loaded name', name);
+      console.log('loaded this.externalCommponentRefList[name]', this.externalCommponentRefList);
+      console.log('loaded factory', factory);
+      Object.assign(externalCommponentRef.instance, {
+        factory: Object.create(factory)
+      });
+    }
+  }
+
+  /**
+   * When external component is registered on load - this method add that component to list
+   * @param factory
+   */
   private registerExternalComponent(factory) {
     this.addOnList[factory.name] = factory;
-
-    // sent factory to componentReference  - or on script loaded ??? need to decide!!!
-
-    // this.customInputTypeFactory.initialize(this.customInputTypeHost);
-    // this.customInputTypeFactory.render(this.elReference.nativeElement);
   }
 
   /**
@@ -231,74 +248,4 @@ export class EavFieldDirective implements OnInit {
 
     return ref.instance.fieldComponent;
   }
-
-  // ----------------------------------------------------
-  // This maybe we can use for custom types
-  // ----------------------------------------------------
-
-  // compileTemplate(): ComponentRef<any>  {
-  //   let metadata = {
-  //     selector: `runtime-component-sample`,
-  //     template: `<div>
-  //               <h3>Template</h3>
-  //               </div>`
-  //     //wrappers: ['field-parent-wrapper', 'field-wrapper']
-  //   };
-
-  //   let factory = this.createComponentFactorySync(this.compiler, metadata, null);
-
-  //   if (this.componentRef) {
-  //     this.componentRef.destroy();
-  //     this.componentRef = null;
-  //   }
-  //   this.componentRef = this.container.createComponent(factory);
-
-  //   return this.componentRef;
-  // }
-
-  // private createComponentFactorySync(compiler: Compiler, metadata: Component, componentClass: any): ComponentFactory<any> {
-  //   const cmpClass = componentClass || class RuntimeComponent { name: string = 'Ante' };
-  //   const decoratedCmp = Component(metadata)(cmpClass);
-
-  //   @NgModule({ imports: [CommonModule], declarations: [decoratedCmp] })
-  //   class RuntimeComponentModule { }
-
-  //   let module: ModuleWithComponentFactories<any> = compiler.compileModuleAndAllComponentsSync(RuntimeComponentModule);
-  //   return module.componentFactories.find(f => f.componentType === decoratedCmp);
-  // }
-  // --------------------------------------------
-
-  // --------------------------------------------
-  // another solution
-  // https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e
-  // --------------------------------------------
-  // @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
-
-  // constructor(private _compiler: Compiler,
-  //             private _injector: Injector,
-  //             private _m: NgModuleRef<any>) {
-  // }
-
-  // ngAfterViewInit() {
-  //   const template = '<span>generated on the fly: {{name}}</span>';
-
-  //   const tmpCmp = Component(
-  //     {template: template})(
-  //       class {
-  //   });
-
-  //   const tmpModule = NgModule(
-  //     {declarations: [tmpCmp]})(
-  //       class {
-  //   });
-
-  //   this._compiler.compileModuleAndAllComponentsAsync(tmpModule)
-  //     .then((factories) => {
-  //       const f = factories.componentFactories[0];
-  //       const cmpRef = this.vc.createComponent(tmpCmp);
-  //       cmpRef.instance.name = 'dynamic';
-  //     })
-  // }
-
-  // --------------------------------------------
 }

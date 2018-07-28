@@ -1,4 +1,4 @@
-import { FormControl, ValidatorFn, Validators } from '@angular/forms';
+import { ValidatorFn, Validators } from '@angular/forms';
 import { EavAttributesTranslated } from '../../shared/models/eav';
 import { CustomValidators } from './custom-validators';
 

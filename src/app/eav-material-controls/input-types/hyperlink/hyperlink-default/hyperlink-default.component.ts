@@ -1,10 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { Subscription } from 'rxjs/Subscription';
+import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,25 +16,33 @@ import { FileTypeService } from '../../../../shared/services/file-type.service';
   styleUrls: ['./hyperlink-default.component.css']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
 })
-export class HyperlinkDefaultComponent implements Field {
+export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
   group: FormGroup;
 
   showPreview;
   toggleAdamValue = false;
-  testLink = '/assets/images/smallImage.jpg';
+  link = '';
   showFieldHints;
 
-  adam: any;
+  // TODOD: temp
+  private eavConfig;
 
-  private adamModeConfig = {
-    usePortalRoot: false
-  };
+  // adam: any;
+  private subscriptions: Subscription[] = [];
+
+  // private adamModeConfig = {
+  //   usePortalRoot: false
+  // };
 
   get value() {
     return this.group.controls[this.config.name].value;
+  }
+
+  get disabled() {
+    return this.group.controls[this.config.name].disabled;
   }
 
   // ensureDefaultConfig();
@@ -46,18 +57,32 @@ export class HyperlinkDefaultComponent implements Field {
     return this.config.settings.Buttons ? this.config.settings.Buttons : 'adam,more';
   }
 
-  constructor(private fileTypeService: FileTypeService) { }
+  constructor(private fileTypeService: FileTypeService,
+    private dnnBridgeService: DnnBridgeService,
+    private eavService: EavService) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
+
+  ngOnInit() {
+    this.attachAdam();
+    this.setLink(this.value);
+    this.suscribeValueChanges();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
 
   private setFormValue(formControlName: string, value: any) {
     this.group.patchValue({ [formControlName]: value });
   }
 
-  isImage = () => this.fileTypeService.isImage(this.testLink);
+  isImage = () => this.fileTypeService.isImage(this.link);
 
-  icon = () => this.fileTypeService.getIconClass(this.testLink);
+  icon = () => this.fileTypeService.getIconClass(this.link);
 
   thumbnailUrl(size: number, quote: boolean) {
-    let result = this.testLink;
+    let result = this.link;
     if (size === 1) {
       result = result + '?w=64&h=64&mode=crop';
     }
@@ -68,23 +93,12 @@ export class HyperlinkDefaultComponent implements Field {
     return qt + result + qt;
   }
 
-  tooltipUrl = (str: string) => str.replace(/\//g, '/&#8203;');
-
-  // Update test-link if necessary - both when typing or if link was set by dialogs
-  //   $scope.$watch("value.Value", function(newValue, oldValue) {
-  //     if (!newValue)
-  //         return;
-
-  //     // handle short-ID links like file:17
-  //     var promise = dnnBridgeSvc.getUrlOfId(newValue);
-  //     if(promise)
-  //         promise.then(function (result) {
-  //             if (result.data)
-  //                 vm.testLink = result.data;
-  //         });
-  //     else
-  //         vm.testLink = newValue;
-  // });
+  tooltipUrl = (str: string): string => {
+    if (!str) {
+      return '';
+    }
+    return str.replace(/\//g, '/&#8203;');
+  }
 
   //#region dnn-page picker dialog
 
@@ -111,24 +125,73 @@ export class HyperlinkDefaultComponent implements Field {
   //#endregion dnn page picker
 
   //#region new adam: callbacks only
-  registerAdam(adam) {
-    this.adam = adam;
-  }
 
   setValue(fileItem) {
-    this.setFormValue(this.config.name, `File:${fileItem.id}`);
+    console.log('setValue fileItem :', fileItem);
+    this.setFormValue(this.config.name, `File:${fileItem.Id}`);
   }
 
-  // afterUpload = setValue;   // binding for dropzone
-
-  toggleAdam(usePortalRoot, imagesOnly) {
-    console.log('toggle addam first:', usePortalRoot);
-    console.log('toggle addam second:', imagesOnly);
-    // this.adam.toggle({
-    //   showImagesOnly: imagesOnly,
-    //   usePortalRoot: usePortalRoot
-    // });
+  toggleAdam(usePortalRoot, showImagesOnly) {
+    console.log('toggleAdam hdefault');
+    this.config.adam.toggle({
+      showImagesOnly: showImagesOnly,
+      usePortalRoot: usePortalRoot
+    });
   }
 
-  //#endregion adam: callbacks only
+  /**
+ * subscribe to form value changes. Only this field change
+ *
+ */
+  private suscribeValueChanges() {
+    this.subscriptions.push(
+      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+        console.log('suscribeValueChanges CHANGE');
+        this.setLink(item);
+      })
+    );
+  }
+
+  /**
+   * Update test-link if necessary - both when typing or if link was set by dialogs
+   * @param value
+   */
+  private setLink(value: string) {
+    // const oldValue = this.value;
+    if (!value) {
+      return null;
+    }
+    // handle short-ID links like file:17
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig,
+      value,
+      this.config.header.contentTypeName,
+      this.config.header.guid,
+      this.config.name);
+
+    if (urlFromId$) {
+      this.subscriptions.push(
+        urlFromId$.subscribe((data) => {
+          if (data) {
+            this.link = data;
+          }
+        }));
+    } else {
+      this.link = value;
+    }
+  }
+
+  private attachAdam() {
+    if (this.config.adam) {
+      // callbacks - functions called from adam
+      this.config.adam.updateCallback = (value) => this.setValue(value);
+
+      // binding for dropzone
+      this.config.adam.afterUploadCallback = (value) => this.setValue(value);
+
+      // return value from form
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+    }
+  }
+
+  //#endregion
 }

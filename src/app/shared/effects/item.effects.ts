@@ -6,7 +6,6 @@ import { ItemService } from '../services/item.service';
 import * as itemActions from '../store/actions/item.actions';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ItemEffects {

@@ -1,7 +1,6 @@
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class ValidationMessagesService {

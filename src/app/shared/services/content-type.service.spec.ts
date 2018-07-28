@@ -1,13 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { StoreModule, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 
 import { ContentTypeService } from './content-type.service';
-import { JsonContentType1 } from '../models/json-format-v1';
 import { ContentType } from '../models/eav';
-import { AppState } from '../models/app-state';
 import { reducers } from '../../shared/store/reducers';
 
 import * as contentTypeTest1 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json';

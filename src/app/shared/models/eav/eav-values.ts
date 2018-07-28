@@ -1,7 +1,5 @@
 import { Value1 } from '../json-format-v1/value1';
-import { EavDimensions } from './eav-dimensions';
 import { EavValue } from './eav-value';
-import { EavAttributes } from './eav-attributes';
 
 export class EavValues<T> {
     values: EavValue<any>[];

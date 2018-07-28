@@ -1,4 +1,3 @@
-import { Value1 } from '../json-format-v1/value1';
 import { EavAttributes } from '.';
 import { EavValues } from './eav-values';
 

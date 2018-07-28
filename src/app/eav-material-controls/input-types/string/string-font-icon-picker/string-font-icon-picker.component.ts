@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { MatInput } from '@angular/material';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { startWith } from 'rxjs/operators/startWith';
 // import { map } from 'rxjs/operators/map';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
+import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
+import { Subscription } from 'rxjs/Subscription';
+import { map, startWith } from 'rxjs/operators';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,24 +20,49 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],
 })
-export class StringFontIconPickerComponent implements Field, OnInit {
+export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  // icons$: [{ rule: CSSStyleSheet, 'class': string }] = ;
   icons = [];
-  filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
+  // filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
+  filteredIcons: Observable<any>;
+  private subscriptions: Subscription[] = [];
 
-  ngOnInit() {
-    this.getIconClasses('.glyphicon-');
+  get files(): string {
+    return this.config.settings.Files ? this.config.settings.Files : '';
+  }
+
+  get prefix(): string {
+    return this.config.settings.CssPrefix ? this.config.settings.CssPrefix : '';
+  }
+
+  get previewCss(): string {
+    return this.config.settings.PreviewCss ? this.config.settings.PreviewCss : '';
   }
 
   get value() {
     return this.group.controls[this.config.name].value;
   }
 
-  setIcon(iconClass: any, formControlName: string) {
-    this.group.patchValue({ [formControlName]: iconClass });
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  constructor(private scriptLoaderService: ScriptLoaderService,
+    private validationMessagesService: ValidationMessagesService) { }
+
+  ngOnInit() {
+    this.loadAdditionalResources(this.files);
+    this.filteredIcons = this.getFilteredIcons();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  getErrorMessage() {
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
 
   getIconClasses(className) {
@@ -46,11 +73,8 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     }
 
     for (let ssSet = 0; ssSet < document.styleSheets.length; ssSet++) {
-      // const classes = document.styleSheets[ssSet].rules || document.styleSheets[ssSet].cssRules;
-      // TEMP: look only bootstrap-glyphicons.css
-      if ((<CSSStyleSheet>document.styleSheets[ssSet]).href === 'http://localhost:4200/assets/style/bootstrap-glyphicons.css') {
-        const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules;
-
+      try {
+        const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules || (<CSSStyleSheet>document.styleSheets[ssSet]).cssRules;
         if (classes) {
           for (let x = 0; x < classes.length; x++) {
             if ((<CSSStyleRule>classes[x]).selectorText && (<CSSStyleRule>classes[x]).selectorText.substring(0, charcount) === className) {
@@ -64,20 +88,66 @@ export class StringFontIconPickerComponent implements Field, OnInit {
             }
           }
         }
+      } catch (error) {
+        // try catch imortant because can't find CSSStyleSheet rules error
+        console.log('Icon picker CSSStyleSheet error: ', error);
       }
+      //   }
+      // }
     }
     // this.icons$ = foundList;
-    this.icons.push(...foundList);
-    // return foundList;
+    // this.icons.push(...foundList);
+    return foundList;
   }
 
-  // TODO: read CSS file
-  //   function loadAdditionalResources(files) {
-  //     files = files || "";
-  //     var mapped = files.replace("[App:Path]", appRoot)
-  //         .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
-  //         "$1/$2");
-  //     var fileList = mapped ? mapped.split("\n") : [];
-  //     return $ocLazyLoad.load(fileList);
-  // }
+  loadAdditionalResources(files: string) {
+    // const mapped = files.replace('[App:Path]', appRoot)
+    // TODO: App root read
+    const mapped = files.replace('[App:Path]', 'http://2sxc-dnn742.dnndev.me/Portals/0/2sxc/QR Code')
+      .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
+        '$1/$2');
+    const fileList = mapped ? mapped.split('\n') : [];
+
+    const scriptModelList: ScriptModel[] = [];
+    fileList.forEach((element, index) => {
+      const scriptModel: ScriptModel = {
+        name: element,
+        filePath: element,
+        loaded: false
+      };
+      scriptModelList.push(scriptModel);
+    });
+
+    this.scriptLoaderService.loadList(scriptModelList, 'css').subscribe(s => {
+      if (s !== null) {
+        this.icons = this.getIconClasses(this.prefix);
+      }
+    });
+  }
+
+  setIcon(iconClass: any, formControlName: string) {
+    this.group.patchValue({ [formControlName]: iconClass });
+  }
+
+  /**
+  *  with update on click trigger value change to open autocomplete
+  */
+  update() {
+    this.group.controls[this.config.name].patchValue(this.value);
+  }
+
+  private filterStates(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  private getFilteredIcons = () => {
+    return this.group.controls[this.config.name].valueChanges
+      .pipe(
+        startWith(''),
+        map(icon => icon ? this.filterStates(icon) : this.icons.slice())
+      );
+
+    // .map(state => state ? this.filterStates(state) : this.icons.slice());
+  }
 }

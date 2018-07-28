@@ -1,9 +1,9 @@
 import {
-  Component, OnInit, ElementRef, QueryList, ViewChildren, OnChanges, AfterViewChecked, ChangeDetectorRef, AfterContentChecked, OnDestroy
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { MatSnackBar } from '@angular/material';
 
@@ -15,13 +15,9 @@ import 'rxjs/add/operator/do';
 import { zip } from 'rxjs/observable/zip';
 import { of } from 'rxjs/observable/of';
 import { Subscription } from 'rxjs/Subscription';
-import * as fromStore from '../../shared/store';
-import * as itemActions from '../../shared/store/actions/item.actions';
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { Item, ContentType, Language } from '../../shared/models/eav';
+import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/services/content-type.service';
-import { ItemState } from '../../shared/store/reducers/item.reducer';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { UrlHelper } from '../../shared/helpers/url-helper';
 import { ItemService } from '../../shared/services/item.service';
@@ -30,6 +26,7 @@ import { LanguageService } from '../../shared/services/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
+import { EavConfiguration } from '../../shared/models/eav-configuration';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -51,20 +48,16 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   willPublish = false;     // default is won't publish, but will usually be overridden
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   enableDraft = false;
-  versioningOptions;
-  partOfPage;
 
   private subscriptions: Subscription[] = [];
-  private mid;
-  private cbid;
-  private tid;
+
+  private eavConfig: EavConfiguration;
 
   constructor(
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private languageService: LanguageService,
-    private router: Router,
     private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
@@ -76,6 +69,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
+
+    // Read configuration from queryString
+    this.eavService.setEavConfiguration(this.route);
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
@@ -133,22 +130,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  getVersioningOptions(partOfPage: boolean, publishing: string) {
-    if (!partOfPage) {
-      return { show: true, hide: true, branch: true };
-    }
 
-    const req = publishing || '';
-    switch (req) {
-      case '':
-      case 'DraftOptional': return { show: true, hide: true, branch: true };
-      case 'DraftRequired': return { branch: true, hide: true };
-      default: {
-        console.error('invalid versioning requiremenets: ' + req.toString());
-        return {};
-      }
-    }
-  }
 
   /**
    * close (remove) iframe window
@@ -170,37 +152,31 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * Load all data for forms
    */
   private loadData() {
-    const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
-    console.log('queryStringParameters', queryStringParameters);
 
-    const appid = queryStringParameters['appId'];
-    const mid = queryStringParameters['mid'];
-    const cbid = queryStringParameters['cbid'];
-    const tid = queryStringParameters['tid'];
-    const items = queryStringParameters['items'];
-    const lang = queryStringParameters['lang'];
-    const langs = queryStringParameters['langs'];
-    const langpri = queryStringParameters['langpri'];
+    this.setTranslateLanguage(this.eavConfig.lang);
 
-    this.mid = queryStringParameters['mid'];
-    this.cbid = queryStringParameters['cbid'];
-    this.tid = queryStringParameters['tid'];
-
-    this.setTranslateLanguage(lang);
-
-    this.partOfPage = queryStringParameters['partOfPage'];
-    const publishing = queryStringParameters['publishing'];
-    this.versioningOptions = this.getVersioningOptions(this.partOfPage, publishing);
-
-    this.languageService.loadLanguages(JSON.parse(langs), lang, langpri, 'en-us'); // UILanguage harcoded (for future usage)
+    this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs),
+      this.eavConfig.lang,
+      this.eavConfig.langpri,
+      'en-us'); // UILanguage harcoded (for future usage)
     this.subscriptions.push(
-      this.eavService.loadAllDataForForm(appid, tid, mid, cbid, items).subscribe(data => {
+      this.eavService.loadAllDataForForm(this.eavConfig).subscribe(data => {
         this.itemService.loadItems(data.Items);
         this.contentTypeService.loadContentTypes(data.ContentTypes);
         this.setPublishMode(data.Items);
       })
     );
   }
+
+  /**
+   * Read Eav Configuration
+   */
+  // private setEavConfiguration() {
+  //   const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
+  //   console.log('queryStringParameters', queryStringParameters);
+  //   // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
+  //   this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
+  // }
 
   /**
    * Set translate language of all forms
@@ -240,7 +216,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
               // TODO - build body from actions
               const body = `{"Items": ${JSON.stringify(allItems)}}`;
-              return this.eavService.savemany(actions[0].appId, this.tid, this.mid, this.cbid, body)
+              //  return this.eavService.savemany(actions[0].appId, this.eavConfiguration.tid, this.mid, this.cbid, body)
+              return this.eavService.savemany(this.eavConfig, body)
                 .map(data => this.eavService.saveItemSuccess(data));
               // .do(data => console.log('working'));
             })
@@ -346,9 +323,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     //   ? 'branch' // it's a branch, so it must have been saved as a draft-branch
     //   : items[0].entity.IsPublished ? 'show' : 'hide';
 
-    // if publis mode is prohibited, revert to default
-    if (!this.versioningOptions[this.publishMode]) {
-      this.publishMode = Object.keys(this.versioningOptions)[0];
+    // if publish mode is prohibited, revert to default
+    if (!this.eavConfig.versioningOptions[this.publishMode]) {
+      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
     }
   }
 }

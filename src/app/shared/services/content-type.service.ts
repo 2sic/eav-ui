@@ -4,9 +4,7 @@ import { ContentType } from '../models/eav/content-type';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { JsonContentType1 } from '../models/json-format-v1/json-content-type1';
-import { AppState } from '../models/app-state';
 
 import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
 import * as fromStore from '../store';

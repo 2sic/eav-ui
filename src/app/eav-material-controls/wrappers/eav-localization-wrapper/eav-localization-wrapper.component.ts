@@ -1,27 +1,20 @@
 import {
-  Component, Input, ViewChild, ViewContainerRef,
-  OnInit, EventEmitter, OnDestroy
+  Component, Input, ViewChild, ViewContainerRef, OnInit, OnDestroy
 } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatFormFieldControl } from '@angular/material/form-field';
-import { FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import {
-  EavValue, EavValues, Language, Item, EavDimensions,
-  EavAttributes, EavAttributesTranslated
+  EavValue, EavValues, Language, EavDimensions, EavAttributes
 } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../validators/validation-helper';
-import { Actions } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
-import * as fromItems from '../../../shared/store/actions/item.actions';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -49,8 +42,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService,
-    private itemService: ItemService,
-    private actions$: Actions) {
+    private itemService: ItemService) {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }
@@ -67,6 +59,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
+
     this.loadlanguagesFromStore();
   }
 
@@ -100,15 +93,13 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   linkToDefault(attributeKey: string) {
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   /**
@@ -143,8 +134,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       console.log(this.currentLanguage + ': Cant copy value from ' + copyFromLanguageKey + ' because that value does not exist.');
     }
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   onClickUseFrom(languageKey: string, attributeKey: string) {
@@ -154,8 +144,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+
+    this.refreshControlConfig(attributeKey);
   }
 
   onClickShareWith(languageKey: string, attributeKey: string) {
@@ -163,8 +153,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, false);
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   translateUnlinkAll() {
@@ -218,6 +207,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.trigger.closeMenu();
   }
 
+  private refreshControlConfig(attributeKey: string) {
+    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
+    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+  }
+
   /**
    * Subscribe triggered when changing all in menu (forAllFields)
    */
@@ -235,7 +230,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private subscribeToAttributeValues() {
     this.subscriptions.push(
       this.attributes$.subscribe(attributes => {
-        // console.log('subscribe attributes1 ', attributes);
         this.attributes = attributes;
       })
     );
@@ -245,20 +239,24 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
-        console.log('config on subscribeToCurrentLanguageFromStore', this.config);
-        this.translateAllConfiguration(currentLanguage);
-
-        this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
-        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+        this.translateAllConfiguration(this.currentLanguage);
+        this.refreshControlConfig(this.config.name);
       })
     );
   }
 
+
+
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(
       this.defaultLanguage$.subscribe(defaultLanguage => {
-        // console.log('subscribe defaultLanguage1', defaultLanguage);
+        console.log('[create] read default language', defaultLanguage);
         this.defaultLanguage = defaultLanguage;
+
+        this.translateAllConfiguration(this.currentLanguage);
+        this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
+        this.setAdamDisable();
+        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
       })
     );
   }
@@ -297,9 +295,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         this.group.controls[attributeKey].enable({ emitEvent: false });
       } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
         this.group.controls[attributeKey].disable({ emitEvent: false });
-        this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-          .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-          .join(', ');
       } else {
         this.group.controls[attributeKey].disable({ emitEvent: false });
       }
@@ -325,6 +320,17 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     } else {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.UseDefault';
+    }
+  }
+
+  /**
+   * Change adam disable state
+   * @param attributeKey
+   */
+  private setAdamDisable() {
+    // set Adam disabled state
+    if (this.config.adam) {
+      this.config.adam.disabled = this.group.controls[this.config.name].disabled;
     }
   }
 }

@@ -1,6 +1,7 @@
 .language-field {
     float: left;
     width: 100%;
+    min-height: 40px;
 }
 
  .eav-localization-lock {

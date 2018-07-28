@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, ValidationErrors } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   MatFormFieldModule,
   MatButtonModule,
@@ -17,6 +17,7 @@ import {
   MatMenuModule,
   MatTooltipModule,
   MatTabsModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import {
   CollapsibleWrapperComponent,
@@ -36,17 +37,23 @@ import {
   HyperlinkDefaultComponent,
   ExternalComponent
 } from './input-types';
-import { InputTypesConstants } from '../shared/constants';
-import { CustomValidators } from './validators/custom-validators';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { Field } from '../eav-dynamic-form/model/field';
 import { ErrorWrapperComponent } from './wrappers/field-parent-wrapper/error-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
+import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
+import { DropzoneComponent } from './adam/dropzone/dropzone.component';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { FilterPipe } from '../shared/pipes/filter.pipe';
+import { OrderByPipe } from '../shared/pipes/orderby.pipe';
+import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
+import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
+import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 
 @NgModule({
   declarations: [
@@ -70,10 +77,19 @@ import { TranslateModule } from '@ngx-translate/core';
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
     EavLanguageSwitcherComponent,
-    ExternalComponent
+    ExternalComponent,
+    AdamBrowserComponent,
+    AdamHintComponent,
+    DropzoneComponent,
+    FilterPipe,
+    OrderByPipe,
+    FileEndingFilterPipe,
+    ClickStopPropagationDirective,
+    HyperlinkLibraryComponent
   ],
   imports: [
     CommonModule,
+    DropzoneModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
@@ -92,6 +108,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     MatTooltipModule,
     MatTabsModule,
+    MatProgressSpinnerModule,
     TranslateModule.forChild()
   ],
   entryComponents: [
@@ -110,7 +127,9 @@ import { TranslateModule } from '@ngx-translate/core';
     CollapsibleWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
-    ExternalComponent
+    HyperlinkLibraryComponent,
+    ExternalComponent,
+    DropzoneComponent
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [FileTypeService, ValidationMessagesService]

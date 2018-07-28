@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
 
 import { ContentTypeService } from '../services/content-type.service';
 import * as contentTypeActions from '../store/actions/content-type.actions';
 import 'rxjs/add/operator/switchMap';
-import { ContentType } from '../models/eav/content-type';
 import * as fromContentType from '../store/actions/content-type.actions';
 
 @Injectable()

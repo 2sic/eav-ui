@@ -1,7 +1,6 @@
-import { FormControl } from '@angular/forms';
-import { EavValue, EavAttributes, Item, EavAttributesTranslated } from '../models/eav';
+
+import { EavValue, EavAttributes, EavAttributesTranslated } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
-import { EavDimensions } from '../models/eav/eav-dimensions';
 
 export class LocalizationHelper {
 
@@ -258,6 +257,7 @@ export class LocalizationHelper {
      * @param languageKey
      */
     public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
+        console.log('removeAttributeDimension: ', allAttributes);
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         const value: EavValue<any> = allAttributes[attributeKey].values.find(eavValue =>

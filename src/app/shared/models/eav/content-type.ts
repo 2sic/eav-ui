@@ -1,6 +1,5 @@
 import { ContentTypeDef } from './content-type-def';
 import { EavHeader } from './eav-header';
-import { JsonContentType1 } from '../json-format-v1/json-content-type1';
 import { JsonHeader1 } from '../json-format-v1';
 
 export class ContentType {

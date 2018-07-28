@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
-import * as fromItems from '../store/actions/item.actions';
+import { Actions } from '@ngrx/effects';
 
 import { EavService } from '../services/eav.service';
 // import * as itemActions from '../store/actions/item.actions';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class EavEffects {
