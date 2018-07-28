@@ -14,6 +14,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { Item } from '../../../../shared/models/eav';
 import { ItemService } from '../../../../shared/services/item.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,37 +34,38 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   chosenEntities: string[];
   // options: Item[];
   selectEntities: Observable<Item[]> = null;
+  // entities = [];
 
   private availableEntities: Item[] = [];
   private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
   private subscriptions: Subscription[] = [];
 
   get allowMultiValue() {
-    return this.config.settings.AllowMultiValue ? this.config.settings.AllowMultiValue.value : false;
+    return this.config.settings.AllowMultiValue || false;
   }
 
   get entityType() {
-    return this.config.settings.EntityType ? this.config.settings.EntityType.value : '';
+    return this.config.settings.EntityType || '';
   }
 
   get enableAddExisting() {
-    return this.config.settings.EnableAddExisting ? this.config.settings.EnableAddExisting.value : false;
+    return this.config.settings.EnableAddExisting || false;
   }
 
   get enableCreate() {
-    return this.config.settings.EnableCreate ? this.config.settings.EnableCreate.value : false;
+    return this.config.settings.EnableCreate || false;
   }
 
   get enableEdit() {
-    return this.config.settings.EnableEdit ? this.config.settings.EnableEdit.value : false;
+    return this.config.settings.EnableEdit || false;
   }
 
   get enableRemove() {
-    return this.config.settings.EnableRemove ? this.config.settings.EnableRemove.value : false;
+    return this.config.settings.EnableRemove || false;
   }
 
   get enableDelete() {
-    return this.config.settings.EnableDelete ? this.config.settings.EnableDelete.value : false;
+    return this.config.settings.EnableDelete || false;
   }
 
   constructor(private itemService: ItemService, private contenttypeService: ContentTypeService) {
@@ -75,10 +77,16 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   // }
 
   ngOnInit() {
-    console.log('ngOnInit EntityDefaultComponent');
+    console.log('[create]  ngOnInit EntityDefaultComponent', this.group.value);
     this.setChosenEntities();
 
     this.setAvailableEntities();
+    console.log('get config', this.config);
+    console.log('get allowMultiValue', this.allowMultiValue);
+    console.log('get enableAddExisting', this.enableAddExisting);
+
+    console.log('[create] OnInit EavFormComponent 2', this.group);
+    console.log('[create] OnInit EavFormComponent 3', this.group.value);
   }
 
   ngAfterViewInit() {
@@ -128,11 +136,12 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * set initial value and subscribe to form value changes
    */
   private setChosenEntities() {
-    this.chosenEntities = this.group.controls[this.config.name].value;
+    this.chosenEntities = []; // this.group.controls[this.config.name].value;
     this.subscriptions.push(
-      this.group.valueChanges.subscribe((item) => {
-        if (this.chosenEntities !== item[this.config.name]) {
-          this.chosenEntities = item[this.config.name];
+      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+        console.log('this.group.controls[this.config.name].valueChanges', item);
+        if (this.chosenEntities !== item) {
+          this.chosenEntities = item;
         }
       })
     );
@@ -146,6 +155,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // TODO: need write right service - this is only for testing
     this.subscriptions.push(
       this.itemService.selectAllItems().subscribe(items => {
+        console.log('availableEntities: ', items);
         this.availableEntities = [...items];
       })
     );
@@ -200,7 +210,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       // this.selectedValue = null;
       const entityValues: string[] = [...this.group.controls[this.config.name].value];
       entityValues.push(value);
-      this.group.patchValue({ [this.config.name]: entityValues });
+      this.group.controls[this.config.name].patchValue(entityValues);
+      // this.group.patchValue({ [this.config.name]: entityValues });
     }
   }
 

@@ -59,6 +59,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
+
     this.loadlanguagesFromStore();
   }
 
@@ -92,17 +93,13 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   linkToDefault(attributeKey: string) {
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage);
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   /**
@@ -137,9 +134,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       console.log(this.currentLanguage + ': Cant copy value from ' + copyFromLanguageKey + ' because that value does not exist.');
     }
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   onClickUseFrom(languageKey: string, attributeKey: string) {
@@ -149,9 +144,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+
+    this.refreshControlConfig(attributeKey);
   }
 
   onClickShareWith(languageKey: string, attributeKey: string) {
@@ -159,9 +153,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, false);
 
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
-    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+    this.refreshControlConfig(attributeKey);
   }
 
   translateUnlinkAll() {
@@ -215,6 +207,12 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.trigger.closeMenu();
   }
 
+  private refreshControlConfig(attributeKey: string) {
+    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
+    this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+  }
+
   /**
    * Subscribe triggered when changing all in menu (forAllFields)
    */
@@ -241,18 +239,24 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
-        this.translateAllConfiguration(currentLanguage);
-        this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
-        this.setAdamDisable();
-        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+        this.translateAllConfiguration(this.currentLanguage);
+        this.refreshControlConfig(this.config.name);
       })
     );
   }
 
+
+
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(
       this.defaultLanguage$.subscribe(defaultLanguage => {
+        console.log('[create] read default language', defaultLanguage);
         this.defaultLanguage = defaultLanguage;
+
+        this.translateAllConfiguration(this.currentLanguage);
+        this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
+        this.setAdamDisable();
+        this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
       })
     );
   }

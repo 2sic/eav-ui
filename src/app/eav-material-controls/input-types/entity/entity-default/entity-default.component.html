@@ -22,10 +22,10 @@
 
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
-
 <div *ngIf="enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1))">
   <mat-form-field [style.width]="'100%'">
-    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" (click)="setSelectEntitiesObservables()">
+    <!--(click)="setSelectEntitiesObservables()"  -->
+    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto">
 
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
       <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.entity.guid" [disabled]="isInChosenEntities(item.entity.guid)">

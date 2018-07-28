@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 // import { map } from 'rxjs/operators/map';
@@ -20,7 +20,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],
 })
-export class StringFontIconPickerComponent implements Field, OnInit {
+export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
   group: FormGroup;
 
@@ -55,6 +55,10 @@ export class StringFontIconPickerComponent implements Field, OnInit {
   ngOnInit() {
     this.loadAdditionalResources(this.files);
     this.filteredIcons = this.getFilteredIcons();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
   getErrorMessage() {
@@ -141,7 +145,7 @@ export class StringFontIconPickerComponent implements Field, OnInit {
     return this.group.controls[this.config.name].valueChanges
       .pipe(
         startWith(''),
-        map(state => state ? this.filterStates(state) : this.icons.slice())
+        map(icon => icon ? this.filterStates(icon) : this.icons.slice())
       );
 
     // .map(state => state ? this.filterStates(state) : this.icons.slice());

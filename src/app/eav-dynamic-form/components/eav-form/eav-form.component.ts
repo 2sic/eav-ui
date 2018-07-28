@@ -34,14 +34,12 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log('OnInit EavFormComponent');
     // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
 
     this.subscriptions.push(
       this.form.valueChanges.subscribe(val => {
         // if (this.form.valid) {
-
         // this.formErrors = this.FormService.validateForm(this.form, this.formErrors, true);
 
         this.formValueChange.emit(val);
@@ -51,6 +49,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges() {
     // console.log('ngOnChanges EavFormComponent');
+
   }
 
   ngOnDestroy() {
@@ -80,9 +79,8 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * @param config
    */
   private createControl(config: FieldConfig) {
-    const { disabled, validation, value } = config;
-    console.log('createControl', config);
-    console.log('createControl disabled', disabled);
+    // tslint:disable-next-line:prefer-const
+    let { disabled, validation, value } = config;
     return this.formBuilder.control({ disabled, value }, validation);
   }
 

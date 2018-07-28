@@ -107,7 +107,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param values key:value list of fields from form
    */
   formValueChange(values: { [key: string]: any }) {
-
     if (this.form.form.valid) {
       this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
     }
@@ -142,7 +141,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       this.eavService.triggerFormSetValueChange(formValues);
 
       if (this.form.valueIsChanged(formValues)) {
-        console.log('setFormValues valueIsChanged');
         // set new values to form
         this.form.patchValue(formValues, emit);
       }
