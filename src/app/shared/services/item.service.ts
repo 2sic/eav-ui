@@ -9,10 +9,12 @@ import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { EavAttributes, EavValue } from '../models/eav';
 
-import * as itemActions from '../../shared/store/actions/item.actions';
+import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
+import { EavConfiguration } from '../models/eav-configuration';
+import { UrlHelper } from '../helpers/url-helper';
 
 @Injectable()
 export class ItemService {
@@ -127,6 +129,35 @@ export class ItemService {
 
   public selectAllItems(): Observable<Item[]> {
     return this.store.select(fromStore.getItems);
+  }
+
+  /**
+   * get availableEntities - (used in entity-default input type)
+   * @param eavConfig
+   * @param body
+   * @param ctName
+   */
+  public getAvailableEntities(eavConfig: EavConfiguration, body: string, ctName: string): Observable<any> {
+    const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
+    console.log('body', body);
+    console.log('headers', header);
+    // maybe create model for data
+    return this.httpClient.post('/desktopmodules/2sxc/api/' + `eav/EntityPicker/getavailableentities`,
+      body,
+      {
+        headers: header,
+        params: {
+          contentTypeName: ctName,
+          appId: eavConfig.appId
+        }
+      }
+    ).pipe(
+      map((data: any) => {
+        return data;
+      }),
+      // tap(data => console.log('getAllDataForForm: ', data)),
+      catchError(error => this.handleError(error))
+    );
   }
 
   /**

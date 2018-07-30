@@ -16,6 +16,9 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { Item } from '../../../../shared/models/eav';
 import { ItemService } from '../../../../shared/services/item.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
+import { EavService } from '../../../../shared/services/eav.service';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -34,10 +37,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   chosenEntities: string[];
   // options: Item[];
-  selectEntities: Observable<Item[]> = null;
+  selectEntities: Observable<EntityInfo[]> = null;
   // entities = [];
 
-  private availableEntities: Item[] = [];
+  private availableEntities: EntityInfo[] = [];
   private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
   private subscriptions: Subscription[] = [];
 
@@ -69,7 +72,12 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     return this.config.settings.EnableDelete || false;
   }
 
-  constructor(private itemService: ItemService, private contenttypeService: ContentTypeService) {
+  private eavConfig: EavConfiguration;
+
+  constructor(private itemService: ItemService,
+    private eavService: EavService,
+    private contenttypeService: ContentTypeService) {
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   // ngDoCheck() {
@@ -104,29 +112,24 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     this.input.nativeElement.value = null;
   }
 
-  // TODO: to many detect changes ???
-  getEntityText = (entityId): string => {
-    // console.log('getEntityText', entityId);
-    if (entityId === null) {
+  getEntityText = (value): string => {
+    if (value === null) {
       return 'empty slot';
     }
-    const entities = this.availableEntities.filter(f => f.entity.guid === entityId);
+    const entities = this.availableEntities.filter(f => f.Value === value);
     if (entities.length > 0) {
-      // TODO: Need read which attribut is title !!! Harcoded 'name' for now.
-      if (entities[0].entity.attributes['Name']) {
-        return entities.length > 0 ? entities[0].entity.attributes['Name'].values[0].value :
-          this.entityTextDefault ? this.entityTextDefault : entityId;
-      }
+      return entities.length > 0 ? entities[0].Text :
+        this.entityTextDefault ? this.entityTextDefault : value;
     }
 
-    return entityId;
+    return value;
   }
 
   /**
    * Determine is entityID in chosenEntities
    */
-  isInChosenEntities = (entityID): boolean => {
-    if (this.chosenEntities.find(id => id === entityID)) {
+  isInChosenEntities = (value): boolean => {
+    if (this.chosenEntities.find(e => e === value)) {
       return true;
     }
 
@@ -137,10 +140,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * set initial value and subscribe to form value changes
    */
   private setChosenEntities() {
-    this.chosenEntities = []; // this.group.controls[this.config.name].value;
+    this.chosenEntities = this.group.controls[this.config.name].value || [];
     this.subscriptions.push(
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        console.log('this.group.controls[this.config.name].valueChanges', item);
         if (this.chosenEntities !== item) {
           this.chosenEntities = item;
         }
@@ -152,10 +154,23 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * TODO: select all entities from app
    */
   private setAvailableEntities() {
+    // TODO: const ctName = contentType.resolve(); // always get the latest definition, possibly from another drop-down
+    // TEMP: harcoded
+    const ctName = '';
+
+    // check if we should get all or only the selected ones...
+    // if we can't add, then we only need one...
+    let itemFilter = null;
+    try {
+      itemFilter = this.enableAddExisting
+        ? null
+        : this.group.controls[this.config.name].value;
+    } catch (err) { }
+
     // Temp
     // TODO: need write right service - this is only for testing
     this.subscriptions.push(
-      this.itemService.selectAllItems().subscribe(items => {
+      this.itemService.getAvailableEntities(this.eavConfig, itemFilter, ctName).subscribe(items => {
         console.log('availableEntities: ', items);
         this.availableEntities = [...items];
       })
@@ -192,15 +207,15 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   // TODO: change temp harcoded name
-  private filter(val: string): Item[] {
+  private filter(val: string): EntityInfo[] {
     if (val === '') {
       return this.availableEntities;
     }
 
     return this.availableEntities.filter(option =>
-      option.entity.attributes['Name'] ?
-        option.entity.attributes['Name'].values[0].value.toLowerCase().indexOf(val.toLowerCase()) === 0
-        : option.entity.guid.toLowerCase().indexOf(val.toLowerCase()) === 0);
+      option.Text ?
+        option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
+        : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
 
   /**
@@ -213,7 +228,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       const entityValues: string[] = [...this.group.controls[this.config.name].value];
       entityValues.push(value);
       this.group.controls[this.config.name].patchValue(entityValues);
-      // this.group.patchValue({ [this.config.name]: entityValues });
     }
   }
 
@@ -237,7 +251,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     const entityValues: string[] = [...this.group.controls[this.config.name].value];
     this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
 
-    this.setSelectEntitiesObservables();
+    // this.setSelectEntitiesObservables();
   }
 
   /**
