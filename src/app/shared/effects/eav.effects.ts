@@ -3,8 +3,6 @@ import { Actions } from '@ngrx/effects';
 
 import { EavService } from '../services/eav.service';
 // import * as itemActions from '../store/actions/item.actions';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class EavEffects {

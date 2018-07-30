@@ -10,7 +10,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
-import { environment } from '../environments/environment'; // Angular CLI environment
 import { metaReducers } from '../app/shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';

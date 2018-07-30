@@ -7,6 +7,4 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 })
 export class TextEntryWrapperComponent {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
-
 }

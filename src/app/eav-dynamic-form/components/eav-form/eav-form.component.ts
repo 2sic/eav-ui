@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, V
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
 import { FieldConfig } from '../../model/field-config';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   exportAs: 'appEavForm',
@@ -25,8 +25,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   form: FormGroup = new FormGroup({});
 
   private subscriptions: Subscription[] = [];
-  // get controls() { return this.config.filter(({ type }) => type !== 'button'); }
-  // get controls() { return this.config }
+
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
@@ -49,7 +48,6 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges() {
     // console.log('ngOnChanges EavFormComponent');
-
   }
 
   ngOnDestroy() {

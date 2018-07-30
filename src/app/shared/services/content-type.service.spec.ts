@@ -18,7 +18,6 @@ import * as contentTypeTest8 from '../../../assets/data/json-to-class-test/conte
 import * as contentTypeTest9 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test9.json';
 import * as contentTypeTest10 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test10.json';
 
-
 describe('ContentTypeService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({

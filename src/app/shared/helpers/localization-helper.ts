@@ -14,7 +14,6 @@ export class LocalizationHelper {
     //     };
     // }
 
-
     /**
      * get translated value for currentLanguage,
      * if not exist return default language translation,

@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { FileTypeConstants } from '../constants/file-type-constants';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchmap';
-import { Subject } from 'rxjs/Subject';
-import { of } from 'rxjs/observable/of';
-import { from } from 'rxjs/observable/from';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ObserveOnOperator } from 'rxjs/operators/observeOn';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SvcCreatorService {

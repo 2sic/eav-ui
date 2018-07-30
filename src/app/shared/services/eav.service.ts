@@ -1,27 +1,21 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/observable/throw';
+import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { ItemService } from './item.service';
 import { ContentTypeService } from './content-type.service';
 import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../../shared/store/actions/item.actions';
-// import * as eavActions from '../../shared/store/actions/eav.actions';
 import * as fromStore from '../store';
-import { Subject } from 'rxjs/Subject';
 import { EavConfiguration } from '../models/eav-configuration';
 
 
 @Injectable()
 export class EavService {
-
-  // public items$  Observable<Item[]>;
 
   // this formSetValueChangeSource observable is using in external components
   private formSetValueChangeSource = new Subject<{ [name: string]: any }>();
@@ -49,7 +43,7 @@ export class EavService {
 
   public loadAllDataForForm(eavConfig: EavConfiguration): Observable<any> {
     const body = JSON.stringify([{ 'EntityId': 3830 }]);
-    // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }, { 'EntityId': 3824 }]);
+    // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
     // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     //  const body = items;
     const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
@@ -58,11 +52,13 @@ export class EavService {
     // maybe create model for data
     return this.httpClient.post(`/desktopmodules/2sxc/api/eav/ui/load?appId=${eavConfig.appId}`,
       body, { headers: header })
-      .map((data: any) => {
-        return data;
-      })
-      // .do(data => console.log('getAllDataForForm: ', data))
-      .catch(this.handleError);
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+        // tap(data => console.log('getAllDataForForm: ', data)),
+        catchError(error => this.handleError(error))
+      );
   }
 
   public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string, defaultLanguage: string) {
@@ -95,12 +91,14 @@ export class EavService {
       `/desktopmodules/2sxc/api/eav/ui/save?appId=${eavConfiguration.appId}&partOfPage=${eavConfiguration.partOfPage}`,
       body,
       { headers: header })
-      .map((data: any) => {
-        console.log('return data');
-        return data;
-      })
-      .do(data => console.log('submit: ', data))
-      .catch(this.handleError);
+      .pipe(
+        map((data: any) => {
+          console.log('return data');
+          return data;
+        }),
+        tap(data => console.log('submit: ', data)),
+        catchError(error => this.handleError(error))
+      );
   }
 
 
@@ -126,6 +124,6 @@ export class EavService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return Observable.throw(errMsg);
+    return observableThrowError(errMsg);
   }
 }

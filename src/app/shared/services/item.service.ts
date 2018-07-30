@@ -1,20 +1,18 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { EavAttributes, EavValue } from '../models/eav';
-// import { ItemState } from '../store/reducers/item.reducer';
 
 import * as itemActions from '../../shared/store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
-// import { Subject } from 'rxjs/Rx';
 
 @Injectable()
 export class ItemService {
@@ -108,23 +106,23 @@ export class ItemService {
   public selectItemById(id: number): Observable<Item> {
     return this.store
       .select(fromStore.getItems)
-      .map(data => data.find(obj => obj.entity.id === id));
+      .pipe(map(data => data.find(obj => obj.entity.id === id)));
   }
 
   public selectAttributeByEntityId(entityId: number, attributeKey: string): Observable<EavValues<any>> {
     return this.store
       .select(fromStore.getItems)
-      .map(c => c.find(obj => obj.entity.id === entityId)
+      .pipe(map(c => c.find(obj => obj.entity.id === entityId)
         ? c.find(obj => obj.entity.id === entityId).entity.attributes[attributeKey]
-        : null);
+        : null));
   }
 
   public selectAttributesByEntityId(entityId: number): Observable<EavAttributes> {
     return this.store
       .select(fromStore.getItems)
-      .map(c => c.find(obj => obj.entity.id === entityId)
+      .pipe(map(c => c.find(obj => obj.entity.id === entityId)
         ? c.find(obj => obj.entity.id === entityId).entity.attributes
-        : null);
+        : null));
   }
 
   public selectAllItems(): Observable<Item[]> {
@@ -138,12 +136,14 @@ export class ItemService {
     // return this.httpClient.get<JsonItem1>('../../../assets/data/item-edit-form/item/json-item-v1-person.json')
     // return this.httpClient.get<JsonItem1>(`../../../assets/data/item-edit-form/item/json-item-v1-accordion.json`)
     return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
-      .map((item: JsonItem1) => {
-        console.log('kreiran item:', Item.create(item));
-        return Item.create(item);
-      })
-      // .do(data => console.log('getItemFromJsonItem1: ', data))
-      .catch(this.handleError);
+      .pipe(
+        map((item: JsonItem1) => {
+          console.log('kreiran item:', Item.create(item));
+          return Item.create(item);
+        }),
+        // tap(data => console.log('getItemFromJsonItem1: ', data)),
+        catchError(error => this.handleError(error))
+      );
   }
 
   /**
@@ -151,17 +151,19 @@ export class ItemService {
    */
   public getJsonItem1(path: string): Observable<JsonItem1> {
     return this.httpClient.get<JsonItem1>(`../../../assets/data/json-to-class-test/item/${path}`)
-      .map((item: JsonItem1) => {
-        return item;
-      })
-      // .do(data => console.log('getItemFromJsonItem1: ', data))
-      .catch(this.handleError);
+      .pipe(
+        map((item: JsonItem1) => {
+          return item;
+        }),
+        // tap(data => console.log('getItemFromJsonItem1: ', data)),
+        catchError(error => this.handleError(error))
+      );
   }
 
   private handleError(error: any) {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return Observable.throw(errMsg);
+    return observableThrowError(errMsg);
   }
 }

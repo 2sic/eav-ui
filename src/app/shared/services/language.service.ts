@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as languageActions from '../../shared/store/actions/language.actions';
 import * as fromStore from '../store';
 import { Language, Item } from '../models/eav';
-import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class LanguageService {
@@ -31,7 +31,7 @@ export class LanguageService {
 
   public selectLanguage(name: string) {
     return this.store.select(fromStore.getLanguages)
-      .map(data => data.find(obj => obj.name === name));
+      .pipe(map(data => data.find(obj => obj.name === name)));
   }
 
   public getCurrentLanguage() {

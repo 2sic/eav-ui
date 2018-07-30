@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
+
 import { AdamService } from '../adam.service';
-import { Observable } from 'rxjs/Observable';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { EavService } from '../../../shared/services/eav.service';

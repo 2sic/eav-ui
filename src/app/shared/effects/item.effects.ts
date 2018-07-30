@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import * as fromItems from '../store/actions/item.actions';
+import { map, switchMap } from 'rxjs/operators';
 
 import { ItemService } from '../services/item.service';
 import * as itemActions from '../store/actions/item.actions';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/catch';
+
+
 
 @Injectable()
 export class ItemEffects {
@@ -19,10 +20,10 @@ export class ItemEffects {
      */
     @Effect() loadItem$ = this.actions$
         .ofType(itemActions.LOAD_ITEM)
-        .switchMap((action: fromItems.LoadItemAction) => {
+        .pipe(switchMap((action: fromItems.LoadItemAction) => {
             return this.itemService.getItemFromJsonItem1(action.path)
-                .map(item => new itemActions.LoadItemSuccessAction(item));
-        });
+                .pipe(map(item => new itemActions.LoadItemSuccessAction(item)));
+        }));
 
 
     // @Effect() saveItem$ = this.actions$

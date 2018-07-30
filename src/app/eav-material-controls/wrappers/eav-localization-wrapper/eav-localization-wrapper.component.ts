@@ -1,15 +1,23 @@
 import {
-  Component, Input, ViewChild, ViewContainerRef, OnInit, OnDestroy
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import {
-  EavValue, EavValues, Language, EavDimensions, EavAttributes
+  EavAttributes,
+  EavDimensions,
+  EavValue,
+  EavValues,
+  Language
 } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
@@ -244,8 +252,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       })
     );
   }
-
-
 
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(

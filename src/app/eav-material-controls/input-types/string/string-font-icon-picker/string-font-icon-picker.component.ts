@@ -1,14 +1,12 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-// import { map } from 'rxjs/operators/map';
+import { Observable, Subscription } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
-import { Subscription } from 'rxjs/Subscription';
-import { map, startWith } from 'rxjs/operators';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({

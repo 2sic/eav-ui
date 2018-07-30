@@ -2,20 +2,14 @@ import {
   Component, ViewChild, OnInit, Input, OnChanges, OnDestroy, EventEmitter, Output
 } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { switchMap, filter } from 'rxjs/operators';
+import { Action } from '@ngrx/store';
 
 // TODO: fix this dependency - from other module - move maybe to shared
 import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 // TODO: fix this dependency
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/switchmap';
-import { filter } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
-
 import {
   Item, ContentType, EavAttributes, EavValues
 } from '../../shared/models/eav';
@@ -23,13 +17,11 @@ import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
 import { ContentTypeService } from '../../shared/services/content-type.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { Action } from '@ngrx/store';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -61,8 +53,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.itemBehaviorSubject$.getValue();
   }
 
-  // TODO: read default language
-  // private defaultLanguage = 'en-us';
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
@@ -159,23 +149,25 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
-      .switchMap((data) => {
-        const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
-        let currentFieldGroup = parentFieldGroup;
-        // loop through contentType attributes
-        data.contentType.attributes.forEach((attribute, index) => {
-          const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
-          // if input type is empty-default create new field group and than continue to add fields to that group
-          if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
-            const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
-            currentFieldGroup = this.createEmptyFieldGroup(attribute.name, collapsed);
-            parentFieldGroup.fieldGroup.push(currentFieldGroup);
-          } else {
-            currentFieldGroup.fieldGroup.push(formlyFieldConfig);
-          }
-        });
-        return of([parentFieldGroup]);
-      });
+      .pipe(
+        switchMap((data) => {
+          const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
+          let currentFieldGroup = parentFieldGroup;
+          // loop through contentType attributes
+          data.contentType.attributes.forEach((attribute, index) => {
+            const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
+            // if input type is empty-default create new field group and than continue to add fields to that group
+            if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
+              const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
+              currentFieldGroup = this.createEmptyFieldGroup(attribute.name, collapsed);
+              parentFieldGroup.fieldGroup.push(currentFieldGroup);
+            } else {
+              currentFieldGroup.fieldGroup.push(formlyFieldConfig);
+            }
+          });
+          return of([parentFieldGroup]);
+        })
+      );
   }
 
   // TEST

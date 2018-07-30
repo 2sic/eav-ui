@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { Observable, Observer, zip } from 'rxjs';
 
 import { FileTypeConstants } from '../constants/file-type-constants';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import { zip } from 'rxjs/observable/zip';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class ScriptLoaderService {

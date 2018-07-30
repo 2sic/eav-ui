@@ -1,7 +1,8 @@
 import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
-import { FormGroup } from '@angular/forms';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({

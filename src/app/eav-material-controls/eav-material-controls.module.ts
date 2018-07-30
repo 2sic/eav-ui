@@ -19,36 +19,37 @@ import {
   MatTabsModule,
   MatProgressSpinnerModule
 } from '@angular/material';
+import { TranslateModule } from '@ngx-translate/core';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+
 import {
   CollapsibleWrapperComponent,
   // FormFieldWrapperComponent
 } from './wrappers';
 import {
+  BooleanDefaultComponent,
+  DatetimeDefaultComponent,
+  EntityDefaultComponent,
+  EmptyDefaultComponent,
+  ExternalComponent,
+  HyperlinkDefaultComponent,
   StringDefaultComponent,
   StringUrlPathComponent,
   StringDropdownComponent,
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
-  BooleanDefaultComponent,
-  DatetimeDefaultComponent,
-  EmptyDefaultComponent,
-  NumberDefaultComponent,
-  EntityDefaultComponent,
-  HyperlinkDefaultComponent,
-  ExternalComponent
+  NumberDefaultComponent
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ErrorWrapperComponent } from './wrappers/field-parent-wrapper/error-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { DropzoneComponent } from './adam/dropzone/dropzone.component';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
@@ -59,33 +60,31 @@ import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-lib
   declarations: [
     // wrappers
     CollapsibleWrapperComponent,
-    // FormFieldWrapperComponent,
+    ErrorWrapperComponent,
+    TextEntryWrapperComponent,
     // types
     StringDefaultComponent,
-    // FormFieldWrapperComponent,
     StringUrlPathComponent,
     StringDropdownComponent,
     StringDropdownQueryComponent,
     StringFontIconPickerComponent,
     BooleanDefaultComponent,
-    TextEntryWrapperComponent,
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
     EavLocalizationComponent,
-    ErrorWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
-    EavLanguageSwitcherComponent,
     ExternalComponent,
     AdamBrowserComponent,
     AdamHintComponent,
     DropzoneComponent,
+    HyperlinkLibraryComponent,
+    EavLanguageSwitcherComponent,
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
     ClickStopPropagationDirective,
-    HyperlinkLibraryComponent
   ],
   imports: [
     CommonModule,

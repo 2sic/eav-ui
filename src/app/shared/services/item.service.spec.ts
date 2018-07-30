@@ -1,10 +1,10 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
+// import { Observable } from 'rxjs';
 import { Store, StoreModule } from '@ngrx/store';
 
-import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/map';
 
 import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';

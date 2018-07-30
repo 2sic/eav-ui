@@ -3,7 +3,6 @@ import { Action } from '@ngrx/store';
 import { Item } from '../../models/eav/item';
 import { EavAttributes, EavValue } from '../../models/eav';
 import { EavValues } from '../../models/eav/eav-values';
-import { EavDimensions } from '../../models/eav/eav-dimensions';
 
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';

@@ -1,7 +1,7 @@
 import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
 import { storeFreeze } from 'ngrx-store-freeze';
-import { environment } from '../../../../environments/environment';
 
+import { environment } from '../../../../environments/environment';
 import * as fromItems from './item.reducer';
 import * as fromContentType from './content-type.reducer';
 import * as fromLanguages from './language.reducer';

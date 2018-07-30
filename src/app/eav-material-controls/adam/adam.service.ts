@@ -1,6 +1,9 @@
+
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+
 import { UrlHelper } from '../../shared/helpers/url-helper';
 import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
@@ -54,12 +57,14 @@ export class AdamService {
             appId: this.eavConfig.appId
           }
         })
-        .map((data: any) => {
-          reload();
-          return data;
-        })
-        // .do(data => console.log('addFolder: ', data))
-        .catch(this.handleError);
+        .pipe(
+          map((data: any) => {
+            reload();
+            return data;
+          }),
+          tap(data => console.log('addFolder: ', data)),
+          catchError(error => this.handleError(error))
+        );
     };
 
     const goIntoFolder = (childFolder): string => {
@@ -115,12 +120,14 @@ export class AdamService {
             appId: this.eavConfig.appId
           }
         })
-        .map((data: any) => {
-          data.forEach(addFullPath);
-          return data;
-        })
-        .do(data => console.log('items subfolder: ', subfolder))
-        .catch(this.handleError);
+        .pipe(
+          map((data: any) => {
+            data.forEach(addFullPath);
+            return data;
+          }),
+          tap(data => console.log('items subfolder: ', subfolder)),
+          catchError(error => this.handleError(error))
+        );
     };
 
     // delete, then reload
@@ -139,12 +146,14 @@ export class AdamService {
             appId: this.eavConfig.appId
           }
         })
-        .map((data: any) => {
-          reload();
-          return data;
-        })
-        // .do(data => console.log('delete: ', data))
-        .catch(this.handleError);
+        .pipe(
+          map((data: any) => {
+            reload();
+            return data;
+          }),
+          // tap(data => console.log('delete: ', data))),
+          catchError(error => this.handleError(error))
+        );
     };
 
     // rename, then reload
@@ -163,12 +172,14 @@ export class AdamService {
             appId: this.eavConfig.appId
           }
         })
-        .map((data: any) => {
-          reload();
-          return data;
-        })
-        .do(data => console.log('rename: ', data))
-        .catch(this.handleError);
+        .pipe(
+          map((data: any) => {
+            reload();
+            return data;
+          }),
+          // tap(data => console.log('rename: ', data)),
+          catchError(error => this.handleError(error))
+        );
     };
 
     // get the correct url for uploading as it is needed by external services (dropzone)
@@ -210,6 +221,6 @@ export class AdamService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return Observable.throw(errMsg);
+    return observableThrowError(errMsg);
   }
 }

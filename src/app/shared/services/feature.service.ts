@@ -1,10 +1,11 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { throwError as observableThrowError, Observable, of } from 'rxjs';
+import { map, catchError, tap, switchMap } from 'rxjs/operators';
 
 import { UrlHelper } from '../helpers/url-helper';
 import { EavConfiguration } from '../models/eav-configuration';
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class FeatureService {
@@ -24,16 +25,18 @@ export class FeatureService {
                     appId: eavConfig.appId
                 }
             })
-            .map((data: any) => {
-                return data;
-            })
-            .do(data => console.log('features: ', data))
-            .catch(this.handleError);
+            .pipe(
+                map((data: any) => {
+                    return data;
+                }),
+                tap(data => console.log('features: ', data)),
+                catchError(error => this.handleError(error))
+            );
     }
 
     enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
         return this.getFeatures(eavConfig, url)
-            .switchMap(s => this.enabledNow(s, guid));
+            .pipe(switchMap(s => this.enabledNow(s, guid)));
     }
 
     private enabledNow = (list, guid): Observable<boolean> => {
@@ -49,6 +52,6 @@ export class FeatureService {
         // In a real world app, we might send the error to remote logging infrastructure
         const errMsg = error.message || 'Server error';
         console.error(errMsg);
-        return Observable.throw(errMsg);
+        return observableThrowError(errMsg);
     }
 }

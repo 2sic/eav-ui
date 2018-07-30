@@ -1,13 +1,16 @@
 import {
-  Component, OnInit, ViewChild, Input, ElementRef
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { FieldExternal } from '../../../../eav-dynamic-form/model/field-external';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-
-import { Subscription } from 'rxjs/Subscription';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
 
@@ -193,7 +196,6 @@ export class ExternalComponent implements FieldExternal, OnInit {
       // this.setAdamOptions();
     }
   }
-
 
   // private setAdamOptions() {
   //   // set Adam disabled state

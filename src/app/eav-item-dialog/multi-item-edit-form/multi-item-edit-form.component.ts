@@ -2,24 +2,17 @@ import {
   Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable, zip, of, Subscription } from 'rxjs';
+import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { MatSnackBar } from '@angular/material';
 
 import 'reflect-metadata';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import { zip } from 'rxjs/observable/zip';
-import { of } from 'rxjs/observable/of';
-import { Subscription } from 'rxjs/Subscription';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { UrlHelper } from '../../shared/helpers/url-helper';
 import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/services/language.service';
@@ -130,8 +123,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-
-
   /**
    * close (remove) iframe window
    */
@@ -206,7 +197,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
         this.subscriptions.push(
           zip(...this.formSaveAllObservables$)
-            .switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
+            .pipe(switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
               // actions[0].updateValues - every action have data from
               console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
               const allItems = [];
@@ -218,10 +209,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
               const body = `{"Items": ${JSON.stringify(allItems)}}`;
               //  return this.eavService.savemany(actions[0].appId, this.eavConfiguration.tid, this.mid, this.cbid, body)
               return this.eavService.savemany(this.eavConfig, body)
-                .map(data => this.eavService.saveItemSuccess(data));
-              // .do(data => console.log('working'));
-            })
-            .catch(err => of(this.eavService.saveItemError(err)))
+                .pipe(
+                  map(data => this.eavService.saveItemSuccess(data)),
+                  tap(data => console.log('working'))
+                );
+            }),
+              catchError(err => of(this.eavService.saveItemError(err)))
+            )
             .subscribe()
         );
       }

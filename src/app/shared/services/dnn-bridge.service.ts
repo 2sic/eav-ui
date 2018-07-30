@@ -1,8 +1,12 @@
+
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
+
 import { UrlHelper } from '../helpers/url-helper';
 import { EavConfiguration } from '../models/eav-configuration';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class DnnBridgeService {
@@ -25,11 +29,15 @@ export class DnnBridgeService {
         {
           headers: header,
         })
-        .map((data: any) => {
-          return data;
-        })
-        .do(data => console.log('features: ', data))
-        .catch(this.handleError);
+        .pipe(
+          map((data: any) => {
+            return data;
+          }),
+          tap(data => console.log('features: ', data)),
+          catchError(error => this.handleError(error))
+        );
+      // .do(data => console.log('features: ', data))
+      // .catch(this.handleError);
     } else {
       return null;
     }
@@ -39,6 +47,6 @@ export class DnnBridgeService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return Observable.throw(errMsg);
+    return observableThrowError(errMsg);
   }
 }

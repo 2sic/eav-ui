@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
+import { map, switchMap } from 'rxjs/operators';
 
 import { ContentTypeService } from '../services/content-type.service';
 import * as contentTypeActions from '../store/actions/content-type.actions';
-import 'rxjs/add/operator/switchMap';
+
 import * as fromContentType from '../store/actions/content-type.actions';
 
 @Injectable()
@@ -18,8 +19,8 @@ export class ContentTypeEffects {
      */
     @Effect() loadContentType$ = this.actions$
         .ofType(contentTypeActions.LOAD_CONTENT_TYPE)
-        .switchMap((action: fromContentType.LoadContentTypeAction) => {
+        .pipe(switchMap((action: fromContentType.LoadContentTypeAction) => {
             return this.contentTypeService.getContentTypeFromJsonContentType1(action.path)
-                .map(contentType => new contentTypeActions.LoadContentTypeSuccessAction(contentType));
-        });
+                .pipe(map(contentType => new contentTypeActions.LoadContentTypeSuccessAction(contentType)));
+        }));
 }

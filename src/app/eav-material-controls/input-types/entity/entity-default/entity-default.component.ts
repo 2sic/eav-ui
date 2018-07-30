@@ -1,12 +1,14 @@
 import {
-  Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/observable/fromEvent';
-import { merge } from 'rxjs/observable/merge';
+import { Observable, Subscription, merge, fromEvent } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
@@ -14,7 +16,6 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { Item } from '../../../../shared/models/eav';
 import { ItemService } from '../../../../shared/services/item.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
-import { map, startWith } from 'rxjs/operators';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -172,13 +173,14 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       const eventNames = ['keyup', 'click'];
       // Merge all observables into one single stream:
       const eventStreams = eventNames.map((eventName) => {
-        return Observable.fromEvent(this.input.nativeElement, eventName);
+        // return Observable.fromEvent(this.input.nativeElement, eventName);
+        return fromEvent(this.input.nativeElement, eventName);
       });
 
       const allEvents$ = merge(...eventStreams);
 
       this.selectEntities = allEvents$
-        .map((value: any) => this.filter(value.target.value));
+        .pipe(map((value: any) => this.filter(value.target.value)));
       // .do(value => console.log('test selectEntities', value));
     }
 
