@@ -137,17 +137,101 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   /**
+   * add entity to form
+   * @param value
+   */
+  addEntity(value: string) {
+    if (value) {
+      // this.selectedValue = null;
+      const entityValues: string[] = [...this.group.controls[this.config.name].value];
+      entityValues.push(value);
+      this.group.controls[this.config.name].patchValue(entityValues);
+    }
+  }
+
+  /**
+   *  open edit eav item dialog for item
+   * @param value
+   */
+  editEntity(value: string) {
+    console.log('TODO editEntity', value);
+
+    // TODO: filter entity Id from availableEntities (we have guid)
+    // Then open item edit:
+    // eavAdminDialogs.openItemEditWithEntityId(id, $scope.getAvailableEntities);
+  }
+
+  /**
+   * remove entity value from form
+   * @param value
+   */
+  removeEntity(value: string, index: number) {
+    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    entityValues.splice(index, 1);
+    // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
+    this.group.controls[this.config.name].patchValue(entityValues);
+  }
+
+  /**
+   * delete entity
+   * @param value
+   */
+  deleteEntity(value: string) {
+    console.log('TODO deleteEntity', value);
+
+
+    // TODO: filter entity Id from availableEntities (we have guid)
+    // Then delete entity item:
+    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
+    //  $scope.chosenEntities.splice(index, 1);
+    //  $scope.maybeReload(true);
+    // });
+  }
+
+  orderUp(value: string, index: number) {
+    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    entityValues.splice(index, 1);
+    entityValues.splice(index - 1, 0, ...[value]);
+    this.group.controls[this.config.name].patchValue(entityValues);
+  }
+
+  orderDown(value: string, index: number) {
+    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    entityValues.splice(index, 1);
+    entityValues.splice(index + 1, 0, ...[value]);
+    this.group.controls[this.config.name].patchValue(entityValues);
+  }
+
+  openNewEntityDialog() {
+    console.log('TODO openNewEntityDialog');
+
+    // open the dialog for a new item
+    // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
+  }
+
+  /**
    * set initial value and subscribe to form value changes
    */
   private setChosenEntities() {
     this.chosenEntities = this.group.controls[this.config.name].value || [];
+
     this.subscriptions.push(
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        if (this.chosenEntities !== item) {
-          this.chosenEntities = item;
-        }
+        this.updateChosenEntities(item);
       })
     );
+
+    this.subscriptions.push(
+      this.eavService.formSetValueChange$.subscribe((item) => {
+        this.updateChosenEntities(this.group.controls[this.config.name].value);
+      })
+    );
+  }
+
+  private updateChosenEntities(values: string[]) {
+    if (this.chosenEntities !== values) {
+      this.chosenEntities = values;
+    }
   }
 
   /**
@@ -167,11 +251,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         : this.group.controls[this.config.name].value;
     } catch (err) { }
 
-    // Temp
-    // TODO: need write right service - this is only for testing
     this.subscriptions.push(
       this.itemService.getAvailableEntities(this.eavConfig, itemFilter, ctName).subscribe(items => {
-        console.log('availableEntities: ', items);
         this.availableEntities = [...items];
       })
     );
@@ -218,61 +299,4 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
 
-  /**
-   * add entity to form
-   * @param value
-   */
-  addEntity(value: string) {
-    if (value) {
-      // this.selectedValue = null;
-      const entityValues: string[] = [...this.group.controls[this.config.name].value];
-      entityValues.push(value);
-      this.group.controls[this.config.name].patchValue(entityValues);
-    }
-  }
-
-  /**
-   *  open edit eav item dialog for item
-   * @param value
-   */
-  editEntity(value: string) {
-    console.log('TODO editEntity', value);
-
-    // TODO: filter entity Id from availableEntities (we have guid)
-    // Then open item edit:
-    // eavAdminDialogs.openItemEditWithEntityId(id, $scope.getAvailableEntities);
-  }
-
-  /**
-   * remove entity value from form
-   * @param value
-   */
-  removeEntity(value: string) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
-    this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
-
-    // this.setSelectEntitiesObservables();
-  }
-
-  /**
-   * delete entity
-   * @param value
-   */
-  deleteEntity(value: string) {
-    console.log('TODO deleteEntity', value);
-
-    // TODO: filter entity Id from availableEntities (we have guid)
-    // Then delete entity item:
-    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
-    //  $scope.chosenEntities.splice(index, 1);
-    //  $scope.maybeReload(true);
-    // });
-  }
-
-  openNewEntityDialog() {
-    console.log('TODO openNewEntityDialog');
-
-    // open the dialog for a new item
-    // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
-  }
 }

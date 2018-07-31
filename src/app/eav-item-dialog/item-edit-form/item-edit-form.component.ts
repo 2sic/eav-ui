@@ -128,12 +128,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
-      this.eavService.triggerFormSetValueChange(formValues);
-
       if (this.form.valueIsChanged(formValues)) {
         // set new values to form
         this.form.patchValue(formValues, emit);
       }
+      // important to be after patchValue
+      this.eavService.triggerFormSetValueChange(formValues);
     }
   }
 
