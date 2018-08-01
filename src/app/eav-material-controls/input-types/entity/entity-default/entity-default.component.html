@@ -4,24 +4,24 @@
     <p matLine>
       <!-- ng-show="!allowMultiValue" -->
       <!-- <i class="material-icons">check</i> -->
-      <!-- dont need any more title="FieldType.Entity.DragMove" -->
-      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
-      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
-      <span [title]="getEntityText(item)">{{ getEntityText(item) }}</span>
-      <button mat-icon-button *ngIf="enableEdit" type="button" (click)="editEntity(item)">
-        <i class="eav-icon-pencil"></i>
-      </button>
-      <button mat-icon-button *ngIf="enableRemove" type="button" (click)="removeEntity(item, i)">
-        <i class="{{allowMultiValue ? 'eav-icon-minus-circled' : 'eav-icon-down-dir'}}"></i>
-      </button>
-      <button mat-icon-button *ngIf="enableDelete" type="button" (click)="deleteEntity(item)">
-        <i class="eav-icon-cancel"></i>
-      </button>
-      <button mat-icon-button *ngIf="chosenEntities[0] !== item" type="button" (click)="orderUp(item, i)">
+      <button mat-icon-button *ngIf="allowMultiValue" [disabled]="chosenEntities[0] === item" type="button" (click)="levelUp(item, i)">
         <mat-icon class="mat-24">arrow_upward</mat-icon>
       </button>
-      <button mat-icon-button *ngIf="chosenEntities[chosenEntities.length - 1] !== item" type="button" (click)="orderDown(item, i)">
+      <button mat-icon-button *ngIf="allowMultiValue" [disabled]="chosenEntities[chosenEntities.length - 1] === item" type="button"
+        (click)="levelDown(item, i)">
         <mat-icon class="mat-24">arrow_downward</mat-icon>
+      </button>
+      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
+      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
+      <span [title]="getEntityText(item) + ' (' + item + ')'">{{ getEntityText(item) }}</span>
+      <button mat-icon-button *ngIf="enableEdit" type="button" (click)="edit(item)" title="{{ 'FieldType.Entity.Edit' | translate }}">
+        <i class="eav-icon-pencil"></i>
+      </button>
+      <button mat-icon-button *ngIf="enableRemove" type="button" (click)="removeSlot(item, i)" title="{{ 'FieldType.Entity.Remove' | translate }}">
+        <i class="{{allowMultiValue ? 'eav-icon-minus-circled' : 'eav-icon-down-dir'}}"></i>
+      </button>
+      <button mat-icon-button *ngIf="enableDelete" type="button" (click)="deleteItemInSlot(item)" title="{{ 'FieldType.Entity.Delete' | translate }}">
+        <i class="eav-icon-cancel"></i>
       </button>
     </p>
   </mat-list-item>

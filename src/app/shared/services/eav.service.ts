@@ -42,7 +42,8 @@ export class EavService {
   }
 
   public loadAllDataForForm(eavConfig: EavConfiguration): Observable<any> {
-    const body = JSON.stringify([{ 'EntityId': 3830 }]);
+    const body = JSON.stringify([{ 'EntityId': 3841 }]);
+    // const body = JSON.stringify([{ 'EntityId': 3830 }]);
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
     // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     //  const body = items;

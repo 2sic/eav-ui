@@ -19,6 +19,7 @@ import { ContentTypeService } from '../../../../shared/services/content-type.ser
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityService } from '../../../../shared/services/entity.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -74,7 +75,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   private eavConfig: EavConfiguration;
 
-  constructor(private itemService: ItemService,
+  constructor(private entityService: EntityService,
     private eavService: EavService,
     private contenttypeService: ContentTypeService) {
     this.eavConfig = this.eavService.getEavConfiguration();
@@ -153,7 +154,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    *  open edit eav item dialog for item
    * @param value
    */
-  editEntity(value: string) {
+  edit(value: string) {
     console.log('TODO editEntity', value);
 
     // TODO: filter entity Id from availableEntities (we have guid)
@@ -165,7 +166,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * remove entity value from form
    * @param value
    */
-  removeEntity(value: string, index: number) {
+  removeSlot(item: string, index: number) {
     const entityValues: string[] = [...this.group.controls[this.config.name].value];
     entityValues.splice(index, 1);
     // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
@@ -176,26 +177,60 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * delete entity
    * @param value
    */
-  deleteEntity(value: string) {
-    console.log('TODO deleteEntity', value);
+  deleteItemInSlot(item: string, index: number) {
+    console.log('TODO deleteEntity', item);
+    if (this.entityType === '') {
+      alert('delete not possible - no type specified in entity field configuration');
+      return;
+    }
 
-
+    const entities: EntityInfo[] = this.availableEntities.filter(f => f.Value === item);
+    const id = entities[0].Id;
+    const text = entities[0].Text;
+    // TODO:
+    const contentTypeTemp = this.entityType; // contentType.resolve()
     // TODO: filter entity Id from availableEntities (we have guid)
     // Then delete entity item:
     // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
     //  $scope.chosenEntities.splice(index, 1);
     //  $scope.maybeReload(true);
     // });
+    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
+    //   this.chosenEntities.splice(index, 1);
+
+    // });
+
+    // this.subscriptions.push(
+    // this.entityService.tryDeleteAndAskForce(this.eavConfig, contentTypeTemp, id, text)
+    // );s
+
+
+    console.log('tryDeleteAndAskForce');
+    this.entityService.delete(this.eavConfig, contentTypeTemp, id, false).subscribe(result => {
+      console.log('notAskForceDelete', result);
+      if (result === null && result.status >= 200 && result.status < 300) {
+        console.log('is in first');
+        // TODO: make message
+        this.removeSlot(item, index);
+      } else {
+        // TODO: message success
+        this.entityService.delete(this.eavConfig, contentTypeTemp, id, true).subscribe(items => {
+          this.removeSlot(item, index);
+          // TODO: refresh avalable entities
+        });
+      }
+
+    });
   }
 
-  orderUp(value: string, index: number) {
+  levelUp(value: string, index: number) {
     const entityValues: string[] = [...this.group.controls[this.config.name].value];
     entityValues.splice(index, 1);
     entityValues.splice(index - 1, 0, ...[value]);
     this.group.controls[this.config.name].patchValue(entityValues);
   }
 
-  orderDown(value: string, index: number) {
+  levelDown(value: string, index: number) {
     const entityValues: string[] = [...this.group.controls[this.config.name].value];
     entityValues.splice(index, 1);
     entityValues.splice(index + 1, 0, ...[value]);
@@ -240,7 +275,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   private setAvailableEntities() {
     // TODO: const ctName = contentType.resolve(); // always get the latest definition, possibly from another drop-down
     // TEMP: harcoded
-    const ctName = '';
+    const ctName = this.entityType;
 
     // check if we should get all or only the selected ones...
     // if we can't add, then we only need one...
@@ -251,11 +286,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         : this.group.controls[this.config.name].value;
     } catch (err) { }
 
-    this.subscriptions.push(
-      this.itemService.getAvailableEntities(this.eavConfig, itemFilter, ctName).subscribe(items => {
-        this.availableEntities = [...items];
-      })
-    );
+    // this.subscriptions.push(
+    this.entityService.getAvailableEntities(this.eavConfig, itemFilter, ctName).subscribe(items => {
+      this.availableEntities = [...items];
+    });
+    // );
 
     // TODO: availableEntities can be title, guid and id only - map observables to that
     // this.contenttypeService.getTitleAttribute(this.config.type)
@@ -287,7 +322,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     }
   }
 
-  // TODO: change temp harcoded name
   private filter(val: string): EntityInfo[] {
     if (val === '') {
       return this.availableEntities;

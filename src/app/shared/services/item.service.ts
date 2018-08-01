@@ -131,34 +131,6 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-  /**
-   * get availableEntities - (used in entity-default input type)
-   * @param eavConfig
-   * @param body
-   * @param ctName
-   */
-  public getAvailableEntities(eavConfig: EavConfiguration, body: string, ctName: string): Observable<any> {
-    const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
-    console.log('body', body);
-    console.log('headers', header);
-    // maybe create model for data
-    return this.httpClient.post('/desktopmodules/2sxc/api/' + `eav/EntityPicker/getavailableentities`,
-      body,
-      {
-        headers: header,
-        params: {
-          contentTypeName: ctName,
-          appId: eavConfig.appId
-        }
-      }
-    ).pipe(
-      map((data: any) => {
-        return data;
-      }),
-      // tap(data => console.log('getAllDataForForm: ', data)),
-      catchError(error => this.handleError(error))
-    );
-  }
 
   /**
    * Get Item from Json Entity V1
