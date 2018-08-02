@@ -79,8 +79,6 @@ export class AdamService {
       childFolder.Subfolder = subPath;
       // now assemble the correct subfolder based on the folders-array
       subfolder = subPath;
-      // TODO:
-      // this.liveListReload();
 
       reload();
 
@@ -96,8 +94,6 @@ export class AdamService {
       } else {
         subfolder = '';
       }
-      // TODO:
-      // this.liveListReload();
       reload();
       return subfolder;
     };
@@ -199,7 +195,6 @@ export class AdamService {
 
     svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));
 
-    // TODO:
     const reload = () => svc.liveListReload();
 
     return svc;

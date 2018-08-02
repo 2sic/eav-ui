@@ -5,8 +5,6 @@ import { Store } from '@ngrx/store';
 import { throwError as observableThrowError, Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
-import { EavConfiguration } from '../models/eav-configuration';
-import { UrlHelper } from '../helpers/url-helper';
 import { UrlConstants } from '../constants/url-constants';
 
 @Injectable()
@@ -39,18 +37,6 @@ export class EntityService {
       catchError(error => this.handleError(error))
     );
   }
-
-  // public tryDeleteAndAskForce(eavConfig: EavConfiguration, contentTypeTemp: string, id: string, text: string): boolean {
-  //   console.log('tryDeleteAndAskForce');
-  //   const notAskForceDelete: Observable<any> = this.delete(eavConfig, contentTypeTemp, id, false);
-  //   console.log('notAskForceDelete', notAskForceDelete);
-  //   if (notAskForceDelete === empty()) {
-  //     console.log('is in');
-  //     return this.delete(eavConfig, contentTypeTemp, id, true);
-  //   }
-  //   console.log('not in');
-  //   return notAskForceDelete;
-  // }
 
   public delete(appId: string, type: string, id: string, tryForce: boolean): Observable<any> {
     console.log('GET delete method:');

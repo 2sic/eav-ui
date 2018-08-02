@@ -13,8 +13,6 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
-import { EavConfiguration } from '../models/eav-configuration';
-import { UrlHelper } from '../helpers/url-helper';
 
 @Injectable()
 export class ItemService {

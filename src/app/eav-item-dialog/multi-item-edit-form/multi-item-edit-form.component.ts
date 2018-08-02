@@ -61,7 +61,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
-    console.log('read multi FORM');
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -149,7 +148,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.eavConfig.langpri,
       'en-us'); // UILanguage harcoded (for future usage)
     this.subscriptions.push(
-      this.eavService.loadAllDataForForm(this.eavConfig).subscribe(data => {
+      this.eavService.loadAllDataForForm(this.eavConfig.appId).subscribe(data => {
         this.itemService.loadItems(data.Items);
         this.contentTypeService.loadContentTypes(data.ContentTypes);
         this.setPublishMode(data.Items);
@@ -195,23 +194,21 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
         this.subscriptions.push(
           zip(...this.formSaveAllObservables$)
-            .pipe(switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
-              // actions[0].updateValues - every action have data from
-              console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
-              const allItems = [];
-              actions.forEach(action => {
-                allItems.push(JsonItem1.create(action.item));
-              });
+            .pipe(
+              switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
+                console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
+                const allItems = [];
+                actions.forEach(action => {
+                  allItems.push(JsonItem1.create(action.item));
+                });
 
-              // TODO - build body from actions
-              const body = `{"Items": ${JSON.stringify(allItems)}}`;
-              //  return this.eavService.savemany(actions[0].appId, this.eavConfiguration.tid, this.mid, this.cbid, body)
-              return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, body)
-                .pipe(
-                  map(data => this.eavService.saveItemSuccess(data)),
-                  tap(data => console.log('working'))
-                );
-            }),
+                const body = `{"Items": ${JSON.stringify(allItems)}}`;
+                return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, body)
+                  .pipe(
+                    map(data => this.eavService.saveItemSuccess(data)),
+                    tap(data => console.log('working'))
+                  );
+              }),
               catchError(err => of(this.eavService.saveItemError(err)))
             )
             .subscribe()

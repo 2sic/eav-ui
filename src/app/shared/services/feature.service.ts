@@ -5,7 +5,6 @@ import { throwError as observableThrowError, Observable, of } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 
 import { UrlHelper } from '../helpers/url-helper';
-import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
 
 @Injectable()
@@ -30,8 +29,8 @@ export class FeatureService {
             );
     }
 
-    enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
-        return this.getFeatures(eavConfig.appId, url)
+    enabled = (guid: string, appId: string, url: string): Observable<boolean> => {
+        return this.getFeatures(appId, url)
             .pipe(switchMap(s => this.enabledNow(s, guid)));
     }
 

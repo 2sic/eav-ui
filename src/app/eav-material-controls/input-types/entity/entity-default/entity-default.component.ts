@@ -193,7 +193,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     console.log('tryDeleteAndAskForce');
     this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, false).subscribe(result => {
       console.log('notAskForceDelete', result);
-      if (result === null && result.status >= 200 && result.status < 300) {
+      if (result === null || result.status >= 200 && result.status < 300) {
         console.log('is in first');
         // TODO: make message
         this.removeSlot(item, index);
