@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
@@ -10,7 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
-import { metaReducers } from '../app/shared/store';
+import { metaReducers } from './shared/store';
 import { LanguageService } from './shared/services/language.service';
 import { ScriptLoaderService } from './shared/services/script.service';
 import { EavService } from './shared/services/eav.service';
@@ -26,6 +26,7 @@ import { SvcCreatorService } from './shared/services/svc-creator.service';
 import { FeatureService } from './shared/services/feature.service';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
+import { HeaderInterceptor } from './shared/interceptors/interceptors';
 
 // const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 //   // Change this to your upload POST address:
@@ -89,7 +90,12 @@ export function createTranslateLoader(http: HttpClient) {
     SvcCreatorService,
     FeatureService,
     DnnBridgeService,
-    EntityService
+    EntityService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeaderInterceptor,
+      multi: true
+    },
     // {
     //   provide: DROPZONE_CONFIG,
     //   useValue: DEFAULT_DROPZONE_CONFIG

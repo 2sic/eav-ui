@@ -7,7 +7,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 
 import { ContentType } from '../models/eav/content-type';
 import { JsonContentType1 } from '../models/json-format-v1/json-content-type1';
-import * as contentTypeActions from '../../shared/store/actions/content-type.actions';
+import * as contentTypeActions from '../store/actions/content-type.actions';
 import * as fromStore from '../store';
 import { AttributeDef } from '../models/eav/attribute-def';
 

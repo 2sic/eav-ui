@@ -5,7 +5,7 @@ import { StoreModule, Store } from '@ngrx/store';
 
 import { ContentTypeService } from './content-type.service';
 import { ContentType } from '../models/eav';
-import { reducers } from '../../shared/store/reducers';
+import { reducers } from '../store/reducers';
 
 import * as contentTypeTest1 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test1.json';
 import * as contentTypeTest2 from '../../../assets/data/json-to-class-test/content-type/json-content-type-v1-test2.json';

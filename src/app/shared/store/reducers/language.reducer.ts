@@ -1,4 +1,4 @@
-import * as fromLanguages from './../actions/language.actions';
+import * as fromLanguages from '../actions/language.actions';
 import { Language } from '../../models/eav/language';
 
 

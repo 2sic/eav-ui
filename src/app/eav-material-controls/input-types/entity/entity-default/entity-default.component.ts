@@ -187,26 +187,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     const entities: EntityInfo[] = this.availableEntities.filter(f => f.Value === item);
     const id = entities[0].Id;
     const text = entities[0].Text;
-    // TODO:
+    // TODO:contentType.resolve()
     const contentTypeTemp = this.entityType; // contentType.resolve()
-    // TODO: filter entity Id from availableEntities (we have guid)
     // Then delete entity item:
-    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
-    //  $scope.chosenEntities.splice(index, 1);
-    //  $scope.maybeReload(true);
-    // });
-    // entitiesSvc.tryDeleteAndAskForce(contentType.resolve(), id, entities[0].Text).then(function () {
-    //   this.chosenEntities.splice(index, 1);
-
-    // });
-
-    // this.subscriptions.push(
-    // this.entityService.tryDeleteAndAskForce(this.eavConfig, contentTypeTemp, id, text)
-    // );s
-
-
     console.log('tryDeleteAndAskForce');
-    this.entityService.delete(this.eavConfig, contentTypeTemp, id, false).subscribe(result => {
+    this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, false).subscribe(result => {
       console.log('notAskForceDelete', result);
       if (result === null && result.status >= 200 && result.status < 300) {
         console.log('is in first');
@@ -214,7 +199,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         this.removeSlot(item, index);
       } else {
         // TODO: message success
-        this.entityService.delete(this.eavConfig, contentTypeTemp, id, true).subscribe(items => {
+        this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, true).subscribe(items => {
           this.removeSlot(item, index);
           // TODO: refresh avalable entities
         });
@@ -287,7 +272,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     } catch (err) { }
 
     // this.subscriptions.push(
-    this.entityService.getAvailableEntities(this.eavConfig, itemFilter, ctName).subscribe(items => {
+    this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
       this.availableEntities = [...items];
     });
     // );

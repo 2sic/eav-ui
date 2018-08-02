@@ -51,7 +51,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private languageService: LanguageService,
-    private route: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private actions$: Actions,
     private snackBar: MatSnackBar,
@@ -62,9 +61,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
-
+    console.log('read multi FORM');
     // Read configuration from queryString
-    this.eavService.setEavConfiguration(this.route);
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -208,7 +206,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
               // TODO - build body from actions
               const body = `{"Items": ${JSON.stringify(allItems)}}`;
               //  return this.eavService.savemany(actions[0].appId, this.eavConfiguration.tid, this.mid, this.cbid, body)
-              return this.eavService.savemany(this.eavConfig, body)
+              return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, body)
                 .pipe(
                   map(data => this.eavService.saveItemSuccess(data)),
                   tap(data => console.log('working'))

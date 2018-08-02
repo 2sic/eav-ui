@@ -29,7 +29,6 @@ export class ItemService {
   //   this.store.dispatch(new itemActions.LoadDataAction(path));
   // }
 
-
   public loadItem(path: string) {
     this.store.dispatch(new itemActions.LoadItemAction(path));
   }
@@ -131,7 +130,6 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-
   /**
    * Get Item from Json Entity V1
    */
@@ -141,7 +139,6 @@ export class ItemService {
     return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
       .pipe(
         map((item: JsonItem1) => {
-          console.log('kreiran item:', Item.create(item));
           return Item.create(item);
         }),
         // tap(data => console.log('getItemFromJsonItem1: ', data)),

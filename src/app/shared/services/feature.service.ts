@@ -6,6 +6,7 @@ import { map, catchError, tap, switchMap } from 'rxjs/operators';
 
 import { UrlHelper } from '../helpers/url-helper';
 import { EavConfiguration } from '../models/eav-configuration';
+import { UrlConstants } from '../constants/url-constants';
 
 @Injectable()
 export class FeatureService {
@@ -13,16 +14,11 @@ export class FeatureService {
     constructor(private httpClient: HttpClient) {
     }
 
-    public getFeatures(eavConfig: EavConfiguration, url: string): Observable<any> {
-        console.log('GET getFeatures:');
-        // TODO:
-        const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
-
-        return this.httpClient.get('/desktopmodules/2sxc/api/eav/system/features',
+    public getFeatures(appId: string, url: string): Observable<any> {
+        return this.httpClient.get(`${UrlConstants.apiRoot}eav/system/features`,
             {
-                headers: header,
                 params: {
-                    appId: eavConfig.appId
+                    appId: appId
                 }
             })
             .pipe(
@@ -35,7 +31,7 @@ export class FeatureService {
     }
 
     enabled = (guid: string, eavConfig: EavConfiguration, url: string): Observable<boolean> => {
-        return this.getFeatures(eavConfig, url)
+        return this.getFeatures(eavConfig.appId, url)
             .pipe(switchMap(s => this.enabledNow(s, guid)));
     }
 

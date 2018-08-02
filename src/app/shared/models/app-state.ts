@@ -1,5 +1,5 @@
-import { Item } from '../models/eav/item';
-import { ContentType } from '../models/eav/content-type';
+import { Item } from './eav/item';
+import { ContentType } from './eav/content-type';
 
 export class AppState {
     items: Item[];

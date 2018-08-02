@@ -7,6 +7,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlHelper } from '../helpers/url-helper';
+import { UrlConstants } from '../constants/url-constants';
 
 @Injectable()
 export class EntityService {
@@ -16,20 +17,18 @@ export class EntityService {
 
   /**
    * get availableEntities - (used in entity-default input type)
-   * @param eavConfig
+   * @param apiId
    * @param body
    * @param ctName
    */
-  public getAvailableEntities(eavConfig: EavConfiguration, body: string, ctName: string): Observable<any> {
-    const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
+  public getAvailableEntities(apiId: string, body: string, ctName: string): Observable<any> {
     // maybe create model for data
-    return this.httpClient.post('/desktopmodules/2sxc/api/' + `eav/EntityPicker/getavailableentities`,
+    return this.httpClient.post(`${UrlConstants.apiRoot}eav/EntityPicker/getavailableentities`,
       body,
       {
-        headers: header,
         params: {
           contentTypeName: ctName,
-          appId: eavConfig.appId
+          appId: apiId
         }
       }
     ).pipe(
@@ -53,19 +52,15 @@ export class EntityService {
   //   return notAskForceDelete;
   // }
 
-  public delete(eavConfig: EavConfiguration, type: string, id: string, tryForce: boolean): Observable<any> {
+  public delete(appId: string, type: string, id: string, tryForce: boolean): Observable<any> {
     console.log('GET delete method:');
-    // TODO:
-    const header = UrlHelper.createHeader(eavConfig.tid, eavConfig.mid, eavConfig.cbid);
-
-    return this.httpClient.get('/desktopmodules/2sxc/api/' + 'eav/entities/delete',
+    return this.httpClient.get(`${UrlConstants.apiRoot}eav/entities/delete`,
       {
-        headers: header,
         // ignoreErrors: 'true',
         params: {
           'contentType': type,
           'id': id,
-          'appId': eavConfig.appId,
+          'appId': appId,
           'force': tryForce.toString()
         }
       })

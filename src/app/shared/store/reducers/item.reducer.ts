@@ -1,5 +1,5 @@
 import { Item } from '../../models/eav/item';
-import * as fromItems from './../actions/item.actions';
+import * as fromItems from '../actions/item.actions';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 
 // export interface ItemState {

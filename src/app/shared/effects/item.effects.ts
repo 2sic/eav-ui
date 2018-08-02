@@ -34,15 +34,5 @@ export class ItemEffects {
     //     })
     //     .catch(err => (Observable.of(new itemActions.SaveItemAttributesValuesErrorAction(err))));
 
-
-    //         @Effect() addStory$ = this.actions$
-    //   .ofType(ADD_STORY)
-    //   .switchMap(action =>
-    //     this.storyService.add(action.payload)
-    //     .switchMap(story => (Observable.from([{
-    //       type: 'ADD_STORY_SUCCESS'
-    //     }, formSuccessAction('newStory')])))
-    //     .catch(err => (Observable.of(formErrorAction('newStory', err))))
-    //   )
 }
 
