@@ -20,6 +20,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,6 +45,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   private availableEntities: EntityInfo[] = [];
   private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
   private subscriptions: Subscription[] = [];
+  private eavConfig: EavConfiguration;
 
   get allowMultiValue() {
     return this.config.settings.AllowMultiValue || false;
@@ -74,17 +76,25 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   get disabled() {
-    console.log('this.group.controls[this.config.name].disabled', this.group.controls[this.config.name].disabled);
     return this.group.controls[this.config.name].disabled;
   }
 
-  private eavConfig: EavConfiguration;
+  get inputInvalid() {
+    return this.group.controls[this.config.name].invalid;
+  }
+
+  getErrorMessage() {
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
+  }
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
-    private contenttypeService: ContentTypeService) {
+    private contenttypeService: ContentTypeService,
+    private validationMessagesService: ValidationMessagesService) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
+
+
 
   // ngDoCheck() {
   //   console.log('DoCheck', this.config.label);

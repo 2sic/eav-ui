@@ -33,30 +33,28 @@
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
 <div *ngIf="enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1))">
-  <mat-form-field [style.width]="'100%'">
-    <!--(click)="setSelectEntitiesObservables()"  -->
-    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" [disabled]="disabled">
+  <mat-form-field [style.width]="'100%'" [formGroup]="group">
 
+    <!--(click)="setSelectEntitiesObservables()"  -->
+    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" [disabled]="disabled"
+      [placeholder]="config.label" [required]="config.required">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
       <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value" [disabled]="isInChosenEntities(item.Value)">
         <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
       </mat-option>
     </mat-autocomplete>
+    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
   </mat-form-field>
-  <!--  <ui-select-no-choice class="bg-warning">
-        <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span>
-        <span ng-if="error">{{error}}</span>
-      </ui-select-no-choice>
-    </ui-select> -->
+  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  <!-- <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span> -->
 </div>
-
 <!-- create new entity to add to this list -->
 <button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)" type="button"
   (click)="openNewEntityDialog()" [disabled]="disabled">
   <i class="eav-icon-plus"></i>
 </button>
 
-<!-- Do we need this ??? -->
+<!-- TODO: Do we need this ??? -->
 <!-- handle free text mode -->
 <!-- <input ng-show="modes.freeTextMode" class="form-control input-material material" ng-model="value.Value" formly-skip-ng-model-attrs-manipulator
   type="text">
