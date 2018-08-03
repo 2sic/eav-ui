@@ -13,8 +13,6 @@ import { map, startWith } from 'rxjs/operators';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { Item } from '../../../../shared/models/eav';
-import { ItemService } from '../../../../shared/services/item.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';

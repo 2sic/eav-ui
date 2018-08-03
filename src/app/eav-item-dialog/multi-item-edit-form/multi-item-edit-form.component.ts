@@ -20,6 +20,7 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
+import { InputTypeService } from '../../shared/services/input-type.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -48,6 +49,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   constructor(
     private itemService: ItemService,
+    private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private languageService: LanguageService,
@@ -150,6 +152,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(
       this.eavService.loadAllDataForForm(this.eavConfig.appId).subscribe(data => {
         this.itemService.loadItems(data.Items);
+        this.inputTypeService.loadInputTypes(data.InputTypes);
         this.contentTypeService.loadContentTypes(data.ContentTypes);
         this.setPublishMode(data.Items);
       })
