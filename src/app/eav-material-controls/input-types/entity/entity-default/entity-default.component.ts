@@ -73,6 +73,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     return this.config.settings.EnableDelete || false;
   }
 
+  get disabled() {
+    console.log('this.group.controls[this.config.name].disabled', this.group.controls[this.config.name].disabled);
+    return this.group.controls[this.config.name].disabled;
+  }
+
   private eavConfig: EavConfiguration;
 
   constructor(private entityService: EntityService,
