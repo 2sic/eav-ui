@@ -180,6 +180,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     console.log('loadFieldFromDefinitionTest', attribute.settings.InputType);
     if (attribute.settings.InputType) {
+
+      // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
+      //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+      // } else {
+      //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
+      // }
+
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
@@ -212,6 +219,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
       }
+
     } else {
       return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
     }

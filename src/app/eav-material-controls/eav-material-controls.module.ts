@@ -17,7 +17,9 @@ import {
   MatMenuModule,
   MatTooltipModule,
   MatTabsModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatDialogModule,
+  MatDialogContent
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -84,7 +86,7 @@ import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-lib
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
-    ClickStopPropagationDirective,
+    ClickStopPropagationDirective
   ],
   imports: [
     CommonModule,

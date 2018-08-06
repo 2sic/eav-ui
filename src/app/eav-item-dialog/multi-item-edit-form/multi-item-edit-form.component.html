@@ -1,7 +1,14 @@
-<mat-card class="example-card" *ngIf="(items$ | async) && (items$ | async).length">
-  <button mat-icon-button (click)="close()" class="button-top-right">
+<!-- <mat-card class="example-card" *ngIf="(items$ | async) && (items$ | async).length"> -->
+<!-- <mat-dialog-actions> -->
+<!-- class="button-top-right" -->
+<!-- <button mat-icon-button (click)="close()">
     <mat-icon class="mat-24">close</mat-icon>
   </button>
+</mat-dialog-actions> -->
+<div mat-dialog-content *ngIf="(items$ | async) && (items$ | async).length">
+  <!-- <button mat-icon-button (click)="close()" class="button-top-right">
+    <mat-icon class="mat-24">close</mat-icon>
+  </button> -->
 
   <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
 
@@ -37,4 +44,5 @@
     <button *ngIf="eavConfig.versioningOptions.branch" mat-menu-item type="button" (click)="publishMode = 'branch'">
       <i class="eav-icon-git-branch"></i>{{ 'SaveMode.branch' |translate }}</button>
   </mat-menu>
-</mat-card>
+</div>
+<!-- </mat-card> -->

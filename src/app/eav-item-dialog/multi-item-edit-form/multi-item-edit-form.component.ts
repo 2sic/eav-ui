@@ -60,6 +60,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private translate: TranslateService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
+    console.log('MultiItemEditFormComponent constructor');
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');

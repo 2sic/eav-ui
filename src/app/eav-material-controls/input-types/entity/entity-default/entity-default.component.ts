@@ -9,6 +9,7 @@ import {
 import { FormGroup } from '@angular/forms';
 import { Observable, Subscription, merge, fromEvent } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
@@ -19,6 +20,10 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import {
+  DialogOverviewExampleDialogComponent
+} from '../../../../eav-item-dialog/dialogs/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -88,7 +93,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   constructor(private entityService: EntityService,
     private eavService: EavService,
     private contenttypeService: ContentTypeService,
-    private validationMessagesService: ValidationMessagesService) {
+    private validationMessagesService: ValidationMessagesService,
+    private dialog: MatDialog) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -169,6 +175,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    */
   edit(value: string) {
     console.log('TODO editEntity', value);
+
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+      width: '650px',
+      data: { entityId: 'entityId sent success' }
+    });
 
     // TODO: filter entity Id from availableEntities (we have guid)
     // Then open item edit:

@@ -50,9 +50,9 @@ export class EavService {
 
   public loadAllDataForForm(appId: string): Observable<any> {
     //  const body = JSON.stringify([{ 'EntityId': 3858 }]);
-    const body = JSON.stringify([{ 'EntityId': 3841 }]);
+    // const body = JSON.stringify([{ 'EntityId': 3841 }]);
     // const body = JSON.stringify([{ 'EntityId': 3830 }]);
-    // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
+    const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
     // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     // maybe create model for data
     return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
