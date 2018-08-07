@@ -71,7 +71,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   ngOnInit() {
     this.loadData();
     // set observing for items
-    this.items$ = this.itemService.selectAllItems();
+    //  this.items$ = this.itemService.selectAllItems();
     // set observing for languages
     this.languages$ = this.languageService.selectAllLanguages();
     // suscribe to form submit
@@ -153,6 +153,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(
       this.eavService.loadAllDataForForm(this.eavConfig.appId).subscribe(data => {
         this.itemService.loadItems(data.Items);
+        this.items$ = this.itemService.selectItemByIda(data.Items.map(item => item.Entity.Id));
         this.inputTypeService.loadInputTypes(data.InputTypes);
         this.contentTypeService.loadContentTypes(data.ContentTypes);
         this.setPublishMode(data.Items);

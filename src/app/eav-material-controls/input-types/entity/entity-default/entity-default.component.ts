@@ -145,6 +145,18 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     return value;
   }
 
+  getEntityId = (value): string => {
+    if (value === null) {
+      return 'empty slot';
+    }
+    const entities = this.availableEntities.filter(f => f.Value === value);
+    if (entities.length > 0) {
+      return entities.length > 0 ? entities[0].Id : value;
+    }
+
+    return value;
+  }
+
   /**
    * Determine is entityID in chosenEntities
    */
@@ -178,7 +190,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
     const dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
       width: '650px',
-      data: { entityId: 'entityId sent success' }
+      data: { id: this.getEntityId(value) }
     });
 
     // TODO: filter entity Id from availableEntities (we have guid)

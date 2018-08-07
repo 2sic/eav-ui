@@ -21,7 +21,7 @@ export class OpenMultiItemDialogComponent implements OnInit {
     dialogConfig.width = '650px';
     // dialogConfig.disableClose = true;
     // dialogConfig.autoFocus = true;
-    dialogConfig.data = { entityId: 'entityId sent success' };
+    // dialogConfig.data = { entityId: 'entityId sent success' };
 
     // Open dialog
     const dialogRef = this.dialog.open(MultiItemEditFormComponent, dialogConfig);

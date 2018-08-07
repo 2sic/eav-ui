@@ -50,9 +50,9 @@ export class EavService {
 
   public loadAllDataForForm(appId: string): Observable<any> {
     //  const body = JSON.stringify([{ 'EntityId': 3858 }]);
-    // const body = JSON.stringify([{ 'EntityId': 3841 }]);
+    const body = JSON.stringify([{ 'EntityId': 3841 }]);
     // const body = JSON.stringify([{ 'EntityId': 3830 }]);
-    const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
+    // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
     // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
     // maybe create model for data
     return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
@@ -65,6 +65,26 @@ export class EavService {
         catchError(error => this.handleError(error))
       );
   }
+  // TODO: create entityarray type
+  public loadAllDataForFormByEntity(appId: string, entityArray: Array<any>): Observable<any> {
+    const body = JSON.stringify(entityArray);
+    //  const body = JSON.stringify([{ 'EntityId': 3858 }]);
+    // const body = JSON.stringify([{ 'EntityId': 3841 }]);
+    // const body = JSON.stringify([{ 'EntityId': 3830 }]);
+    // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
+    // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
+    // maybe create model for data
+    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
+      body)
+      .pipe(
+        map((data: any) => {
+          return data;
+        }),
+        // tap(data => console.log('getAllDataForForm: ', data)),
+        catchError(error => this.handleError(error))
+      );
+  }
+
 
   public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string, defaultLanguage: string) {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, item, updateValues, existingLanguageKey, defaultLanguage));
