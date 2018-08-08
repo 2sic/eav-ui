@@ -23,6 +23,10 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import {
   DialogOverviewExampleDialogComponent
 } from '../../../../eav-item-dialog/dialogs/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
+import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { DialogTypeConstants } from '../../../../shared/constants/type-constants';
+import { ItemService } from '../../../../shared/services/item.service';
+import { Item } from '../../../../shared/models/eav';
 
 
 @Component({
@@ -92,6 +96,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
+    private itemService: ItemService,
     private contenttypeService: ContentTypeService,
     private validationMessagesService: ValidationMessagesService,
     private dialog: MatDialog) {
@@ -123,6 +128,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   ngOnDestroy() {
+    console.log('NG DESTROYYYYYY');
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
@@ -188,10 +194,35 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   edit(value: string) {
     console.log('TODO editEntity', value);
 
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+    // const dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+    //   width: '650px',
+    //   data: { id: this.getEntityId(value) }
+    // });
+
+    const dialogRef = this.dialog.open(MultiItemEditFormComponent, {
       width: '650px',
-      data: { id: this.getEntityId(value) }
+      data: {
+        id: this.getEntityId(value),
+        type: DialogTypeConstants.byEntity
+      }
     });
+
+
+    // Close dialog
+    // this.subscriptions.push(
+    //   dialogRef.afterClosed().subscribe(result => {
+    //     // Remove item from store after dialog is closed
+    //     const itemSubscription: Subscription =
+    //       this.itemService.selectItemById(Number(this.getEntityId(value)))
+    //         .subscribe(item => {
+    //           if (item) {
+    //             this.itemService.deleteItem(item);
+    //           }
+    //         });
+
+    //     itemSubscription.unsubscribe();
+    //   })
+    // );
 
     // TODO: filter entity Id from availableEntities (we have guid)
     // Then open item edit:

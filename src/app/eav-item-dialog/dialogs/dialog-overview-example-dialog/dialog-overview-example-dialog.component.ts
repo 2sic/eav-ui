@@ -29,7 +29,7 @@ export class DialogOverviewExampleDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<DialogOverviewExampleDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public item: DialogData,
+    @Inject(MAT_DIALOG_DATA) private item: DialogData,
     private itemService: ItemService,
     private languageService: LanguageService,
     private eavService: EavService,

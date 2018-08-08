@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, zip } from 'rxjs';
 
-import { FileTypeConstants } from '../constants/file-type-constants';
+import { FileTypeConstants } from '../constants/type-constants';
 
 @Injectable()
 export class ScriptLoaderService {

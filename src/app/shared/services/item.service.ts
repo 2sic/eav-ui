@@ -127,8 +127,11 @@ export class ItemService {
       .select(fromStore.getItems)
       .pipe(map(data => data.find(obj => obj.entity.id === id)));
   }
-
-  public selectItemByIda(idsList: number[]): Observable<Item[]> {
+  /**
+   * Select items from store by id array list
+   * @param idsList
+   */
+  public selectItemsByIdList(idsList: number[]): Observable<Item[]> {
     return this.store
       .select(fromStore.getItems)
       .pipe(map(data => data.filter(obj => idsList.filter(id => id === obj.entity.id).length > 0)));

@@ -1,12 +1,12 @@
 import {
-  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterContentInit, AfterViewInit
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -21,6 +21,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
+import { DialogTypeConstants } from '../../shared/constants/type-constants';
+
+export interface FormDialogData {
+  id: string;
+  type: string;
+}
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -47,7 +53,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private eavConfig: EavConfiguration;
 
-  constructor(
+  constructor(@Inject(MAT_DIALOG_DATA) private formDialogData: FormDialogData,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService,
@@ -60,33 +66,23 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private translate: TranslateService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
-    console.log('MultiItemEditFormComponent constructor');
 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
+    this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
   }
 
   ngOnInit() {
-    this.loadData();
-    // set observing for items
-    //  this.items$ = this.itemService.selectAllItems();
-    // set observing for languages
-    this.languages$ = this.languageService.selectAllLanguages();
+    this.loadItemsData();
+    this.setLanguageConfig();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
-
-    this.subscriptions.push(
-      this.currentLanguage$.subscribe(len => {
-        this.formErrors = [];
-      })
-    );
   }
 
   ngAfterContentChecked() {
     this.saveFormSuscribe();
-
     this.setFormsAreValid();
     // need this to detectChange this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
@@ -101,7 +97,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   formValueChange() {
     this.setFormsAreValid();
-
+    // reset form errors
     this.formErrors = [];
   }
 
@@ -142,23 +138,29 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /**
    * Load all data for forms
    */
-  private loadData() {
+  private loadItemsData() {
+    const entityId: number = Number(this.formDialogData.id);
 
-    this.setTranslateLanguage(this.eavConfig.lang);
-
-    this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs),
-      this.eavConfig.lang,
-      this.eavConfig.langpri,
-      'en-us'); // UILanguage harcoded (for future usage)
-    this.subscriptions.push(
+    // if dialog type load with entity ids (edit - entity)
+    if (this.formDialogData.type === DialogTypeConstants.byEntity && entityId) {
+      this.eavService.loadAllDataForFormByEntity(this.eavConfig.appId, [{ 'EntityId': entityId }]).subscribe(data => {
+        this.afterLoadItemsData(data);
+      });
+      // this.items$ = this.itemService.selectItemsByIdList([entityId]);
+    } else {  // else dialog type load without entity ids. (edit - toolbar)
       this.eavService.loadAllDataForForm(this.eavConfig.appId).subscribe(data => {
-        this.itemService.loadItems(data.Items);
-        this.items$ = this.itemService.selectItemByIda(data.Items.map(item => item.Entity.Id));
-        this.inputTypeService.loadInputTypes(data.InputTypes);
-        this.contentTypeService.loadContentTypes(data.ContentTypes);
-        this.setPublishMode(data.Items);
-      })
-    );
+        this.afterLoadItemsData(data);
+        this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
+      });
+    }
+  }
+
+  private afterLoadItemsData(data: any) {
+    this.itemService.loadItems(data.Items);
+    this.inputTypeService.loadInputTypes(data.InputTypes);
+    this.contentTypeService.loadContentTypes(data.ContentTypes);
+    this.setPublishMode(data.Items);
+    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
   }
 
   /**
@@ -170,6 +172,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   //   // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
   //   this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
   // }
+
+  private setLanguageConfig() {
+    this.setTranslateLanguage(this.eavConfig.lang);
+    // UILanguage harcoded (for future usage)
+    // this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+
+    this.languages$ = this.languageService.selectAllLanguages();
+    // on current language change reset form errors
+    this.subscriptions.push(this.currentLanguage$.subscribe(len => {
+      this.formErrors = [];
+    }));
+  }
 
   /**
    * Set translate language of all forms
@@ -292,7 +306,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   // TODO: finish group and new entity ?????
-  setPublishMode(items: Item[]) {
+  private setPublishMode(items: Item[]) {
     items.forEach(item => {
 
       // If the entity is null, it does not exist yet. Create a new one
