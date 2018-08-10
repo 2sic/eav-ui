@@ -6,6 +6,6 @@ export class FileTypeConstants {
 
 export class DialogTypeConstants {
     // string
-    public static readonly byEntity: string = 'byEntity';
-    public static readonly byAppContent: string = 'byAppContent';
+    public static readonly itemEditWithEntityId: string = 'itemEditWithEntityId';
+    public static readonly itemEditWithContent: string = 'itemEditWithContent';
 }

@@ -28,6 +28,7 @@ import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
 import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { InputTypeService } from './shared/services/input-type.service';
+import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 
 // const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 //   // Change this to your upload POST address:
@@ -70,7 +71,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    TranslateModule.forRoot()
+    TranslateModule.forRoot(),
     //     {
     //     loader: {
     //       provide: TranslateLoader,
@@ -93,6 +94,7 @@ export function createTranslateLoader(http: HttpClient) {
     FeatureService,
     DnnBridgeService,
     EntityService,
+    EavAdminUiService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HeaderInterceptor,

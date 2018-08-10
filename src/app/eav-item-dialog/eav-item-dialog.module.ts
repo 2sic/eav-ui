@@ -15,7 +15,6 @@ import {
   MatIconModule,
   MatMenuModule,
   MatSnackBarModule,
-  MatDialogContent,
   MatDialogModule
 } from '@angular/material';
 
@@ -31,7 +30,6 @@ import { EavEffects } from '../shared/effects/eav.effects';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
-import { DialogOverviewExampleDialogComponent } from './dialogs/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 
 const routes: Routes = [
@@ -50,7 +48,6 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [
     MultiItemEditFormComponent,
     ItemEditFormComponent,
-    DialogOverviewExampleDialogComponent,
     OpenMultiItemDialogComponent
   ],
   imports: [
@@ -82,8 +79,7 @@ export function createTranslateLoader(http: HttpClient) {
     })
   ],
   entryComponents: [
-    MultiItemEditFormComponent,
-    DialogOverviewExampleDialogComponent
+    MultiItemEditFormComponent
   ],
   exports: [RouterModule],
   providers: [],

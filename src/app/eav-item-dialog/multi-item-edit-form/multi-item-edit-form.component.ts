@@ -22,11 +22,7 @@ import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
 import { DialogTypeConstants } from '../../shared/constants/type-constants';
-
-export interface FormDialogData {
-  id: string;
-  type: string;
-}
+import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -53,7 +49,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private eavConfig: EavConfiguration;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private formDialogData: FormDialogData,
+  constructor(@Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService,
@@ -142,7 +138,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const entityId: number = Number(this.formDialogData.id);
 
     // if dialog type load with entity ids (edit - entity)
-    if (this.formDialogData.type === DialogTypeConstants.byEntity && entityId) {
+    if (this.formDialogData.type === DialogTypeConstants.itemEditWithEntityId && entityId) {
       this.eavService.loadAllDataForFormByEntity(this.eavConfig.appId, [{ 'EntityId': entityId }]).subscribe(data => {
         this.afterLoadItemsData(data);
       });

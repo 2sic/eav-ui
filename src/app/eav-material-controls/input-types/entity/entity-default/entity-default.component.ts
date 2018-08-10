@@ -14,19 +14,14 @@ import { MatDialog } from '@angular/material';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ContentTypeService } from '../../../../shared/services/content-type.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import {
-  DialogOverviewExampleDialogComponent
-} from '../../../../eav-item-dialog/dialogs/dialog-overview-example-dialog/dialog-overview-example-dialog.component';
 import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
-import { DialogTypeConstants } from '../../../../shared/constants/type-constants';
-import { ItemService } from '../../../../shared/services/item.service';
-import { Item } from '../../../../shared/models/eav';
+import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
+import { FieldMaskService } from '../../../../shared/services/field-mask.service';
 
 
 @Component({
@@ -48,6 +43,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   // options: Item[];
   selectEntities: Observable<EntityInfo[]> = null;
   // entities = [];
+  private contentType: FieldMaskService;
 
   private availableEntities: EntityInfo[] = [];
   private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
@@ -96,31 +92,25 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
-    private itemService: ItemService,
-    private contenttypeService: ContentTypeService,
+    private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
     private dialog: MatDialog) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
-
-
-  // ngDoCheck() {
-  //   console.log('DoCheck', this.config.label);
-  //   // console.log('this.chosenEntities: ', [... this.group.controls[this.config.name].value]);
-  // }
-
   ngOnInit() {
+
+    // Initialize entities
+    const sourceMask = this.entityType || null;
+    // this will contain the auto-resolve type (based on other contentType-field)
+    this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null);
+    // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
+    console.log('contentType', this.contentType);
+
     console.log('[create]  ngOnInit EntityDefaultComponent', this.group.value);
     this.setChosenEntities();
 
     this.setAvailableEntities();
-    console.log('get config', this.config);
-    console.log('get allowMultiValue', this.allowMultiValue);
-    console.log('get enableAddExisting', this.enableAddExisting);
-
-    console.log('[create] OnInit EavFormComponent 2', this.group);
-    console.log('[create] OnInit EavFormComponent 3', this.group.value);
   }
 
   ngAfterViewInit() {
@@ -128,12 +118,14 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   ngOnDestroy() {
-    console.log('NG DESTROYYYYYY');
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
+  maybeReload() {
+    console.log('call maybeReload');
+  }
+
   optionSelected(event) {
-    console.log('optionSelected:', event);
     this.addEntity(event.option.value);
     this.input.nativeElement.value = null;
   }
@@ -192,41 +184,16 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * @param value
    */
   edit(value: string) {
-    console.log('TODO editEntity', value);
 
-    // const dialogRef = this.dialog.open(DialogOverviewExampleDialogComponent, {
+    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, this.getEntityId(value), MultiItemEditFormComponent);
+
+    // const dialogRef = this.dialog.open(MultiItemEditFormComponent, {
     //   width: '650px',
-    //   data: { id: this.getEntityId(value) }
+    //   data: {
+    //     id: this.getEntityId(value),
+    //     type: DialogTypeConstants.byEntity
+    //   }
     // });
-
-    const dialogRef = this.dialog.open(MultiItemEditFormComponent, {
-      width: '650px',
-      data: {
-        id: this.getEntityId(value),
-        type: DialogTypeConstants.byEntity
-      }
-    });
-
-
-    // Close dialog
-    // this.subscriptions.push(
-    //   dialogRef.afterClosed().subscribe(result => {
-    //     // Remove item from store after dialog is closed
-    //     const itemSubscription: Subscription =
-    //       this.itemService.selectItemById(Number(this.getEntityId(value)))
-    //         .subscribe(item => {
-    //           if (item) {
-    //             this.itemService.deleteItem(item);
-    //           }
-    //         });
-
-    //     itemSubscription.unsubscribe();
-    //   })
-    // );
-
-    // TODO: filter entity Id from availableEntities (we have guid)
-    // Then open item edit:
-    // eavAdminDialogs.openItemEditWithEntityId(id, $scope.getAvailableEntities);
   }
 
   /**
@@ -245,7 +212,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * @param value
    */
   deleteItemInSlot(item: string, index: number) {
-    console.log('TODO deleteEntity', item);
     if (this.entityType === '') {
       alert('delete not possible - no type specified in entity field configuration');
       return;
@@ -257,11 +223,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // TODO:contentType.resolve()
     const contentTypeTemp = this.entityType; // contentType.resolve()
     // Then delete entity item:
-    console.log('tryDeleteAndAskForce');
     this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, false).subscribe(result => {
-      console.log('notAskForceDelete', result);
       if (result === null || result.status >= 200 && result.status < 300) {
-        console.log('is in first');
         // TODO: make message
         this.removeSlot(item, index);
       } else {
@@ -271,7 +234,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
           // TODO: refresh avalable entities
         });
       }
-
     });
   }
 
@@ -293,6 +255,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     console.log('TODO openNewEntityDialog');
 
     // open the dialog for a new item
+    // TODO: finisih this when web services are completed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
   }
 
@@ -338,14 +301,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         : this.group.controls[this.config.name].value;
     } catch (err) { }
 
-    // this.subscriptions.push(
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
       this.availableEntities = [...items];
     });
-    // );
-
-    // TODO: availableEntities can be title, guid and id only - map observables to that
-    // this.contenttypeService.getTitleAttribute(this.config.type)
   }
 
   /**

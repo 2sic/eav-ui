@@ -1,9 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { MultiItemEditFormComponent } from '../../multi-item-edit-form/multi-item-edit-form.component';
-import { DialogOverviewExampleDialogComponent } from '../dialog-overview-example-dialog/dialog-overview-example-dialog.component';
-import { ScrollStrategyOptions } from '@angular/cdk/overlay';
-import { DialogTypeConstants } from '../../../shared/constants/type-constants';
+import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
 
 /**
  * This component only open multi-item-dailog component in mat-dialog window
@@ -15,10 +13,11 @@ import { DialogTypeConstants } from '../../../shared/constants/type-constants';
 })
 export class OpenMultiItemDialogComponent implements OnInit {
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog,
+    private eavAdminUiService: EavAdminUiService) {
 
     // Open dialog
-    const dialogRef = this.openDialog(this.dialog);
+    const dialogRef = this.eavAdminUiService.openItemEditWithContent(this.dialog, MultiItemEditFormComponent);
 
     // Close dialog
     dialogRef.afterClosed().subscribe(result => {
@@ -29,36 +28,7 @@ export class OpenMultiItemDialogComponent implements OnInit {
   ngOnInit() { }
 
   /**
-   * Open MatDialog without entityid.
-   * @param dialog
-   */
-  private openDialog(dialog: MatDialog) {
-    const dialogRef = this.dialog.open(MultiItemEditFormComponent, {
-      width: '650px',
-      // height: '90%',
-      // disableClose = true,
-      // autoFocus = true,
-      data: {
-        id: null,
-        type: DialogTypeConstants.byAppContent
-      }
-    });
-
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.width = '650px';
-    // // dialogConfig.disableClose = true;
-    // // dialogConfig.autoFocus = true;
-    // dialogConfig.data = {
-    //   id: null,
-    //   type: DialogTypeConstants.byAppContent
-    // };
-
-    // const dialogRef = dialog.open(MultiItemEditFormComponent, dialogConfig);
-    return dialogRef;
-  }
-
-  /**
-   * Trigger after dialog is closed
+   * Triggered after dialog is closed
    */
   private afterClosedDialog() {
     console.log('The dialog was closed');

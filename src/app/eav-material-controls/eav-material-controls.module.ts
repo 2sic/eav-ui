@@ -18,8 +18,7 @@ import {
   MatTooltipModule,
   MatTabsModule,
   MatProgressSpinnerModule,
-  MatDialogModule,
-  MatDialogContent
+
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
