@@ -103,7 +103,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // Initialize entities
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve type (based on other contentType-field)
-    this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null);
+    this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
     console.log('contentType', this.contentType);
 
@@ -184,16 +184,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * @param value
    */
   edit(value: string) {
-
     const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, this.getEntityId(value), MultiItemEditFormComponent);
-
-    // const dialogRef = this.dialog.open(MultiItemEditFormComponent, {
-    //   width: '650px',
-    //   data: {
-    //     id: this.getEntityId(value),
-    //     type: DialogTypeConstants.byEntity
-    //   }
-    // });
   }
 
   /**
@@ -288,7 +279,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * TODO: select all entities from app
    */
   private setAvailableEntities() {
-    // TODO: const ctName = contentType.resolve(); // always get the latest definition, possibly from another drop-down
+    // TODO:
+    // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
     // TEMP: harcoded
     const ctName = this.entityType;
 

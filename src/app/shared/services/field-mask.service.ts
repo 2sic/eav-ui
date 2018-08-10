@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AbstractControl } from '@angular/forms';
 
 
 @Injectable()
@@ -16,9 +17,10 @@ export class FieldMaskService {
   // construct a object which has liveListCache, liveListReload(), liveListReset(),
   constructor(private mask: string,
     private changeEvent: any,
-    private overloadPreCleanValues: any) {
+    private overloadPreCleanValues: any,
+    private model: { [key: string]: AbstractControl; }) {
     this.mask = mask;
-
+    this.model = model;
     this.fields = this.fieldList();
 
     if (overloadPreCleanValues) { // got an overload...
@@ -31,12 +33,10 @@ export class FieldMaskService {
   }
 
   // retrieves a list of all fields used in the mask
-  private fieldList = () => {
+  public fieldList = () => {
     const result = [];
     if (!this.mask) { return result; }
-    console.log('mask:', this.mask);
     const matches = this.mask.match(this.findFields);
-    console.log('matches:', matches);
     if (matches) {
       matches.forEach((e, i) => {
         const staticName = e.replace(this.unwrapField, '');
@@ -46,6 +46,22 @@ export class FieldMaskService {
       result.push(this.mask);
     }
     return result;
+  }
+
+  // resolves a mask to the final value
+  // getNewAutoValue()
+  // TODO: see do we still need this
+  // this.model = this.group.controls (group is FormGroup)
+  resolve = () => {
+    let value = this.mask;
+    this.fields.forEach((e, i) => {
+      const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
+      const cleaned = this.preClean(e, replaceValue);
+      value = value.replace('[' + e + ']', cleaned);
+    });
+
+    console.log('resolve:', value);
+    return value;
   }
 
 }

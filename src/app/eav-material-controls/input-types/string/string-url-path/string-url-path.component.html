@@ -1,8 +1,9 @@
 <div>
     <!-- directive : only-simple-url-chars -->
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
-        <input matInput type="text" class="form-control material" [formControlName]="config.name" (blur)="finalClean(config.name)"
-            (keyup)="clean(config.name)" [placeholder]="config.label" [required]='config.required'>
+        <!-- (keyup)="clean(config.name, false)" -->
+        <input matInput type="text" class="form-control material" [formControlName]="config.name" (blur)="clean(config.name, true)"
+            [placeholder]="config.label" [required]='config.required'>
         <mat-hint align="start" *ngIf="config.settings.Notes"> {{config.settings.Notes}}</mat-hint>
         <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
     </mat-form-field>
