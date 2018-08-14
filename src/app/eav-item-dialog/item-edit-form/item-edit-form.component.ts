@@ -53,6 +53,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.itemBehaviorSubject$.getValue();
   }
 
+  private eavConfig;
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
   contentType$: Observable<ContentType>;
@@ -65,7 +66,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private actions$: Actions
-  ) { }
+  ) {
+    this.eavConfig = eavService.getEavConfiguration();
+  }
 
   ngOnInit() {
     this.itemBehaviorSubject$.subscribe((item: Item) => {
@@ -111,8 +114,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.form.form.valid) {
       // TODO create body for submit
-      // TODO read appId
-      this.eavService.saveItem(15, this.item, values, this.currentLanguage, this.defaultLanguage);
+      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -128,12 +130,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
-      this.eavService.triggerFormSetValueChange(formValues);
-
       if (this.form.valueIsChanged(formValues)) {
         // set new values to form
         this.form.patchValue(formValues, emit);
       }
+      // important to be after patchValue
+      this.eavService.triggerFormSetValueChange(formValues);
     }
   }
 
@@ -178,6 +180,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     console.log('loadFieldFromDefinitionTest', attribute.settings.InputType);
     if (attribute.settings.InputType) {
+
+      // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
+      //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+      // } else {
+      //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
+      // }
+
       switch (attribute.settings.InputType.values[0].value) {
         case InputTypesConstants.stringDefault:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
@@ -205,9 +214,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.external:
         case 'custom-gps':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+        case 'custom-my-field-test':
+          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
         default:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
       }
+
     } else {
       return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
     }

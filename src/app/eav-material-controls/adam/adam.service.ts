@@ -43,13 +43,10 @@ export class AdamService {
 
     // create folder
     const addFolder = (newfolder) => {
-      // TODO:
-      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       // maybe create model for data
       return this.httpClient.post(url + '/folder',
         {},
         {
-          headers: header,
           params: {
             subfolder: subfolder,
             newFolder: newfolder,
@@ -82,8 +79,6 @@ export class AdamService {
       childFolder.Subfolder = subPath;
       // now assemble the correct subfolder based on the folders-array
       subfolder = subPath;
-      // TODO:
-      // this.liveListReload();
 
       reload();
 
@@ -99,8 +94,6 @@ export class AdamService {
       } else {
         subfolder = '';
       }
-      // TODO:
-      // this.liveListReload();
       reload();
       return subfolder;
     };
@@ -108,12 +101,9 @@ export class AdamService {
     const getAll = (): Observable<AdamItem[]> => {
 
       console.log('GET ALL subfolder:', subfolder);
-      // TODO:
-      const header = UrlHelper.createHeader('89', '421', '421');
       // maybe create model for data
       return this.httpClient.get(url + '/items',
         {
-          headers: header,
           params: {
             subfolder: subfolder,
             usePortalRoot: serviceConfig.usePortalRoot,
@@ -133,11 +123,8 @@ export class AdamService {
     // delete, then reload
     // IF verb DELETE fails, so I'm using get for now
     const deleteItem = (item) => {
-      // TODO:
-      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       return this.httpClient.get(url + '/delete',
         {
-          headers: header,
           params: {
             subfolder: subfolder,
             isFolder: item.IsFolder,
@@ -158,11 +145,8 @@ export class AdamService {
 
     // rename, then reload
     const rename = (item, newName) => {
-      // TODO:
-      const header = UrlHelper.createHeader(this.eavConfig.tid, this.eavConfig.mid, this.eavConfig.cbid);
       return this.httpClient.get(url + '/rename',
         {
-          headers: header,
           params: {
             subfolder: subfolder,
             isFolder: item.IsFolder,
@@ -211,7 +195,6 @@ export class AdamService {
 
     svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));
 
-    // TODO:
     const reload = () => svc.liveListReload();
 
     return svc;

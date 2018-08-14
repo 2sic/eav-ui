@@ -1,5 +1,5 @@
 import { ContentType } from '../../models/eav';
-import * as fromContentType from './../actions/content-type.actions';
+import * as fromContentType from '../actions/content-type.actions';
 
 export interface ContentTypeState {
     contentTypes: ContentType[];

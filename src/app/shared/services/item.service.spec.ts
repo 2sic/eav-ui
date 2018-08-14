@@ -9,7 +9,7 @@ import { Store, StoreModule } from '@ngrx/store';
 import { Item } from '../models/eav';
 import { JsonItem1 } from '../models/json-format-v1';
 import { AppState } from '../models/app-state';
-import { reducers } from '../../shared/store/reducers';
+import { reducers } from '../store/reducers';
 import { ItemService } from './item.service';
 
 import * as test1 from '../../../assets/data/json-to-class-test/item/json-item-v1-test1.json';

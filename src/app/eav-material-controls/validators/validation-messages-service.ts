@@ -103,12 +103,12 @@ export class ValidationMessagesService {
    * get validation error for control
    * @param control
    */
-  public getErrorMessage(control: AbstractControl, config: FieldConfig): string {
+  public getErrorMessage(control: AbstractControl, config: FieldConfig, touched?: boolean): string {
     let formError = '';
     if (control) {
       const messages = this.validationMessages();
       if (control && control.invalid) {
-        if ((control.dirty || control.touched)) {
+        if ((control.dirty || control.touched) || touched) {
           Object.keys(control.errors).forEach(key => {
             if (messages[key]) {
               formError = messages[key](config);

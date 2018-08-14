@@ -19,7 +19,7 @@ import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
 import { InputTypesConstants } from '../../../shared/constants';
-import { FileTypeConstants } from '../../../shared/constants/file-type-constants';
+import { FileTypeConstants } from '../../../shared/constants/type-constants';
 
 @Directive({
   selector: '[appEavField]'

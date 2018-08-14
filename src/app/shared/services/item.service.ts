@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { throwError as observableThrowError, Observable } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, filter } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
 import { EavAttributes, EavValue } from '../models/eav';
 
-import * as itemActions from '../../shared/store/actions/item.actions';
+import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
@@ -26,7 +26,6 @@ export class ItemService {
   // public loadAllData(path: string) {
   //   this.store.dispatch(new itemActions.LoadDataAction(path));
   // }
-
 
   public loadItem(path: string) {
     this.store.dispatch(new itemActions.LoadItemAction(path));
@@ -103,12 +102,6 @@ export class ItemService {
     this.store.dispatch(new itemActions.DeleteItemAction(item));
   }
 
-  public selectItemById(id: number): Observable<Item> {
-    return this.store
-      .select(fromStore.getItems)
-      .pipe(map(data => data.find(obj => obj.entity.id === id)));
-  }
-
   public selectAttributeByEntityId(entityId: number, attributeKey: string): Observable<EavValues<any>> {
     return this.store
       .select(fromStore.getItems)
@@ -129,6 +122,25 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
+  public selectItemById(id: number): Observable<Item> {
+    return this.store
+      .select(fromStore.getItems)
+      .pipe(map(data => data.find(obj => obj.entity.id === id)));
+  }
+  /**
+   * Select items from store by id array list
+   * @param idsList
+   */
+  public selectItemsByIdList(idsList: number[]): Observable<Item[]> {
+    return this.store
+      .select(fromStore.getItems)
+      .pipe(map(data => data.filter(obj => idsList.filter(id => id === obj.entity.id).length > 0)));
+  }
+
+  // public selectItemById(id: number): Observable<Item> {
+  //   return this.store.select(fromStore.getItemById(id));
+  // }
+
   /**
    * Get Item from Json Entity V1
    */
@@ -138,7 +150,6 @@ export class ItemService {
     return this.httpClient.get<JsonItem1>(`/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/data/item-edit-form/item/${path}`)
       .pipe(
         map((item: JsonItem1) => {
-          console.log('kreiran item:', Item.create(item));
           return Item.create(item);
         }),
         // tap(data => console.log('getItemFromJsonItem1: ', data)),

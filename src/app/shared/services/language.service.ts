@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-import * as languageActions from '../../shared/store/actions/language.actions';
+import * as languageActions from '../store/actions/language.actions';
 import * as fromStore from '../store';
 import { Language, Item } from '../models/eav';
 

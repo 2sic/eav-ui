@@ -3,11 +3,13 @@ import { storeFreeze } from 'ngrx-store-freeze';
 
 import { environment } from '../../../../environments/environment';
 import * as fromItems from './item.reducer';
+import * as fromInputTypes from './input-type.reducer';
 import * as fromContentType from './content-type.reducer';
 import * as fromLanguages from './language.reducer';
 
 export interface EavState {
     itemState: fromItems.ItemState;
+    inputTypeState: fromInputTypes.InputTypeState;
     contentTypeState: fromContentType.ContentTypeState;
     languages: fromLanguages.LanguagesState;
 }
@@ -34,6 +36,7 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
 
 export const reducers: ActionReducerMap<EavState> = {
     itemState: fromItems.itemReducer,
+    inputTypeState: fromInputTypes.inputTypeReducer,
     contentTypeState: fromContentType.contentTypeReducer,
     languages: fromLanguages.languageReducer,
 };

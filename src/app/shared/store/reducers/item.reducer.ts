@@ -1,5 +1,5 @@
 import { Item } from '../../models/eav/item';
-import * as fromItems from './../actions/item.actions';
+import * as fromItems from '../actions/item.actions';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 
 // export interface ItemState {
@@ -31,12 +31,34 @@ export const initialState: ItemState = {
 
 export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
     switch (action.type) {
+        // case fromItems.LOAD_ITEM_SUCCESS: {
+        //     console.log('LOAD_ITEM_SUCCESS', action);
+        //     return {
+        //         ...state,
+        //         ...{ items: [...state.items, action.newItem] }
+        //     };
+        // }
         case fromItems.LOAD_ITEM_SUCCESS: {
-            console.log('LOAD_ITEM_SUCCESS', action);
-            return {
-                ...state,
-                ...{ items: [...state.items, action.newItem] }
-            };
+            // if item with same id not exist in store add item else overwrite item
+            const itemExist = state.items.filter(data =>
+                data.entity.id === action.newItem.entity.id);
+            if (itemExist.length === 0) {
+                return {
+                    ...state,
+                    ...{ items: [...state.items, action.newItem] }
+                };
+            } else {
+                return {
+                    ...state,
+                    ...{
+                        items: state.items.map(item => {
+                            return item.entity.id === action.newItem.entity.id
+                                ? action.newItem
+                                : item;
+                        })
+                    }
+                };
+            }
         }
         case fromItems.UPDATE_ITEM: {
             console.log('action.attributes', action.attributes);
