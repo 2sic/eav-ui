@@ -144,7 +144,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       });
       // this.items$ = this.itemService.selectItemsByIdList([entityId]);
     } else {  // else dialog type load without entity ids. (edit - toolbar)
-      this.eavService.loadAllDataForForm(this.eavConfig.appId).subscribe(data => {
+      this.eavService.loadAllDataForForm(this.eavConfig.appId, this.eavConfig.items).subscribe(data => {
         this.afterLoadItemsData(data);
         this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
       });

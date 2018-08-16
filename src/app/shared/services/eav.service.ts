@@ -48,8 +48,9 @@ export class EavService {
     }
   }
 
-  public loadAllDataForForm(appId: string): Observable<any> {
-    const body = JSON.stringify([{ 'EntityId': 1033 }]);
+  public loadAllDataForForm(appId: string, items: string): Observable<any> {
+    const body = items.replace(/"/g, '\'');
+    // const body = JSON.stringify([{ 'EntityId': 1033 }]);
     // const body = JSON.stringify([{ 'EntityId': 3861 }]);
     //  const body = JSON.stringify([{ 'EntityId': 3858 }]);
     // const body = JSON.stringify([{ 'EntityId': 3841 }]);
