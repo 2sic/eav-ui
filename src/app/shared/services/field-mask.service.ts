@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AbstractControl } from '@angular/forms';
 
-
-@Injectable()
+// @Injectable()
 export class FieldMaskService {
 
   // private mask: string;
@@ -13,8 +12,6 @@ export class FieldMaskService {
   private findFields = /\[.*?\]/ig;
   private unwrapField = /[\[\]]/ig;
 
-
-  // construct a object which has liveListCache, liveListReload(), liveListReset(),
   constructor(private mask: string,
     private changeEvent: any,
     private overloadPreCleanValues: any,
@@ -50,7 +47,6 @@ export class FieldMaskService {
 
   // resolves a mask to the final value
   // getNewAutoValue()
-  // TODO: see do we still need this
   // this.model = this.group.controls (group is FormGroup)
   resolve = () => {
     let value = this.mask;

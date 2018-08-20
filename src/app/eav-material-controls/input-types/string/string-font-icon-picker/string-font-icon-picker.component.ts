@@ -8,6 +8,8 @@ import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EavService } from '../../../../shared/services/eav.service';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,6 +28,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   // filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
   filteredIcons: Observable<any>;
   private subscriptions: Subscription[] = [];
+  private eavConfig: EavConfiguration;
 
   get files(): string {
     return this.config.settings.Files ? this.config.settings.Files : '';
@@ -48,7 +51,10 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   constructor(private scriptLoaderService: ScriptLoaderService,
-    private validationMessagesService: ValidationMessagesService) { }
+    private validationMessagesService: ValidationMessagesService,
+    private eavService: EavService) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
 
   ngOnInit() {
     this.loadAdditionalResources(this.files);
@@ -100,8 +106,8 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
 
   loadAdditionalResources(files: string) {
     // const mapped = files.replace('[App:Path]', appRoot)
-    // TODO: App root read
-    const mapped = files.replace('[App:Path]', 'http://2sxc-dnn742.dnndev.me/Portals/0/2sxc/QR Code')
+    // TODO: test this replace
+    const mapped = files.replace('[App:Path]', this.eavConfig.portalroot + this.eavConfig.approot)
       .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
         '$1/$2');
     const fileList = mapped ? mapped.split('\n') : [];

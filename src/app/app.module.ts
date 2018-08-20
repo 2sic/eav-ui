@@ -29,6 +29,8 @@ import { EntityService } from './shared/services/entity.service';
 import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { InputTypeService } from './shared/services/input-type.service';
 import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
+import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
+import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 
 // const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 //   // Change this to your upload POST address:
@@ -38,19 +40,23 @@ import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 // };
 
 const routes: Routes = [
-  {
-    path: 'eav-item-dialog',
-    loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
-  },
+  // {
+  //   path: 'eav-item-dialog',
+  //   loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
+  // },
   // {
   //   path: '',
   //   redirectTo: '',
   //   // redirectTo: 'eav-item-dialog',
   //   pathMatch: 'full'
   // },
+  // {
+  //   path: '**',
+  //   redirectTo: 'eav-item-dialog',
+  // },
   {
     path: '**',
-    redirectTo: 'eav-item-dialog',
+    component: OpenMultiItemDialogComponent
   }
 ];
 
@@ -71,6 +77,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
+    EavItemDialogModule,
     TranslateModule.forRoot(),
     //     {
     //     loader: {

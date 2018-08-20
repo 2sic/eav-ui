@@ -51,9 +51,11 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 
     // get all mask field and subcribe to changes. On every change sourcesChangedTryToUpdate.
     this.fieldMaskService.fieldList().forEach((e, i) => {
-      this.group.controls[e].valueChanges.subscribe((item) => {
-        this.sourcesChangedTryToUpdate(this.fieldMaskService);
-      });
+      if (this.group.controls[e]) {
+        this.group.controls[e].valueChanges.subscribe((item) => {
+          this.sourcesChangedTryToUpdate(this.fieldMaskService);
+        });
+      }
     });
 
     // clean on value change
@@ -64,32 +66,30 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
     );
   }
 
-
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
+  /**
+   * Field-Mask handling
+   * @param fieldMaskService
+   */
   private sourcesChangedTryToUpdate(fieldMaskService: FieldMaskService) {
     const formControlValue = this.group.controls[this.config.name].value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (formControlValue && formControlValue !== this.lastAutoCopy) {
-      console.log('sourcesChangedTryToUpdate returned: ', formControlValue);
-      console.log('sourcesChangedTryToUpdate lastAutoCopy: ', this.lastAutoCopy);
       return;
     }
 
-    // const orig = fieldMaskService.resolve(); // vm.getFieldContentBasedOnMask(sourceMask);
     const orig = fieldMaskService.resolve();
 
-    // orig = orig.replace("/", "-").replace("\\", "-"); // when auto-importing, remove slashes as they shouldn't feel like paths afterwards
     const cleaned = Helper.stripNonUrlCharacters(orig, this.enableSlashes, true);
-    // if (cleaned && formControlValue) {
     if (cleaned) {
       this.lastAutoCopy = cleaned;
-      console.log('sourcesChangedTryToUpdate cleaned: ', cleaned);
       this.group.controls[this.config.name].patchValue(cleaned, { emitEvent: false });
     }
   }
+
   private preCleane = (key, value) => {
     return value.replace('/', '-').replace('\\', '-'); // this will remove slashes which could look like path-parts
   }
@@ -101,14 +101,6 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
       this.group.controls[formControlName].patchValue(cleaned, { emitEvent: false });
     }
   }
-
-  // finalClean(formControlName: string) {
-  //   const formControlValue = this.group.controls[formControlName].value;
-  //   const cleaned = Helper.stripNonUrlCharacters(formControlValue, this.enableSlashes, false);
-  //   if (formControlValue !== cleaned) {
-  //     this.group.controls[formControlName].patchValue(cleaned);
-  //   }
-  // }
 
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);

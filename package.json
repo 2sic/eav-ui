@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit --base-href /DesktopModules/ToSIC_SexyContent/dist/ng-edit/",
-    "develop": "ng build --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit --base-href /DesktopModules/ToSIC_SexyContent/dist/ng-edit/",
+    "build": "ng build --prod --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit",
+    "develop": "ng build --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

@@ -334,5 +334,4 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
-
 }

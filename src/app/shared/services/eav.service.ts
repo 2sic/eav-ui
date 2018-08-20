@@ -52,7 +52,7 @@ export class EavService {
     const body = items.replace(/"/g, '\'');
     // const body = JSON.stringify([{ 'EntityId': 1033 }]);
     // const body = JSON.stringify([{ 'EntityId': 3861 }]);
-    //  const body = JSON.stringify([{ 'EntityId': 3858 }]);
+    // const body = JSON.stringify([{ 'EntityId': 3858 }]);
     // const body = JSON.stringify([{ 'EntityId': 3841 }]);
     // const body = JSON.stringify([{ 'EntityId': 3830 }]);
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }

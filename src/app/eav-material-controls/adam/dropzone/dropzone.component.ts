@@ -23,7 +23,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   group: FormGroup;
 
   public dropzoneConfig: DropzoneConfigInterface;
-  private eavConfig: EavConfiguration;  // url: 'http://2sxc-dnn742.dnndev.me/',
+  private eavConfig: EavConfiguration;
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
@@ -41,8 +41,9 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   ngOnInit() {
     this.config.adam = this.adamRef;
 
-    // TODO: read from configuration
-    const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
+    // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
+    const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
+
     // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
 
     const contentType = this.config.header.contentTypeName;
@@ -54,7 +55,7 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
-    console.log('this.url', this.url);
+    console.log('', this.url);
 
     this.dropzoneConfig = {
       url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
