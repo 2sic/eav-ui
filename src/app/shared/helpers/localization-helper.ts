@@ -67,9 +67,9 @@ export class LocalizationHelper {
      */
     public static isEditableTranslationExist =
         (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean => {
-            return allAttributesValues.values.filter(eavValue =>
+            return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
                 eavValue.dimensions.find(d => (d.value === languageKey)
-                    || (languageKey === defaultLanguage && d.value === '*'))).length > 0;
+                    || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
         }
 
     public static isReadonlyTranslationExist = (allAttributesValues: EavValues<any>, languageKey: string): boolean => {

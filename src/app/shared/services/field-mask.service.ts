@@ -59,6 +59,5 @@ export class FieldMaskService {
     console.log('resolve:', value);
     return value;
   }
-
 }
 
