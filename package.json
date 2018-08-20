@@ -6,7 +6,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit",
+    "build-watch": "ng build --prod --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit  --watch",
     "develop": "ng build --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit",
+    "develop-watch": "ng build --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit --watch",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
