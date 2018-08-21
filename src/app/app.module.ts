@@ -19,10 +19,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdamService } from './eav-material-controls/adam/adam.service';
 import { SvcCreatorService } from './shared/services/svc-creator.service';
 
-// import {
-//   DropzoneModule, DropzoneConfigInterface,
-//   DROPZONE_CONFIG
-// } from 'ngx-dropzone-wrapper';
 import { FeatureService } from './shared/services/feature.service';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
@@ -32,28 +28,7 @@ import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 
-// const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
-//   // Change this to your upload POST address:
-//   url: 'http://2sxc-dnn742.dnndev.me/',
-//   acceptedFiles: 'image/*',
-//   createImageThumbnails: true
-// };
-
 const routes: Routes = [
-  // {
-  //   path: 'eav-item-dialog',
-  //   loadChildren: 'app/eav-item-dialog/eav-item-dialog.module#EavItemDialogModule'
-  // },
-  // {
-  //   path: '',
-  //   redirectTo: '',
-  //   // redirectTo: 'eav-item-dialog',
-  //   pathMatch: 'full'
-  // },
-  // {
-  //   path: '**',
-  //   redirectTo: 'eav-item-dialog',
-  // },
   {
     path: '**',
     component: OpenMultiItemDialogComponent
@@ -61,7 +36,8 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  console.log('bbbb', new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json'));
+  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
 }
 
 @NgModule({
@@ -78,15 +54,14 @@ export function createTranslateLoader(http: HttpClient) {
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     EavItemDialogModule,
-    TranslateModule.forRoot(),
-    //     {
-    //     loader: {
-    //       provide: TranslateLoader,
-    //       useFactory: (createTranslateLoader),
-    //       deps: [HttpClient]
-    //     }
-    //   }
-    // )
+    TranslateModule.forRoot(
+      {
+        loader: {
+          provide: TranslateLoader,
+          useFactory: (createTranslateLoader),
+          deps: [HttpClient]
+        }
+      })
   ],
   exports: [RouterModule],
   providers: [
@@ -107,11 +82,6 @@ export function createTranslateLoader(http: HttpClient) {
       useClass: HeaderInterceptor,
       multi: true
     },
-    // {
-    //   provide: DROPZONE_CONFIG,
-    //   useValue: DEFAULT_DROPZONE_CONFIG
-    // }
-    // { provide: APP_BASE_HREF, useValue: '' }
   ],
   bootstrap: [AppComponent]
 })

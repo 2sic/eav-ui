@@ -32,18 +32,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: OpenMultiItemDialogComponent
-    // component: MultiItemEditFormComponent
-  }
-];
-
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
-}
-
 @NgModule({
   declarations: [
     MultiItemEditFormComponent,
@@ -52,7 +40,6 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
@@ -69,14 +56,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatDialogModule,
     StoreModule.forFeature('eavItemDialog', reducers),
     EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      },
-      isolate: true
-    })
+    TranslateModule.forChild()
   ],
   entryComponents: [
     MultiItemEditFormComponent
