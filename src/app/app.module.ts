@@ -36,7 +36,6 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  console.log('bbbb', new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json'));
   return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
 }
 

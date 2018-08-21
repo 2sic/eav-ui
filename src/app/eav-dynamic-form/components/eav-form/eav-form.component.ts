@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
 import { FieldConfig } from '../../model/field-config';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   exportAs: 'appEavForm',
@@ -23,12 +24,16 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   formValueChange: EventEmitter<any> = new EventEmitter<any>();
 
   form: FormGroup = new FormGroup({});
+  showDebugItems = false;
 
   private subscriptions: Subscription[] = [];
 
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
+  get debugEnviroment() {
+    return !environment.production;
+  }
 
   constructor(private formBuilder: FormBuilder) { }
 

@@ -212,7 +212,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.hyperlinkLibrary:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkLibrary, index);
         case InputTypesConstants.external:
-        case 'custom-gps':
+        case 'string-wysiwyg':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
         case 'custom-my-field-test':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
