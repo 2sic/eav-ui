@@ -7,6 +7,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/services/feature.service';
+import { AdamConfig } from '../../../shared/models/adam/adam-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,18 +30,19 @@ export class AdamBrowserComponent implements OnInit {
   @Input() url;
 
   // Configuration
-  @Input() subFolder;
-  @Input() folderDepth;
+  subFolder = '';
+  folderDepth = 0;
   @Input() metadataContentTypes;
   @Input() showImagesOnly;
   @Input() showFolders;
   @Input() allowAssetsInRoot;
 
-  @Input() autoLoad;
+  autoLoad = false;
 
   @Input() adamModeConfig = { usePortalRoot: false };
   // this is configuration need change:
-  @Input() fileFilter;
+  // TODO: add this in config
+  fileFilter = '*.jpg,*.pdf.,*.css';
 
   // basic functionality
   @Input() disabled = false;
@@ -93,7 +95,6 @@ export class AdamBrowserComponent implements OnInit {
     // this.folders = this.svc.folders;
 
     if (this.autoLoad) {
-      console.log('autoload:');
       this.toggle(null);
     }
   }
@@ -243,11 +244,18 @@ export class AdamBrowserComponent implements OnInit {
     }
 
     if (this.show) {
-
       console.log('TOGGLE this.showImagesOnly', this.showImagesOnly);
       this.refresh();
       console.log('TOGGLE this.items', this.items);
     }
+  }
+
+  // TODO: add fileFiter
+  setConfig(adamConfig: AdamConfig) {
+    this.autoLoad = adamConfig.autoLoad;
+    this.folderDepth = adamConfig.folderDepth;
+    this.subFolder = adamConfig.subFolder;
+    this.toggle(null);
   }
 
   private itemDefinition = function (item, metadataType) {

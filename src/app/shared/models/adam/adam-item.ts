@@ -19,3 +19,5 @@ export class AdamItem {
         this.FullPath = FullPath;
     }
 }
+
+

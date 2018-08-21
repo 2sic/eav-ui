@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -34,6 +35,10 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
 
       // return value from form
       // this.config.adam.getValueCallback = () =>
+      this.config.adam.afterUploadCallback = (fileItem) => { };
+
+      // set adam configuration
+      this.config.adam.setConfig(new AdamConfig(true, 0, this.config.settings.folderDepth));
     }
   }
 }
