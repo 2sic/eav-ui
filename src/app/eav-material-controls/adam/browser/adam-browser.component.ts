@@ -41,7 +41,6 @@ export class AdamBrowserComponent implements OnInit {
   allowAssetsInRoot;
   subFolder = '';
   enableSelect = true;
-  // fileFilter = '*.jpg,*.pdf.,*.css';
   fileFilter = '';
   folderDepth = 0;
   metadataContentTypes;
