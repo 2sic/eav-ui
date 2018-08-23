@@ -1,8 +1,8 @@
 <div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled" (error)="onUploadError($event)"
   (success)="onUploadSuccess($event)" (drop)="onDrop($event)">
   <ng-container #fieldComponent></ng-container>
-  <!-- [autoLoad]="false" [folderDepth]="0" [subFolder]="" fileFilter="*.jpg,*.pdf.,*.css"-->
-  <adam-browser (openUpload)="openUpload()" [url]="url" [enableSelect]="true" [metadataOfCmsObject]="">
+  <!-- [autoLoad]="false" [folderDepth]="0" [subFolder]="" fileFilter="*.jpg,*.pdf.,*.css" [enableSelect]="true"-->
+  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="">
   </adam-browser>
   <!-- ng-show="uploading" -->
   <div class="{{'field-' + config.index}}">

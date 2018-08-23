@@ -153,7 +153,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.contentType$
       .pipe(
         switchMap((data) => {
-          const parentFieldGroup = this.createEmptyFieldGroup('Edit item', false);
+          const parentFieldGroup = this.createEmptyFieldGroup(null, false);
           let currentFieldGroup = parentFieldGroup;
           // loop through contentType attributes
           data.contentType.attributes.forEach((attribute, index) => {
@@ -161,7 +161,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
             // if input type is empty-default create new field group and than continue to add fields to that group
             if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
               const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
-              currentFieldGroup = this.createEmptyFieldGroup(attribute.name, collapsed);
+              currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
               parentFieldGroup.fieldGroup.push(currentFieldGroup);
             } else {
               currentFieldGroup.fieldGroup.push(formlyFieldConfig);
@@ -244,24 +244,29 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       ? settingsTranslated.Disabled : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
         this.item.entity.attributes[attribute.name], attribute.name));
 
-    const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+    // const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+    const label = attribute !== null
+      ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
+      : null;
+
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
     return {
       // valueKey: `${attribute.name}.values[0].value`,
+      // pattern: pattern,
+      disabled: disabled,
       entityId: this.item.entity.id,
+      fullSettings: attribute.settings,
       header: this.item.header,
-      value: value,
-      name: attribute.name,
-      type: inputType, // TODO see do we need this
+      index: index,
       label: label,
+      name: attribute.name,
       placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
       required: required,
-      // pattern: pattern,
       settings: settingsTranslated,
-      fullSettings: attribute.settings,
+      type: inputType, // TODO see do we need this
       validation: validationList,
-      disabled: disabled,
-      index: index
+      value: value,
+      wrappers: ['app-hidden-wrapper'],
     };
   }
 
@@ -299,6 +304,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * loop trough all controls and set disable control if needed
    * @param allAttributes
    * @param currentLanguage
+   * @param defaultLanguage
    */
   private disableControlsForCurrentLanguage(allAttributes: EavAttributes, currentLanguage: string, defaultLanguage: string) {
     Object.keys(this.item.entity.attributes).forEach(attributeKey => {
@@ -310,18 +316,24 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Create title field group with collapsible wrapper
-   * @param title
-   * @param collapse
    */
-  private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
+  private createEmptyFieldGroup = (attribute: AttributeDef, collapse: boolean): FieldConfig => {
+    let settingsTranslated = null;
+    if (attribute) {
+      settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
+    }
+
     return {
-      name: name,
-      header: this.item.header,
-      type: InputTypesConstants.emptyDefault,
-      wrappers: ['app-collapsible-wrapper'],
-      label: name,
       collapse: collapse,
       fieldGroup: [],
+      header: this.item.header,
+      label: attribute !== null
+        ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
+        : 'Edit Item',
+      name: attribute !== null ? attribute.name : 'Edit Item',
+      settings: settingsTranslated,
+      type: InputTypesConstants.emptyDefault,
+      wrappers: ['app-collapsible-wrapper'],
     };
   }
 }

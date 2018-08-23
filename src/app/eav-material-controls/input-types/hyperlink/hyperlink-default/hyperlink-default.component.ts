@@ -8,6 +8,7 @@ import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { Subscription } from 'rxjs';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
+import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,9 +34,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   // adam: any;
   private subscriptions: Subscription[] = [];
 
-  // private adamModeConfig = {
-  //   usePortalRoot: false
-  // };
+  private adamModeConfig: AdamModeConfig = {
+    usePortalRoot: false
+  };
 
   get value() {
     return this.group.controls[this.config.name].value;
@@ -51,6 +52,10 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     // then the wrapper will enable/disable the field, depending on the dimension state\
     // so if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
     return this.config.settings.ShowAdam ? this.config.settings.ShowAdam : true;
+  }
+
+  get fileFilter() {
+    return this.config.settings.FileFilter || '';
   }
 
   get buttons(): string {
@@ -190,6 +195,38 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
       // return value from form
       this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+
+      // set adam configuration (initial config)
+      // this.config.adam.setConfig(
+      //   new AdamConfig(this.adamModeConfig,
+      //     true, // allowAssetsRoot
+      //     false, // autoLoad
+      //     true, // enableSelect
+      //     this.fileFilter, // fileFilter
+      //     0, // folderDepth
+      //     '', // metadataContentTypes
+      //     '', // subFolder
+      //   )
+      // );
+      console.log('HyperDefault setConfig : ', Object.assign(new AdamConfig(), {
+        adamModeConfig: this.adamModeConfig,
+        fileFilter: this.fileFilter
+      }));
+
+      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
+        adamModeConfig: this.adamModeConfig,
+        fileFilter: this.fileFilter
+      }));
+      //   new AdamConfig(this.adamModeConfig,
+      //     true, // allowAssetsInRoot
+      //     false, // autoLoad
+      //     true, // enableSelect
+      //     this.fileFilter, // fileFilter
+      //     0, // folderDepth
+      //     '', // metadataContentTypes
+      //     '', // subFolder
+
+
     }
   }
 
