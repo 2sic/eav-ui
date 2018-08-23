@@ -11,4 +11,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config;
+
+  get notes() {
+    return this.config.settings ? (this.config.settings.Notes || '') : '';
+  }
 }
