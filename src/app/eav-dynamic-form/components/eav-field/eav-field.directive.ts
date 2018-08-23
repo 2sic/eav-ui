@@ -95,6 +95,10 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig): ComponentRef<any> {
+    if (fieldConfig.wrappers) {
+      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
+    }
+
     const componentType = this.readComponentType(fieldConfig.type);
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);

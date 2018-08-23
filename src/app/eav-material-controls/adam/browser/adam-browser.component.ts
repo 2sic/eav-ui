@@ -36,15 +36,15 @@ export class AdamBrowserComponent implements OnInit {
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
   // Configuration
-  autoLoad = false;
   adamModeConfig = { usePortalRoot: false };
   allowAssetsInRoot;
-  subFolder = '';
+  autoLoad = false;
   enableSelect = true;
   fileFilter = '';
   folderDepth = 0;
   metadataContentTypes;
   showImagesOnly;
+  subFolder = '';
 
   showFolders;
 
@@ -55,9 +55,9 @@ export class AdamBrowserComponent implements OnInit {
 
   allowedFileTypes = [];
   clipboardPasteImageFunctionalityDisabled = true;
-  oldConfig;
   items: AdamItem[];
   items$: Observable<AdamItem[]>; // = this.svc.liveList();
+  oldConfig;
   svc;
 
   private eavConfig: EavConfiguration;
@@ -254,9 +254,9 @@ export class AdamBrowserComponent implements OnInit {
     this.enableSelect = adamConfig.enableSelect;
     this.fileFilter = adamConfig.fileFilter;
     this.folderDepth = adamConfig.folderDepth;
-    this.subFolder = adamConfig.subFolder;
     this.metadataContentTypes = adamConfig.metadataContentTypes;
     this.showImagesOnly = adamConfig.showImagesOnly;
+    this.subFolder = adamConfig.subFolder;
 
     // Reload configuration
     this.initConfig();

@@ -248,20 +248,21 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
     return {
       // valueKey: `${attribute.name}.values[0].value`,
+      // pattern: pattern,
+      disabled: disabled,
       entityId: this.item.entity.id,
+      fullSettings: attribute.settings,
       header: this.item.header,
-      value: value,
-      name: attribute.name,
-      type: inputType, // TODO see do we need this
+      index: index,
       label: label,
+      name: attribute.name,
       placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
       required: required,
-      // pattern: pattern,
       settings: settingsTranslated,
-      fullSettings: attribute.settings,
+      type: inputType, // TODO see do we need this
       validation: validationList,
-      disabled: disabled,
-      index: index
+      value: value,
+      wrappers: ['app-hidden-wrapper'],
     };
   }
 
@@ -315,13 +316,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private createEmptyFieldGroup = (name: string, collapse: boolean): FieldConfig => {
     return {
-      name: name,
-      header: this.item.header,
-      type: InputTypesConstants.emptyDefault,
-      wrappers: ['app-collapsible-wrapper'],
-      label: name,
       collapse: collapse,
       fieldGroup: [],
+      header: this.item.header,
+      label: name,
+      name: name,
+      type: InputTypesConstants.emptyDefault,
+      wrappers: ['app-collapsible-wrapper'],
     };
   }
 }

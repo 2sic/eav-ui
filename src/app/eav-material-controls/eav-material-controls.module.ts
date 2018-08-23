@@ -56,6 +56,7 @@ import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
 import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
+import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-lib
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
-    ClickStopPropagationDirective
+    ClickStopPropagationDirective,
+    HiddenWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -129,7 +131,8 @@ import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-lib
     HyperlinkDefaultComponent,
     HyperlinkLibraryComponent,
     ExternalComponent,
-    DropzoneComponent
+    DropzoneComponent,
+    HiddenWrapperComponent
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [FileTypeService, ValidationMessagesService]
