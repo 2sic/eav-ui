@@ -13,6 +13,7 @@ import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
+import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -149,6 +150,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
       return {
         toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2)
+        setAdamConfig: (adamConfig: AdamConfig) => this.config.adam.setConfig(adamConfig),
         adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
       };
     }

@@ -29,47 +29,43 @@ export class AdamBrowserComponent implements OnInit {
   // New Configuration
   @Input() url;
 
-  // Configuration
-  subFolder = '';
-  folderDepth = 0;
-  @Input() metadataContentTypes;
-  @Input() showImagesOnly;
-  @Input() showFolders;
-  @Input() allowAssetsInRoot;
-
-  autoLoad = false;
-
-  @Input() adamModeConfig = { usePortalRoot: false };
-  // this is configuration need change:
-  // TODO: add this in config
-  fileFilter = '*.jpg,*.pdf.,*.css';
-
   // basic functionality
   @Input() disabled = false;
-  @Input() enableSelect;
-
   @Input() show = false;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
+
+  // Configuration
+  autoLoad = false;
+  adamModeConfig = { usePortalRoot: false };
+  allowAssetsInRoot;
+  subFolder = '';
+  enableSelect = true;
+  // fileFilter = '*.jpg,*.pdf.,*.css';
+  fileFilter = '';
+  folderDepth = 0;
+  metadataContentTypes;
+  showImagesOnly;
+
+  showFolders;
 
   // callback is set in attachAdam
   updateCallback;
   afterUploadCallback;
   getValueCallback;
-  oldConfig;
+
+  allowedFileTypes = [];
   clipboardPasteImageFunctionalityDisabled = true;
+  oldConfig;
+  items: AdamItem[];
+  items$: Observable<AdamItem[]>; // = this.svc.liveList();
+  svc;
+
+  private eavConfig: EavConfiguration;
 
   get folders() {
     return this.svc ? this.svc.folders : [];
   }
-
-  items: AdamItem[];
-  svc;
-
-  items$: Observable<AdamItem[]>; // = this.svc.liveList();
-  allowedFileTypes = [];
-
-  private eavConfig: EavConfiguration;
 
   constructor(private adamService: AdamService,
     private fileTypeService: FileTypeService,
@@ -244,18 +240,31 @@ export class AdamBrowserComponent implements OnInit {
     }
 
     if (this.show) {
-      console.log('TOGGLE this.showImagesOnly', this.showImagesOnly);
       this.refresh();
-      console.log('TOGGLE this.items', this.items);
     }
   }
 
-  // TODO: add fileFiter
+  /**
+   * set configuration (called from input type)
+   * @param adamConfig
+   */
   setConfig(adamConfig: AdamConfig) {
+    console.log('adam browser setAdamConfig', adamConfig);
+    this.allowAssetsInRoot = adamConfig.allowAssetsInRoot;
     this.autoLoad = adamConfig.autoLoad;
+    this.enableSelect = adamConfig.enableSelect;
+    this.fileFilter = adamConfig.fileFilter;
     this.folderDepth = adamConfig.folderDepth;
     this.subFolder = adamConfig.subFolder;
-    this.toggle(null);
+    this.metadataContentTypes = adamConfig.metadataContentTypes;
+    this.showImagesOnly = adamConfig.showImagesOnly;
+
+    // Reload configuration
+    this.initConfig();
+    this.show = this.autoLoad;
+    if (this.show) {
+      this.refresh();
+    }
   }
 
   private itemDefinition = function (item, metadataType) {
