@@ -11,7 +11,7 @@ import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 // TODO: fix this dependency
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import {
-  Item, ContentType, EavAttributes, EavValues
+  Item, ContentType, EavAttributes, EavValues, EavAttributesTranslated, EavHeader
 } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
@@ -22,6 +22,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import isEmpty from 'lodash/isEmpty';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -101,7 +102,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
-      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage,
+        this.defaultLanguage, this.item.header.guid);
     }
 
     // emit event to perent
@@ -141,7 +143,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
+    // Content type read allways from header ???
+    this.contentType$ = this.contentTypeService.getContentTypeById(
+      this.item.entity.type === null ? this.item.header.contentTypeName : this.item.entity.type.id
+    );
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
@@ -167,6 +172,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
               currentFieldGroup.fieldGroup.push(formlyFieldConfig);
             }
           });
+
           return of([parentFieldGroup]);
         })
       );
@@ -237,14 +243,22 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const required = settingsTranslated.Required ? settingsTranslated.Required : false;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Required, false);
     // attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
+    let value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
+    if (!value) {
+      value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
+      this.itemService.addAttributeValue(this.item.entity.id, attribute.name,
+        value, this.currentLanguage, false, this.item.header.guid);
+    }
 
+    // const disabled = false;
     const disabled: boolean = settingsTranslated.Disabled
-      ? settingsTranslated.Disabled : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
-        this.item.entity.attributes[attribute.name], attribute.name));
-
-    // const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+      ? settingsTranslated.Disabled
+      : isEmpty(this.item.entity.attributes) ?
+        false
+        : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
+          this.item.entity.attributes[attribute.name], attribute.name));
+    //// const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     const label = attribute !== null
       ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
       : null;
@@ -254,7 +268,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // valueKey: `${attribute.name}.values[0].value`,
       // pattern: pattern,
       disabled: disabled,
-      entityId: this.item.entity.id,
+      entityId: this.item.entity === null ? 0 : this.item.entity.id,
       fullSettings: attribute.settings,
       header: this.item.header,
       index: index,
@@ -268,6 +282,45 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       value: value,
       wrappers: ['app-hidden-wrapper'],
     };
+  }
+
+  parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
+    let defaultValue = settings.DefaultValue;
+
+    if (header.prefill && header.prefill[attributeKey]) {
+      defaultValue = header.prefill[attributeKey];
+    }
+
+    switch (inputType) {
+      case InputTypesConstants.booleanDefault:
+        return defaultValue !== undefined && defaultValue !== null ? defaultValue.toLowerCase() === 'true' : false;
+      case InputTypesConstants.datetimeDefault:
+        return defaultValue !== undefined && defaultValue !== null && defaultValue !== '' ? new Date(defaultValue) : null;
+      case InputTypesConstants.numberDefault:
+        return defaultValue !== undefined && defaultValue !== null && defaultValue !== '' ? Number(defaultValue) : '';
+      case InputTypesConstants.entityDefault:
+        if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
+          return []; // no default value
+        }
+        // 3 possibilities
+        if (defaultValue.constructor === Array) { return defaultValue; }  // possibility 1) an array
+
+        // for possibility 2 & 3, do some variation checking
+        if (defaultValue.indexOf('{') > -1) { // string has { } characters, we must switch them to quotes
+          defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
+        }
+
+        if (defaultValue.indexOf(',') !== -1 && defaultValue.indexOf('[') === -1) { // list but no array, add brackets
+          defaultValue = '[' + defaultValue + ']';
+        }
+
+        return (defaultValue.indexOf('[') === 0) // possibility 2) an array with guid strings
+          ? JSON.parse(defaultValue) // if it's a string containing an array
+          : [defaultValue.replace(/"/g, '')]; //  possibility 3) just a guid string, but might have quotes
+
+      default:
+        return defaultValue ? defaultValue : '';
+    }
   }
 
   /**

@@ -60,7 +60,7 @@ describe(`itemReducer`, () => {
                 new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', [])
             );
             const expectedResult = { items: [updatedItem] };
-            const action = new itemActions.UpdateItemAction(updatedItem.entity.attributes, updatedItem.entity.id);
+            const action = new itemActions.UpdateItemAction(updatedItem.entity.attributes, updatedItem.entity.id, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             // we changed attribute TestKey from true to false
@@ -113,7 +113,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeAction(updatedItem.entity.id,
-                updatedItem.entity.attributes['TestKey'], 'TestKey');
+                updatedItem.entity.attributes['TestKey'], 'TestKey', updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             // we add 'de-de' dimension
@@ -162,7 +162,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Value update', 'en-us', 'en-us', false);
+                'Value update', 'en-us', 'en-us', false, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -210,7 +210,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Value update', 'en-us', 'en-us', true);
+                'Value update', 'en-us', 'en-us', true, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -258,7 +258,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Value update', 'en-us', 'en-us', false);
+                'Value update', 'en-us', 'en-us', false, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             // we add 'de-de' dimension
@@ -337,7 +337,7 @@ describe(`itemReducer`, () => {
             const updateValues = { 'TestKey': 'Value update', 'TestKey2': 'Second Value update' };
 
             const action = new itemActions.UpdateItemAttributesValuesAction(updatedItem.entity.id, updateValues,
-                'en-us', 'en-us');
+                'en-us', 'en-us', updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0].value)
@@ -415,7 +415,7 @@ describe(`itemReducer`, () => {
             const updateValues = { 'TestKey': 'Value update', 'TestKey2': 'Second Value update' };
 
             const action = new itemActions.UpdateItemAttributesValuesAction(updatedItem.entity.id, updateValues,
-                'en-us', 'en-us');
+                'en-us', 'en-us', updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0].value)
@@ -483,8 +483,56 @@ describe(`itemReducer`, () => {
                 ]
             };
 
-            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey');
+            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey', updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
+            expect(result.items[0].entity.attributes['TestKey'])
+                .toEqual(expectedResult.items[0].entity.attributes['TestKey']);
+        });
+
+        it(`should ADD_ITEM_ATTRIBUTE_VALUE new entity and attributes empty - by header guid`, () => {
+            // let currentEavAtribute: EavAttributes; // = new EavAttributes();
+            const currentEavAtribute = {};
+
+            const currentItem: Item = new Item(
+                new EavHeader(1, 1, '10000000-0000-0000-0000-000000000001', '', [], null, null, null, null),
+                new EavEntity(0, 1, '', new EavType('', ''), currentEavAtribute, '', [])
+            );
+            const currentItemState = { items: [currentItem] };
+            // let updatedEavAtribute: EavAttributes; // = new EavAttributes();
+            const updatedEavAtribute = {
+                'TestKey': {
+                    values: [
+                        {
+                            value: 'Value de-de',
+                            dimensions: [
+                                {
+                                    value: 'de-de'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            const updatedItem: Item = new Item(
+                new EavHeader(1, 1, '10000000-0000-0000-0000-000000000001', '', [], null, null, null, null),
+                new EavEntity(0, 1, '', new EavType('', ''), updatedEavAtribute, '', []
+                ));
+            const expectedResult = { items: [updatedItem] };
+
+            const newValue = {
+                value: 'Value de-de',
+                dimensions: [
+                    {
+                        value: 'de-de'
+                    }
+                ]
+            };
+
+            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey', updatedItem.header.guid);
+            console.log('result1:', currentItemState);
+            const result = itemReducer(currentItemState, action);
+            console.log('result 5:', result);
             expect(result.items[0].entity.attributes['TestKey'])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey']);
         });
@@ -615,7 +663,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
-                'de-de', 'en-us', 'en-us', false);
+                'de-de', 'en-us', 'en-us', false, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -667,7 +715,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
-                'de-de', 'en-us', 'en-us', true);
+                'de-de', 'en-us', 'en-us', true, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -719,7 +767,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
 
             const action = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
-                'de-de', 'en-us', 'en-us', false);
+                'de-de', 'en-us', 'en-us', false, updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -769,7 +817,8 @@ describe(`itemReducer`, () => {
                 new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
                 ));
             const expectedResult = { items: [updatedItem] };
-            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', currentItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -824,7 +873,8 @@ describe(`itemReducer`, () => {
                 new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
                 ));
             const expectedResult = { items: [updatedItem] };
-            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', currentItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values[0])
@@ -879,7 +929,8 @@ describe(`itemReducer`, () => {
                 new EavEntity(1, 1, '', new EavType('', ''), updatedEavAtribute, '', []
                 ));
             const expectedResult = { items: [updatedItem] };
-            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const action = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', currentItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values)
@@ -950,7 +1001,7 @@ describe(`itemReducer`, () => {
             const expectedResult = { items: [updatedItem] };
             // important - ValueUpdated value get from en-us then update de-de
             const action = new itemActions.UpdateItemAttributeValueAction(updatedItem.entity.id, 'TestKey',
-                'Value', 'de-de', 'en-us', false);
+                'Value', 'de-de', 'en-us', false, updatedItem.header.guid);
 
             const result = itemReducer(currentItemState, action);
             console.log('result', result);
@@ -1020,7 +1071,7 @@ describe(`itemReducer`, () => {
             };
 
             const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, eavValueCopyFromEn,
-                'TestKey');
+                'TestKey', updatedItem.header.guid);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values)
@@ -1071,11 +1122,12 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = { items: [updatedItem] };
 
-            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', currentItem.header.guid);
             const firstActionResultState = itemReducer(currentItemState, action1);
 
             const action2 = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
-                'de-de', 'en-us', 'en-us', true);
+                'de-de', 'en-us', 'en-us', true, currentItem.header.guid);
             const finalResult = itemReducer(firstActionResultState, action2);
 
             expect(finalResult.items[0].entity.attributes['TestKey'].values)
@@ -1126,11 +1178,12 @@ describe(`itemReducer`, () => {
                 ));
             const expectedResult = { items: [updatedItem] };
 
-            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey', 'de-de');
+            const action1 = new itemActions.RemoveItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
+                'de-de', currentItem.header.guid);
             const firstActionResultState = itemReducer(currentItemState, action1);
 
             const action2 = new itemActions.AddItemAttributeDimensionAction(currentItem.entity.id, 'TestKey',
-                'de-de', 'en-us', 'en-us', false);
+                'de-de', 'en-us', 'en-us', false, currentItem.header.guid);
             const finalResult = itemReducer(firstActionResultState, action2);
 
             expect(finalResult.items[0].entity.attributes['TestKey'].values)

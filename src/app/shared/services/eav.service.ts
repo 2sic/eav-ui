@@ -50,6 +50,7 @@ export class EavService {
 
   public loadAllDataForForm(appId: string, items: string): Observable<any> {
     const body = items.replace(/"/g, '\'');
+    // const body = JSON.stringify([{ 'EntityId': 3870 }]);
     // const body = JSON.stringify([{ 'EntityId': 2809 }]);
     // const body = JSON.stringify([{ 'EntityId': 1033 }]);
     // const body = JSON.stringify([{ 'EntityId': 3861 }]);
