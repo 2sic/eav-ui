@@ -122,11 +122,14 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
       scriptModelList.push(scriptModel);
     });
 
-    this.scriptLoaderService.loadList(scriptModelList, 'css').subscribe(s => {
-      if (s !== null) {
-        this.icons = this.getIconClasses(this.prefix);
-      }
-    });
+    const scriptList: Observable<ScriptModel[]> = this.scriptLoaderService.loadList(scriptModelList, 'css');
+    if (scriptList) {
+      scriptList.subscribe(s => {
+        if (s !== null) {
+          this.icons = this.getIconClasses(this.prefix);
+        }
+      });
+    }
   }
 
   setIcon(iconClass: any, formControlName: string) {

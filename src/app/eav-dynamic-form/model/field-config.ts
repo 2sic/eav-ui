@@ -4,6 +4,7 @@ import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/a
 
 export interface FieldConfig {
     entityId?: number;
+    entityGuid?: string;
     header?: EavHeader;
     disabled?: boolean;
     label?: string;

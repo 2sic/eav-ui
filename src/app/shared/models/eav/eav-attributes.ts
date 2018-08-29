@@ -49,7 +49,10 @@ export class EavAttributes {
             eavEntityArray.forEach(eavEntity => {
                 if (eavEntity.type.id === '@All') {
                     Object.keys(eavEntity.attributes).forEach(attributeKey => {
-                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                        // Not rewrite if value is string empty
+                        if (!(newEavAtribute[attributeKey] && eavEntity.attributes[attributeKey].values[0].value === '')) {
+                            newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+                        }
                     });
                 }
             });
@@ -70,5 +73,7 @@ export class EavAttributes {
 
         return eavAttributes;
     }
+
+
 
 }

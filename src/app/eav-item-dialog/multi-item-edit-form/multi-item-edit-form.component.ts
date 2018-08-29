@@ -128,7 +128,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   trackByFn(index, item) {
-    return item.entity.id;
+    return item.entity.id === 0 ? item.entity.guid : item.entity.id;
   }
 
   /**
@@ -146,7 +146,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     } else {  // else dialog type load without entity ids. (edit - toolbar)
       this.eavService.loadAllDataForForm(this.eavConfig.appId, this.eavConfig.items).subscribe(data => {
         this.afterLoadItemsData(data);
-        this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
+        // this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
       });
     }
   }
@@ -156,7 +156,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.inputTypeService.loadInputTypes(data.InputTypes);
     this.contentTypeService.loadContentTypes(data.ContentTypes);
     this.setPublishMode(data.Items);
-    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
+    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
   }
 
   /**

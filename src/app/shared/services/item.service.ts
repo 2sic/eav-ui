@@ -39,26 +39,27 @@ export class ItemService {
     });
   }
 
-  public updateItem(attributes: EavAttributes, id: number) {
-    this.store.dispatch(new itemActions.UpdateItemAction(attributes, id));
+  public updateItem(attributes: EavAttributes, id: number, guid: string) {
+    this.store.dispatch(new itemActions.UpdateItemAction(attributes, id, guid));
   }
 
-  public updateItemAttribute(entityId: number, newEavAttribute: EavValues<any>, attributeKey: string) {
-    this.store.dispatch(new itemActions.UpdateItemAttributeAction(entityId, newEavAttribute, attributeKey));
+  public updateItemAttribute(entityId: number, newEavAttribute: EavValues<any>, attributeKey: string, guid: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributeAction(entityId, newEavAttribute, attributeKey, guid));
   }
 
-  public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string) {
-    this.store.dispatch(new itemActions.AddItemAttributeValueAction(entityId, newEavAttributeValue, attributeKey));
+  public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string, guid: string) {
+    this.store.dispatch(new itemActions.AddItemAttributeValueAction(entityId, newEavAttributeValue, attributeKey, guid));
   }
 
   public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
     this.store.dispatch(new itemActions.UpdateItemAttributeValueAction(entityId, attributeKey, newEavAttributeValue,
-      existingDimensionValue, defaultLanguage, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly, guid));
   }
 
-  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string) {
-    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey, defaultLanguage));
+  public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any },
+    languageKey: string, defaultLanguage: string, guid: string) {
+    this.store.dispatch(new itemActions.UpdateItemAttributesValuesAction(entityId, updateValues, languageKey, defaultLanguage, guid));
   }
 
   /**
@@ -66,13 +67,13 @@ export class ItemService {
   * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
   * */
   public addItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean) {
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
     this.store.dispatch(new itemActions.AddItemAttributeDimensionAction(entityId, attributeKey, dimensionValue,
-      existingDimensionValue, defaultLanguage, isReadOnly));
+      existingDimensionValue, defaultLanguage, isReadOnly, guid));
   }
 
-  public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string) {
-    this.store.dispatch(new itemActions.RemoveItemAttributeDimensionAction(entityId, attributeKey, dimensionValue));
+  public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string, guid: string) {
+    this.store.dispatch(new itemActions.RemoveItemAttributeDimensionAction(entityId, attributeKey, dimensionValue, guid));
   }
 
   // public updateItem(attributes: EavAttributes, item: EavItem) {
@@ -82,10 +83,10 @@ export class ItemService {
   addAttributeValue(
     entityId: number,
     attributeKey: string,
-    oldAttributeValues: EavValues<any>,
     newValue: any,
     languageKey: string,
-    isReadOnly: boolean) {
+    isReadOnly: boolean,
+    guid: string) {
 
     let newLanguageValue = languageKey;
 
@@ -95,26 +96,26 @@ export class ItemService {
 
     const newEavValue = new EavValue(newValue, [new EavDimensions(newLanguageValue)]);
 
-    this.addItemAttributeValue(entityId, newEavValue, attributeKey);
+    this.addItemAttributeValue(entityId, newEavValue, attributeKey, guid);
   }
 
   public deleteItem(item: Item) {
     this.store.dispatch(new itemActions.DeleteItemAction(item));
   }
 
-  public selectAttributeByEntityId(entityId: number, attributeKey: string): Observable<EavValues<any>> {
-    return this.store
-      .select(fromStore.getItems)
-      .pipe(map(c => c.find(obj => obj.entity.id === entityId)
-        ? c.find(obj => obj.entity.id === entityId).entity.attributes[attributeKey]
-        : null));
-  }
+  // public selectAttributeByEntityId(entityId: number, attributeKey: string, guid: string): Observable<EavValues<any>> {
+  //   return this.store
+  //     .select(fromStore.getItems)
+  //     .pipe(map(c => c.find(obj => obj.entity.id === 0 ? obj.header.guid === guid : obj.entity.id === entityId)
+  //       ? c.find(obj => obj.entity.id === entityId).entity.attributes[attributeKey]
+  //       : null));
+  // }
 
-  public selectAttributesByEntityId(entityId: number): Observable<EavAttributes> {
+  public selectAttributesByEntityId(entityId: number, guid: string): Observable<EavAttributes> {
     return this.store
       .select(fromStore.getItems)
-      .pipe(map(c => c.find(obj => obj.entity.id === entityId)
-        ? c.find(obj => obj.entity.id === entityId).entity.attributes
+      .pipe(map(c => c.find(obj => obj.entity.id === 0 ? obj.entity.guid === guid : obj.entity.id === entityId)
+        ? c.find(obj => obj.entity.id === 0 ? obj.entity.guid === guid : obj.entity.id === entityId).entity.attributes
         : null));
   }
 
@@ -122,19 +123,23 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-  public selectItemById(id: number): Observable<Item> {
-    return this.store
-      .select(fromStore.getItems)
-      .pipe(map(data => data.find(obj => obj.entity.id === id)));
-  }
+  // public selectItemById(id: number): Observable<Item> {
+  //   return this.store
+  //     .select(fromStore.getItems)
+  //     .pipe(map(data => data.find(obj => obj.entity.id === id)));
+  // }
+
   /**
    * Select items from store by id array list
    * @param idsList
    */
-  public selectItemsByIdList(idsList: number[]): Observable<Item[]> {
+  public selectItemsByIdList(idsList: any[]): Observable<Item[]> {
     return this.store
       .select(fromStore.getItems)
-      .pipe(map(data => data.filter(obj => idsList.filter(id => id === obj.entity.id).length > 0)));
+      .pipe(map(data => {
+        console.log('[Empty Entity] data:', data);
+        return data.filter(obj => obj.entity === null || idsList.filter(id => id === obj.entity.id || id === obj.entity.guid).length > 0);
+      }));
   }
 
   // public selectItemById(id: number): Observable<Item> {

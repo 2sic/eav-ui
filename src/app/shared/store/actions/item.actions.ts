@@ -42,18 +42,18 @@ export class LoadItemSuccessAction implements Action {
  */
 export class AddItemAttributeAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE;
-    constructor(public id: number, public attribute: EavValues<any>, public attributeKey) { }
+    constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string, public guid: string) { }
 }
 
 export class AddItemAttributeValueAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_VALUE;
-    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey) { }
+    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey: string, public guid: string) { }
 }
 
 export class AddItemAttributeDimensionAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
-        public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean) { }
+        public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean, public guid: string) { }
 }
 
 /**
@@ -61,7 +61,7 @@ export class AddItemAttributeDimensionAction implements Action {
  */
 export class UpdateItemAction implements Action {
     readonly type = UPDATE_ITEM;
-    constructor(public attributes: EavAttributes, public id: number) { }
+    constructor(public attributes: EavAttributes, public id: number, public guid: string) { }
 }
 export class UpdateItemSuccessAction implements Action {
     readonly type = UPDATE_ITEM_SUCCESS;
@@ -70,19 +70,19 @@ export class UpdateItemSuccessAction implements Action {
 
 export class UpdateItemAttributeAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTE;
-    constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string) { }
+    constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string, public guid: string) { }
 }
 
 export class UpdateItemAttributeValueAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTE_VALUE;
     constructor(public id: number, public attributeKey: string, public attributeValue: string,
-        public existingLanguageKey: string, public defaultLanguage: string, public isReadOnly: boolean) { }
+        public existingLanguageKey: string, public defaultLanguage: string, public isReadOnly: boolean, public guid: string) { }
 }
 
 export class UpdateItemAttributesValuesAction implements Action {
     readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
     constructor(public id: number, public updateValues: { [key: string]: any },
-        public existingLanguageKey: string, public defaultLanguage: string) { }
+        public existingLanguageKey: string, public defaultLanguage: string, public guid: string) { }
 }
 
 /**
@@ -114,7 +114,7 @@ export class SaveItemAttributesValuesErrorAction implements Action {
 
 export class RemoveItemAttributeDimensionAction implements Action {
     readonly type = REMOVE_ITEM_ATTRIBUTE_DIMENSION;
-    constructor(public id: number, public attributeKey: string, public dimensionValue: string) { }
+    constructor(public id: number, public attributeKey: string, public dimensionValue: string, public guid: string) { }
 }
 /**
  * Delete

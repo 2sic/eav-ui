@@ -11,7 +11,7 @@ import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 // TODO: fix this dependency
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import {
-  Item, ContentType, EavAttributes, EavValues
+  Item, ContentType, EavAttributes, EavValues, EavAttributesTranslated, EavHeader
 } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
@@ -22,6 +22,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import isEmpty from 'lodash/isEmpty';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -101,7 +102,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
-      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage, this.defaultLanguage);
+      this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage,
+        this.defaultLanguage, this.item.entity.guid);
     }
 
     // emit event to perent
@@ -141,7 +143,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(this.item.entity.type.id);
+    // Content type read allways from header ???
+    this.contentType$ = this.contentTypeService.getContentTypeById(
+      this.item.entity.type === null ? this.item.header.contentTypeName : this.item.entity.type.id
+    );
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
@@ -159,7 +164,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           data.contentType.attributes.forEach((attribute, index) => {
             const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
             // if input type is empty-default create new field group and than continue to add fields to that group
-            if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) {
+            if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
+              || attribute.type === InputTypesConstants.empty) {
               const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
               currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
               parentFieldGroup.fieldGroup.push(currentFieldGroup);
@@ -167,6 +173,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
               currentFieldGroup.fieldGroup.push(formlyFieldConfig);
             }
           });
+
           return of([parentFieldGroup]);
         })
       );
@@ -174,45 +181,51 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   // TEST
   private loadFieldFromDefinitionTest(attribute: AttributeDef, index: number): FieldConfig {
-    if (attribute.settings.InputType.values[0].value === 'custom-gps') {
-      console.log('loadFieldFromDefinitionTest attribute:', attribute);
-    }
-
-    console.log('loadFieldFromDefinitionTest', attribute.settings.InputType);
-    if (attribute.settings.InputType) {
+    // if (attribute.settings.InputType.values[0].value === 'custom-gps') {
+    //   console.log('loadFieldFromDefinitionTest attribute:', attribute);
+    // }
+    if (attribute.settings.InputType || attribute.type) {
 
       // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
       //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
       // } else {
       //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
       // }
-
-      switch (attribute.settings.InputType.values[0].value) {
+      switch (attribute.settings.InputType.values[0].value ? attribute.settings.InputType.values[0].value : attribute.type) {
+        case InputTypesConstants.default:
         case InputTypesConstants.stringDefault:
+        case InputTypesConstants.string:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
         case InputTypesConstants.stringUrlPath:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath, index);
         // return this.loadFieldFromDefinitionStringUrlPath(attribute);
         case InputTypesConstants.booleanDefault:
+        case InputTypesConstants.boolean:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault, index);
         // return this.getStringIconFontPickerFormlyField(attribute);
+        case InputTypesConstants.dropdown:
         case InputTypesConstants.stringDropdown:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown, index);
         // return this.loadFieldFromDefinitionStringDropDown(attribute);
         case InputTypesConstants.datetimeDefault:
+        case InputTypesConstants.datetime:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault, index);
         case InputTypesConstants.numberDefault:
+        case InputTypesConstants.number:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault, index);
         case InputTypesConstants.stringFontIconPicker:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker, index);
         case InputTypesConstants.entityDefault:
+        case InputTypesConstants.entity:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault, index);
         case InputTypesConstants.hyperlinkDefault:
+        case InputTypesConstants.hyperlink:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault, index);
         case InputTypesConstants.hyperlinkLibrary:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkLibrary, index);
         case InputTypesConstants.external:
-        case 'string-wysiwyg':
+        case InputTypesConstants.wysiwyg:
+        case InputTypesConstants.stringWysiwyg:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
         case 'custom-my-field-test':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
@@ -237,14 +250,22 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const required = settingsTranslated.Required ? settingsTranslated.Required : false;
     // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Required, false);
     // attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
-    const value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
+    let value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
+    if (!value) {
+      value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
+      this.itemService.addAttributeValue(this.item.entity.id, attribute.name,
+        value, this.currentLanguage, false, this.item.entity.guid);
+    }
 
+    // const disabled = false;
     const disabled: boolean = settingsTranslated.Disabled
-      ? settingsTranslated.Disabled : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
-        this.item.entity.attributes[attribute.name], attribute.name));
-
-    // const label = settingsTranslated.Name ? settingsTranslated.Name : null;
+      ? settingsTranslated.Disabled
+      : this.item.entity.id === 0 ?
+        false
+        : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
+          this.item.entity.attributes[attribute.name], attribute.name));
+    //// const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     const label = attribute !== null
       ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
       : null;
@@ -255,6 +276,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // pattern: pattern,
       disabled: disabled,
       entityId: this.item.entity.id,
+      entityGuid: this.item.entity.guid,
       fullSettings: attribute.settings,
       header: this.item.header,
       index: index,
@@ -268,6 +290,45 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       value: value,
       wrappers: ['app-hidden-wrapper'],
     };
+  }
+
+  parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
+    let defaultValue = settings.DefaultValue;
+
+    if (header.prefill && header.prefill[attributeKey]) {
+      defaultValue = header.prefill[attributeKey];
+    }
+
+    switch (inputType) {
+      case InputTypesConstants.booleanDefault:
+        return defaultValue !== undefined && defaultValue !== null ? defaultValue.toLowerCase() === 'true' : false;
+      case InputTypesConstants.datetimeDefault:
+        return defaultValue !== undefined && defaultValue !== null && defaultValue !== '' ? new Date(defaultValue) : null;
+      case InputTypesConstants.numberDefault:
+        return defaultValue !== undefined && defaultValue !== null && defaultValue !== '' ? Number(defaultValue) : '';
+      case InputTypesConstants.entityDefault:
+        if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
+          return []; // no default value
+        }
+        // 3 possibilities
+        if (defaultValue.constructor === Array) { return defaultValue; }  // possibility 1) an array
+
+        // for possibility 2 & 3, do some variation checking
+        if (defaultValue.indexOf('{') > -1) { // string has { } characters, we must switch them to quotes
+          defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
+        }
+
+        if (defaultValue.indexOf(',') !== -1 && defaultValue.indexOf('[') === -1) { // list but no array, add brackets
+          defaultValue = '[' + defaultValue + ']';
+        }
+
+        return (defaultValue.indexOf('[') === 0) // possibility 2) an array with guid strings
+          ? JSON.parse(defaultValue) // if it's a string containing an array
+          : [defaultValue.replace(/"/g, '')]; //  possibility 3) just a guid string, but might have quotes
+
+      default:
+        return defaultValue ? defaultValue : '';
+    }
   }
 
   /**

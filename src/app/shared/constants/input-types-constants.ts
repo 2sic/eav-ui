@@ -5,6 +5,7 @@ export class InputTypesConstants {
     public static readonly stringDropdown: string = 'string-dropdown';
     public static readonly stringDropdownQuery: string = 'string-dropdown-query';
     public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
+    public static readonly stringWysiwyg: string = 'string-wysiwyg';
     // boolean
     public static readonly booleanDefault: string = 'boolean-default';
     // datetime
@@ -21,4 +22,18 @@ export class InputTypesConstants {
     public static readonly hyperlinkLibrary: string = 'hyperlink-library';
     // custom/files
     public static readonly external: string = 'external';
+
+    // old types
+    public static readonly dropdown: string = 'dropdown';
+    public static readonly wysiwyg: string = 'wysiwyg';
+    public static readonly default: string = 'default';
+
+    // attribute.type for old types
+    public static readonly string: string = 'String';
+    public static readonly hyperlink: string = 'Hyperlink';
+    public static readonly number: string = 'Number';
+    public static readonly boolean: string = 'Boolean';
+    public static readonly datetime: string = 'DateTime';
+    public static readonly entity: string = 'Entity';
+    public static readonly empty: string = 'Empty';
 }

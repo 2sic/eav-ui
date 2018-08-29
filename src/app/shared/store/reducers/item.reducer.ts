@@ -1,6 +1,7 @@
 import { Item } from '../../models/eav/item';
 import * as fromItems from '../actions/item.actions';
 import { LocalizationHelper } from '../../helpers/localization-helper';
+import isEmpty from 'lodash/isEmpty';
 
 // export interface ItemState {
 //     items: Array<{
@@ -41,7 +42,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
         case fromItems.LOAD_ITEM_SUCCESS: {
             // if item with same id not exist in store add item else overwrite item
             const itemExist = state.items.filter(data =>
-                data.entity.id === action.newItem.entity.id);
+                isEmpty(data.entity.attributes) === false && data.entity.id === action.newItem.entity.id);
             if (itemExist.length === 0) {
                 return {
                     ...state,
@@ -66,7 +67,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -85,7 +86,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -106,7 +107,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -126,7 +127,9 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.item.entity.id
+                        return (item.entity.id === 0
+                            ? item.entity.guid === action.item.entity.guid
+                            : item.entity.id === action.item.entity.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -146,7 +149,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -161,11 +164,12 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
             };
         }
         case fromItems.ADD_ITEM_ATTRIBUTE_VALUE: {
+            console.log('ADD_ITEM_ATTRIBUTE_VALUE: ', action);
             return {
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -184,7 +188,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -204,7 +208,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return item.entity.id === action.id
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -222,7 +226,9 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
             return {
                 ...state,
                 ...{
-                    items: state.items.filter(item => item.entity.id !== action.item.entity.id)
+                    items: state.items.filter(item => (item.entity.id === 0 ?
+                        item.entity.guid !== action.item.entity.guid
+                        : item.entity.id !== action.item.entity.id))
                 }
             };
         default: {
