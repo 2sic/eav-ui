@@ -128,7 +128,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   trackByFn(index, item) {
-    return item.entity.type === null ? item.header.guid : item.entity.id;
+    return item.entity.id === 0 ? item.entity.guid : item.entity.id;
   }
 
   /**
@@ -156,7 +156,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.inputTypeService.loadInputTypes(data.InputTypes);
     this.contentTypeService.loadContentTypes(data.ContentTypes);
     this.setPublishMode(data.Items);
-    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity === null ? item.Header.Guid : item.Entity.Id)));
+    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
   }
 
   /**

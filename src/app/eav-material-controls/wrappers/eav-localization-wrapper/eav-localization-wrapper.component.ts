@@ -60,7 +60,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   ngOnInit() {
-    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId, this.config.header.guid);
+    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId, this.config.entityGuid);
 
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
@@ -86,7 +86,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   translateUnlink(attributeKey: string) {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.header.guid);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
 
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
@@ -96,7 +96,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     if (defaultValue) {
       this.itemService.addAttributeValue(this.config.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.header.guid);
+        this.currentLanguage, false, this.config.entityGuid);
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
@@ -105,7 +105,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   linkToDefault(attributeKey: string) {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.header.guid);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
 
     this.refreshControlConfig(attributeKey);
   }
@@ -134,11 +134,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       if (valueAlreadyExist) {
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.header.guid);
+          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.entityGuid);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(this.config.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, false, this.config.header.guid);
+          attributeValueTranslation.value, this.currentLanguage, false, this.config.entityGuid);
       }
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + copyFromLanguageKey + ' because that value does not exist.');
@@ -148,9 +148,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   onClickUseFrom(languageKey: string, attributeKey: string) {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.header.guid);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, true, this.config.header.guid);
+      languageKey, this.defaultLanguage, true, this.config.entityGuid);
 
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
@@ -159,9 +159,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   onClickShareWith(languageKey: string, attributeKey: string) {
-    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.header.guid);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, false, this.config.header.guid);
+      languageKey, this.defaultLanguage, false, this.config.entityGuid);
 
     this.refreshControlConfig(attributeKey);
   }

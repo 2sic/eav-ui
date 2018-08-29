@@ -67,7 +67,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -86,7 +86,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -107,7 +107,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -128,7 +128,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...{
                     items: state.items.map(item => {
                         return (item.entity.id === 0
-                            ? item.header.guid === action.item.header.guid
+                            ? item.entity.guid === action.item.entity.guid
                             : item.entity.id === action.item.entity.id)
                             ? {
                                 ...item,
@@ -149,7 +149,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -169,7 +169,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -188,7 +188,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -208,7 +208,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
-                        return (item.entity.id === 0 ? item.header.guid === action.headerGuid : item.entity.id === action.id)
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
                                 entity: {
@@ -227,7 +227,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.filter(item => (item.entity.id === 0 ?
-                        item.header.guid !== action.item.header.guid
+                        item.entity.guid !== action.item.entity.guid
                         : item.entity.id !== action.item.entity.id))
                 }
             };

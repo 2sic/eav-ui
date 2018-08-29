@@ -103,7 +103,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
       this.itemService.updateItemAttributesValues(this.item.entity.id, values, this.currentLanguage,
-        this.defaultLanguage, this.item.header.guid);
+        this.defaultLanguage, this.item.entity.guid);
     }
 
     // emit event to perent
@@ -248,7 +248,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     if (!value) {
       value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
       this.itemService.addAttributeValue(this.item.entity.id, attribute.name,
-        value, this.currentLanguage, false, this.item.header.guid);
+        value, this.currentLanguage, false, this.item.entity.guid);
     }
 
     // const disabled = false;
@@ -268,7 +268,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // valueKey: `${attribute.name}.values[0].value`,
       // pattern: pattern,
       disabled: disabled,
-      entityId: this.item.entity === null ? 0 : this.item.entity.id,
+      entityId: this.item.entity.id,
+      entityGuid: this.item.entity.guid,
       fullSettings: attribute.settings,
       header: this.item.header,
       index: index,

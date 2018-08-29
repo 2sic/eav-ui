@@ -90,7 +90,7 @@ export class LocalizationHelper {
                     eavAttributes[key] = { ...allAttributes[key] };
                 }
             });
-            if (Object.keys(allAttributes[attributeKey]).length === 0) {
+            if (!allAttributes[attributeKey]) {
                 eavAttributes[attributeKey] = { ...attribute };
             }
         } else {
@@ -203,7 +203,7 @@ export class LocalizationHelper {
         let eavAttributes: EavAttributes = new EavAttributes();
         const attribute: EavValues<any> =
             Object.keys(allAttributes).length === 0
-                || Object.keys(allAttributes[attributeKey]).length === 0 ?
+                || !allAttributes[attributeKey] ?
                 {
                     // Add attribute
                     ...allAttributes[attributeKey], values: [attributeValue]
@@ -212,8 +212,6 @@ export class LocalizationHelper {
                     // Add attribute
                     ...allAttributes[attributeKey], values: [...allAttributes[attributeKey].values, attributeValue]
                 };
-
-        console.log('attribute', attributeKey);
         eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
 
         return eavAttributes;
