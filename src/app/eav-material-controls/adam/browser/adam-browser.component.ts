@@ -248,7 +248,6 @@ export class AdamBrowserComponent implements OnInit {
    * @param adamConfig
    */
   setConfig(adamConfig: AdamConfig) {
-    console.log('adam browser setAdamConfig', adamConfig);
     this.allowAssetsInRoot = adamConfig.allowAssetsInRoot;
     this.autoLoad = adamConfig.autoLoad;
     this.enableSelect = adamConfig.enableSelect;

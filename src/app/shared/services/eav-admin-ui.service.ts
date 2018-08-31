@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
+import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
 
 @Injectable()
 export class EavAdminUiService {
@@ -35,5 +36,17 @@ export class EavAdminUiService {
             }
         });
 
+    }
+
+    // TODO: unite all modals function in one.
+    public openPagePickerModal = (dialog: MatDialog, component: any, type: string, connector: any): MatDialogRef<{}, any> => {
+        return dialog.open(component, {
+            width: '650px',
+            data: <DnnBridgeDialogData>{
+                id: null,
+                type: type,
+                connector: connector
+            }
+        });
     }
 }

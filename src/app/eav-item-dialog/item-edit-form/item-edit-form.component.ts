@@ -116,7 +116,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (this.form.form.valid) {
       // TODO create body for submit
-      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
+      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage,
+        this.defaultLanguage);
     }
   }
 
@@ -157,7 +158,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
       .pipe(
-        switchMap((data) => {
+        switchMap((data: ContentType) => {
           const parentFieldGroup = this.createEmptyFieldGroup(null, false);
           let currentFieldGroup = parentFieldGroup;
           // loop through contentType attributes
@@ -226,6 +227,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         case InputTypesConstants.external:
         case InputTypesConstants.wysiwyg:
         case InputTypesConstants.stringWysiwyg:
+        case InputTypesConstants.stringWysiwygTinymce:
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
         case 'custom-my-field-test':
           return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
@@ -255,7 +257,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     if (!value) {
       value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
       this.itemService.addAttributeValue(this.item.entity.id, attribute.name,
-        value, this.currentLanguage, false, this.item.entity.guid);
+        value, this.currentLanguage, false, this.item.entity.guid, attribute.type);
     }
 
     // const disabled = false;
@@ -285,7 +287,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
       required: required,
       settings: settingsTranslated,
-      type: inputType, // TODO see do we need this
+      inputType: inputType, // TODO see do we need this
+      type: attribute.type,
       validation: validationList,
       value: value,
       wrappers: ['app-hidden-wrapper'],
@@ -393,7 +396,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         : 'Edit Item',
       name: attribute !== null ? attribute.name : 'Edit Item',
       settings: settingsTranslated,
-      type: InputTypesConstants.emptyDefault,
+      inputType: InputTypesConstants.emptyDefault,
+      //  type: attribute.type,
       wrappers: ['app-collapsible-wrapper'],
     };
   }

@@ -175,7 +175,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                                 entity: {
                                     ...item.entity,
                                     attributes: LocalizationHelper.addAttributeValue(item.entity.attributes,
-                                        action.attributeValue, action.attributeKey)
+                                        action.attributeValue, action.attributeKey, action.attributeType)
                                 }
                             }
                             : item;

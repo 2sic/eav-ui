@@ -96,7 +96,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
     if (defaultValue) {
       this.itemService.addAttributeValue(this.config.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.entityGuid);
+        this.currentLanguage, false, this.config.entityGuid, this.config.type);
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
@@ -138,7 +138,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(this.config.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, false, this.config.entityGuid);
+          attributeValueTranslation.value, this.currentLanguage, false, this.config.entityGuid, this.config.type);
       }
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + copyFromLanguageKey + ' because that value does not exist.');

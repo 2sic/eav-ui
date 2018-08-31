@@ -198,7 +198,8 @@ export class LocalizationHelper {
         return eavAttributes;
     }
 
-    public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string): EavAttributes {
+    public static addAttributeValue(allAttributes: EavAttributes,
+        attributeValue: EavValue<any>, attributeKey: string, attributeType: string): EavAttributes {
         // copy attributes from item
         let eavAttributes: EavAttributes = new EavAttributes();
         const attribute: EavValues<any> =
@@ -206,11 +207,11 @@ export class LocalizationHelper {
                 || !allAttributes[attributeKey] ?
                 {
                     // Add attribute
-                    ...allAttributes[attributeKey], values: [attributeValue]
+                    ...allAttributes[attributeKey], values: [attributeValue], type: attributeType
                 }
                 : {
                     // Add attribute
-                    ...allAttributes[attributeKey], values: [...allAttributes[attributeKey].values, attributeValue]
+                    ...allAttributes[attributeKey], values: [...allAttributes[attributeKey].values, attributeValue], type: attributeType
                 };
         eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
 

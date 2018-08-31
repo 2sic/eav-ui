@@ -14,6 +14,7 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
+import { AttributeDef } from '../models/eav/attribute-def';
 
 
 @Injectable()
@@ -86,8 +87,10 @@ export class EavService {
   }
 
 
-  public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string, defaultLanguage: string) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, item, updateValues, existingLanguageKey, defaultLanguage));
+  public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string,
+    defaultLanguage: string) {
+    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, item, updateValues, existingLanguageKey,
+      defaultLanguage));
   }
 
   public saveItemSuccess(data: any) {

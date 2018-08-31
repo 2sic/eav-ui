@@ -1,14 +1,15 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
+import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../shared/services/eav.service';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { MatDialog } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -64,7 +65,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   constructor(private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
-    private eavService: EavService) {
+    private eavService: EavService,
+    private dialog: MatDialog) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -118,13 +120,14 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   // open the dialog
   openPageDialog() {
     console.log('openPageDialog');
-    // dnnBridgeSvc.open(
+    // this.dnnBridgeService.open(
     //   this.value,
     //   {
     //     Paths: this.config.settings.Paths ? this.config.settings.Paths.values[0].value : '',
     //     FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
     //   },
-    //   this.processResultOfPagePicker);
+    //   this.processResultOfPagePicker,
+    //   this.dialog);
   }
 
   //#endregion dnn page picker

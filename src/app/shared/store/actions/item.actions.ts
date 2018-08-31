@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 import { Item } from '../../models/eav/item';
 import { EavAttributes, EavValue } from '../../models/eav';
 import { EavValues } from '../../models/eav/eav-values';
+import { AttributeDef } from '../../models/eav/attribute-def';
 
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';
@@ -47,7 +48,8 @@ export class AddItemAttributeAction implements Action {
 
 export class AddItemAttributeValueAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_VALUE;
-    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey: string, public guid: string) { }
+    constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey: string,
+        public guid: string, public attributeType: string) { }
 }
 
 export class AddItemAttributeDimensionAction implements Action {
