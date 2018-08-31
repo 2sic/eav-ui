@@ -36,7 +36,8 @@ describe(`itemReducer`, () => {
                         value: true,
                         dimensions: []
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -52,7 +53,8 @@ describe(`itemReducer`, () => {
                         value: false,
                         dimensions: []
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -84,7 +86,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -103,7 +106,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -133,7 +137,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -152,7 +157,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -181,7 +187,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -200,7 +207,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -229,7 +237,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -248,7 +257,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -279,7 +289,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -291,7 +302,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -312,7 +324,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -324,7 +337,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -357,7 +371,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -369,7 +384,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -390,7 +406,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -402,7 +419,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -435,7 +453,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
             };
 
@@ -464,7 +483,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -480,10 +500,12 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ]
+                ],
+                type: 'String'
             };
 
-            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey', updatedItem.entity.guid);
+            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey',
+                updatedItem.entity.guid, newValue.type);
             const result = itemReducer(currentItemState, action);
             expect(result.items[0].entity.attributes['TestKey'])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey']);
@@ -510,7 +532,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -526,10 +549,12 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ]
+                ],
+                type: 'String'
             };
 
-            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey', updatedItem.entity.guid);
+            const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey',
+                updatedItem.entity.guid, newValue.type);
             console.log('result1:', currentItemState);
             const result = itemReducer(currentItemState, action);
             console.log('result 5:', result);
@@ -550,7 +575,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -562,7 +588,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -583,7 +610,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 },
                 'TestKey2': {
                     values: [
@@ -595,7 +623,8 @@ describe(`itemReducer`, () => {
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    type: 'String'
                 }
             };
 
@@ -631,7 +660,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -653,7 +683,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -683,7 +714,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -705,7 +737,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -735,7 +768,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -757,7 +791,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -790,7 +825,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -809,7 +845,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -846,7 +883,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -865,7 +903,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -902,7 +941,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -921,7 +961,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -964,7 +1005,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -991,7 +1033,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -1024,7 +1067,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -1051,7 +1095,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -1067,11 +1112,12 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, eavValueCopyFromEn,
-                'TestKey', updatedItem.entity.guid);
+                'TestKey', updatedItem.entity.guid, eavValueCopyFromEn.type);
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values)
@@ -1091,7 +1137,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -1113,7 +1160,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
@@ -1147,7 +1195,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const currentItem: Item = new Item(
@@ -1169,7 +1218,8 @@ describe(`itemReducer`, () => {
                             }
                         ]
                     }
-                ]
+                ],
+                type: 'String'
             };
 
             const updatedItem: Item = new Item(
