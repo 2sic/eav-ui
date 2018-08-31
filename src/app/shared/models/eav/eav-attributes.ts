@@ -21,7 +21,7 @@ export class EavAttributes {
                 Object.keys(attribute1).forEach(attribute1Key => {
                     if (attribute1.hasOwnProperty(attribute1Key)) {
                         // Creates new EavValue for specified type
-                        newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key]);
+                        newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key], attributes1Key);
                     }
                 });
             }
@@ -68,7 +68,7 @@ export class EavAttributes {
 
         Object.keys(value).forEach(valueKey => {
             const eavValues: EavValue<any>[] = [];
-            eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])]);
+            eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])], 'String');
         });
 
         return eavAttributes;

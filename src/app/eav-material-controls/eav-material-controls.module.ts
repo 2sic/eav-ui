@@ -40,7 +40,8 @@ import {
   StringDropdownComponent,
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
-  NumberDefaultComponent
+  NumberDefaultComponent,
+  HyperlinkDefaultPagepickerComponent
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
@@ -57,6 +58,7 @@ import { ClickStopPropagationDirective } from '../shared/directives/click-stop-p
 import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
+import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
 
 @NgModule({
   declarations: [
@@ -87,7 +89,9 @@ import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper
     OrderByPipe,
     FileEndingFilterPipe,
     ClickStopPropagationDirective,
-    HiddenWrapperComponent
+    HiddenWrapperComponent,
+    HyperlinkDefaultPagepickerComponent,
+    WebFormBridgeDirective
   ],
   imports: [
     CommonModule,
@@ -132,7 +136,8 @@ import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper
     HyperlinkLibraryComponent,
     ExternalComponent,
     DropzoneComponent,
-    HiddenWrapperComponent
+    HiddenWrapperComponent,
+    HyperlinkDefaultPagepickerComponent
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [FileTypeService, ValidationMessagesService]

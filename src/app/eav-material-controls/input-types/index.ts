@@ -10,3 +10,6 @@ export { NumberDefaultComponent } from './number/number-default/number-default.c
 export { EntityDefaultComponent } from './entity/entity-default/entity-default.component';
 export { HyperlinkDefaultComponent } from './hyperlink/hyperlink-default/hyperlink-default.component';
 export { ExternalComponent } from './custom/external/external.component';
+export {
+    HyperlinkDefaultPagepickerComponent
+} from './dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';

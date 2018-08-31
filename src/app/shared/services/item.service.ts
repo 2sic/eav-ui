@@ -47,8 +47,8 @@ export class ItemService {
     this.store.dispatch(new itemActions.UpdateItemAttributeAction(entityId, newEavAttribute, attributeKey, guid));
   }
 
-  public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string, guid: string) {
-    this.store.dispatch(new itemActions.AddItemAttributeValueAction(entityId, newEavAttributeValue, attributeKey, guid));
+  public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string, guid: string, type: string) {
+    this.store.dispatch(new itemActions.AddItemAttributeValueAction(entityId, newEavAttributeValue, attributeKey, guid, type));
   }
 
   public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
@@ -86,7 +86,8 @@ export class ItemService {
     newValue: any,
     languageKey: string,
     isReadOnly: boolean,
-    guid: string) {
+    guid: string,
+    type: string) {
 
     let newLanguageValue = languageKey;
 
@@ -96,7 +97,7 @@ export class ItemService {
 
     const newEavValue = new EavValue(newValue, [new EavDimensions(newLanguageValue)]);
 
-    this.addItemAttributeValue(entityId, newEavValue, attributeKey, guid);
+    this.addItemAttributeValue(entityId, newEavValue, attributeKey, guid, type);
   }
 
   public deleteItem(item: Item) {
