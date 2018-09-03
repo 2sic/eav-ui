@@ -1,15 +1,17 @@
 import { Action } from '@ngrx/store';
 
 import { Item } from '../../models/eav/item';
-import { EavAttributes, EavValue } from '../../models/eav';
+import { EavAttributes, EavValue, EavHeader } from '../../models/eav';
 import { EavValues } from '../../models/eav/eav-values';
 import { AttributeDef } from '../../models/eav/attribute-def';
-
+// Item
 export const LOAD_ITEM = '[Item] LOAD_ITEM';
 export const LOAD_ITEM_SUCCESS = '[Item] LOAD_ITEM_SUCCESS';
 export const UPDATE_ITEM = '[Item] UPDATE_ITEM';
 export const UPDATE_ITEM_SUCCESS = '[Item] UPDATE_ITEM_SUCCESS';
 
+export const DELETE_ITEM = '[Item] DELETE_ITEM';
+// Item Attributes
 export const ADD_ITEM_ATTRIBUTE = '[Item] ADD_ITEM_ATTRIBUTE';
 export const UPDATE_ITEM_ATTRIBUTE = '[Item] UPDATE_ITEM_ATTRIBUTE';
 
@@ -24,7 +26,8 @@ export const ADD_ITEM_ATTRIBUTE_DIMENSION = '[Item] ADD_ITEM_ATTRIBUTE_DIMENSION
 export const UPDATE_ITEM_ATTRIBUTE_DIMENSION = '[Item] UPDATE_ITEM_ATTRIBUTE_DIMENSION';
 export const REMOVE_ITEM_ATTRIBUTE_DIMENSION = '[Item] REMOVE_ITEM_ATTRIBUTE_DIMENSION';
 
-export const DELETE_ITEM = '[Item] DELETE_ITEM';
+// Item Header
+export const UPDATE_ITEM_HEADER = '[Item] UPDATE_ITEM_HEADER';
 
 /**
  * Load
@@ -87,6 +90,11 @@ export class UpdateItemAttributesValuesAction implements Action {
         public existingLanguageKey: string, public defaultLanguage: string, public guid: string) { }
 }
 
+export class UpdateItemHeaderAction implements Action {
+    readonly type = UPDATE_ITEM_HEADER;
+    constructor(public id: number, public guid: string, public header: EavHeader) { }
+}
+
 /**
  * Save (submit)
  */
@@ -143,4 +151,5 @@ export type Actions
     | UpdateItemSuccessAction
     | UpdateItemAttributeAction
     | RemoveItemAttributeDimensionAction
-    | DeleteItemAction;
+    | DeleteItemAction
+    | UpdateItemHeaderAction;

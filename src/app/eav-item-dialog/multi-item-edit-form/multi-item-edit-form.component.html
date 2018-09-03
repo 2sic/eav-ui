@@ -32,16 +32,17 @@
     <button mat-menu-item type="button" (click)="saveAll(false)">{{ 'Button.SaveAndKeepOpen' | translate}}</button>
   </mat-menu>
   <button mat-icon-button type="button" [matMenuTriggerFor]="publishModeMenu" [ngClass]="{ 'disabled': !formsAreValid }">
-    <i [ngClass]="{'eav-icon-eye': publishMode === 'show', 'eav-icon-eye-close': publishMode === 'hide', 'eav-icon-git-branch': publishMode === 'branch'}"></i> {{ 'SaveMode.' + publishMode | translate }}
+    <i [ngClass]="{'eav-icon-eye': publishMode === 'show', 'eav-icon-eye-close': publishMode === 'hide', 'eav-icon-git-branch': publishMode === 'branch'}"></i>
+    {{ 'SaveMode.' + publishMode | translate }}
     <i class="eav-icon-down-dir"></i>
   </button>
 
   <mat-menu #publishModeMenu="matMenu" [overlapTrigger]="false">
-    <button *ngIf="eavConfig.versioningOptions.show" mat-menu-item type="button" (click)="publishMode = 'show'">
+    <button *ngIf="versioningOptions.show" mat-menu-item type="button" (click)="publishMode = 'show'">
       <i class="eav-icon-eye"></i>{{ 'SaveMode.show' | translate }}</button>
-    <button *ngIf="eavConfig.versioningOptions.hide" mat-menu-item type="button" (click)="publishMode = 'hide'">
+    <button *ngIf="versioningOptions.hide" mat-menu-item type="button" (click)="publishMode = 'hide'">
       <i class="eav-icon-eye-close"></i>{{ 'SaveMode.hide' | translate }}</button>
-    <button *ngIf="eavConfig.versioningOptions.branch" mat-menu-item type="button" (click)="publishMode = 'branch'">
+    <button *ngIf="versioningOptions.branch" mat-menu-item type="button" (click)="publishMode = 'branch'">
       <i class="eav-icon-git-branch"></i>{{ 'SaveMode.branch' |translate }}</button>
   </mat-menu>
 </div>

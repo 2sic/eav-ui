@@ -7,9 +7,15 @@
         </span>
         {{config.label ? config.label : 'EditEntity.DefaultTitle' | translate }}
     </div>
+
+    <!-- <button *ngIf="config.header.group.slotCanBeEmpty" type="button" mat-icon-button (click)="toggleSlotIsEmpty(config.header)">
+        <mat-icon class="eav-icon-toggle-off" [ngClass]="slotIsUsed ? 'eav-icon-toggle-on' : 'eav-icon-toggle-off'"></mat-icon>
+    </button> -->
+    <mat-slide-toggle *ngIf="config.header.group.slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsEmptyChecked">
+    </mat-slide-toggle>
+
     <div [hidden]="config.collapse">
         <div [innerHtml]='notes'></div>
-
         <ng-container #fieldComponent></ng-container>
     </div>
 </div>

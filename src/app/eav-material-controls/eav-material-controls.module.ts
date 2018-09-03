@@ -18,6 +18,7 @@ import {
   MatTooltipModule,
   MatTabsModule,
   MatProgressSpinnerModule,
+  MatSlideToggleModule
 
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
@@ -115,6 +116,7 @@ import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge
     MatTooltipModule,
     MatTabsModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
     TranslateModule.forChild()
   ],
   entryComponents: [

@@ -7,7 +7,7 @@ import { map, catchError, tap, filter } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -76,6 +76,10 @@ export class ItemService {
     this.store.dispatch(new itemActions.RemoveItemAttributeDimensionAction(entityId, attributeKey, dimensionValue, guid));
   }
 
+  public updateItemHeader(entityId: number, guid: string, header: EavHeader) {
+    this.store.dispatch(new itemActions.UpdateItemHeaderAction(entityId, guid, header));
+  }
+
   // public updateItem(attributes: EavAttributes, item: EavItem) {
   //   this.store.dispatch(new itemActions.UpdateItemAction(attributes, item));
   // }
@@ -130,6 +134,17 @@ export class ItemService {
   //     .pipe(map(data => data.find(obj => obj.entity.id === id)));
   // }
 
+  /**
+   * Observe header for item from store
+   * @param id
+   */
+  public selectHeaderByEntityId(entityId: number, guid: string): Observable<EavHeader> {
+    return this.store
+      .select(fromStore.getItems)
+      .pipe(map(c => c.find(obj => obj.entity.id === 0 ? obj.entity.guid === guid : obj.entity.id === entityId)
+        ? c.find(obj => obj.entity.id === 0 ? obj.entity.guid === guid : obj.entity.id === entityId).header
+        : null));
+  }
   /**
    * Select items from store by id array list
    * @param idsList

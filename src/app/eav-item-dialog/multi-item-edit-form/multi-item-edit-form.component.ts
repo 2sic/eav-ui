@@ -23,6 +23,7 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
 import { DialogTypeConstants } from '../../shared/constants/type-constants';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
+import { GroupAssignment1 } from '../../shared/models/json-format-v1/group-assignment1';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -44,6 +45,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   willPublish = false;     // default is won't publish, but will usually be overridden
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   enableDraft = false;
+
+  versioningOptions;
+
 
   private subscriptions: Subscription[] = [];
 
@@ -155,7 +159,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.itemService.loadItems(data.Items);
     this.inputTypeService.loadInputTypes(data.InputTypes);
     this.contentTypeService.loadContentTypes(data.ContentTypes);
-    this.setPublishMode(data.Items);
+    this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
   }
 
@@ -302,9 +306,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   // TODO: finish group and new entity ?????
-  private setPublishMode(items: Item[]) {
+  private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
+    this.versioningOptions = this.getVersioningOptions();
     items.forEach(item => {
-
       // If the entity is null, it does not exist yet. Create a new one
       // TODO: do we need this ???
       // if (!item.entity && !!item.header.contentTypeName) {
@@ -317,20 +321,44 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       ////// load more content-type metadata to show
       //// vm.items[i].ContentType = contentTypeSvc.getDetails(vm.items[i].Header.ContentTypeName);
       // set slot value - must be inverte for boolean-switch
-      // const grp = item.header.group;
-      // item.slotIsUsed = (grp === null || grp === undefined || grp.SlotIsEmpty !== true);
+
+      const grp: GroupAssignment1 = item.Header.Group;
+      // vm.items[i].slotIsUsed = (grp === null || grp === undefined || grp.slotIsEmpty !== true);
+      // TODO:
+      const slotIsUsed = (grp === null || grp === undefined || grp.SlotIsEmpty !== true);
     });
 
     // this.willPublish = items[0].entity.IsPublished;
+    this.willPublish = isPublished;
     // this.enableDraft = items[0].header.entityId !== 0; // it already exists, so enable draft
+    this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
     // this.publishMode = items[0].entity.IsBranch
     //   ? 'branch' // it's a branch, so it must have been saved as a draft-branch
     //   : items[0].entity.IsPublished ? 'show' : 'hide';
+    this.publishMode = draftShouldBranch
+      ? 'branch' // it's a branch, so it must have been saved as a draft-branch
+      : isPublished ? 'show' : 'hide';
 
     // if publish mode is prohibited, revert to default
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
       this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
     }
   }
+
+
+
+  getVersioningOptions() {
+    if (!this.eavConfig.partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+    const req = this.eavConfig.publishing || '';
+    switch (req) {
+      case '':
+      case 'DraftOptional': return { show: true, hide: true, branch: true };
+      case 'DraftRequired': return { branch: true, hide: true };
+      default: throw Error('invalid versioning requiremenets: ' + req.toString());
+    }
+  }
+
 }
 

@@ -231,6 +231,24 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                         : item.entity.id !== action.item.entity.id))
                 }
             };
+        case fromItems.UPDATE_ITEM_HEADER: {
+            console.log('action.header', action.header);
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
+                            ? {
+                                ...item,
+                                header: {
+                                    ...action.header
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
         default: {
             return state;
         }
