@@ -82,7 +82,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   public formSaveObservable(): Observable<Action> {
     return this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) => action.item.entity.id === this.item.entity.id));
+      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) =>
+        this.item.entity.id === 0 ? this.item.entity.guid === action.item.entity.guid : this.item.entity.id === action.item.entity.id));
   }
 
   ngOnDestroy(): void {
@@ -111,11 +112,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   submit(values: { [key: string]: any }) {
-    console.log('submit item edit');
-    console.log(values);
-
     if (this.form.form.valid) {
-      // TODO create body for submit
       this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage,
         this.defaultLanguage);
     }

@@ -9,8 +9,8 @@ export class EavGroupAssignment {
     slotIsEmpty: boolean;
     contentBlockAppId: number;
 
-    constructor(guid: string, part: string, index: number, add: boolean,
-        slotCanBeEmpty: boolean, slotIsEmpty: boolean, contentBlockAppId: number) {
+    constructor(guid?: string, part?: string, index?: number, add?: boolean,
+        slotCanBeEmpty?: boolean, slotIsEmpty?: boolean, contentBlockAppId?: number) {
         this.guid = guid;
         this.part = part;
         this.index = index;
