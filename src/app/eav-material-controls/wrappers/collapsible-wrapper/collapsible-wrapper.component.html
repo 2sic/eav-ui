@@ -11,7 +11,7 @@
     <!-- <button *ngIf="config.header.group.slotCanBeEmpty" type="button" mat-icon-button (click)="toggleSlotIsEmpty(config.header)">
         <mat-icon class="eav-icon-toggle-off" [ngClass]="slotIsUsed ? 'eav-icon-toggle-on' : 'eav-icon-toggle-off'"></mat-icon>
     </button> -->
-    <mat-slide-toggle *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsEmptyChecked">
+    <mat-slide-toggle *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
     </mat-slide-toggle>
 
     <div [hidden]="config.collapse">

@@ -289,7 +289,6 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
     this.config.validation = ValidationHelper.setDefaultValidations(this.config.settings);
     this.config.required = this.config.settings.Required ? this.config.settings.Required : false;
-
   }
 
   /**

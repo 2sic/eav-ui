@@ -258,8 +258,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // const disabled = false;
-    const disabled: boolean = settingsTranslated.Disabled
-      ? settingsTranslated.Disabled
+    const disabled: boolean = settingsTranslated.Disabled || (this.item.header.group && this.item.header.group.slotIsEmpty)
+      ? true
       : this.item.entity.id === 0 ?
         false
         : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
