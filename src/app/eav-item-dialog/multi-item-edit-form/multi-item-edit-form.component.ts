@@ -221,10 +221,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
                   allItems.push(JsonItem1.create(action.item));
                 });
 
-                const body = `{"Items": ${JSON.stringify(allItems)}}`;
-                return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, body)
+                const body = {
+                  Items: allItems,
+                  IsPublished: this.publishMode === 'show',
+                  DraftShouldBranch: this.publishMode === 'branch'
+                };
+
+                return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
                   .pipe(
-                    map(data => this.eavService.saveItemSuccess(data)),
+                    map(data => {
+                      this.enableDraft = true; // after saving, we can re-save as draft
+                      this.eavService.saveItemSuccess(data);
+                    }),
                     tap(data => console.log('working'))
                   );
               }),
@@ -305,36 +313,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  // TODO: finish group and new entity ?????
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
-    items.forEach(item => {
-      // If the entity is null, it does not exist yet. Create a new one
-      // TODO: do we need this ???
-      // if (!item.entity && !!item.header.contentTypeName) {
-      //   // TODO: do we need this ???
-      //   item.entity = entitiesSvc.newEntity(item.header);
-      // }
-      // TODO: do we need this ???
-      // item.entity = enhanceEntity(item.entity);
 
-      ////// load more content-type metadata to show
-      //// vm.items[i].ContentType = contentTypeSvc.getDetails(vm.items[i].Header.ContentTypeName);
-      // set slot value - must be inverte for boolean-switch
-
-      const grp: GroupAssignment1 = item.Header.Group;
-      // vm.items[i].slotIsUsed = (grp === null || grp === undefined || grp.slotIsEmpty !== true);
-      // TODO:
-      const slotIsUsed = (grp === null || grp === undefined || grp.SlotIsEmpty !== true);
-    });
-
-    // this.willPublish = items[0].entity.IsPublished;
-    this.willPublish = isPublished;
-    // this.enableDraft = items[0].header.entityId !== 0; // it already exists, so enable draft
     this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
-    // this.publishMode = items[0].entity.IsBranch
-    //   ? 'branch' // it's a branch, so it must have been saved as a draft-branch
-    //   : items[0].entity.IsPublished ? 'show' : 'hide';
     this.publishMode = draftShouldBranch
       ? 'branch' // it's a branch, so it must have been saved as a draft-branch
       : isPublished ? 'show' : 'hide';
@@ -345,9 +327,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-
-
-  getVersioningOptions() {
+  private getVersioningOptions() {
     if (!this.eavConfig.partOfPage) {
       return { show: true, hide: true, branch: true };
     }
