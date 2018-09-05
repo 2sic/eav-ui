@@ -37,7 +37,7 @@ export class EavEntity {
                 null,
                 new EavAttributes(),
                 '',
-                []);
+                null);
         }
         const eavAttributes = EavAttributes.create(item.Attributes);
         const eavMetaData = this.createArray(item.Metadata);
@@ -57,13 +57,14 @@ export class EavEntity {
     * @param item
     */
     public static createArray(entity1Array: Entity1[]): EavEntity[] {
-        const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
-        if (entity1Array !== undefined && entity1Array !== null) {
-            console.log('entity1Array:', entity1Array);
-            entity1Array.forEach(entity1 => {
-                eavMetaDataArray.push(EavEntity.create(entity1));
-            });
+        if (!entity1Array) {
+            return null;
         }
+        const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
+        console.log('entity1Array:', entity1Array);
+        entity1Array.forEach(entity1 => {
+            eavMetaDataArray.push(EavEntity.create(entity1));
+        });
         return eavMetaDataArray;
     }
 }

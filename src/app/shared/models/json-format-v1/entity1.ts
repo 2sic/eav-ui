@@ -48,12 +48,13 @@ export class Entity1 {
 
 
     public static createArray(eavEntityArray: EavEntity[]): Entity1[] {
-        const metaData1Array: Entity1[] = new Array<Entity1>();
-        if (eavEntityArray !== undefined && eavEntityArray !== null) {
-            eavEntityArray.forEach(eavEntity => {
-                metaData1Array.push(Entity1.create(eavEntity));
-            });
+        if (!eavEntityArray) {
+            return null;
         }
+        const metaData1Array: Entity1[] = new Array<Entity1>();
+        eavEntityArray.forEach(eavEntity => {
+            metaData1Array.push(Entity1.create(eavEntity));
+        });
         return metaData1Array;
     }
 }
