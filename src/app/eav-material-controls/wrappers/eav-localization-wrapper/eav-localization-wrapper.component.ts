@@ -46,6 +46,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   languages: Language[];
   infoMessage = '';
   infoMessageLabel = '';
+  headerGroupSlotIsEmpty = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -67,6 +68,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
+    this.subscribeToEntityHeaderFromStore();
 
     this.loadlanguagesFromStore();
   }
@@ -271,6 +273,19 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     );
   }
 
+  private subscribeToEntityHeaderFromStore() {
+    if (this.config.header.group.slotCanBeEmpty) {
+      this.subscriptions.push(
+        this.itemService.selectHeaderByEntityId(this.config.entityId, this.config.entityGuid).subscribe(header => {
+          if (header.group) {
+            this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
+            this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
+          }
+        })
+      );
+    }
+  }
+
   /**
    * Load languages from store and subscribe to languages
    */
@@ -298,14 +313,21 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
    * @param currentLanguage
    * @param defaultLanguage
    */
-  private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
+  private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string,
+    defaultLanguage: string) {
+    // if control already disabled through settings then skip
     if (!this.config.disabled) {
-      if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-        this.group.controls[attributeKey].enable({ emitEvent: false });
-      } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+      // if header group slot is empty disable control
+      if (this.headerGroupSlotIsEmpty) {
         this.group.controls[attributeKey].disable({ emitEvent: false });
-      } else {
-        this.group.controls[attributeKey].disable({ emitEvent: false });
+      } else { // else set enable/disable depending on editable translation exist
+        if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+          this.group.controls[attributeKey].enable({ emitEvent: false });
+        } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+          this.group.controls[attributeKey].disable({ emitEvent: false });
+        } else {
+          this.group.controls[attributeKey].disable({ emitEvent: false });
+        }
       }
     }
   }

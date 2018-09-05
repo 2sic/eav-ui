@@ -40,7 +40,6 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
         this.itemService.selectHeaderByEntityId(this.config.entityId, this.config.entityGuid).subscribe(header => {
           if (header.group) {
             this.slotIsUsedChecked = !header.group.slotIsEmpty;
-            this.disableAllControls(this.slotIsUsedChecked);
           }
 
           this.header = { ...header };
@@ -64,16 +63,4 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     }
 
   };
-
-  private disableAllControls(slotIsUsed: boolean) {
-    if (slotIsUsed) {
-      Object.keys(this.group.controls).forEach(key => {
-        this.group.controls[key].enable({ emitEvent: false });
-      });
-    } else {
-      Object.keys(this.group.controls).forEach(key => {
-        this.group.controls[key].disable({ emitEvent: false });
-      });
-    }
-  }
 }

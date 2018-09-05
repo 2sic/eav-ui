@@ -242,13 +242,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    * @param attribute
    */
   private loadFieldFromDefinition(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
-    // const inputType = InputTypesConstants.stringDefault; // attribute.settings.InputType.values[0].value;
     const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
     // set validation for all input types
     const validationList: ValidatorFn[] = ValidationHelper.setDefaultValidations(settingsTranslated);
     const required = settingsTranslated.Required ? settingsTranslated.Required : false;
-    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Required, false);
-    // attribute.settings.Required ? attribute.settings.Required.values[0].value : false;
     let value = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage,
       this.item.entity.attributes[attribute.name], null);
     if (!value) {
@@ -257,19 +254,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         value, this.currentLanguage, false, this.item.entity.guid, attribute.type);
     }
 
-    // const disabled = false;
-    const disabled: boolean = settingsTranslated.Disabled || (this.item.header.group && this.item.header.group.slotIsEmpty)
+    const disabled: boolean = settingsTranslated.Disabled
       ? true
       : this.item.entity.id === 0 ?
         false
         : (this.isControlDisabledForCurrentLanguage(this.currentLanguage, this.defaultLanguage,
           this.item.entity.attributes[attribute.name], attribute.name));
-    //// const label = settingsTranslated.Name ? settingsTranslated.Name : null;
     const label = attribute !== null
       ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
       : null;
 
-    // LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, attribute.settings.Name, null);
     return {
       // valueKey: `${attribute.name}.values[0].value`,
       // pattern: pattern,
