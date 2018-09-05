@@ -112,7 +112,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   submit(values: { [key: string]: any }) {
-    if (this.form.form.valid) {
+    if (this.form.form.valid || (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
       this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage,
         this.defaultLanguage);
     }

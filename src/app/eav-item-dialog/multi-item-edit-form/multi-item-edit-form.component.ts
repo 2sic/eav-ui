@@ -292,7 +292,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
       this.formsAreValid = true;
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        if (itemEditFormComponent.form.valid === false) {
+        if (itemEditFormComponent.form.valid === false
+          && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
           this.formsAreValid = false;
         }
       });
