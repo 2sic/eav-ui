@@ -274,7 +274,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   private subscribeToEntityHeaderFromStore() {
-    if (this.config.header.group.slotCanBeEmpty) {
+    if (this.config.header.group && this.config.header.group.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entityId, this.config.entityGuid).subscribe(header => {
           if (header.group) {

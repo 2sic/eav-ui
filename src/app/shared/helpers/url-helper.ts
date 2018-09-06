@@ -19,7 +19,7 @@ export class UrlHelper {
         const queryParams: { [key: string]: string } = {};
         url.split('&').forEach(f => {
             if (f.split('=').length === 2) {
-                queryParams[f.split('=')[0]] = f.split('=')[1];
+                queryParams[f.split('=')[0]] = decodeURIComponent(f.split('=')[1].replace(/\+/g, ' '));
             }
         });
         return queryParams;

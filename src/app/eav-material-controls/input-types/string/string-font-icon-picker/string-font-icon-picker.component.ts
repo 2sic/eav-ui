@@ -105,11 +105,10 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   loadAdditionalResources(files: string) {
-    // const mapped = files.replace('[App:Path]', appRoot)
-    // TODO: test this replace
-    const mapped = files.replace('[App:Path]', this.eavConfig.portalroot + this.eavConfig.approot)
+    const mapped = files.replace('[App:Path]', this.eavConfig.approot)
       .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
         '$1/$2');
+    console.log('[loadAdditionalResources] mapped', mapped);
     const fileList = mapped ? mapped.split('\n') : [];
 
     const scriptModelList: ScriptModel[] = [];
