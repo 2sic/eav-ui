@@ -22,7 +22,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { EavService } from '../../shared/services/eav.service';
 import { Actions } from '@ngrx/effects';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import isEmpty from 'lodash/isEmpty';
+import { Feature } from '../../shared/models/feature/feature';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -36,6 +36,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() defaultLanguage: string;
+  @Input() features: Feature[];
 
   @Input()
   set currentLanguage(value: string) {
@@ -283,6 +284,34 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       validation: validationList,
       value: value,
       wrappers: ['app-hidden-wrapper'],
+      features: this.features
+    };
+  }
+
+
+  /**
+   * Create title field group with collapsible wrapper
+   */
+  private createEmptyFieldGroup = (attribute: AttributeDef, collapse: boolean): FieldConfig => {
+    let settingsTranslated = null;
+    if (attribute) {
+      settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
+    }
+
+    return {
+      entityId: this.item.entity.id,
+      entityGuid: this.item.entity.guid,
+      collapse: collapse,
+      fieldGroup: [],
+      header: this.item.header,
+      label: attribute !== null
+        ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
+        : 'Edit Item',
+      name: attribute !== null ? attribute.name : 'Edit Item',
+      settings: settingsTranslated,
+      inputType: InputTypesConstants.emptyDefault,
+      //  type: attribute.type,
+      wrappers: ['app-collapsible-wrapper'],
     };
   }
 
@@ -369,29 +398,4 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  /**
-   * Create title field group with collapsible wrapper
-   */
-  private createEmptyFieldGroup = (attribute: AttributeDef, collapse: boolean): FieldConfig => {
-    let settingsTranslated = null;
-    if (attribute) {
-      settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
-    }
-
-    return {
-      entityId: this.item.entity.id,
-      entityGuid: this.item.entity.guid,
-      collapse: collapse,
-      fieldGroup: [],
-      header: this.item.header,
-      label: attribute !== null
-        ? (settingsTranslated !== null && settingsTranslated.Name) ? settingsTranslated.Name : attribute.name
-        : 'Edit Item',
-      name: attribute !== null ? attribute.name : 'Edit Item',
-      settings: settingsTranslated,
-      inputType: InputTypesConstants.emptyDefault,
-      //  type: attribute.type,
-      wrappers: ['app-collapsible-wrapper'],
-    };
-  }
 }

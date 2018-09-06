@@ -1,46 +1,40 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { throwError as observableThrowError, Observable, of } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 
-import { UrlHelper } from '../helpers/url-helper';
 import { UrlConstants } from '../constants/url-constants';
+import * as fromStore from '../store';
+import * as featureActions from '../store/actions/feature.actions';
+import { Feature } from '../models/feature/feature';
 
 @Injectable()
 export class FeatureService {
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
+    }
+    /**
+     * Dispatch LoadItemsAction to store
+     * @param path
+     */
+    public loadFeatures(features: any[]) {
+        const featureList: Feature[] = Feature.createFeatureArray(features);
+        this.store.dispatch(new featureActions.LoadFeaturesAction(featureList));
     }
 
-    public getFeatures(appId: string, url: string): Observable<any> {
-        return this.httpClient.get(`${UrlConstants.apiRoot}eav/system/features`,
-            {
-                params: {
-                    appId: appId
-                }
-            })
-            .pipe(
-                map((data: any) => {
-                    return data;
-                }),
-                tap(data => console.log('features: ', data)),
-                catchError(error => this.handleError(error))
-            );
+    public selectFeatures(): Observable<Feature[]> {
+        return this.store.select(fromStore.getFeatures);
     }
 
-    enabled = (guid: string, appId: string, url: string): Observable<boolean> => {
-        return this.getFeatures(appId, url)
-            .pipe(switchMap(s => this.enabledNow(s, guid)));
-    }
-
-    private enabledNow = (list, guid): Observable<boolean> => {
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].id === guid) {
-                return of(list[i].enabled);
+    public isEnabledNow = (features: Feature[], guid): boolean => {
+        for (let i = 0; i < features.length; i++) {
+            if (features[i].id === guid) {
+                return features[i].enabled;
             }
         }
-        return of(false);
+        return false;
     }
 
     private handleError(error: any) {
