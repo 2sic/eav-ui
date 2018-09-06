@@ -8,6 +8,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
+import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,6 +18,7 @@ import { AdamConfig } from '../../../shared/models/adam/adam-config';
 })
 export class AdamBrowserComponent implements OnInit {
 
+  @Input() config: FieldConfig;
   // TODO: temp need to change
   // eavConfig.metadataOfCmsObject
   @Input() metadataOfCmsObject: any;
@@ -102,15 +104,11 @@ export class AdamBrowserComponent implements OnInit {
     this.allowAssetsInRoot = this.allowAssetsInRoot || true; // if true, the initial folder can have files, otherwise only subfolders
     this.metadataContentTypes = this.metadataContentTypes || '';
 
-    // TODO:
-    // appRoot = read app root
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
 
     // if feature clipboardPasteImageFunctionality enabled
-    this.featureService.enabled('f6b8d6da-4744-453b-9543-0de499aa2352', this.eavConfig.appId, this.url)
-      .subscribe(enabled =>
-        this.clipboardPasteImageFunctionalityDisabled = (enabled === false)
-      );
+    const featureEnabled = this.featureService.isEnabledNow(this.config.features, 'f6b8d6da-4744-453b-9543-0de499aa2352');
+    this.clipboardPasteImageFunctionalityDisabled = (featureEnabled === false);
   }
 
   addFolder() {

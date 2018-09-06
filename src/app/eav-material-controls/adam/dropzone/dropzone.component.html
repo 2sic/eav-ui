@@ -2,7 +2,7 @@
   (success)="onUploadSuccess($event)" (drop)="onDrop($event)">
   <ng-container #fieldComponent></ng-container>
   <!-- [autoLoad]="false" [folderDepth]="0" [subFolder]="" fileFilter="*.jpg,*.pdf.,*.css" [enableSelect]="true"-->
-  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="">
+  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config">
   </adam-browser>
   <!-- ng-show="uploading" -->
   <div class="{{'field-' + config.index}}">

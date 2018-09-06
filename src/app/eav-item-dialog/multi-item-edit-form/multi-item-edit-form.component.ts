@@ -23,7 +23,8 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
 import { DialogTypeConstants } from '../../shared/constants/type-constants';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
-import { GroupAssignment1 } from '../../shared/models/json-format-v1/group-assignment1';
+import { FeatureService } from '../../shared/services/feature.service';
+import { Feature } from '../../shared/models/feature/feature';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -33,40 +34,39 @@ import { GroupAssignment1 } from '../../shared/models/json-format-v1/group-assig
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
-  items$: Observable<Item[]>;
-  languages$: Observable<Language[]>;
+  closeWindow = false;
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
-  formSaveAllObservables$: Observable<Action>[] = [];
-  formErrors: { [key: string]: any }[] = [];
-  Object = Object;
-  formsAreValid = false;
-  closeWindow = false;
-  willPublish = false;     // default is won't publish, but will usually be overridden
-  publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   enableDraft = false;
-
+  formErrors: { [key: string]: any }[] = [];
+  formsAreValid = false;
+  formSaveAllObservables$: Observable<Action>[] = [];
+  items$: Observable<Item[]>;
+  languages$: Observable<Language[]>;
+  features$: Observable<Feature[]>;
+  Object = Object;
+  publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
-
+  willPublish = false;     // default is won't publish, but will usually be overridden
 
   private subscriptions: Subscription[] = [];
 
   private eavConfig: EavConfiguration;
 
   constructor(@Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
-    private itemService: ItemService,
-    private inputTypeService: InputTypeService,
+    private actions$: Actions,
+    private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
+    private featureService: FeatureService,
+    private inputTypeService: InputTypeService,
+    private itemService: ItemService,
     private languageService: LanguageService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private actions$: Actions,
     private snackBar: MatSnackBar,
-    private validationMessagesService: ValidationMessagesService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private validationMessagesService: ValidationMessagesService) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
-
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Read configuration from queryString
@@ -139,19 +139,20 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * Load all data for forms
    */
   private loadItemsData() {
-    const entityId: number = Number(this.formDialogData.id);
+    const loadBody = this.setLoadBody(this.formDialogData.type);
 
+    this.eavService.loadAllDataForForm(this.eavConfig.appId, loadBody).subscribe(data => {
+      this.afterLoadItemsData(data);
+    });
+  }
+
+  private setLoadBody(dialogType: string) {
     // if dialog type load with entity ids (edit - entity)
-    if (this.formDialogData.type === DialogTypeConstants.itemEditWithEntityId && entityId) {
-      this.eavService.loadAllDataForFormByEntity(this.eavConfig.appId, [{ 'EntityId': entityId }]).subscribe(data => {
-        this.afterLoadItemsData(data);
-      });
-      // this.items$ = this.itemService.selectItemsByIdList([entityId]);
-    } else {  // else dialog type load without entity ids. (edit - toolbar)
-      this.eavService.loadAllDataForForm(this.eavConfig.appId, this.eavConfig.items).subscribe(data => {
-        this.afterLoadItemsData(data);
-        // this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => item.Entity.Id));
-      });
+    if (dialogType === DialogTypeConstants.itemEditWithEntityId) {
+      const entityId: number = Number(this.formDialogData.id);
+      return `[{ 'EntityId': ${entityId} }]`;
+    } else { // else dialog type load without entity ids. (edit - toolbar)
+      return this.eavConfig.items;
     }
   }
 
@@ -159,8 +160,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.itemService.loadItems(data.Items);
     this.inputTypeService.loadInputTypes(data.InputTypes);
     this.contentTypeService.loadContentTypes(data.ContentTypes);
+    this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
+    this.features$ = this.featureService.selectFeatures();
   }
 
   /**

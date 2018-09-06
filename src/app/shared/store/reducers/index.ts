@@ -6,12 +6,14 @@ import * as fromItems from './item.reducer';
 import * as fromInputTypes from './input-type.reducer';
 import * as fromContentType from './content-type.reducer';
 import * as fromLanguages from './language.reducer';
+import * as fromFeatures from './feature.reducer';
 
 export interface EavState {
     itemState: fromItems.ItemState;
     inputTypeState: fromInputTypes.InputTypeState;
     contentTypeState: fromContentType.ContentTypeState;
     languages: fromLanguages.LanguagesState;
+    features: fromFeatures.FeaturesState;
 }
 
 // console.log all actions
@@ -39,6 +41,7 @@ export const reducers: ActionReducerMap<EavState> = {
     inputTypeState: fromInputTypes.inputTypeReducer,
     contentTypeState: fromContentType.contentTypeReducer,
     languages: fromLanguages.languageReducer,
+    features: fromFeatures.featureReducer,
 };
 
 export const getEavState = createFeatureSelector<EavState>('eavItemDialog');

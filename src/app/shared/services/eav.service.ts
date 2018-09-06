@@ -33,10 +33,6 @@ export class EavService {
     private route: ActivatedRoute) {
   }
 
-  // public getAllData() {
-  //   this.store.dispatch(new dataActions.LoadAllDataAction());
-  // }
-
   public getEavConfiguration = (): EavConfiguration => {
     if (!this.eavConfig) {
       this.setEavConfiguration(this.route);
@@ -51,15 +47,10 @@ export class EavService {
 
   public loadAllDataForForm(appId: string, items: string): Observable<any> {
     const body = items.replace(/"/g, '\'');
+    // TEST
     // const body = JSON.stringify([{ 'EntityId': 3870 }]);
-    // const body = JSON.stringify([{ 'EntityId': 2809 }]);
-    // const body = JSON.stringify([{ 'EntityId': 1033 }]);
-    // const body = JSON.stringify([{ 'EntityId': 3861 }]);
-    // const body = JSON.stringify([{ 'EntityId': 3858 }]);
-    // const body = JSON.stringify([{ 'EntityId': 3841 }]);
-    // const body = JSON.stringify([{ 'EntityId': 3830 }]);
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
-    // const body = JSON.stringify([{ 'EntityId': 1034 }, { 'EntityId': 1035 }]);
+
     // maybe create model for data
     return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
       body)
@@ -72,20 +63,19 @@ export class EavService {
       );
   }
   // TODO: create entityarray type
-  public loadAllDataForFormByEntity(appId: string, entityArray: Array<any>): Observable<any> {
-    const body = JSON.stringify(entityArray);
-    // maybe create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
-      body)
-      .pipe(
-        map((data: any) => {
-          return data;
-        }),
-        // tap(data => console.log('getAllDataForForm: ', data)),
-        catchError(error => this.handleError(error))
-      );
-  }
-
+  // public loadAllDataForFormByEntity(appId: string, entityArray: Array<any>): Observable<any> {
+  //   const body = JSON.stringify(entityArray);
+  //   // maybe create model for data
+  //   return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
+  //     body)
+  //     .pipe(
+  //       map((data: any) => {
+  //         return data;
+  //       }),
+  //       // tap(data => console.log('getAllDataForForm: ', data)),
+  //       catchError(error => this.handleError(error))
+  //     );
+  // }
 
   public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string,
     defaultLanguage: string) {
@@ -105,12 +95,6 @@ export class EavService {
   // public savemany(appId: number, tabId: string, moduleId: string, contentBlockId: string, body: string): Observable<any> {
   public savemany(appId: string, partOfPage: string, body: string): Observable<any> {
     console.log('start submit');
-    // tslint:disable-next-line:max-line-length
-    // const bodyTemp = `[{"Header":{"EntityId":1722,"Guid":"07621ab2-4bdc-4fd2-9c9d-e9cc765f988c","ContentTypeName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b","Metadata":null,"Group":null,"Prefill":null,"Title":null,"DuplicateEntity":null},"Entity":{"Id":1722,"Type":{"Name":"DirectoryItem","StaticName":"67a0b738-f1d0-4773-899d-c5bb04cfce2b"},"IsPublished":true,"IsBranch":false,"TitleAttributeName":"Title","Attributes":{"Title":{"Values":[{"Value":"2sic internet solutions","Dimensions":{"en-us":false}}]},"Industry":{"Values":[{"Value":["9e733bf4-8179-4add-a333-6cb6dbff38dc"],"Dimensions":{}}]},"Link":{"Values":[{"Value":"https://www.2sic.com","Dimensions":{"en-us":false}}]},"Logo":{"Values":[{"Value":"file:216","Dimensions":{"en-us":false}}]},"LinkText":{"Values":[{"Value":"www.2sic.com","Dimensions":{"en-us":false}}]},"Town":{"Values":[{"Value":"Buchs","Dimensions":{"en-us":false}}]},"localizationMenus":[{"all":{}},{"all":{}},{"all":{}},{"all":{}},{"all":{}}]},"AppId":15},"slotIsUsed":true}]`;
-
-    //  const body = items;
-    // const partOfPage = false;
-
     // TODO: create model for data
     return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
       body)
