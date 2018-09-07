@@ -71,8 +71,6 @@ export class DnnBridgeService {
           // tap(data => console.log('Hyperlink data: ', data)),
           catchError(error => this.handleError(error))
         );
-      // .do(data => console.log('features: ', data))
-      // .catch(this.handleError);
     } else {
       return null;
     }

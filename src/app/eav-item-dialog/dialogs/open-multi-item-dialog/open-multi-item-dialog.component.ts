@@ -31,7 +31,6 @@ export class OpenMultiItemDialogComponent implements OnInit {
    * Triggered after dialog is closed
    */
   private afterClosedDialog() {
-    console.log('The dialog was closed');
     // find and remove iframe
     // TODO: this is not good - need to find better solution
     const iframes = window.parent.frames.document.getElementsByTagName('iframe');

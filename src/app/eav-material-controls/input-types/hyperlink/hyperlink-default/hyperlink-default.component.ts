@@ -119,15 +119,14 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   // open the dialog
   openPageDialog() {
-    console.log('openPageDialog');
-    // this.dnnBridgeService.open(
-    //   this.value,
-    //   {
-    //     Paths: this.config.settings.Paths ? this.config.settings.Paths.values[0].value : '',
-    //     FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
-    //   },
-    //   this.processResultOfPagePicker,
-    //   this.dialog);
+    this.dnnBridgeService.open(
+      this.value,
+      {
+        Paths: this.config.settings.Paths ? this.config.settings.Paths : '',
+        FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
+      },
+      this.processResultOfPagePicker.bind(this),
+      this.dialog);
   }
 
   //#endregion dnn page picker
@@ -135,12 +134,10 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region new adam: callbacks only
 
   setValue(fileItem) {
-    console.log('setValue fileItem :', fileItem);
     this.setFormValue(this.config.name, `File:${fileItem.Id}`);
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
-    console.log('toggleAdam hdefault');
     this.config.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot

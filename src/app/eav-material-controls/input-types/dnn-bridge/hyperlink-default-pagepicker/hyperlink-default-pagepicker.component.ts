@@ -1,7 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { AdminDialogData } from '../../../../shared/models/eav/admin-dialog-data';
-import { DnnBridgeDialogData } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-hyperlink-default-pagepicker',
@@ -10,14 +7,6 @@ import { DnnBridgeDialogData } from '../../../../shared/models/dnn-bridge/dnn-br
 })
 export class HyperlinkDefaultPagepickerComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public dialogData: DnnBridgeDialogData) { }
-
-  get bridge() {
-    return this.dialogData.connector;
-  }
-
-  ngOnInit() {
-    console.log('HyperlinkDefaultPagepickerComponent formDialogData: ', this.dialogData);
-  }
-
+  constructor() { }
+  ngOnInit() { }
 }
