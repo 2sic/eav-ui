@@ -125,10 +125,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   close() {
     // find and remove iframe
     // TODO: this is not good - need to find better solution
-    const iframes = window.parent.frames.document.getElementsByTagName('iframe');
-    if (iframes[0] && iframes[0].parentElement) {
-      iframes[0].parentElement.remove();
-    }
+    (window.parent as any).$2sxc.totalPopup.close();
+    // const iframes = window.parent.frames.document.getElementsByTagName('iframe');
+    // if (iframes[0] && iframes[0].parentElement) {
+    //   iframes[0].parentElement.remove();
+    // }
   }
 
   trackByFn(index, item) {
