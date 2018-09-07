@@ -190,7 +190,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       // } else {
       //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
       // }
-      switch (attribute.settings.InputType.values[0].value ? attribute.settings.InputType.values[0].value : attribute.type) {
+      switch (attribute.settings.InputType && attribute.settings.InputType.values[0].value
+        ? attribute.settings.InputType.values[0].value : attribute.type) {
         case InputTypesConstants.default:
         case InputTypesConstants.stringDefault:
         case InputTypesConstants.string:
