@@ -22,9 +22,9 @@ export class OpenMultiItemDialogComponent implements OnInit {
     this.dialogRef = this.eavAdminUiService.openItemEditWithContent(this.dialog, MultiItemEditFormComponent);
 
     // Close dialog
-    // this.dialogRef.afterClosed().subscribe(result => {
-    //   this.afterClosedDialog();
-    // });
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.afterClosedDialog();
+    });
   }
 
   ngOnInit() { }
@@ -32,8 +32,7 @@ export class OpenMultiItemDialogComponent implements OnInit {
   /**
    * Triggered after dialog is closed
    */
-  // private afterClosedDialog() {
-  //   console.log('i have data:', this.dialogRef.data);
-  //   (window.parent as any).$2sxc.totalPopup.close();
-  // }
+  private afterClosedDialog() {
+    (window.parent as any).$2sxc.totalPopup.close();
+  }
 }

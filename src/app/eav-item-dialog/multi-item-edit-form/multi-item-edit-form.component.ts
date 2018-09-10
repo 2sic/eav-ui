@@ -48,7 +48,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
-  dialogAlreadyClosed = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -83,7 +82,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.saveFormMessagesSubscribe();
 
     // Close dialog
-    this.afterClosedDialogSubscribe();
+    // this.afterClosedDialogSubscribe();
   }
 
   ngAfterContentChecked() {
@@ -126,17 +125,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   trackByFn(index, item) {
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
-  }
-
-  /**
-   * Triggered after dialog is closed
-   */
-  private afterClosedDialogSubscribe() {
-    this.dialogRef.afterClosed().subscribe(result => {
-      if (!this.dialogAlreadyClosed) {
-        this.closeIFrame();
-      }
-    });
   }
 
   private afterLoadItemsData(data: any) {
@@ -291,16 +279,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
         // TODO show success message
-        // this.snackBar.open('saved',);
-
-        this.snackBarOpen('saved', this.closeWindow);
+        if (this.closeWindow) {
+          this.closeIFrame();
+        } else {
+          this.snackBarOpen('saved');
+        }
       }));
     this.subscriptions.push(this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
         console.log('error END', action.error);
         // TODO show error message
-        this.snackBarOpen('error', false);
+        this.snackBarOpen('error');
       }));
   }
 
@@ -309,18 +299,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * @param message
    * @param callClose
    */
-  private snackBarOpen(message: string, callClose: boolean) {
+  private snackBarOpen(message: string) {
     const snackBarRef = this.snackBar.open(message, '', {
-      duration: 500
+      duration: 3000
     });
 
-    if (callClose) {
-      this.closeDialog();
-      this.dialogAlreadyClosed = true;
-      snackBarRef.afterDismissed().subscribe(null, null, () => {
-        this.closeIFrame();
-      });
-    }
+    //   this.closeDialog();
+    //   snackBarRef.afterDismissed().subscribe(null, null, () => {
+    //     this.closeIFrame();
+    //   });
   }
 
   /**
