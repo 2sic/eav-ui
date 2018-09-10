@@ -311,7 +311,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private snackBarOpen(message: string, callClose: boolean) {
     const snackBarRef = this.snackBar.open(message, '', {
-      duration: 1000
+      duration: 500
     });
 
     if (callClose) {
