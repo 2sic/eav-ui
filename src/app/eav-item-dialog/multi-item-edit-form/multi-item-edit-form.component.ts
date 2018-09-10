@@ -80,9 +80,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.setLanguageConfig();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
-
-    // Close dialog
-    // this.afterClosedDialogSubscribe();
   }
 
   ngAfterContentChecked() {
@@ -303,11 +300,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const snackBarRef = this.snackBar.open(message, '', {
       duration: 3000
     });
-
-    //   this.closeDialog();
-    //   snackBarRef.afterDismissed().subscribe(null, null, () => {
-    //     this.closeIFrame();
-    //   });
   }
 
   /**

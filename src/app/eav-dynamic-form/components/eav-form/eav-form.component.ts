@@ -64,17 +64,22 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * @param fieldConfigArray
    */
   private createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
-    // const group = this.formBuilder.group({});
-    fieldConfigArray.forEach(fieldConfig => {
-      if (fieldConfig.fieldGroup) {
-        this.createControlsInFormGroup(fieldConfig.fieldGroup);
-      } else {
-        this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
+    try {
+      // const group = this.formBuilder.group({});
+      fieldConfigArray.forEach(fieldConfig => {
+        if (fieldConfig.fieldGroup) {
+          this.createControlsInFormGroup(fieldConfig.fieldGroup);
+        } else {
+          this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
+        }
       }
-    }
-    );
+      );
 
-    return this.form;
+      return this.form;
+    } catch (error) {
+      console.error(`Error creating form controls: ${error}
+      FieldConfig: ${fieldConfigArray}`);
+    }
   }
 
   /**
@@ -82,9 +87,14 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * @param config
    */
   private createControl(config: FieldConfig) {
-    // tslint:disable-next-line:prefer-const
-    let { disabled, validation, value } = config;
-    return this.formBuilder.control({ disabled, value }, validation);
+    try {
+      // tslint:disable-next-line:prefer-const
+      let { disabled, validation, value } = config;
+      return this.formBuilder.control({ disabled, value }, validation);
+    } catch (error) {
+      console.error(`Error creating form control: ${error}
+      Config: ${config}`);
+    }
   }
 
   // handleSubmit(event: Event) {

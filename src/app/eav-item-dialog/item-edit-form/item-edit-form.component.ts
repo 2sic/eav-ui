@@ -157,85 +157,96 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.contentType$
       .pipe(
         switchMap((data: ContentType) => {
-          const parentFieldGroup = this.createEmptyFieldGroup(null, false);
-          let currentFieldGroup = parentFieldGroup;
-          // loop through contentType attributes
-          data.contentType.attributes.forEach((attribute, index) => {
-            const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
-            // if input type is empty-default create new field group and than continue to add fields to that group
-            if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
-              || attribute.type === InputTypesConstants.empty) {
-              const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
-              currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
-              parentFieldGroup.fieldGroup.push(currentFieldGroup);
-            } else {
-              currentFieldGroup.fieldGroup.push(formlyFieldConfig);
-            }
-          });
+          try {
+            const parentFieldGroup = this.createEmptyFieldGroup(null, false);
+            let currentFieldGroup = parentFieldGroup;
+            // loop through contentType attributes
+            data.contentType.attributes.forEach((attribute, index) => {
+              const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
+              // if input type is empty-default create new field group and than continue to add fields to that group
+              if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
+                || attribute.type === InputTypesConstants.empty) {
+                const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
+                currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
+                parentFieldGroup.fieldGroup.push(currentFieldGroup);
+              } else {
+                currentFieldGroup.fieldGroup.push(formlyFieldConfig);
+              }
+            });
 
-          return of([parentFieldGroup]);
+            return of([parentFieldGroup]);
+          } catch (error) {
+            console.error(`Error loading content type: ${error}.
+            Content type data: ${JSON.stringify(data)}`);
+          }
         })
       );
   }
 
   // TEST
   private loadFieldFromDefinitionTest(attribute: AttributeDef, index: number): FieldConfig {
-    // if (attribute.settings.InputType.values[0].value === 'custom-gps') {
-    //   console.log('loadFieldFromDefinitionTest attribute:', attribute);
-    // }
-    if (attribute.settings.InputType || attribute.type) {
-
-      // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
-      //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
-      // } else {
-      //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
+    try {
+      // if (attribute.settings.InputType.values[0].value === 'custom-gps') {
+      //   console.log('loadFieldFromDefinitionTest attribute:', attribute);
       // }
-      switch (attribute.settings.InputType && attribute.settings.InputType.values[0].value
-        ? attribute.settings.InputType.values[0].value : attribute.type) {
-        case InputTypesConstants.default:
-        case InputTypesConstants.stringDefault:
-        case InputTypesConstants.string:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
-        case InputTypesConstants.stringUrlPath:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath, index);
-        // return this.loadFieldFromDefinitionStringUrlPath(attribute);
-        case InputTypesConstants.booleanDefault:
-        case InputTypesConstants.boolean:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault, index);
-        // return this.getStringIconFontPickerFormlyField(attribute);
-        case InputTypesConstants.dropdown:
-        case InputTypesConstants.stringDropdown:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown, index);
-        // return this.loadFieldFromDefinitionStringDropDown(attribute);
-        case InputTypesConstants.datetimeDefault:
-        case InputTypesConstants.datetime:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault, index);
-        case InputTypesConstants.numberDefault:
-        case InputTypesConstants.number:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault, index);
-        case InputTypesConstants.stringFontIconPicker:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker, index);
-        case InputTypesConstants.entityDefault:
-        case InputTypesConstants.entity:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault, index);
-        case InputTypesConstants.hyperlinkDefault:
-        case InputTypesConstants.hyperlink:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault, index);
-        case InputTypesConstants.hyperlinkLibrary:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkLibrary, index);
-        case InputTypesConstants.external:
-        case InputTypesConstants.wysiwyg:
-        case InputTypesConstants.stringWysiwyg:
-        case InputTypesConstants.stringWysiwygTinymce:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
-        case 'custom-my-field-test':
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
-        default:
-          return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
-      }
+      if (attribute.settings.InputType || attribute.type) {
+        // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
+        //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+        // } else {
+        //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
+        // }
+        switch (attribute.settings.InputType && attribute.settings.InputType.values[0].value
+          ? attribute.settings.InputType.values[0].value : attribute.type) {
+          case InputTypesConstants.default:
+          case InputTypesConstants.stringDefault:
+          case InputTypesConstants.string:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
+          case InputTypesConstants.stringUrlPath:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringUrlPath, index);
+          // return this.loadFieldFromDefinitionStringUrlPath(attribute);
+          case InputTypesConstants.booleanDefault:
+          case InputTypesConstants.boolean:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.booleanDefault, index);
+          // return this.getStringIconFontPickerFormlyField(attribute);
+          case InputTypesConstants.dropdown:
+          case InputTypesConstants.stringDropdown:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDropdown, index);
+          // return this.loadFieldFromDefinitionStringDropDown(attribute);
+          case InputTypesConstants.datetimeDefault:
+          case InputTypesConstants.datetime:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.datetimeDefault, index);
+          case InputTypesConstants.numberDefault:
+          case InputTypesConstants.number:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.numberDefault, index);
+          case InputTypesConstants.stringFontIconPicker:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringFontIconPicker, index);
+          case InputTypesConstants.entityDefault:
+          case InputTypesConstants.entity:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.entityDefault, index);
+          case InputTypesConstants.hyperlinkDefault:
+          case InputTypesConstants.hyperlink:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkDefault, index);
+          case InputTypesConstants.hyperlinkLibrary:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.hyperlinkLibrary, index);
+          case InputTypesConstants.external:
+          case InputTypesConstants.wysiwyg:
+          case InputTypesConstants.stringWysiwyg:
+          case InputTypesConstants.stringWysiwygTinymce:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+          case 'custom-my-field-test':
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
+          default:
+            return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
+        }
 
-    } else {
-      return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
+      } else {
+        return this.loadFieldFromDefinition(attribute, InputTypesConstants.stringDefault, index);
+      }
+    } catch (error) {
+      console.error(`Error loading input fields: ${error}.
+      Attribute name: ${attribute.name}
+      Attribute input type: ${attribute.settings.InputType && attribute.settings.InputType.values[0].value
+          ? attribute.settings.InputType.values[0].value : attribute.type}`);
     }
   }
 
