@@ -162,22 +162,28 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
             let currentFieldGroup = parentFieldGroup;
             // loop through contentType attributes
             data.contentType.attributes.forEach((attribute, index) => {
-              const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
-              // if input type is empty-default create new field group and than continue to add fields to that group
-              if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
-                || attribute.type === InputTypesConstants.empty) {
-                const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
-                currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
-                parentFieldGroup.fieldGroup.push(currentFieldGroup);
-              } else {
-                currentFieldGroup.fieldGroup.push(formlyFieldConfig);
+              try {
+                const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
+                // if input type is empty-default create new field group and than continue to add fields to that group
+                if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
+                  || attribute.type === InputTypesConstants.empty) {
+                  const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
+                  currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
+                  parentFieldGroup.fieldGroup.push(currentFieldGroup);
+                } else {
+                  currentFieldGroup.fieldGroup.push(formlyFieldConfig);
+                }
+              } catch (error) {
+                console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
+                throw error;
               }
             });
 
             return of([parentFieldGroup]);
           } catch (error) {
             console.error(`Error loading content type: ${error}.
-            Content type data: ${JSON.stringify(data)}`);
+            Content type data: ${JSON.stringify(data)}`, data);
+            throw error;
           }
         })
       );
