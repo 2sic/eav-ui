@@ -165,7 +165,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
               try {
                 const formlyFieldConfig: FieldConfig = this.loadFieldFromDefinitionTest(attribute, index);
                 // if input type is empty-default create new field group and than continue to add fields to that group
-                if (attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault
+                if ((attribute.settings.InputType && attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault)
                   || attribute.type === InputTypesConstants.empty) {
                   const collapsed = attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
                   currentFieldGroup = this.createEmptyFieldGroup(attribute, collapsed);
@@ -253,6 +253,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       Attribute name: ${attribute.name}
       Attribute input type: ${attribute.settings.InputType && attribute.settings.InputType.values[0].value
           ? attribute.settings.InputType.values[0].value : attribute.type}`);
+      throw error;
     }
   }
 

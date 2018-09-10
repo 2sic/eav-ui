@@ -79,6 +79,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     } catch (error) {
       console.error(`Error creating form controls: ${error}
       FieldConfig: ${fieldConfigArray}`);
+      throw error;
     }
   }
 
@@ -94,6 +95,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     } catch (error) {
       console.error(`Error creating form control: ${error}
       Config: ${config}`);
+      throw error;
     }
   }
 
