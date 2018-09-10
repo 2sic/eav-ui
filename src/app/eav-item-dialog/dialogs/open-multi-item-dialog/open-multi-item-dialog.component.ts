@@ -13,16 +13,18 @@ import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service
 })
 export class OpenMultiItemDialogComponent implements OnInit {
 
+  private dialogRef;
+
   constructor(private dialog: MatDialog,
     private eavAdminUiService: EavAdminUiService) {
 
     // Open dialog
-    const dialogRef = this.eavAdminUiService.openItemEditWithContent(this.dialog, MultiItemEditFormComponent);
+    this.dialogRef = this.eavAdminUiService.openItemEditWithContent(this.dialog, MultiItemEditFormComponent);
 
     // Close dialog
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterClosedDialog();
-    });
+    // this.dialogRef.afterClosed().subscribe(result => {
+    //   this.afterClosedDialog();
+    // });
   }
 
   ngOnInit() { }
@@ -30,14 +32,8 @@ export class OpenMultiItemDialogComponent implements OnInit {
   /**
    * Triggered after dialog is closed
    */
-  private afterClosedDialog() {
-    // find and remove iframe
-    // TODO: this is not good - need to find better solution
-
-    (window.parent as any).$2sxc.totalPopup.close();
-    // const iframes = window.parent.frames.document.getElementsByTagName('iframe');
-    // if (iframes[0] && iframes[0].parentElement) {
-    //   iframes[0].parentElement.remove();
-    // }
-  }
+  // private afterClosedDialog() {
+  //   console.log('i have data:', this.dialogRef.data);
+  //   (window.parent as any).$2sxc.totalPopup.close();
+  // }
 }

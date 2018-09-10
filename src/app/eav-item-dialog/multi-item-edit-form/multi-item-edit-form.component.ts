@@ -6,7 +6,7 @@ import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -48,12 +48,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
+  dialogAlreadyClosed = false;
 
   private subscriptions: Subscription[] = [];
 
   private eavConfig: EavConfiguration;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
+  constructor(public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    @Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
@@ -79,6 +81,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.setLanguageConfig();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
+
+    // Close dialog
+    this.afterClosedDialogSubscribe();
   }
 
   ngAfterContentChecked() {
@@ -119,21 +124,70 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
+  trackByFn(index, item) {
+    return item.entity.id === 0 ? item.entity.guid : item.entity.id;
+  }
+
+  /**
+   * Triggered after dialog is closed
+   */
+  private afterClosedDialogSubscribe() {
+    this.dialogRef.afterClosed().subscribe(result => {
+      if (!this.dialogAlreadyClosed) {
+        this.closeIFrame();
+      }
+    });
+  }
+
+  private afterLoadItemsData(data: any) {
+    this.itemService.loadItems(data.Items);
+    this.inputTypeService.loadInputTypes(data.InputTypes);
+    this.contentTypeService.loadContentTypes(data.ContentTypes);
+    this.featureService.loadFeatures(data.Features);
+    this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
+    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
+    this.features$ = this.featureService.selectFeatures();
+  }
+
   /**
    * close (remove) iframe window
    */
-  close() {
-    // find and remove iframe
-    // TODO: this is not good - need to find better solution
-    (window.parent as any).$2sxc.totalPopup.close();
-    // const iframes = window.parent.frames.document.getElementsByTagName('iframe');
-    // if (iframes[0] && iframes[0].parentElement) {
-    //   iframes[0].parentElement.remove();
-    // }
+  private closeDialog() {
+    this.dialogRef.close();
   }
 
-  trackByFn(index, item) {
-    return item.entity.id === 0 ? item.entity.guid : item.entity.id;
+  /**
+   * close (remove) iframe window
+   */
+  private closeIFrame() {
+    (window.parent as any).$2sxc.totalPopup.close();
+  }
+
+  /**
+   * Fill in all error validation messages from all forms
+   */
+  private displayAllValidationMessages() {
+    this.formErrors = [];
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        if (itemEditFormComponent.form.form.invalid) {
+          this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
+        }
+      });
+    }
+  }
+
+  private getVersioningOptions() {
+    if (!this.eavConfig.partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+    const req = this.eavConfig.publishing || '';
+    switch (req) {
+      case '':
+      case 'DraftOptional': return { show: true, hide: true, branch: true };
+      case 'DraftRequired': return { branch: true, hide: true };
+      default: throw Error('invalid versioning requiremenets: ' + req.toString());
+    }
   }
 
   /**
@@ -156,26 +210,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       return this.eavConfig.items;
     }
   }
-
-  private afterLoadItemsData(data: any) {
-    this.itemService.loadItems(data.Items);
-    this.inputTypeService.loadInputTypes(data.InputTypes);
-    this.contentTypeService.loadContentTypes(data.ContentTypes);
-    this.featureService.loadFeatures(data.Features);
-    this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
-    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
-    this.features$ = this.featureService.selectFeatures();
-  }
-
-  /**
-   * Read Eav Configuration
-   */
-  // private setEavConfiguration() {
-  //   const queryStringParameters = UrlHelper.readQueryStringParameters(this.route.snapshot.fragment);
-  //   console.log('queryStringParameters', queryStringParameters);
-  //   // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
-  //   this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
-  // }
 
   private setLanguageConfig() {
     this.setTranslateLanguage(this.eavConfig.lang);
@@ -258,6 +292,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         console.log('success END: ', action.data);
         // TODO show success message
         // this.snackBar.open('saved',);
+
         this.snackBarOpen('saved', this.closeWindow);
       }));
     this.subscriptions.push(this.actions$
@@ -276,15 +311,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private snackBarOpen(message: string, callClose: boolean) {
     const snackBarRef = this.snackBar.open(message, '', {
-      duration: 2000
+      duration: 1000
     });
 
     if (callClose) {
-      this.subscriptions.push(
-        snackBarRef.afterDismissed().subscribe(null, null, () => {
-          this.close();
-        })
-      );
+      this.closeDialog();
+      this.dialogAlreadyClosed = true;
+      snackBarRef.afterDismissed().subscribe(null, null, () => {
+        this.closeIFrame();
+      });
     }
   }
 
@@ -304,20 +339,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  /**
-   * Fill in all error validation messages from all forms
-   */
-  private displayAllValidationMessages() {
-    this.formErrors = [];
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        if (itemEditFormComponent.form.form.invalid) {
-          this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
-        }
-      });
-    }
-  }
-
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
 
@@ -331,19 +352,5 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
     }
   }
-
-  private getVersioningOptions() {
-    if (!this.eavConfig.partOfPage) {
-      return { show: true, hide: true, branch: true };
-    }
-    const req = this.eavConfig.publishing || '';
-    switch (req) {
-      case '':
-      case 'DraftOptional': return { show: true, hide: true, branch: true };
-      case 'DraftRequired': return { branch: true, hide: true };
-      default: throw Error('invalid versioning requiremenets: ' + req.toString());
-    }
-  }
-
 }
 
