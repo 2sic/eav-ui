@@ -13,7 +13,6 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap, filter } from 'rxjs/operators';
 import { ValidatorFn } from '@angular/forms';
 
-
 import {
   ContentType,
   EavAttributesTranslated,
@@ -67,9 +66,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private eavConfig;
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
+
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfig[]>;
-
   formIsValid = false;
 
   constructor(
@@ -89,6 +88,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.loadContentTypeFromStore();
   }
 
+  ngOnDestroy(): void {
+    this.itemBehaviorSubject$.unsubscribe();
+  }
+
+  ngOnChanges(): void { }
+
   public formSaveObservable(): Observable<Action> {
     return this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
@@ -96,17 +101,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         this.item.entity.id === 0
           ? this.item.entity.guid === action.item.entity.guid
           : this.item.entity.id === action.item.entity.id));
-  }
-
-  ngOnDestroy(): void {
-    this.itemBehaviorSubject$.unsubscribe();
-    // this.formSuccess.unsubscribe();
-    // this.formError.unsubscribe();
-  }
-
-  ngOnChanges(): void {
-    console.log('ItemEditFormComponent current change: ', this.currentLanguage);
-    // this.formIsValid = this.form.form.valid;
   }
 
   /**
@@ -121,14 +115,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       );
     }
 
-    // emit event to perent
+    // emit event to parent
     this.itemFormValueChange.emit();
   }
 
   submit(values: { [key: string]: any }) {
-    if (this.form.form.valid || (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
-      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage,
-        this.defaultLanguage);
+    if (this.form.form.valid ||
+      (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
+      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -151,16 +145,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   private loadContentTypeFromStore() {
     // Load content type for item from store
-    // Content type read allways from header ???
     this.contentType$ = this.contentTypeService.getContentTypeById(
-      this.item.entity.type === null ? this.item.header.contentTypeName : this.item.entity.type.id
+      this.item.entity.type === null
+        ? this.item.header.contentTypeName
+        : this.item.entity.type.id
     );
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
 
   /**
-   * load content type attributes to Formly FormFields (formlyFieldConfigArray)
+   * load FieldConfig for all fields from content type attributes
    */
   private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
     return this.contentType$
@@ -291,7 +286,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
     // set validation for all input types
     const validationList: ValidatorFn[] = ValidationHelper.setDefaultValidations(settingsTranslated);
-    const required = settingsTranslated.Required ? settingsTranslated.Required : false;
+    const required = settingsTranslated.Required
+      ? settingsTranslated.Required
+      : false;
     let value = LocalizationHelper.translate(
       this.currentLanguage,
       this.defaultLanguage,
@@ -301,7 +298,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // set default value if needed
     let defaultValueIsSet = false;
     if (!value) {
-      value = this.setDefaultValue(value, attribute, inputType, settingsTranslated);
+      value = this.setDefaultValue(attribute, inputType, settingsTranslated);
       defaultValueIsSet = true;
     }
     const disabled: boolean = this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
@@ -379,8 +376,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** Set default value and add that attribute in store */
-  private setDefaultValue(value: any, attribute: AttributeDef, inputType: string, settingsTranslated: EavAttributesTranslated) {
-    value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
+  private setDefaultValue(attribute: AttributeDef, inputType: string, settingsTranslated: EavAttributesTranslated): any {
+    const value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
     this.itemService.addAttributeValue(
       this.item.entity.id,
       attribute.name,
