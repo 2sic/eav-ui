@@ -167,16 +167,18 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
             // loop through contentType attributes
             data.contentType.attributes.forEach((attribute, index) => {
               try {
-                const formlyFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index);
                 // if input type is empty-default create new field group and than continue to add fields to that group
-                if ((attribute.settings.InputType && attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault)
-                  || attribute.type === InputTypesConstants.empty) {
+                const isEmptyInputType = (attribute.settings.InputType &&
+                  attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) ||
+                  attribute.type === InputTypesConstants.empty;
+                if (isEmptyInputType) {
                   const collapsed = attribute.settings.DefaultCollapsed
                     ? attribute.settings.DefaultCollapsed.values[0].value
                     : false;
                   currentFieldGroup = this.buildEmptyFieldGroup(attribute, collapsed, 'Edit Item');
                   parentFieldGroup.fieldGroup.push(currentFieldGroup);
                 } else {
+                  const formlyFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index);
                   currentFieldGroup.fieldGroup.push(formlyFieldConfig);
                 }
               } catch (error) {
