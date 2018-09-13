@@ -1,28 +1,37 @@
 import {
-  Component, ViewChild, OnInit, Input, OnChanges, OnDestroy, EventEmitter, Output
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  Component,
+  ViewChild
 } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
+import { Action } from '@ngrx/store';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap, filter } from 'rxjs/operators';
-import { Action } from '@ngrx/store';
+import { ValidatorFn } from '@angular/forms';
 
-// TODO: fix this dependency - from other module - move maybe to shared
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
-// TODO: fix this dependency
-import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+
 import {
-  Item, ContentType, EavAttributes, EavValues, EavAttributesTranslated, EavHeader
+  ContentType,
+  EavAttributesTranslated,
+  EavHeader,
+  Item,
 } from '../../shared/models/eav';
+import { Actions } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
+import { ContentTypeService } from '../../shared/services/content-type.service';
+import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+import { EavService } from '../../shared/services/eav.service';
+import { Feature } from '../../shared/models/feature/feature';
+import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
-import { ContentTypeService } from '../../shared/services/content-type.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
-import { EavService } from '../../shared/services/eav.service';
-import { Actions } from '@ngrx/effects';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { Feature } from '../../shared/models/feature/feature';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -123,10 +132,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // deleteItem() {
-  //   this.itemService.deleteItem(this.item);
-  // }
-
   private setFormValues = (item: Item, emit: boolean) => {
     if (this.form) {
       const formValues: { [name: string]: any } = {};
@@ -205,12 +210,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         // }
 
         if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
-          return this.loadNewInputTypeFieldConfig(attribute, index);
+          const inputTypeName = this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
+          return this.buildInputTypeFieldConfig(attribute, inputTypeName, index);
         } else {
-          return this.loadOldInputTypeFieldConfig(attribute, index);
+          const inputTypeFromOldName = this.getInputTypeNameOldConfig(attribute.type);
+          return this.buildInputTypeFieldConfig(attribute, inputTypeFromOldName, index);
         }
       } else {
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
+        return this.buildInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
       }
     } catch (error) {
       console.error(`Error loading input fields: ${error}.
@@ -222,8 +229,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /** read new inputField settings */
-  private loadNewInputTypeFieldConfig(attribute: AttributeDef, index: number): FieldConfig {
-    switch (attribute.settings.InputType.values[0].value) {
+  private getInputTypeNameNewConfig(inputTypeName: string): string {
+    switch (inputTypeName) {
       case InputTypesConstants.stringDefault:
       case InputTypesConstants.stringUrlPath:
       case InputTypesConstants.booleanDefault:
@@ -234,53 +241,53 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       case InputTypesConstants.entityDefault:
       case InputTypesConstants.hyperlinkDefault:
       case InputTypesConstants.hyperlinkLibrary:
-        return this.loadInputTypeFieldConfig(attribute, attribute.settings.InputType.values[0].value, index);
+        return inputTypeName;
       case InputTypesConstants.stringWysiwyg:
       case InputTypesConstants.stringWysiwygTinymce:
       case InputTypesConstants.external:
       case 'custom-my-field-test':
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.external, index);
+        return InputTypesConstants.external;
       default:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
+        return InputTypesConstants.stringDefault;
     }
   }
 
   /** read old inputField settings  */
-  private loadOldInputTypeFieldConfig(attribute: AttributeDef, index: number): FieldConfig {
-    switch (attribute.type) {
+  private getInputTypeNameOldConfig(inputTypeName: string): string {
+    switch (inputTypeName) {
       case InputTypesConstants.default:
       case InputTypesConstants.string:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
+        return InputTypesConstants.stringDefault;
       case InputTypesConstants.stringUrlPath:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringUrlPath, index);
+        return InputTypesConstants.stringUrlPath;
       case InputTypesConstants.boolean:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.booleanDefault, index);
+        return InputTypesConstants.booleanDefault;
       case InputTypesConstants.dropdown:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringDropdown, index);
+        return InputTypesConstants.stringDropdown;
       case InputTypesConstants.datetime:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.datetimeDefault, index);
+        return InputTypesConstants.datetimeDefault;
       case InputTypesConstants.number:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.numberDefault, index);
+        return InputTypesConstants.numberDefault;
       case InputTypesConstants.stringFontIconPicker:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringFontIconPicker, index);
+        return InputTypesConstants.stringFontIconPicker;
       case InputTypesConstants.entity:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.entityDefault, index);
+        return InputTypesConstants.entityDefault;
       case InputTypesConstants.hyperlink:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.hyperlinkDefault, index);
+        return InputTypesConstants.hyperlinkDefault;
       case InputTypesConstants.hyperlinkLibrary:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.hyperlinkLibrary, index);
+        return InputTypesConstants.hyperlinkLibrary;
       case InputTypesConstants.external:
       case InputTypesConstants.wysiwyg:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.external, index);
+        return InputTypesConstants.external;
       default:
-        return this.loadInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
+        return InputTypesConstants.stringDefault;
     }
   }
 
   /**
    * Load inputType FieldConfig from AttributeDef
    */
-  private loadInputTypeFieldConfig(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
+  private buildInputTypeFieldConfig(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
     const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
     // set validation for all input types
     const validationList: ValidatorFn[] = ValidationHelper.setDefaultValidations(settingsTranslated);
@@ -297,7 +304,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       value = this.setDefaultValue(value, attribute, inputType, settingsTranslated);
       defaultValueIsSet = true;
     }
-
     const disabled: boolean = this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
     const label = this.getFieldLabel(attribute, settingsTranslated, null);
 
@@ -353,7 +359,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       ? (settingsTranslated !== null && settingsTranslated.Name)
         ? settingsTranslated.Name
         : attribute.name
-      : null;
+      : defaultValue;
   }
 
   private getFieldDisabled = (
