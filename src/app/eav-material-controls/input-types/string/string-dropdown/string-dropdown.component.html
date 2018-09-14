@@ -1,31 +1,18 @@
-<div *ngIf="freeTextMode; then inputField else selectField"></div>
-
-<ng-template #selectField>
-  <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <mat-select placeholder="Favorite animal" [formControlName]="config.name" [required]='config.required' [placeholder]="config.placeholder">
-      <mat-option>--</mat-option>
-      <mat-option *ngFor="let item of selectOptions" [value]="item.value">
-        {{item.label}}
-      </mat-option>
-    </mat-select>
-    <a matSuffix *ngIf="config.settings.EnableTextEntry && config.settings.EnableTextEntry" [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
-      (click)="freeTextMode= !freeTextMode ">
-      <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
-    </a>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
-  </mat-form-field>
-</ng-template>
-
-<ng-template #inputField>
-  <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material" [required]='config.required'
-      [formControlName]="config.name" [placeholder]="config.placeholder">
-    <a matSuffix *ngIf="config.settings.EnableTextEntry && config.settings.EnableTextEntry" [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
-      (click)="freeTextMode = !freeTextMode ">
-      <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i>
-    </a>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
-  </mat-form-field>
-</ng-template>
+<mat-form-field [formGroup]="group" [style.width]="'100%'">
+  <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.name" [required]='config.required'
+    [placeholder]="config.placeholder">
+    <mat-option>-</mat-option>
+    <mat-option *ngFor="let item of selectOptions" [value]="item.value">
+      {{item.label}}
+    </mat-option>
+  </mat-select>
+  <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material" [required]='config.required'
+    [formControlName]="config.name" [placeholder]="config.placeholder">
+  <a matSuffix *ngIf="enableTextEntry" [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
+    (click)="freeTextMode= !freeTextMode ">
+    <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
+    <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i>
+  </a>
+  <mat-hint align="start" *ngIf="notes">{{config.settings.Notes}}</mat-hint>
+  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+</mat-form-field>

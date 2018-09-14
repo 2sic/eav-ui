@@ -25,15 +25,38 @@ export class StringDropdownComponent implements Field, OnInit {
   private _selectOptions: string[] = [];
   private _oldOptions: string[] = [];
 
+  get enableTextEntry() {
+    return this.config.settings.EnableTextEntry || false;
+  }
+
+  get notes() {
+    return this.config.settings.Notes || '';
+  }
+
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
+  }
+
+  get value() {
+    return this.group.controls[this.config.name].value;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.selectOptions = this.setOptionsFromDropdownValues();
-    console.log('this.config.settings.DropdownValues:', this.config.settings.DropdownValues);
+    this.freeTextMode = this.setFreeTextMode();
+  }
+
+  private setFreeTextMode() {
+    // TODO: if value exist and not in select option and EnableTextEntry === true switch to free text mode.
+    if (this.value) {
+      const isInSelectOptions: boolean = this.selectOptions.find(s => s.value === this.value);
+      if (!isInSelectOptions && this.enableTextEntry) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
