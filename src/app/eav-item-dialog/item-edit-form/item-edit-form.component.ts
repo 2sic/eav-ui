@@ -94,7 +94,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(): void { }
 
-  public formSaveObservable(): Observable<Action> {
+  /** Observe is item form is saved */
+  formSaveObservable(): Observable<Action> {
     return this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
       .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) =>
@@ -286,9 +287,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private buildInputTypeFieldConfig(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
     const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
+    // important - a hidden field dont have validations and is not required
+    const visibleInEditUI = (settingsTranslated.VisibleInEditUI === false) ? false : true;
     // set validation for all input types
-    const validationList: ValidatorFn[] = ValidationHelper.setDefaultValidations(settingsTranslated);
-    const required = settingsTranslated.Required
+    const validationList: ValidatorFn[] = visibleInEditUI
+      ? ValidationHelper.setDefaultValidations(settingsTranslated)
+      : [];
+    const required = settingsTranslated.Required && visibleInEditUI
       ? settingsTranslated.Required
       : false;
     let value = LocalizationHelper.translate(

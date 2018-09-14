@@ -302,8 +302,14 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   private translateAllConfiguration(currentLanguage: string) {
     this.config.settings = LocalizationHelper.translateSettings(this.config.fullSettings, this.currentLanguage, this.defaultLanguage);
     this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
-    this.config.validation = ValidationHelper.setDefaultValidations(this.config.settings);
-    this.config.required = this.config.settings.Required ? this.config.settings.Required : false;
+    // important - a hidden field don't have validations and is not required
+    const visibleInEditUI = (this.config.settings.VisibleInEditUI === false) ? false : true;
+    this.config.validation = visibleInEditUI
+      ? ValidationHelper.setDefaultValidations(this.config.settings)
+      : [];
+    this.config.required = this.config.settings.Required && visibleInEditUI
+      ? this.config.settings.Required
+      : false;
   }
 
   /**
