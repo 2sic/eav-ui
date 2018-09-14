@@ -49,7 +49,6 @@ export class StringDropdownComponent implements Field, OnInit {
   }
 
   private setFreeTextMode() {
-    // TODO: if value exist and not in select option and EnableTextEntry === true switch to free text mode.
     if (this.value) {
       const isInSelectOptions: boolean = this.selectOptions.find(s => s.value === this.value);
       if (!isInSelectOptions && this.enableTextEntry) {
