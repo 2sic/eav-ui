@@ -23,6 +23,14 @@ export class NumberDefaultComponent implements Field, OnInit {
     return this.group.controls[this.config.name].invalid;
   }
 
+  get max() {
+    return this.config.settings.Max;
+  }
+
+  get min() {
+    return this.config.settings.Min;
+  }
+
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
   }
