@@ -1,7 +1,5 @@
 <div>
-    <!-- directive : only-simple-url-chars -->
     <mat-form-field [formGroup]="group" [style.width]="'100%'">
-        <!-- (keyup)="clean(config.name, false)" -->
         <input matInput type="text" class="form-control material" [formControlName]="config.name" (blur)="clean(config.name, true)"
             [placeholder]="config.label" [required]='config.required'>
         <mat-hint align="start" *ngIf="config.settings.Notes"> {{config.settings.Notes}}</mat-hint>

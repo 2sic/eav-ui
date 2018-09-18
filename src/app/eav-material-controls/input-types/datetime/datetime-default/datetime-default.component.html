@@ -2,10 +2,9 @@
 
 <ng-template #notUseTimePickerTemplate>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-      [required]='config.required'>
+    <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.name"
+      [placeholder]="config.label" [required]='config.required'>
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
-    <!-- (dateChange)="to.change(field, formControl)" -->
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
@@ -16,7 +15,6 @@
 <ng-template #useTimePickerTemplate>
   <mat-form-field [formGroup]="group" [style.width]="'100%'">
     <input matInput [formControlName]="config.name" [owlDateTime]="picker" [placeholder]="config.label" [required]='config.required'>
-    <!-- (dateTimeChange)="to.change(field, formControl)" -->
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>
 
