@@ -3,25 +3,6 @@ import * as fromItems from '../actions/item.actions';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import isEmpty from 'lodash/isEmpty';
 
-// export interface ItemState {
-//     items: Array<{
-//         header: EavHeader,
-//         entity: {
-//             id: number,
-//             version: string,
-//             guid: string,
-//             type: string,
-//             attributes: AttributesState,
-//             owner: string,
-//             metadata: any[],
-//         }
-//     }>;
-// }
-
-// export const initialState: ItemState = {
-//     items: []
-// };
-
 export interface ItemState {
     items: Item[];
 }
@@ -32,13 +13,6 @@ export const initialState: ItemState = {
 
 export function itemReducer(state = initialState, action: fromItems.Actions): ItemState {
     switch (action.type) {
-        // case fromItems.LOAD_ITEM_SUCCESS: {
-        //     console.log('LOAD_ITEM_SUCCESS', action);
-        //     return {
-        //         ...state,
-        //         ...{ items: [...state.items, action.newItem] }
-        //     };
-        // }
         case fromItems.LOAD_ITEM_SUCCESS: {
             // if item with same id not exist in store add item else overwrite item
             const itemExist = state.items.filter(data =>
@@ -86,6 +60,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
+
                         return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
@@ -127,6 +102,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
+
                         return (item.entity.id === 0
                             ? item.entity.guid === action.item.entity.guid
                             : item.entity.id === action.item.entity.id)
@@ -149,6 +125,7 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 ...state,
                 ...{
                     items: state.items.map(item => {
+
                         return (item.entity.id === 0 ? item.entity.guid === action.guid : item.entity.id === action.id)
                             ? {
                                 ...item,
@@ -254,6 +231,5 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
         }
     }
 }
-
 
 export const getItems = (state: ItemState) => state.items;

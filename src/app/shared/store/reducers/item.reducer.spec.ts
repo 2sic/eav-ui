@@ -500,13 +500,13 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ],
-                type: 'String'
+                ]
             };
 
             const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey',
-                updatedItem.entity.guid, newValue.type);
+                updatedItem.entity.guid, 'String');
             const result = itemReducer(currentItemState, action);
+
             expect(result.items[0].entity.attributes['TestKey'])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey']);
         });
@@ -549,15 +549,12 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ],
-                type: 'String'
+                ]
             };
 
             const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, newValue, 'TestKey',
-                updatedItem.entity.guid, newValue.type);
-            console.log('result1:', currentItemState);
+                updatedItem.entity.guid, 'String');
             const result = itemReducer(currentItemState, action);
-            console.log('result 5:', result);
             expect(result.items[0].entity.attributes['TestKey'])
                 .toEqual(expectedResult.items[0].entity.attributes['TestKey']);
         });
@@ -1112,12 +1109,11 @@ describe(`itemReducer`, () => {
                     {
                         value: 'de-de'
                     }
-                ],
-                type: 'String'
+                ]
             };
 
             const action = new itemActions.AddItemAttributeValueAction(updatedItem.entity.id, eavValueCopyFromEn,
-                'TestKey', updatedItem.entity.guid, eavValueCopyFromEn.type);
+                'TestKey', updatedItem.entity.guid, 'String');
             const result = itemReducer(currentItemState, action);
 
             expect(result.items[0].entity.attributes['TestKey'].values)

@@ -79,6 +79,7 @@ export class LocalizationHelper {
     }
 
     public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
+
         // copy attributes from item
         const eavAttributes: EavAttributes = new EavAttributes();
         if (Object.keys(allAttributes).length > 0) {
@@ -96,6 +97,7 @@ export class LocalizationHelper {
         } else {
             eavAttributes[attributeKey] = { ...attribute };
         }
+
         return eavAttributes;
     }
 
@@ -109,11 +111,11 @@ export class LocalizationHelper {
         allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string): EavAttributes {
         // copy attributes from item
         const eavAttributes: EavAttributes = new EavAttributes();
-        console.log('saveAttributeValues attributes before ', allAttributes);
         Object.keys(allAttributes).forEach(attributeKey => {
             const newItemValue = updateValues[attributeKey];
             // if new value exist update attribute for languageKey
-            if (newItemValue !== null && newItemValue !== undefined) {
+            // if (newItemValue !== null && newItemValue !== undefined) {
+            if (newItemValue !== undefined) {
                 const valueWithLanguageExist = this.isEditableOrReadonlyTranslationExist(
                     allAttributes[attributeKey], languageKey, defaultLanguage);
 
@@ -147,7 +149,6 @@ export class LocalizationHelper {
                 eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
             }
         });
-
         return eavAttributes;
     }
 
