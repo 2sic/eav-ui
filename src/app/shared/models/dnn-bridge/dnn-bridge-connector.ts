@@ -10,8 +10,7 @@ export class DnnBridgeConnector {
 }
 
 export class DnnBridgeDialogData {
-    constructor(public id: string, public type: string, public connector: DnnBridgeConnector) {
-        this.id = id;
+    constructor(public type: string, public connector: DnnBridgeConnector) {
         this.type = type;
         this.connector = connector;
     }

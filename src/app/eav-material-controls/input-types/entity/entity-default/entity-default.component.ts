@@ -184,7 +184,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * @param value
    */
   edit(value: string) {
-    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, this.getEntityId(value), MultiItemEditFormComponent);
+    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, this.getEntityId(value));
   }
 
   /**
@@ -248,6 +248,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // open the dialog for a new item
     // TODO: finisih this when web services are completed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
+    console.log('openNewEntityDialog:', this.entityType);
+    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
   }
 
   /**

@@ -1,6 +1,8 @@
+import { DialogTypeConstants } from '../../constants/type-constants';
+
 export class AdminDialogData {
-    constructor(public id: string, public type: string) {
-        this.id = id;
-        this.type = type;
+    constructor(public dialogType: DialogTypeConstants, public item: any) {
+        this.dialogType = dialogType;
+        this.item = item;
     }
 }

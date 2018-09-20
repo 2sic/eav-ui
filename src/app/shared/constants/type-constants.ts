@@ -8,4 +8,5 @@ export class DialogTypeConstants {
     // string
     public static readonly itemEditWithEntityId: string = 'itemEditWithEntityId';
     public static readonly itemEditWithContent: string = 'itemEditWithContent';
+    public static readonly itemNewEntity: string = 'itemNewEntity';
 }

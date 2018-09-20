@@ -179,21 +179,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * Load all data for forms
    */
   private loadItemsData() {
-    const loadBody = this.setLoadBody(this.formDialogData.type);
+    const loadBody = this.formDialogData.item || this.eavConfig.items;
 
     this.eavService.loadAllDataForForm(this.eavConfig.appId, loadBody).subscribe(data => {
       this.afterLoadItemsData(data);
     });
-  }
-
-  private setLoadBody(dialogType: string) {
-    // if dialog type load with entity ids (edit - entity)
-    if (dialogType === DialogTypeConstants.itemEditWithEntityId) {
-      const entityId: number = Number(this.formDialogData.id);
-      return `[{ 'EntityId': ${entityId} }]`;
-    } else { // else dialog type load without entity ids. (edit - toolbar)
-      return this.eavConfig.items;
-    }
   }
 
   private setLanguageConfig() {
