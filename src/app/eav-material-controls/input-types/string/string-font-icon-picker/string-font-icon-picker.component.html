@@ -3,8 +3,8 @@
     <div matPrefix class="thumbnail-before-input icon-preview">
       <i class="glyphicon {{value}}"></i>
     </div>
-    <input matInput type="text" class="form-control material" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
-      [matAutocomplete]="auto" (click)="update()">
+    <input matInput type="text" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
+      [required]="config.required" [matAutocomplete]="auto" (click)="update()">
     <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
     <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
   </mat-form-field>

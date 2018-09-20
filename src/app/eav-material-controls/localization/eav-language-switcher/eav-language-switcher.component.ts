@@ -14,6 +14,8 @@ export class EavLanguageSwitcherComponent {
 
   @Input() currentLanguage: string;
 
+  @Input() formsAreValid: boolean;
+
   constructor(private languageService: LanguageService) {
     // this.currentLanguage$ = languageService.getCurrentLanguage();
   }

@@ -96,11 +96,8 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
         // try catch imortant because can't find CSSStyleSheet rules error
         console.log('Icon picker CSSStyleSheet error: ', error);
       }
-      //   }
-      // }
     }
-    // this.icons$ = foundList;
-    // this.icons.push(...foundList);
+
     return foundList;
   }
 
@@ -108,7 +105,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     const mapped = files.replace('[App:Path]', this.eavConfig.approot)
       .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
         '$1/$2');
-    console.log('[loadAdditionalResources] mapped', mapped);
+
     const fileList = mapped ? mapped.split('\n') : [];
 
     const scriptModelList: ScriptModel[] = [];
@@ -153,7 +150,5 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
         startWith(''),
         map(icon => icon ? this.filterStates(icon) : this.icons.slice())
       );
-
-    // .map(state => state ? this.filterStates(state) : this.icons.slice());
   }
 }

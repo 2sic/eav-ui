@@ -1,4 +1,3 @@
-<!-- <mat-card class="example-card" *ngIf="(items$ | async) && (items$ | async).length"> -->
 <!-- <mat-dialog-actions> -->
 <!-- class="button-top-right" -->
 <!-- <button mat-icon-button (click)="close()">
@@ -6,11 +5,8 @@
   </button>
 </mat-dialog-actions> -->
 <div mat-dialog-content *ngIf="(items$ | async) && (items$ | async).length">
-  <!-- <button mat-icon-button (click)="close()" class="button-top-right">
-    <mat-icon class="mat-24">close</mat-icon>
-  </button> -->
-
-  <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)" [currentLanguage]="(currentLanguage$ | async)"></app-eav-language-switcher>
+  <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)"
+    [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid"></app-eav-language-switcher>
 
   <mat-error *ngIf="!formsAreValid">
     <span *ngFor="let formError of formErrors;">
@@ -46,4 +42,3 @@
       <i class="eav-icon-git-branch"></i>{{ 'SaveMode.branch' |translate }}</button>
   </mat-menu>
 </div>
-<!-- </mat-card> -->
