@@ -1,4 +1,4 @@
 <mat-tab-group *ngIf="currentLanguage" (selectedTabChange)="selectedTabChanged($event)" [selectedIndex]="languages.indexOf(getLanguage(currentLanguage))">
-  <mat-tab *ngFor="let language of languages" [label]="language.name.substring(0, language.name.indexOf('(') > 0 ? language.name.indexOf('(') - 1 : 100 )"
-    [disabled]="!formsAreValid"></mat-tab>
+  <mat-tab *ngFor="let language of languages" [label]="language.name.substring(0, language.name.indexOf('(') > 0 ? language.name.indexOf('(') - 1 : 100 )"></mat-tab>
+  <!-- [disabled]="!formsAreValid" -->
 </mat-tab-group>

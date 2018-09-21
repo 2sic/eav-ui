@@ -1,43 +1,41 @@
 <!-- !modes.freeTextMode && -->
-<mat-list *ngIf="enableCreate || (chosenEntities && chosenEntities.length > 0)">
-  <mat-list-item *ngFor="let item of chosenEntities; let i = index">
-    <p matLine>
-      <!-- ng-show="!allowMultiValue" -->
-      <!-- <i class="material-icons">check</i> -->
-      <button mat-icon-button *ngIf="allowMultiValue" [disabled]="chosenEntities[0] === item || disabled" type="button" (click)="levelUp(item, i)">
-        <mat-icon class="mat-24">arrow_upward</mat-icon>
-      </button>
-      <button mat-icon-button *ngIf="allowMultiValue" [disabled]="chosenEntities[chosenEntities.length - 1] === item || disabled"
-        type="button" (click)="levelDown(item, i)">
-        <mat-icon class="mat-24">arrow_downward</mat-icon>
-      </button>
-      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
-      <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
-      <span [title]="getEntityText(item) + ' (' + item + ')'">{{ getEntityText(item) }}</span>
-      <button mat-icon-button *ngIf="enableEdit" type="button" (click)="edit(item)" title="{{ 'FieldType.Entity.Edit' | translate }}"
-        [disabled]="disabled">
-        <i class="eav-icon-pencil"></i>
-      </button>
-      <button mat-icon-button *ngIf="enableRemove" type="button" (click)="removeSlot(item, i)" title="{{ 'FieldType.Entity.Remove' | translate }}"
-        [disabled]="disabled">
-        <i class="{{allowMultiValue ? 'eav-icon-minus-circled' : 'eav-icon-down-dir'}}"></i>
-      </button>
-      <button mat-icon-button *ngIf="enableDelete" type="button" (click)="deleteItemInSlot(item)" title="{{ 'FieldType.Entity.Delete' | translate }}"
-        [disabled]="disabled">
-        <i class="eav-icon-cancel"></i>
-      </button>
-    </p>
-  </mat-list-item>
-</mat-list>
+<div *ngIf="enableCreate || (chosenEntities && chosenEntities.length > 0)">
+  <div class="dnd-placeholder" #placeholder>
+  </div>
+  <div [dndList]="dndListConfig" [dndPlaceholder]="placeholder" [dndModel]="chosenEntities">
+    <div *ngFor="let item of chosenEntities; let i = index" [dndType]="item.type" [dndDraggable] [dndObject]="item"
+      (dndMoved)="removeItem(item, chosenEntities)">
+      <div class="dnd-element">
+        <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
+        <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
+        <span [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+        <!-- dndHandle -->
+        <div class="dnd-buttons">
+          <button dndNoDrag mat-icon-button *ngIf="enableEdit" type="button" class="dndButtons" (click)="edit(item.name)"
+            title="{{ 'FieldType.Entity.Edit' | translate }}" [disabled]="disabled">
+            <i class="eav-icon-pencil"></i>
+          </button>
+          <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons" (click)="removeSlot(item.name, i)"
+            title="{{ 'FieldType.Entity.Remove' | translate }}" [disabled]="disabled">
+            <i class="{{allowMultiValue ? 'eav-icon-minus-circled' : 'eav-icon-down-dir'}}"></i>
+          </button>
+          <button dndNoDrag mat-icon-button *ngIf="enableDelete" type="button" class="dndButtons" (click)="deleteItemInSlot(item.name)"
+            title="{{ 'FieldType.Entity.Delete' | translate }}" [disabled]="disabled">
+            <i class="eav-icon-cancel"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- pick existing entity -->
 <!-- ng-if="!modes.freeTextMode" -->
 <div *ngIf="enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1))">
   <mat-form-field [style.width]="'100%'" [formGroup]="group">
-
     <!--(click)="setSelectEntitiesObservables()"  -->
-    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto" [disabled]="disabled"
-      [placeholder]="config.label" [required]="config.required">
+    <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto"
+      [disabled]="disabled" [placeholder]="config.label" [required]="config.required">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
       <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value" [disabled]="isInChosenEntities(item.Value)">
         <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
@@ -49,8 +47,8 @@
   <!-- <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span> -->
 </div>
 <!-- create new entity to add to this list -->
-<button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)" type="button"
-  (click)="openNewEntityDialog()" [disabled]="disabled">
+<button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)"
+  type="button" (click)="openNewEntityDialog()" [disabled]="disabled">
   <i class="eav-icon-plus"></i>
 </button>
 

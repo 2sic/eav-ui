@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
-import { NgSwitchCase } from '@angular/common';
 
 @Injectable()
 export class EavAdminUiService {
@@ -24,7 +23,7 @@ export class EavAdminUiService {
     }
 
     /**
-    * Open a modal dialog containing the given component.
+    * Open a modal dialog containing the given component. With ContentTypeName
     */
     public openItemNewEntity = (dialog: MatDialog, component: any, contentTypeName: any): MatDialogRef<{}, any> => {
         return this.openModalDialog(dialog, component, null, contentTypeName, DialogTypeConstants.itemNewEntity);

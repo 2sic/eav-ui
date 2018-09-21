@@ -39,7 +39,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  chosenEntities: string[];
+
+  chosenEntities: any[];
   // options: Item[];
   selectEntities: Observable<EntityInfo[]> = null;
   // entities = [];
@@ -85,6 +86,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
   }
+
+  get dndListConfig() {
+    return { allowedTypes: [this.config.name] };
+  }
+
 
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
@@ -159,7 +165,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * Determine is entityID in chosenEntities
    */
   isInChosenEntities = (value): boolean => {
-    if (this.chosenEntities.find(e => e === value)) {
+    if (this.chosenEntities.find(e => e.name === value)) {
       return true;
     }
 
@@ -243,20 +249,19 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   openNewEntityDialog() {
-    console.log('TODO openNewEntityDialog');
-
     // open the dialog for a new item
-    // TODO: finisih this when web services are completed
+    // TODO: finisih this - bug form closed when new entity closed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
-    console.log('openNewEntityDialog:', this.entityType);
-    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
+
+    // const dialogRef =
+    this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
   }
 
   /**
    * set initial value and subscribe to form value changes
    */
   private setChosenEntities() {
-    this.chosenEntities = this.group.controls[this.config.name].value || [];
+    this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value); //  || [];
 
     this.subscriptions.push(
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
@@ -272,8 +277,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   private updateChosenEntities(values: string[]) {
-    if (this.chosenEntities !== values) {
-      this.chosenEntities = values;
+    const updatedValues = this.mapFromEntityListToNameList(values);
+    if (this.chosenEntities !== updatedValues) {
+      this.chosenEntities = updatedValues;
     }
   }
 
@@ -335,5 +341,34 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       option.Text ?
         option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
+  }
+
+  public removeItem(item: any, list: any[]): void {
+    const oldIndex = list.indexOf(item);
+    const newIndex = list.findIndex(i => i.name === item.name);
+    list.splice(list.indexOf(item), 1);
+    // TEMP FIX Sorting list by moving an item up the list
+    // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
+    if (newIndex < oldIndex) {
+      list.splice(newIndex - 1, 0, item);
+      list.splice(newIndex + 1, 1);
+    }
+
+    const entityList = this.mapFromNameListToEntityList(list);
+    this.group.controls[this.config.name].patchValue(entityList);
+  }
+
+  private mapFromEntityListToNameList(entityList: string[]): any[] {
+    if (!entityList) {
+      return [];
+    }
+    return entityList.map(v => ({ 'name': v, 'type': this.config.name }));
+  }
+
+  private mapFromNameListToEntityList(nameList: any[]): string[] {
+    if (!nameList) {
+      return [];
+    }
+    return nameList.map(v => v.name);
   }
 }
