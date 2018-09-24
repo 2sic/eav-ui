@@ -7,7 +7,7 @@ import { LanguageService } from '../../../shared/services/language.service';
 @Component({
   selector: 'app-eav-language-switcher',
   templateUrl: './eav-language-switcher.component.html',
-  styleUrls: ['./eav-language-switcher.component.css']
+  styleUrls: ['./eav-language-switcher.component.scss']
 })
 export class EavLanguageSwitcherComponent {
   @Input() languages: Language[];

@@ -35,7 +35,7 @@ import * as fromItems from '../../shared/store/actions/item.actions';
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
-  styleUrls: ['./item-edit-form.component.css']
+  styleUrls: ['./item-edit-form.component.scss']
 })
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(EavFormComponent) form: EavFormComponent;

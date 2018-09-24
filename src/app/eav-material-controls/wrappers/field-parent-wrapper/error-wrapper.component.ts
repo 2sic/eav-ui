@@ -8,7 +8,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
 @Component({
   selector: 'app-error-wrapper',
   templateUrl: './error-wrapper.component.html',
-  styleUrls: ['./error-wrapper.component.css']
+  styleUrls: ['./error-wrapper.component.scss']
 })
 export class ErrorWrapperComponent implements FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;

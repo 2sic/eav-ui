@@ -4,7 +4,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 @Component({
   selector: 'app-hidden-wrapper',
   templateUrl: './hidden-wrapper.component.html',
-  styleUrls: ['./hidden-wrapper.component.css']
+  styleUrls: ['./hidden-wrapper.component.scss']
 })
 export class HiddenWrapperComponent implements FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;

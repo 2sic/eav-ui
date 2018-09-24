@@ -14,7 +14,7 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
   // tslint:disable-next-line:component-selector
   selector: 'adam-browser',
   templateUrl: './adam-browser.component.html',
-  styleUrls: ['./adam-browser.component.css']
+  styleUrls: ['./adam-browser.component.scss']
 })
 export class AdamBrowserComponent implements OnInit {
 

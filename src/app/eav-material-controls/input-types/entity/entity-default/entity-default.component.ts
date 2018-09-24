@@ -28,7 +28,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
   // tslint:disable-next-line:component-selector
   selector: 'entity-default',
   templateUrl: './entity-default.component.html',
-  styleUrls: ['./entity-default.component.css'],
+  styleUrls: ['./entity-default.component.scss'],
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

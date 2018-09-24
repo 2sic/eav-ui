@@ -13,7 +13,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
   // tslint:disable-next-line:component-selector
   selector: 'string-url-path',
   templateUrl: './string-url-path.component.html',
-  styleUrls: ['./string-url-path.component.css']
+  styleUrls: ['./string-url-path.component.scss']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

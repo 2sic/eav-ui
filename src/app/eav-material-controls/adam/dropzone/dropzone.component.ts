@@ -11,7 +11,7 @@ import { FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-dropzone',
   templateUrl: './dropzone.component.html',
-  styleUrls: ['./dropzone.component.css']
+  styleUrls: ['./dropzone.component.scss']
 })
 export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;

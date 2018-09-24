@@ -29,7 +29,7 @@ import { Feature } from '../../shared/models/feature/feature';
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
-  styleUrls: ['./multi-item-edit-form.component.css']
+  styleUrls: ['./multi-item-edit-form.component.scss']
 })
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;

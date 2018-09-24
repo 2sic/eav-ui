@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
   exportAs: 'appEavForm',
   templateUrl: './eav-form.component.html',
   selector: 'app-eav-form',
-  styleUrls: ['./eav-form.component.css']
+  styleUrls: ['./eav-form.component.scss']
 })
 export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;

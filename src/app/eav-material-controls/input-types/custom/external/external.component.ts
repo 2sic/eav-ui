@@ -19,7 +19,7 @@ import { AdamConfig } from '../../../../shared/models/adam/adam-config';
   // tslint:disable-next-line:component-selector
   selector: 'external',
   templateUrl: './external.component.html',
-  styleUrls: ['./external.component.css']
+  styleUrls: ['./external.component.scss']
 })
 @InputType({
   wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],

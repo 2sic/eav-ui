@@ -10,7 +10,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   // tslint:disable-next-line:component-selector
   selector: 'string-default',
   templateUrl: './string-default.component.html',
-  styleUrls: ['./string-default.component.css']
+  styleUrls: ['./string-default.component.scss']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

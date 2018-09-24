@@ -10,7 +10,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   // tslint:disable-next-line:component-selector
   selector: 'datetime-default',
   templateUrl: './datetime-default.component.html',
-  styleUrls: ['./datetime-default.component.css']
+  styleUrls: ['./datetime-default.component.scss']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

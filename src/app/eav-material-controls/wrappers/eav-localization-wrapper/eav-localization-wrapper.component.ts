@@ -27,7 +27,7 @@ import { ValidationHelper } from '../../validators/validation-helper';
 @Component({
   selector: 'app-eav-localization-wrapper',
   templateUrl: './eav-localization-wrapper.component.html',
-  styleUrls: ['./eav-localization-wrapper.component.css']
+  styleUrls: ['./eav-localization-wrapper.component.scss']
 })
 export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;

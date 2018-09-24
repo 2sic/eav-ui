@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   // tslint:disable-next-line:component-selector
   selector: 'hyperlink-default',
   templateUrl: './hyperlink-default.component.html',
-  styleUrls: ['./hyperlink-default.component.css']
+  styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
   wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],

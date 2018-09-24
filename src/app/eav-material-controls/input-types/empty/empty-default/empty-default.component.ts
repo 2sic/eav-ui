@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   // tslint:disable-next-line:component-selector
   selector: 'empty-default',
   templateUrl: './empty-default.component.html',
-  styleUrls: ['./empty-default.component.css']
+  styleUrls: ['./empty-default.component.scss']
 })
 export class EmptyDefaultComponent {
 }

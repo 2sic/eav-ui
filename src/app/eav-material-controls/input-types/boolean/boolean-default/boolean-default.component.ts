@@ -10,7 +10,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
-  styleUrls: ['./boolean-default.component.css']
+  styleUrls: ['./boolean-default.component.scss']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

@@ -12,7 +12,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 @Component({
   selector: 'app-collapsible-wrapper',
   templateUrl: './collapsible-wrapper.component.html',
-  styleUrls: ['./collapsible-wrapper.component.css']
+  styleUrls: ['./collapsible-wrapper.component.scss']
 })
 export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;

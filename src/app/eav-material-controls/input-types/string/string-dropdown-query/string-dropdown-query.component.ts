@@ -5,7 +5,7 @@ import { MatInput } from '@angular/material';
   // tslint:disable-next-line:component-selector
   selector: 'string-dropdown-query',
   templateUrl: './string-dropdown-query.component.html',
-  styleUrls: ['./string-dropdown-query.component.css']
+  styleUrls: ['./string-dropdown-query.component.scss']
 })
 export class StringDropdownQueryComponent {
   @ViewChild(MatInput) matInput: MatInput;

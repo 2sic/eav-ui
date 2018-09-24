@@ -15,7 +15,7 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
   // tslint:disable-next-line:component-selector
   selector: 'string-font-icon-picker',
   templateUrl: './string-font-icon-picker.component.html',
-  styleUrls: ['./string-font-icon-picker.component.css']
+  styleUrls: ['./string-font-icon-picker.component.scss']
 })
 @InputType({
   wrapper: ['app-eav-localization-wrapper'],

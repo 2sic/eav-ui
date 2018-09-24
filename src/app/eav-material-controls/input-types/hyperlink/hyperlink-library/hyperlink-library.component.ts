@@ -10,7 +10,7 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   // tslint:disable-next-line:component-selector
   selector: 'hyperlink-library',
   templateUrl: './hyperlink-library.component.html',
-  styleUrls: ['./hyperlink-library.component.css']
+  styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
   wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
