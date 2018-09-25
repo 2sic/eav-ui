@@ -13,6 +13,7 @@ export interface FieldConfig {
     options?: string[];
     placeholder?: string;
     inputType: string;
+    isParentGroup?: boolean;
     type?: string;
     validation?: ValidatorFn[];
     value?: any;

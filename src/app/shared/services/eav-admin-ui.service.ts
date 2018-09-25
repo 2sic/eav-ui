@@ -52,7 +52,14 @@ export class EavAdminUiService {
         }
 
         return dialog.open(component, {
-            width: '650px',
+            panelClass: 'multi-item-dialog',
+            // width: '700px',
+            // height: '90vh',
+            // scrollStrategy: overlay.scrollStrategies.reposition(),
+            // height: 'inherit',
+
+            // panelClass: 'mdc-layout-grid__cell--span-6',
+            // width: '30%',
             // height: '90%',
             // disableClose = true,
             // autoFocus = true,

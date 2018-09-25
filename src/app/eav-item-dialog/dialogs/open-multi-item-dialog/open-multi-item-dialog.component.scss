@@ -1,0 +1,53 @@
+// .mat-dialog-container {
+//     padding: 0px !important;
+//     // background: gray;
+//   }
+
+.multi-item-dialog {
+    // height: 90vh;
+
+    .mat-dialog-container {
+        padding: 0;
+        // background: #454f64;
+        background-color: #EFF0F2;
+        border-radius: 8px;
+        // opacity: 0.44;
+        margin-bottom: 100px !important;
+    }
+
+    .mat-dialog-content {
+
+        height: 90vh;
+        // max-height: inherit !important;
+    }
+}
+// .mat-dialog-container {
+//     display: flex !important;
+//     flex-direction: column;
+// }
+
+// .mat-dialog-container > * {
+//     display: flex;
+//     flex-direction: column;
+// }
+
+// .mat-dialog-content {
+//     max-height: inherit !important;
+// }
+
+
+
+// .mat-dialog-actions {
+//     display: block !important;
+//     flex-grow: inherit;
+//     flex-shrink: inherit;
+//     padding: 12px 0 0 !important;
+
+//     &:last-child {
+//         margin-bottom: 0 !important;
+//     }
+// }
+
+
+
+  

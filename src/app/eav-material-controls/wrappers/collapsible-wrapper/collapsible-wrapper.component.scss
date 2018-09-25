@@ -1,0 +1,45 @@
+$border-radius: 8px;
+
+.mat-card-group-parent {
+    padding: 0;
+    margin: 16px 0 0 0;
+    border-radius: $border-radius;
+    // background: #EFF0F2;
+}
+
+.mat-card-group-child {
+    padding: 0;
+    margin: 0 0 16px 0;
+    border-radius: $border-radius;
+}
+
+
+.mat-card-content-group-parent{
+    border-radius: $border-radius;
+    padding-bottom: 0;
+}
+
+// .mat-card-content-group-child{
+//     background: gray;
+//     border-radius: 10px;
+
+// }
+
+.mat-card-header-group-parent{
+    border-radius: $border-radius;
+}
+
+.mat-card-header-group-child{
+    border-radius: $border-radius;
+}
+
+.mat-card-title-group {
+    padding: 8px;
+    align-items: center;
+}
+
+
+
+// .mat-card-header-group-child{
+
+// }

@@ -1,0 +1,97 @@
+@import '../node_modules/@angular/material/theming';
+@include mat-core();
+
+// Define azing colors.
+$mat-eav-item-dialog-primary: (
+  50: #ffffff,
+  100: #ffffff,
+  200: #ffffff,
+  300: #ffffff,
+  400: #ffffff,
+  500: #ffffff,
+  600: #bfbfbf,
+  700: #808080,
+  800: #4d4d4d,
+  900: #000000,
+  A100: #ffffff,
+  A200: #ffffff,
+  A400: #ffffff,
+  A700: #808080,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
+$mat-eav-item-dialog-secondary: (
+  50: #ffffff,
+  100: #66baff,
+  200: #0087f4,
+  300: #007ee6,
+  400: #0070cc,
+  500: #0062b3,
+  600: #005499,
+  700: #004680,
+  800: #002a4d,
+  900: #000000,
+  A100: #66baff,
+  A200: #0087f4,
+  A400: #0070cc,
+  A700: #004680,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
+$editUI-theme-primary: mat-palette($mat-eav-item-dialog-secondary);
+$editUI-theme-accent: mat-palette($mat-eav-item-dialog-secondary, A200, A100, A400);
+$editUI-theme-warn: mat-palette($mat-red);
+
+
+$editUI-light-theme: mat-light-theme($editUI-theme-primary, $editUI-theme-accent, $editUI-theme-warn);
+
+@include angular-material-theme($editUI-light-theme);
+
+// Override Typography.
+$custom-typography: mat-typography-config(
+    $font-family:   '"Roboto", sans-serif',
+    $display-4:     mat-typography-level(32px, 36px, 400, 'Roboto Light'),
+    $display-3:     mat-typography-level(48px, 52px, 400, 'Roboto Light'),
+    $display-2:     mat-typography-level(60px, 64px, 400, 'Roboto Light'),
+    $display-1:     mat-typography-level(96px, 108px, 400, 'Roboto Light'),
+    $headline:      mat-typography-level(96px, 108px, 400, 'Roboto Light'),
+    $title:         mat-typography-level(60px, 64px, 500, 'Roboto Light'),
+    $subheading-2:  mat-typography-level(14px, 20px, 700, 'Roboto Medium'),
+    $subheading-1:  mat-typography-level(16px, 20px, 700, 'Roboto Regular'),
+    $body-2:        mat-typography-level(14px, 20px, 600, 'Roboto Regular'),
+    $body-1:        mat-typography-level(16px, 20px, 400, 'Roboto Regular'),
+    $button:        mat-typography-level(14px, 20px, 400, 'Roboto Medium'),
+    $caption:       mat-typography-level(12px, 16px, 400, 'Roboto Regular')
+);
+
+@include angular-material-typography($custom-typography);

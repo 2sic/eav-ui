@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { MultiItemEditFormComponent } from '../../multi-item-edit-form/multi-item-edit-form.component';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
 
@@ -9,7 +9,8 @@ import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service
 @Component({
   selector: 'app-open-multi-item-dialog',
   templateUrl: './open-multi-item-dialog.component.html',
-  // styleUrls: ['./open-multi-item-dialog.component.css']
+  styleUrls: ['./open-multi-item-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class OpenMultiItemDialogComponent implements OnInit {
 
