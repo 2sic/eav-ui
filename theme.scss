@@ -78,20 +78,36 @@ $editUI-light-theme: mat-light-theme($editUI-theme-primary, $editUI-theme-accent
 @include angular-material-theme($editUI-light-theme);
 
 // Override Typography.
+// $custom-typography: mat-typography-config(
+//     $font-family:   '"Roboto", sans-serif',
+//     $display-4:     mat-typography-level(32px, 36px, 400, 'Roboto Light'),
+//     $display-3:     mat-typography-level(48px, 52px, 400, 'Roboto Light'),
+//     $display-2:     mat-typography-level(60px, 64px, 400, 'Roboto Light'),
+//     $display-1:     mat-typography-level(96px, 108px, 400, 'Roboto Light'),
+//     $headline:      mat-typography-level(96px, 108px, 400, 'Roboto Light'),
+//     $title:         mat-typography-level(60px, 64px, 500, 'Roboto Light'),
+//     $subheading-2:  mat-typography-level(14px, 20px, 700, 'Roboto Medium'),
+//     $subheading-1:  mat-typography-level(16px, 20px, 700, 'Roboto Regular'),
+//     $body-2:        mat-typography-level(14px, 20px, 600, 'Roboto Regular'),
+//     $body-1:        mat-typography-level(16px, 20px, 400, 'Roboto Regular'),
+//     $button:        mat-typography-level(14px, 20px, 400, 'Roboto Medium'),
+//     $caption:       mat-typography-level(12px, 16px, 400, 'Roboto Regular')
+// );
+
 $custom-typography: mat-typography-config(
     $font-family:   '"Roboto", sans-serif',
-    $display-4:     mat-typography-level(32px, 36px, 400, 'Roboto Light'),
-    $display-3:     mat-typography-level(48px, 52px, 400, 'Roboto Light'),
-    $display-2:     mat-typography-level(60px, 64px, 400, 'Roboto Light'),
-    $display-1:     mat-typography-level(96px, 108px, 400, 'Roboto Light'),
-    $headline:      mat-typography-level(96px, 108px, 400, 'Roboto Light'),
-    $title:         mat-typography-level(60px, 64px, 500, 'Roboto Light'),
-    $subheading-2:  mat-typography-level(14px, 20px, 700, 'Roboto Medium'),
-    $subheading-1:  mat-typography-level(16px, 20px, 700, 'Roboto Regular'),
-    $body-2:        mat-typography-level(14px, 20px, 600, 'Roboto Regular'),
-    $body-1:        mat-typography-level(16px, 20px, 400, 'Roboto Regular'),
-    $button:        mat-typography-level(14px, 20px, 400, 'Roboto Medium'),
-    $caption:       mat-typography-level(12px, 16px, 400, 'Roboto Regular')
+    $display-4:     mat-typography-level(32px, 36px, 400, 'Roboto'),
+    $display-3:     mat-typography-level(48px, 52px, 400, 'Roboto'),
+    $display-2:     mat-typography-level(60px, 64px, 400, 'Roboto'),
+    $display-1:     mat-typography-level(96px, 108px, 400, 'Roboto'),
+    $headline:      mat-typography-level(96px, 108px, 400, 'Roboto'),
+    $title:         mat-typography-level(60px, 64px, 500, 'Roboto'),
+    $subheading-2:  mat-typography-level(14px, 20px, 700, 'Roboto'),
+    $subheading-1:  mat-typography-level(16px, 20px, 700, 'Roboto'),
+    $body-2:        mat-typography-level(14px, 20px, 600, 'Roboto'),
+    $body-1:        mat-typography-level(16px, 20px, 400, 'Roboto'),
+    $button:        mat-typography-level(14px, 20px, 400, 'Roboto'),
+    $caption:       mat-typography-level(12px, 16px, 400, 'Roboto')
 );
 
 @include angular-material-typography($custom-typography);

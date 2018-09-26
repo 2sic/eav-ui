@@ -1,21 +1,21 @@
 <mat-card [ngClass]="config.isParentGroup ? 'mat-card-group-parent' :'mat-card-group-child'">
     <mat-card-header [ngClass]="config.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
-        <mat-card-title class="mat-card-title-group">
-            <div (click)="config.collapse = !config.collapse">
+        <div (click)="config.collapse = !config.collapse">
+            <mat-card-title class="mat-card-title-group">
                 <i *ngIf="config.collapse" class="material-icons">keyboard_arrow_up</i>
                 <i *ngIf="!config.collapse" class="material-icons">keyboard_arrow_down</i>
                 {{config.label ? config.label : 'EditEntity.DefaultTitle' | translate }}
-            </div>
-            <mat-slide-toggle *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
-            </mat-slide-toggle>
-        </mat-card-title>
+            </mat-card-title>
+        </div>
+        <mat-slide-toggle *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
+        </mat-slide-toggle>
     </mat-card-header>
     <mat-divider></mat-divider>
     <!-- [style]="config.collapse ? 'display: none;' : ''" -->
     <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-                <div mat-dialog-content class="mdc-layout-grid__cell--span-12">
+                <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>
                 </div>
             </div>

@@ -18,8 +18,8 @@ import {
     MatTooltipModule,
     MatTabsModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule
-
+    MatSlideToggleModule,
+    MatChipsModule
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -104,6 +104,7 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatChipsModule,
         MatDatepickerModule,
         MatFormFieldModule,
         MatGridListModule,

@@ -1,4 +1,35 @@
-<mat-tab-group *ngIf="currentLanguage" (selectedTabChange)="selectedTabChanged($event)" [selectedIndex]="languages.indexOf(getLanguage(currentLanguage))">
-  <mat-tab *ngFor="let language of languages" [label]="language.name.substring(0, language.name.indexOf('(') > 0 ? language.name.indexOf('(') - 1 : 100 )"></mat-tab>
-  <!-- [disabled]="!formsAreValid" -->
-</mat-tab-group>
+<!-- <mat-tab-group *ngIf="currentLanguage" (selectedTabChange)="selectedTabChanged($event)" [selectedIndex]="languages.indexOf(getLanguage(currentLanguage))">
+  <mat-tab *ngFor="let language of languages" [label]="language.name.substring(0, language.name.indexOf('(') > 0 ? language.name.indexOf('(') - 1 : 100 )"></mat-tab> -->
+<!-- [disabled]="!formsAreValid" -->
+<!-- </mat-tab-group> -->
+
+<!-- <mat-chip-list>
+  <mat-chip>Papadum</mat-chip>
+  <mat-chip color="primary">Naan</mat-chip>
+  <mat-chip color="accent">Dal</mat-chip>
+</mat-chip-list> -->
+
+<!-- <h3>Stroked Buttons</h3>
+<div class="button-row">
+  <button mat-stroked-button>Basic</button>
+  <button mat-stroked-button color="primary">ENGLISH</button>
+  <button mat-stroked-button color="accent">FRANCE</button>
+  <button mat-stroked-button color="warn">DOCHLAND</button>
+  <button mat-stroked-button disabled>Disabled</button>
+  <a mat-stroked-button routerLink=".">Link</a>
+</div> -->
+<!-- <div class="mdc-layout-grid__inner"> -->
+
+<mat-card class="language-selector-card">
+  <mat-card-content>
+    <div class="button-row">
+      <button mat-icon-button class="close-button">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button mat-flat-button color="accent">DEUTSCH</button>
+      <button mat-flat-button color="white">ENGLISH</button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-divider></mat-divider>
