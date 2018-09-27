@@ -52,7 +52,7 @@ export class EavAdminUiService {
         }
 
         return dialog.open(component, {
-            panelClass: 'multi-item-dialog',
+            panelClass: 'c-multi-item-dialog',
             // width: '700px',
             // height: '90vh',
             // scrollStrategy: overlay.scrollStrategies.reposition(),

@@ -1,0 +1,23 @@
+.c-multi-item-dialog {
+    .mat-dialog-container {
+        padding: 0;
+        background-color: #EFF0F2;
+        border-radius: 8px;
+        width:40vw;
+        max-width:900px;
+    }
+
+    .mat-dialog-content {
+        // margin-top:0;
+        margin:0;
+        padding: 0;
+        max-height: 80vh;
+        // width:40vw;
+        // max-width:900px;
+    }
+    
+    .mat-dialog-actions {
+        padding:0;
+        margin-bottom:0;
+    }
+}

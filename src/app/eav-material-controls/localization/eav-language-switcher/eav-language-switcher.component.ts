@@ -24,10 +24,19 @@ export class EavLanguageSwitcherComponent {
    * on select tab changed update current language in store
    * @param event
    */
-  selectedTabChanged(tabChangeEvent: MatTabChangeEvent) {
-    const language: Language = this.getLanguageByName(tabChangeEvent.tab.textLabel);
+  // selectedTabChanged(tabChangeEvent: MatTabChangeEvent) {
+  //   const language: Language = this.getLanguageByName(tabChangeEvent.tab.textLabel);
+  //   this.languageService.updateCurrentLanguage(language.key);
+  // }
+
+  /**
+   * on select tab changed update current language in store
+   * @param language
+   */
+  selectLanguage(language: Language) {
     this.languageService.updateCurrentLanguage(language.key);
   }
+
 
   private getLanguageByName = (name): Language => {
     return this.languages.find(d => d.name.startsWith(name));

@@ -1,26 +1,31 @@
-.multi-item-dialog {
-    .mat-dialog-container {
-        padding: 0;
-        background-color: #EFF0F2;
-        border-radius: 8px;
-    }
 
-    .mat-dialog-content {
-        // margin-top:0;
-        margin:0;
-        padding: 0;
-        max-height: 80vh;
-        width:40vw;
-        max-width:900px;
-        -ms-overflow-style: none;  // IE 10+
-        overflow: -moz-scrollbars-none;  // Firefox
-     } 
-      ::-webkit-scrollbar { 
-         display: none;  // Safari and Chrome
-     }
+
+// .multi-item-dialog {
+//     .mat-dialog-container {
+//         padding: 0;
+//         background-color: #EFF0F2;
+//         border-radius: 8px;
+//         width:40vw;
+//         max-width:900px;
+//     }
+
+//     .mat-dialog-content {
+//         // margin-top:0;
+//         margin:0;
+//         padding: 0;
+//         max-height: 80vh;
+//         // width:40vw;
+//         // max-width:900px;
+//         -ms-overflow-style: none;  // IE 10+
+//         overflow: -moz-scrollbars-none;  // Firefox
+       
+//      } 
+//      ::-webkit-scrollbar { 
+//         display: none;  // Safari and Chrome
+//     }
     
-    .mat-dialog-actions {
-        padding:0;
-        margin-bottom:0;
-    }
-}
+//     .mat-dialog-actions {
+//         padding:0;
+//         margin-bottom:0;
+//     }
+// }
