@@ -19,7 +19,8 @@ import {
     MatTabsModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule,
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -61,6 +62,8 @@ import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-lib
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
 import { DndListModule } from 'ngx-drag-and-drop-lists';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 
 @NgModule({
     declarations: [
@@ -94,18 +97,21 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
         HiddenWrapperComponent,
         HyperlinkDefaultPagepickerComponent,
         WebFormBridgeDirective,
+        SaveStatusDialogComponent,
     ],
     imports: [
+        // DndDraggable,
         CommonModule,
         DndListModule,
-        // DndDraggable,
         DropzoneModule,
+        FlexLayoutModule,
         MatAutocompleteModule,
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
         MatChipsModule,
         MatDatepickerModule,
+        MatDialogModule,
         MatFormFieldModule,
         MatGridListModule,
         MatIconModule,
@@ -124,26 +130,27 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
         TranslateModule.forChild(),
     ],
     entryComponents: [
+        BooleanDefaultComponent,
+        CollapsibleWrapperComponent,
+        DatetimeDefaultComponent,
+        DropzoneComponent,
+        EavLocalizationComponent,
+        EmptyDefaultComponent,
+        EntityDefaultComponent,
+        ErrorWrapperComponent,
+        ExternalComponent,
+        HiddenWrapperComponent,
+        HyperlinkDefaultComponent,
+        HyperlinkDefaultPagepickerComponent,
+        HyperlinkLibraryComponent,
+        NumberDefaultComponent,
+        SaveStatusDialogComponent,
         StringDefaultComponent,
-        StringUrlPathComponent,
         StringDropdownComponent,
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
-        BooleanDefaultComponent,
+        StringUrlPathComponent,
         TextEntryWrapperComponent,
-        DatetimeDefaultComponent,
-        EmptyDefaultComponent,
-        NumberDefaultComponent,
-        EavLocalizationComponent,
-        ErrorWrapperComponent,
-        CollapsibleWrapperComponent,
-        EntityDefaultComponent,
-        HyperlinkDefaultComponent,
-        HyperlinkLibraryComponent,
-        ExternalComponent,
-        DropzoneComponent,
-        HiddenWrapperComponent,
-        HyperlinkDefaultPagepickerComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

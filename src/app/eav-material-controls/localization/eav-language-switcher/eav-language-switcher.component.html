@@ -3,21 +3,26 @@
 <!-- [disabled]="!formsAreValid" -->
 <!-- </mat-tab-group> -->
 
-<mat-card class="c-language-switcher-header" *ngIf="currentLanguage">
-  <!-- <button mat-icon-button class="c-icon c-icon--first"> -->
-  <div class="c-card-header-icon c-card-header-icon--first">
+<mat-card>
+  <button mat-icon-button fxLayoutAlign="center center" [mat-dialog-close]="true">
     <mat-icon>clear</mat-icon>
+  </button>
+  <div fxFlex="auto" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px" fxLayoutGap.md="16px"
+    fxLayoutGap.gt-md="24px" class="u-add-scrollbar u-no-scrollbar">
+    <div></div>
+    <button mat-flat-button *ngFor="let language of languages" [color]="currentLanguage===language.key? 'accent' : 'white'"
+      (click)="selectLanguage(language)">
+      {{language.name.substring(0, language.name.indexOf('(') > 0
+      ? language.name.indexOf('(') - 1
+      : 100).toUpperCase()}}
+    </button>
+    <div></div>
   </div>
-  <div class="c-language-switcher-header__content u-no-scrollbar">
-    <div *ngFor="let language of languages" class="c-language-switcher-header__item">
-      <button mat-flat-button class="c-mat-flat-button" [color]="currentLanguage===language.key? 'accent' : 'white'"
-        (click)=" selectLanguage(language)">
-        {{language.name.substring(0, language.name.indexOf('(') > 0
-        ? language.name.indexOf('(') - 1
-        : 100).toUpperCase()}}
-      </button>
-    </div>
+  <div fxLayoutAlign="end center">
+    <button mat-button color="primary" (click)="openSaveSatusDialog()">
+      Status: DRAFT
+    </button>
   </div>
-  <div class="c-card-header-menu c-card-header-menu--last">Status: DRAFT</div>
+
 </mat-card>
 <mat-divider></mat-divider>

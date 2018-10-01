@@ -21,3 +21,35 @@
         margin-bottom:0;
     }
 }
+
+
+.c-save-status-dialog {
+    .mat-dialog-container {
+        padding: 0;
+        background-color: #EFF0F2;
+        border-radius: 8px;
+        // width:40vw;
+        // max-width:900px;
+    }
+
+    // .mat-dialog-content {
+
+    // }
+    
+    // .mat-dialog-actions {
+
+    // }
+}
+
+.c-save-status-dialog--header{
+    padding: 24px;
+}
+.c-save-status-dialog--actions{
+    padding-bottom:24px;
+    .mat-pseudo-checkbox {
+        display: none;
+    }
+}
+.c-save-status-dialog--list-item{
+    padding-bottom:24px;
+}
