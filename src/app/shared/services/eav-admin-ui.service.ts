@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, DialogPosition } from '@angular/material';
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
@@ -53,8 +53,12 @@ export class EavAdminUiService {
 
         return dialog.open(component, {
             panelClass: 'c-multi-item-dialog',
-            // width: '700px',
-            // height: '90vh',
+            autoFocus: false,
+            // position: <DialogPosition>{ top: '10px', bottom: '10px', left: '24px', right: '24px' },
+            position: <DialogPosition>{ top: '24px' },
+            width: '100vw',
+            maxWidth: 960,
+            //  maxHeight: '80vh',
             // scrollStrategy: overlay.scrollStrategies.reposition(),
             // height: 'inherit',
 
@@ -62,7 +66,6 @@ export class EavAdminUiService {
             // width: '30%',
             // height: '90%',
             // disableClose = true,
-            // autoFocus = true,
             data: <AdminDialogData>{
                 dialogType,
                 item

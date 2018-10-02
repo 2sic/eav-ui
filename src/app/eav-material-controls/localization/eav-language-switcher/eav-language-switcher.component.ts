@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material';
+import { MatTabChangeEvent, DialogPosition } from '@angular/material';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { Language } from '../../../shared/models/eav';
@@ -57,11 +57,13 @@ export class EavLanguageSwitcherComponent {
     // Open dialog
     const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
       panelClass: 'c-save-status-dialog',
+      autoFocus: false,
       width: '350px',
       // height: '80vh',
+      // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
       data: <AdminDialogData>{
         dialogType: DialogTypeConstants.itemEditWithEntityId,
-        item: 'ante'
+        item: 'temp'
       }
     });
 

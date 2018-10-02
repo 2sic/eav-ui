@@ -1,5 +1,7 @@
-$edit-ui-dialog-width: 40vw;
-$edit-ui-dialog-max-height: 75vh;
+$edit-ui-dialog-width: 100vw;
+$edit-ui-dialog-max-width: 960px;
+// TODO: calculate the max height of editUi by screens
+$edit-ui-dialog-max-height: 70vh;
 $edit-ui-dialog-background-color: #EFF0F2;
 $edit-ui-dialog-border-radius:8px;
 
@@ -14,8 +16,9 @@ $save-button-width-extended:200px;
         padding: 0;
         background-color: $edit-ui-dialog-background-color;
         border-radius: $edit-ui-dialog-border-radius;
-        width: $edit-ui-dialog-width;
-        max-width:960px;
+        // width: $edit-ui-dialog-width;
+        // max-width: 960px;
+        bottom: 10px;
     }
 
     .mat-card {
@@ -23,27 +26,23 @@ $save-button-width-extended:200px;
     }
 
     .mat-dialog-content {
-        // margin-top:0;
         margin:0;
         padding: 0;
         max-height: $edit-ui-dialog-max-height;
-        // width:40vw;
-        // max-width:900px;
     }
     
     .mat-dialog-actions {
         padding:0;
         margin-bottom:0;
-        max-width:40vw;
     }
 
     &--save-div {
         z-index: 1;
         position: fixed;
         width: $edit-ui-dialog-width;
-        max-height: $edit-ui-dialog-max-height;
+        max-width: $edit-ui-dialog-max-width;
         padding: 0;
-            line-height: 0;
+        line-height: 0;
     }
 
     &--save-button {

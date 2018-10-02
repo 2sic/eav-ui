@@ -12,8 +12,7 @@
     </mat-card-header>
     <mat-divider></mat-divider>
     <!-- [style]="config.collapse ? 'display: none;' : ''" -->
-    <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'"
-        cdkFocusInitial>
+    <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
                 <div class="mdc-layout-grid__cell--span-12">
