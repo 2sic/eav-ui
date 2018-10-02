@@ -27,9 +27,7 @@ import { reducers } from '../shared/store';
 import { ItemEffects } from '../shared/effects/item.effects';
 import { ContentTypeEffects } from '../shared/effects/content-type.effects';
 import { EavEffects } from '../shared/effects/eav.effects';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 
 @NgModule({

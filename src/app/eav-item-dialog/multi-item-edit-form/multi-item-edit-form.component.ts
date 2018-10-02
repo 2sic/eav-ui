@@ -48,6 +48,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
+  extendedSaveButtonIsReduced = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -80,6 +81,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.setLanguageConfig();
     // suscribe to form submit
     this.saveFormMessagesSubscribe();
+
+    this.reduceExtendedSaveButton();
   }
 
   ngAfterContentChecked() {
@@ -320,6 +323,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
       this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
     }
+  }
+
+  private reduceExtendedSaveButton() {
+    setTimeout(() => {
+      this.extendedSaveButtonIsReduced = true;
+    }, 3000);
   }
 }
 
