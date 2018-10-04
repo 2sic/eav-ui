@@ -1,0 +1,11 @@
+<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--parent' : ''">
+
+  <!-- <mat-card> -->
+  <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--child' : ''">
+    <button mat-button type="button" (click)="dialogIsOpen = false" [ngStyle]="{ 'display': !dialogIsOpen ? 'none' : 'block' }">Close</button>
+    <!-- <span>The expandable work</span> -->
+    <ng-container #fieldComponent></ng-container>
+  </div>
+  <!-- </mat-card> -->
+</div>
+<button mat-button type="button" (click)="dialogIsOpen = true" [ngStyle]="{ 'display': dialogIsOpen ? 'none' : 'block' }">Open</button>

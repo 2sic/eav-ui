@@ -18,6 +18,7 @@ import {
   EavAttributesTranslated,
   EavHeader,
   Item,
+  EavAttributes,
 } from '../../shared/models/eav';
 import { Actions } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
@@ -163,7 +164,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(
         switchMap((data: ContentType) => {
           try {
-            const parentFieldGroup = this.buildEmptyFieldGroup(null, false, 'Edit Item', true);
+
+
+            const parentFieldGroup = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
             let currentFieldGroup = parentFieldGroup;
             // loop through contentType attributes
             data.contentType.attributes.forEach((attribute, index) => {
@@ -176,7 +179,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                   const collapsed = attribute.settings.DefaultCollapsed
                     ? attribute.settings.DefaultCollapsed.values[0].value
                     : false;
-                  currentFieldGroup = this.buildEmptyFieldGroup(attribute, collapsed, 'Edit Item', false);
+                  currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
                   parentFieldGroup.fieldGroup.push(currentFieldGroup);
                 } else { // all other fields (not group empty)
                   const formlyFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index);
@@ -337,14 +340,19 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
    */
   private buildEmptyFieldGroup = (
     attribute: AttributeDef,
+    contentTypeSettings: EavAttributes,
     collapse: boolean,
     defaultValue: string,
     isParentGroup: boolean
   ): FieldConfig => {
     let settingsTranslated = null;
+
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
+    } else if (contentTypeSettings) {
+      settingsTranslated = LocalizationHelper.translateSettings(contentTypeSettings, this.currentLanguage, this.defaultLanguage);
     }
+
     const label = this.getFieldLabel(attribute, settingsTranslated, defaultValue);
     const name = attribute !== null ? attribute.name : defaultValue;
 

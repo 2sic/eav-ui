@@ -15,6 +15,10 @@
     <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
+                <mat-hint class="mdc-layout-grid__cell--span-12" align="start" *ngIf="notes || editInstructions"><span></span>
+                    <div [innerHtml]='notes'></div>
+                    <div [innerHtml]='editInstructions'></div>
+                </mat-hint>
                 <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>
                 </div>

@@ -1,0 +1,24 @@
+.c-expandable-wrapper {
+    &--parent {
+        position: fixed;
+        z-index: 1;
+        top: 24px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        align-items: self-start;
+        justify-content: center;
+        display: flex;
+    }
+
+    &--child {
+        background: #EFF0F2;
+        max-width: 960px;
+        width: 100vw; 
+        // transition: width 5s;
+        top: 24px;
+        max-height: 75vh;
+        overflow: scroll;
+    }
+
+}

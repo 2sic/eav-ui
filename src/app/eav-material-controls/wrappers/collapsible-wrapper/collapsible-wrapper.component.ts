@@ -28,6 +28,10 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     return this.config.settings ? (this.config.settings.Notes || '') : '';
   }
 
+  get editInstructions() {
+    return this.config.settings ? (this.config.settings.EditInstructions || '') : '';
+  }
+
   get slotCanBeEmpty() {
     return this.config.header.group ? this.config.header.group.slotCanBeEmpty || false : false;
   }

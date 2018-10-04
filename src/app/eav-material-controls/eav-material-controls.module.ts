@@ -64,6 +64,7 @@ import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge
 import { DndListModule } from 'ngx-drag-and-drop-lists';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
+import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 
 @NgModule({
     declarations: [
@@ -98,6 +99,7 @@ import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-sta
         HyperlinkDefaultPagepickerComponent,
         WebFormBridgeDirective,
         SaveStatusDialogComponent,
+        ExpandableWrapperComponent,
     ],
     imports: [
         // DndDraggable,
@@ -151,6 +153,7 @@ import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-sta
         StringFontIconPickerComponent,
         StringUrlPathComponent,
         TextEntryWrapperComponent,
+        ExpandableWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]
