@@ -6,7 +6,7 @@ import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -21,10 +21,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
-import { DialogTypeConstants } from '../../shared/constants/type-constants';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/services/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
+import {
+  SnackBarUnsavedChangesComponent
+} from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -38,8 +40,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
   enableDraft = false;
+
   formErrors: { [key: string]: any }[] = [];
   formsAreValid = false;
+  formsAreDirty = false;
+
   formSaveAllObservables$: Observable<Action>[] = [];
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
@@ -83,11 +88,16 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.saveFormMessagesSubscribe();
 
     this.reduceExtendedSaveButton();
+
+    this.dialogRef.backdropClick().subscribe(result => {
+      this.closeDialog();
+    });
   }
 
   ngAfterContentChecked() {
     this.saveFormSuscribe();
-    this.setFormsAreValid();
+    this.setAllFormsStates();
+    this.dialogRef.disableClose = this.formsAreDirty;
     // need this to detectChange this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
   }
@@ -100,7 +110,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * observe formValue changes from all child forms
    */
   formValueChange() {
-    this.setFormsAreValid();
+    this.setAllFormsStates();
+    this.dialogRef.disableClose = this.formsAreDirty;
     // reset form errors
     this.formErrors = [];
   }
@@ -113,10 +124,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
         itemEditFormComponent.form.submitOutside();
       });
-
+      console.log('saveAll', close);
       if (close) {
         this.closeWindow = true;
-        // this.close();
       }
     } else {
       this.displayAllValidationMessages();
@@ -125,6 +135,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   trackByFn(index, item) {
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
+  }
+
+  /**
+   * close (remove) iframe window
+   */
+  closeDialog() {
+    if (this.dialogRef.disableClose) {
+      this.snackBarYouHaveUnsavedChanges();
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   private afterLoadItemsData(data: any) {
@@ -140,16 +161,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /**
    * close (remove) iframe window
    */
-  private closeDialog() {
-    this.dialogRef.close();
-  }
-
-  /**
-   * close (remove) iframe window
-   */
-  private closeIFrame() {
-    (window.parent as any).$2sxc.totalPopup.close();
-  }
+  // private closeIFrame() {
+  //   (window.parent as any).$2sxc.totalPopup.close();
+  // }
 
   /**
    * Fill in all error validation messages from all forms
@@ -165,18 +179,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  private getVersioningOptions() {
-    if (!this.eavConfig.partOfPage) {
-      return { show: true, hide: true, branch: true };
-    }
-    const req = this.eavConfig.publishing || '';
-    switch (req) {
-      case '':
-      case 'DraftOptional': return { show: true, hide: true, branch: true };
-      case 'DraftRequired': return { branch: true, hide: true };
-      default: throw Error('invalid versioning requiremenets: ' + req.toString());
-    }
-  }
+  // private getVersioningOptions() {
+  //   if (!this.eavConfig.partOfPage) {
+  //     return { show: true, hide: true, branch: true };
+  //   }
+  //   const req = this.eavConfig.publishing || '';
+  //   switch (req) {
+  //     case '':
+  //     case 'DraftOptional': return { show: true, hide: true, branch: true };
+  //     case 'DraftRequired': return { branch: true, hide: true };
+  //     default: throw Error('invalid versioning requiremenets: ' + req.toString());
+  //   }
+  // }
 
   /**
    * Load all data for forms
@@ -268,10 +282,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
+        console.log('success END: ', this.closeWindow);
         // TODO show success message
         if (this.closeWindow) {
-          this.closeIFrame();
+          this.closeDialog();
         } else {
+          // child dialogs
           this.snackBarOpen('saved');
         }
       }));
@@ -282,6 +298,41 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         // TODO show error message
         this.snackBarOpen('error');
       }));
+  }
+
+
+  /**
+   * Determines whether all forms are valid and sets a this.formsAreValid depending on it
+   */
+  private setAllFormsStates() {
+    this.formsAreDirty = false;
+    this.formsAreValid = false;
+    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+      this.formsAreValid = true;
+      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        if (itemEditFormComponent.form.valid === false
+          && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
+          this.formsAreValid = false;
+        }
+        if (itemEditFormComponent.form.dirty) {
+          this.formsAreDirty = true;
+        }
+      });
+    }
+  }
+
+  private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
+    // this.versioningOptions = this.getVersioningOptions();
+
+    this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
+    this.publishMode = draftShouldBranch
+      ? 'branch' // it's a branch, so it must have been saved as a draft-branch
+      : isPublished ? 'show' : 'hide';
+
+    // if publish mode is prohibited, revert to default
+    if (!this.eavConfig.versioningOptions[this.publishMode]) {
+      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
+    }
   }
 
   /**
@@ -296,39 +347,30 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   * Determines whether all forms are valid and sets a this.formsAreValid depending on it
-   */
-  private setFormsAreValid() {
-    this.formsAreValid = false;
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.formsAreValid = true;
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        if (itemEditFormComponent.form.valid === false
-          && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
-          this.formsAreValid = false;
-        }
-      });
-    }
+ * Open snackbar when snack bar not saved
+ */
+  public snackBarYouHaveUnsavedChanges() {
+    const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
+      data: { save: false },
+      duration: 5000
+    });
+
+    snackBarRef.onAction().subscribe(s => {
+      console.log('snackBarRef.onAction()', snackBarRef.containerInstance.snackBarConfig.data.save);
+      if (snackBarRef.containerInstance.snackBarConfig.data.save) {
+        this.saveAll(true);
+      } else {
+        this.dialogRef.disableClose = false;
+        this.closeDialog();
+      }
+    });
   }
 
-  private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
-    this.versioningOptions = this.getVersioningOptions();
-
-    this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
-    this.publishMode = draftShouldBranch
-      ? 'branch' // it's a branch, so it must have been saved as a draft-branch
-      : isPublished ? 'show' : 'hide';
-
-    // if publish mode is prohibited, revert to default
-    if (!this.eavConfig.versioningOptions[this.publishMode]) {
-      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
-    }
-  }
 
   private reduceExtendedSaveButton() {
     setTimeout(() => {
       this.extendedSaveButtonIsReduced = true;
-    }, 3000);
+    }, 5000);
   }
 }
 

@@ -31,6 +31,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   get changes() { return this.form.valueChanges; }
   get valid() { return this.form.valid; }
   get value() { return this.form.value; }
+  get dirty() { return this.form.dirty; }
   get debugEnviroment() {
     return !environment.production;
   }
@@ -98,13 +99,6 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
       throw error;
     }
   }
-
-  // handleSubmit(event: Event) {
-  //   console.log('Submit');
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   this.submit.emit(this.value);
-  // }
 
   save(event) {
     console.log('form save', event);

@@ -65,6 +65,7 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
+import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 
 @NgModule({
     declarations: [
@@ -100,6 +101,7 @@ import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expand
         WebFormBridgeDirective,
         SaveStatusDialogComponent,
         ExpandableWrapperComponent,
+        SnackBarUnsavedChangesComponent,
     ],
     imports: [
         // DndDraggable,
@@ -140,6 +142,7 @@ import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expand
         EmptyDefaultComponent,
         EntityDefaultComponent,
         ErrorWrapperComponent,
+        ExpandableWrapperComponent,
         ExternalComponent,
         HiddenWrapperComponent,
         HyperlinkDefaultComponent,
@@ -147,13 +150,13 @@ import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expand
         HyperlinkLibraryComponent,
         NumberDefaultComponent,
         SaveStatusDialogComponent,
+        SnackBarUnsavedChangesComponent,
         StringDefaultComponent,
         StringDropdownComponent,
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
         StringUrlPathComponent,
         TextEntryWrapperComponent,
-        ExpandableWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

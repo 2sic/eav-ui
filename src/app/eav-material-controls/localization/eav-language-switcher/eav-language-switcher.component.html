@@ -4,7 +4,8 @@
 <!-- </mat-tab-group> -->
 
 <mat-card>
-  <button mat-icon-button fxLayoutAlign="center center" [mat-dialog-close]="true">
+  <!-- [mat-dialog-close]="true" -->
+  <button mat-icon-button fxLayoutAlign="center center" (click)="closeDialog()">
     <mat-icon>clear</mat-icon>
   </button>
   <div fxFlex="auto" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px" fxLayoutGap.md="16px"

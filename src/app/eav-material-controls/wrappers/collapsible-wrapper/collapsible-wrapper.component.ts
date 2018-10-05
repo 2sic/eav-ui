@@ -65,6 +65,5 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       this.itemService.updateItemHeader(this.config.entityId, this.config.entityGuid,
         { ...this.header, group: new EavGroupAssignment() });
     }
-
   };
 }

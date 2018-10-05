@@ -7,6 +7,7 @@ import { LanguageService } from '../../../shared/services/language.service';
 import { SaveStatusDialogComponent } from '../../dialogs/save-status-dialog/save-status-dialog.component';
 import { AdminDialogData } from '../../../shared/models/eav/admin-dialog-data';
 import { DialogTypeConstants } from '../../../shared/constants/type-constants';
+import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 
 @Component({
   selector: 'app-eav-language-switcher',
@@ -24,8 +25,16 @@ export class EavLanguageSwitcherComponent {
   versioningOptions;
 
   constructor(private languageService: LanguageService,
+    public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     private dialog: MatDialog) {
     // this.currentLanguage$ = languageService.getCurrentLanguage();
+
+  }
+
+  closeDialog() {
+    console.log('dialogRef this.dialogRef.disableClose', this.dialogRef.disableClose);
+    // console.log('dialogRef this.dialogRef.disableClose', this.dialogRef.);
+    this.dialogRef.componentInstance.closeDialog();
   }
 
   /**
