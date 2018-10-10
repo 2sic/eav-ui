@@ -21,30 +21,22 @@ export class EavLanguageSwitcherComponent {
 
   @Input() formsAreValid: boolean;
 
-  publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
+  // publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
 
+  get publishMode() {
+    return this.multiFormDialogRef.componentInstance.publishMode;
+  }
+
   constructor(private languageService: LanguageService,
-    public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>,
     private dialog: MatDialog) {
     // this.currentLanguage$ = languageService.getCurrentLanguage();
-
   }
 
   closeDialog() {
-    console.log('dialogRef this.dialogRef.disableClose', this.dialogRef.disableClose);
-    // console.log('dialogRef this.dialogRef.disableClose', this.dialogRef.);
-    this.dialogRef.componentInstance.closeDialog();
+    this.multiFormDialogRef.componentInstance.closeDialog();
   }
-
-  /**
-   * on select tab changed update current language in store
-   * @param event
-   */
-  // selectedTabChanged(tabChangeEvent: MatTabChangeEvent) {
-  //   const language: Language = this.getLanguageByName(tabChangeEvent.tab.textLabel);
-  //   this.languageService.updateCurrentLanguage(language.key);
-  // }
 
   /**
    * on select tab changed update current language in store
@@ -54,14 +46,6 @@ export class EavLanguageSwitcherComponent {
     this.languageService.updateCurrentLanguage(language.key);
   }
 
-  // private getLanguageByName = (name): Language => {
-  //   return this.languages.find(d => d.name.startsWith(name));
-  // }
-
-  // private getLanguage = (key): Language => {
-  //   return this.languages.find(d => d.key === key);
-  // }
-
   public openSaveSatusDialog() {
     // Open dialog
     const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
@@ -70,15 +54,12 @@ export class EavLanguageSwitcherComponent {
       width: '350px',
       // height: '80vh',
       // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
-      data: <AdminDialogData>{
-        dialogType: DialogTypeConstants.itemEditWithEntityId,
-        item: 'temp'
-      }
     });
 
+    dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
     // Close dialog
     dialogRef.afterClosed().subscribe(result => {
-      console.log('SaveStatusDialogComponent1 afterClosed', result);
+      this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
     });
   }
 }

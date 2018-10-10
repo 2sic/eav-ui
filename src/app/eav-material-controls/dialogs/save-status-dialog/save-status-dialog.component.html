@@ -6,7 +6,7 @@
   </div>
   <mat-nav-list fxFill class="c-save-status-dialog--actions" toggle>
     <mat-divider></mat-divider>
-    <mat-list-item (click)="publishEntry()">
+    <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="primary">
           <i matListIcon class="eav-icon-eye"></i>
@@ -19,7 +19,7 @@
       </div>
     </mat-list-item>
     <mat-divider></mat-divider>
-    <mat-list-item (click)="hideEntry()">
+    <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="primary">
           <i matListIcon class="eav-icon-eye-close"></i>
@@ -32,7 +32,7 @@
       </div>
     </mat-list-item>
     <mat-divider></mat-divider>
-    <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="'mat-list-item-focus'">
+    <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="primary">
           <i matListIcon class="eav-icon-git-branch"></i>
@@ -48,13 +48,3 @@
   </mat-nav-list>
   <span></span>
 </div>
-
-
-<!-- <mat-menu #publishModeMenu="matMenu" [overlapTrigger]="false">
-  <button *ngIf="versioningOptions.show" mat-menu-item type="button" (click)="publishMode = 'show'">
-    <i class="eav-icon-eye"></i>{{ 'SaveMode.show' | translate }}</button>
-  <button *ngIf="versioningOptions.hide" mat-menu-item type="button" (click)="publishMode = 'hide'">
-    <i class="eav-icon-eye-close"></i>{{ 'SaveMode.hide' | translate }}</button>
-  <button *ngIf="versioningOptions.branch" [disabled]="!enableDraft" mat-menu-item type="button" (click)="publishMode = 'branch'">
-    <i class="eav-icon-git-branch"></i>{{ 'SaveMode.branch' |translate }}</button>
-</mat-menu> -->

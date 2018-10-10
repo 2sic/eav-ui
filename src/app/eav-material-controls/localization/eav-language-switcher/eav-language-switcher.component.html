@@ -21,7 +21,12 @@
   </div>
   <div fxLayoutAlign="end center">
     <button mat-button color="primary" (click)="openSaveSatusDialog()">
-      Status: DRAFT
+      Status:
+
+      <span>
+        {{ ('SaveMode.' + publishMode | translate : '').toUpperCase() }}
+
+      </span>
     </button>
   </div>
 </mat-card>

@@ -64,6 +64,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.itemBehaviorSubject$.getValue();
   }
 
+  get allControlsAreDisabled() {
+    const asd = this.checkAreAllControlsDisabled();
+    return asd;
+  }
+
   private eavConfig;
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
@@ -123,9 +128,20 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   submit(values: { [key: string]: any }) {
     if (this.form.form.valid ||
+      this.allControlsAreDisabled ||
       (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
       this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
     }
+  }
+
+  private checkAreAllControlsDisabled(): boolean {
+    let allDisabled = true;
+    Object.keys(this.form.form.controls).forEach(key => {
+      if (!this.form.form.controls[key].disabled) {
+        allDisabled = false;
+      }
+    });
+    return allDisabled;
   }
 
   private setFormValues = (item: Item, emit: boolean) => {

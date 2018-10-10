@@ -1,3 +1,5 @@
-<span> You have unsaved changes: </span>
-<button mat-button (click)="saveChanges(true)">Yes</button>
-<button mat-button (click)="saveChanges(false)">No</button>
+<span> {{'Errors.UnsavedChanges' | translate}} </span>
+<div fxLayoutAlign="end end">
+    <button mat-button (click)="saveChanges(true)" color="accent">{{ 'General.Buttons.Save' | translate }}</button>
+    <button mat-button (click)="saveChanges(false)" color="accent">{{ 'General.Buttons.NotSave' | translate }}</button>
+</div>

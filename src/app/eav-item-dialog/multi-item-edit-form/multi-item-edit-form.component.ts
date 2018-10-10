@@ -36,7 +36,7 @@ import {
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
-  closeWindow = false;
+  formIsSaved = false;
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
   enableDraft = false;
@@ -44,6 +44,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   formErrors: { [key: string]: any }[] = [];
   formsAreValid = false;
   formsAreDirty = false;
+  allControlsAreDisabled = true;
 
   formSaveAllObservables$: Observable<Action>[] = [];
   items$: Observable<Item[]>;
@@ -84,19 +85,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   ngOnInit() {
     this.loadItemsData();
     this.setLanguageConfig();
-    // suscribe to form submit
-    this.saveFormMessagesSubscribe();
-
     this.reduceExtendedSaveButton();
 
-    this.dialogRef.backdropClick().subscribe(result => {
-      this.closeDialog();
-    });
+    this.dialogBackdropClickSubscribe();
+    this.saveFormMessagesSubscribe();
   }
 
   ngAfterContentChecked() {
     this.saveFormSuscribe();
-    this.setAllFormsStates();
+    this.checkFormsState();
     this.dialogRef.disableClose = this.formsAreDirty;
     // need this to detectChange this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
@@ -110,23 +107,36 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * observe formValue changes from all child forms
    */
   formValueChange() {
-    this.setAllFormsStates();
+    this.checkFormsState();
     this.dialogRef.disableClose = this.formsAreDirty;
     // reset form errors
     this.formErrors = [];
   }
 
+
   /**
- * save all forms
- */
+   * close form dialog or if close is disabled show a message
+   */
+  closeDialog() {
+    if (this.dialogRef.disableClose) {
+      this.snackBarYouHaveUnsavedChanges();
+    } else {
+      this.dialogRef.close();
+    }
+  }
+
+  /**
+   * * save all forms
+   */
   saveAll(close: boolean) {
-    if (this.formsAreValid) {
+    if (this.formsAreValid || this.allControlsAreDisabled) {
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
         itemEditFormComponent.form.submitOutside();
       });
       console.log('saveAll', close);
+
       if (close) {
-        this.closeWindow = true;
+        this.formIsSaved = true;
       }
     } else {
       this.displayAllValidationMessages();
@@ -138,16 +148,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   * close (remove) iframe window
+   * after a data load is finished load all that data to form
+   * @param data
    */
-  closeDialog() {
-    if (this.dialogRef.disableClose) {
-      this.snackBarYouHaveUnsavedChanges();
-    } else {
-      this.dialogRef.close();
-    }
-  }
-
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
     this.inputTypeService.loadInputTypes(data.InputTypes);
@@ -156,6 +159,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
     this.features$ = this.featureService.selectFeatures();
+  }
+
+  private dialogBackdropClickSubscribe() {
+    this.dialogRef.backdropClick().subscribe(result => {
+      this.closeDialog();
+    });
   }
 
   /**
@@ -179,18 +188,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  // private getVersioningOptions() {
-  //   if (!this.eavConfig.partOfPage) {
-  //     return { show: true, hide: true, branch: true };
-  //   }
-  //   const req = this.eavConfig.publishing || '';
-  //   switch (req) {
-  //     case '':
-  //     case 'DraftOptional': return { show: true, hide: true, branch: true };
-  //     case 'DraftRequired': return { branch: true, hide: true };
-  //     default: throw Error('invalid versioning requiremenets: ' + req.toString());
-  //   }
-  // }
+  private getVersioningOptions() {
+    if (!this.eavConfig.partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+    const req = this.eavConfig.publishing || '';
+    switch (req) {
+      case '':
+      case 'DraftOptional': return { show: true, hide: true, branch: true };
+      case 'DraftRequired': return { branch: true, hide: true };
+      default: throw Error('invalid versioning requiremenets: ' + req.toString());
+    }
+  }
 
   /**
    * Load all data for forms
@@ -276,20 +285,24 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   /**
    * display form messages on form success or form error
+   *  imortant: this is subscribed to an all open dialogs, a forms are distinguished by this.formIsSaved variable
+   *  TODO :need to distinguished form by forms data
    */
   private saveFormMessagesSubscribe() {
     this.subscriptions.push(this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
-        console.log('success END: ', this.closeWindow);
-        // TODO show success message
-        if (this.closeWindow) {
+        if (this.formIsSaved) {
+          this.dialogRef.disableClose = false;
           this.closeDialog();
-        } else {
-          // child dialogs
           this.snackBarOpen('saved');
         }
+        // else {
+        //   console.log('success END: saveFormMessagesSubscribe saved');
+        //   // child dialogs
+        //   this.snackBarOpen('saved');
+        // }
       }));
     this.subscriptions.push(this.actions$
       .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
@@ -304,9 +317,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /**
    * Determines whether all forms are valid and sets a this.formsAreValid depending on it
    */
-  private setAllFormsStates() {
+  private checkFormsState() {
     this.formsAreDirty = false;
     this.formsAreValid = false;
+    this.allControlsAreDisabled = true;
     if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
       this.formsAreValid = true;
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
@@ -317,12 +331,19 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         if (itemEditFormComponent.form.dirty) {
           this.formsAreDirty = true;
         }
+        console.log('itemEditFormComponent.form.form: itemEditFormComponent', itemEditFormComponent.allControlsAreDisabled);
+        if (!itemEditFormComponent.allControlsAreDisabled) {
+          console.log('checkAreAllControlsDisabled returned falseee', false);
+          this.allControlsAreDisabled = false;
+        }
+
+        console.log('checkAreAllControlsDisabled itemEditFormComponent.form.form:', this.allControlsAreDisabled);
       });
     }
   }
 
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
-    // this.versioningOptions = this.getVersioningOptions();
+    this.versioningOptions = this.getVersioningOptions();
 
     this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
     this.publishMode = draftShouldBranch
@@ -347,8 +368,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
- * Open snackbar when snack bar not saved
- */
+  Open snackbar when snack bar not saved
+  */
   public snackBarYouHaveUnsavedChanges() {
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
       data: { save: false },
@@ -356,7 +377,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     });
 
     snackBarRef.onAction().subscribe(s => {
-      console.log('snackBarRef.onAction()', snackBarRef.containerInstance.snackBarConfig.data.save);
       if (snackBarRef.containerInstance.snackBarConfig.data.save) {
         this.saveAll(true);
       } else {
@@ -365,7 +385,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       }
     });
   }
-
 
   private reduceExtendedSaveButton() {
     setTimeout(() => {
