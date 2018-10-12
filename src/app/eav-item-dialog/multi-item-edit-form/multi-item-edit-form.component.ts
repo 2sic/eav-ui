@@ -24,6 +24,7 @@ import { InputTypeService } from '../../shared/services/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/services/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
+import isEmpty from 'lodash/isEmpty';
 import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -43,7 +44,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   formErrors: { [key: string]: any }[] = [];
   formsAreValid = false;
-  formsAreDirty = false;
+  formsAreDirty = {};
   allControlsAreDisabled = true;
 
   formSaveAllObservables$: Observable<Action>[] = [];
@@ -89,15 +90,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.dialogBackdropClickSubscribe();
     this.saveFormMessagesSubscribe();
+    this.formSetValueChangeSubscribe();
   }
 
   ngAfterContentChecked() {
     this.saveFormSuscribe();
-    this.checkFormsState();
-    this.dialogRef.disableClose = this.formsAreDirty;
+    // this.checkFormsState();
     // need this to detectChange this.formsAreValid after ViewChecked
-    this.changeDetectorRef.detectChanges();
+    // this.changeDetectorRef.detectChanges();
   }
+
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
@@ -108,7 +111,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   formValueChange() {
     this.checkFormsState();
-    this.dialogRef.disableClose = this.formsAreDirty;
     // reset form errors
     this.formErrors = [];
   }
@@ -161,6 +163,19 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.features$ = this.featureService.selectFeatures();
   }
 
+  /**
+   * Determine is from is dirty on any language. If any form is dirty we need to ask to save.
+   */
+  private areFormsDirtyAnyLanguage() {
+    let isDirty = false;
+    Object.keys(this.formsAreDirty).forEach(key => {
+      if (this.formsAreDirty[key] === true) {
+        isDirty = true;
+      }
+    });
+    return isDirty;
+  }
+
   private dialogBackdropClickSubscribe() {
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
@@ -199,6 +214,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       case 'DraftRequired': return { branch: true, hide: true };
       default: throw Error('invalid versioning requiremenets: ' + req.toString());
     }
+  }
+
+  private formSetValueChangeSubscribe() {
+    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
+      this.checkFormsState();
+    }));
   }
 
   /**
@@ -313,33 +334,44 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       }));
   }
 
-
   /**
-   * Determines whether all forms are valid and sets a this.formsAreValid depending on it
+   * First set form state then read state in get method
    */
   private checkFormsState() {
-    this.formsAreDirty = false;
-    this.formsAreValid = false;
-    this.allControlsAreDisabled = true;
-    if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
+    this.setFormState();
+    this.getFormState();
+  }
+
+  private setFormState() {
+    if (this.itemEditFormComponentQueryList &&
+      this.itemEditFormComponentQueryList.length > 0 &&
+      this.itemEditFormComponentQueryList.first.currentLanguage) {
+
+      // Default values
+      this.allControlsAreDisabled = true;
       this.formsAreValid = true;
+      this.formsAreDirty[this.itemEditFormComponentQueryList.first.currentLanguage] = false;
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        // set form valid
         if (itemEditFormComponent.form.valid === false
           && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
           this.formsAreValid = false;
         }
+        // set form dirty
         if (itemEditFormComponent.form.dirty) {
-          this.formsAreDirty = true;
-        }
-        console.log('itemEditFormComponent.form.form: itemEditFormComponent', itemEditFormComponent.allControlsAreDisabled);
-        if (!itemEditFormComponent.allControlsAreDisabled) {
-          console.log('checkAreAllControlsDisabled returned falseee', false);
-          this.allControlsAreDisabled = false;
+          this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
         }
 
-        console.log('checkAreAllControlsDisabled itemEditFormComponent.form.form:', this.allControlsAreDisabled);
+        // set all form are disabled
+        if (!itemEditFormComponent.allControlsAreDisabled) {
+          this.allControlsAreDisabled = false;
+        }
       });
     }
+  }
+
+  private getFormState() {
+    this.dialogRef.disableClose = this.areFormsDirtyAnyLanguage();
   }
 
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
