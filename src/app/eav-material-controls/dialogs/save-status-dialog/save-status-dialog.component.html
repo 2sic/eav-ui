@@ -8,7 +8,7 @@
     <mat-divider></mat-divider>
     <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
-        <button mat-icon-button color="primary">
+        <button mat-icon-button color="accent">
           <i matListIcon class="eav-icon-eye"></i>
         </button>
       </div>
@@ -21,7 +21,7 @@
     <mat-divider></mat-divider>
     <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
-        <button mat-icon-button color="primary">
+        <button mat-icon-button color="accent">
           <i matListIcon class="eav-icon-eye-close"></i>
         </button>
       </div>
@@ -34,7 +34,7 @@
     <mat-divider></mat-divider>
     <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
-        <button mat-icon-button color="primary">
+        <button mat-icon-button color="accent">
           <i matListIcon class="eav-icon-git-branch"></i>
         </button>
       </div>

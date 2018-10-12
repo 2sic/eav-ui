@@ -1,19 +1,21 @@
 <!-- <div (mouseleave)="showFieldHints = false"> -->
 <div>
-  <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseenter)="showPreview = true" (mouseleave)="showPreview = false"
-      [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
+  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+    <div matPrefix *ngIf="value && isImage()" class="thumbnail-before-input" (mouseenter)="showPreview = true"
+      (mouseleave)="showPreview = false" [ngStyle]="{'background-image': 'url(' + thumbnailUrl(1, true) + ')'}">
     </div>
     <div matPrefix *ngIf="value && !isImage()" class="thumbnail-before-input icon-before-input">
-      <a [href]="link" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
+      <a [href]="link" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(link)}}"
+        matTooltipPosition="right">
       </a>
     </div>
     <div matPrefix *ngIf="!value" class="thumbnail-before-input empty-placeholder">
     </div>
-    <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required" (click)="showFieldHints = true"
-      [required]="config.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
+    <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
+      (click)="showFieldHints = true" [required]="config.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
-      ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
+      ADAM - sponsored with ♥ by 2sic.com"
+      matTooltipPosition="above">
     <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() }}</mat-error> -->
     <span matSuffix class="input-group-btn">
       <div style="width: 6px;"></div>
@@ -25,8 +27,8 @@
         (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
         <i class="eav-icon-sitemap"></i>
       </button>
-      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button" class="btn btn-default icon-field-button"
-        [matMenuTriggerFor]="menu">
+      <button mat-icon-button *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button"
+        class="btn btn-default icon-field-button" [matMenuTriggerFor]="menu">
         <i class="eav-icon-options"></i>
       </button>
       <mat-menu #menu="matMenu">

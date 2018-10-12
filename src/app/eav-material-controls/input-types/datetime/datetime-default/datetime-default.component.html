@@ -1,7 +1,7 @@
 <div *ngIf="config.settings.UseTimePicker && config.settings.UseTimePicker === true; then useTimePickerTemplate else notUseTimePickerTemplate"></div>
 
 <ng-template #notUseTimePickerTemplate>
-  <mat-form-field [formGroup]="group" [style.width]="'100%'">
+  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
     <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.name"
       [placeholder]="config.label" [required]='config.required'>
     <!-- -->
@@ -14,7 +14,7 @@
 </ng-template>
 
 <ng-template #useTimePickerTemplate>
-  <mat-form-field [formGroup]="group" [style.width]="'100%'">
+  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
     <input matInput [formControlName]="config.name" [owlDateTime]="picker" [placeholder]="config.label" [required]='config.required'>
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>

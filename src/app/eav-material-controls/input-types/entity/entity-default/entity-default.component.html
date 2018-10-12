@@ -32,7 +32,7 @@
 <!-- pick existing entity close-->
 <!-- ng-if="!modes.freeTextMode" -->
 <div *ngIf="enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1))">
-  <mat-form-field [style.width]="'100%'" [formGroup]="group">
+  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
     <!--(click)="setSelectEntitiesObservables()"  -->
     <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto"
       [disabled]="disabled" [placeholder]="config.label" [required]="config.required">

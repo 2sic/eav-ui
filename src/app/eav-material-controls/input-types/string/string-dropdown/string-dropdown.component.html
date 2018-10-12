@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="group" [style.width]="'100%'">
+<mat-form-field [formGroup]="group" appearance="fill" color="accent">
   <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.name" [required]='config.required'
     [placeholder]="config.placeholder">
     <mat-option value=""></mat-option>

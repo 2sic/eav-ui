@@ -25,7 +25,7 @@
   </div>
   <div dir="rtl" class="c-multi-item-dialog--save-div">
     <div fxFlex="nogrow" class="c-multi-item-dialog--save-button">
-      <button mat-fab color="primary" dir="ltr" [disabled]="!formsAreValid && !allControlsAreDisabled" [ngClass]="extendedSaveButtonIsReduced ? 'mat-fab--compact' : 'mat-fab--extended'"
+      <button mat-fab dir="ltr" [disabled]="!formsAreValid && !allControlsAreDisabled" [ngClass]="extendedSaveButtonIsReduced ? 'mat-fab--compact' : 'mat-fab--extended'"
         (click)="saveAll(true)">
         <i class="material-icons">done</i>
         {{extendedSaveButtonIsReduced ? '' : ('Button.Save' | translate).toUpperCase() + '(CTRL + S)' }}
