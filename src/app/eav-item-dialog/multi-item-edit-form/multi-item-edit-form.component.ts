@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterContentInit, AfterViewInit
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
@@ -34,7 +34,7 @@ import {
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss']
 })
-export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy {
+export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
   formIsSaved = false;
@@ -96,11 +96,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   ngAfterContentChecked() {
     this.saveFormSuscribe();
     // this.checkFormsState();
-    // need this to detectChange this.formsAreValid after ViewChecked
-    // this.changeDetectorRef.detectChanges();
+    // need this to detectChange for this.formsAreValid after ViewChecked
+    this.changeDetectorRef.detectChanges();
   }
 
-
+  ngAfterViewChecked() {
+    // need this to detectChange for this.formsAreValid
+    this.changeDetectorRef.detectChanges();
+  }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
@@ -357,6 +360,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
           this.formsAreValid = false;
         }
+
         // set form dirty
         if (itemEditFormComponent.form.dirty) {
           this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;

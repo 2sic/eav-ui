@@ -1,11 +1,19 @@
-<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--parent' : ''">
-
-  <!-- <mat-card> -->
-  <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--child' : ''">
-    <button mat-button type="button" (click)="dialogIsOpen = false" [ngStyle]="{ 'display': !dialogIsOpen ? 'none' : 'block' }">Close</button>
-    <!-- <span>The expandable work</span> -->
-    <ng-container #fieldComponent></ng-container>
+<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--parent' : 'c-expandable-wrapper--hidden'">
+  <div mat-dialog-container [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--child mat-elevation-z24' : 'c-expandable-wrapper--hidden'">
+    <div mat-dialog-actions>
+      <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false" [ngStyle]="{ 'display': !dialogIsOpen ? 'none' : 'block' }">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+    <div mat-dialog-content class="c-expandable-wrapper--child--content u-add-scrollbar u-no-scrollbar ">
+      <div>
+        <ng-container #fieldComponent></ng-container>
+      </div>
+    </div>
   </div>
-  <!-- </mat-card> -->
 </div>
-<button mat-button type="button" (click)="dialogIsOpen = true" [ngStyle]="{ 'display': dialogIsOpen ? 'none' : 'block' }">Open</button>
+
+<div (click)="dialogIsOpen = true" [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--hidden' : 'c-expandable-wrapper--closed'">
+  <div [innerHtml]="value"></div>
+</div>

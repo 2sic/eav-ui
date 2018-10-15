@@ -22,7 +22,7 @@ import { AdamConfig } from '../../../../shared/models/adam/adam-config';
   styleUrls: ['./external.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
+  wrapper: ['app-expandable-wrapper', 'app-dropzone', 'app-eav-localization-wrapper'],
 })
 export class ExternalComponent implements FieldExternal, OnInit {
   @ViewChild('container') elReference: ElementRef;

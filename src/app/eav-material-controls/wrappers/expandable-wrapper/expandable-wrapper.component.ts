@@ -17,8 +17,13 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
 
   dialogIsOpen = false;
 
+  get value() {
+    return this.group.controls[this.config.name].value;
+  }
+
   constructor() { }
 
   ngOnInit() {
+
   }
 }
