@@ -1,19 +1,29 @@
-<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--parent' : 'c-expandable-wrapper--hidden'">
-  <div mat-dialog-container [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--child mat-elevation-z24' : 'c-expandable-wrapper--hidden'">
-    <div mat-dialog-actions>
-      <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false" [ngStyle]="{ 'display': !dialogIsOpen ? 'none' : 'block' }">
-        <mat-icon>clear</mat-icon>
-      </button>
+<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__container' : 'u-display-none'">
+  <div fxLayout="column" class="c-expandable-wrapper__dialog mat-elevation-z24">
+    <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__header mat-elevation-z2' : ''">
+      <mat-card>
+        <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+      </mat-card>
     </div>
-    <mat-divider></mat-divider>
-    <div mat-dialog-content class="c-expandable-wrapper--child--content u-add-scrollbar u-no-scrollbar ">
-      <div>
-        <ng-container #fieldComponent></ng-container>
+    <!-- fxFlex="grow" -->
+    <div class='u-add-scrollbar u-hide-scrollbar'>
+      <div class="c-expandable-wrapper__dialog__item">
       </div>
+      <div class="c-expandable-wrapper__dialog__content">
+        <div>
+          <ng-container #fieldComponent></ng-container>
+        </div>
+      </div>
+    </div>
+    <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__footer' : ''">
+      <mat-card>
+        <!-- empty -->
+      </mat-card>
     </div>
   </div>
 </div>
-
-<div (click)="dialogIsOpen = true" [ngClass]="dialogIsOpen ? 'c-expandable-wrapper--hidden' : 'c-expandable-wrapper--closed'">
+<div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__control mat-ripple">
   <div [innerHtml]="value"></div>
 </div>

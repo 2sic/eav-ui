@@ -1,0 +1,136 @@
+
+// Expandable wrapper - tinyMCE
+
+@mixin cssAnimation($keyFrame, $duration, $delay) {
+    -moz-animation: $keyFrame $duration ease-in $delay forwards;
+    /* Firefox */
+    -webkit-animation: $keyFrame $duration ease-in $delay forwards;
+    /* Safari and Chrome */
+    -o-animation: $keyFrame $duration ease-in $delay forwards;
+    /* Opera */
+    animation: $keyFrame $duration ease-in $delay forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+
+@mixin itemShrinkTransformAnimation($duration, $delay) {
+    @keyframes heightElement {
+        from {
+            height: 30vh;
+        }
+        to {
+            height: 0;
+        }
+    }
+    @-webkit-keyframes heightElement {
+        from {
+            height: 30vh;
+        }
+        to {
+            height: 0;
+        }
+    }
+    @include cssAnimation(heightElement, $duration, $delay);
+}
+
+@mixin contentExpandTransformAnimation($duration, $delay) {
+    @keyframes heightContent {
+        from {
+            height:0;
+            min-height:0;
+        }
+        to {
+            height:100%;
+            min-height:calc(85vh - 62px);
+        }
+    }
+    @-webkit-keyframes heightContent {
+        from {
+            height:0;
+            min-height:0;
+        }
+        to {
+            height:100%;
+            min-height:calc(85vh - 62px);
+        }
+    }
+    @include cssAnimation(heightContent, $duration, $delay);
+}
+
+.c-expandable-wrapper {
+    &__control {
+        position:relative;
+        margin: 16px 0 16px 0;
+        padding: 8px;
+        min-height: 72px;
+        max-height: 72px;
+        cursor: pointer;
+        overflow: hidden;
+        border: 2px;
+        // border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
+        border-bottom-style: solid;
+        border-color: map_get($mat-eav-item-dialog-secondary, 500);
+        background: map_get($mat-eav-item-dialog-background, 50);
+
+        // @include mat-elevation-transition;
+        @include mat-elevation(2);
+    }
+
+    &__container {
+        // background: #EFF0F2;
+        border-radius: $edit-ui-input-border-radius;
+        position: fixed;
+        z-index: 2;
+        // top: 24px;
+        // bottom: 0;
+        // left: 0;
+        // right: 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: self-start;
+        justify-content: center;
+        display: flex;
+    }
+
+    &__dialog {
+        flex-direction: column;
+        display: flex;
+        border-radius: $edit-ui-input-border-radius;
+        max-width: 960px;
+        width: 100vw; 
+        margin-top: 24px;
+        min-height: 85vh;
+        max-height: 85vh;
+        padding: 0;
+        .mat-dialog-actions {
+            padding: 16px;
+        }
+        &__header {
+            background: white;
+            z-index: 1;
+            border-radius: 8px 8px 0 0;
+            .mat-card {
+                border-radius: 8px 8px 0 0;  
+            }
+        }
+        &__content {
+            border-radius: $edit-ui-input-border-radius;
+            background: map_get($mat-eav-item-dialog-background, 50);
+            @include contentExpandTransformAnimation(0.3s, 0s);
+        }
+        &__footer {
+            background: white;
+            border-radius: 0 0 8px 8px;
+           
+            .mat-card {
+                border-radius: 0 0 8px 8px;  
+                min-height:40px;
+            }
+        }
+        &__item {
+            @include itemShrinkTransformAnimation(0.3s, 0s);
+        }
+    }
+}

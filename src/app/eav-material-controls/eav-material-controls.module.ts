@@ -21,6 +21,7 @@ import {
     MatSlideToggleModule,
     MatChipsModule,
     MatDialogModule,
+    MatRippleModule
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
@@ -131,6 +132,7 @@ import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-cha
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
+        MatRippleModule,
         TranslateModule.forChild(),
     ],
     entryComponents: [

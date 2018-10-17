@@ -3,7 +3,7 @@
     <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)" class="eav-language-switcher-header"
       [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid"></app-eav-language-switcher>
   </div>
-  <div mat-dialog-content class="u-no-scrollbar">
+  <div mat-dialog-content class="u-hide-scrollbar">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-12">
@@ -23,8 +23,8 @@
     </div>
 
   </div>
-  <div dir="rtl" class="c-multi-item-dialog--save-div">
-    <div fxFlex="nogrow" class="c-multi-item-dialog--save-button">
+  <div dir="rtl" class="c-multi-item-dialog__save-container">
+    <div fxFlex="nogrow" class="c-multi-item-dialog__save-button">
       <button mat-fab dir="ltr" [disabled]="!formsAreValid && !allControlsAreDisabled" [ngClass]="extendedSaveButtonIsReduced ? 'mat-fab--compact' : 'mat-fab--extended'"
         (click)="saveAll(true)">
         <i class="material-icons">done</i>

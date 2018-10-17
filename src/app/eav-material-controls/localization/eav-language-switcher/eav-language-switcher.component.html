@@ -9,7 +9,7 @@
     <mat-icon>clear</mat-icon>
   </button>
   <div fxFlex="auto" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px" fxLayoutGap.md="16px"
-    fxLayoutGap.gt-md="24px" class="u-add-scrollbar u-no-scrollbar">
+    fxLayoutGap.gt-md="24px" class="u-add-scrollbar u-hide-scrollbar">
     <div></div>
     <button mat-flat-button *ngFor="let language of languages" [color]="currentLanguage===language.key? 'accent' : 'white'"
       (click)="selectLanguage(language)">

@@ -1,4 +1,4 @@
-.u-no-scrollbar {
+.u-hide-scrollbar {
     -ms-overflow-style: none;  // IE 10+
     overflow: -moz-scrollbars-none;  // Firefox
      
@@ -9,4 +9,8 @@
 
 .u-add-scrollbar {
     overflow: scroll;
+}
+
+.u-display-none {
+    display: none !important;
 }
