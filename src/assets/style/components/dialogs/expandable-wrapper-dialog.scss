@@ -13,49 +13,49 @@
     animation-fill-mode: forwards;
 }
 
-@mixin itemShrinkTransformAnimation($duration, $delay) {
-    @keyframes heightElement {
-        from {
-            height: 30vh;
-        }
-        to {
-            height: 0;
-        }
-    }
-    @-webkit-keyframes heightElement {
-        from {
-            height: 30vh;
-        }
-        to {
-            height: 0;
-        }
-    }
-    @include cssAnimation(heightElement, $duration, $delay);
-}
+// @mixin itemShrinkTransformAnimation($duration, $delay) {
+//     @keyframes heightElement {
+//         from {
+//             height: 30vh;
+//         }
+//         to {
+//             height: 0;
+//         }
+//     }
+//     @-webkit-keyframes heightElement {
+//         from {
+//             height: 30vh;
+//         }
+//         to {
+//             height: 0;
+//         }
+//     }
+//     @include cssAnimation(heightElement, $duration, $delay);
+// }
 
-@mixin contentExpandTransformAnimation($duration, $delay) {
-    @keyframes heightContent {
-        from {
-            height:0;
-            min-height:0;
-        }
-        to {
-            height:100%;
-            min-height:calc(85vh - 62px);
-        }
-    }
-    @-webkit-keyframes heightContent {
-        from {
-            height:0;
-            min-height:0;
-        }
-        to {
-            height:100%;
-            min-height:calc(85vh - 62px);
-        }
-    }
-    @include cssAnimation(heightContent, $duration, $delay);
-}
+// @mixin contentExpandTransformAnimation($duration, $delay) {
+//     @keyframes heightContent {
+//         from {
+//             height:0;
+//             min-height:0;
+//         }
+//         to {
+//             height:100%;
+//             min-height:$expandable-wrapper-max-height;
+//         }
+//     }
+//     @-webkit-keyframes heightContent {
+//         from {
+//             height:0;
+//             min-height:0;
+//         }
+//         to {
+//             height:100%;
+//             min-height:$expandable-wrapper-max-height;
+//         }
+//     }
+//     @include cssAnimation(heightContent, $duration, $delay);
+// }
 
 .c-expandable-wrapper {
     &__control {
@@ -101,12 +101,13 @@
         max-width: 960px;
         width: 100vw; 
         margin-top: 24px;
-        min-height: 85vh;
-        max-height: 85vh;
+        min-height: $expandable-wrapper-max-height;
+        max-height: $expandable-wrapper-max-height;
         padding: 0;
         .mat-dialog-actions {
             padding: 16px;
         }
+
         &__header {
             background: white;
             z-index: 1;
@@ -114,23 +115,48 @@
             .mat-card {
                 border-radius: 8px 8px 0 0;  
             }
-        }
-        &__content {
-            border-radius: $edit-ui-input-border-radius;
-            background: map_get($mat-eav-item-dialog-background, 50);
-            @include contentExpandTransformAnimation(0.3s, 0s);
-        }
-        &__footer {
-            background: white;
-            border-radius: 0 0 8px 8px;
-           
-            .mat-card {
-                border-radius: 0 0 8px 8px;  
-                min-height:40px;
+            &__tinymce-toolbar {
+                min-height: 38px;
             }
         }
-        &__item {
-            @include itemShrinkTransformAnimation(0.3s, 0s);
+
+        &__content {
+            position:relative;
+            border-radius: $edit-ui-input-border-radius;
+            background: map_get($mat-eav-item-dialog-background, 50);
+           // @include contentExpandTransformAnimation(0.3s, 0s);
+       
+
         }
+
+        &__content app-dropzone .dropzone-container {
+            display: flex;
+            flex-direction: column;
+           //  max-height: 75vh;
+            max-height: calc(#{$edit-ui-dialog-max-height} - 38px);
+        }
+
+        &__content app-dropzone .dropzone-content {
+            flex: auto;
+            height: calc(#{$edit-ui-dialog-max-height} - 38px);
+
+            overflow: scroll;
+            // Hide scroll
+            -ms-overflow-style: none;  // IE 10+
+            overflow: -moz-scrollbars-none;  // Firefox
+            &::-webkit-scrollbar { 
+                display: none;  // Safari and Chrome
+            }
+        }
+
+        &__content adam-browser {
+            // todo: need to set max height!
+            background: white;
+        }
+
+        // &__item {
+            // height:30vh;
+            // @include itemShrinkTransformAnimation(0.3s, 0s);
+        // }
     }
 }

@@ -43,9 +43,9 @@ import { attachAdam } from './tinymce-adam-service.js'
         }
 
         render(container) {
-
+            // <div id="fixed-editor-toolbar` + this.id + `"></div>
             container.innerHTML = `<div class="wrap-float-label">
-            <div id="` + this.id + `" class="field-string-wysiwyg-mce-box wrap-float-label"></div>
+            <div id="` + this.id + `" class="field-string-wysiwyg-mce-box"></div>
             </div>
             <span id="dummyfocus" tabindex="-1"></span>`;
 
@@ -62,6 +62,7 @@ import { attachAdam } from './tinymce-adam-service.js'
 
             var selectorOptions = {
                 selector: '#' + this.id,
+                fixed_toolbar_container: '#fixed-editor-toolbar' + this.id,
                 //init_instance_callback: this.tinyMceInitCallback
                 setup: this.tinyMceInitCallback.bind(this),
             };
@@ -170,6 +171,11 @@ import { attachAdam } from './tinymce-adam-service.js'
             editor.on('change', e => {
                 console.log('Editor was change', editor.getContent());
                 this.changeCheck(e, editor.getContent())
+            });
+
+            // This prevents the blur event from hiding the toolbar
+            editor.on('blur', function () {
+                return false;
             });
         }
     }

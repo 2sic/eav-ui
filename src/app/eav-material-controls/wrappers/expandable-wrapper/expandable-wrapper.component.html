@@ -1,27 +1,26 @@
 <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__container' : 'u-display-none'">
   <div fxLayout="column" class="c-expandable-wrapper__dialog mat-elevation-z24">
     <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__header mat-elevation-z2' : ''">
-      <mat-card>
+      <mat-card class="mat-elevation-z0">
         <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
       </mat-card>
+      <div id="{{'fixed-editor-toolbar' + id}}" class="c-expandable-wrapper__dialog__header__tinymce-toolbar"></div>
     </div>
     <!-- fxFlex="grow" -->
+    <!-- class='u-add-scrollbar u-hide-scrollbar'> -->
     <div class='u-add-scrollbar u-hide-scrollbar'>
-      <div class="c-expandable-wrapper__dialog__item">
+      <div class="c-expandable-wrapper__dialog__item" [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-expandable-wrapper__dialog__content">
-        <div>
-          <ng-container #fieldComponent></ng-container>
-        </div>
+      <div class="c-expandable-wrapper__dialog__content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        <ng-container #fieldComponent></ng-container>
       </div>
     </div>
-    <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__footer' : ''">
+    <!-- <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__footer' : ''">
       <mat-card>
-        <!-- empty -->
       </mat-card>
-    </div>
+    </div> -->
   </div>
 </div>
 <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__control mat-ripple">
