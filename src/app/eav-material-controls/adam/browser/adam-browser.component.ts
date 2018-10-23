@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 import { AdamService } from '../adam.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
@@ -10,11 +11,27 @@ import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'adam-browser',
   templateUrl: './adam-browser.component.html',
-  styleUrls: ['./adam-browser.component.scss']
+  styleUrls: ['./adam-browser.component.scss'],
+  animations: [
+    trigger('adamShowAnimate', [
+      state('closed', style({
+        height: '0',
+        overflow: 'hidden'
+      })),
+      state('open', style({
+        height: '*',
+        overflow: 'hidden'
+      })),
+      transition('closed => open', [
+        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      ])
+    ])
+  ]
 })
 export class AdamBrowserComponent implements OnInit {
 

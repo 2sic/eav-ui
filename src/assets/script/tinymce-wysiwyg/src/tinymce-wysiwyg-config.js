@@ -75,7 +75,7 @@ export default class tinymceWysiwygConfig {
         var svc = this.svc();
         return {
             baseURL: svc.cdnRoot,
-            inline: true, // use the div, not an iframe
+            // inline: true, // use the div, not an iframe
             automatic_uploads: false, // we're using our own upload mechanism
             modes: modes, // for later switch to another mode
             menubar: modes.standard.menubar, // basic menu (none)
@@ -99,7 +99,7 @@ export default class tinymceWysiwygConfig {
             // General looks
             skin: "lightgray",
             theme: "modern",
-            // statusbar: true,    // doesn't work in inline :(
+            statusbar: false,    // doesn't work in inline :(
 
             language: svc.defaultLanguage,
 

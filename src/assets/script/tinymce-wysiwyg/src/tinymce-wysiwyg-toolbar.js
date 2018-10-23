@@ -15,11 +15,19 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
                     self.active(state);
                 });
             }
-
-            if (editor.formatter)
+            if (editor.formatter) {
                 watchChange();
-            else
-                editor.on("init", watchChange());
+            }
+            else {
+                // this work only in inline mode
+                //  editor.on("init", watchChange());
+                // this work only when not in inline mode
+                // TODO:
+                // editor.on('SetContent', function (e) {
+                //     console.log('editor SetContent', editor.formatter);
+                //     watchChange()
+                // });
+            }
         };
     }
 
@@ -167,12 +175,19 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
 
     //#region mode switching and the buttons for it
     function switchModes(mode) {
+        console.log('switchModes1', editor.settings.modes[mode].toolbar);
         editor.settings.toolbar = editor.settings.modes[mode].toolbar;
         editor.settings.menubar = editor.settings.modes[mode].menubar;
         // editor.settings.contextmenu = editor.settings.modes[mode].contextmenu; - doesn't work at the moment
 
-        editor.theme.panel.remove();    // kill current toolbar
-        editor.theme.renderUI(editor);
+        // refresh editor toolbar when it's in inline mode  (inline true)
+        // editor.theme.panel.remove();    // kill current toolbar
+        // editor.theme.renderUI(editor);
+
+        // refresh editor toolbar when it's NOT in inline mode (inline false)
+        tinymce.remove(editor);
+        tinymce.init(editor.settings);
+
         editor.execCommand("mceFocus");
 
         // focus away...

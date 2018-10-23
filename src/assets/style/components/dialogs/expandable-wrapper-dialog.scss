@@ -108,40 +108,37 @@
             padding: 16px;
         }
 
-        &__header {
-            background: white;
-            z-index: 1;
-            border-radius: 8px 8px 0 0;
-            .mat-card {
-                border-radius: 8px 8px 0 0;  
-            }
-            &__tinymce-toolbar {
-                min-height: 38px;
-            }
-        }
+        // &__header {
+        //     background: white;
+        //     z-index: 1;
+        //     border-radius: 8px 8px 0 0;
+        //     .mat-card {
+        //         border-radius: 8px 8px 0 0;  
+        //     }
+        //     &__tinymce-toolbar {
+        //         min-height: 38px;
+        //     }
+        // }
 
         &__content {
             position:relative;
             border-radius: $edit-ui-input-border-radius;
             background: map_get($mat-eav-item-dialog-background, 50);
            // @include contentExpandTransformAnimation(0.3s, 0s);
-       
-
         }
 
         &__content app-dropzone .dropzone-container {
             display: flex;
             flex-direction: column;
-           //  max-height: 75vh;
-            max-height: calc(#{$edit-ui-dialog-max-height} - 38px);
+            height: 100%;
+             // max-height: $edit-ui-dialog-max-height;
+            // max-height: calc(#{$edit-ui-dialog-max-height} - 38px);
         }
 
         &__content app-dropzone .dropzone-content {
-            flex: auto;
-            height: calc(#{$edit-ui-dialog-max-height} - 38px);
-
-            overflow: scroll;
-            // Hide scroll
+             flex: 1 1 100%;
+             overflow: scroll;
+             // Hide scroll
             -ms-overflow-style: none;  // IE 10+
             overflow: -moz-scrollbars-none;  // Firefox
             &::-webkit-scrollbar { 
@@ -151,9 +148,13 @@
 
         &__content adam-browser {
             // todo: need to set max height!
+            //overflow: scroll;
             background: white;
         }
 
+        // &__content adam-hint {
+        //     // flex: 1;
+        // }
         // &__item {
             // height:30vh;
             // @include itemShrinkTransformAnimation(0.3s, 0s);

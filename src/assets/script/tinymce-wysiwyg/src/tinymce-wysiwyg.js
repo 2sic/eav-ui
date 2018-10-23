@@ -44,9 +44,9 @@ import { attachAdam } from './tinymce-adam-service.js'
 
         render(container) {
             // <div id="fixed-editor-toolbar` + this.id + `"></div>
-            container.innerHTML = `<div class="wrap-float-label">
-            <div id="` + this.id + `" class="field-string-wysiwyg-mce-box"></div>
-            </div>
+            container.innerHTML = `<div class="wrap-float-label" style="height:100% !important">
+            <textarea id="` + this.id + `" class="field-string-wysiwyg-mce-box"></div>
+            </textarea>
             <span id="dummyfocus" tabindex="-1"></span>`;
 
             var settings = {
@@ -61,8 +61,12 @@ import { attachAdam } from './tinymce-adam-service.js'
             // });
 
             var selectorOptions = {
-                selector: '#' + this.id,
-                fixed_toolbar_container: '#fixed-editor-toolbar' + this.id,
+                selector: 'textarea#' + this.id,
+                body_class: 'field-string-wysiwyg-mce-box', // when inline=false
+                content_css: 'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css',
+                height: '100%',
+                branding: false,
+                // fixed_toolbar_container: '#fixed-editor-toolbar' + this.id,
                 //init_instance_callback: this.tinyMceInitCallback
                 setup: this.tinyMceInitCallback.bind(this),
             };
@@ -173,10 +177,10 @@ import { attachAdam } from './tinymce-adam-service.js'
                 this.changeCheck(e, editor.getContent())
             });
 
-            // This prevents the blur event from hiding the toolbar
-            editor.on('blur', function () {
-                return false;
-            });
+            // This prevents the blur event from hiding the toolbar - inline mode
+            // editor.on('blur', function () {
+            //     return false;
+            // });
         }
     }
 

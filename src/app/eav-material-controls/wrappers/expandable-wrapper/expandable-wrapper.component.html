@@ -6,10 +6,7 @@
           <mat-icon>arrow_back</mat-icon>
         </button>
       </mat-card>
-      <div id="{{'fixed-editor-toolbar' + id}}" class="c-expandable-wrapper__dialog__header__tinymce-toolbar"></div>
     </div>
-    <!-- fxFlex="grow" -->
-    <!-- class='u-add-scrollbar u-hide-scrollbar'> -->
     <div class='u-add-scrollbar u-hide-scrollbar'>
       <div class="c-expandable-wrapper__dialog__item" [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
@@ -17,12 +14,12 @@
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>
-    <!-- <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__footer' : ''">
-      <mat-card>
-      </mat-card>
-    </div> -->
   </div>
 </div>
 <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__control mat-ripple">
   <div [innerHtml]="value"></div>
+</div>
+<div>
+  <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
+  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
 </div>
