@@ -192,6 +192,136 @@ $editUI-light-theme: mat-light-theme(
   $editUI-theme-warn
 );
 
+// override matFormFieldFill theme
+// Theme styles that only apply to the fill appearance of the form-field.
+
+@mixin mat-form-field-fill-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.08)); // changed from 0.04 to 0.08
+  $fill-disabled-background: mat-color($foreground, base, if($is-dark-theme, 0.05, 0.02));
+  $underline-color: mat-color($foreground, divider, if($is-dark-theme, 0.5, 0.42));
+  $label-disabled-color: mat-color($foreground, disabled-text);
+
+  .mat-form-field-appearance-fill {
+    .mat-form-field-flex {
+      background-color: $fill-background;
+    }
+
+    &.mat-form-field-disabled .mat-form-field-flex {
+      background-color: $fill-disabled-background;
+    }
+
+    .mat-form-field-underline::before {
+      background-color: $underline-color;
+    }
+
+    &.mat-form-field-disabled {
+      .mat-form-field-label {
+        color: $label-disabled-color;
+      }
+
+      .mat-form-field-underline::before {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+// override matFormFieldFill theme
+// Theme styles that apply to all appearances of the form-field.
+
+@mixin mat-form-field-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  // Label colors. Required is used for the `*` star shown in the label.
+  $label-color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
+  $focused-label-color: mat-color($primary);
+  $required-label-color: mat-color($accent);
+
+  // Underline colors.
+  $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.87));
+  $underline-color-accent: mat-color($accent);
+  $underline-color-warn: mat-color($warn);
+  $underline-focused-color: mat-color($primary);
+
+  .mat-form-field-label {
+    color: $label-color;
+  }
+
+  .mat-hint {
+    color: $label-color;
+  }
+
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $focused-label-color;
+
+    &.mat-accent {
+      color: $underline-color-accent;
+    }
+
+    &.mat-warn {
+      color: $underline-color-warn;
+    }
+  }
+
+  .mat-focused .mat-form-field-required-marker {
+    color: $required-label-color;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $underline-color-base;
+  }
+
+  .mat-form-field.mat-focused {
+    .mat-form-field-ripple {
+      background-color: $underline-focused-color;
+
+      &.mat-accent {
+        background-color: $underline-color-accent;
+      }
+
+      &.mat-warn {
+        background-color: $underline-color-warn;
+      }
+    }
+  }
+
+  // Styling for the error state of the form field. Note that while the same can be
+  // achieved with the ng-* classes, we use this approach in order to ensure that the same
+  // logic is used to style the error state and to show the error messages.
+  .mat-form-field.mat-form-field-invalid {
+    .mat-form-field-label {
+      color: $underline-color-warn;
+
+      &.mat-accent,
+      .mat-form-field-required-marker {
+        color: $underline-color-warn;
+      }
+    }
+
+    .mat-form-field-ripple,
+    .mat-form-field-ripple.mat-accent {
+      background-color: $underline-color-warn;
+    }
+  }
+
+  .mat-error {
+    color: $underline-color-warn;
+  }
+
+  @include mat-form-field-legacy-theme($theme);
+  @include mat-form-field-standard-theme($theme);
+  @include mat-form-field-fill-theme($theme);
+  @include mat-form-field-outline-theme($theme);
+}
+
 @include angular-material-theme($editUI-light-theme);
 
 $editUI-typography: mat-typography-config(
@@ -210,6 +340,7 @@ $editUI-typography: mat-typography-config(
     $caption:       mat-typography-level(12px, 16px, 400),
     $input:         mat-typography-level(inherit, 1.25, 400)
 );
+
 
 // overwrite mat-form-field-fill-typography
 @mixin mat-form-field-fill-typography($config) {

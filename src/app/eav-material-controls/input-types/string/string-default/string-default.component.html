@@ -5,8 +5,10 @@
         <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name"
             [placeholder]="config.label" [required]="config.required">
         <mat-label>{{config.label}}</mat-label>
-        <mat-hint align="start" *ngIf="config.settings.Notes"><span><i class="material-icons" style="font-size: 10px;">info</i></span>
-            <span> {{config.settings.Notes}}</span></mat-hint>
+        <mat-hint align="start" *ngIf="config.settings.Notes" fxLayout="row" fxLayoutAlign="start center">
+            <i class="material-icons" style="font-size: 14px;">info_outline</i>
+            <span>&nbsp;{{config.settings.Notes}}</span>
+        </mat-hint>
         <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
     </mat-form-field>
 </ng-template>
@@ -16,8 +18,10 @@
         <textarea matInput [rows]="rowCount" type="text" [id]="id" class="form-control material" [formControlName]="config.name"
             [placeholder]="config.label" [required]="config.required"></textarea>
         <mat-label>{{config.label}}</mat-label>
-        <mat-hint align="start" *ngIf="config.settings.Notes"><span><i class="material-icons md-8" style="font-size: 10px">info</i>
-                {{config.settings.Notes}}</span></mat-hint>
+        <mat-hint align="start" *ngIf="config.settings.Notes" fxLayout="row" fxLayoutAlign="start center">
+            <i class="material-icons" style="font-size: 14px;">info_outline</i>
+            <span>&nbsp;{{config.settings.Notes}}</span>
+        </mat-hint>
         <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
     </mat-form-field>
 </ng-template>

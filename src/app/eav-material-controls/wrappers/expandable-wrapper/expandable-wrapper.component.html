@@ -16,10 +16,18 @@
     </div>
   </div>
 </div>
-<div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__control mat-ripple">
-  <div [innerHtml]="value"></div>
-</div>
 <div>
-  <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__preview mat-ripple">
+    <div [ngClass]="value ? 'c-expandable-wrapper__preview__container' : 'c-expandable-wrapper__preview__container__empty'">
+      <mat-label [ngClass]="value ? 'mat-caption label-accent' : 'mat-empty label-color'">{{config.label}}</mat-label>
+      <div *ngIf="value" [innerHtml]="value"></div>
+    </div>
+  </div>
+  <div class="c-expandable-wrapper__preview__hint">
+    <mat-hint class="mat-caption" align="start" *ngIf="config.settings.Notes" fxLayout="row" fxLayoutAlign="start center">
+      <i class="material-icons" style="font-size: 14px;">info_outline</i>
+      <span>&nbsp;{{config.settings.Notes}}</span>
+    </mat-hint>
+    <mat-error class="mat-caption" *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  </div>
 </div>

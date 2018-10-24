@@ -9,6 +9,10 @@
     font-size: larger;
     overflow: auto;
 
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+
       /*  For iFrame mode */
       border: none;
       border-radius: 0;
