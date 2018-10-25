@@ -137,7 +137,7 @@ $mat-eav-item-dialog-background: (
 
 $editUI-theme-primary: mat-palette($mat-eav-item-dialog-primary);
 $editUI-theme-accent: mat-palette($mat-eav-item-dialog-secondary);// A200, A100, A400
-$editUI-theme-warn: mat-palette($mat-red);
+$editUI-theme-warn: mat-palette($mat-eav-item-dialog-error);
 
 
 $editUI-theme-background: (

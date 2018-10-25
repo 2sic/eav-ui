@@ -1,33 +1,41 @@
-<div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__container' : 'u-display-none'">
-  <div fxLayout="column" class="c-expandable-wrapper__dialog mat-elevation-z24">
-    <div [ngClass]="dialogIsOpen ? 'c-expandable-wrapper__dialog__header mat-elevation-z2' : ''">
-      <mat-card class="mat-elevation-z0">
-        <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-      </mat-card>
-    </div>
-    <div class='u-add-scrollbar u-hide-scrollbar'>
-      <div class="c-expandable-wrapper__dialog__item" [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+<div class="c-expandable-wrapper">
+  <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+    <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
+      <div [ngClass]="dialogIsOpen ? 'mat-elevation-z2' : ''">
+        <mat-card class="mat-elevation-z0">
+          <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        </mat-card>
       </div>
-      <div class="c-expandable-wrapper__dialog__content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
-        <ng-container #fieldComponent></ng-container>
+      <div class='u-add-scrollbar u-hide-scrollbar'>
+        <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+        </div>
+        <div class="c-ew__dialog-content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+          <ng-container #fieldComponent></ng-container>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div>
-  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-expandable-wrapper__preview mat-ripple">
-    <div [ngClass]="value ? 'c-expandable-wrapper__preview__container' : 'c-expandable-wrapper__preview__container__empty'">
-      <mat-label [ngClass]="value ? 'mat-caption label-accent' : 'mat-empty label-color'">{{config.label}}</mat-label>
-      <div *ngIf="value" [innerHtml]="value"></div>
+  <div>
+    <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+      <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+        <mat-label *ngIf="!inputInvalid" [ngClass]="value ? 'mat-caption c-ew__color--accent' : 'mat-empty c-ew__color--primary'">{{config.label}}
+          {{config.required ? '*': '' }}</mat-label>
+        <mat-label *ngIf="inputInvalid" [ngClass]="value ? 'mat-caption mat-error' : 'mat-empty mat-error'">{{config.label}}
+          {{config.required ? '*': '' }}</mat-label>
+        <div *ngIf="value" [innerHtml]="value"></div>
+      </div>
     </div>
-  </div>
-  <div class="c-expandable-wrapper__preview__hint">
-    <mat-hint class="mat-caption" align="start" *ngIf="config.settings.Notes" fxLayout="row" fxLayoutAlign="start center">
-      <i class="material-icons" style="font-size: 14px;">info_outline</i>
-      <span>&nbsp;{{config.settings.Notes}}</span>
-    </mat-hint>
-    <mat-error class="mat-caption" *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+    <div class="c-ew__preview-hint">
+      <mat-hint *ngIf="!inputInvalid && config.settings.Notes" class="mat-caption" align="start" fxLayout="row"
+        fxLayoutAlign="start center">
+        <i class="material-icons" style="font-size: 14px;">info_outline</i>
+        <span class="c-ew__preview-hint-text">&nbsp;{{config.settings.Notes}}</span>
+      </mat-hint>
+      <mat-error *ngIf="inputInvalid" class="mat-caption">{{ getErrorMessage() | translate:{ param:
+        config.settings }
+        }}</mat-error>
+    </div>
   </div>
 </div>
