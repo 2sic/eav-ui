@@ -1,0 +1,130 @@
+@import "./theme.scss";
+@import "../../../../assets/style/variables.scss";
+
+.c-ew {
+    &__preview {
+        position:relative;
+        //  margin: 16px 0 0 0;
+        // margin: 0 0 16px 0;
+        padding: 6px 12px 12px 12px;
+        min-height: 119px;
+        max-height: 119px;
+        height: 119px;
+        cursor: pointer;
+       
+        // border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
+        border: 1px map_get($mat-eav-item-dialog-secondary, 500);;
+        border-bottom-style: solid;
+        // rgba($editUI-foreground-color, 0.44);
+        // border-color: map_get($mat-eav-item-dialog-secondary, 500);
+        background: rgba($editUI-foreground-color, 0.08);
+
+        &-container {
+            overflow: hidden;
+            height: 100%;
+            -webkit-align-content: center;
+            align-content: center;
+            
+            &--empty {
+                padding: 6px 0 0 0;
+            }
+        }
+
+        &-hint {
+            margin: 0px 0 0 12px;
+            padding: 4px 0 0 0;
+            min-height: 28px;
+            
+            &-text {
+                white-space: nowrap; 
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+        &-hint mat-hint {
+            color: rgba($editUI-foreground-color, 0.44);
+        }
+
+        &--input-invalid {
+            padding: 6px 12px 11px 12px;
+            border: 2px;
+            border-bottom-style: solid;
+            border-color: map_get($mat-eav-item-dialog-error, 500);
+        }
+
+        .c-ew__color--accent{
+            color: map_get($mat-eav-item-dialog-secondary, 500);
+        }
+
+        .c-ew__color--primary {
+            color: rgba($editUI-foreground-color, 0.44);
+        }
+
+        &:hover {
+            padding: 6px 12px 11px 12px;
+            border: 2px map_get($mat-eav-item-dialog-secondary, 500);
+            border-bottom-style: solid;
+            // border-color: map_get($mat-eav-item-dialog-secondary, 500);
+        }
+
+        mat-empty {
+            height: 48px;
+            padding: 24px 0 0 0;
+        }
+    }
+
+    &__container {
+        border-radius: $edit-ui-input-border-radius;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: self-start;
+        justify-content: center;
+        display: flex;
+    }
+
+    &__dialog {
+        flex-direction: column;
+        display: flex;
+        border-radius: $edit-ui-input-border-radius;
+        max-width: 960px;
+        width: 100vw; 
+        margin-top: 24px;
+        min-height: $expandable-wrapper-max-height;
+        max-height: $expandable-wrapper-max-height;
+        padding: 0;
+        .mat-dialog-actions {
+            padding: 16px;
+        }
+
+        &-content {
+            position:relative;
+            border-radius: $edit-ui-input-border-radius;
+            background: map_get($mat-eav-item-dialog-background, 50);
+
+            // app-dropzone .dropzone-container {
+            //     display: flex;
+            //     flex-direction: column;
+            //     height: 100%;
+            // }
+
+            // app-dropzone .dropzone-content {
+            //     flex: 1 1 100%;
+            //     overflow: scroll;
+            //     // Hide scroll
+            //    -ms-overflow-style: none;  // IE 10+
+            //    overflow: -moz-scrollbars-none;  // Firefox
+            //    &::-webkit-scrollbar { 
+            //        display: none;  // Safari and Chrome
+            //    }
+            // }
+
+            // adam-browser {
+            //     background: white;
+            // }   
+        }
+    }
+}
