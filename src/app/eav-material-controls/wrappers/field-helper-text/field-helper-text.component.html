@@ -1,0 +1,14 @@
+<div class="c-ew__preview-hint">
+  <mat-hint *ngIf="!inputInvalid && config.settings.Notes" class="mat-caption" align="start" fxLayout="row"
+    fxLayoutAlign="start center">
+    <i class="material-icons" style="font-size: 14px;">info_outline</i>
+    <span class="c-ew__preview-hint-text">&nbsp;{{config.settings.Notes}}</span>
+  </mat-hint>
+  <mat-error *ngIf="inputInvalid && !disableError" class="mat-caption">
+    {{ (haveDirtyTouched
+    ? getErrorMessage()
+    : getErrorMessageWithoutDirtyTouched())
+    | translate:{ param:config.settings }
+    }}
+  </mat-error>
+</div>

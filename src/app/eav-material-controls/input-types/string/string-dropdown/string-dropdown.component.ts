@@ -79,8 +79,4 @@ export class StringDropdownComponent implements Field, OnInit {
     }
     return options;
   }
-
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
-  }
 }

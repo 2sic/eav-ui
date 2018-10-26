@@ -1,8 +1,6 @@
 <mat-form-field [formGroup]="group" appearance="fill" color="accent">
-  <input matInput type="number" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-    [required]='config.required' [min]="min" [max]="max">
-  <mat-hint align="start" *ngIf="config.settings.Notes && config.settings.Notes">
-    {{config.settings.Notes}}
-  </mat-hint>
-  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  <input matInput type="number" class="form-control material" [formControlName]="config.name" [required]='config.required'
+    [placeholder]="config.label" [min]="min" [max]="max">
+  <mat-label>{{config.label}}</mat-label>
 </mat-form-field>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

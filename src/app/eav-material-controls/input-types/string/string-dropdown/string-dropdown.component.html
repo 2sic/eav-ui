@@ -13,6 +13,6 @@
     <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
     <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i>
   </a>
-  <mat-hint align="start" *ngIf="notes">{{config.settings.Notes}}</mat-hint>
-  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  <mat-label>{{config.label}}</mat-label>
 </mat-form-field>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

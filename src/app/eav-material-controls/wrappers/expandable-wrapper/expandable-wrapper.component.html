@@ -1,7 +1,7 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
-    <div [ngClass]="dialogIsOpen ? 'mat-elevation-z2' : ''">
-      <mat-card class="mat-elevation-z0">
+    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+      <mat-card class="c-ew--border-radius mat-elevation-z0">
         <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
@@ -10,7 +10,7 @@
     <div class='u-add-scrollbar u-hide-scrollbar'>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+      <div class="c-ew__dialog-content c-ew--border-radius" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>
@@ -26,14 +26,5 @@
       <div *ngIf="value" [innerHtml]="value"></div>
     </div>
   </div>
-  <div class="c-ew__preview-hint">
-    <mat-hint *ngIf="!inputInvalid && config.settings.Notes" class="mat-caption" align="start" fxLayout="row"
-      fxLayoutAlign="start center">
-      <i class="material-icons" style="font-size: 14px;">info_outline</i>
-      <span class="c-ew__preview-hint-text">&nbsp;{{config.settings.Notes}}</span>
-    </mat-hint>
-    <mat-error *ngIf="inputInvalid" class="mat-caption">{{ getErrorMessage() | translate:{ param:
-      config.settings }
-      }}</mat-error>
-  </div>
+  <app-field-helper-text [config]="config" [group]="group" haveDirtyTouched="fasle"></app-field-helper-text>
 </div>

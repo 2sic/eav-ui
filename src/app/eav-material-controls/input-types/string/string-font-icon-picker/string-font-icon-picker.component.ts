@@ -65,10 +65,6 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
-  }
-
   getIconClasses(className) {
     const charcount = className.length, foundList = [], duplicateDetector = {};
 

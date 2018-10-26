@@ -359,6 +359,8 @@ $editUI-typography: mat-typography-config(
   $fill-appearance-label-offset: -12px;
   // The border applied to the form-field-infix
   $infix-border-top: 12px;
+  // from mat-form-field-typography
+  $wrapper-padding-bottom: 0;
 
   .mat-form-field-appearance-fill {
     width:100%;
@@ -390,10 +392,31 @@ $editUI-typography: mat-typography-config(
                 $infix-margin-top);
       }
     }  
+
+    // from mat-form-field-typography
+    .mat-form-field-wrapper {
+      padding-bottom: $wrapper-padding-bottom;
+    }
+    // from mat-form-field-typography
+    .mat-form-field-underline {
+      // We want the underline to start at the end of the content box, not the padding box,
+      // so we move it up by the padding amount.
+      bottom: $wrapper-padding-bottom;
+    }
   }
 }
 
 @include angular-material-typography($editUI-typography);
+
+// .mat-form-field-wrapper {
+//   padding-bottom: $wrapper-padding-bottom;
+// }
+
+// .mat-form-field-underline {
+//   // We want the underline to start at the end of the content box, not the padding box,
+//   // so we move it up by the padding amount.
+//   bottom: $wrapper-padding-bottom;
+// }
 
 
 

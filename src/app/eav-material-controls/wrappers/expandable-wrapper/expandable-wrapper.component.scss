@@ -30,20 +30,6 @@
             }
         }
 
-        &-hint {
-            margin: 0px 0 0 12px;
-            padding: 4px 0 0 0;
-            min-height: 28px;
-            
-            &-text {
-                white-space: nowrap; 
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-        &-hint mat-hint {
-            color: rgba($editUI-foreground-color, 0.44);
-        }
 
         &--input-invalid {
             padding: 6px 12px 11px 12px;
@@ -74,7 +60,7 @@
     }
 
     &__container {
-        border-radius: $edit-ui-input-border-radius;
+        border-radius: $edit-ui-dialog-border-radius;
         position: fixed;
         z-index: 2;
         top: 0;
@@ -84,12 +70,16 @@
         align-items: self-start;
         justify-content: center;
         display: flex;
+
+       
     }
+
+   
 
     &__dialog {
         flex-direction: column;
         display: flex;
-        border-radius: $edit-ui-input-border-radius;
+        // border-radius: $edit-ui-input-border-radius;
         max-width: 960px;
         width: 100vw; 
         margin-top: 24px;
@@ -100,9 +90,15 @@
             padding: 16px;
         }
 
+        &-header {
+            .mat-card {
+                padding:16px 24px 16px 24px;
+            }
+        }
+
         &-content {
             position:relative;
-            border-radius: $edit-ui-input-border-radius;
+            // border-radius: $edit-ui-input-border-radius;
             background: map_get($mat-eav-item-dialog-background, 50);
 
             // app-dropzone .dropzone-container {
@@ -126,5 +122,13 @@
             //     background: white;
             // }   
         }
+
+       
+    }
+
+    &--border-radius{
+        border-radius: $edit-ui-dialog-border-radius;
     }
 }
+
+

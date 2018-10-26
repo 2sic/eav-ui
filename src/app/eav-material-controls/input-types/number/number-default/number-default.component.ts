@@ -31,10 +31,6 @@ export class NumberDefaultComponent implements Field, OnInit {
     return this.config.settings.Min;
   }
 
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
-  }
-
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit(): void {

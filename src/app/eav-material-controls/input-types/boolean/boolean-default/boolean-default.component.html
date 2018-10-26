@@ -2,7 +2,5 @@
   <mat-checkbox [formControlName]="config.name" labelPosition="start">
     {{config.label}}
   </mat-checkbox>
-  <div>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-  </div>
+  <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
 </div>

@@ -67,6 +67,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 
 @NgModule({
     declarations: [
@@ -103,6 +104,7 @@ import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-cha
         SaveStatusDialogComponent,
         ExpandableWrapperComponent,
         SnackBarUnsavedChangesComponent,
+        FieldHelperTextComponent,
     ],
     imports: [
         // DndDraggable,

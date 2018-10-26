@@ -98,8 +98,4 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
       this.group.controls[formControlName].patchValue(cleaned, { emitEvent: false });
     }
   }
-
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
-  }
 }

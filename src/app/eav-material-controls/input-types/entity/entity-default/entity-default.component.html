@@ -36,16 +36,21 @@
     <!--(click)="setSelectEntitiesObservables()"  -->
     <input matInput type="text" #autocompleteInput [id]="id" [placeholder]="config.label" [matAutocomplete]="auto"
       [disabled]="disabled" [placeholder]="config.label" [required]="config.required">
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
-      <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value" [disabled]="isInChosenEntities(item.Value)">
-        <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
-      </mat-option>
-    </mat-autocomplete>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
+
+    <mat-label>{{config.label}}</mat-label>
+    <!-- <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint> -->
   </mat-form-field>
-  <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+  <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error> -->
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
+    <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value" [disabled]="isInChosenEntities(item.Value)">
+      <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
+    </mat-option>
+  </mat-autocomplete>
   <!-- <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span> -->
 </div>
+
+
 <!-- create new entity to add to this list -->
 <button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)"
   type="button" (click)="openNewEntityDialog()" [disabled]="disabled">

@@ -4,12 +4,10 @@
   <mat-form-field [formGroup]="group" appearance="fill" color="accent">
     <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.name"
       [placeholder]="config.label" [required]='config.required'>
-    <!-- -->
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+    <mat-label>{{config.label}}</mat-label>
   </mat-form-field>
 </ng-template>
 
@@ -18,11 +16,10 @@
     <input matInput [formControlName]="config.name" [owlDateTime]="picker" [placeholder]="config.label" [required]='config.required'>
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>
-
     <button matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
       <mat-icon class="mat-24">today</mat-icon>
     </button>
-    <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-    <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
+    <mat-label>{{config.label}}</mat-label>
   </mat-form-field>
 </ng-template>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
