@@ -15,8 +15,15 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() group: FormGroup;
   @Input() haveDirtyTouched = true;
   @Input() disableError = false;
+
+  isFullText = false;
+
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
+  }
+
+  get disabled() {
+    return this.group.controls[this.config.name].disabled;
   }
 
   getErrorMessage() {

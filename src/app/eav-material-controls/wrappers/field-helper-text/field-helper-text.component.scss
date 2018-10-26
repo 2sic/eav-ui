@@ -1,23 +1,26 @@
 @import "./theme.scss";
 @import "../../../../assets/style/variables.scss";
 
-.c-ew {
-    &__preview {
-       
-
+.c-fht {
+    &__container {
+        margin: 0px 0 0 12px;
+        padding: 4px 0 0 0;
+        min-height: 28px;
+        
         &-hint {
-            margin: 0px 0 0 12px;
-            padding: 4px 0 0 0;
-            min-height: 28px;
-            
-            &-text {
+            color: rgba($editUI-foreground-color, 0.44);
+
+            &--ellipsis {
                 white-space: nowrap; 
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-        }
-        &-hint mat-hint {
-            color: rgba($editUI-foreground-color, 0.44);
+
+            &--disabled {
+                white-space: wrap; 
+                overflow: visible;
+                text-overflow: ellipsis;
+            }
         }
 
         &--input-invalid {
@@ -33,13 +36,6 @@
 
         .c-ew__color--primary {
             color: rgba($editUI-foreground-color, 0.44);
-        }
-
-        &:hover {
-            padding: 6px 12px 11px 12px;
-            border: 2px map_get($mat-eav-item-dialog-secondary, 500);
-            border-bottom-style: solid;
-            // border-color: map_get($mat-eav-item-dialog-secondary, 500);
         }
     }
 }

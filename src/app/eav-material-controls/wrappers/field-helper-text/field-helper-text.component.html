@@ -1,8 +1,9 @@
-<div class="c-ew__preview-hint">
-  <mat-hint *ngIf="!inputInvalid && config.settings.Notes" class="mat-caption" align="start" fxLayout="row"
-    fxLayoutAlign="start center">
+<div class="c-fht__container">
+  <mat-hint *ngIf="!inputInvalid && config.settings.Notes" class="mat-caption" (click)="isFullText = !isFullText"
+    [ngClass]="disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
+    fxLayoutAlign="start start">
     <i class="material-icons" style="font-size: 14px;">info_outline</i>
-    <span class="c-ew__preview-hint-text">&nbsp;{{config.settings.Notes}}</span>
+    <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''">&nbsp;{{config.settings.Notes}}</span>
   </mat-hint>
   <mat-error *ngIf="inputInvalid && !disableError" class="mat-caption">
     {{ (haveDirtyTouched

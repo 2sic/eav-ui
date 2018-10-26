@@ -200,10 +200,11 @@ $editUI-light-theme: mat-light-theme(
   $foreground: map-get($theme, foreground);
   $is-dark-theme: map-get($theme, is-dark);
 
-  $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.08)); // changed from 0.04 to 0.08
-  $fill-disabled-background: mat-color($foreground, base, if($is-dark-theme, 0.05, 0.02));
-  $underline-color: mat-color($foreground, divider, if($is-dark-theme, 0.5, 0.42));
-  $label-disabled-color: mat-color($foreground, disabled-text);
+  $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.08));
+  $fill-disabled-background: mat-color($foreground, base, if($is-dark-theme, 0.05, 0.04));
+  $underline-color:  mat-color($foreground, divider, if($is-dark-theme, 0.5, 0.44));
+  // $label-disabled-color: mat-color($foreground, disabled-text);
+  $label-disabled-color: mat-color($foreground, base, if($is-dark-theme, 0.5, 0.24));
 
   .mat-form-field-appearance-fill {
     .mat-form-field-flex {
@@ -216,6 +217,11 @@ $editUI-light-theme: mat-light-theme(
 
     .mat-form-field-underline::before {
       background-color: $underline-color;
+    }
+
+    // FIX: make 1px line transparent when hover (because color is 0.44 transparency)
+    .mat-form-field-flex:hover + .mat-form-field-underline::before{
+        background-color: transparent;
     }
 
     &.mat-form-field-disabled {
@@ -242,12 +248,12 @@ $editUI-light-theme: mat-light-theme(
   $is-dark-theme: map-get($theme, is-dark);
 
   // Label colors. Required is used for the `*` star shown in the label.
-  $label-color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
+  $label-color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.44));
   $focused-label-color: mat-color($primary);
   $required-label-color: mat-color($accent);
 
   // Underline colors.
-  $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.87));
+  $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.44)); // this is underline on hover
   $underline-color-accent: mat-color($accent);
   $underline-color-warn: mat-color($warn);
   $underline-focused-color: mat-color($primary);
