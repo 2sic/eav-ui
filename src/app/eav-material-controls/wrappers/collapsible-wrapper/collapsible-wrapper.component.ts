@@ -7,7 +7,6 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
-import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -22,7 +21,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   // slotIsUsed = false;
   slotIsUsedChecked = false;
   header: EavHeader;
+
   private subscriptions: Subscription[] = [];
+
 
   get notes() {
     return this.config.settings ? (this.config.settings.Notes || '') : '';

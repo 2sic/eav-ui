@@ -68,6 +68,14 @@ import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-sta
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
+import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
+import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
+// import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+// import { library } from '@fortawesome/fontawesome-svg-core';
+// import { faLanguage } from '@fortawesome/free-solid-svg-icons';
+
+// Add an icon to the library for convenient access in other components
+// library.add(faLanguage);
 
 @NgModule({
     declarations: [
@@ -105,6 +113,8 @@ import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-hel
         ExpandableWrapperComponent,
         SnackBarUnsavedChangesComponent,
         FieldHelperTextComponent,
+        TranslateGroupMenuComponent,
+        LinkToOtherLanguageComponent,
     ],
     imports: [
         // DndDraggable,
@@ -135,6 +145,7 @@ import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-hel
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
         MatRippleModule,
+        // FontAwesomeModule,
         TranslateModule.forChild(),
     ],
     entryComponents: [
@@ -161,6 +172,7 @@ import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-hel
         StringFontIconPickerComponent,
         StringUrlPathComponent,
         TextEntryWrapperComponent,
+        LinkToOtherLanguageComponent,
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

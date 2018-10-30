@@ -22,6 +22,7 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
                 // this work only in inline mode
                 //  editor.on("init", watchChange());
                 // this work only when not in inline mode
+
                 // TODO:
                 // editor.on('SetContent', function (e) {
                 //     console.log('editor SetContent', editor.formatter);

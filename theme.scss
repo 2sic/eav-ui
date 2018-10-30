@@ -147,7 +147,7 @@ $editUI-theme-background: (
   background: map_get($mat-eav-item-dialog-background, 50),
   hover:      rgba(black, 0.04),
   card:       white,
-  dialog:     map_get($mat-eav-item-dialog-background, 50),
+  dialog:     white, // map_get($mat-eav-item-dialog-background, 50),
   disabled-button: rgba(black, 0.12),
   raised-button: white,
   focused-button: $dark-focused,
@@ -331,12 +331,13 @@ $editUI-light-theme: mat-light-theme(
 
 @include angular-material-theme($editUI-light-theme);
 
+// $display-1:     mat-typography-level(34px, 40px, 400),
 $editUI-typography: mat-typography-config(
     $font-family:   '"Roboto", sans-serif',
     $display-4:     mat-typography-level(112px, 112px, 300),
     $display-3:     mat-typography-level(56px, 56px, 400),
     $display-2:     mat-typography-level(45px, 48px, 400),
-    $display-1:     mat-typography-level(34px, 40px, 400),
+    $display-1:     mat-typography-level(20px, 24px, 500),
     $headline:      mat-typography-level(96px, 108px, 300),
     $title:         mat-typography-level(60px, 64px, 300),
     $subheading-2:  mat-typography-level(14px, 20px, 500),
@@ -413,16 +414,3 @@ $editUI-typography: mat-typography-config(
 }
 
 @include angular-material-typography($editUI-typography);
-
-// .mat-form-field-wrapper {
-//   padding-bottom: $wrapper-padding-bottom;
-// }
-
-// .mat-form-field-underline {
-//   // We want the underline to start at the end of the content box, not the padding box,
-//   // so we move it up by the padding amount.
-//   bottom: $wrapper-padding-bottom;
-// }
-
-
-

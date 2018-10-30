@@ -1,0 +1,29 @@
+<mat-nav-list toggle>
+  <mat-list-item (click)="dontTranslate()" [ngClass]="selectedOption.linkType === 'dontTranslate' ? 'mat-list-item-focus' : ''">
+    <span matLine>Don’t Translate</span>
+  </mat-list-item>
+  <mat-list-item (click)="translate()" [ngClass]="selectedOption.linkType === 'translate' ? 'mat-list-item-focus' : ''">
+    <span matLine>Translate</span>
+  </mat-list-item>
+  <mat-list-item (click)="linkReadOnly()" [ngClass]="selectedOption.linkType === 'linkReadOnly' ? 'mat-list-item-focus' : ''">
+    <span matLine>Link read-only</span>
+  </mat-list-item>
+  <mat-list-item (click)="linkReadWrite()" [ngClass]="selectedOption.linkType === 'linkReadWrite' ? 'mat-list-item-focus' : ''">
+    <span matLine>Link read-write (shared)</span>
+  </mat-list-item>
+</mat-nav-list>
+<mat-divider></mat-divider>
+<mat-nav-list toggle *ngIf="showLanguages || selectedOption.language !== ''">
+  <mat-list-item (click)="selectLanguage('en-us')" [ngClass]="selectedOption.language === 'en-us' ? 'mat-list-item-focus' : ''">
+    <span matLine>en-us</span>
+  </mat-list-item>
+  <mat-list-item (click)="selectLanguage('fr-fr')" [ngClass]="selectedOption.language === 'fr-fr' ? 'mat-list-item-focus' : ''">
+    <span matLine>fr-fr</span>
+  </mat-list-item>
+</mat-nav-list>
+<mat-divider></mat-divider>
+<mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button (click)="linkOtherLanguage()" color="accent">
+    OK
+  </button>
+</mat-dialog-actions>

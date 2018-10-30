@@ -362,11 +362,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     isParentGroup: boolean
   ): FieldConfig => {
     let settingsTranslated = null;
+    let fullSettings = null;
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
+      fullSettings = attribute.settings;
     } else if (contentTypeSettings) {
       settingsTranslated = LocalizationHelper.translateSettings(contentTypeSettings, this.currentLanguage, this.defaultLanguage);
+      fullSettings = contentTypeSettings;
     }
 
     const label = this.getFieldLabel(attribute, settingsTranslated, defaultValue);
@@ -375,6 +378,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return {
       entityId: this.item.entity.id,
       entityGuid: this.item.entity.guid,
+      fullSettings: fullSettings,
       collapse: collapse,
       fieldGroup: [],
       header: this.item.header,

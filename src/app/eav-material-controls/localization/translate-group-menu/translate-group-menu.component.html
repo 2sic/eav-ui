@@ -1,0 +1,15 @@
+<div *ngIf="(currentLanguage !== defaultLanguage)" fxLayoutAlign="end center">
+  <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu" color="accent">
+    <span>TRANSLATE</span>
+  </button>
+  <div fxLayoutAlign="end center">
+    <span>&nbsp;</span>
+    <i class="fas fa-language"></i>
+  </div>
+
+  <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
+    <button mat-menu-item type="button" (click)="translateAll()">Translate</button>
+    <button mat-menu-item type="button" (click)="dontTranslateAll()" class="menu-item-selected">Don't translate</button>
+    <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()">Link to other language</button>
+  </mat-menu>
+</div>

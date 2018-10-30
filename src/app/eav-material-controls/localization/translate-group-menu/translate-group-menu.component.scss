@@ -1,0 +1,8 @@
+@import "./theme.scss";
+@import "../../../../assets/style/variables.scss";
+
+$background:map-get($editUI-light-theme, background);
+
+.menu-item-selected{
+    background: mat-color($background, 'hover');
+}

@@ -17,9 +17,7 @@
             }
 
             &--disabled {
-                white-space: wrap; 
-                overflow: visible;
-                text-overflow: ellipsis;
+                color: rgba($editUI-foreground-color, 0.24);
             }
         }
 

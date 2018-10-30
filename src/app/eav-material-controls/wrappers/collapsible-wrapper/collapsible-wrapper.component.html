@@ -1,15 +1,24 @@
 <mat-card [ngClass]="config.isParentGroup ? 'mat-card-group-parent' :'mat-card-group-child'">
-    <mat-card-header [ngClass]="config.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
-        <div (click)="config.collapse = !config.collapse">
-            <mat-card-title class="mat-card-title-group">
-                <i *ngIf="config.collapse" class="material-icons">keyboard_arrow_up</i>
-                <i *ngIf="!config.collapse" class="material-icons">keyboard_arrow_down</i>
-                {{config.label ? config.label : 'EditEntity.DefaultTitle' | translate }}
-            </mat-card-title>
+    <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="config.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
+
+        <div fxFlex="auto" fxLayoutAlign="start center" (click)="config.collapse = !config.collapse">
+            <div fxLayoutAlign="start center" class="mat-card-title-group" [ngClass]="config.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
+                <i *ngIf="config.collapse" class="material-icons">keyboard_arrow_down</i>
+                <i *ngIf="!config.collapse" class="material-icons">keyboard_arrow_up</i>
+                <span>&nbsp;</span>
+                <span>{{config.label ? config.label :
+                    'EditEntity.DefaultTitle' | translate }}</span>
+            </div>
         </div>
-        <mat-slide-toggle *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
+        <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
         </mat-slide-toggle>
-    </mat-card-header>
+
+        <!-- <button *ngIf="config.isParentGroup" mat-button fxLayoutAlign="end center">
+            <span>TRANSLATE</span><span>&nbsp;</span>
+            <i class="fas fa-language"></i>
+        </button> -->
+        <app-translate-group-menu *ngIf="config.isParentGroup" fxLayoutAlign="end center" [config]="config" [group]="group"></app-translate-group-menu>
+    </div>
     <mat-divider></mat-divider>
     <!-- [style]="config.collapse ? 'display: none;' : ''" -->
     <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
