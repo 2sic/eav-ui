@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
@@ -11,6 +11,8 @@ import { ItemService } from '../../../shared/services/item.service';
 import { EavValue, EavAttributes, EavValues } from '../../../shared/models/eav';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../validators/validation-helper';
+import isEqual from 'lodash/isEqual';
+import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 
 
 @Component({
@@ -18,7 +20,7 @@ import { ValidationHelper } from '../../validators/validation-helper';
   templateUrl: './translate-group-menu.component.html',
   styleUrls: ['./translate-group-menu.component.scss']
 })
-export class TranslateGroupMenuComponent implements OnInit {
+export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
@@ -31,6 +33,8 @@ export class TranslateGroupMenuComponent implements OnInit {
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
 
+  translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
+
   private subscriptions: Subscription[] = [];
 
   constructor(private dialog: MatDialog,
@@ -41,9 +45,10 @@ export class TranslateGroupMenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    // default state
+    // this.setTranslationState('', '');
 
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId, this.config.entityGuid);
-    console.log('config', this.config);
     this.subscribeToAttributeValues();
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
@@ -51,39 +56,64 @@ export class TranslateGroupMenuComponent implements OnInit {
     this.subscribeToEntityHeaderFromStore();
   }
 
-  translateAll() {
-    console.log('translateAll');
-    Object.keys(this.attributes).forEach(attributeKey => {
-
-      this.translateUnlink(attributeKey);
-    });
-
-    this.languageService.triggerLocalizationWrapperMenuChange();
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
+  private setTranslationState(linkType: string, language: string) {
+    this.translationState.linkType = linkType;
+    this.translationState.language = language;
+  }
 
   translateUnlink(attributeKey: string) {
-    console.log('translateAll removeItemAttributeDimension attributes', this.attributes[attributeKey]);
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
-    console.log('translateAll removeItemAttributeDimension', attributeKey);
-    console.log('translateAll removeItemAttributeDimension attributes', this.attributes[attributeKey]);
-    console.log('translateAll removeItemAttributeDimension defaultLanguage', this.defaultLanguage);
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
       this.defaultLanguage,
       this.defaultLanguage
     );
-    console.log('translateAll defaultValue', defaultValue);
     if (defaultValue) {
-      console.log('translateAll addAttributeValue', attributeKey);
+      const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
+      console.log('confoiggggggggggggggg', fieldType);
       this.itemService.addAttributeValue(this.config.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.entityGuid, this.config.type);
+        this.currentLanguage, false, this.config.entityGuid, fieldType);
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
 
     this.refreshControlConfig(attributeKey);
   }
+
+  // private getFieldType(attributeKey: string): string {
+  //   if (this.config.type) {
+  //     return this.config.type;
+  //   } else {
+  //     return this.getFieldTypeFromFieldGroup(this.config.fieldGroup, attributeKey);
+  //   }
+  // }
+
+  // /**
+  //  * loop through fieldGroup configuration recursively to get type
+  //  * Form group configuration have configuration from all child fields.
+  //  * @param fieldGroup
+  //  * @param attributeKey
+  //  */
+  // private getFieldTypeFromFieldGroup(fieldGroup: FieldConfig[], attributeKey: string) {
+  //   let type;
+  //   fieldGroup.forEach(fieldConfig => {
+  //     if (fieldConfig.fieldGroup) {
+  //       const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(fieldConfig.fieldGroup, attributeKey);
+  //       if (typeFromFieldGroup) {
+  //         type = typeFromFieldGroup;
+  //       }
+  //     } else {
+  //       if (fieldConfig.name === attributeKey) {
+  //         type = fieldConfig.type;
+  //       }
+  //     }
+  //   });
+  //   return type;
+  // }
 
   private refreshControlConfig(attributeKey: string) {
     // TODOD preskocio parent group
@@ -146,7 +176,6 @@ export class TranslateGroupMenuComponent implements OnInit {
   private subscribeToDefaultLanguageFromStore() {
     this.subscriptions.push(
       this.defaultLanguage$.subscribe(defaultLanguage => {
-        console.log('[create] read default language', defaultLanguage);
         this.defaultLanguage = defaultLanguage;
 
         this.translateAllConfiguration(this.currentLanguage);
@@ -183,8 +212,139 @@ export class TranslateGroupMenuComponent implements OnInit {
     }
   }
 
+
+
+  linkToDefault(attributeKey: string) {
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
+
+    this.refreshControlConfig(attributeKey);
+  }
+
+  private triggerTranslation(actionResult: LinkToOtherLanguageData) {
+    if (!isEqual(this.translationState, actionResult)) {
+      this.setTranslationState(actionResult.linkType, actionResult.language);
+      // need be sure that we have a language selected when a link option is clicked
+      switch (this.translationState.linkType) {
+        case 'translate':
+          this.translateAll();
+          break;
+        case 'dontTranslate':
+          this.dontTranslateAll();
+          break;
+        case 'linkReadOnly':
+          this.linkReadOnlyAll(this.translationState.language);
+          break;
+        case 'linkReadWrite':
+          this.linkReadWriteAll(this.translationState.language);
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  translateAll() {
+    this.setTranslationState('translate', '');
+    Object.keys(this.attributes).forEach(attributeKey => {
+      this.translateUnlink(attributeKey);
+    });
+
+    this.languageService.triggerLocalizationWrapperMenuChange();
+  }
+
   dontTranslateAll() {
-    console.log('dontTranslateAll');
+    this.setTranslationState('dontTranslate', '');
+
+    Object.keys(this.attributes).forEach(attributeKey => {
+      this.linkToDefault(attributeKey);
+    });
+
+    this.languageService.triggerLocalizationWrapperMenuChange();
+  }
+
+  // onClickCopyFromAll(languageKey) {
+  //   this.setTranslationState('onClickCopyFromAll', languageKey);
+  //   Object.keys(this.attributes).forEach(attributeKey => {
+  //      this.onClickCopyFrom(languageKey, attributeKey);
+  //   });
+
+  //   this.languageService.triggerLocalizationWrapperMenuChange();
+  // }
+
+  /**
+   * Copy value where language is copyFromLanguageKey to value where language is current language
+   * If value of current language don't exist then add new value
+   * @param copyFromLanguageKey
+   */
+  // onClickCopyFrom(copyFromLanguageKey: string, attributeKey: string) {
+  //   const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
+  //     this.attributes[attributeKey],
+  //     copyFromLanguageKey,
+  //     this.defaultLanguage
+  //   );
+
+  //   if (attributeValueTranslation) {
+  //     const valueAlreadyExist: boolean = this.attributes ?
+  //       LocalizationHelper.isEditableOrReadonlyTranslationExist(
+  //         this.attributes[attributeKey],
+  //         this.currentLanguage,
+  //         this.defaultLanguage
+  //       )
+  //       : false;
+
+  //     if (valueAlreadyExist) {
+  //       // Copy attribute value where language is languageKey to value where language is current language
+  //       this.itemService.updateItemAttributeValue(this.config.entityId, attributeKey,
+  //         attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.entityGuid);
+  //     } else {
+  //       // Copy attribute value where language is languageKey to new attribute with current language
+  //       this.itemService.addAttributeValue(this.config.entityId, attributeKey,
+  //         attributeValueTranslation.value, this.currentLanguage, false, this.config.entityGuid, this.config.type);
+  //     }
+  //   } else {
+  //     console.log(this.currentLanguage + ': Cant copy value from ' + copyFromLanguageKey + ' because that value does not exist.');
+  //   }
+
+  //   this.refreshControlConfig(attributeKey);
+  // }
+
+  linkReadOnlyAll(languageKey) {
+    this.setTranslationState('linkReadOnly', languageKey);
+    Object.keys(this.attributes).forEach(attributeKey => {
+      this.linkReadOnly(languageKey, attributeKey);
+    });
+
+    this.languageService.triggerLocalizationWrapperMenuChange();
+  }
+
+  linkReadOnly(languageKey: string, attributeKey: string) {
+    this.setTranslationState('linkReadOnly', languageKey);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
+    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, true, this.config.entityGuid);
+
+    // TODO: investigate can only triger current language change to disable controls ???
+    // this.languageService.updateCurrentLanguage(this.currentLanguage);
+
+    this.refreshControlConfig(attributeKey);
+  }
+
+  linkReadWriteAll(languageKey) {
+    this.setTranslationState('linkReadWrite', languageKey);
+    Object.keys(this.attributes).forEach(attributeKey => {
+      this.linkReadWrite(languageKey, attributeKey);
+    });
+
+    this.languageService.triggerLocalizationWrapperMenuChange();
+  }
+
+  linkReadWrite(languageKey: string, attributeKey: string) {
+    this.setTranslationState('linkReadWrite', languageKey);
+    this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
+    this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, false, this.config.entityGuid);
+
+    this.refreshControlConfig(attributeKey);
   }
 
   openLinkToOtherLanguage() {
@@ -195,16 +355,15 @@ export class TranslateGroupMenuComponent implements OnInit {
       width: '280px',
       // height: '80vh',
       // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
-      data: new LinkToOtherLanguageData('translate', 'en-us')
+      data: new LinkToOtherLanguageData(this.translationState.linkType, this.translationState.language)
     });
-
     // dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
     // Close dialog
-    dialogRef.afterClosed().subscribe(result => {
-      // this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
-      console.log('dialog closed');
+    dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
+      if (actionResult) {
+        console.log('dialog closed', this.translationState);
+        this.triggerTranslation(actionResult);
+      }
     });
   }
-
-
 }

@@ -14,16 +14,13 @@
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-nav-list toggle *ngIf="showLanguages || selectedOption.language !== ''">
-  <mat-list-item (click)="selectLanguage('en-us')" [ngClass]="selectedOption.language === 'en-us' ? 'mat-list-item-focus' : ''">
-    <span matLine>en-us</span>
-  </mat-list-item>
-  <mat-list-item (click)="selectLanguage('fr-fr')" [ngClass]="selectedOption.language === 'fr-fr' ? 'mat-list-item-focus' : ''">
-    <span matLine>fr-fr</span>
+  <mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [ngClass]="selectedOption.language === language.key ? 'mat-list-item-focus' : ''">
+    <span matLine>{{language.key}}</span>
   </mat-list-item>
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button (click)="linkOtherLanguage()" color="accent">
+  <button mat-button (click)="linkOtherLanguage()" color="accent" [mat-dialog-close]="selectedOption">
     OK
   </button>
 </mat-dialog-actions>

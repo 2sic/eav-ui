@@ -24,7 +24,6 @@ import { InputTypeService } from '../../shared/services/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/services/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
-import isEmpty from 'lodash/isEmpty';
 import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';

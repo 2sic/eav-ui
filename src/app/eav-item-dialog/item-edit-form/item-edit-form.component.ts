@@ -180,8 +180,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(
         switchMap((data: ContentType) => {
           try {
-
-
             const parentFieldGroup = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
             let currentFieldGroup = parentFieldGroup;
             // loop through contentType attributes
