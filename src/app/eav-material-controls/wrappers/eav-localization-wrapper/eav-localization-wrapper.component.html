@@ -1,53 +1,7 @@
-<div class="language-wrap">
-  <div class="language-field" (dblclick)="toggleTranslate(currentLanguage !== defaultLanguage)">
+<div class="language-wrap" fxLayout="row" fxLayoutAlign="start start">
+  <div (dblclick)="toggleTranslate(currentLanguage !== defaultLanguage)" fxFlex="auto" [ngClass]="(currentLanguage !== defaultLanguage) ? 'language-wrap__field-short' : 'language-wrap__field'">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <button *ngIf="(currentLanguage !== defaultLanguage)" class="eav-localization-lock" [ngClass]="{ 'eav-localization-lock-open': !inputDisabled }"
-    mat-icon-button type="button" [matMenuTriggerFor]="rootMenu">
-    {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}
-    <mat-icon class="mat-18 language-icon">language</mat-icon>
-  </button>
-  <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
-    <button mat-menu-item type="button" (click)="translateUnlink(config.name)">{{ 'LangMenu.Unlink'| translate }}</button>
-    <button mat-menu-item type="button" (click)="linkToDefault(config.name)">{{ 'LangMenu.LinkDefault' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromMenu">{{ 'LangMenu.Copy' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromMenu">{{ 'LangMenu.Use' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithMenu">{{ 'LangMenu.Share' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="allFieldsMenu">{{ 'LangMenu.AllFields' | translate }}</button>
-  </mat-menu>
-
-  <mat-menu #copyFromMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFrom(language.key, config.name)"
-      [title]="language.name">{{language.key}}</button>
-  </mat-menu>
-
-  <mat-menu #useFromMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFrom(language.key, config.name)"
-      [disabled]="!hasLanguage(language.key)" [title]="language.name">{{language.key}}</button>
-  </mat-menu>
-
-  <mat-menu #shareWithMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWith(language.key, config.name)"
-      [disabled]="!hasLanguage(language.key)" [title]="language.name">{{language.key}}</button>
-  </mat-menu>
-
-  <mat-menu #allFieldsMenu="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item type="button" (click)="translateUnlinkAll()">{{ 'LangMenu.Unlink' | translate }}</button>
-    <button mat-menu-item type="button" (click)="linkToDefaultAll()">{{ 'LangMenu.LinkDefault' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="copyFromAllMenu">{{ 'LangMenu.Copy' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="useFromAllMenu">{{ 'LangMenu.Use' | translate }}</button>
-    <button mat-menu-item type="button" [matMenuTriggerFor]="shareWithAllMenu">{{ 'LangMenu.Share' | translate }}</button>
-  </mat-menu>
-
-  <mat-menu #copyFromAllMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickCopyFromAll(language.key)" [title]="language.name">{{language.key}}</button>
-  </mat-menu>
-
-  <mat-menu #useFromAllMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickUseFromAll(language.key)" [title]="language.name">{{language.key}}</button>
-  </mat-menu>
-
-  <mat-menu #shareWithAllMenu="matMenu">
-    <button mat-menu-item type="button" *ngFor="let language of languages" (click)="onClickShareWithAll(language.key)" [title]="language.name">{{language.key}}</button>
-  </mat-menu>
+  <app-translate-group-menu [ngClass]="(currentLanguage !== defaultLanguage) ? 'language-wrap__icon' : 'language-wrap__icon-hide'"
+    fxLayoutAlign="end center" [config]="config" [group]="group" [toggleTranslateField]="toggleTranslateField"></app-translate-group-menu>
 </div>

@@ -1,12 +1,10 @@
-<div *ngIf="(currentLanguage !== defaultLanguage)" fxLayoutAlign="end center">
+<div *ngIf="(currentLanguage !== defaultLanguage) && config.isParentGroup" fxLayoutAlign="end center">
   <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu" color="accent">
     <span>TRANSLATE</span>
   </button>
   <div fxLayoutAlign="end center">
-    <span>&nbsp;</span>
-    <i class="fas fa-language"></i>
+    <i class="fas fa-language" style="font-size: 20px"></i>
   </div>
-
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
     <button mat-menu-item type="button" (click)="translateAll()" [ngClass]="translationState.linkType === 'translate' ? 'menu-item-selected' : ''">
       Translate all
@@ -14,8 +12,28 @@
     <button mat-menu-item type="button" (click)="dontTranslateAll()" [ngClass]="translationState.linkType === 'dontTranslate' ? 'menu-item-selected' : ''">
       Don't translate any
     </button>
-    <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()" [ngClass]="translationState.language !== '' ? 'menu-item-selected' : ''">Link
-      to other language
+    <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()" [ngClass]="translationState.language !== '' ? 'menu-item-selected' : ''">
+      Link to other language
+    </button>
+  </mat-menu>
+</div>
+
+<div *ngIf="(currentLanguage !== defaultLanguage) && !config.isParentGroup" fxLayoutAlign="end center">
+  <div fxLayoutAlign="end center">
+    <!-- {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }} -->
+    <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2">
+      <i class="fas fa-language" style="font-size: 20px"></i>
+    </button>
+  </div>
+  <mat-menu #rootMenu2="matMenu" [overlapTrigger]="true">
+    <button mat-menu-item type="button" (click)="translateUnlink(config.name)" [ngClass]="translationState.linkType === 'translate' ? 'menu-item-selected' : ''">
+      Translate
+    </button>
+    <button mat-menu-item type="button" (click)="linkToDefault(config.name)" [ngClass]="translationState.linkType === 'dontTranslate' ? 'menu-item-selected' : ''">
+      Don't translate
+    </button>
+    <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()" [ngClass]="translationState.language !== '' ? 'menu-item-selected' : ''">
+      Link to other language
     </button>
   </mat-menu>
 </div>

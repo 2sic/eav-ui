@@ -12,11 +12,6 @@
         </div>
         <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
         </mat-slide-toggle>
-
-        <!-- <button *ngIf="config.isParentGroup" mat-button fxLayoutAlign="end center">
-            <span>TRANSLATE</span><span>&nbsp;</span>
-            <i class="fas fa-language"></i>
-        </button> -->
         <app-translate-group-menu *ngIf="config.isParentGroup" fxLayoutAlign="end center" [config]="config" [group]="group"></app-translate-group-menu>
     </div>
     <mat-divider></mat-divider>
@@ -24,10 +19,10 @@
     <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-                <mat-hint class="mdc-layout-grid__cell--span-12" align="start" *ngIf="notes || editInstructions"><span></span>
+                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes || editInstructions"><span></span>
                     <div [innerHtml]='notes'></div>
                     <div [innerHtml]='editInstructions'></div>
-                </mat-hint>
+                </div>
                 <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>
                 </div>
