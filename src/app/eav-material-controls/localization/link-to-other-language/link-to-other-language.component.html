@@ -5,6 +5,9 @@
   <mat-list-item (click)="translate()" [ngClass]="selectedOption.linkType === 'translate' ? 'mat-list-item-focus' : ''">
     <span matLine>Translate</span>
   </mat-list-item>
+  <mat-list-item (click)="linkCopyFrom()" [ngClass]="selectedOption.linkType === 'linkCopyFrom' ? 'mat-list-item-focus' : ''">
+    <span matLine>Copy from (translate)</span>
+  </mat-list-item>
   <mat-list-item (click)="linkReadOnly()" [ngClass]="selectedOption.linkType === 'linkReadOnly' ? 'mat-list-item-focus' : ''">
     <span matLine>Link read-only</span>
   </mat-list-item>
@@ -20,7 +23,7 @@
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button (click)="linkOtherLanguage()" color="accent" [mat-dialog-close]="selectedOption">
+  <button mat-button (click)="linkOtherLanguage()" color="accent" [disabled]="okButtonDisabled()" [mat-dialog-close]="selectedOption">
     OK
   </button>
 </mat-dialog-actions>

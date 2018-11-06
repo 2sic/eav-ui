@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { LanguageService } from '../../../shared/services/language.service';
 import { Language } from '../../../shared/models/eav';
+import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 
 @Component({
   selector: 'app-link-to-other-language',
@@ -51,35 +52,46 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   translate() {
     this.showLanguages = false;
-    this.selectedOption.linkType = 'translate';
+    this.selectedOption.linkType = TranslationLinkTypeConstants.translate;
     this.selectedOption.language = '';
-    console.log('translate');
   }
 
   dontTranslate() {
     this.showLanguages = false;
-    this.selectedOption.linkType = 'dontTranslate';
+    this.selectedOption.linkType = TranslationLinkTypeConstants.dontTranslate;
     this.selectedOption.language = '';
-    console.log('dontTranslate');
   }
 
   linkReadOnly() {
     this.showLanguages = true;
-    this.selectedOption.linkType = 'linkReadOnly';
+    this.selectedOption.linkType = TranslationLinkTypeConstants.linkReadOnly;
   }
 
   linkReadWrite() {
     this.showLanguages = true;
-    this.selectedOption.linkType = 'linkReadWrite';
+    this.selectedOption.linkType = TranslationLinkTypeConstants.linkReadWrite;
   }
 
+  linkCopyFrom() {
+    this.showLanguages = true;
+    this.selectedOption.linkType = TranslationLinkTypeConstants.linkCopyFrom;
+  }
 
   selectLanguage(lang: string) {
     this.selectedOption.language = lang;
   }
 
+  okButtonDisabled() {
+    if (this.selectedOption.language === '' &&
+      this.selectedOption.linkType !== TranslationLinkTypeConstants.translate &&
+      this.selectedOption.linkType !== TranslationLinkTypeConstants.dontTranslate) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   linkOtherLanguage() {
     console.log(this.selectedOption);
   }
-
 }
