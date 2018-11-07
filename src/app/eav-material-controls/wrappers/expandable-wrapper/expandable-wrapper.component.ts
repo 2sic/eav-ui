@@ -27,13 +27,13 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
         height: '0',
       })),
       state('expanded', style({
-        height: '75vh',
-        'max-height': '75vh',
+        height: 'calc(100vh - 120px)',
+        'max-height': 'calc(100vh - 120px)',
       })),
       transition('closed => expanded', [
         animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
           style({ 'height': '0vh', overflow: 'hidden' }),
-          style({ 'height': '75vh', overflow: 'hidden' }),
+          style({ 'height': 'calc(100vh - 120px)', overflow: 'hidden' }),
         ])),
       ]),
     ]),

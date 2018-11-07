@@ -27,17 +27,96 @@ import { Feature } from '../../shared/models/feature/feature';
 import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import {
+  trigger, state, style, transition,
+  animate, keyframes, group
+} from '@angular/animations';
+
+export const SlideLeftRightAnimation = [
+  trigger('slideLeft', [
+    state('true', style({
+      // transform: 'translateX(0)'
+    })),
+    state('false', style({
+      // transform: 'translateX(0)'
+    })),
+
+    transition('* => *',
+      [
+        animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
+          style({ transform: 'translateX(+10%)' }),
+          style({ transform: 'translateX(+20%)' }),
+          style({ transform: 'translateX(+30%)' }),
+          style({ transform: 'translateX(+40%)' }),
+          style({ transform: 'translateX(+50%)' }),
+          style({ transform: 'translateX(+60%)' }),
+          style({ transform: 'translateX(+70%)' }),
+          style({ transform: 'translateX(+80%)' }),
+          style({ transform: 'translateX(+90%)' }),
+          style({ transform: 'translateX(+100%)' }),
+          style({ transform: 'translateX(-100%)' }),
+          style({ transform: 'translateX(-90%)' }),
+          style({ transform: 'translateX(-80%)' }),
+          style({ transform: 'translateX(-70%)' }),
+          style({ transform: 'translateX(-60%)' }),
+          style({ transform: 'translateX(-50%)' }),
+          style({ transform: 'translateX(-40%)' }),
+          style({ transform: 'translateX(-30%)' }),
+          style({ transform: 'translateX(-20%)' }),
+          style({ transform: 'translateX(-10%)' }),
+        ])),
+      ]
+    ),
+  ]),
+  trigger('slideRight', [
+    state('true', style({
+      // transform: 'translateX(0)'
+    })),
+    state('false', style({
+      //  transform: 'translateX(0)'
+    })),
+    transition('* => *', [
+      animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
+        style({ transform: 'translateX(-10%)' }),
+        style({ transform: 'translateX(-20%)' }),
+        style({ transform: 'translateX(-30%)' }),
+        style({ transform: 'translateX(-40%)' }),
+        style({ transform: 'translateX(-50%)' }),
+        style({ transform: 'translateX(-60%)' }),
+        style({ transform: 'translateX(-70%)' }),
+        style({ transform: 'translateX(-80%)' }),
+        style({ transform: 'translateX(-90%)' }),
+        style({ transform: 'translateX(-100%)' }),
+        style({ transform: 'translateX(+100%)' }),
+        style({ transform: 'translateX(+90%)' }),
+        style({ transform: 'translateX(+80%)' }),
+        style({ transform: 'translateX(+70%)' }),
+        style({ transform: 'translateX(+60%)' }),
+        style({ transform: 'translateX(+50%)' }),
+        style({ transform: 'translateX(+40%)' }),
+        style({ transform: 'translateX(+30%)' }),
+        style({ transform: 'translateX(+20%)' }),
+        style({ transform: 'translateX(+10%)' }),
+      ])),
+    ]),
+  ]),
+];
 
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
-  styleUrls: ['./multi-item-edit-form.component.scss']
+  styleUrls: ['./multi-item-edit-form.component.scss'],
+  animations: [SlideLeftRightAnimation]
 })
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
+  animationStateLeft = 'false';
+  animationStateRight = 'false';
+
   formIsSaved = false;
   currentLanguage$: Observable<string>;
+  currentLanguage: string;
   defaultLanguage$: Observable<string>;
   enableDraft = false;
 
@@ -49,6 +128,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   formSaveAllObservables$: Observable<Action>[] = [];
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
+  languages: Language[];
   features$: Observable<Feature[]>;
   Object = Object;
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
@@ -241,8 +321,20 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
 
     this.languages$ = this.languageService.selectAllLanguages();
-    // on current language change reset form errors
+    this.subscriptions.push(this.languages$.subscribe(languages => {
+      this.languages = languages;
+    }));
+
     this.subscriptions.push(this.currentLanguage$.subscribe(len => {
+      // const languagesKeys: string[] = this.languages.map(l => l.key);
+      if (this.languages.findIndex(l => l.key === this.currentLanguage) > this.languages.findIndex(l => l.key === len)) {
+        // this.animationState = this.animationState === 'right' ? 'left' : 'right';
+        this.animationStateLeft = this.animationStateLeft === 'false' ? 'true' : 'false';
+      } else {
+        this.animationStateRight = this.animationStateRight === 'false' ? 'true' : 'false';
+      }
+      this.currentLanguage = len;
+      // on current language change reset form errors
       this.formErrors = [];
     }));
   }

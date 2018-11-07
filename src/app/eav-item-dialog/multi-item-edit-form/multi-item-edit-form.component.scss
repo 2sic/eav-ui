@@ -6,9 +6,9 @@
 }
 
 .mat-dialog-content {
-    margin:0;
-    padding: 0;
-    max-height: $edit-ui-dialog-max-height;
+     margin:0;
+     padding: 0;
+     max-height: $edit-ui-dialog-max-height // calc(100vh - 120px);
 }
 
 .mat-dialog-actions {
@@ -41,13 +41,11 @@
               height: $save-button-height;
               width:$save-button-width-compact;
               transition: width 1s;
-              
           }
           &--extended {
               height: $save-button-height;
               width:$save-button-width-extended;
               transition: width 1s;
-              
           }
       }
   }
