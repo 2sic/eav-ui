@@ -46,10 +46,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   defaultLanguage$: Observable<string>;
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
-
-  infoMessage = '';
-  infoMessageLabel = '';
-
   translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
 
   private subscriptions: Subscription[] = [];
@@ -64,14 +60,36 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId, this.config.entityGuid);
     this.subscribeToAttributeValues();
+    this.subscribeMenuChange();
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.subscribeToEntityHeaderFromStore();
+
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  openLinkToOtherLanguage() {
+    // Open dialog
+    const dialogRef = this.dialog.open(LinkToOtherLanguageComponent, {
+      panelClass: 'c-link-to-other-language',
+      autoFocus: false,
+      width: '280px',
+      data: new LinkToOtherLanguageData(this.translationState.linkType,
+        this.translationState.language,
+        this.defaultLanguage,
+        this.attributes,
+        this.config.name)
+    });
+    // Close dialog
+    dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
+      if (actionResult) {
+        this.triggerTranslation(actionResult);
+      }
+    });
   }
 
   translateUnlink(attributeKey: string) {
@@ -202,21 +220,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-  openLinkToOtherLanguage() {
-    // Open dialog
-    const dialogRef = this.dialog.open(LinkToOtherLanguageComponent, {
-      panelClass: 'c-link-to-other-language',
-      autoFocus: false,
-      width: '280px',
-      data: new LinkToOtherLanguageData(this.translationState.linkType, this.translationState.language)
-    });
-    // Close dialog
-    dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
-      if (actionResult) {
-        this.triggerTranslation(actionResult);
-      }
-    });
-  }
+
 
   getTranslationStateClass() {
     if (!this.translationState) {
@@ -242,7 +246,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private refreshControlConfig(attributeKey: string) {
     if (!this.config.isParentGroup) {
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-      // this.setAdamDisable();
+      this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
     }
   }
@@ -344,11 +348,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         this.defaultLanguage = defaultLanguage;
 
         this.translateAllConfiguration(this.currentLanguage);
-        if (!this.config.isParentGroup) {
-          this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
-          // this.setAdamDisable();
-          this.readTranslationState(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
-        }
+        this.refreshControlConfig(this.config.name);
       })
     );
   }
@@ -389,15 +389,36 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         this.setTranslationState(TranslationLinkTypeConstants.translate, '');
       }
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-        .join(', ');
       const readOnlyElements: EavDimensions<string>[] = LocalizationHelper.getAttributeValueTranslation(attributes,
         currentLanguage, defaultLanguage)
         .dimensions.filter(f => f.value !== currentLanguage);
       this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, readOnlyElements[0].value);
     } else {
       this.setTranslationState(TranslationLinkTypeConstants.dontTranslate, '');
+    }
+  }
+
+  /**
+    * Subscribe triggered when changing all in menu (forAllFields)
+    */
+  private subscribeMenuChange() {
+    this.subscriptions.push(
+      this.languageService.localizationWrapperMenuChange$.subscribe(s => {
+        if (!this.config.isParentGroup) {
+          this.refreshControlConfig(this.config.name);
+        }
+      })
+    );
+  }
+
+  /**
+   * * Change adam disable state
+   *   * @param attributeKey
+   *  */
+  private setAdamDisable() {
+    // set Adam disabled state
+    if (this.config.adam) {
+      this.config.adam.disabled = this.group.controls[this.config.name].disabled;
     }
   }
 }

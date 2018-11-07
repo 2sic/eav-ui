@@ -6,6 +6,7 @@ import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-othe
 import { LanguageService } from '../../../shared/services/language.service';
 import { Language } from '../../../shared/models/eav';
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
+import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 
 @Component({
   selector: 'app-link-to-other-language',
@@ -93,5 +94,12 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   linkOtherLanguage() {
     console.log(this.selectedOption);
+  }
+
+  hasLanguage = (languageKey) => {
+    return this.data.attributes
+      ? LocalizationHelper.isEditableOrReadonlyTranslationExist(this.data.attributes[this.data.attributeKey],
+        languageKey, this.data.defaultLanguage)
+      : false;
   }
 }

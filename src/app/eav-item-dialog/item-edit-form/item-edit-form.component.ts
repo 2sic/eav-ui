@@ -321,13 +321,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     );
     // set default value if needed
     let defaultValueIsSet = false;
-    if (!value) {
+    if (value === undefined) {
       value = this.setDefaultValue(attribute, inputType, settingsTranslated);
       defaultValueIsSet = true;
     }
-    const disabled: boolean = this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
+    const disabled: boolean = settingsTranslated.Disabled; // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
     const label = this.getFieldLabel(attribute, settingsTranslated, null);
-
     return {
       disabled: disabled,
       entityId: this.item.entity.id,
@@ -398,21 +397,22 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       : defaultValue;
   }
 
-  private getFieldDisabled = (
-    attribute: AttributeDef,
-    settingsTranslated: EavAttributesTranslated,
-    defaultValueIsSet: boolean
-  ): boolean => {
-    return settingsTranslated.Disabled
-      ? true
-      : this.item.entity.id === 0 || defaultValueIsSet
-        ? false
-        : !LocalizationHelper.isEditableTranslationExist(
-          this.item.entity.attributes[attribute.name],
-          this.currentLanguage,
-          this.defaultLanguage
-        );
-  }
+  // private getFieldDisabled = (
+  //   attribute: AttributeDef,
+  //   settingsTranslated: EavAttributesTranslated,
+  //   defaultValueIsSet: boolean
+  // ): boolean => {
+
+  //   return settingsTranslated.Disabled
+  //     ? true
+  //   : this.item.entity.id === 0 || defaultValueIsSet
+  //     ? false
+  //   : !LocalizationHelper.isEditableTranslationExist(
+  //     this.item.entity.attributes[attribute.name],
+  //     this.currentLanguage,
+  //     this.defaultLanguage
+  //   );
+  // }
 
   /** Set default value and add that attribute in store */
   private setDefaultValue(attribute: AttributeDef, inputType: string, settingsTranslated: EavAttributesTranslated): any {

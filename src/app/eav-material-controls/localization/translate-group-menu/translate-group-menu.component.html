@@ -1,7 +1,7 @@
 <div *ngIf="(currentLanguage !== defaultLanguage) && config.isParentGroup" fxLayoutAlign="end center">
-  <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu" color="accent">
+  <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu">
     <span fxLayoutAlign="end center">
-      TRANSLATE &nbsp;&nbsp;<i class="fas fa-language" style="font-size: 20px; color:rgb(69, 79, 99);"></i>
+      TRANSLATE &nbsp;&nbsp;<i class="fas fa-language" style="font-size: 20px;"></i>
     </span>
   </button>
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">

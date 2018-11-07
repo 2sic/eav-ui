@@ -3,10 +3,10 @@
     <span matLine>Don’t Translate</span>
   </mat-list-item>
   <mat-list-item (click)="translate()" [ngClass]="selectedOption.linkType === 'translate' ? 'mat-list-item-focus' : ''">
-    <span matLine>Translate</span>
+    <span matLine>Translate ({{data.defaultLanguage}})</span>
   </mat-list-item>
   <mat-list-item (click)="linkCopyFrom()" [ngClass]="selectedOption.linkType === 'linkCopyFrom' ? 'mat-list-item-focus' : ''">
-    <span matLine>Copy from (translate)</span>
+    <span matLine>Translate (...)</span>
   </mat-list-item>
   <mat-list-item (click)="linkReadOnly()" [ngClass]="selectedOption.linkType === 'linkReadOnly' ? 'mat-list-item-focus' : ''">
     <span matLine>Link read-only</span>
@@ -17,6 +17,7 @@
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-nav-list toggle *ngIf="showLanguages || selectedOption.language !== ''">
+  <!-- [disabled]="!hasLanguage(language.key)" -->
   <mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [ngClass]="selectedOption.language === language.key ? 'mat-list-item-focus' : ''">
     <span matLine>{{language.key}}</span>
   </mat-list-item>
