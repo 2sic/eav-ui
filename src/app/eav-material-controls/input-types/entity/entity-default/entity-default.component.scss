@@ -1,3 +1,7 @@
+@import "../../../../../../theme.scss";
+@import "../../../../../assets/style/variables.scss";
+
+
 /* h4 {
     margin-top: 25px;
   }
@@ -37,17 +41,29 @@ margin-bottom: 40px;
 .dnd-element {
     position: relative;
     cursor: move;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    // padding-top: 24px;
+    // padding-bottom: 10px;
+
+    height: 56px;
+     // background:  mat-color($editUI-theme-foreground, base,  0.08);
+   // border-radius: 32px;
+    // border: 1px solid rgba($editUI-foreground-color, 0.44);
+    // max-height: 24px;
 }
 
 .dnd-buttons {
     position: absolute;
     right: 0;
-    top:0;
+    top:10px;
     display: inline;
     /* // visibility: hidden; */
 }
+
 /* .dnd-element:hover .dnd-buttons {
     visibility: visible;
 } */
+
+
+.dnd-space {
+    height: 32px;
+}

@@ -70,12 +70,7 @@ import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-cha
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
-// import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-// import { library } from '@fortawesome/fontawesome-svg-core';
-// import { faLanguage } from '@fortawesome/free-solid-svg-icons';
-
-// Add an icon to the library for convenient access in other components
-// library.add(faLanguage);
+import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 
 @NgModule({
     declarations: [
@@ -115,6 +110,7 @@ import { LinkToOtherLanguageComponent } from './localization/link-to-other-langu
         FieldHelperTextComponent,
         TranslateGroupMenuComponent,
         LinkToOtherLanguageComponent,
+        EntityExpandableWrapperComponent,
     ],
     imports: [
         // DndDraggable,
@@ -156,6 +152,7 @@ import { LinkToOtherLanguageComponent } from './localization/link-to-other-langu
         EavLocalizationComponent,
         EmptyDefaultComponent,
         EntityDefaultComponent,
+        EntityExpandableWrapperComponent,
         ErrorWrapperComponent,
         ExpandableWrapperComponent,
         ExternalComponent,

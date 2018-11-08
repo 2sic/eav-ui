@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, Subscription, merge, fromEvent } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
@@ -31,14 +31,13 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
   styleUrls: ['./entity-default.component.scss'],
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  // wrapper: ['app-eav-localization-wrapper', 'app-entity-expandable-wrapper'],
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterViewInit {
   @ViewChild('autocompleteInput') input;
 
   @Input() config: FieldConfig;
   group: FormGroup;
-
 
   chosenEntities: any[];
   // options: Item[];

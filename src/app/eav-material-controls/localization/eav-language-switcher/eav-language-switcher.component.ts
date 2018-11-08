@@ -1,12 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { MatTabChangeEvent, DialogPosition } from '@angular/material';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 import { SaveStatusDialogComponent } from '../../dialogs/save-status-dialog/save-status-dialog.component';
-import { AdminDialogData } from '../../../shared/models/eav/admin-dialog-data';
-import { DialogTypeConstants } from '../../../shared/constants/type-constants';
 import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 
 @Component({

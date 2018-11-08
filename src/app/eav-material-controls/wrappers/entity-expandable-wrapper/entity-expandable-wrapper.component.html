@@ -11,8 +11,14 @@
     <div class='u-add-scrollbar u-hide-scrollbar'>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content c-ew--border-radius" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
-        <ng-container #fieldComponent></ng-container>
+      <div class="c-ew__dialog-content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        <div class="mdc-layout-grid">
+          <div class="mdc-layout-grid__inner">
+            <mat-card class="mdc-layout-grid__cell--span-12 c-ew--border-radius">
+              <ng-container #fieldComponent></ng-container>
+            </mat-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -24,7 +30,14 @@
         {{config.required ? '*': '' }}</mat-label>
       <mat-label *ngIf="inputInvalid" [ngClass]="value ? 'mat-caption mat-error' : 'mat-empty mat-error'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <div *ngIf="value" [innerHtml]="value"></div>
+      <!-- <div *ngIf="value" [innerHtml]="value"></div> -->
+
+      <mat-list *ngIf="value && availableEntities" role="list">
+        <mat-list-item role="listitem" *ngFor="let item of value">
+          <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
+          <span [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
+        </mat-list-item>
+      </mat-list>
     </div>
   </div>
   <app-field-helper-text [config]="config" [group]="group" haveDirtyTouched="fasle"></app-field-helper-text>

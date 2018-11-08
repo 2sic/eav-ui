@@ -5,9 +5,11 @@
   <div [dndList]="dndListConfig" [dndPlaceholder]="placeholder" [dndModel]="chosenEntities">
     <div *ngFor="let item of chosenEntities; let i = index" [dndType]="item.type" [dndDraggable] [dndObject]="item"
       (dndMoved)="removeItem(item, chosenEntities)">
-      <div class="dnd-element">
+      <div class="dnd-element" fxLayout="row" fxLayoutAlign="start center">
+        <span>&nbsp;&nbsp;</span>
         <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
         <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
+        <span>&nbsp;</span>
         <span [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
         <!-- dndHandle -->
         <div class="dnd-buttons">
@@ -27,6 +29,7 @@
       </div>
     </div>
   </div>
+  <!-- <div *ngIf="(chosenEntities && chosenEntities.length > 0)" class="dnd-space"></div> -->
 </div>
 
 <!-- pick existing entity close-->
@@ -41,7 +44,7 @@
     <!-- <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint> -->
   </mat-form-field>
   <!-- <mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error> -->
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
     <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value" [disabled]="isInChosenEntities(item.Value)">
       <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
@@ -50,6 +53,7 @@
   <!-- <span ng-if="!error">{{ 'FieldType.EntityQuery.QueryNoItems' | translate }}</span> -->
 </div>
 
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
 <!-- create new entity to add to this list -->
 <button mat-icon-button *ngIf="enableCreate && entityType !== '' && (allowMultiValue || chosenEntities.length < 1)"

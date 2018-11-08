@@ -320,13 +320,19 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       null
     );
     // set default value if needed
-    let defaultValueIsSet = false;
-    if (value === undefined) {
+    // let defaultValueIsSet = false;
+    if (value === undefined || value === null) {
       value = this.setDefaultValue(attribute, inputType, settingsTranslated);
-      defaultValueIsSet = true;
+      //  defaultValueIsSet = true;
     }
-    const disabled: boolean = settingsTranslated.Disabled; // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
+    // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
+    const disabled: boolean = settingsTranslated.Disabled;
     const label = this.getFieldLabel(attribute, settingsTranslated, null);
+
+    const wrappers = this.setWrappers(inputType, settingsTranslated);
+
+
+    console.log('disabled:', disabled);
     return {
       disabled: disabled,
       entityId: this.item.entity.id,
@@ -343,9 +349,25 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       type: attribute.type,
       validation: validationList,
       value: value,
-      wrappers: ['app-hidden-wrapper'],
+      wrappers: wrappers, // ['app-hidden-wrapper'],
       features: this.features
     };
+  }
+
+  private setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
+    // default wrappers
+    const wrappers: string[] = ['app-hidden-wrapper'];
+
+    // entity-default wrappers
+    if (inputType === InputTypesConstants.entityDefault) {
+      // wrappers.push('app-eav-localization-wrapper');
+      const allowMultiValue = settingsTranslated.AllowMultiValue || false;
+      if (allowMultiValue) {
+        wrappers.push('app-entity-expandable-wrapper');
+      }
+    }
+
+    return wrappers;
   }
 
   /**
