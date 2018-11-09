@@ -27,7 +27,7 @@ margin-bottom: 40px;
 } */
 
 .dnd-placeholder {
-    background-color: #ddd;
+    background-color:  mat-color($editUI-theme-foreground, base,  0.08);
     display: block;
     min-height: 20px;
     padding-top: 15px;
@@ -45,15 +45,31 @@ margin-bottom: 40px;
     // padding-bottom: 10px;
 
     height: 56px;
-     // background:  mat-color($editUI-theme-foreground, base,  0.08);
-   // border-radius: 32px;
-    // border: 1px solid rgba($editUI-foreground-color, 0.44);
-    // max-height: 24px;
+    background:  mat-color($editUI-theme-foreground, base,  0.08);
+    padding: 0 0 0 12px;
+}
+
+.dnd-element-multi {
+    position: relative;
+    cursor: move;
+    height: 56px;
+    background: white;
+    border-radius: 32px;
+    border: 1px solid rgba($editUI-foreground-color, 0.44);
+    margin: 4px 0 4px 0;
+    padding: 0 16px 0 16px;
+}
+
+.dnd-element-text {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 170px);
 }
 
 .dnd-buttons {
     position: absolute;
-    right: 0;
+    right: 4px;
     top:10px;
     display: inline;
     /* // visibility: hidden; */
@@ -66,4 +82,27 @@ margin-bottom: 40px;
 
 .dnd-space {
     height: 32px;
+}
+
+.ed-field {
+    width: 100%;
+    height: 100%;
+}
+
+.ed-field__create-icon {
+    width: 48px;
+    height: 56px;
+}
+
+.ed-field__create-icon-hide {
+    width: 0;
+}
+
+.ed-field__field-short {
+    width: calc(100% - 48px);
+    max-width: calc(100% - 48px);
+}
+
+.ed-field__field {
+    width: 100%;
 }

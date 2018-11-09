@@ -26,16 +26,18 @@
 <div>
   <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" [ngClass]="value ? 'mat-caption c-ew__color--accent' : 'mat-empty c-ew__color--primary'">{{config.label}}
+      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <mat-label *ngIf="inputInvalid" [ngClass]="value ? 'mat-caption mat-error' : 'mat-empty mat-error'">{{config.label}}
+      <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
       <!-- <div *ngIf="value" [innerHtml]="value"></div> -->
 
       <mat-list *ngIf="value && availableEntities" role="list">
         <mat-list-item role="listitem" *ngFor="let item of value">
-          <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i>
-          <span [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
+          <!-- class="eav-icon-link pull-left eav-entityselect-icon"  -->
+          <!-- <i title="" mat-list-icon class="eav-icon-link" *ngIf="!allowMultiValue"></i> -->
+          <mat-icon mat-list-icon>link</mat-icon>
+          <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
         </mat-list-item>
       </mat-list>
     </div>

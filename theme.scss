@@ -202,7 +202,7 @@ $editUI-light-theme: mat-light-theme(
 
   $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.08));
   $fill-disabled-background: mat-color($foreground, base, if($is-dark-theme, 0.05, 0.04));
-  $underline-color:  mat-color($foreground, divider, if($is-dark-theme, 0.5, 0.44));
+  $underline-color:  mat-color($foreground, base, if($is-dark-theme, 0.5, 0.44));
   // $label-disabled-color: mat-color($foreground, disabled-text);
   $label-disabled-color: mat-color($foreground, base, if($is-dark-theme, 0.5, 0.24));
 
@@ -253,7 +253,8 @@ $editUI-light-theme: mat-light-theme(
   $required-label-color: mat-color($accent);
 
   // Underline colors.
-  $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.44)); // this is underline on hover
+  // $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.44)); // this is underline on hover
+  $underline-color-base: mat-color($foreground, base, if($is-dark-theme, 1, 0.44));
   $underline-color-accent: mat-color($accent);
   $underline-color-warn: mat-color($warn);
   $underline-focused-color: mat-color($primary);

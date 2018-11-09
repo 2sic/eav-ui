@@ -1,4 +1,4 @@
-@import "../../../../theme.scss";
+@import "./theme.scss";
 @import "../../../../assets/style/variables.scss";
 
 .c-ew {
@@ -13,7 +13,8 @@
         cursor: pointer;
        
         // border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px map_get($mat-eav-item-dialog-secondary, 500);;
+        // border: 1px map_get($mat-eav-item-dialog-secondary, 500);
+        border: 1px rgba($editUI-foreground-color, 0.44);
         border-bottom-style: solid;
         // rgba($editUI-foreground-color, 0.44);
         // border-color: map_get($mat-eav-item-dialog-secondary, 500);
@@ -29,8 +30,6 @@
                 padding: 6px 0 0 0;
             }
         }
-
-
         &--input-invalid {
             padding: 6px 12px 11px 12px;
             border: 2px;
@@ -48,9 +47,9 @@
 
         &:hover {
             padding: 6px 12px 11px 12px;
-            border: 2px map_get($mat-eav-item-dialog-secondary, 500);
+            // border: 2px map_get($mat-eav-item-dialog-secondary, 500);
+            border: 2px rgba($editUI-foreground-color, 0.44);
             border-bottom-style: solid;
-            // border-color: map_get($mat-eav-item-dialog-secondary, 500);
         }
 
         mat-empty {
@@ -78,7 +77,7 @@
         flex-direction: column;
         display: flex;
         // border-radius: $edit-ui-input-border-radius;
-        max-width: 960px;
+        max-width: $edit-ui-dialog-max-width;
         width: 100vw; 
         margin-top: 24px;
         min-height: $expandable-wrapper-max-height;
@@ -100,7 +99,7 @@
             // border-radius: $edit-ui-input-border-radius;
             
              background: map_get($mat-eav-item-dialog-background, 50);
-
+             border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
            
 
             // app-dropzone .dropzone-container {
@@ -133,9 +132,7 @@
     }
 }
 
-.mat-list-item-content {
-    max-height: 24px;
-}
+
 
 .mat-list-item {
     // background: mat-color($editUI-theme-foreground, base,  0.08);
@@ -143,6 +140,12 @@
     border-radius: 32px;
     border: 1px solid rgba($editUI-foreground-color, 0.44);
     max-height: 24px;
+    margin: 2px 0 2px 0;
+   
+  
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 

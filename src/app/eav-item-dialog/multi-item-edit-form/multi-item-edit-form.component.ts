@@ -34,13 +34,9 @@ import {
 
 export const SlideLeftRightAnimation = [
   trigger('slideLeft', [
-    state('true', style({
-      // transform: 'translateX(0)'
-    })),
-    state('false', style({
-      // transform: 'translateX(0)'
-    })),
-
+    state('true', style({})),
+    state('false', style({})),
+    transition('void => *', animate(0)),
     transition('* => *',
       [
         animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
@@ -69,12 +65,9 @@ export const SlideLeftRightAnimation = [
     ),
   ]),
   trigger('slideRight', [
-    state('true', style({
-      // transform: 'translateX(0)'
-    })),
-    state('false', style({
-      //  transform: 'translateX(0)'
-    })),
+    state('true', style({})),
+    state('false', style({})),
+    transition('void => *', animate(0)),
     transition('* => *', [
       animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
         style({ transform: 'translateX(-10%)' }),
@@ -111,8 +104,8 @@ export const SlideLeftRightAnimation = [
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
-  animationStateLeft = 'false';
-  animationStateRight = 'false';
+  animationStateLeft: string;
+  animationStateRight: string;
 
   formIsSaved = false;
   currentLanguage$: Observable<string>;
@@ -325,18 +318,20 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.languages = languages;
     }));
 
-    this.subscriptions.push(this.currentLanguage$.subscribe(len => {
-      // const languagesKeys: string[] = this.languages.map(l => l.key);
-      if (this.languages.findIndex(l => l.key === this.currentLanguage) > this.languages.findIndex(l => l.key === len)) {
-        // this.animationState = this.animationState === 'right' ? 'left' : 'right';
-        this.animationStateLeft = this.animationStateLeft === 'false' ? 'true' : 'false';
-      } else {
-        this.animationStateRight = this.animationStateRight === 'false' ? 'true' : 'false';
-      }
-      this.currentLanguage = len;
+    this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
+      this.changeAnimationState(lan);
+      this.currentLanguage = lan;
       // on current language change reset form errors
       this.formErrors = [];
     }));
+  }
+
+  private changeAnimationState(language: string) {
+    if (this.languages.findIndex(l => l.key === this.currentLanguage) > this.languages.findIndex(l => l.key === language)) {
+      this.animationStateLeft = this.animationStateLeft === 'false' ? 'true' : 'false';
+    } else {
+      this.animationStateRight = this.animationStateRight === 'false' ? 'true' : 'false';
+    }
   }
 
   /**

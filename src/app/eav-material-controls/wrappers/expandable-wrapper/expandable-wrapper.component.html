@@ -20,9 +20,9 @@
 <div>
   <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" [ngClass]="value ? 'mat-caption c-ew__color--accent' : 'mat-empty c-ew__color--primary'">{{config.label}}
+      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <mat-label *ngIf="inputInvalid" [ngClass]="value ? 'mat-caption mat-error' : 'mat-empty mat-error'">{{config.label}}
+      <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
       <div *ngIf="value" [innerHtml]="value"></div>
     </div>

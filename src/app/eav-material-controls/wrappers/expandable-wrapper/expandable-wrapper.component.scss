@@ -1,4 +1,4 @@
-@import "../../../../theme.scss";
+@import "./theme.scss";
 @import "../../../../assets/style/variables.scss";
 
 .c-ew {
@@ -13,7 +13,7 @@
         cursor: pointer;
        
         // border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px map_get($mat-eav-item-dialog-secondary, 500);;
+        border: 1px rgba($editUI-foreground-color, 0.44);
         border-bottom-style: solid;
         // rgba($editUI-foreground-color, 0.44);
         // border-color: map_get($mat-eav-item-dialog-secondary, 500);
@@ -47,7 +47,7 @@
 
         &:hover {
             padding: 6px 12px 11px 12px;
-            border: 2px map_get($mat-eav-item-dialog-secondary, 500);
+            border: 2px rgba($editUI-foreground-color, 0.44);
             border-bottom-style: solid;
             // border-color: map_get($mat-eav-item-dialog-secondary, 500);
         }
