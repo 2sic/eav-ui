@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, AfterViewInit
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
@@ -163,11 +163,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.dialogBackdropClickSubscribe();
     this.saveFormMessagesSubscribe();
     this.formSetValueChangeSubscribe();
+
+    this.checkFormsState();
   }
 
   ngAfterContentChecked() {
-    this.saveFormSuscribe();
-    // this.checkFormsState();
+    this.attachAllSaveFormObservables();
     // need this to detectChange for this.formsAreValid after ViewChecked
     this.changeDetectorRef.detectChanges();
   }
@@ -176,6 +177,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // need this to detectChange for this.formsAreValid
     this.changeDetectorRef.detectChanges();
   }
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
@@ -348,10 +350,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   * With zip function look all forms submit observables and when all finish save all data (call savemany service)
+   * Attach all save form observables from child itemEditFormComponent
+   * and subscribe to all observables with one subscribe (observable zip function).
+   * It also initially checks the status of the form (invalid, dirty ...).
    */
-  private saveFormSuscribe() {
-    // important - only subscribe once
+  private attachAllSaveFormObservables() {
     if (this.formSaveAllObservables$.length === 0) {
       if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
         this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
@@ -359,38 +362,38 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         });
       }
 
+      // only called once when a formSaveAllObservables array is filled
       if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
-        this.subscriptions.push(
-          zip(...this.formSaveAllObservables$)
-            .pipe(
-              switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
-                console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
-                const allItems = [];
-                actions.forEach(action => {
-                  allItems.push(JsonItem1.create(action.item));
-                });
-
-                const body = {
-                  Items: allItems,
-                  IsPublished: this.publishMode === 'show',
-                  DraftShouldBranch: this.publishMode === 'branch'
-                };
-
-                return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
-                  .pipe(
-                    map(data => {
-                      this.enableDraft = true; // after saving, we can re-save as draft
-                      this.eavService.saveItemSuccess(data);
-                    }),
-                    tap(data => console.log('working'))
-                  );
-              }),
-              catchError(err => of(this.eavService.saveItemError(err)))
-            )
-            .subscribe()
-        );
+        this.saveFormSubscribe();
+        this.checkFormsState();
       }
     }
+  }
+
+  /**
+   * With zip function look all forms submit observables and when all finish save all data (call savemany service)
+   */
+  private saveFormSubscribe() {
+    // important - only subscribe once
+    this.subscriptions.push(zip(...this.formSaveAllObservables$)
+      .pipe(switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
+        console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
+        const allItems = [];
+        actions.forEach(action => {
+          allItems.push(JsonItem1.create(action.item));
+        });
+        const body = {
+          Items: allItems,
+          IsPublished: this.publishMode === 'show',
+          DraftShouldBranch: this.publishMode === 'branch'
+        };
+        return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
+          .pipe(map(data => {
+            this.enableDraft = true; // after saving, we can re-save as draft
+            this.eavService.saveItemSuccess(data);
+          }), tap(data => console.log('working')));
+      }), catchError(err => of(this.eavService.saveItemError(err))))
+      .subscribe());
   }
 
   /**
@@ -435,7 +438,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (this.itemEditFormComponentQueryList &&
       this.itemEditFormComponentQueryList.length > 0 &&
       this.itemEditFormComponentQueryList.first.currentLanguage) {
-
       // Default values
       this.allControlsAreDisabled = true;
       this.formsAreValid = true;

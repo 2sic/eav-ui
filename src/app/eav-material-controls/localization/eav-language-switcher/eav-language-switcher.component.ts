@@ -18,6 +18,8 @@ export class EavLanguageSwitcherComponent {
 
   @Input() formsAreValid: boolean;
 
+  @Input() allControlsAreDisabled: boolean;
+
   // publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
 

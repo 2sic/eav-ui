@@ -47,6 +47,12 @@
               width:$save-button-width-extended;
               transition: width 1s;
           }
+
+          &--disabled {
+            color:  rgba(black, 0.26);
+            background-color: rgba($editUI-foreground-color, 0.12);
+           ;
+        }
       }
   }
 }

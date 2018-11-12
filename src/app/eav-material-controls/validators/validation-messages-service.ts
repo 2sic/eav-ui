@@ -92,6 +92,8 @@ export class ValidationMessagesService {
               formErrors[key] = formErrors[key] || messages[keyError](undefined);
             });
           }
+          // this displays an error message on an invalid control
+          control.markAsTouched({ onlySelf: true });
         }
       }
     });
