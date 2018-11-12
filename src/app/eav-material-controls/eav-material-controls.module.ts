@@ -48,7 +48,6 @@ import {
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
-import { ErrorWrapperComponent } from './wrappers/field-parent-wrapper/error-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
@@ -76,7 +75,6 @@ import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-w
     declarations: [
         // wrappers
         CollapsibleWrapperComponent,
-        ErrorWrapperComponent,
         TextEntryWrapperComponent,
         // types
         StringDefaultComponent,
@@ -153,7 +151,6 @@ import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-w
         EmptyDefaultComponent,
         EntityDefaultComponent,
         EntityExpandableWrapperComponent,
-        ErrorWrapperComponent,
         ExpandableWrapperComponent,
         ExternalComponent,
         HiddenWrapperComponent,
