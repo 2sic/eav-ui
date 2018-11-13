@@ -48,6 +48,12 @@ export class StringDropdownComponent implements Field, OnInit {
     this.freeTextMode = this.setFreeTextMode();
   }
 
+  freeTextModeChange(event) {
+    this.freeTextMode = !this.freeTextMode;
+    // Stops dropdown from opening
+    event.stopPropagation();
+  }
+
   private setFreeTextMode() {
     if (this.value) {
       const isInSelectOptions: boolean = this.selectOptions.find(s => s.value === this.value);
@@ -79,4 +85,7 @@ export class StringDropdownComponent implements Field, OnInit {
     }
     return options;
   }
+
+
+
 }

@@ -43,6 +43,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   // options: Item[];
   selectEntities: Observable<EntityInfo[]> = null;
   // entities = [];
+  // TODO:
+  freeTextMode = false;
   private contentType: FieldMaskService;
 
   private availableEntities: EntityInfo[] = [];
@@ -78,6 +80,11 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     return this.config.settings.EnableDelete || false;
   }
 
+  // TODO:
+  get enableTextEntry() {
+    return this.config.settings.EnableTextEntry || false;
+  }
+
   get disabled() {
     return this.group.controls[this.config.name].disabled;
   }
@@ -110,20 +117,29 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // this will contain the auto-resolve type (based on other contentType-field)
     this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-    console.log('contentType', this.contentType);
 
+    console.log('contentType', this.contentType);
     console.log('[create]  ngOnInit EntityDefaultComponent', this.group.value);
+
     this.setChosenEntities();
 
     this.setAvailableEntities();
   }
 
   ngAfterViewInit() {
+    console.log('setSelectEntitiesObservables1');
     this.setSelectEntitiesObservables();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  freeTextModeChange(event) {
+    this.freeTextMode = !this.freeTextMode;
+
+    // Stops dropdown from opening
+    event.stopPropagation();
   }
 
   maybeReload() {
@@ -201,6 +217,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     entityValues.splice(index, 1);
     // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
     this.group.controls[this.config.name].patchValue(entityValues);
+
+    if (entityValues.length === 0) {
+      console.log('setSelectEntitiesObservables5', this.input);
+    }
   }
 
   /**
@@ -309,6 +329,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * selectEntities observe events from input autocomplete field
    */
   private setSelectEntitiesObservables() {
+    console.log('setSelectEntitiesObservables', this.input);
     if (this.input && this.selectEntities === null) {
       const eventNames = ['keyup', 'click'];
       // Merge all observables into one single stream:
@@ -320,7 +341,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       const allEvents$ = merge(...eventStreams);
 
       this.selectEntities = allEvents$
-        .pipe(map((value: any) => this.filter(value.target.value)));
+        .pipe(map((value: any) => {
+          return this.filter(value.target.value);
+        }));
       // .do(value => console.log('test selectEntities', value));
     }
 
