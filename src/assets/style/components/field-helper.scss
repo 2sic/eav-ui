@@ -1,0 +1,13 @@
+.c-fht__container-hint--ellipsis p {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+
+.c-fht__container-hint p:first-child {
+    margin: 0px;
+}

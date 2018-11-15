@@ -1,6 +1,8 @@
 @import "./theme.scss";
 @import "../../../../assets/style/variables.scss";
 
+
+
 .c-fht {
     &__container {
         // margin: 0px 0 0 12px;
@@ -14,6 +16,11 @@
                 white-space: nowrap; 
                 overflow: hidden;
                 text-overflow: ellipsis;
+                max-height: 16px;
+                // in global scss
+                // p {
+                //     margin-block-start: 0;
+                // }
             }
 
             &--disabled {

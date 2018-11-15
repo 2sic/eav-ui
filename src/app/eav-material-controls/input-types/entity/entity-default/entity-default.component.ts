@@ -111,23 +111,17 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   ngOnInit() {
-
     // Initialize entities
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve type (based on other contentType-field)
     this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-
-    console.log('contentType', this.contentType);
-    console.log('[create]  ngOnInit EntityDefaultComponent', this.group.value);
-
-    this.setChosenEntities();
-
+    this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.chosenEntitiesSubscribeToChanges();
     this.setAvailableEntities();
   }
 
   ngAfterViewInit() {
-    console.log('setSelectEntitiesObservables1');
     this.setSelectEntitiesObservables();
   }
 
@@ -205,7 +199,14 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * @param value
    */
   edit(value: string) {
-    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, this.getEntityId(value));
+    const entityId = this.getEntityId(value);
+    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value);
+      this.setAvailableEntities();
+    });
   }
 
   /**
@@ -272,34 +273,33 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // TODO: finisih this - bug form closed when new entity closed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
 
-    // const dialogRef =
-    this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
+    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
   }
 
   /**
-   * set initial value and subscribe to form value changes
+   * set initial value
    */
-  private setChosenEntities() {
-    this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value); //  || [];
+  // private setChosenEntities() {
+  //   this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value); //  || [];
+  // }
 
-    this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        this.updateChosenEntities(item);
-      })
-    );
-
-    this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe((item) => {
-        this.updateChosenEntities(this.group.controls[this.config.name].value);
-      })
-    );
-  }
-
-  private updateChosenEntities(values: string[]) {
+  private setChosenEntities(values: string[]) {
     const updatedValues = this.mapFromEntityListToNameList(values);
     if (this.chosenEntities !== updatedValues) {
       this.chosenEntities = updatedValues;
     }
+  }
+
+  /**
+  * subscribe to form value changes
+  */
+  private chosenEntitiesSubscribeToChanges() {
+    this.subscriptions.push(this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.setChosenEntities(item);
+    }));
+    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
+      this.setChosenEntities(this.group.controls[this.config.name].value);
+    }));
   }
 
   /**

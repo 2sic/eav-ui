@@ -3,46 +3,19 @@ import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
-import { trigger, state, transition, animate, style, keyframes } from '@angular/animations';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EntityDefaultComponent } from '../../input-types';
 import { EntityService } from '../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
+import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
   templateUrl: './entity-expandable-wrapper.component.html',
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
-  animations: [
-    trigger('itemShrinkAnimation', [
-      state('open', style({
-        height: '30vh'
-      })),
-      state('closed', style({
-        height: '0vh'
-      })),
-      transition('open => closed', [
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ]),
-    ]),
-    trigger('contentExpandAnimation', [
-      state('closed', style({
-        height: '0',
-      })),
-      state('expanded', style({
-        height: 'calc(100vh - 120px)',
-        'max-height': 'calc(100vh - 120px)',
-      })),
-      transition('closed => expanded', [
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
-          style({ 'height': '0vh', overflow: 'hidden' }),
-          style({ 'height': 'calc(100vh - 120px)', overflow: 'hidden' }),
-        ])),
-      ]),
-    ]),
-  ],
+  animations: [ContentExpandAnimation],
 })
 
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {

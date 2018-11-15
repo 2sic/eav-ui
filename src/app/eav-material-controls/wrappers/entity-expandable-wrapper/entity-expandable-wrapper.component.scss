@@ -7,9 +7,9 @@
         //  margin: 16px 0 0 0;
         // margin: 0 0 16px 0;
         padding: 6px 12px 12px 12px;
-        min-height: 119px;
-        max-height: 119px;
-        height: 119px;
+        min-height: 38px; // 56px minus paddings
+        max-height: 119px; 
+        // height: 56px;
         cursor: pointer;
        
         // border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
@@ -23,6 +23,7 @@
         &-container {
             overflow: hidden;
             height: 100%;
+            max-height: 95px;// 119px minus paddings
             -webkit-align-content: center;
             align-content: center;
             
