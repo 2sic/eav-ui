@@ -10,6 +10,7 @@ import { EntityService } from '../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -23,6 +24,8 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
 
   @Input() config: FieldConfig;
   group: FormGroup;
+
+  dialogIsOpen = false;
 
   get value() {
     return this.group.controls[this.config.name].value;
@@ -44,13 +47,14 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
     return this.config.settings.EntityType || '';
   }
 
-  private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
+  private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private eavConfig: EavConfiguration;
-  private availableEntities: EntityInfo[] = [];
+  availableEntities: EntityInfo[] = [];
 
   constructor(private validationMessagesService: ValidationMessagesService,
     private entityService: EntityService,
-    private eavService: EavService) {
+    private eavService: EavService,
+    private translate: TranslateService) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 

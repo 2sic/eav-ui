@@ -6,8 +6,6 @@
       (dndMoved)="removeItem(item, chosenEntities)">
       <div [ngClass]="allowMultiValue ? 'dnd-element-multi mat-elevation-z2' : 'dnd-element'" fxLayout="row"
         fxLayoutAlign="start center">
-        <!-- <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="allowMultiValue"></i>
-        <i title="" class="eav-icon-link pull-left eav-entityselect-icon" *ngIf="!allowMultiValue"></i> -->
         <div class="dnd-element-content">
           <div *ngIf="!allowMultiValue">
             <mat-label class="mat-caption">{{config.label}} {{config.required ? '*': '' }}</mat-label>
@@ -28,7 +26,7 @@
             title="{{ 'FieldType.Entity.Remove' | translate }}" [disabled]="disabled">
             <mat-icon> {{allowMultiValue ? 'remove_circle' : 'arrow_drop_down'}}</mat-icon>
           </button>
-          <button dndNoDrag mat-icon-button *ngIf="enableDelete" type="button" class="dndButtons" (click)="deleteItemInSlot(item.name)"
+          <button dndNoDrag mat-icon-button *ngIf="enableDelete" type="button" class="dndButtons" (click)="deleteItemInSlot(item.name, i)"
             title="{{ 'General.Buttons.Delete' | translate }}" [disabled]="disabled">
             <mat-icon>clear</mat-icon>
           </button>

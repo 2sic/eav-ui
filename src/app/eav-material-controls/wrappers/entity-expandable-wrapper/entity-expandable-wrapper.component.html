@@ -30,16 +30,18 @@
         {{config.required ? '*': '' }}</mat-label>
       <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <!-- <div *ngIf="value" [innerHtml]="value"></div> -->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"
+          fxLayoutAlign="start start">
+          <mat-list-item role="listitem" *ngFor="let item of value">
+            <mat-icon mat-list-icon>link</mat-icon>
+            <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
+          </mat-list-item>
+        </mat-list>
+        <!-- {{value?.length - 5 }}  -->
+        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="end end" class="more-entities"> &nbsp; ...</span>
 
-      <mat-list *ngIf="value && availableEntities" role="list">
-        <mat-list-item role="listitem" *ngFor="let item of value">
-          <!-- class="eav-icon-link pull-left eav-entityselect-icon"  -->
-          <!-- <i title="" mat-list-icon class="eav-icon-link" *ngIf="!allowMultiValue"></i> -->
-          <mat-icon mat-list-icon>link</mat-icon>
-          <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
-        </mat-list-item>
-      </mat-list>
+      </div>
     </div>
   </div>
   <app-field-helper-text [config]="config" [group]="group" haveDirtyTouched="fasle"></app-field-helper-text>

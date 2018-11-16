@@ -1,6 +1,6 @@
-<div mat-dialog-container *ngIf="(items$ | async) && (items$ | async).length">
+<div mat-dialog-container *ngIf="(items$ | async)?.length > 0">
   <div mat-dialog-actions>
-    <app-eav-language-switcher *ngIf="(languages$ | async).length > 0" [languages]="(languages$ | async)" class="eav-language-switcher-header"
+    <app-eav-language-switcher *ngIf="(languages$ | async).length> 0" [languages]="(languages$ | async)" class="eav-language-switcher-header"
       [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
   </div>
   <div mat-dialog-content class="u-hide-scrollbar">

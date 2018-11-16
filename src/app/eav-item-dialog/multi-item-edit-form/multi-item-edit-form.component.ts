@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, AfterViewInit
+  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
@@ -28,69 +28,6 @@ import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
-
-// export const SlideLeftRightAnimation = [
-//   trigger('slideLeft', [
-//     state('true', style({})),
-//     state('false', style({})),
-//     transition('void => *', animate(0)),
-//     transition('* => *',
-//       [
-//         animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
-//           style({ transform: 'translateX(+10%)' }),
-//           style({ transform: 'translateX(+20%)' }),
-//           style({ transform: 'translateX(+30%)' }),
-//           style({ transform: 'translateX(+40%)' }),
-//           style({ transform: 'translateX(+50%)' }),
-//           style({ transform: 'translateX(+60%)' }),
-//           style({ transform: 'translateX(+70%)' }),
-//           style({ transform: 'translateX(+80%)' }),
-//           style({ transform: 'translateX(+90%)' }),
-//           style({ transform: 'translateX(+100%)' }),
-//           style({ transform: 'translateX(-100%)' }),
-//           style({ transform: 'translateX(-90%)' }),
-//           style({ transform: 'translateX(-80%)' }),
-//           style({ transform: 'translateX(-70%)' }),
-//           style({ transform: 'translateX(-60%)' }),
-//           style({ transform: 'translateX(-50%)' }),
-//           style({ transform: 'translateX(-40%)' }),
-//           style({ transform: 'translateX(-30%)' }),
-//           style({ transform: 'translateX(-20%)' }),
-//           style({ transform: 'translateX(-10%)' }),
-//         ])),
-//       ]
-//     ),
-//   ]),
-//   trigger('slideRight', [
-//     state('true', style({})),
-//     state('false', style({})),
-//     transition('void => *', animate(0)),
-//     transition('* => *', [
-//       animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
-//         style({ transform: 'translateX(-10%)' }),
-//         style({ transform: 'translateX(-20%)' }),
-//         style({ transform: 'translateX(-30%)' }),
-//         style({ transform: 'translateX(-40%)' }),
-//         style({ transform: 'translateX(-50%)' }),
-//         style({ transform: 'translateX(-60%)' }),
-//         style({ transform: 'translateX(-70%)' }),
-//         style({ transform: 'translateX(-80%)' }),
-//         style({ transform: 'translateX(-90%)' }),
-//         style({ transform: 'translateX(-100%)' }),
-//         style({ transform: 'translateX(+100%)' }),
-//         style({ transform: 'translateX(+90%)' }),
-//         style({ transform: 'translateX(+80%)' }),
-//         style({ transform: 'translateX(+70%)' }),
-//         style({ transform: 'translateX(+60%)' }),
-//         style({ transform: 'translateX(+50%)' }),
-//         style({ transform: 'translateX(+40%)' }),
-//         style({ transform: 'translateX(+30%)' }),
-//         style({ transform: 'translateX(+20%)' }),
-//         style({ transform: 'translateX(+10%)' }),
-//       ])),
-//     ]),
-//   ]),
-// ];
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -153,6 +90,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   ngOnInit() {
+    console.log('[Empty Entity] formDialogData', this.formDialogData);
+
     this.loadItemsData();
     this.setLanguageConfig();
     this.reduceExtendedSaveButton();
@@ -175,7 +114,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.changeDetectorRef.detectChanges();
   }
 
-
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
@@ -193,11 +131,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /**
    * close form dialog or if close is disabled show a message
    */
-  closeDialog() {
+  closeDialog(saveResult?: any) {
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close();
+      this.dialogRef.close(saveResult);
     }
   }
 
@@ -405,7 +343,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         console.log('success END: ', action.data);
         if (this.formIsSaved) {
           this.dialogRef.disableClose = false;
-          this.closeDialog();
+          this.closeDialog(action.data);
           this.snackBarOpen('saved');
         }
         // else {

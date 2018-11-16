@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { throwError as observableThrowError, Observable } from 'rxjs';
-import { map, catchError, tap, filter } from 'rxjs/operators';
+import { map, catchError, tap, filter, delay } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
@@ -32,7 +32,6 @@ export class ItemService {
   }
 
   public loadItems(items: JsonItem1[]) {
-    console.log('start create item');
     items.forEach((jsonItem1: JsonItem1) => {
       const item: Item = Item.create(jsonItem1);
       this.store.dispatch(new itemActions.LoadItemSuccessAction(item));
@@ -152,10 +151,11 @@ export class ItemService {
   public selectItemsByIdList(idsList: any[]): Observable<Item[]> {
     return this.store
       .select(fromStore.getItems)
-      .pipe(map(data => {
-        console.log('[Empty Entity] data:', data);
-        return data.filter(obj => obj.entity === null || idsList.filter(id => id === obj.entity.id || id === obj.entity.guid).length > 0);
-      }));
+      .pipe(
+        delay(0),
+        map(data => {
+          return data.filter(obj => obj.entity === null || idsList.filter(id => id === obj.entity.id || id === obj.entity.guid).length > 0);
+        }));
   }
 
   // public selectItemById(id: number): Observable<Item> {

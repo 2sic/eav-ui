@@ -23,7 +23,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(@Inject(MAT_DIALOG_DATA) private data: LinkToOtherLanguageData,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: LinkToOtherLanguageData,
     private languageService: LanguageService) {
     this.selectedOption = this.data;
   }

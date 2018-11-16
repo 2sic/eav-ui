@@ -6,11 +6,13 @@ import { throwError as observableThrowError, Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import { UrlConstants } from '../constants/url-constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class EntityService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+    private translate: TranslateService) {
   }
 
   /**
@@ -38,26 +40,31 @@ export class EntityService {
     );
   }
 
-  public delete(appId: string, type: string, id: string, tryForce: boolean): Observable<any> {
-    console.log('GET delete method:');
-    return this.httpClient.get(`${UrlConstants.apiRoot}eav/entities/delete`,
-      {
-        // ignoreErrors: 'true',
-        params: {
-          'contentType': type,
-          'id': id,
-          'appId': appId,
-          'force': tryForce.toString()
-        }
-      })
-      .pipe(
-        map((data: any) => {
-          console.log('data retun', data);
-          return data;
-        }),
-        // tap(data => console.log('entity delete: ', data)),
-        catchError(error => of(error))
-      );
+  public delete(appId: string, type: string, id: string, itemTitle: string, tryForce: boolean): Observable<any> {
+    const msg = this.translate.instant('General.Questions.DeleteEntity', { title: itemTitle, id: id });
+    if (!confirm(msg)) {
+      return null;
+    } else {
+      console.log('GET delete method:');
+      return this.httpClient.get(`${UrlConstants.apiRoot}eav/entities/delete`,
+        {
+          // ignoreErrors: 'true',
+          params: {
+            'contentType': type,
+            'id': id,
+            'appId': appId,
+            'force': tryForce.toString()
+          }
+        })
+        .pipe(
+          map((data: any) => {
+            console.log('data retun', data);
+            return data;
+          }),
+          // tap(data => console.log('entity delete: ', data)),
+          catchError(error => of(error))
+        );
+    }
 
     // return null;
   }

@@ -22,6 +22,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -40,73 +41,46 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   group: FormGroup;
 
   chosenEntities: any[];
-  // options: Item[];
   selectEntities: Observable<EntityInfo[]> = null;
-  // entities = [];
   // TODO:
   freeTextMode = false;
-  private contentType: FieldMaskService;
 
+  private contentType: FieldMaskService;
   private availableEntities: EntityInfo[] = [];
-  private entityTextDefault = 'Item not found'; // $translate.instant("FieldType.Entity.EntityNotFound");
+  private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
-  get allowMultiValue() {
-    return this.config.settings.AllowMultiValue || false;
-  }
+  get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
 
-  get entityType() {
-    return this.config.settings.EntityType || '';
-  }
+  get entityType() { return this.config.settings.EntityType || ''; }
 
-  get enableAddExisting() {
-    return this.config.settings.EnableAddExisting || false;
-  }
+  get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
 
-  get enableCreate() {
-    return this.config.settings.EnableCreate || false;
-  }
+  get enableCreate() { return this.config.settings.EnableCreate || true; }
 
-  get enableEdit() {
-    return this.config.settings.EnableEdit || false;
-  }
+  get enableEdit() { return this.config.settings.EnableEdit || true; }
 
-  get enableRemove() {
-    return this.config.settings.EnableRemove || false;
-  }
+  get enableRemove() { return this.config.settings.EnableRemove || true; }
 
-  get enableDelete() {
-    return this.config.settings.EnableDelete || false;
-  }
-
+  get enableDelete() { return this.config.settings.EnableDelete || false; }
   // TODO:
-  get enableTextEntry() {
-    return this.config.settings.EnableTextEntry || false;
-  }
+  get enableTextEntry() { return this.config.settings.EnableTextEntry || false; }
 
-  get disabled() {
-    return this.group.controls[this.config.name].disabled;
-  }
+  get disabled() { return this.group.controls[this.config.name].disabled; }
 
-  get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
-  }
+  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
 
-  get dndListConfig() {
-    return { allowedTypes: [this.config.name] };
-  }
+  get dndListConfig() { return { allowedTypes: [this.config.name] }; }
 
-
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
-  }
+  getErrorMessage = () => this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
     private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private translate: TranslateService) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -116,9 +90,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // this will contain the auto-resolve type (based on other contentType-field)
     this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-    this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.setData();
     this.chosenEntitiesSubscribeToChanges();
-    this.setAvailableEntities();
   }
 
   ngAfterViewInit() {
@@ -131,7 +104,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   freeTextModeChange(event) {
     this.freeTextMode = !this.freeTextMode;
-
     // Stops dropdown from opening
     event.stopPropagation();
   }
@@ -202,10 +174,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     const entityId = this.getEntityId(value);
     const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
 
-
     dialogRef.afterClosed().subscribe(result => {
-      this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value);
-      this.setAvailableEntities();
+      this.setData();
     });
   }
 
@@ -220,7 +190,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     this.group.controls[this.config.name].patchValue(entityValues);
 
     if (entityValues.length === 0) {
-      console.log('setSelectEntitiesObservables5', this.input);
+      // focus if list dont have any alement more
+      setTimeout(() => this.input.nativeElement.focus());
     }
   }
 
@@ -233,22 +204,23 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       alert('delete not possible - no type specified in entity field configuration');
       return;
     }
-
     const entities: EntityInfo[] = this.availableEntities.filter(f => f.Value === item);
     const id = entities[0].Id;
-    const text = entities[0].Text;
+    const title = entities[0].Text;
     // TODO:contentType.resolve()
     const contentTypeTemp = this.entityType; // contentType.resolve()
     // Then delete entity item:
-    this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, false).subscribe(result => {
+    this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, false).subscribe(result => {
+
       if (result === null || result.status >= 200 && result.status < 300) {
         // TODO: make message
         this.removeSlot(item, index);
+        this.setData();
       } else {
         // TODO: message success
-        this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, true).subscribe(items => {
+        this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, true).subscribe(items => {
           this.removeSlot(item, index);
-          // TODO: refresh avalable entities
+          this.setData();
         });
       }
     });
@@ -273,15 +245,38 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // TODO: finisih this - bug form closed when new entity closed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
 
+    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
+
     const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
+
+    dialogRef.afterClosed().subscribe(result => {
+      // dialogRef.componentInstance;
+      if (result) {
+        this.addEntity(Object.keys(result)[0]);
+        this.setData();
+      }
+    });
   }
 
-  /**
-   * set initial value
-   */
-  // private setChosenEntities() {
-  //   this.chosenEntities = this.mapFromEntityListToNameList(this.group.controls[this.config.name].value); //  || [];
-  // }
+  removeItem(item: any, list: any[]): void {
+    const oldIndex = list.indexOf(item);
+    const newIndex = list.findIndex(i => i.name === item.name);
+    list.splice(list.indexOf(item), 1);
+    // TEMP FIX Sorting list by moving an item up the list
+    // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
+    if (newIndex < oldIndex) {
+      list.splice(newIndex - 1, 0, item);
+      list.splice(newIndex + 1, 1);
+    }
+
+    const entityList = this.mapFromNameListToEntityList(list);
+    this.group.controls[this.config.name].patchValue(entityList);
+  }
+
+  private setData() {
+    this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.setAvailableEntities();
+  }
 
   private setChosenEntities(values: string[]) {
     const updatedValues = this.mapFromEntityListToNameList(values);
@@ -329,7 +324,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * selectEntities observe events from input autocomplete field
    */
   private setSelectEntitiesObservables() {
-    console.log('setSelectEntitiesObservables', this.input);
     if (this.input && this.selectEntities === null) {
       const eventNames = ['keyup', 'click'];
       // Merge all observables into one single stream:
@@ -354,7 +348,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     }
   }
 
-  private filter(val: string): EntityInfo[] {
+  private filter = (val: string): EntityInfo[] => {
     if (val === '') {
       return this.availableEntities;
     }
@@ -365,29 +359,14 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
 
-  public removeItem(item: any, list: any[]): void {
-    const oldIndex = list.indexOf(item);
-    const newIndex = list.findIndex(i => i.name === item.name);
-    list.splice(list.indexOf(item), 1);
-    // TEMP FIX Sorting list by moving an item up the list
-    // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
-    if (newIndex < oldIndex) {
-      list.splice(newIndex - 1, 0, item);
-      list.splice(newIndex + 1, 1);
-    }
-
-    const entityList = this.mapFromNameListToEntityList(list);
-    this.group.controls[this.config.name].patchValue(entityList);
-  }
-
-  private mapFromEntityListToNameList(entityList: string[]): any[] {
+  private mapFromEntityListToNameList = (entityList: string[]): any[] => {
     if (!entityList) {
       return [];
     }
     return entityList.map(v => ({ 'name': v, 'type': this.config.name }));
   }
 
-  private mapFromNameListToEntityList(nameList: any[]): string[] {
+  private mapFromNameListToEntityList = (nameList: any[]): string[] => {
     if (!nameList) {
       return [];
     }

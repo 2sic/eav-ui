@@ -16,7 +16,9 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
         case fromItems.LOAD_ITEM_SUCCESS: {
             // if item with same id not exist in store add item else overwrite item
             const itemExist = state.items.filter(data =>
-                isEmpty(data.entity.attributes) === false && data.entity.id === action.newItem.entity.id);
+                isEmpty(data.entity.attributes) === false
+                && data.entity.id === action.newItem.entity.id
+                && data.entity.id !== 0);
             if (itemExist.length === 0) {
                 return {
                     ...state,

@@ -38,12 +38,6 @@ export class ValidationMessagesService {
 
   // return list of error messages
   public validationMessages() {
-    // this.translateService.get('ValidationMessage').subscribe(trans => {
-
-    //   this.messages['required'] = trans.Required;
-    //   // console.log('VALIDATION MESSAGES:', data)
-    // });
-
     const messages = {
       required: (config: FieldConfig) => {
         return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
