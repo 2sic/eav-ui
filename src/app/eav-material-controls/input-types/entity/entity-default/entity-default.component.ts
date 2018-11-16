@@ -23,6 +23,7 @@ import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-it
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { FieldMaskService } from '../../../../shared/services/field-mask.service';
 import { TranslateService } from '@ngx-translate/core';
+import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 
 
 @Component({
@@ -35,19 +36,19 @@ import { TranslateService } from '@ngx-translate/core';
   // wrapper: ['app-eav-localization-wrapper', 'app-entity-expandable-wrapper'],
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('autocompleteInput') input;
+  @ViewChild('autoCompleteInput') autoCompleteInputControl;
+  @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  chosenEntities: any[];
+  // chosenEntities: any[];
   selectEntities: Observable<EntityInfo[]> = null;
   // TODO:
   freeTextMode = false;
 
   private contentType: FieldMaskService;
   private availableEntities: EntityInfo[] = [];
-  private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
@@ -73,6 +74,8 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   get dndListConfig() { return { allowedTypes: [this.config.name] }; }
 
+  get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
+
   getErrorMessage = () => this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
 
   constructor(private entityService: EntityService,
@@ -90,8 +93,9 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     // this will contain the auto-resolve type (based on other contentType-field)
     this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-    this.setData();
-    this.chosenEntitiesSubscribeToChanges();
+    // this.setData();
+    this.setAvailableEntities();
+    // this.chosenEntitiesSubscribeToChanges();
   }
 
   ngAfterViewInit() {
@@ -114,32 +118,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   optionSelected(event) {
     this.addEntity(event.option.value);
-    this.input.nativeElement.value = null;
-  }
-
-  getEntityText = (value): string => {
-    if (value === null) {
-      return 'empty slot';
-    }
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Text :
-        this.entityTextDefault ? this.entityTextDefault : value;
-    }
-
-    return value;
-  }
-
-  getEntityId = (value): string => {
-    if (value === null) {
-      return 'empty slot';
-    }
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Id : value;
-    }
-
-    return value;
+    this.autoCompleteInputControl.nativeElement.value = null;
   }
 
   /**
@@ -166,86 +145,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     }
   }
 
-  /**
-   *  open edit eav item dialog for item
-   * @param value
-   */
-  edit(value: string) {
-    const entityId = this.getEntityId(value);
-    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.setData();
-    });
-  }
-
-  /**
-   * remove entity value from form
-   * @param value
-   */
-  removeSlot(item: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
-    entityValues.splice(index, 1);
-    // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
-    this.group.controls[this.config.name].patchValue(entityValues);
-
-    if (entityValues.length === 0) {
-      // focus if list dont have any alement more
-      setTimeout(() => this.input.nativeElement.focus());
-    }
-  }
-
-  /**
-   * delete entity
-   * @param value
-   */
-  deleteItemInSlot(item: string, index: number) {
-    if (this.entityType === '') {
-      alert('delete not possible - no type specified in entity field configuration');
-      return;
-    }
-    const entities: EntityInfo[] = this.availableEntities.filter(f => f.Value === item);
-    const id = entities[0].Id;
-    const title = entities[0].Text;
-    // TODO:contentType.resolve()
-    const contentTypeTemp = this.entityType; // contentType.resolve()
-    // Then delete entity item:
-    this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, false).subscribe(result => {
-
-      if (result === null || result.status >= 200 && result.status < 300) {
-        // TODO: make message
-        this.removeSlot(item, index);
-        this.setData();
-      } else {
-        // TODO: message success
-        this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, true).subscribe(items => {
-          this.removeSlot(item, index);
-          this.setData();
-        });
-      }
-    });
-  }
-
-  levelUp(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
-    entityValues.splice(index, 1);
-    entityValues.splice(index - 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
-  }
-
-  levelDown(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
-    entityValues.splice(index, 1);
-    entityValues.splice(index + 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
-  }
-
   openNewEntityDialog() {
     // open the dialog for a new item
     // TODO: finisih this - bug form closed when new entity closed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
-
-    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
 
     const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
 
@@ -258,49 +161,16 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     });
   }
 
-  removeItem(item: any, list: any[]): void {
-    const oldIndex = list.indexOf(item);
-    const newIndex = list.findIndex(i => i.name === item.name);
-    list.splice(list.indexOf(item), 1);
-    // TEMP FIX Sorting list by moving an item up the list
-    // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
-    if (newIndex < oldIndex) {
-      list.splice(newIndex - 1, 0, item);
-      list.splice(newIndex + 1, 1);
-    }
-
-    const entityList = this.mapFromNameListToEntityList(list);
-    this.group.controls[this.config.name].patchValue(entityList);
-  }
-
   private setData() {
-    this.setChosenEntities(this.group.controls[this.config.name].value);
+    // this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.entityDefaultListComponent.setChosenEntities(this.group.controls[this.config.name].value);
     this.setAvailableEntities();
-  }
-
-  private setChosenEntities(values: string[]) {
-    const updatedValues = this.mapFromEntityListToNameList(values);
-    if (this.chosenEntities !== updatedValues) {
-      this.chosenEntities = updatedValues;
-    }
-  }
-
-  /**
-  * subscribe to form value changes
-  */
-  private chosenEntitiesSubscribeToChanges() {
-    this.subscriptions.push(this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-      this.setChosenEntities(item);
-    }));
-    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
-      this.setChosenEntities(this.group.controls[this.config.name].value);
-    }));
   }
 
   /**
    * TODO: select all entities from app
    */
-  private setAvailableEntities() {
+  setAvailableEntities() {
     // TODO:
     // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
     // TEMP: harcoded
@@ -324,12 +194,12 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
    * selectEntities observe events from input autocomplete field
    */
   private setSelectEntitiesObservables() {
-    if (this.input && this.selectEntities === null) {
+    if (this.autoCompleteInputControl && this.selectEntities === null) {
       const eventNames = ['keyup', 'click'];
       // Merge all observables into one single stream:
       const eventStreams = eventNames.map((eventName) => {
         // return Observable.fromEvent(this.input.nativeElement, eventName);
-        return fromEvent(this.input.nativeElement, eventName);
+        return fromEvent(this.autoCompleteInputControl.nativeElement, eventName);
       });
 
       const allEvents$ = merge(...eventStreams);
@@ -343,7 +213,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
     // clear this.selectEntities if input don't exist
     // this can happen when not allowMultiValue
-    if (!this.input) {
+    if (!this.autoCompleteInputControl) {
       this.selectEntities = null;
     }
   }
@@ -357,19 +227,5 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
       option.Text ?
         option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
-  }
-
-  private mapFromEntityListToNameList = (entityList: string[]): any[] => {
-    if (!entityList) {
-      return [];
-    }
-    return entityList.map(v => ({ 'name': v, 'type': this.config.name }));
-  }
-
-  private mapFromNameListToEntityList = (nameList: any[]): string[] => {
-    if (!nameList) {
-      return [];
-    }
-    return nameList.map(v => v.name);
   }
 }

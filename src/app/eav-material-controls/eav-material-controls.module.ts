@@ -70,6 +70,7 @@ import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-hel
 import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
+import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
 
 @NgModule({
     declarations: [
@@ -109,6 +110,7 @@ import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-w
         TranslateGroupMenuComponent,
         LinkToOtherLanguageComponent,
         EntityExpandableWrapperComponent,
+        EntityDefaultListComponent,
     ],
     imports: [
         // DndDraggable,
