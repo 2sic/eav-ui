@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material';
 import { EavService } from '../../../..//shared/services/eav.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { Helper } from '../../../../shared/helpers/helper';
 
 @Component({
   selector: 'app-entity-default-list',
@@ -51,6 +52,10 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
   get dndListConfig() { return { allowedTypes: [this.config.name] }; }
 
+  get separator() { return this.config.settings.Separator || ','; }
+
+  get value() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+
   constructor(private entityService: EntityService,
     private eavService: EavService,
     private eavAdminUiService: EavAdminUiService,
@@ -60,7 +65,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.setChosenEntities(this.value);
     this.chosenEntitiesSubscribeToChanges();
   }
 
@@ -184,7 +189,8 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   private setData() {
-    this.setChosenEntities(this.group.controls[this.config.name].value);
+    this.setChosenEntities(this.value);
+    // TODO: call this in parent
     // this.setAvailableEntities();
   }
 
@@ -200,10 +206,10 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   */
   private chosenEntitiesSubscribeToChanges() {
     this.subscriptions.push(this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-      this.setChosenEntities(item);
+      this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
-      this.setChosenEntities(this.group.controls[this.config.name].value);
+      this.setChosenEntities(this.value);
     }));
   }
 

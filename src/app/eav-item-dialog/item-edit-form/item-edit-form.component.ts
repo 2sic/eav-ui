@@ -279,6 +279,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         return InputTypesConstants.booleanDefault;
       case InputTypesConstants.dropdown:
         return InputTypesConstants.stringDropdown;
+      case InputTypesConstants.stringDropdownQuery:
+        return InputTypesConstants.stringDropdownQuery;
       case InputTypesConstants.datetime:
         return InputTypesConstants.datetimeDefault;
       case InputTypesConstants.number:
@@ -359,7 +361,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const wrappers: string[] = ['app-hidden-wrapper'];
 
     // entity-default wrappers
-    if (inputType === InputTypesConstants.entityDefault) {
+    if (inputType === InputTypesConstants.entityDefault ||
+      InputTypesConstants.stringDropdownQuery) {
       // wrappers.push('app-eav-localization-wrapper');
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
       if (allowMultiValue) {

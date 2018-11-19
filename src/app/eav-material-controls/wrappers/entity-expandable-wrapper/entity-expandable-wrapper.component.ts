@@ -11,6 +11,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { TranslateService } from '@ngx-translate/core';
+import { Helper } from '../../../shared/helpers/helper';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -28,7 +29,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
   dialogIsOpen = false;
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator);
   }
 
   get id() {
@@ -46,6 +47,8 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
   get entityType() {
     return this.config.settings.EntityType || '';
   }
+
+  get separator() { return this.config.settings.Separator || ','; }
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private eavConfig: EavConfiguration;
@@ -85,7 +88,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
     // TODO:
     // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
     // TEMP: harcoded
-    const ctName = this.entityType;
+    const ctName = this.entityType || 'QueryCarList';
 
     // check if we should get all or only the selected ones...
     // if we can't add, then we only need one...
@@ -93,7 +96,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
     try {
       itemFilter = this.enableAddExisting
         ? null
-        : this.group.controls[this.config.name].value;
+        : this.value;
     } catch (err) { }
 
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {

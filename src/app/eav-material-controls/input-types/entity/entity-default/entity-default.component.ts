@@ -24,7 +24,7 @@ import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.serv
 import { FieldMaskService } from '../../../../shared/services/field-mask.service';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
-
+import { Helper } from '../../../../shared/helpers/helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -40,41 +40,48 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
   @Input() config: FieldConfig;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
-  // chosenEntities: any[];
-  selectEntities: Observable<EntityInfo[]> = null;
-  // TODO:
+  // @Input() enableTextEntry = false;
+
   freeTextMode = false;
+  selectEntities: Observable<EntityInfo[]> = null;
 
   private contentType: FieldMaskService;
   private availableEntities: EntityInfo[] = [];
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
-  get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
+  get allowMultiValue(): boolean { return this.config.settings.AllowMultiValue || false; }
 
-  get entityType() { return this.config.settings.EntityType || ''; }
+  // For string-dropdown-query
+  get enableTextEntry(): boolean { return this.config.settings.EnableTextEntry || false; }
 
-  get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
+  get entityType(): string { return this.config.settings.EntityType || ''; }
 
-  get enableCreate() { return this.config.settings.EnableCreate || true; }
+  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting || true; }
 
-  get enableEdit() { return this.config.settings.EnableEdit || true; }
+  get enableCreate(): boolean { return this.config.settings.EnableCreate || true; }
 
-  get enableRemove() { return this.config.settings.EnableRemove || true; }
+  get enableEdit(): boolean { return this.config.settings.EnableEdit || true; }
 
-  get enableDelete() { return this.config.settings.EnableDelete || false; }
+  get enableRemove(): boolean { return this.config.settings.EnableRemove || true; }
+
+  get enableDelete(): boolean { return this.config.settings.EnableDelete || false; }
   // TODO:
-  get enableTextEntry() { return this.config.settings.EnableTextEntry || false; }
+  // get enableTextEntry() { return this.config.settings.EnableTextEntry || false; }
 
-  get disabled() { return this.group.controls[this.config.name].disabled; }
+  get disabled(): boolean { return this.group.controls[this.config.name].disabled; }
 
-  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
+  get inputInvalid(): boolean { return this.group.controls[this.config.name].invalid; }
 
   get dndListConfig() { return { allowedTypes: [this.config.name] }; }
 
   get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
+
+  get separator() { return this.config.settings.Separator || ','; }
+
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
 
   getErrorMessage = () => this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
 
@@ -88,6 +95,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
   }
 
   ngOnInit() {
+
     // Initialize entities
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve type (based on other contentType-field)
@@ -163,7 +171,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
 
   private setData() {
     // this.setChosenEntities(this.group.controls[this.config.name].value);
-    this.entityDefaultListComponent.setChosenEntities(this.group.controls[this.config.name].value);
+    this.entityDefaultListComponent.setChosenEntities(this.controlValue);
     this.setAvailableEntities();
   }
 
@@ -182,13 +190,15 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy, AfterVi
     try {
       itemFilter = this.enableAddExisting
         ? null
-        : this.group.controls[this.config.name].value;
+        : this.controlValue;
     } catch (err) { }
 
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
       this.availableEntities = [...items];
     });
   }
+
+
 
   /**
    * selectEntities observe events from input autocomplete field
