@@ -1,0 +1,417 @@
+// @import '../node_modules/@angular/material/theming';
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Define azing colors.
+$mat-eav-item-dialog-primary: (
+  50 : #ffffff,
+  100 : #ffffff,
+  200 : #ffffff,
+  300 : #ffffff,
+  400 : #ffffff,
+  500 : #ffffff,
+  600 : #ffffff,
+  700 : #ffffff,
+  800 : #ffffff,
+  900 : #ffffff,
+  A100 : #ffffff,
+  A200 : #ffffff,
+  A400 : #ffffff,
+  A700 : #ffffff,
+  contrast: (
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #000000,
+      500 : #000000,
+      600 : #000000,
+      700 : #000000,
+      800 : #000000,
+      900 : #000000,
+      A100 : #000000,
+      A200 : #000000,
+      A400 : #000000,
+      A700 : #000000,
+  )
+);
+
+$mat-eav-item-dialog-secondary: (
+  50 : #e0f1fe,
+  100 : #b3dbfc,
+  200 : #80c3fa,
+  300 : #4dabf7,
+  400 : #2699f6,
+  500 : #0087f4,
+  600 : #007ff3,
+  700 : #0074f1,
+  800 : #006aef,
+  900 : #0057ec,
+  A100 : #ffffff,
+  A200 : #e0e9ff,
+  A400 : #adc6ff,
+  A700 : #93b4ff,
+  contrast: (
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #000000,
+      500 : #ffffff,
+      600 : #ffffff,
+      700 : #ffffff,
+      800 : #ffffff,
+      900 : #ffffff,
+      A100 : #000000,
+      A200 : #000000,
+      A400 : #000000,
+      A700 : #000000,
+  )
+);
+
+$mat-eav-item-dialog-error: (
+    50 : #f6e0e6,
+    100 : #e7b3c1,
+    200 : #d88098,
+    300 : #c84d6e,
+    400 : #bc264f,
+    500 : #b00030,
+    600 : #a9002b,
+    700 : #a00024,
+    800 : #97001e,
+    900 : #870013,
+    A100 : #ffb3b9,
+    A200 : #ff808a,
+    A400 : #ff4d5b,
+    A700 : #ff3443,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$mat-eav-item-dialog-background: (
+  50 : #e9eaec,
+  100 : #c7cad0,
+  200 : #a2a7b1,
+  300 : #7d8492,
+  400 : #61697a,
+  500 : #454f63,
+  600 : #3e485b,
+  700 : #363f51,
+  800 : #2e3647,
+  900 : #1f2635,
+  A100 : #7ca3ff,
+  A200 : #4980ff,
+  A400 : #165cff,
+  A700 : #004bfc,
+  contrast: (
+      50 : #000000,
+      100 : #000000,
+      200 : #000000,
+      300 : #000000,
+      400 : #ffffff,
+      500 : #ffffff,
+      600 : #ffffff,
+      700 : #ffffff,
+      800 : #ffffff,
+      900 : #ffffff,
+      A100 : #000000,
+      A200 : #ffffff,
+      A400 : #ffffff,
+      A700 : #ffffff,
+  )
+);
+
+
+$editUI-theme-primary: mat-palette($mat-eav-item-dialog-primary);
+$editUI-theme-accent: mat-palette($mat-eav-item-dialog-secondary);// A200, A100, A400
+$editUI-theme-warn: mat-palette($mat-eav-item-dialog-error);
+
+
+$editUI-theme-background: (
+  status-bar: map_get($mat-eav-item-dialog-background, 300),
+  app-bar:    map_get($mat-eav-item-dialog-background, 100),
+  background: map_get($mat-eav-item-dialog-background, 50),
+  hover:      rgba(black, 0.04),
+  card:       white,
+  dialog:     white, // map_get($mat-eav-item-dialog-background, 50),
+  disabled-button: rgba(black, 0.12),
+  raised-button: white,
+  focused-button: $dark-focused,
+  selected-button: map_get($mat-eav-item-dialog-background, 300),
+  selected-disabled-button: map_get($mat-eav-item-dialog-background, 400),
+  disabled-button-toggle: map_get($mat-eav-item-dialog-background, 200),
+  unselected-chip: map_get($mat-eav-item-dialog-background, 300),
+  disabled-list-option: map_get($mat-eav-item-dialog-background, 200),
+);
+ 
+$editUI-foreground-color: #454f63;
+$editUI-theme-foreground: (
+  base:              $editUI-foreground-color,
+  divider:           $dark-dividers,
+  dividers:          $dark-dividers,
+  disabled:          $dark-disabled-text,
+  disabled-button:   rgba($editUI-foreground-color, 0.26),
+  disabled-text:     rgba($editUI-foreground-color, 0.44),
+  hint-text:         rgba($editUI-foreground-color, 0.44),
+  secondary-text:    $dark-secondary-text,
+  icon:              rgba($editUI-foreground-color, 0.54),
+  icons:             rgba($editUI-foreground-color, 0.54),
+  text:              rgba($editUI-foreground-color, 1),
+  slider-min:        rgba($editUI-foreground-color, 0.87),
+  slider-off:        rgba($editUI-foreground-color, 0.26),
+  slider-off-active: rgba($editUI-foreground-color, 0.38),
+);
+
+@function mat-light-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+  @return (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+    is-dark: false,
+    foreground: $editUI-theme-foreground,
+    background: $editUI-theme-background,
+  );
+}
+
+$editUI-light-theme: mat-light-theme(
+  $editUI-theme-primary, 
+  $editUI-theme-accent, 
+  $editUI-theme-warn
+);
+
+// override matFormFieldFill theme
+// Theme styles that only apply to the fill appearance of the form-field.
+
+@mixin mat-form-field-fill-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  $fill-background: mat-color($foreground, base, if($is-dark-theme, 0.1, 0.08));
+  $fill-disabled-background: mat-color($foreground, base, if($is-dark-theme, 0.05, 0.04));
+  $underline-color:  mat-color($foreground, base, if($is-dark-theme, 0.5, 0.44));
+  // $label-disabled-color: mat-color($foreground, disabled-text);
+  $label-disabled-color: mat-color($foreground, base, if($is-dark-theme, 0.5, 0.24));
+
+  .mat-form-field-appearance-fill {
+    .mat-form-field-flex {
+      background-color: $fill-background;
+    }
+
+    &.mat-form-field-disabled .mat-form-field-flex {
+      background-color: $fill-disabled-background;
+    }
+
+    .mat-form-field-underline::before {
+      background-color: $underline-color;
+    }
+
+    // FIX: make 1px line transparent when hover (because color is 0.44 transparency)
+    .mat-form-field-flex:hover + .mat-form-field-underline::before{
+        background-color: transparent;
+    }
+
+    &.mat-form-field-disabled {
+      .mat-form-field-label {
+        color: $label-disabled-color;
+      }
+
+      .mat-form-field-underline::before {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+// override matFormFieldFill theme
+// Theme styles that apply to all appearances of the form-field.
+
+@mixin mat-form-field-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+  $is-dark-theme: map-get($theme, is-dark);
+
+  // Label colors. Required is used for the `*` star shown in the label.
+  $label-color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.44));
+  $focused-label-color: mat-color($primary);
+  $required-label-color: mat-color($accent);
+
+  // Underline colors.
+  // $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.44)); // this is underline on hover
+  $underline-color-base: mat-color($foreground, base, if($is-dark-theme, 1, 0.44));
+  $underline-color-accent: mat-color($accent);
+  $underline-color-warn: mat-color($warn);
+  $underline-focused-color: mat-color($primary);
+
+  .mat-form-field-label {
+    color: $label-color;
+  }
+
+  .mat-hint {
+    color: $label-color;
+  }
+
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $focused-label-color;
+
+    &.mat-accent {
+      color: $underline-color-accent;
+    }
+
+    &.mat-warn {
+      color: $underline-color-warn;
+    }
+  }
+
+  .mat-focused .mat-form-field-required-marker {
+    color: $required-label-color;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $underline-color-base;
+  }
+
+  .mat-form-field.mat-focused {
+    .mat-form-field-ripple {
+      background-color: $underline-focused-color;
+
+      &.mat-accent {
+        background-color: $underline-color-accent;
+      }
+
+      &.mat-warn {
+        background-color: $underline-color-warn;
+      }
+    }
+  }
+
+  // Styling for the error state of the form field. Note that while the same can be
+  // achieved with the ng-* classes, we use this approach in order to ensure that the same
+  // logic is used to style the error state and to show the error messages.
+  .mat-form-field.mat-form-field-invalid {
+    .mat-form-field-label {
+      color: $underline-color-warn;
+
+      &.mat-accent,
+      .mat-form-field-required-marker {
+        color: $underline-color-warn;
+      }
+    }
+
+    .mat-form-field-ripple,
+    .mat-form-field-ripple.mat-accent {
+      background-color: $underline-color-warn;
+    }
+  }
+
+  .mat-error {
+    color: $underline-color-warn;
+  }
+
+  @include mat-form-field-legacy-theme($theme);
+  @include mat-form-field-standard-theme($theme);
+  @include mat-form-field-fill-theme($theme);
+  @include mat-form-field-outline-theme($theme);
+}
+
+@include angular-material-theme($editUI-light-theme);
+
+// $display-1:     mat-typography-level(34px, 40px, 400),
+$editUI-typography: mat-typography-config(
+    $font-family:   '"Roboto", sans-serif',
+    $display-4:     mat-typography-level(112px, 112px, 300),
+    $display-3:     mat-typography-level(56px, 56px, 400),
+    $display-2:     mat-typography-level(45px, 48px, 400),
+    $display-1:     mat-typography-level(20px, 24px, 500),
+    $headline:      mat-typography-level(96px, 108px, 300),
+    $title:         mat-typography-level(60px, 64px, 300),
+    $subheading-2:  mat-typography-level(14px, 20px, 500),
+    $subheading-1:  mat-typography-level(16px, 20px, 400),
+    $body-2:        mat-typography-level(14px, 20px, 400),
+    $body-1:        mat-typography-level(16px, 20px, 400),
+    $button:        mat-typography-level(14px, 20px, 500),
+    $caption:       mat-typography-level(12px, 16px, 400),
+    $input:         mat-typography-level(inherit, 1.25, 400)
+);
+
+
+// overwrite mat-form-field-fill-typography
+@mixin mat-form-field-fill-typography($config) {
+  // The unit-less line-height from the font config.
+  $line-height: mat-line-height($config, input);
+  // The amount to scale the font for the floating label and subscript.
+  $subscript-font-scale: 0.75;
+  // The padding on top of the infix.
+  $infix-padding-top: 0px;
+  // The padding below the infix.
+  $infix-padding-bottom: 12px;
+  // The margin applied to the form-field-infix to reserve space for the floating label.
+  $infix-margin-top: 20px;
+  // The amount we offset the label from the input text in the fill appearance.
+  $fill-appearance-label-offset: -12px;
+  // The border applied to the form-field-infix
+  $infix-border-top: 12px;
+  // from mat-form-field-typography
+  $wrapper-padding-bottom: 0;
+
+  .mat-form-field-appearance-fill {
+    width:100%;
+   
+    .mat-form-field-infix {
+      padding: $infix-padding-top 0 $infix-padding-bottom 0;
+      border-top: $infix-border-top solid transparent;
+    }
+
+    .mat-form-field-label {
+      top: $infix-margin-top + $infix-padding-top;
+      margin-top: $fill-appearance-label-offset;
+    }
+
+    &.mat-form-field-can-float {
+      &.mat-form-field-should-float .mat-form-field-label,
+      .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
+        @include _mat-form-field-fill-label-floating(
+                $subscript-font-scale, $infix-padding-top + $fill-appearance-label-offset,
+                $infix-margin-top);
+      }
+
+      // Server-side rendered matInput with a label attribute but label not shown
+      // (used as a pure CSS stand-in for mat-form-field-should-float).
+      .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
+      .mat-form-field-label {
+        @include _mat-form-field-fill-label-floating(
+                $subscript-font-scale, $infix-padding-top + $fill-appearance-label-offset,
+                $infix-margin-top);
+      }
+    }  
+
+    // from mat-form-field-typography
+    .mat-form-field-wrapper {
+      padding-bottom: $wrapper-padding-bottom;
+    }
+    // from mat-form-field-typography
+    .mat-form-field-underline {
+      // We want the underline to start at the end of the content box, not the padding box,
+      // so we move it up by the padding amount.
+      bottom: $wrapper-padding-bottom;
+    }
+  }
+}
+
+@include angular-material-typography($editUI-typography);

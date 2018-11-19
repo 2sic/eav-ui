@@ -1,0 +1,15 @@
+<div class="c-fht__container">
+  <mat-hint *ngIf="config.settings.Notes" class="mat-caption" (click)="isFullText = !isFullText" [ngClass]="disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'"
+    align="start" fxLayout="row" fxLayoutAlign="start start">
+    <i class="material-icons" style="font-size: 14px;">info_outline</i>
+    <span>&nbsp;</span>
+    <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''" [innerHtml]="config.settings.Notes"></span>
+  </mat-hint>
+  <mat-error *ngIf="inputInvalid && !disableError" class="mat-caption">
+    {{ (haveDirtyTouched
+    ? getErrorMessage()
+    : getErrorMessageWithoutDirtyTouched())
+    | translate:{ param:config.settings }
+    }}
+  </mat-error>
+</div>

@@ -1,0 +1,13 @@
+<!-- formly-skip-ng-model-attrs-manipulator -->
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
+  <input matInput type="text" [required]='config.required' [id]="id" [formControlName]="config.name" [placeholder]="config.placeholder">
+  <!-- *ngIf="enableTextEntry  && (allowMultiValue || chosenEntities.length < 1)"  -->
+  <a matSuffix (click)="freeTextModeChange($event)">
+    <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
+    <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+  </a>
+  <mat-label>{{config.label}}</mat-label>
+</mat-form-field>
+
+
+<entity-default [config]="config" [group]="group"></entity-default>

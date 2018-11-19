@@ -1,0 +1,19 @@
+<div *ngIf="rowCount > 1; then textareaField else inputField">
+</div>
+<ng-template #inputField>
+    <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+        <input matInput type="text" [id]="id" class="form-control material" [formControlName]="config.name"
+            [placeholder]="config.label" [required]="config.required">
+        <mat-label>{{config.label}}</mat-label>
+    </mat-form-field>
+</ng-template>
+
+<ng-template #textareaField>
+    <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+        <textarea matInput [rows]="rowCount" type="text" [id]="id" class="form-control material" [formControlName]="config.name"
+            [placeholder]="config.label" [required]="config.required"></textarea>
+        <mat-label>{{config.label}}</mat-label>
+    </mat-form-field>
+</ng-template>
+
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

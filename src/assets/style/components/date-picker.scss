@@ -1,0 +1,13 @@
+
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+.date-picker-wide-suffix-right .mat-form-field-suffix {
+	position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.date-picker-wide-suffix-right .mat-input-element {
+    box-sizing: border-box;
+    padding-right: 30px;
+}

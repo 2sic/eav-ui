@@ -1,0 +1,40 @@
+$border-radius: 8px;
+
+.mat-card {
+    &-group-parent {
+        padding: 0;
+        margin: 0 0 0 0;
+        border-radius: $border-radius;
+        // background: #EFF0F2;
+        // max-width: 960px;
+    }
+    &-group-child {
+        padding: 0;
+        margin: 0 0 16px 0;
+        border-radius: $border-radius;
+    }
+}
+
+.mat-card-header {
+    &-group-parent {
+        padding: 16px 24px 16px 24px;
+        border-radius: $border-radius;
+        height: 56px;
+    }
+    &-group-child {
+        padding: 16px 24px 16px 24px;
+        border-radius: $border-radius;
+        height: 56px;
+    }
+}
+
+.mat-card-content {
+    &-group-parent {
+        border-radius: $border-radius;
+        padding-bottom: 0;
+    }
+}
+
+.mat-card-title-group {
+    margin:0;
+}

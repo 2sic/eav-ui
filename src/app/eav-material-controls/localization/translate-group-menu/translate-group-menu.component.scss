@@ -1,0 +1,25 @@
+@import "./theme.scss";
+@import "../../../../assets/style/variables.scss";
+
+$background:map-get($editUI-light-theme, background);
+
+.menu-item-selected{
+    background: mat-color($background, 'hover');
+}
+
+.eav-localization-lock-open { 
+    // color: #228b22; 
+    color: green; 
+}
+
+.eav-localization { 
+    &-translate {
+        color: green; 
+    }
+    &-link-read-only {
+        color: blue; 
+    }
+    &-link-read-write {
+        color: red; 
+    }
+}

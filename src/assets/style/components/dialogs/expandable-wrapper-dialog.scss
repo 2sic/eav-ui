@@ -1,0 +1,33 @@
+
+// // Expandable wrapper - tinyMCE
+.c-ew__dialog-content {
+    app-dropzone .dropzone-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    app-dropzone .dropzone-content {
+        flex: 1 1 100%;
+        overflow: scroll;
+        // Hide scroll
+        -ms-overflow-style: none;  // IE 10+
+        overflow: -moz-scrollbars-none;  // Firefox
+        &::-webkit-scrollbar { 
+            display: none;  // Safari and Chrome
+        }
+    }
+
+    adam-browser {
+        background: white;
+    }   
+
+    //  .mat-card {
+    //     padding:16px 24px 16px 24px;
+    // }
+}
+
+.c-ew__preview-container .mat-list .mat-list-item .mat-list-item-content {
+    max-height: 24px;
+    padding: 0 16px 0 16px;
+}

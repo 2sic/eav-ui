@@ -1,0 +1,6 @@
+<mat-form-field [formGroup]="group" appearance="fill" color="accent">
+  <input matInput type="number" class="form-control material" [formControlName]="config.name" [required]='config.required'
+    [placeholder]="config.label" [min]="min" [max]="max">
+  <mat-label>{{config.label}}</mat-label>
+</mat-form-field>
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

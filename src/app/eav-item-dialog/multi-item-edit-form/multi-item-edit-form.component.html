@@ -1,0 +1,39 @@
+<div mat-dialog-container *ngIf="(items$ | async)?.length > 0">
+  <div mat-dialog-actions>
+    <app-eav-language-switcher *ngIf="(languages$ | async).length> 0" [languages]="(languages$ | async)" class="eav-language-switcher-header"
+      [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
+  </div>
+  <div mat-dialog-content class="u-hide-scrollbar">
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft" [@slideRight]="animationStateRight">
+          <!-- <mat-error *ngIf="!formsAreValid">
+            <span *ngFor="let formError of formErrors;">
+              <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ formError[key] | translate}}</p>
+            </span>
+          </mat-error> -->
+
+          <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
+            <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)" [defaultLanguage]="(defaultLanguage$ | async)"
+              [features]="(features$ | async)" (itemFormValueChange)="formValueChange($event)"></app-item-edit-form>
+          </div>
+          <!-- ISDIRTY: {{formsAreDirty}} -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div dir="rtl" class="c-multi-item-dialog__save-container">
+    <div fxFlex="nogrow" class="c-multi-item-dialog__save-button">
+      <button mat-fab dir="ltr" [ngClass]="{
+        'mat-fab--compact' : extendedSaveButtonIsReduced,
+        'mat-fab--extended' : !extendedSaveButtonIsReduced, 
+        'mat-fab--disabled' : !formsAreValid && !allControlsAreDisabled
+      }"
+        (click)="saveAll(true)">
+        <i class="material-icons">done</i>
+        {{extendedSaveButtonIsReduced ? '' : ('Button.Save' | translate).toUpperCase() + '(CTRL + S)' }}
+      </button>
+    </div>
+  </div>
+</div>
