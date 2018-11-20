@@ -9,5 +9,5 @@
   <mat-label>{{config.label}}</mat-label>
 </mat-form-field>
 
-
-<entity-default [config]="config" [group]="group"></entity-default>
+<app-entity-default-main-search [config]="config" [group]="group" (callAvailableEntities)="callAvailableEntities($event)">
+</app-entity-default-main-search>

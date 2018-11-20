@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
-import { EntityDefaultComponent } from '../../input-types';
 import { EntityService } from '../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
@@ -20,13 +19,15 @@ import { Helper } from '../../../shared/helpers/helper';
   animations: [ContentExpandAnimation],
 })
 
-export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
+export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfig;
   group: FormGroup;
 
   dialogIsOpen = false;
+
+  get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
 
   get value() {
     return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator);
@@ -52,7 +53,6 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private eavConfig: EavConfiguration;
-  availableEntities: EntityInfo[] = [];
 
   constructor(private validationMessagesService: ValidationMessagesService,
     private entityService: EntityService,
@@ -62,7 +62,10 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
   }
 
   ngOnInit() {
-    this.setAvailableEntities();
+    // this.setAvailableEntities();
+  }
+
+  ngAfterViewInit() {
   }
 
   // TODO: same method in entity - !!!
@@ -77,31 +80,4 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit {
     }
     return value;
   }
-
-
-  /**
-   *  // TODO: same method in entity - !!!
-   * TODO: select all entities from app
-   *
-   */
-  private setAvailableEntities() {
-    // TODO:
-    // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
-    // TEMP: harcoded
-    const ctName = this.entityType || 'QueryCarList';
-
-    // check if we should get all or only the selected ones...
-    // if we can't add, then we only need one...
-    let itemFilter = null;
-    try {
-      itemFilter = this.enableAddExisting
-        ? null
-        : this.value;
-    } catch (err) { }
-
-    this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-      this.availableEntities = [...items];
-    });
-  }
-
 }

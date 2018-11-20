@@ -21,16 +21,16 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
-  @Input() availableEntities: EntityInfo[];
   @Input() autoCompleteInputControl: any;
 
   chosenEntities: any[];
 
   // private contentType: FieldMaskService;
-  // private availableEntities: EntityInfo[] = [];
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
+
+  get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
 
   get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
 

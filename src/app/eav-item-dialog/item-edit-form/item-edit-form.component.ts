@@ -250,6 +250,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       case InputTypesConstants.stringUrlPath:
       case InputTypesConstants.booleanDefault:
       case InputTypesConstants.stringDropdown:
+      case InputTypesConstants.stringDropdownQuery:
       case InputTypesConstants.datetimeDefault:
       case InputTypesConstants.numberDefault:
       case InputTypesConstants.stringFontIconPicker:
@@ -333,8 +334,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     const wrappers = this.setWrappers(inputType, settingsTranslated);
 
-
-    console.log('disabled:', disabled);
     return {
       disabled: disabled,
       entityId: this.item.entity.id,
