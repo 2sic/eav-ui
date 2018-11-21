@@ -6,9 +6,9 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
-import { EavService } from '../../../../shared/services/eav.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { FieldMaskService } from '../../../../shared/services/field-mask.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -25,10 +25,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
   availableEntities: EntityInfo[] = [];
   error = '';
-
-  // private eavConfig: EavConfiguration;
-  // TODO:
-  // get enableTextEntry() { return this.config.settings.EnableTextEntry || false; }
+  fieldMaskService: FieldMaskService;
 
   get freeTextMode() { return this.entityDefaultMainSearchComponent.freeTextMode || false; }
 
@@ -47,16 +44,24 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   get allowMultiValue() { return this.config.settings.UrlParameters || true; }
 
   constructor(
-    private eavService: EavService,
     private queryService: QueryService,
     private translate: TranslateService) {
-    // this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
+    // Initialize url parameters mask
+    // this will contain the auto-resolve url parameters
+    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.maybeReload, null, this.group.controls);
+
+    // get all mask field and subcribe to changes. On every change getAvailableEntities.
+    this.subscribeToMaskFieldsChanges();
   }
 
   ngOnDestroy(): void {
+  }
+
+  maybeReload() {
+    console.log('call maybeReload');
   }
 
   freeTextModeChange(event: any) {
@@ -72,7 +77,8 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     if (!this.query) {
       alert(`No query defined for ${this.config.name} - can't load entities`);
     }
-    const params = ''; // paramsMask.resolve(); // always get the latest definition
+
+    const params = this.fieldMaskService.resolve(); // always get the latest definition
     let queryUrl = this.query;
     if (queryUrl.indexOf('/') === -1) { // append stream name if not defined
       queryUrl = queryUrl + '/' + this.streamName;
@@ -85,7 +91,6 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
           this.error = this.translate.instant('FieldType.EntityQuery.QueryStreamNotFound') + this.streamName;
         } else { // everything ok - set data to select
           this.config.availableEntities = data[this.streamName].map(this.queryEntityMapping);
-          console.log('this.config.availableEntities:', this.config.availableEntities);
         }
         // $scope.indicateReload = false;
       });
@@ -95,6 +100,19 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
       console.error(`${this.translate.instant('FieldType.EntityQuery.QueryError')} - ${error.data}`);
       throw error;
     }
+  }
+
+  /**
+   *  get all mask field and subcribe to changes. On every change getAvailableEntities.
+   */
+  subscribeToMaskFieldsChanges() {
+    this.fieldMaskService.fieldList().forEach((e, i) => {
+      if (this.group.controls[e]) {
+        this.group.controls[e].valueChanges.subscribe((item) => {
+          this.getAvailableEntities();
+        });
+      }
+    });
   }
 
   queryEntityMapping = (entity) => {

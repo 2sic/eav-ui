@@ -95,14 +95,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   }
 
   ngOnInit() {
-    // // Initialize entities
-    // const sourceMask = this.entityType || null;
-    // // this will contain the auto-resolve type (based on other contentType-field)
-    // this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
-    // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-    // this.setData();
+
     this.setAvailableEntities();
-    // this.chosenEntitiesSubscribeToChanges();
   }
 
   ngAfterViewInit() {

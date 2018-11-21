@@ -28,6 +28,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   // }
 
   ngOnInit() {
+    // important for calling a FieldMaskService from extended component
+    super.ngOnInit();
   }
 
   ngOnDestroy(): void {

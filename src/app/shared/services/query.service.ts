@@ -22,7 +22,6 @@ export class QueryService {
     return this.httpClient.get(`${UrlConstants.apiRoot}app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`)
       .pipe(
         map((data: any) => {
-          console.log('this.config.availableEntities before', data);
           return data;
         }),
         // tap(data => console.log('items subfolder: ', subfolder)),
