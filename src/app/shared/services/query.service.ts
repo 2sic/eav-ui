@@ -13,15 +13,16 @@ export class QueryService {
   }
 
   /**
-   * get availableEntities - (used in entity-default input type)
+   * get availableEntities - (used in entity-query and string-dropdown-query input type)
    * @param apiId
    * @param body
    * @param ctName
    */
   public getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, ignoreErrors: boolean): Observable<any> {
-    return this.httpClient.get(`${UrlConstants.apiRoot}app/auto/query/${queryUrl}?includeGuid=true${params ? '&' + params : ''})`)
+    return this.httpClient.get(`${UrlConstants.apiRoot}app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`)
       .pipe(
         map((data: any) => {
+          console.log('this.config.availableEntities before', data);
           return data;
         }),
         // tap(data => console.log('items subfolder: ', subfolder)),

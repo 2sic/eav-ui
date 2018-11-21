@@ -255,6 +255,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       case InputTypesConstants.numberDefault:
       case InputTypesConstants.stringFontIconPicker:
       case InputTypesConstants.entityDefault:
+      case InputTypesConstants.entityQuery:
       case InputTypesConstants.hyperlinkDefault:
       case InputTypesConstants.hyperlinkLibrary:
         return inputTypeName;
@@ -280,8 +281,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         return InputTypesConstants.booleanDefault;
       case InputTypesConstants.dropdown:
         return InputTypesConstants.stringDropdown;
-      case InputTypesConstants.stringDropdownQuery:
-        return InputTypesConstants.stringDropdownQuery;
       case InputTypesConstants.datetime:
         return InputTypesConstants.datetimeDefault;
       case InputTypesConstants.number:
@@ -361,7 +360,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     // entity-default wrappers
     if (inputType === InputTypesConstants.entityDefault ||
-      InputTypesConstants.stringDropdownQuery) {
+      inputType === InputTypesConstants.stringDropdownQuery ||
+      inputType === InputTypesConstants.entityQuery) {
       // wrappers.push('app-eav-localization-wrapper');
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
       if (allowMultiValue) {

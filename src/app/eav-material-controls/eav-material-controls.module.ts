@@ -72,6 +72,7 @@ import { LinkToOtherLanguageComponent } from './localization/link-to-other-langu
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
 import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-default-main-search/entity-default-main-search.component';
+import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
 
 @NgModule({
     declarations: [
@@ -113,6 +114,7 @@ import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-de
         EntityExpandableWrapperComponent,
         EntityDefaultListComponent,
         EntityDefaultMainSearchComponent,
+        EntityQueryComponent,
     ],
     imports: [
         // DndDraggable,
@@ -154,6 +156,7 @@ import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-de
         EavLocalizationComponent,
         EmptyDefaultComponent,
         EntityDefaultComponent,
+        EntityQueryComponent,
         EntityExpandableWrapperComponent,
         ExpandableWrapperComponent,
         ExternalComponent,

@@ -1,4 +1,5 @@
-<app-entity-default-list [config]="config" [group]="group" [autoCompleteInputControl]="autoCompleteInputControl"></app-entity-default-list>
+<app-entity-default-list [config]="config" [group]="group" [autoCompleteInputControl]="autoCompleteInputControl"
+  [isStringFormat]="isStringFormat" (callAvailableEntities)="setAvailableEntities()"></app-entity-default-list>
 
 <!-- pick existing entity close-->
 <div [hidden]="freeTextMode">
@@ -40,7 +41,7 @@
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
 <!-- *ngIf="enableTextEntry  && (allowMultiValue || chosenEntities.length < 1)"  -->
-<!-- <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
   <input matInput type="text" [required]='config.required' [id]="id" [formControlName]="config.name" [placeholder]="config.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">
@@ -48,7 +49,7 @@
     <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
   </a>
   <mat-label>{{config.label}}</mat-label>
-</mat-form-field>-->
+</mat-form-field>
 
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 

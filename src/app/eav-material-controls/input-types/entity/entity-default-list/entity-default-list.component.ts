@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -22,6 +22,11 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
   @Input() autoCompleteInputControl: any;
+  // by default data is in array format, but can be stringformat
+  @Input() isStringFormat = false;
+
+  @Output()
+  callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
 
   chosenEntities: any[];
 
@@ -54,7 +59,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
   get separator() { return this.config.settings.Separator || ','; }
 
-  get value() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
@@ -65,7 +70,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setChosenEntities(this.value);
+    this.setChosenEntities(this.controlValue);
     this.chosenEntitiesSubscribeToChanges();
   }
 
@@ -116,10 +121,10 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
    * @param value
    */
   removeSlot(item: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
-    // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
-    this.group.controls[this.config.name].patchValue(entityValues);
+
+    this.patchValue(entityValues);
 
     if (entityValues.length === 0) {
       // focus if list dont have any alement more
@@ -159,17 +164,17 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   levelUp(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
     entityValues.splice(index - 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
+    this.patchValue(entityValues);
   }
 
   levelDown(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
     entityValues.splice(index + 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
+    this.patchValue(entityValues);
   }
 
 
@@ -185,13 +190,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     }
 
     const entityList = this.mapFromNameListToEntityList(list);
-    this.group.controls[this.config.name].patchValue(entityList);
+    this.patchValue(entityList);
   }
 
   private setData() {
-    this.setChosenEntities(this.value);
+    this.setChosenEntities(this.controlValue);
     // TODO: call this in parent
     // this.setAvailableEntities();
+    this.callAvailableEntities.emit();
   }
 
   private setChosenEntities(values: string[]) {
@@ -209,7 +215,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
-      this.setChosenEntities(this.value);
+      this.setChosenEntities(this.controlValue);
     }));
   }
 
@@ -225,5 +231,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       return [];
     }
     return nameList.map(v => v.name);
+  }
+
+  private patchValue(entityValues: string[]) {
+    if (this.isStringFormat) {
+      const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
+      this.group.controls[this.config.name].patchValue(stringEntityValue);
+    } else {
+      this.group.controls[this.config.name].patchValue(entityValues);
+    }
   }
 }

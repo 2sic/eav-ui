@@ -90,8 +90,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   ngOnInit() {
-    console.log('[Empty Entity] formDialogData', this.formDialogData);
-
     this.loadItemsData();
     this.setLanguageConfig();
     this.reduceExtendedSaveButton();
@@ -126,7 +124,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // reset form errors
     this.formErrors = [];
   }
-
 
   /**
    * close form dialog or if close is disabled show a message
@@ -383,12 +380,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
           this.formsAreValid = false;
         }
-
         // set form dirty
         if (itemEditFormComponent.form.dirty) {
           this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
         }
-
         // set all form are disabled
         if (!itemEditFormComponent.allControlsAreDisabled) {
           this.allControlsAreDisabled = false;
@@ -403,12 +398,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
-
     this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
     this.publishMode = draftShouldBranch
       ? 'branch' // it's a branch, so it must have been saved as a draft-branch
       : isPublished ? 'show' : 'hide';
-
     // if publish mode is prohibited, revert to default
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
       this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];

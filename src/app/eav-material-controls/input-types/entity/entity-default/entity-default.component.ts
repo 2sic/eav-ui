@@ -28,15 +28,13 @@ import { Subscription } from 'rxjs';
   // wrapper: ['app-eav-localization-wrapper', 'app-entity-expandable-wrapper'],
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
-  @ViewChild('autoCompleteInput') autoCompleteInputControl;
-  @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
 
-  private contentType: FieldMaskService;
+  // private contentType: FieldMaskService;
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
@@ -47,8 +45,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   get separator() { return this.config.settings.Separator || ','; }
 
-  // get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
-  value() { return this.group.controls[this.config.name].value; }
+  get value() { return this.group.controls[this.config.name].value; }
 
   constructor(private entityService: EntityService,
     private eavService: EavService) {
@@ -56,7 +53,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('ngOnInit StringDropdownQueryComponent1');
     // // Initialize entities
     // const sourceMask = this.entityType || null;
     // // this will contain the auto-resolve type (based on other contentType-field)
@@ -76,10 +72,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   // }
 
   callAvailableEntities(value) {
-    this.getAvailableEntitiesByContentType();
+    this.getAvailableEntities();
   }
 
-  private getAvailableEntitiesByContentType() {
+  private getAvailableEntities() {
     // TODO:
     // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
     // TEMP: harcoded

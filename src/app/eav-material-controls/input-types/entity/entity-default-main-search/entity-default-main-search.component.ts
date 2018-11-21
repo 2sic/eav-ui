@@ -38,12 +38,12 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
-  // @Input() availableEntities: EntityInfo[] = [];
+
+  // by default data is in array format, but can be stringformat
+  @Input() isStringFormat = false;
 
   @Output()
   callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
-
-  // @Input() enableTextEntry = false;
 
   freeTextMode = false;
   selectEntities: Observable<EntityInfo[]> = null;
@@ -58,7 +58,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
 
   get allowMultiValue(): boolean { return this.config.settings.AllowMultiValue || false; }
 
-  // For string-dropdown-query
   get enableTextEntry(): boolean { return this.config.settings.EnableTextEntry || false; }
 
   get entityType(): string { return this.config.settings.EntityType || ''; }
@@ -72,26 +71,12 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   get enableRemove(): boolean { return this.config.settings.EnableRemove || true; }
 
   get enableDelete(): boolean { return this.config.settings.EnableDelete || false; }
-  // TODO:
-  // get enableTextEntry() { return this.config.settings.EnableTextEntry || false; }
 
   get disabled(): boolean { return this.group.controls[this.config.name].disabled; }
 
   get inputInvalid(): boolean { return this.group.controls[this.config.name].invalid; }
 
-  get dndListConfig() { return { allowedTypes: [this.config.name] }; }
-
   get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
-
-  get label() { return this.config.settings.Label || ''; }
-
-  get value() { return this.config.settings.Value || ''; }
-
-  get query() { return this.config.settings.Query || ''; }
-
-  get streamName() { return this.config.settings.StreamName || 'Default'; }
-
-  get urlParameters() { return this.config.settings.UrlParameters || ''; }
 
   get separator() { return this.config.settings.Separator || ','; }
 
@@ -110,7 +95,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   }
 
   ngOnInit() {
-
     // // Initialize entities
     // const sourceMask = this.entityType || null;
     // // this will contain the auto-resolve type (based on other contentType-field)
@@ -162,9 +146,9 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   addEntity(value: string) {
     if (value) {
       // this.selectedValue = null;
-      const entityValues: string[] = [...Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator)];
+      const entityValues: string[] = [...this.controlValue];
       entityValues.push(value);
-      this.group.controls[this.config.name].patchValue(entityValues);
+      this.patchValue(entityValues);
     }
   }
 
@@ -185,7 +169,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   }
 
   private setData() {
-    // this.setChosenEntities(this.group.controls[this.config.name].value);
     this.entityDefaultListComponent.setChosenEntities(this.controlValue);
     this.setAvailableEntities();
   }
@@ -196,24 +179,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   setAvailableEntities() {
     this.callAvailableEntities.emit();
   }
-
-  // private getAvailableEntitiesByContentType() {
-  //   // TODO:
-  //   // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
-  //   // TEMP: harcoded
-  //   const ctName = this.entityType;
-  //   // check if we should get all or only the selected ones...
-  //   // if we can't add, then we only need one...
-  //   let itemFilter = null;
-  //   try {
-  //     itemFilter = this.enableAddExisting
-  //       ? null
-  //       : this.controlValue;
-  //   } catch (err) { }
-  //   this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-  //     this.config.availableEntities = [...items];
-  //   });
-  // }
 
   /**
    * selectEntities observe events from input autocomplete field
@@ -233,7 +198,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
         .pipe(map((value: any) => {
           return this.filter(value.target.value);
         }));
-      // .do(value => console.log('test selectEntities', value));
     }
 
     // clear this.selectEntities if input don't exist
@@ -252,5 +216,14 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
       option.Text ?
         option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
         : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
+  }
+
+  private patchValue(entityValues: string[]) {
+    if (this.isStringFormat) {
+      const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
+      this.group.controls[this.config.name].patchValue(stringEntityValue);
+    } else {
+      this.group.controls[this.config.name].patchValue(entityValues);
+    }
   }
 }
