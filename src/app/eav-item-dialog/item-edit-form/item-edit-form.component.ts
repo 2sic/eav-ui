@@ -20,7 +20,7 @@ import {
   Item,
   EavAttributes,
 } from '../../shared/models/eav';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
@@ -32,6 +32,7 @@ import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import isEmpty from 'lodash/isEmpty';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -322,8 +323,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       null
     );
     // set default value if needed
-    // let defaultValueIsSet = false;
-    if (value === undefined || value === null) {
+    if (isEmpty(value)) {
       value = this.setDefaultValue(attribute, inputType, settingsTranslated);
       //  defaultValueIsSet = true;
     }
@@ -440,16 +440,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
   /** Set default value and add that attribute in store */
   private setDefaultValue(attribute: AttributeDef, inputType: string, settingsTranslated: EavAttributesTranslated): any {
-    const value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
+    const defaultValue = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
+
     this.itemService.addAttributeValue(
       this.item.entity.id,
       attribute.name,
-      value,
+      defaultValue,
       this.currentLanguage,
       false,
       this.item.entity.guid,
       attribute.type);
-    return value;
+    return defaultValue;
   }
 
   private parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
@@ -473,6 +474,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           ? Number(defaultValue)
           : '';
       case InputTypesConstants.entityDefault:
+      case InputTypesConstants.entityQuery:
         if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
           return []; // no default value
         }

@@ -125,10 +125,11 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     entityValues.splice(index, 1);
 
     this.patchValue(entityValues);
-
     if (entityValues.length === 0) {
       // focus if list dont have any alement more
-      setTimeout(() => this.autoCompleteInputControl.nativeElement.focus());
+      setTimeout(() => {
+        this.autoCompleteInputControl.nativeElement.focus();
+      });
     }
   }
 
@@ -194,17 +195,28 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   private setData() {
-    this.setChosenEntities(this.controlValue);
+    const chosenListIsChanged = this.setChosenEntities(this.controlValue);
+    if (chosenListIsChanged) { this.setDirty(); }
     // TODO: call this in parent
     // this.setAvailableEntities();
     this.callAvailableEntities.emit();
   }
 
-  private setChosenEntities(values: string[]) {
+  /**
+   * set chosen entities list and if change return true
+   * @param values
+   */
+  private setChosenEntities(values: string[]): boolean {
     const updatedValues = this.mapFromEntityListToNameList(values);
     if (this.chosenEntities !== updatedValues) {
       this.chosenEntities = updatedValues;
+      return true;
     }
+    return false;
+  }
+
+  private setDirty() {
+    this.group.controls[this.config.name].markAsDirty();
   }
 
   /**
@@ -240,5 +252,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     } else {
       this.group.controls[this.config.name].patchValue(entityValues);
     }
+    this.setDirty();
   }
 }

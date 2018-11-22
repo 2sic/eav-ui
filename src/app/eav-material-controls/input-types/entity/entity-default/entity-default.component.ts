@@ -38,6 +38,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
+  private fieldMaskService: FieldMaskService;
 
   get entityType(): string { return this.config.settings.EntityType || ''; }
 
@@ -61,25 +62,30 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     // // this.setData();
     // this.setAvailableEntities(this.config.inputType);
     // // this.chosenEntitiesSubscribeToChanges();
+
+    // Initialize url parameters mask
+    const sourceMask = this.entityType || null;
+    // this will contain the auto-resolve url parameters
+    this.fieldMaskService = new FieldMaskService(sourceMask, this.maybeReload, null, this.group.controls);
+
+    // get all mask field and subcribe to changes. On every change getAvailableEntities.
+    this.subscribeToMaskFieldsChanges();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  // maybeReload() {
-  //   console.log('call maybeReload');
-  // }
+  maybeReload() {
+    console.log('call maybeReload');
+  }
 
   callAvailableEntities(value) {
     this.getAvailableEntities();
   }
 
   private getAvailableEntities() {
-    // TODO:
-    // const ctName = this.contentType.resolve(); // always get the latest definition, possibly from another drop-down
-    // TEMP: harcoded
-    const ctName = this.entityType;
+    const ctName = this.fieldMaskService.resolve(); // always get the latest definition, possibly from another drop-down
     // check if we should get all or only the selected ones...
     // if we can't add, then we only need one...
     let itemFilter = null;
@@ -90,6 +96,19 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     } catch (err) { }
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
       this.config.availableEntities = [...items];
+    });
+  }
+
+  /**
+   *  get all mask field and subcribe to changes. On every change getAvailableEntities.
+   */
+  private subscribeToMaskFieldsChanges() {
+    this.fieldMaskService.fieldList().forEach((e, i) => {
+      if (this.group.controls[e]) {
+        this.group.controls[e].valueChanges.subscribe((item) => {
+          this.getAvailableEntities();
+        });
+      }
     });
   }
 }

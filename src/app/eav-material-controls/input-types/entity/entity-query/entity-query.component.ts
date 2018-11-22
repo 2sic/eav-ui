@@ -18,16 +18,13 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
 })
 @InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
   error = '';
-  fieldMaskService: FieldMaskService;
-
-  get freeTextMode() { return this.entityDefaultMainSearchComponent.freeTextMode || false; }
+  private fieldMaskService: FieldMaskService;
 
   get label() { return this.config.settings.Label || ''; }
 
@@ -64,9 +61,6 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     console.log('call maybeReload');
   }
 
-  freeTextModeChange(event: any) {
-    this.entityDefaultMainSearchComponent.freeTextModeChange(event);
-  }
 
   callAvailableEntities(value) {
     this.getAvailableEntities();
@@ -102,10 +96,14 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     }
   }
 
+  queryEntityMapping = (entity) => {
+    return { Value: entity.Guid, Text: entity.Title, Id: entity.Id };
+  }
+
   /**
-   *  get all mask field and subcribe to changes. On every change getAvailableEntities.
-   */
-  subscribeToMaskFieldsChanges() {
+  *  get all mask field and subcribe to changes. On every change getAvailableEntities.
+  */
+  private subscribeToMaskFieldsChanges() {
     this.fieldMaskService.fieldList().forEach((e, i) => {
       if (this.group.controls[e]) {
         this.group.controls[e].valueChanges.subscribe((item) => {
@@ -113,9 +111,5 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  queryEntityMapping = (entity) => {
-    return { Value: entity.Guid, Text: entity.Title, Id: entity.Id };
   }
 }

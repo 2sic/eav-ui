@@ -219,5 +219,10 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
     } else {
       this.group.controls[this.config.name].patchValue(entityValues);
     }
+    this.setDirty();
+  }
+
+  private setDirty() {
+    this.group.controls[this.config.name].markAsDirty();
   }
 }

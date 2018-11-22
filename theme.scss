@@ -135,11 +135,9 @@ $mat-eav-item-dialog-background: (
   )
 );
 
-
 $editUI-theme-primary: mat-palette($mat-eav-item-dialog-primary);
 $editUI-theme-accent: mat-palette($mat-eav-item-dialog-secondary);// A200, A100, A400
 $editUI-theme-warn: mat-palette($mat-eav-item-dialog-error);
-
 
 $editUI-theme-background: (
   status-bar: map_get($mat-eav-item-dialog-background, 300),
@@ -349,7 +347,6 @@ $editUI-typography: mat-typography-config(
     $caption:       mat-typography-level(12px, 16px, 400),
     $input:         mat-typography-level(inherit, 1.25, 400)
 );
-
 
 // overwrite mat-form-field-fill-typography
 @mixin mat-form-field-fill-typography($config) {

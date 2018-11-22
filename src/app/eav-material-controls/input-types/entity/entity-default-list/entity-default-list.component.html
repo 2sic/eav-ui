@@ -6,8 +6,9 @@
       (dndMoved)="removeItem(item, chosenEntities)">
       <div [ngClass]="allowMultiValue ? 'dnd-element-multi mat-elevation-z2' : 'dnd-element'" fxLayout="row"
         fxLayoutAlign="start center">
-        <div class="dnd-element-content">
-          <div *ngIf="!allowMultiValue">
+        <!-- Multiple elements -->
+        <div *ngIf="!allowMultiValue" class="dnd-element-content" dndNoDrag>
+          <div>
             <mat-label class="mat-caption">{{config.label}} {{config.required ? '*': '' }}</mat-label>
           </div>
           <div fxLayout="row" fxLayoutAlign="start center">
@@ -16,7 +17,16 @@
             <span class="dnd-element-text" [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
           </div>
         </div>
-        <!-- dndHandle -->
+        <!-- Single element -->
+        <div *ngIf="allowMultiValue" class="dnd-element-content">
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon>link</mat-icon>
+            <span>&nbsp;&nbsp;</span>
+            <span class="dnd-element-text" [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+          </div>
+        </div>
+        <!-- dndHandle specific handle elements (drag)-->
+        <!-- Action buttons -->
         <div class="dnd-buttons" fxLayoutAlign="end center">
           <button dndNoDrag mat-icon-button *ngIf="enableEdit" type="button" class="dndButtons" (click)="edit(item.name)"
             title="{{ 'FieldType.Entity.Edit' | translate }}" [disabled]="disabled">
