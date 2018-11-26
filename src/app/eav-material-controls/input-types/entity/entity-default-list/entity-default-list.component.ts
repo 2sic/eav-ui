@@ -24,6 +24,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   @Input() autoCompleteInputControl: any;
   // by default data is in array format, but can be stringformat
   @Input() isStringFormat = false;
+  @Input() freeTextMode = false;
 
   @Output()
   callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
@@ -36,29 +37,17 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
 
   get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
-
   get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
-
   get entityType() { return this.config.settings.EntityType || ''; }
-
   // get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
-
   get enableCreate() { return this.config.settings.EnableCreate || true; }
-
   get enableEdit() { return this.config.settings.EnableEdit || true; }
-
   get enableRemove() { return this.config.settings.EnableRemove || true; }
-
   get enableDelete() { return this.config.settings.EnableDelete || false; }
-
   get disabled() { return this.group.controls[this.config.name].disabled; }
-
   // get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-
   get dndListConfig() { return { allowedTypes: [this.config.name] }; }
-
   get separator() { return this.config.settings.Separator || ','; }
-
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
 
   constructor(private entityService: EntityService,
@@ -78,17 +67,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  getEntityText = (value): string => {
-    if (value === null) {
+  getEntityText = (entityId): string => {
+    if (entityId === null) {
       return 'empty slot';
     }
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Text :
-        this.entityTextDefault ? this.entityTextDefault : value;
-    }
+    const entities = this.availableEntities.filter(f => f.Value === entityId);
+    return entities.length > 0 ? entities[0].Text :
+      this.entityTextDefault ? this.entityTextDefault : entityId;
 
-    return value;
   }
 
   private getEntityId = (value): string => {
@@ -183,7 +169,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     const oldIndex = list.indexOf(item);
     const newIndex = list.findIndex(i => i.name === item.name);
     list.splice(list.indexOf(item), 1);
-    // TEMP FIX Sorting list by moving an item up the list
+    // TEMP FIX Sorting list by moving an item up in the list
     // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
     if (newIndex < oldIndex) {
       list.splice(newIndex - 1, 0, item);

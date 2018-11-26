@@ -24,12 +24,22 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple"
+    [ngClass]="{
+      'c-ew__preview--invalid' : inputInvalid && touched,
+      'c-ew__preview--disabled': disabled
+    }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
-      <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
+      <mat-label [ngClass]="{
+        'mat-caption' : value && value.length > 0,
+        'mat-empty' : !(value && value.length > 0),
+        'mat-error' : inputInvalid && touched && !disabled,
+        'color__primary' : !(inputInvalid && touched) && !disabled,
+        'color__label-disabled' : disabled
+      }">
+        {{config.label}}
+        {{config.required? '*': '' }}
+      </mat-label>
       <div fxLayout="row" fxLayoutAlign="start start">
         <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"
           fxLayoutAlign="start start">
@@ -38,9 +48,8 @@
             <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>
-        <!-- {{value?.length - 5 }}  -->
-        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="end end" class="more-entities"> &nbsp; ...</span>
-
+        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="center end" class="more-entities mat-body-1">
+          &nbsp; {{value?.length}}</span>
       </div>
     </div>
   </div>

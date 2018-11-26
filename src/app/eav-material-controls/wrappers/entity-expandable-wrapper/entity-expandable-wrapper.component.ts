@@ -5,8 +5,6 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
-import { EntityService } from '../../../shared/services/entity.service';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,37 +26,20 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   dialogIsOpen = false;
 
   get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
-
-  get value() {
-    return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator);
-  }
-
-  get id() {
-    return `${this.config.entityId}${this.config.index}`;
-  }
-
-  get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
-  }
-
-  get enableAddExisting() {
-    return this.config.settings.EnableAddExisting || false;
-  }
-
-  get entityType() {
-    return this.config.settings.EntityType || '';
-  }
-
+  get value() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+  get id() { return `${this.config.entityId}${this.config.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
+  get enableAddExisting() { return this.config.settings.EnableAddExisting || false; }
+  get entityType() { return this.config.settings.EntityType || ''; }
   get separator() { return this.config.settings.Separator || ','; }
+  get touched() { return this.group.controls[this.config.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.name].disabled; }
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
-  private eavConfig: EavConfiguration;
 
   constructor(private validationMessagesService: ValidationMessagesService,
-    private entityService: EntityService,
     private eavService: EavService,
     private translate: TranslateService) {
-    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {

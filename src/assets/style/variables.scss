@@ -17,14 +17,3 @@ $save-button-width-extended:200px;
 $expandable-wrapper-max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height});
 
 
-// @mixin edit-ui-dialog-max-height() {
-//     @media only screen and (max-height: 480px) {
-//         max-height: 70vh;
-//     }
-//     @media only screen and (min-height: 480px) and (max-height: 840px) {
-//         max-height: calc(100vh - 120px);
-//     }
-//     @media only screen and (min-height: 840px) {
-//         max-height: 85vh;
-//     }
-// }

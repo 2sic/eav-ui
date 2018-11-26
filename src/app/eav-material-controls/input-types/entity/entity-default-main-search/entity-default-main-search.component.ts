@@ -38,6 +38,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
+  @Input() error = '';
 
   // by default data is in array format, but can be stringformat
   @Input() isStringFormat = false;
@@ -47,7 +48,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
 
   freeTextMode = false;
   selectEntities: Observable<EntityInfo[]> = null;
-  error = '';
 
   private contentType: FieldMaskService;
   // private availableEntities: EntityInfo[] = [];
@@ -81,6 +81,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   get separator() { return this.config.settings.Separator || ','; }
 
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+
+  get touched() { return this.group.controls[this.config.name].touched || false; }
 
   getErrorMessage = () => this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
 
@@ -224,5 +226,21 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
 
   private setDirty() {
     this.group.controls[this.config.name].markAsDirty();
+  }
+
+  setTouched() {
+    this.group.controls[this.config.name].markAsTouched();
+  }
+
+  getPlaceholder() {
+    if (this.availableEntities && this.availableEntities.length > 0) {
+      return 'search';
+    }
+
+    if (this.error) {
+      return this.error;
+    } else {
+      this.translate.instant('FieldType.EntityQuery.QueryNoItems');
+    }
   }
 }

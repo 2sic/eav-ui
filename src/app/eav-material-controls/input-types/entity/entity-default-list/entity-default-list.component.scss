@@ -48,6 +48,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: calc(100% - 170px);
+
+    // &--disabled {
+    //     color: $editUI-label-disabled-color;
+    // }
 }
 
 .dnd-buttons {
@@ -56,6 +60,18 @@
     top:10px;
     display: inline;
     /* // visibility: hidden; */
+}
+
+.dnd-element--disabled {
+    border-color: $editUI-disabled-background;
+    background-color: $editUI-disabled-background;
+
+    .dnd-element-text {
+        color: $editUI-label-disabled-color;
+    }
+    .dnd-element-content mat-label, .dnd-element-content mat-icon {
+        color: $editUI-label-disabled-color;
+    }
 }
 
 /* .dnd-element:hover .dnd-buttons {

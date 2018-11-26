@@ -145,6 +145,7 @@ import { EntityQueryComponent } from './input-types/entity/entity-query/entity-q
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
         MatRippleModule,
+        MatChipsModule,
         // FontAwesomeModule,
         TranslateModule.forChild(),
     ],

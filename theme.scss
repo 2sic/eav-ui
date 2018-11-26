@@ -193,6 +193,8 @@ $editUI-light-theme: mat-light-theme(
 
 // override matFormFieldFill theme
 // Theme styles that only apply to the fill appearance of the form-field.
+$editUI-disabled-background: mat-color($editUI-theme-foreground, base, 0.04);
+$editUI-label-disabled-color: mat-color($editUI-theme-foreground, base, 0.24);
 
 @mixin mat-form-field-fill-theme($theme) {
   $foreground: map-get($theme, foreground);
