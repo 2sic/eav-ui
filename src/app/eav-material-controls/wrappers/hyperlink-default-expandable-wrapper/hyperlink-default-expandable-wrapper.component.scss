@@ -1,0 +1,124 @@
+@import "./theme.scss";
+@import "../../../../assets/style/variables.scss";
+
+.c-ew {
+    &__preview {
+        min-height: 72px;
+        max-height: 72px;
+        height: 72px;
+        width: 100%;
+
+        &-field {
+            &--short {
+                width: calc(100% - 72px);
+                max-width: calc(100% - 72px);
+            }
+            &-hint{
+                color: rgba($editUI-foreground-color, 0.44);
+            }
+        }
+    }
+
+    &__container {
+        border-radius: $edit-ui-dialog-border-radius;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        right: 0;  
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        align-items: self-start;
+        justify-content: center;
+        display: flex;
+    }
+
+    &__dialog {
+        flex-direction: column;
+        display: flex;
+        // border-radius: $edit-ui-input-border-radius;
+        max-width: 960px;
+        width: 100vw; 
+        margin-top: 24px;
+        min-height: $expandable-wrapper-max-height;
+        max-height: $expandable-wrapper-max-height;
+        padding: 0;
+        .mat-dialog-actions {
+            padding: 16px;
+        }
+
+        &-header {
+            .mat-card {
+                padding:16px 24px 16px 24px;
+            }
+        }
+
+        &-content {
+            position:relative;
+            // border-radius: $edit-ui-input-border-radius;
+            background: map_get($mat-eav-item-dialog-background, 50);
+
+            // app-dropzone .dropzone-container {
+            //     display: flex;
+            //     flex-direction: column;
+            //     height: 100%;
+            // }
+
+            // app-dropzone .dropzone-content {
+            //     flex: 1 1 100%;
+            //     overflow: scroll;
+            //     // Hide scroll
+            //    -ms-overflow-style: none;  // IE 10+
+            //    overflow: -moz-scrollbars-none;  // Firefox
+            //    &::-webkit-scrollbar { 
+            //        display: none;  // Safari and Chrome
+            //    }
+            // }
+
+            // adam-browser {
+            //     background: white;
+            // }   
+        }
+    }
+
+    &--border-radius{
+        border-radius: $edit-ui-dialog-border-radius;
+    }
+}
+
+.thumbnail-before-input {
+    padding-top: 0; 
+    padding-bottom: 0; 
+    border-top-width: 0; 
+    padding-left: 0; 
+    padding-right: 0; 
+    border-left-width: 0; 
+    border-bottom-width: 0; 
+    background-color:  rgba($editUI-foreground-color, 0.08);
+    /* transparent;  */
+
+    /* new */
+    min-width: 72px;
+    min-height: 72px;
+    /* position: absolute;
+    top: 0; */
+     /* important to add this, because of paddings which are auto-added */
+    border-radius: 4px 0 0 0;
+    border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
+
+    &.icon-before-input {
+        width: 72px;
+        font-size: 56px;
+        a {
+            color: rgba($editUI-foreground-color, 0.44);
+        }
+    }
+}
+
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding: 0px 0 20px 0;
+}
+
+

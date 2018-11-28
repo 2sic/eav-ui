@@ -15,7 +15,6 @@ import { MatDialog } from '@angular/material';
 
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -52,48 +51,29 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   private contentType: FieldMaskService;
   // private availableEntities: EntityInfo[] = [];
   private subscriptions: Subscription[] = [];
-  private eavConfig: EavConfiguration;
 
   get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
-
   get allowMultiValue(): boolean { return this.config.settings.AllowMultiValue || false; }
-
   get enableTextEntry(): boolean { return this.config.settings.EnableTextEntry || false; }
-
   get entityType(): string { return this.config.settings.EntityType || ''; }
-
   get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting || true; }
-
   get enableCreate(): boolean { return this.config.settings.EnableCreate || true; }
-
   get enableEdit(): boolean { return this.config.settings.EnableEdit || true; }
-
   get enableRemove(): boolean { return this.config.settings.EnableRemove || true; }
-
   get enableDelete(): boolean { return this.config.settings.EnableDelete || false; }
-
   get disabled(): boolean { return this.group.controls[this.config.name].disabled; }
-
   get inputInvalid(): boolean { return this.group.controls[this.config.name].invalid; }
-
   get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
-
   get separator() { return this.config.settings.Separator || ','; }
-
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
-
   get touched() { return this.group.controls[this.config.name].touched || false; }
 
   getErrorMessage = () => this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config, true);
 
-  constructor(private entityService: EntityService,
-    private eavService: EavService,
-    private queryService: QueryService,
-    private eavAdminUiService: EavAdminUiService,
+  constructor(private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
     private dialog: MatDialog,
     private translate: TranslateService) {
-    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {

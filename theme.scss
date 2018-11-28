@@ -360,6 +360,8 @@ $editUI-typography: mat-typography-config(
   $infix-padding-top: 0px;
   // The padding below the infix.
   $infix-padding-bottom: 12px;
+  // Special padding for hyperlink input fields
+  $infix-padding-bottom-hyperlink: 23px;
   // The margin applied to the form-field-infix to reserve space for the floating label.
   $infix-margin-top: 20px;
   // The amount we offset the label from the input text in the fill appearance.
@@ -376,7 +378,16 @@ $editUI-typography: mat-typography-config(
       padding: $infix-padding-top 0 $infix-padding-bottom 0;
       border-top: $infix-border-top solid transparent;
     }
-
+    // Special padding for hyperlink input fields
+    &.mat-form-field-hyperlink {
+      .mat-form-field-infix {
+        padding: $infix-padding-top 0 $infix-padding-bottom-hyperlink 0;
+      }
+      .mat-form-field-subscript-wrapper {
+        margin-top: 0;
+      }
+    }
+   
     .mat-form-field-label {
       top: $infix-margin-top + $infix-padding-top;
       margin-top: $fill-appearance-label-offset;

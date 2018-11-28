@@ -48,8 +48,8 @@
             <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="center end" class="more-entities mat-body-1">
-          &nbsp; {{value?.length}}</span>
+        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="end end" class="more-entities mat-body-1">
+          {{value?.length}}</span>
       </div>
     </div>
   </div>

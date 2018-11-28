@@ -1,53 +1,54 @@
-.thumbnail-before-input.icon-before-input {
-    width: 46px;
-    font-size: 42px;
-    padding-left: 2px;
-    padding-right: 5px;
-    padding-top: 2px;
-    padding-bottom: 3px;
+@import "./theme.scss";
+@import "../../../../../assets/style/variables.scss";
+
+
+// component hyperlink-default
+.c-hld {
+    min-height: 72px;
+    max-height: 72px;
+    height: 72px;
+    width: 100%;
+
+    &-field {
+        &--short {
+            width: calc(100% - 72px);
+            max-width: calc(100% - 72px);
+        }
+        &-hint{
+            color: rgba($editUI-foreground-color, 0.44);
+        }
+    }
+
+    &-thumbnail {
+        padding-top: 0; 
+        padding-bottom: 0; 
+        border-top-width: 0; 
+        padding-left: 0; 
+        padding-right: 0; 
+        border-left-width: 0; 
+        border-bottom-width: 0; 
+        background-color:  rgba($editUI-foreground-color, 0.08);
+        /* transparent;  */
+    
+        /* new */
+        min-width: 72px;
+        min-height: 72px;
+        /* position: absolute;
+        top: 0; */
+         /* important to add this, because of paddings which are auto-added */
+        border-radius: 4px 0 0 0;
+        border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
+    
+        &.c-hld-icon {
+            width: 72px;
+            font-size: 56px;
+            a {
+                color: rgba($editUI-foreground-color, 0.44);
+            }
+        }
+    }
 }
-.icon-before-input a {
-    color: #444;
-}
 
-.thumbnail-before-input {
-    padding-top: 0; 
-    padding-bottom: 0; 
-    border-top-width: 0; 
-    padding-left: 0; 
-    padding-right: 0; 
-    border-left-width: 0; 
-    border-bottom-width: 0; 
-    background-color: transparent;
-    /* transparent;  */
-
-    /* new */
-    width: 64px;
-    height: 64px;
-    /* position: absolute;
-    top: 0; */
-     /* important to add this, because of paddings which are auto-added */
-    border-radius: 0;
-}
-
-/* design/style the empty placeholder - for now don't do anything '*/
-/* .thumbnail-before-input.empty-placeholder { */
-    /*background-color: pink;*/
-/* } */
-
-div.dropzone div.input-group div.tooltip-inner {
-    word-wrap: break-word;
-}
-
-.field-hints {
-    visibility: hidden;
-    opacity: 0;
-    transition-duration: 200ms, 200ms;
-    transition-property: opacity, visibility;
-    transition-delay: 0, 200ms;
-}
-
-div.focused .field-hints {
-    visibility: visible;
-    opacity:1;
+.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding: 0px 0 20px 0;
 }

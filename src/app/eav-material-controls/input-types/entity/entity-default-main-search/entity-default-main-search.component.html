@@ -9,9 +9,7 @@
         <mat-form-field [formGroup]="group" appearance="fill" color="accent">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled" (blur)="setTouched()">
-          <!-- [required]="config.required" -->
           <mat-icon matSuffix *ngIf="!enableTextEntry">arrow_drop_down</mat-icon>
-          <!-- <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint> -->
           <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)">
             <i class="eav-icon-i-cursor"></i>
             <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>

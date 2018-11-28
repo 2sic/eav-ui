@@ -135,8 +135,6 @@
             //     background: white;
             // }   
         }
-
-       
     }
 
     &--border-radius{
@@ -145,21 +143,15 @@
 }
 
 .more-entities {
-    padding: 12px 8px 0 0;
-
+    padding: 0px 8px 0 8px;
+    margin: 11px 0px 0px 12px;
     background: transparent;
-    color:rgba($editUI-foreground-color, 0.44);
+    color:$editUI-foreground-color;
     border-radius: 32px;
     border: 1px solid rgba($editUI-foreground-color, 0.44);
     max-height: 24px;
-    margin: 0px 8px 0px 8px;
+    min-height: 24px;
 
-    // padding: 12px 8px 0 0;
-    // background: white;
-    // border-radius: 32px;
-    // border: 1px solid rgba(69, 79, 99, 0.44);
-    // max-height: 24px;
-    // margin: 0px 8px 0px 8px;
 }
 
 .mat-list {
@@ -175,8 +167,7 @@
     border: 1px solid rgba($editUI-foreground-color, 0.44);
     max-height: 24px;
     margin: 2px 0 2px 0;
-    min-width: 148px;
-
+    min-width: 152px;
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;

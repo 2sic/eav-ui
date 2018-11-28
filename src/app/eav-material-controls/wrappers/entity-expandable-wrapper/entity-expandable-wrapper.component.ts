@@ -16,7 +16,6 @@ import { Helper } from '../../../shared/helpers/helper';
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
