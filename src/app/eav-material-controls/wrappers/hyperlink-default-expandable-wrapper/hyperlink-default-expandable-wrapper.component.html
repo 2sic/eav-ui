@@ -1,7 +1,7 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
-  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
-      <mat-card class="c-ew--border-radius mat-elevation-z0" fxLayout="row">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
@@ -11,37 +11,20 @@
     <div class='u-add-scrollbar u-hide-scrollbar'>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content c-ew--border-radius" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+      <div class="c-ew__dialog-content u-border-radius-bottom" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>
   </div>
 </div>
 <div>
-  <!-- (click)="dialogIsOpen = true" -->
-  <!-- <div matRipple (click)="ante()" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
-    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
-      <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
-      <div *ngIf="value" [innerHtml]="value"></div>
-    </div>
-  </div> -->
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start">
-    <div fxLayoutAlign="start center" class="thumbnail-before-input" [ngClass]="{'icon-before-input': value && !isImage()}"
-      [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
+    <div matPrefix fxLayoutAlign="start center" class="thumbnail-before-input" [ngClass]="{'icon-before-input': value && !isImage()}"
+      [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}" (click)="dialogIsOpen = true">
       <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}"
         matTooltipPosition="right">
       </a>
     </div>
-    <!-- <div matPrefix *ngIf="value && !isImage()" class="thumbnail-before-input icon-before-input">
-      <a [href]="link" target="_blank" tabindex="-1" [class]="icon()" matTooltip="{{tooltipUrl(link)}}"
-        matTooltipPosition="right">
-      </a>
-    </div> -->
-    <!-- <div matPrefix *ngIf="!value" class="thumbnail-before-input empty-placeholder">
-    </div> -->
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <mat-form-field appearance="fill" color="accent" class="mat-form-field-hyperlink">
         <input matInput type="text" [placeholder]="config.label" (click)="showFieldHints = true" (change)="setValue($event)"

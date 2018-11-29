@@ -18,13 +18,13 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-hyperlink-default-expandable-wrapper', 'app-dropzone', 'app-eav-localization-wrapper'],
+  wrapper: ['app-simple-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-dropzone'],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  showPreview;
+  showPreview = true;
   toggleAdamValue = false;
   link = '';
   showFieldHints;
@@ -94,7 +94,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       result = result + '?w=72&h=72&mode=crop';
     }
     if (size === 2) {
-      result = result + '?w=500&h=400&mode=max';
+      result = result + '?w=960&h=960&mode=max';
     }
     const qt = quote ? '"' : '';
     return qt + result + qt;

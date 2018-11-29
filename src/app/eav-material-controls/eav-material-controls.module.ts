@@ -76,6 +76,7 @@ import { EntityQueryComponent } from './input-types/entity/entity-query/entity-q
 import {
     HyperlinkDefaultExpandableWrapperComponent
 } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
+import { SimpleDropzoneWrapperComponent } from './adam/simple-dropzone-wrapper/simple-dropzone-wrapper.component';
 
 @NgModule({
     declarations: [
@@ -119,6 +120,7 @@ import {
         EntityDefaultMainSearchComponent,
         EntityQueryComponent,
         HyperlinkDefaultExpandableWrapperComponent,
+        SimpleDropzoneWrapperComponent,
     ],
     imports: [
         // DndDraggable,
@@ -179,7 +181,8 @@ import {
         StringUrlPathComponent,
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
-        HyperlinkDefaultExpandableWrapperComponent
+        HyperlinkDefaultExpandableWrapperComponent,
+        SimpleDropzoneWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

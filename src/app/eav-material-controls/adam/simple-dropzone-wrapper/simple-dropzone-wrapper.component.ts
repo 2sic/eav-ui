@@ -8,16 +8,16 @@ import { EavService } from '../../../shared/services/eav.service';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FormGroup } from '@angular/forms';
 
+
 @Component({
-  selector: 'app-dropzone',
-  templateUrl: './dropzone.component.html',
-  styleUrls: ['./dropzone.component.scss']
+  selector: 'app-simple-dropzone-wrapper',
+  templateUrl: './simple-dropzone-wrapper.component.html',
+  styleUrls: ['./simple-dropzone-wrapper.component.scss']
 })
-export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
+export class SimpleDropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
-  @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfig;
   group: FormGroup;
@@ -37,22 +37,14 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.config.adam = this.adamRef;
-    // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
+    //  this.config.adam = this.adamRef;
+
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
-
-    // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
-
     const contentType = this.config.header.contentTypeName;
-    // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
     const entityGuid = this.config.header.guid;
-    // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
     const field = this.config.name;
-    // const field = 'HyperLinkStaticName';
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
-
-    console.log('', this.url);
 
     this.dropzoneConfig = {
       url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
@@ -84,9 +76,6 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
     this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
-
-    console.log('this.dropzoneConfig:', this.dropzoneConfig);
-    console.log('config ddropzone wrapper:', this.config.index);
   }
 
   public onUploadError(args: any): void {
@@ -94,18 +83,20 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   }
 
   public onUploadSuccess(args: any): void {
-    console.log('onUploadSuccess:', args);
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
-      this.adamRef.svc.addFullPath(response); // calculate additional infos
-      this.adamRef.afterUploadCallback(response);
-      // Reset dropzone
-      this.dropzoneRef.reset();
-      this.adamRef.refresh();
+      if (this.config.adam) {
+        this.config.adam.svc.addFullPath(response); // calculate additional infos
+        this.config.adam.afterUploadCallback(response);
+        // Reset dropzone
+        this.dropzoneRef.reset();
+        this.config.adam.refresh();
+      } else {
+        alert('Upload failed because: ADAM reference doesn\'t exist');
+      }
     } else {
       alert('Upload failed because: ' + response.Error);
     }
-
   }
 
   public onDrop(args: any): void {
@@ -126,3 +117,4 @@ export class DropzoneComponent implements FieldWrapper, OnInit, AfterViewInit {
   // }
 
 }
+

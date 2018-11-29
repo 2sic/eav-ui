@@ -1,7 +1,7 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
-      <mat-card class="c-ew--border-radius mat-elevation-z0" fxLayout="row">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
@@ -14,7 +14,7 @@
       <div class="c-ew__dialog-content" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <div class="mdc-layout-grid">
           <div class="mdc-layout-grid__inner">
-            <mat-card class="mdc-layout-grid__cell--span-12 c-ew--border-radius">
+            <mat-card class="mdc-layout-grid__cell--span-12 u-border-radius">
               <ng-container #fieldComponent></ng-container>
             </mat-card>
           </div>
