@@ -19,12 +19,20 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple"
+    [ngClass]="{
+    'c-ew__preview--invalid' : inputInvalid,
+    'c-ew__preview--disabled': disabled
+  }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="(config.adam.items$ | async)?.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
+      <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{
+        'mat-caption' : (config.adam.items$ | async)?.length > 0,
+        'mat-empty' : !((config.adam.items$ | async)?.length > 0),
+        'mat-error' : inputInvalid && !disabled,
+        'color__primary' : !(inputInvalid) && !disabled,
+        'color__label-disabled' : disabled
+      }">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <!-- <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
-            {{config.required ? '*': '' }}</mat-label> -->
       <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
         <!-- folder list - not always shown -->
         <ng-container *ngIf="config.adam && config.adam.showFolders">
@@ -35,10 +43,6 @@
             </div>
           </div>
         </ng-container>
-        <!-- fxLayout="row" fxLayoutAlign="start start" -->
-        <!-- files -->
-        <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
-
         <div *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
           <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
             <i [ngClass]="icon(item)"></i>

@@ -32,6 +32,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   get id() { return `${this.config.entityId}${this.config.index}`; }
   get inputInvalid() { return this.group.controls[this.config.name].invalid; }
   get touched() { return this.group.controls[this.config.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.name].disabled; }
 
   constructor(private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,

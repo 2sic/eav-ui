@@ -22,17 +22,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  get value() {
-    return this.group.controls[this.config.name].value;
-  }
-
-  get id() {
-    return `${this.config.entityId}${this.config.index}`;
-  }
-
-  get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
-  }
+  get value() { return this.group.controls[this.config.name].value; }
+  get id() { return `${this.config.entityId}${this.config.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
+  get disabled() { return this.group.controls[this.config.name].disabled; }
 
   constructor(private fileTypeService: FileTypeService) { }
 

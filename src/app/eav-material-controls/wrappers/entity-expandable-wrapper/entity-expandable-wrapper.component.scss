@@ -61,11 +61,6 @@
             padding: 24px 0 0 0;
         }
     }
-
-
-  
-            
-  
 }
 
 .more-entities {
@@ -75,10 +70,10 @@
     color:$editUI-foreground-color;
     border-radius: 32px;
     border: 1px solid rgba($editUI-foreground-color, 0.44);
-    max-height: 16px;
-    min-height: 16px;
+    max-height: 20px;
+    min-height: 20px;
     font-size: 12px;
-    line-height: 12px;
+    line-height: 16px;
 
 }
 

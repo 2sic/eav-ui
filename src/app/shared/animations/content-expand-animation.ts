@@ -17,8 +17,8 @@ export const ContentExpandAnimation = [
             height: '0',
         })),
         state('expanded', style({
-            height: 'calc(100vh - 120px)',
-            'max-height': 'calc(100vh - 120px)',
+            height: 'calc(100vh - 119px)',
+            'max-height': 'calc(100vh - 119px)',
         })),
         transition('closed => expanded', [
             animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([

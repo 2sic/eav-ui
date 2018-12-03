@@ -15,6 +15,9 @@
             }
             &-hint{
                 color: rgba($editUI-foreground-color, 0.44);
+                white-space: nowrap; 
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
@@ -43,12 +46,15 @@
     &.icon-before-input {
         width: 72px;
         font-size: 56px;
-        a {
+        a,i {
             color: rgba($editUI-foreground-color, 0.44);
         }
     }
-}
 
+    &--disabled {
+        opacity: 0.5;
+    }
+}
 
 .mat-form-field-appearance-fill .mat-form-field-infix {
     padding: 0px 0 20px 0;

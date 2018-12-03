@@ -1,5 +1,4 @@
 
-
 .c-ew {
     &__container {
         border-radius: $edit-ui-dialog-border-radius;
@@ -88,6 +87,10 @@
                 display: none;  // Safari and Chrome
             }
         }   
+
+        adam-hint {
+            z-index:3;
+        }
     }
 }
 
