@@ -77,6 +77,9 @@ import {
     HyperlinkDefaultExpandableWrapperComponent
 } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { SimpleDropzoneWrapperComponent } from './adam/simple-dropzone-wrapper/simple-dropzone-wrapper.component';
+import {
+    HyperlinkLibraryExpandableWrapperComponent
+} from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 
 @NgModule({
     declarations: [
@@ -121,6 +124,7 @@ import { SimpleDropzoneWrapperComponent } from './adam/simple-dropzone-wrapper/s
         EntityQueryComponent,
         HyperlinkDefaultExpandableWrapperComponent,
         SimpleDropzoneWrapperComponent,
+        HyperlinkLibraryExpandableWrapperComponent,
     ],
     imports: [
         // DndDraggable,
@@ -182,7 +186,8 @@ import { SimpleDropzoneWrapperComponent } from './adam/simple-dropzone-wrapper/s
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,
-        SimpleDropzoneWrapperComponent
+        SimpleDropzoneWrapperComponent,
+        HyperlinkLibraryExpandableWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

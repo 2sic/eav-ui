@@ -1,0 +1,55 @@
+<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.label}}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      </div>
+      <div class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        <ng-container #fieldComponent></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="(config.adam.items$ | async)?.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
+        {{config.required ? '*': '' }}</mat-label>
+      <!-- <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
+            {{config.required ? '*': '' }}</mat-label> -->
+      <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
+        <!-- folder list - not always shown -->
+        <ng-container *ngIf="config.adam && config.adam.showFolders">
+          <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
+            <div class="adam-browse-background-icon">
+              <i class="eav-icon-folder-empty"></i>
+              <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- fxLayout="row" fxLayoutAlign="start start" -->
+        <!-- files -->
+        <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
+
+        <div *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
+          <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
+            <i [ngClass]="icon(item)"></i>
+            <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+          </div>
+          <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
+            <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=56&h=56&mode=crop'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-field-helper-text [config]="config" [group]="group" haveDirtyTouched="fasle"></app-field-helper-text>
+</div>

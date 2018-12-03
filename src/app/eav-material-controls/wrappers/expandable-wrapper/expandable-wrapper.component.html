@@ -8,10 +8,11 @@
         <span fxLayoutAlign="center center" class="mat-display-1">{{config.label}}</span>
       </mat-card>
     </div>
-    <div class='u-add-scrollbar u-hide-scrollbar'>
+    <div>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content u-border-radius-bottom" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+      <div class="c-ew__dialog-content u-border-radius-bottom  u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>

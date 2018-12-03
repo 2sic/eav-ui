@@ -226,8 +226,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       //     0, // folderDepth
       //     '', // metadataContentTypes
       //     '', // subFolder
-
-
     }
   }
 
