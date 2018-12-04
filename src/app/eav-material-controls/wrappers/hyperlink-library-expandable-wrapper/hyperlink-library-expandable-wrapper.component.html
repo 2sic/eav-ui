@@ -24,6 +24,7 @@
     'c-ew__preview--invalid' : inputInvalid,
     'c-ew__preview--disabled': disabled
   }">
+    <!-- 'color__label-disabled' : disabled -->
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{
         'mat-caption' : (config.adam.items$ | async)?.length > 0,
@@ -51,6 +52,15 @@
           <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
             <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=56&h=56&mode=crop'">
           </div>
+        </div>
+      </div>
+      <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
+        <div>
+          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="start start">drop files here</mat-hint>
+        </div>
+        <div fxFlex="auto"></div>
+        <div>
+          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="end end">ADAM - sponsored with ♥ by 2sic.com</mat-hint>
         </div>
       </div>
     </div>

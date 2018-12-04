@@ -4,11 +4,11 @@
 .c-ew {
     &__preview {
         position:relative;
-        padding: 6px 12px 12px 12px;
+        padding: 6px 12px;
         min-height: 37px;
         max-height: 119px;
         cursor: pointer;
-    
+        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
         border: 1px rgba($editUI-foreground-color, 0.44);
         border-bottom-style: solid;
         background: rgba($editUI-foreground-color, 0.08);
@@ -24,9 +24,20 @@
             overflow: hidden;
         }
 
-       // &--input-invalid {
+        &-hint {
+           padding: 8px 0 0 0;
+           width: 100%;
+
+            &-text {
+                color: rgba($editUI-foreground-color, 0.44);
+                white-space: nowrap; 
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
         &--invalid {
-            padding: 6px 12px 11px 12px;
+            padding: 6px 12px 5px 12px;
             border: 2px;
             border-bottom-style: solid;
             border-color: map_get($mat-eav-item-dialog-error, 500);
@@ -38,7 +49,7 @@
             cursor: default;
             // $editUI-label-disabled-color
 
-            .adam-browse-background-icon {
+            .adam-browse-background-icon, .c-ew__preview-hint-text {
                 color: $editUI-label-disabled-color;
             }
 
@@ -60,7 +71,7 @@
         }
 
         &:hover {
-            padding: 6px 12px 11px 12px;
+            padding: 6px 12px 5px 12px;
             border: 2px rgba($editUI-foreground-color, 0.44);
             border-bottom-style: solid;
         }
@@ -83,9 +94,9 @@
             &-image {
                 height: 56px;
                 width: 56px;
-                border-radius: 8px;
+                border-radius: $edit-ui-dialog-border-radius;
                 img {
-                    border-radius: 8px;
+                    border-radius: $edit-ui-dialog-border-radius;
                 }
             }
         }

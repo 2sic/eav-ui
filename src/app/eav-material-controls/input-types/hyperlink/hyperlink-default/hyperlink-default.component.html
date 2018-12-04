@@ -35,18 +35,7 @@
     </button>
   </mat-menu>
 </div>
-<!-- </span> -->
 
-<!-- class="c-hld-thumbnail" -->
-<!-- (mouseenter)="showPreview = true" (mouseleave)="showPreview = false"  -->
-<div [ngClass]="{'c-hld-icon': value && !isImage()}" [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
-  <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}"
-    matTooltipPosition="right">
-  </a>
-</div>
-
-<!-- <div class="c-hld" fxLayout="row" fxLayoutAlign="start start"> -->
-<!-- class="c-hld-field--short"  fxFlex="auto" -->
 <div class="mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius">
@@ -74,6 +63,11 @@
         <div class="c-hld-image-container">
           <img [src]="thumbnailUrl(2)" class="c-hld-image" />
         </div>
+      </div>
+      <div [ngClass]="{'c-hld-icon': value && !isImage()}" [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
+        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}"
+          matTooltipPosition="right">
+        </a>
       </div>
     </mat-card>
   </div>

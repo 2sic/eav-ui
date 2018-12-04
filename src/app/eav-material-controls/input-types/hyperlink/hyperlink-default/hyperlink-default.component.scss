@@ -70,13 +70,13 @@
          /* important to add this, because of paddings which are auto-added */
         border-radius: 4px 0 0 0;
         border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
-    
-        &.c-hld-icon {
-            width: 72px;
-            font-size: 56px;
-            a {
-                color: rgba($editUI-foreground-color, 0.44);
-            }
+    }
+
+    &-icon {
+        width: 72px;
+        font-size: 56px;
+        a {
+            color: rgba($editUI-foreground-color, 0.44);
         }
     }
 }

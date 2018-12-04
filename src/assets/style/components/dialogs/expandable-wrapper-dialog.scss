@@ -45,13 +45,13 @@
 }
 // // Expandable wrapper 
 .c-ew__dialog-content {
-    app-dropzone .dropzone-container {
+    .adam-dialog-container {
         display: flex;
         flex-direction: column;
         height: 100%;
     }
 
-    app-dropzone .dropzone-content {
+    .adam-dialog-content {
         flex: 1 1 100%;
         overflow: scroll;
         // Hide scroll
@@ -72,9 +72,13 @@
     }
 
     &--empty {
-        app-dropzone .dropzone-content {
-            flex: 1 1 auto;
+        .adam-dialog-container {
+            flex: 1 1 100%;
         }
+
+        .adam-dialog-content {
+            flex: 1 1 auto;
+        }   
 
         adam-browser {
             flex: 1 1 100%;
@@ -86,12 +90,12 @@
             &::-webkit-scrollbar { 
                 display: none;  // Safari and Chrome
             }
-        }   
-
-        adam-hint {
-            z-index:3;
         }
     }
+
+   adam-hint {
+       z-index:3;
+   }
 }
 
 .c-ew__preview-container .mat-list .mat-list-item .mat-list-item-content {

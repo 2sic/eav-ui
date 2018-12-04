@@ -13,7 +13,7 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
-  wrapper: ['app-simple-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-dropzone'],
+  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit {
   @Input() config: FieldConfig;

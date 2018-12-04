@@ -25,10 +25,11 @@
       'thumbnail-before-input--disabled': disabled
     }"
       [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}" (click)="!disabled ? dialogIsOpen = true : ''">
-      <a *ngIf="!disabled && value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
+      <!-- <i *ngIf="!disabled && value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
         matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
-      </a>
-      <i *ngIf="disabled && value && !isImage()" [ngClass]="icon()"></i>
+      </i> -->
+      <!-- *ngIf="disabled && value && !isImage()" -->
+      <i *ngIf="value && !isImage()" [ngClass]="icon()"></i>
     </div>
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <mat-form-field appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'" class="mat-form-field-hyperlink">

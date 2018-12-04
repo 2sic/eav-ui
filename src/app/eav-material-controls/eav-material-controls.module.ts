@@ -53,7 +53,7 @@ import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
-import { DropzoneComponent } from './adam/dropzone/dropzone.component';
+import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
@@ -76,7 +76,7 @@ import { EntityQueryComponent } from './input-types/entity/entity-query/entity-q
 import {
     HyperlinkDefaultExpandableWrapperComponent
 } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
-import { SimpleDropzoneWrapperComponent } from './adam/simple-dropzone-wrapper/simple-dropzone-wrapper.component';
+import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
 import {
     HyperlinkLibraryExpandableWrapperComponent
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
@@ -102,7 +102,7 @@ import {
         ExternalComponent,
         AdamBrowserComponent,
         AdamHintComponent,
-        DropzoneComponent,
+        AdamAttachWrapperComponent,
         HyperlinkLibraryComponent,
         EavLanguageSwitcherComponent,
         FilterPipe,
@@ -123,7 +123,7 @@ import {
         EntityDefaultMainSearchComponent,
         EntityQueryComponent,
         HyperlinkDefaultExpandableWrapperComponent,
-        SimpleDropzoneWrapperComponent,
+        DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
     ],
     imports: [
@@ -163,7 +163,7 @@ import {
         BooleanDefaultComponent,
         CollapsibleWrapperComponent,
         DatetimeDefaultComponent,
-        DropzoneComponent,
+        AdamAttachWrapperComponent,
         EavLocalizationComponent,
         EmptyDefaultComponent,
         EntityDefaultComponent,
@@ -186,7 +186,7 @@ import {
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,
-        SimpleDropzoneWrapperComponent,
+        DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],

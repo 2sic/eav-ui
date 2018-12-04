@@ -1,17 +1,13 @@
-<div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled" (error)="onUploadError($event)"
-  (success)="onUploadSuccess($event)" (drop)="onDrop($event)">
-  <div class="dropzone-content">
+<div class="adam-dialog-container">
+  <div class="adam-dialog-content">
     <ng-container #fieldComponent></ng-container>
-    <!-- [autoLoad]="false" [folderDepth]="0" [subFolder]="" fileFilter="*.jpg,*.pdf.,*.css" [enableSelect]="true"-->
   </div>
   <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config">
   </adam-browser>
-  <!-- ng-show="uploading" -->
   <div class="{{'field-' + config.index}}">
     <div class="dropzone-previews">
     </div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>
-  <!-- todo: focus with css -->
   <adam-hint class="field-hints"></adam-hint>
 </div>

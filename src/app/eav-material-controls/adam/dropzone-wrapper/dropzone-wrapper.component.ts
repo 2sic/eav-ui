@@ -10,11 +10,11 @@ import { FormGroup } from '@angular/forms';
 
 
 @Component({
-  selector: 'app-simple-dropzone-wrapper',
-  templateUrl: './simple-dropzone-wrapper.component.html',
-  styleUrls: ['./simple-dropzone-wrapper.component.scss']
+  selector: 'app-dropzone-wrapper',
+  templateUrl: './dropzone-wrapper.component.html',
+  styleUrls: ['./dropzone-wrapper.component.scss']
 })
-export class SimpleDropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
+export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
@@ -106,10 +106,10 @@ export class SimpleDropzoneWrapperComponent implements FieldWrapper, OnInit, Aft
   /**
    * triger click on clickable element for load open
    */
-  openUpload() {
-    console.log('openUpload click');
-    this.invisibleClickableReference.nativeElement.click();
-  }
+  // openUpload() {
+  //   console.log('openUpload click');
+  //   this.invisibleClickableReference.nativeElement.click();
+  // }
 
   // updateCallback() {
   //   console.log('update callback');

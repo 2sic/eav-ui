@@ -20,44 +20,46 @@
                 text-overflow: ellipsis;
             }
         }
-    }
-}
 
-.thumbnail-before-input {
-    padding-top: 0; 
-    padding-bottom: 0; 
-    border-top-width: 0; 
-    padding-left: 0; 
-    padding-right: 0; 
-    border-left-width: 0; 
-    border-bottom-width: 0; 
-    background-color:  rgba($editUI-foreground-color, 0.08);
-    /* transparent;  */
+        .thumbnail-before-input {
+            padding-top: 0; 
+            padding-bottom: 0; 
+            border-top-width: 0; 
+            padding-left: 0; 
+            padding-right: 0; 
+            border-left-width: 0; 
+            border-bottom-width: 0; 
+            background-color:  rgba($editUI-foreground-color, 0.08);
+            /* transparent;  */
+        
+            /* new */
+            min-width: 72px;
+            min-height: 72px;
+            /* position: absolute;
+            top: 0; */
+             /* important to add this, because of paddings which are auto-added */
+            border-radius: $edit-ui-input-border-radius 0 0 0;
+            border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
+        
+            &.icon-before-input {
+                width: 72px;
+                font-size: 56px;
+                a,i {
+                    color: rgba($editUI-foreground-color, 0.44);
+                }
+            }
+        
+            &--disabled {
+                opacity: 0.5;
+                border-bottom: 0;
+            }
+        }
 
-    /* new */
-    min-width: 72px;
-    min-height: 72px;
-    /* position: absolute;
-    top: 0; */
-     /* important to add this, because of paddings which are auto-added */
-    border-radius: 4px 0 0 0;
-    border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
-
-    &.icon-before-input {
-        width: 72px;
-        font-size: 56px;
-        a,i {
-            color: rgba($editUI-foreground-color, 0.44);
+        .mat-form-field-appearance-fill .mat-form-field-infix {
+            padding: 0px 0 20px 0;
         }
     }
-
-    &--disabled {
-        opacity: 0.5;
-    }
 }
 
-.mat-form-field-appearance-fill .mat-form-field-infix {
-    padding: 0px 0 20px 0;
-}
 
 

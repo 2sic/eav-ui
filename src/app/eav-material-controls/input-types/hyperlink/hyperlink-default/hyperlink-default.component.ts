@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-simple-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-dropzone'],
+  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
@@ -32,7 +32,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   // TODOD: temp
   private eavConfig;
 
-  // adam: any;
   private subscriptions: Subscription[] = [];
 
   private adamModeConfig: AdamModeConfig = {
