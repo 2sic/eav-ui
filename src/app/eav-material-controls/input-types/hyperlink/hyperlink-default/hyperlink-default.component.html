@@ -1,7 +1,3 @@
-<!-- <div (mouseleave)="showFieldHints = false"> -->
-
-<!-- <span class="input-group-btn"> -->
-<!-- <div style="width: 6px;"></div> -->
 <div class="c-hld-buttons" fxLayout="row" fxLayoutAlign="end end" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled" (click)="toggleAdam()"
@@ -39,26 +35,19 @@
 <div class="mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius">
-
       <mat-form-field [formGroup]="group" appearance="fill" color="accent" class="mat-form-field-hyperlink">
-
         <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
           (click)="showFieldHints = true" [required]="config.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
       ADAM - sponsored with ♥ by 2sic.com"
           matTooltipPosition="above">
         <mat-label>{{config.label}}</mat-label>
-        <!-- <mat-hint align="start" class="c-hld-field-hint">drop files here</mat-hint> -->
-        <!-- <mat-hint align="end" class="c-hld-field-hint">ADAM - sponsored with ♥ by 2sic.com</mat-hint> -->
-        <!-- tooltip-html="{{tooltipUrl(link)}}" -->
         <mat-hint *ngIf="value" align="start" class="c-hld-field-hint">
           <a href="{{link}}" target="_blank" tabindex="-1">
             <span>&nbsp;... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
           </a>
         </mat-hint>
       </mat-form-field>
-
-      <!-- *ngIf="showPreviw" -->
       <div *ngIf="value && isImage()">
         <div class="c-hld-image-container">
           <img [src]="thumbnailUrl(2)" class="c-hld-image" />

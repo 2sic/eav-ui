@@ -18,18 +18,17 @@ export class InputTypesConstants {
     // entity
     public static readonly entityDefault: string = 'entity-default';
     public static readonly entityQuery: string = 'entity-query';
+    public static readonly entityContentBlocks: string = 'entity-content-blocks';
     // hyperlink/files
     public static readonly hyperlinkDefault: string = 'hyperlink-default';
     // hyperlink library
     public static readonly hyperlinkLibrary: string = 'hyperlink-library';
     // custom/files
     public static readonly external: string = 'external';
-
     // old types
     public static readonly dropdown: string = 'dropdown';
     public static readonly wysiwyg: string = 'wysiwyg';
     public static readonly default: string = 'default';
-
     // attribute.type for old types
     public static readonly string: string = 'String';
     public static readonly hyperlink: string = 'Hyperlink';

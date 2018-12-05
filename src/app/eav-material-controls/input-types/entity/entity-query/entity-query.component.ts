@@ -26,19 +26,11 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   error = '';
   private fieldMaskService: FieldMaskService;
 
-  get label() { return this.config.settings.Label || ''; }
-
-  get value() { return this.config.settings.Value || ''; }
-
   get query() { return this.config.settings.Query || ''; }
 
   get streamName() { return this.config.settings.StreamName || 'Default'; }
 
-  get separator() { return this.config.settings.Separator || ','; }
-
   get urlParameters() { return this.config.settings.UrlParameters || ''; }
-
-  get allowMultiValue() { return this.config.settings.UrlParameters || true; }
 
   constructor(
     private queryService: QueryService,
@@ -60,7 +52,6 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   maybeReload() {
     console.log('call maybeReload');
   }
-
 
   callAvailableEntities(value) {
     this.getAvailableEntities();

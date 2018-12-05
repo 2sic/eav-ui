@@ -118,7 +118,8 @@ export class AdamBrowserComponent implements OnInit {
     this.showImagesOnly = this.showImagesOnly || false;
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
-    this.allowAssetsInRoot = this.allowAssetsInRoot || true; // if true, the initial folder can have files, otherwise only subfolders
+    // if true, the initial folder can have files, otherwise only subfolders
+    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true;
     this.metadataContentTypes = this.metadataContentTypes || '';
 
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work

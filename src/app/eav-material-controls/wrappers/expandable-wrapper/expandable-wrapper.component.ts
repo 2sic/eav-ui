@@ -34,7 +34,5 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 }

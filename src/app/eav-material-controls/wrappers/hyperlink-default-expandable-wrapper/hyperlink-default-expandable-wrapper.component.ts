@@ -62,7 +62,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   setValue(val) {
     if (val.target.value !== this.value) {
       this.group.controls[this.config.name].patchValue(val.target.value);
-      this.group.controls[this.config.name].markAsTouched();
+      this.setDirty();
     }
   }
 
@@ -76,6 +76,10 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     }
     const qt = quote ? '"' : '';
     return qt + result + qt;
+  }
+
+  setTouched() {
+    this.group.controls[this.config.name].markAsTouched();
   }
 
   /**
@@ -119,4 +123,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     );
   }
 
+  private setDirty() {
+    this.group.controls[this.config.name].markAsDirty();
+  }
 }

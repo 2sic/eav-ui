@@ -16,7 +16,7 @@ import { AdamItem } from '../../../shared/models/adam/adam-item';
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfig;
@@ -30,15 +30,6 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   constructor(private fileTypeService: FileTypeService) { }
 
   ngOnInit() {
-    // console.log('this.config.adam', this.config.adam);
-  }
-
-  ngAfterViewInit() {
-    console.log('this.config.adam', this.config.adam);
-  }
-
-  ngOnDestroy() {
-    // this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
   icon(item: AdamItem) {

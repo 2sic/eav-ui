@@ -257,6 +257,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       case InputTypesConstants.stringFontIconPicker:
       case InputTypesConstants.entityDefault:
       case InputTypesConstants.entityQuery:
+      case InputTypesConstants.entityContentBlocks:
       case InputTypesConstants.hyperlinkDefault:
       case InputTypesConstants.hyperlinkLibrary:
         return inputTypeName;
@@ -361,10 +362,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     // entity-default wrappers
     if (inputType === InputTypesConstants.entityDefault ||
       inputType === InputTypesConstants.stringDropdownQuery ||
-      inputType === InputTypesConstants.entityQuery) {
-      // wrappers.push('app-eav-localization-wrapper');
+      inputType === InputTypesConstants.entityQuery ||
+      inputType === InputTypesConstants.entityContentBlocks) {
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
-      if (allowMultiValue) {
+
+      if (allowMultiValue ||
+        inputType === InputTypesConstants.entityContentBlocks) {
         wrappers.push('app-entity-expandable-wrapper');
       }
     }

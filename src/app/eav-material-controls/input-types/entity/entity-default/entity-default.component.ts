@@ -42,7 +42,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   get entityType(): string { return this.config.settings.EntityType || ''; }
 
-  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting || true; }
+  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting === false ? false : true; }
 
   get separator() { return this.config.settings.Separator || ','; }
 
@@ -84,7 +84,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     this.getAvailableEntities();
   }
 
-  private getAvailableEntities() {
+  getAvailableEntities() {
     const ctName = this.fieldMaskService.resolve(); // always get the latest definition, possibly from another drop-down
     // check if we should get all or only the selected ones...
     // if we can't add, then we only need one...

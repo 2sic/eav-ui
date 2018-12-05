@@ -29,4 +29,6 @@ export interface FieldConfig {
     adam?: AdamBrowserComponent;
     features?: Feature[];
     availableEntities?: EntityInfo[];
+    enableCollapseField?: boolean;
+    collapseField?: boolean;
 }

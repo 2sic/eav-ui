@@ -80,6 +80,7 @@ import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapp
 import {
     HyperlinkLibraryExpandableWrapperComponent
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 
 @NgModule({
     declarations: [
@@ -125,6 +126,7 @@ import {
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
+        EntityContentBlockComponent,
     ],
     imports: [
         // DndDraggable,
@@ -187,7 +189,8 @@ import {
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,
-        HyperlinkLibraryExpandableWrapperComponent
+        HyperlinkLibraryExpandableWrapperComponent,
+        EntityContentBlockComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]

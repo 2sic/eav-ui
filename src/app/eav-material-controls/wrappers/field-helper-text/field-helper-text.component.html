@@ -6,10 +6,6 @@
     <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''" [innerHtml]="config.settings.Notes"></span>
   </mat-hint>
   <mat-error *ngIf="inputInvalid && !disableError" class="mat-caption">
-    {{ (haveDirtyTouched
-    ? getErrorMessage()
-    : getErrorMessageWithoutDirtyTouched())
-    | translate:{ param:config.settings }
-    }}
+    {{ getErrorMessage() | translate:{ param:config.settings } }}
   </mat-error>
 </div>

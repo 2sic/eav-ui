@@ -40,9 +40,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
   get entityType() { return this.config.settings.EntityType || ''; }
   // get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
-  get enableCreate() { return this.config.settings.EnableCreate || true; }
-  get enableEdit() { return this.config.settings.EnableEdit || true; }
-  get enableRemove() { return this.config.settings.EnableRemove || true; }
+  get enableCreate() { return this.config.settings.EnableCreate === false ? false : true; }
+  get enableEdit() { return this.config.settings.EnableEdit === false ? false : true; }
+  get enableRemove() { return this.config.settings.EnableRemove === false ? false : true; }
   get enableDelete() { return this.config.settings.EnableDelete || false; }
   get disabled() { return this.group.controls[this.config.name].disabled; }
   // get inputInvalid() { return this.group.controls[this.config.name].invalid; }

@@ -32,7 +32,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   }
 
   get allowAssetsInRoot() {
-    return this.config.settings.AllowAssetsInRoot || true;
+    return this.config.settings.AllowAssetsInRoot === false ? false : true;
   }
 
   constructor() { }

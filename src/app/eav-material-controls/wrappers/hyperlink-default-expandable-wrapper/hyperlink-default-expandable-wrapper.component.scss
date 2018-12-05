@@ -21,6 +21,12 @@
             }
         }
 
+        &--disabled {
+            .c-ew__preview-field-hint {
+                color: $editUI-label-disabled-color;
+            }
+        }
+
         .thumbnail-before-input {
             padding-top: 0; 
             padding-bottom: 0; 
@@ -52,6 +58,9 @@
             &--disabled {
                 opacity: 0.5;
                 border-bottom: 0;
+                .c-ew__preview-field-hint {
+                    color: $editUI-label-disabled-color;
+                }
             }
         }
 

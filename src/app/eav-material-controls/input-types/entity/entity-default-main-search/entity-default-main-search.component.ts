@@ -56,15 +56,15 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   get allowMultiValue(): boolean { return this.config.settings.AllowMultiValue || false; }
   get enableTextEntry(): boolean { return this.config.settings.EnableTextEntry || false; }
   get entityType(): string { return this.config.settings.EntityType || ''; }
-  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting || true; }
-  get enableCreate(): boolean { return this.config.settings.EnableCreate || true; }
-  get enableEdit(): boolean { return this.config.settings.EnableEdit || true; }
-  get enableRemove(): boolean { return this.config.settings.EnableRemove || true; }
+  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting === false ? false : true; }
+  get enableCreate(): boolean { return this.config.settings.EnableAddExisting === false ? false : true; }
+  get enableEdit(): boolean { return this.config.settings.EnableEdit === false ? false : true; }
+  get enableRemove(): boolean { return this.config.settings.EnableRemove === false ? false : true; }
   get enableDelete(): boolean { return this.config.settings.EnableDelete || false; }
+  get separator() { return this.config.settings.Separator || ','; }
   get disabled(): boolean { return this.group.controls[this.config.name].disabled; }
   get inputInvalid(): boolean { return this.group.controls[this.config.name].invalid; }
   get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
-  get separator() { return this.config.settings.Separator || ','; }
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
   get touched() { return this.group.controls[this.config.name].touched || false; }
 
@@ -77,6 +77,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   }
 
   ngOnInit() {
+    console.log('ANTE:', this.config.settings.EnableRemove);
 
     this.setAvailableEntities();
   }
