@@ -366,6 +366,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       inputType === InputTypesConstants.entityContentBlocks) {
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
 
+      if (inputType === InputTypesConstants.entityContentBlocks) {
+        wrappers.push('app-collapsible-field-wrapper');
+      }
+
       if (allowMultiValue ||
         inputType === InputTypesConstants.entityContentBlocks) {
         wrappers.push('app-entity-expandable-wrapper');

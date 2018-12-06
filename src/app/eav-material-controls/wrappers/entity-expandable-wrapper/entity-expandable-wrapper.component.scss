@@ -8,6 +8,7 @@
         min-height: 38px; // 56px minus paddings
         cursor: pointer;
 
+        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
         border: 1px rgba($editUI-foreground-color, 0.44);
         border-bottom-style: solid;
         background: rgba($editUI-foreground-color, 0.08);

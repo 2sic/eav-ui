@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutAlign="start center" [ngClass]="config.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
+  <div fxFlex="auto" fxLayoutAlign="start center" (click)="config.collapseField = !config.collapseField" class="mat-caption">
+    <div *ngIf="config.enableCollapseField" fxLayoutAlign="start center" class="mat-caption">
+      <i *ngIf="config.collapseField" class="material-icons">keyboard_arrow_down</i>
+      <i *ngIf="!config.collapseField" class="material-icons">keyboard_arrow_up</i>
+      <span>&nbsp;</span>
+      <span>{{config.label }}&nbsp;{{config.required? '*': '' }}</span>
+    </div>
+  </div>
+</div>
+<div [ngStyle]="{ 'display': !(config.collapseField && config.enableCollapseField) ? 'block' : 'none' }">
+  <ng-container #fieldComponent></ng-container>
+</div>
+<app-field-helper-text *ngIf="config.collapseField && config.enableCollapseField" [config]="config" [group]="group"></app-field-helper-text>

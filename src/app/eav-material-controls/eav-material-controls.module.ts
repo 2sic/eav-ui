@@ -81,6 +81,7 @@ import {
     HyperlinkLibraryExpandableWrapperComponent
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
+import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 
 @NgModule({
     declarations: [
@@ -127,6 +128,7 @@ import { EntityContentBlockComponent } from './input-types/entity/entity-content
         DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
+        CollapsibleFieldWrapperComponent,
     ],
     imports: [
         // DndDraggable,
@@ -190,7 +192,8 @@ import { EntityContentBlockComponent } from './input-types/entity/entity-content
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
-        EntityContentBlockComponent
+        EntityContentBlockComponent,
+        CollapsibleFieldWrapperComponent
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService]
