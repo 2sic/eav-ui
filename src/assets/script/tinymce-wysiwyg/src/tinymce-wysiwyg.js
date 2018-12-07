@@ -6,22 +6,24 @@ import { attachAdam } from './tinymce-adam-service.js'
 
     class externalTinymceWysiwyg {
 
-        constructor(name, id, host, options, config) {
+        constructor(name, id, host, options, form, config) {
             this.name = name;
             this.id = id;
             this.host = host;
-            // this.options = options;
+            this.options = options;
+            this.form = form;
             this.config = config;
 
             this.adam;
         }
 
-        initialize(host, options, id) {
+        initialize(host, options, form, id) {
             // if (!this.host) {
             //     this.host = {};
             // }
             this.host = host;
-            // this.options = options;
+            this.options = options;
+            this.form = form;
             this.id = id;
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
@@ -49,6 +51,8 @@ import { attachAdam } from './tinymce-adam-service.js'
             </textarea>
             <span id="dummyfocus" tabindex="-1"></span>`;
 
+
+
             var settings = {
                 enableContentBlocks: false,
                 // auto_focus: false,
@@ -71,7 +75,7 @@ import { attachAdam } from './tinymce-adam-service.js'
                 setup: this.tinyMceInitCallback.bind(this),
             };
 
-
+            this.enableContentBlocksIfPossible(settings);
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
 
             // check if it's an additionally translated language and load the translations
@@ -182,11 +186,26 @@ import { attachAdam } from './tinymce-adam-service.js'
             //     return false;
             // });
         }
+
+        enableContentBlocksIfPossible(settings) {
+            // quit if there are no following fields
+            if (Object.keys(this.form.controls).length === this.options.index + 1) {
+                return;
+            }
+            var key = Object.keys(this.form.controls)[this.options.index + 1];
+            var nextField = this.form.controls[key];
+            console.log('enableContentBlocksIfPossible: ', nextField);
+            console.log('enableContentBlocksIfPossible: ', this.options);
+            if (nextField.type === 'entity-content-blocks') {
+                console.log('enableContentBlocksIfPossible:success');
+                settings.enableContentBlocks = true;
+            }
+        }
     }
 
     function externalComponentFactory(name) {
         var config = new tinymceWysiwygConfig();
-        return new externalTinymceWysiwyg(name, null, null, null, config);
+        return new externalTinymceWysiwyg(name, null, null, null, null, config);
     }
 
     window.addOn.register(externalComponentFactory('tinymce-wysiwyg'));

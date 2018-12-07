@@ -43,6 +43,7 @@ export default class tinymceWysiwygConfig {
     };
 
     buildModes(settings) {
+        console.log('settings.enableContentBlocks:', settings.enableContentBlocks);
         // the WYSIWYG-modes we offer, standard with simple toolbar and advanced with much more
         return {
             standard: {

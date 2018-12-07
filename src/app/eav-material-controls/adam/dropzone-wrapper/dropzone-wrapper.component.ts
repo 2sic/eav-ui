@@ -103,6 +103,10 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     // this.adamRef.updateCallback();
   }
 
+  onProccesing(args: any): void {
+    console.log('proccesing', args);
+  }
+
   /**
    * triger click on clickable element for load open
    */

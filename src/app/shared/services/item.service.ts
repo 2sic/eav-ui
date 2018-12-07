@@ -7,12 +7,14 @@ import { map, catchError, tap, filter, delay } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
+import { AttributeDef } from '../models/eav/attribute-def';
+import { InputFieldHelper } from '../helpers/input-field-helper';
 
 @Injectable()
 export class ItemService {
@@ -156,6 +158,22 @@ export class ItemService {
         map(data => {
           return data.filter(obj => obj.entity === null || idsList.filter(id => id === obj.entity.id || id === obj.entity.guid).length > 0);
         }));
+  }
+
+  /** Set default value and add that attribute in store */
+  public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string,
+    settingsTranslated: EavAttributesTranslated, currentLanguage: string): any {
+    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
+
+    this.addAttributeValue(
+      item.entity.id,
+      attribute.name,
+      defaultValue,
+      currentLanguage,
+      false,
+      item.entity.guid,
+      attribute.type);
+    return defaultValue;
   }
 
   // public selectItemById(id: number): Observable<Item> {

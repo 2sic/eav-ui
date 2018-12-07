@@ -14,6 +14,7 @@ export interface FieldConfig {
     options?: string[];
     placeholder?: string;
     inputType: string;
+    allInputTypeNames?: string[];
     isParentGroup?: boolean;
     type?: string;
     validation?: ValidatorFn[];

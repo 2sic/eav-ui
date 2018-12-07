@@ -23,7 +23,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/script/clipboard-paste/paste.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -99,7 +99,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
     console.log('this.customInputTypeHost', this.elReference.nativeElement);
-    factory.initialize(this.externalInputTypeHost, this.config, this.id);
+    factory.initialize(this.externalInputTypeHost, this.config, this.group, this.id);
     factory.render(this.elReference.nativeElement);
     console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 

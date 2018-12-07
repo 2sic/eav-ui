@@ -220,8 +220,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-
-
   getTranslationStateClass() {
     if (!this.translationState) {
       return '';
@@ -321,14 +319,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private translateAllConfiguration(currentLanguage: string) {
     this.config.settings = LocalizationHelper.translateSettings(this.config.fullSettings, this.currentLanguage, this.defaultLanguage);
     this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
-    // important - a hidden field don't have validations and is not required
-    const visibleInEditUI = (this.config.settings.VisibleInEditUI === false) ? false : true;
-    this.config.validation = visibleInEditUI
-      ? ValidationHelper.setDefaultValidations(this.config.settings)
-      : [];
-    this.config.required = this.config.settings.Required && visibleInEditUI
-      ? this.config.settings.Required
-      : false;
+    this.config.validation = ValidationHelper.getValidations(this.config.settings);
+    this.config.required = ValidationHelper.isRequired(this.config.settings);
   }
 
   private subscribeToCurrentLanguageFromStore() {
