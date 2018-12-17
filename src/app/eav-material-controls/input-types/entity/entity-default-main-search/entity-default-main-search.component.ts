@@ -77,8 +77,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   }
 
   ngOnInit() {
-    console.log('ANTE:', this.config.settings.EnableRemove);
-
     this.setAvailableEntities();
   }
 

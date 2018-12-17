@@ -85,7 +85,7 @@ export default class tinymceWysiwygConfig {
             contextmenu: modes.standard.contextmenu, //"link image | charmap hr adamimage",
             autosave_ask_before_unload: false,
             paste_as_text: true,
-            extended_valid_elements: this.svc.validateAlso,
+            extended_valid_elements: svc.validateAlso,
             //'@[class]' // allow classes on all elements, 
             //+ ',i' // allow i elements (allows icon-font tags like <i class="fa fa-...">)
             //+ ",hr[sxc|guid]", // experimental: allow inline content-blocks

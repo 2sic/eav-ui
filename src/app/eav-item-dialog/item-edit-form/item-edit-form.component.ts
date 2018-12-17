@@ -19,7 +19,7 @@ import {
   EavAttributes,
   EavAttributesTranslated,
 } from '../../shared/models/eav';
-import { Actions, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
@@ -33,6 +33,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import * as fromItems from '../../shared/store/actions/item.actions';
 import isEmpty from 'lodash/isEmpty';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
+import { EavConfiguration } from '../../shared/models/eav-configuration';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -69,7 +70,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.checkAreAllControlsDisabled();
   }
 
-  private eavConfig;
+  private eavConfig: EavConfiguration;
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
 
@@ -130,7 +131,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     if (this.form.form.valid ||
       this.allControlsAreDisabled ||
       (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
-      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
+      this.eavService.saveItem(Number(this.eavConfig.appId), this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -183,7 +184,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
             let currentFieldGroup: FieldConfig = parentFieldGroup;
 
             const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
-            console.log('allInputTypes', allInputTypeNames);
             // loop through contentType attributes
             data.contentType.attributes.forEach((attribute, index) => {
               try {
@@ -268,7 +268,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       required: required,
       settings: settingsTranslated,
       inputType: inputType,
-      allInputTypeNames: allInputTypeNames,
+      allInputTypeNames: allInputTypeNames, // TODO: maybe better way
       type: attribute.type,
       validation: validationList,
       value: value,

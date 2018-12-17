@@ -21,7 +21,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
   dialogIsOpen = false;
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.name].value.replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
   }
 
   get id() {

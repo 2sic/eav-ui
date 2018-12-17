@@ -4,19 +4,14 @@
 .c-ew {
     &__preview {
         position:relative;
-        //  margin: 16px 0 0 0;
-        // margin: 0 0 16px 0;
         padding: 6px 12px 12px 12px;
-        min-height: 119px;
-        max-height: 119px;
-        height: 119px;
+        min-height: 37px; // 56px minus paddings
+        max-height: 121px;
         cursor: pointer;
        
         border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
         border: 1px rgba($editUI-foreground-color, 0.44);
         border-bottom-style: solid;
-        // rgba($editUI-foreground-color, 0.44);
-        // border-color: map_get($mat-eav-item-dialog-secondary, 500);
         background: rgba($editUI-foreground-color, 0.08);
 
         &-container {
@@ -30,18 +25,18 @@
             }
         }
 
-        &--input-invalid {
+        &--invalid {
             padding: 6px 12px 11px 12px;
             border: 2px;
             border-bottom-style: solid;
             border-color: map_get($mat-eav-item-dialog-error, 500);
         }
 
-        .c-ew__color--accent{
+        .color__accent {
             color: map_get($mat-eav-item-dialog-secondary, 500);
         }
 
-        .c-ew__color--primary {
+        .color__primary {
             color: rgba($editUI-foreground-color, 0.44);
         }
 
@@ -58,6 +53,7 @@
         }
     }
 
+   
     &__container {
         border-radius: $edit-ui-dialog-border-radius;
         position: fixed;
@@ -98,27 +94,6 @@
             position:relative;
             // border-radius: $edit-ui-input-border-radius;
             background: map_get($mat-eav-item-dialog-background, 50);
-
-            // app-dropzone .dropzone-container {
-            //     display: flex;
-            //     flex-direction: column;
-            //     height: 100%;
-            // }
-
-            // app-dropzone .dropzone-content {
-            //     flex: 1 1 100%;
-            //     overflow: scroll;
-            //     // Hide scroll
-            //    -ms-overflow-style: none;  // IE 10+
-            //    overflow: -moz-scrollbars-none;  // Firefox
-            //    &::-webkit-scrollbar { 
-            //        display: none;  // Safari and Chrome
-            //    }
-            // }
-
-            // adam-browser {
-            //     background: white;
-            // }   
         }
     }
 }

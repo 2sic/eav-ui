@@ -260,8 +260,7 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
         tooltip: "ContentBlock.Add",
         onclick: function () {
             var guid = Math.uuid().toLowerCase(); // requires the uuid-generator to be included
-
-            editor.insertContent("<hr sxc=\"sxc-content-block\" guid=\"" + guid + "\" />");
+            editor.insertContent('<hr sxc=\"sxc-content-block\" guid=\"' + guid + '\" />');
         }
     });
     // #endregion

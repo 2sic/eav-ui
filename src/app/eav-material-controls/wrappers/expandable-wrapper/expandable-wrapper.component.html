@@ -19,13 +19,14 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--invalid' : ''">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
+      <mat-label *ngIf="!inputInvalid" class="color__primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
       <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
         {{config.required ? '*': '' }}</mat-label>
-      <div *ngIf="value" [innerHtml]="value"></div>
+      <div *ngIf="value" class="c-ew__preview-content" [innerHtml]="value">
+      </div>
     </div>
   </div>
   <!-- hasDirtyTouched="fasle"  -->

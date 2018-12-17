@@ -79,7 +79,8 @@ import { attachAdam } from './tinymce-adam-service.js'
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
 
             // check if it's an additionally translated language and load the translations
-            var lang2 = 'es'; //  /* "de" */ languages.currentLanguage.substr(0, 2);
+            // TODO:
+            var lang2 = 'en'; //  /* "de" */ languages.currentLanguage.substr(0, 2);
             if (this.config.svc().languages.indexOf(lang2) >= 0) {
                 options = Object.assign(options, {
                     language: lang2,
@@ -189,15 +190,11 @@ import { attachAdam } from './tinymce-adam-service.js'
 
         enableContentBlocksIfPossible(settings) {
             // quit if there are no following fields
-            if (Object.keys(this.form.controls).length === this.options.index + 1) {
+            if (this.options.allInputTypeNames.length === this.options.index + 1) {
                 return;
             }
-            var key = Object.keys(this.form.controls)[this.options.index + 1];
-            var nextField = this.form.controls[key];
-            console.log('enableContentBlocksIfPossible: ', nextField);
-            console.log('enableContentBlocksIfPossible: ', this.options);
-            if (nextField.type === 'entity-content-blocks') {
-                console.log('enableContentBlocksIfPossible:success');
+            var nextField = this.options.allInputTypeNames[this.options.index + 1];
+            if (nextField === 'entity-content-blocks') {
                 settings.enableContentBlocks = true;
             }
         }

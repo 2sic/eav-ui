@@ -98,7 +98,27 @@
    }
 }
 
-.c-ew__preview-container .mat-list .mat-list-item .mat-list-item-content {
-    max-height: 24px;
-    padding: 0 16px 0 16px;
+.c-ew__preview-container {
+
+    .mat-list .mat-list-item .mat-list-item-content {
+        max-height: 24px;
+        padding: 0 16px 0 16px;
+    }
+        
+    /* content block placeholders */
+    /* added in 08.04.06 - purpose still secret :)*/
+    .sxc-content-block {
+        background-color: #B0DCFF; /* temporary color */
+        height: 75px;
+    }
+    .sxc-content-block::after {
+        color: white;
+        content: "App / Content";
+        position: absolute;
+        text-align: center;
+        font-size: 25px;
+        display: inline-block;
+        width: 100%;
+        margin-top: 17px;
+    }
 }

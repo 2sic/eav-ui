@@ -148,7 +148,9 @@ export class EavFieldDirective implements OnInit {
       fieldConfig.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js',
+        'assets/script/tinymce-wysiwyg/src/libs/math.uuid.js',
+        'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
       // ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
       FileTypeConstants.css);
   }
