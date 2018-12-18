@@ -51,8 +51,6 @@ import { attachAdam } from './tinymce-adam-service.js'
             </textarea>
             <span id="dummyfocus" tabindex="-1"></span>`;
 
-
-
             var settings = {
                 enableContentBlocks: false,
                 // auto_focus: false,
@@ -87,7 +85,6 @@ import { attachAdam } from './tinymce-adam-service.js'
                     language_url: "/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/" + lang2 + ".js"
                 });
             }
-
 
             tinymce.init(options);
         }
@@ -143,12 +140,7 @@ import { attachAdam } from './tinymce-adam-service.js'
          * @param {*} newValue 
          */
         setValue(container, newValue) {
-            // var elements = container.getElementsByTagName('div');
-            // console.log('Exernal outside valu:', elements[1].innerHTML);
-            // console.log('Exernal outside newvalue:', newValue);
-            // if (elements[1].innerHTML !== newValue)
-            //     elements[1].innerHTML = newValue;
-            console.log('setValue', this.id);
+            console.log('[set value] tynimce id:', this.id);
             var oldValue = tinymce.get(this.id).getContent();
             if (newValue !== oldValue) {
                 tinymce.get(this.id).setContent(newValue);
@@ -174,11 +166,12 @@ import { attachAdam } from './tinymce-adam-service.js'
                 // editor.selection.select(editor.getBody(), true);
                 // editor.selection.collapse(false);
 
-                this.host.setInitValues();
+                // TODO: see do we need this
+                // this.host.setInitValues();
             });
 
             editor.on('change', e => {
-                console.log('Editor was change', editor.getContent());
+                console.log('[set value] Editor was change', editor.getContent());
                 this.changeCheck(e, editor.getContent())
             });
 

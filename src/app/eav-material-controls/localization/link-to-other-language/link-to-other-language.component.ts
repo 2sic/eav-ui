@@ -50,7 +50,6 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
     );
   }
 
-
   translate() {
     this.showLanguages = false;
     this.selectedOption.linkType = TranslationLinkTypeConstants.translate;

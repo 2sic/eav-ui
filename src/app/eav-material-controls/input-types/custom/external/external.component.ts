@@ -14,6 +14,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
+import { LanguageService } from '../../../../shared/services/language.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -30,7 +31,6 @@ export class ExternalComponent implements FieldExternal, OnInit {
   group: FormGroup;
   @Input()
   set factory(value: any) {
-    console.log('set factory', value);
     if (value) {
       this.renderExternalComponent(value);
       this.subscribeFormChange(value);
@@ -39,7 +39,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   private subscriptions: Subscription[] = [];
+
   loaded = true;
+  externalFactory: any;
+  updateTriggeredByControl = false;
 
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
@@ -49,17 +52,16 @@ export class ExternalComponent implements FieldExternal, OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
-  externalFactory: any;
-
   constructor(private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService) { }
+    private eavService: EavService) {
+  }
 
   /**
    * This is host methods which the external control sees
    */
   private externalInputTypeHost = {
-    update: (value) => this.update(value),
-    setInitValues: (value) => this.setInitValues(),
+    update: (value: string) => this.update(value),
+    setInitValues: (value: string) => this.setInitValues(),
     // toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
     // adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
     attachAdam: () => this.attachAdam()
@@ -111,10 +113,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
     this.loaded = false;
   }
 
-  private update(value) {
-    console.log('ExternalComponent update change', value);
+  private update(value: string) {
     // TODO: validate value
     this.group.controls[this.config.name].patchValue(value);
+    this.updateTriggeredByControl = true;
   }
 
   /**
@@ -122,6 +124,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
    */
   private setInitValues() {
     this.setExternalControlValues(this.externalFactory, this.group.controls[this.config.name].value);
+    this.setExternalControlOptions(this.externalFactory);
   }
 
   private attachAdam() {
@@ -139,7 +142,6 @@ export class ExternalComponent implements FieldExternal, OnInit {
           ? this.externalFactory.adamSetValue(value)
           : alert('adam attached but adamSetValue method not exist');
 
-
       this.config.adam.afterUploadCallback = (value) =>
         this.externalFactory.adamAfterUpload
           ? this.externalFactory.adamAfterUpload(value)
@@ -149,7 +151,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
       this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
 
       return {
-        toggleAdam: (value1, value2) => this.config.adam.toggle(value1), // this.toggleAdam(value1, value2)
+        toggleAdam: (value1: any, value2: any) => this.config.adam.toggle(value1),
         setAdamConfig: (adamConfig: AdamConfig) => this.config.adam.setConfig(adamConfig),
         adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
       };
@@ -162,8 +164,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private suscribeValueChanges(factory: any) {
     this.subscriptions.push(
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        console.log('ExternalComponent suscribeValueChanges', item);
         this.setExternalControlValues(factory, item);
+        this.setExternalControlOptions(factory);
       })
     );
   }
@@ -175,8 +177,11 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private subscribeFormChange(factory: any) {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe((item) => {
-        console.log('Formm CHANGEEEEEEEEEEEEEEEEEE', item);
-        this.setExternalControlValues(factory, item[this.config.name]);
+        if (!this.updateTriggeredByControl) {
+          this.setExternalControlValues(factory, item[this.config.name]);
+          this.setExternalControlOptions(factory);
+        }
+        this.updateTriggeredByControl = false;
       })
     );
   }
@@ -186,15 +191,23 @@ export class ExternalComponent implements FieldExternal, OnInit {
    * @param factory
    * @param value
    */
-  private setExternalControlValues(factory, value) {
+  private setExternalControlValues(factory: any, value: string) {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
       if (value) {
-        console.log('set valueeee', value);
         factory.setValue(this.elReference.nativeElement, value);
       }
-      factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
+    }
+  }
 
+  /**
+   * refresh only exteranl component options
+   * @param factory
+   */
+  private setExternalControlOptions(factory: any) {
+    // if container have value
+    if (this.elReference.nativeElement.innerHTML) {
+      factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
       // this.setAdamOptions();
     }
   }

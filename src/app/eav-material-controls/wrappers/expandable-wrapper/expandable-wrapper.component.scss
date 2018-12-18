@@ -32,12 +32,23 @@
             border-color: map_get($mat-eav-item-dialog-error, 500);
         }
 
+        &--disabled {
+            border-color: $editUI-disabled-background;
+            background-color: $editUI-disabled-background;
+            cursor: default;
+            // $editUI-label-disabled-color
+        }
+
         .color__accent {
             color: map_get($mat-eav-item-dialog-secondary, 500);
         }
 
         .color__primary {
             color: rgba($editUI-foreground-color, 0.44);
+        }
+
+        .color__label-disabled {
+            color: $editUI-label-disabled-color;
         }
 
         &:hover {
