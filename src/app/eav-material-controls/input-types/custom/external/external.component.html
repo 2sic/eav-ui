@@ -1,15 +1,5 @@
-<!-- <mat-form-field [formGroup]="group" [style.width]="'100%'">
-    <input matInput type="text" id="demo" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
-        [required]="config.required" #someVar1>
-</mat-form-field> -->
-
-<!-- style="display:none;" -->
-
 <mat-spinner *ngIf="loaded"></mat-spinner>
 <div #container style="height:100%"></div>
 
-<mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
-<mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error>
-
-
-<!-- <div [innerHtml]="html"></div> -->
+<!-- <mat-hint align="start" *ngIf="config.settings.Notes">{{config.settings.Notes}}</mat-hint>
+<mat-error *ngIf="inputInvalid">{{ getErrorMessage() | translate:{ param: config.settings } }}</mat-error> -->

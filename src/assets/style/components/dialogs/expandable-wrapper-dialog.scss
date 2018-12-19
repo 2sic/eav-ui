@@ -70,6 +70,14 @@
     adam-hint {
         z-index:1;
     }
+    
+    // important for tinyMCE
+    .mce-tinymce {
+        display: flex; 
+        flex-direction: column;
+        flex: 1;
+        align-items:stretch;
+    }
 
     &--empty {
         .adam-dialog-container {

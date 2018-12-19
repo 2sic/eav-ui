@@ -43,15 +43,16 @@
 /* } */
 
 /*Flex for iframe mode*/
-div.wrap-float-label, .mce-tinymce, .mce-stack-layout, .mce-edit-area{
+div.wrap-float-label, .mce-stack-layout, .mce-edit-area {
     display: flex!important;
     flex-direction: column;
     flex: 1;
     align-items:stretch;
 }
+
 .mce-tinymce iframe{
     flex: 1;
-}
+} 
 
 /*Editing area*/
  .mce-container-body .mce-edit-area {
@@ -183,3 +184,5 @@ hr[sxc]::after {
 .feature-contentblocks .mce-btn-addcontentblock.mce-btn {
     display: inline-block;
 }*/
+
+

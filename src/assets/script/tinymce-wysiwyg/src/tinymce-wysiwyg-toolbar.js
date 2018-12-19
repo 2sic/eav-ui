@@ -19,15 +19,9 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
                 watchChange();
             }
             else {
-                // this work only in inline mode
-                //  editor.on("init", watchChange());
-                // this work only when not in inline mode
-
-                // TODO:
-                // editor.on('SetContent', function (e) {
-                //     console.log('editor SetContent', editor.formatter);
-                //     watchChange()
-                // });
+                editor.on('init', function () {
+                    watchChange();
+                });
             }
         };
     }
@@ -46,6 +40,7 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
 
     // call register once the editor-object is ready
     editor.on('init', function () {
+        console.log('editor SetContent init registerTinyMceFormats');
         registerTinyMceFormats(editor, vm.host);
     });
 
@@ -155,7 +150,6 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
             { icon: "superscript", text: "Superscript", onclick: function () { editor.execCommand("superscript"); } },
             { icon: "subscript", text: "Subscript", onclick: function () { editor.execCommand("subscript"); } }
         ]
-
     });
 
     // drop-down with italic, strikethrough, ...
@@ -171,7 +165,6 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
             { icon: "outdent", text: "Outdent", onclick: function () { editor.execCommand("Outdent"); } },
             { icon: "indent", text: "Indent", onclick: function () { editor.execCommand("Indent"); } }
         ]
-
     });
 
     //#region mode switching and the buttons for it

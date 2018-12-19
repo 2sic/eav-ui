@@ -104,7 +104,8 @@ export default class tinymceWysiwygConfig {
 
             language: svc.defaultLanguage,
 
-            debounce: false // DONT slow-down model updates - otherwise we sometimes miss the last changes
+            debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
+            // link_context_toolbar: true,
 
             //paste_preprocess: function (plugin, args) {
             //    console.log(args.content);

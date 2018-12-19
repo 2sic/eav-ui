@@ -166,8 +166,7 @@ import { attachAdam } from './tinymce-adam-service.js'
                 // editor.selection.select(editor.getBody(), true);
                 // editor.selection.collapse(false);
 
-                // TODO: see do we need this
-                // this.host.setInitValues();
+                this.host.setInitValues();
             });
 
             editor.on('change', e => {
@@ -175,9 +174,12 @@ import { attachAdam } from './tinymce-adam-service.js'
                 this.changeCheck(e, editor.getContent())
             });
 
+            editor.on('click', e => {
+                console.log('[set value] click', editor);
+            });
             // This prevents the blur event from hiding the toolbar - inline mode
             // editor.on('blur', function () {
-            //     return false;
+            //     // return false;
             // });
         }
 
