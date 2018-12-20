@@ -6,18 +6,19 @@ import { attachAdam } from './tinymce-adam-service.js'
 
     class externalTinymceWysiwyg {
 
-        constructor(name, id, host, options, form, config) {
+        constructor(name, id, host, options, config, currentLang) {
             this.name = name;
             this.id = id;
             this.host = host;
             this.options = options;
-            this.form = form;
+            // this.form = form;
             this.config = config;
+            this.currentLang = currentLang;
 
             this.adam;
         }
 
-        initialize(host, options, form, id) {
+        initialize(host, options, form, currentLang, id) {
             // if (!this.host) {
             //     this.host = {};
             // }
@@ -25,6 +26,7 @@ import { attachAdam } from './tinymce-adam-service.js'
             this.options = options;
             this.form = form;
             this.id = id;
+            this.currentLang = currentLang;
             // this.options = somethingWithCallbacks.options;
             console.log('myComponent initialize', this.host);
 
@@ -76,15 +78,7 @@ import { attachAdam } from './tinymce-adam-service.js'
             this.enableContentBlocksIfPossible(settings);
             var options = Object.assign(selectorOptions, this.config.getDefaultOptions(settings));
 
-            // check if it's an additionally translated language and load the translations
-            // TODO:
-            var lang2 = 'en'; //  /* "de" */ languages.currentLanguage.substr(0, 2);
-            if (this.config.svc().languages.indexOf(lang2) >= 0) {
-                options = Object.assign(options, {
-                    language: lang2,
-                    language_url: "/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/" + lang2 + ".js"
-                });
-            }
+            options = this.config.setLanguageOptions(this.currentLang, options);
 
             tinymce.init(options);
         }
@@ -107,10 +101,7 @@ import { attachAdam } from './tinymce-adam-service.js'
          * @param {*} value 
          */
         validateValue(value) {
-            // if (value.length < 3) {
-            //     return false;
-            // }
-            //TODO: show validate message ???
+            // TODO: show validate message ???
             return true;
         }
 
@@ -129,8 +120,6 @@ import { attachAdam } from './tinymce-adam-service.js'
             else if (!disabled && isReadOnly) {
                 tinymce.get(this.id).setMode('code');
             }
-
-            //  document.scrollTop();
         }
 
         /**
@@ -146,10 +135,6 @@ import { attachAdam } from './tinymce-adam-service.js'
                 tinymce.get(this.id).setContent(newValue);
             }
         }
-
-        // isDirty() {
-        //     return tinymce.get(this.id).isDirty();
-        // }
 
         /**
          * on tinyMce setup we set toolbarButtons and change event listener
@@ -174,9 +159,6 @@ import { attachAdam } from './tinymce-adam-service.js'
                 this.changeCheck(e, editor.getContent())
             });
 
-            editor.on('click', e => {
-                console.log('[set value] click', editor);
-            });
             // This prevents the blur event from hiding the toolbar - inline mode
             // editor.on('blur', function () {
             //     // return false;
@@ -197,7 +179,7 @@ import { attachAdam } from './tinymce-adam-service.js'
 
     function externalComponentFactory(name) {
         var config = new tinymceWysiwygConfig();
-        return new externalTinymceWysiwyg(name, null, null, null, null, config);
+        return new externalTinymceWysiwyg(name, null, null, null, config, 'en');
     }
 
     window.addOn.register(externalComponentFactory('tinymce-wysiwyg'));

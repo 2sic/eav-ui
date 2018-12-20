@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { FieldExternal } from '../../../../eav-dynamic-form/model/field-external';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
@@ -15,6 +16,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { EavService } from '../../../../shared/services/eav.service';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { LanguageService } from '../../../../shared/services/language.service';
+
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -53,7 +55,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   constructor(private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService) {
+    private eavService: EavService,
+    private translate: TranslateService) {
+
   }
 
   /**
@@ -67,41 +71,13 @@ export class ExternalComponent implements FieldExternal, OnInit {
     attachAdam: () => this.attachAdam()
   };
 
-  // TODO: need to finish validation
-  getErrorMessage() {
-    // console.log('trigger getErrorMessage1:', this.config.name);
-    // console.log('trigger getErrorMessage:',
-
-    let formError = '';
-    const control = this.group.controls[this.config.name];
-    if (control) {
-      const messages = this.validationMessagesService.validationMessages();
-      if (control && control.invalid) {
-        // if ((control.dirty || control.touched)) {
-        // if (this.externalFactory && this.externalFactory.isDirty) {
-        Object.keys(control.errors).forEach(key => {
-          if (messages[key]) {
-            formError = messages[key](this.config);
-          }
-        });
-        // }
-        // }
-      }
-    }
-    // console.log('control.dirty:', control.dirty);
-    // console.log('control.touched:', control.touched);
-    return formError;
-
-    // this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config));
-    // return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
-  }
-
   ngOnInit() { }
 
   private renderExternalComponent(factory: any) {
     console.log('this.customInputTypeHost', this.externalInputTypeHost);
     console.log('this.customInputTypeHost', this.elReference.nativeElement);
-    factory.initialize(this.externalInputTypeHost, this.config, this.group, this.id);
+    console.log('this.translate.currentLang', this.translate.currentLang);
+    factory.initialize(this.externalInputTypeHost, this.config, this.group, this.translate.currentLang, this.id);
     factory.render(this.elReference.nativeElement);
     console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 
@@ -116,6 +92,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private update(value: string) {
     // TODO: validate value
     this.group.controls[this.config.name].patchValue(value);
+    this.setDirty();
     this.updateTriggeredByControl = true;
   }
 
@@ -185,6 +162,12 @@ export class ExternalComponent implements FieldExternal, OnInit {
       })
     );
   }
+
+  private setDirty() {
+    this.group.controls[this.config.name].markAsDirty();
+  }
+
+
 
   /**
    * write value from the form into the view in external component

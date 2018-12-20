@@ -118,5 +118,17 @@ export default class tinymceWysiwygConfig {
             //}
         };
     };
+
+    setLanguageOptions(currentLang, options) {
+        // check if it's an additionally translated language and load the translations
+        var lang2 = currentLang.substr(0, 2); //  /* "de" */ 
+        if (this.svc().languages.indexOf(lang2) >= 0) {
+            options = Object.assign(options, {
+                language: lang2,
+                language_url: "/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/" + lang2 + ".js"
+            });
+        }
+        return options;
+    }
 }
 // })();
