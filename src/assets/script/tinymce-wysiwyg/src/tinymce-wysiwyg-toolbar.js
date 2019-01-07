@@ -5,6 +5,10 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
     var editor = editor;
     //#region helpers like initOnPostRender(name)
 
+    //TODO: translate:
+    // if ($scope.tinymceOptions.language)
+    //             tinyMceHelpers.addTranslations(editor, $scope.tinymceOptions.language);
+
     // helper function to add activate/deactivate to buttons like alignleft, alignright etc.
     function initOnPostRender(name) { // copied/modified from https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
         return function () {

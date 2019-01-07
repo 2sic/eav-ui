@@ -19,7 +19,7 @@ import {
   EavAttributes,
   EavAttributesTranslated,
 } from '../../shared/models/eav';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
@@ -104,11 +104,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /** Observe is item form is saved */
   formSaveObservable(): Observable<Action> {
     return this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) =>
-        this.item.entity.id === 0
-          ? this.item.entity.guid === action.item.entity.guid
-          : this.item.entity.id === action.item.entity.id));
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
+        filter((action: fromItems.SaveItemAttributesValuesAction) =>
+          this.item.entity.id === 0
+            ? this.item.entity.guid === action.item.entity.guid
+            : this.item.entity.id === action.item.entity.id));
   }
 
   /**

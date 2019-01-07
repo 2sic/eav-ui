@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 import 'reflect-metadata';
@@ -335,7 +335,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private saveFormMessagesSubscribe() {
     this.subscriptions.push(this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
         if (this.formIsSaved) {
@@ -350,7 +350,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         // }
       }));
     this.subscriptions.push(this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR))
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
         console.log('error END', action.error);
         // TODO show error message

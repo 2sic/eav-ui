@@ -4,16 +4,16 @@
     border-width: 1px;
     border-color: rgb(170,178,189);
     border-radius: 4px;
-    padding: 8px;
+    /* padding: 8px; */
     padding-left: 0;
     overflow: auto;
 
-    font-size: larger;
+    font-size: medium;
     color:rgb(69, 79, 99);
 
     font-family: 'Roboto', sans-serif;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 400; 
 
     /*  For iFrame mode */
     border: none;
