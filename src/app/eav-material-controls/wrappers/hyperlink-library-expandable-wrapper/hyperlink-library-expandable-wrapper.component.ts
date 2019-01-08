@@ -22,6 +22,8 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   @Input() config: FieldConfig;
   group: FormGroup;
 
+  dialogIsOpen = false;
+
   get value() { return this.group.controls[this.config.name].value; }
   get id() { return `${this.config.entityId}${this.config.index}`; }
   get inputInvalid() { return this.group.controls[this.config.name].invalid; }

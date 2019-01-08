@@ -1,8 +1,8 @@
-@import "../../../../../../theme.scss";
 @import "../../../../../assets/style/variables.scss";
 
 .dnd-placeholder {
-    background-color:  mat-color($editUI-theme-foreground, base,  0.08);
+   // background-color:  mat-color($editUI-theme-foreground, base,  0.08);
+    background-color: rgba($editUI-foreground-color, 0.08);
     display: block;
     min-height: 20px;
     padding-top: 15px;
@@ -20,7 +20,8 @@
     // padding-bottom: 10px;
 
     height: 56px;
-    background:  mat-color($editUI-theme-foreground, base,  0.08);
+    // background:  mat-color($editUI-theme-foreground, base,  0.08);
+    background: rgba($editUI-foreground-color, 0.08);
     padding: 0 0 0 12px;
 }
 

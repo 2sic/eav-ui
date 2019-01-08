@@ -27,7 +27,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   showPreview = true;
   toggleAdamValue = false;
   link = '';
-  showFieldHints;
+
 
   // TODOD: temp
   private eavConfig;

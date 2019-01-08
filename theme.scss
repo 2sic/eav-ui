@@ -1,139 +1,8 @@
 // @import '../node_modules/@angular/material/theming';
 @import '~@angular/material/theming';
+@import "assets/style/variables.scss";
+@import "assets/style/theme/material-colors.scss";
 @include mat-core();
-
-// Define azing colors.
-$mat-eav-item-dialog-primary: (
-  50 : #ffffff,
-  100 : #ffffff,
-  200 : #ffffff,
-  300 : #ffffff,
-  400 : #ffffff,
-  500 : #ffffff,
-  600 : #ffffff,
-  700 : #ffffff,
-  800 : #ffffff,
-  900 : #ffffff,
-  A100 : #ffffff,
-  A200 : #ffffff,
-  A400 : #ffffff,
-  A700 : #ffffff,
-  contrast: (
-      50 : #000000,
-      100 : #000000,
-      200 : #000000,
-      300 : #000000,
-      400 : #000000,
-      500 : #000000,
-      600 : #000000,
-      700 : #000000,
-      800 : #000000,
-      900 : #000000,
-      A100 : #000000,
-      A200 : #000000,
-      A400 : #000000,
-      A700 : #000000,
-  )
-);
-
-$mat-eav-item-dialog-secondary: (
-  50 : #e0f1fe,
-  100 : #b3dbfc,
-  200 : #80c3fa,
-  300 : #4dabf7,
-  400 : #2699f6,
-  500 : #0087f4,
-  600 : #007ff3,
-  700 : #0074f1,
-  800 : #006aef,
-  900 : #0057ec,
-  A100 : #ffffff,
-  A200 : #e0e9ff,
-  A400 : #adc6ff,
-  A700 : #93b4ff,
-  contrast: (
-      50 : #000000,
-      100 : #000000,
-      200 : #000000,
-      300 : #000000,
-      400 : #000000,
-      500 : #ffffff,
-      600 : #ffffff,
-      700 : #ffffff,
-      800 : #ffffff,
-      900 : #ffffff,
-      A100 : #000000,
-      A200 : #000000,
-      A400 : #000000,
-      A700 : #000000,
-  )
-);
-
-$mat-eav-item-dialog-error: (
-    50 : #f6e0e6,
-    100 : #e7b3c1,
-    200 : #d88098,
-    300 : #c84d6e,
-    400 : #bc264f,
-    500 : #b00030,
-    600 : #a9002b,
-    700 : #a00024,
-    800 : #97001e,
-    900 : #870013,
-    A100 : #ffb3b9,
-    A200 : #ff808a,
-    A400 : #ff4d5b,
-    A700 : #ff3443,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #ffffff,
-        400 : #ffffff,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #ffffff,
-    )
-);
-
-$mat-eav-item-dialog-background: (
-  50 : #e9eaec,
-  100 : #c7cad0,
-  200 : #a2a7b1,
-  300 : #7d8492,
-  400 : #61697a,
-  500 : #454f63,
-  600 : #3e485b,
-  700 : #363f51,
-  800 : #2e3647,
-  900 : #1f2635,
-  A100 : #7ca3ff,
-  A200 : #4980ff,
-  A400 : #165cff,
-  A700 : #004bfc,
-  contrast: (
-      50 : #000000,
-      100 : #000000,
-      200 : #000000,
-      300 : #000000,
-      400 : #ffffff,
-      500 : #ffffff,
-      600 : #ffffff,
-      700 : #ffffff,
-      800 : #ffffff,
-      900 : #ffffff,
-      A100 : #000000,
-      A200 : #ffffff,
-      A400 : #ffffff,
-      A700 : #ffffff,
-  )
-);
 
 $editUI-theme-primary: mat-palette($mat-eav-item-dialog-primary);
 $editUI-theme-accent: mat-palette($mat-eav-item-dialog-secondary);// A200, A100, A400
@@ -156,7 +25,7 @@ $editUI-theme-background: (
   disabled-list-option: map_get($mat-eav-item-dialog-background, 200),
 );
  
-$editUI-foreground-color: #454f63;
+// $editUI-foreground-color: #454f63;
 $editUI-theme-foreground: (
   base:              $editUI-foreground-color,
   divider:           $dark-dividers,
@@ -193,8 +62,8 @@ $editUI-light-theme: mat-light-theme(
 
 // override matFormFieldFill theme
 // Theme styles that only apply to the fill appearance of the form-field.
-$editUI-disabled-background: mat-color($editUI-theme-foreground, base, 0.04);
-$editUI-label-disabled-color: mat-color($editUI-theme-foreground, base, 0.24);
+// $editUI-disabled-background: mat-color($editUI-theme-foreground, base, 0.04);
+// $editUI-label-disabled-color: mat-color($editUI-theme-foreground, base, 0.24);
 
 @mixin mat-form-field-fill-theme($theme) {
   $foreground: map-get($theme, foreground);

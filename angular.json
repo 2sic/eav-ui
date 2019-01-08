@@ -25,7 +25,12 @@
             ],
             "scripts": [
               "src/assets/script/clipboard-paste/paste.js"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./"
+              ]
+            }
           },
           "configurations": {
             "production": {
