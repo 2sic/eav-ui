@@ -15,10 +15,11 @@ import { attachAdam } from './tinymce-adam-service.js'
             this.config = config;
             this.currentLang = currentLang;
 
+            this.translateService
             this.adam;
         }
 
-        initialize(host, options, form, currentLang, id) {
+        initialize(host, options, form, translateService, id) {
             // if (!this.host) {
             //     this.host = {};
             // }
@@ -26,10 +27,8 @@ import { attachAdam } from './tinymce-adam-service.js'
             this.options = options;
             this.form = form;
             this.id = id;
-            this.currentLang = currentLang;
-            // this.options = somethingWithCallbacks.options;
-            console.log('myComponent initialize', this.host);
-
+            this.currentLang = translateService.currentLang;
+            this.translateService = translateService;
             // Attach adam
             attachAdam(this);
             // Set Adam configuration
@@ -81,12 +80,13 @@ import { attachAdam } from './tinymce-adam-service.js'
             options = this.config.setLanguageOptions(this.currentLang, options);
 
             tinymce.init(options);
+
         }
 
         /**
          * function call on change
-         * @param {*} event 
-         * @param {*} value 
+         * @param {*} event
+         * @param {*} value
          */
         changeCheck(event, value) {
             // do validity checks
@@ -111,8 +111,6 @@ import { attachAdam } from './tinymce-adam-service.js'
          * @param {*} disabled 
          */
         setOptions(container, disabled) {
-            console.log('set disable 1', tinymce.get(this.id));
-
             var isReadOnly = tinymce.get(this.id).readonly;
             if (disabled && !isReadOnly) {
                 tinymce.get(this.id).setMode('readonly');
@@ -141,13 +139,12 @@ import { attachAdam } from './tinymce-adam-service.js'
          * @param {*} editor 
          */
         tinyMceInitCallback(editor) {
-            console.log("Editor1: " + editor.id + " is now initialized.");
-            console.log("Editor host: ", this.host);
+            if (editor.settings.language)
+                this.config.addTranslations(editor.settings.language, this.translateService);
+
             var imgSizes = this.config.svc().imgSizes;
             addTinyMceToolbarButtons(this, editor, imgSizes);
-
             editor.on('init', e => {
-                // console.log('Editor was init');
                 // editor.selection.select(editor.getBody(), true);
                 // editor.selection.collapse(false);
 
@@ -158,11 +155,6 @@ import { attachAdam } from './tinymce-adam-service.js'
                 console.log('[set value] Editor was change', editor.getContent());
                 this.changeCheck(e, editor.getContent())
             });
-
-            // This prevents the blur event from hiding the toolbar - inline mode
-            // editor.on('blur', function () {
-            //     // return false;
-            // });
         }
 
         enableContentBlocksIfPossible(settings) {

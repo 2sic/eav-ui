@@ -130,5 +130,25 @@ export default class tinymceWysiwygConfig {
         }
         return options;
     }
+
+    addTranslations(language, translateService) {
+        var primaryLan = this.svc().defaultLanguage;
+        var keys = [], mceTranslations = {}, prefix = "Extension.TinyMce", prefixDot = "Extension.TinyMce."//  pLen = prefix.length;
+
+        // find all relevant keys by querying the primary language
+        // var all = translateService.getTranslationTable(primaryLan);
+        var all = translateService.translations[primaryLan];
+        // ReSharper disable once MissingHasOwnPropertyInForeach
+        for (var key in all)
+            if (key.indexOf(prefix) === 0)
+                keys.push(key);
+
+        var translations = translateService.instant(keys);
+
+        for (var k = 0; k < keys.length; k++)
+            mceTranslations[keys[k].replace(prefixDot, '')] = translations[keys[k]];
+
+        tinymce.addI18n(language, translations[keys[0]]);
+    }
 }
 // })();

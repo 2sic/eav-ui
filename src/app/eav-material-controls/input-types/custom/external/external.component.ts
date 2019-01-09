@@ -57,7 +57,6 @@ export class ExternalComponent implements FieldExternal, OnInit {
   constructor(private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
     private translate: TranslateService) {
-
   }
 
   /**
@@ -74,12 +73,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
   ngOnInit() { }
 
   private renderExternalComponent(factory: any) {
-    console.log('this.customInputTypeHost', this.externalInputTypeHost);
-    console.log('this.customInputTypeHost', this.elReference.nativeElement);
-    console.log('this.translate.currentLang', this.translate.currentLang);
-    factory.initialize(this.externalInputTypeHost, this.config, this.group, this.translate.currentLang, this.id);
+    factory.initialize(this.externalInputTypeHost, this.config, this.group, this.translate, this.id);
     factory.render(this.elReference.nativeElement);
-    console.log('factory.writeValue(', this.group.controls[this.config.name].value);
 
     // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
     // this.setExternalControlValues(factory, this.group.controls[this.config.name].value);
