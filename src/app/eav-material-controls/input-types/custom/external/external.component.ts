@@ -15,7 +15,9 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { LanguageService } from '../../../../shared/services/language.service';
+import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { MatDialog } from '@angular/material';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 
 
 @Component({
@@ -41,6 +43,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   private subscriptions: Subscription[] = [];
+  private eavConfig: EavConfiguration;
 
   loaded = true;
   externalFactory: any;
@@ -56,7 +59,10 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
   constructor(private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private dnnBridgeService: DnnBridgeService,
+    private dialog: MatDialog) {
+    this.eavConfig = eavService.getEavConfiguration();
   }
 
   /**
@@ -67,7 +73,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
     setInitValues: (value: string) => this.setInitValues(),
     // toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
     // adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
-    attachAdam: () => this.attachAdam()
+    attachAdam: () => this.attachAdam(),
+    openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => this.openDnnDialog(oldValue, params, callback, dialog),
+    getUrlOfIdDnnDialog: (value: string, callback: any) => this.getUrlOfIdDnnDialog(value, callback)
   };
 
   ngOnInit() { }
@@ -89,6 +97,37 @@ export class ExternalComponent implements FieldExternal, OnInit {
     this.group.controls[this.config.name].patchValue(value);
     this.setDirty();
     this.updateTriggeredByControl = true;
+  }
+
+  openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
+    console.log('openDnnDialog');
+    this.dnnBridgeService.open(
+      oldValue,
+      params,
+      callback,
+      this.dialog);
+  }
+
+  getUrlOfIdDnnDialog(value: string, urlCallback: any) {
+    console.log('getUrlOfIdDnnDialog');
+    // handle short-ID links like file:17
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
+      value,
+      this.config.header.contentTypeName,
+      this.config.header.guid,
+      this.config.name);
+
+    if (urlFromId$) {
+      // this.subscriptions.push(
+      urlFromId$.subscribe((data) => {
+        if (data) {
+          urlCallback(data);
+        }
+      });
+      // );
+    } else {
+      urlCallback(value);
+    }
   }
 
   /**
@@ -189,6 +228,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
       // this.setAdamOptions();
     }
   }
+
+
 
   // private setAdamOptions() {
   //   // set Adam disabled state

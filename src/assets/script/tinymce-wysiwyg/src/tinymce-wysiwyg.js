@@ -1,6 +1,7 @@
 import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 import { attachAdam } from './tinymce-adam-service.js'
+import { attachDnnBridgeService } from './tinymce-dnnbridge-service.js';
 
 (function () {
 
@@ -141,6 +142,9 @@ import { attachAdam } from './tinymce-adam-service.js'
         tinyMceInitCallback(editor) {
             if (editor.settings.language)
                 this.config.addTranslations(editor.settings.language, this.translateService);
+
+            // Attach DnnBridgeService
+            attachDnnBridgeService(this, editor);
 
             var imgSizes = this.config.svc().imgSizes;
             addTinyMceToolbarButtons(this, editor, imgSizes);

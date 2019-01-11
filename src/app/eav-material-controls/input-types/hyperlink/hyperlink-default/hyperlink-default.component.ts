@@ -127,7 +127,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.processResultOfPagePicker.bind(this),
       this.dialog);
   }
-
   //#endregion dnn page picker
 
   //#region new adam: callbacks only
