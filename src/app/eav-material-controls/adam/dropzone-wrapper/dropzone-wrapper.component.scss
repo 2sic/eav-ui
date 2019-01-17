@@ -1,3 +1,18 @@
+@import "../../../../assets/style/theme/material-colors.scss";
+
 .dropzone-container {
     height: 100%;
+    position:relative;
+}
+
+.drop-dashed-border:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border: 2px solid map_get($mat-eav-item-dialog-secondary, 500);
+    border-style: dashed;
 }

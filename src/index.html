@@ -11,6 +11,21 @@
   <script>
     var jsVersionCacheId = window.location.search;    // use this to prevent
     document.write('<script src="../../js/2sxc.api.min.js' + jsVersionCacheId + '"></scr' + 'ipt>');
+
+    // prevent drop on page - can only drop on dropzone
+    const dropzoneId = 'dropzone'
+    window.addEventListener('dragover', e => {
+      e = e || event
+      if (e.target.id !== dropzoneId) {
+        e.preventDefault()
+      }
+    })
+    window.addEventListener('drop', e => {
+      e = e || event
+      if (e.target.id !== dropzoneId) {
+        e.preventDefault()
+      }
+    })
   </script>
 
   <!-- <link rel="icon" type="image/x-icon" href="favicon.ico"> -->

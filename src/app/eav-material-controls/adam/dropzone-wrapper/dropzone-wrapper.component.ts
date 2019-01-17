@@ -27,6 +27,9 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
+  showDashedBorder = false;
+
+  private enterTarget: any;
 
   get disabled() {
     return this.group.controls[this.config.name].disabled;
@@ -38,7 +41,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   ngOnInit() {
     //  this.config.adam = this.adamRef;
-
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
     const contentType = this.config.header.contentTypeName;
     const entityGuid = this.config.header.guid;
@@ -80,9 +82,11 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
+    this.showDashedBorder = false;
   }
 
   public onUploadSuccess(args: any): void {
+    this.showDashedBorder = false;
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
@@ -99,8 +103,20 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     }
   }
 
+  public dragenter(args: any): void {
+    this.enterTarget = event.target;
+    this.showDashedBorder = true;
+  }
+
+  public dragleave(args: any): void {
+    if (this.enterTarget === args.target) {
+      // true leave
+      this.showDashedBorder = false;
+    }
+  }
+
   public onDrop(args: any): void {
-    // this.adamRef.updateCallback();
+    this.showDashedBorder = false;
   }
 
   onProccesing(args: any): void {
@@ -119,6 +135,5 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   //   console.log('update callback');
   //   console.log('adamModeImage', this.adamModeImage);
   // }
-
 }
 
