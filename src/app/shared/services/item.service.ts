@@ -93,7 +93,6 @@ export class ItemService {
     isReadOnly: boolean,
     guid: string,
     type: string) {
-
     let newLanguageValue = languageKey;
 
     if (isReadOnly) {
@@ -162,17 +161,11 @@ export class ItemService {
 
   /** Set default value and add that attribute in store */
   public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string,
-    settingsTranslated: EavAttributesTranslated, currentLanguage: string): any {
+    settingsTranslated: EavAttributesTranslated, currentLanguage: string, defaultLanguage: string): any {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
-    this.addAttributeValue(
-      item.entity.id,
-      attribute.name,
-      defaultValue,
-      currentLanguage,
-      false,
-      item.entity.guid,
-      attribute.type);
+    this.updateItemAttributeValue(item.entity.id, attribute.name,
+      defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
     return defaultValue;
   }
 

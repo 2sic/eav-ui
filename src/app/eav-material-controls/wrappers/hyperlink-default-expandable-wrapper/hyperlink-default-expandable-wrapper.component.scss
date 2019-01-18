@@ -3,8 +3,6 @@
 
 .c-ew {
     &__preview {
-
-       
         min-height: 72px;
         max-height: 72px;
         height: 72px;
@@ -30,13 +28,13 @@
         }
 
         .thumbnail-before-input {
-            padding-top: 0; 
-            padding-bottom: 0; 
-            border-top-width: 0; 
-            padding-left: 0; 
-            padding-right: 0; 
-            border-left-width: 0; 
-            border-bottom-width: 0; 
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top-width: 0;
+            padding-left: 0;
+            padding-right: 0;
+            border-left-width: 0;
+            border-bottom-width: 0;
             background-color:  rgba($editUI-foreground-color, 0.08);
             /* transparent;  */
         
@@ -58,7 +56,7 @@
             }
         
             &--disabled {
-                opacity: 0.5;
+                // opacity: 0.5;
                 border-bottom: 0;
                 .c-ew__preview-field-hint {
                     color: $editUI-label-disabled-color;

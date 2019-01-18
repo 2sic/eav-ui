@@ -247,7 +247,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     );
     // set default value if needed
     if (isEmpty(value)) {
-      value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated, this.currentLanguage);
+      value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
+        this.currentLanguage, this.defaultLanguage);
       //  defaultValueIsSet = true;
     }
     // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
