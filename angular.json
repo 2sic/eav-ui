@@ -24,7 +24,10 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/assets/script/clipboard-paste/paste.js"
+              "src/assets/script/clipboard-paste/paste.js",
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
