@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreModule, Store } from '@ngrx/store';
 import { Routes, RouterModule } from '@angular/router';
@@ -61,5 +61,6 @@ import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/o
   ],
   exports: [RouterModule],
   providers: [],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class EavItemDialogModule { }
