@@ -1,6 +1,6 @@
 <mat-form-field [formGroup]="group" appearance="fill" color="accent">
-  <div matPrefix class="thumbnail-before-input icon-preview">
-    <i class="glyphicon {{value}}"></i>
+  <div matPrefix class="thumbnail-before-input">
+    <i class="glyphicon {{value}} icon-preview"></i>
   </div>
   <input matInput type="text" class="form-control material" [formControlName]="config.name" [placeholder]="config.label"
     [required]="config.required" [matAutocomplete]="auto" (click)="update()">
@@ -10,7 +10,7 @@
 <mat-autocomplete #auto="matAutocomplete">
   <mat-option *ngFor="let icn of filteredIcons | async" [value]="icn.class">
     <a (click)="setIcon(icn.class, config.name)">
-      <i class="{{config.settings.PreviewCss}} {{icn.class}}"></i>
+      <i class="{{config.settings.PreviewCss}} {{icn.class}} icon-preview"></i>
       <span>{{icn.class}}</span>
     </a>
   </mat-option>
