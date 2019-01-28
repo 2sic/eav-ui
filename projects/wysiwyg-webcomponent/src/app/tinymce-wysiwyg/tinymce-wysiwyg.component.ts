@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, AfterContentInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { TinymceWysiwygConfig } from '../services/tinymce-wysiwyg-config';
 import { TinyMceDnnBridgeService } from '../services/tinymce-dnnbridge-service';
 import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { TinyMceAdamService } from '../services/tinymce-adam-service';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 // import { attachAdam } from './tinymce-adam-service.js'
@@ -15,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./tinymce-wysiwyg.component.scss']
 })
 export class TinymceWysiwygComponent implements OnInit {
+
   @Input()
   set id(value: string) { this._id = value; }
   get id(): string { return this._id; }
@@ -54,55 +56,14 @@ export class TinymceWysiwygComponent implements OnInit {
   _translateService: TranslateService;
   // config: TinymceWysiwygConfig;
   options: any;
+  adam: any;
+  editor: any;
+  setAdamConfig: any;
 
   constructor(public tinymceWysiwygConfig: TinymceWysiwygConfig,
-    public tinyMceDnnBridgeService: TinyMceDnnBridgeService) {
-    console.log('wysiwyg constructor config:', this.config);
-    console.log('wysiwyg constructor form:', this.form);
-    console.log('wysiwyg constructor host:', this.host);
-    console.log('wysiwyg constructor disabled:', this.disabled);
-    console.log('wysiwyg constructor value:', this.value);
-    // // if (!this.host) {
-    // //     this.host = {};
-    // // }
-    // this.host = host;
-    // this.options = options;
-    // this.form = form;
-    // this.id = id;
-    // this.currentLang = translateService.currentLang;
-    // this.translateService = translateService;
-    // // Attach adam
-    // attachAdam(this);
-    // // Set Adam configuration
-    // this.setAdamConfig({
-    //     adamModeConfig: { usePortalRoot: false },
-    //     allowAssetsInRoot: true,
-    //     autoLoad: false,
-    //     enableSelect: true,
-    //     folderDepth: 0,
-    //     fileFilter: '',
-    //     metadataContentTypes: '',
-    //     subFolder: '',
-    //     showImagesOnly: false  //adamModeImage?
-    // });
+    public tinyMceDnnBridgeService: TinyMceDnnBridgeService,
+    public tinyMceAdamService: TinyMceAdamService) {
   }
-
-  //   constructor(name, id, host, options, config, currentLang) {
-  //     this.name = name;
-  //     this.id = id;
-  //     this.host = host;
-  //     this.options = options;
-  //     // this.form = form;
-  //     this.config = config;
-  //     this.currentLang = currentLang;
-
-  //     this.translateService
-  //     this.adam;
-  // }
-
-  // initialize(host, options, form, translateService, id) {
-
-  // }
 
   ngOnInit() {
     console.log('wysiwyg config:', this.config);
@@ -164,32 +125,30 @@ export class TinymceWysiwygComponent implements OnInit {
 
   // /**
   //  * On render and change set configuration of control
-  //  * @param {*} container - is html container for component
   //  * @param {*} disabled
   //  */
   setOptions(disabled) {
     console.log('set options disabled:', disabled);
-    // const isReadOnly = tinymce.get(this.id).readonly;
-    // if (disabled && !isReadOnly) {
-    //   tinymce.get(this.id).setMode('readonly');
-    // }
-    // else if (!disabled && isReadOnly) {
-    //   tinymce.get(this.id).setMode('code');
-    // }
+    const isReadOnly = this.editor.editorManager.get(this.id).readonly;
+    if (disabled && !isReadOnly) {
+      this.editor.editorManager.get(this.id).setMode('readonly');
+    } else if (!disabled && isReadOnly) {
+      this.editor.editorManager.get(this.id).setMode('code');
+    }
   }
 
   // /**
   //  * New value from the form into the view
   //  * This function can be triggered from outside when value changed
-  //  * @param {} container
   //  * @param {*} newValue
   //  */
   setValue(newValue) {
     console.log('[set value] tynimce id:', this.id);
-    // const oldValue = tinymce.get(this.id).getContent();
-    // if (newValue !== oldValue) {
-    //   tinymce.get(this.id).setContent(newValue);
-    // }
+    console.log('[set value] editor:', this.editor);
+    const oldValue = this.editor.editorManager.get(this.id).getContent();
+    if (newValue !== oldValue) {
+      this.editor.editorManager.get(this.id).setContent(newValue);
+    }
   }
 
   // /**
@@ -197,26 +156,43 @@ export class TinymceWysiwygComponent implements OnInit {
   //  * @param {*} editor
   //  */
   tinyMceInitCallback(editor) {
-    console.log('editor:', editor);
-    // if (editor.settings.language) {
-    //   this.tinymceWysiwygConfig.addTranslations(editor.settings.language, this.translateService, editor);
-    // }
-    // // Attach DnnBridgeService
-    // this.tinyMceDnnBridgeService.attachDnnBridgeService(this, editor);
+    console.log('editor:', editor.editorManager);
+    // set editor
+    this.editor = editor;
+    // Attach adam
+    this.tinyMceAdamService.attachAdam(this, editor.editorManager);
+    // Set Adam configuration
+    this.setAdamConfig({
+      adamModeConfig: { usePortalRoot: false },
+      allowAssetsInRoot: true,
+      autoLoad: false,
+      enableSelect: true,
+      folderDepth: 0,
+      fileFilter: '',
+      metadataContentTypes: '',
+      subFolder: '',
+      showImagesOnly: false  // adamModeImage?
+    });
 
-    // const imgSizes = this.tinymceWysiwygConfig.svc().imgSizes;
-    // TinyMceToolbarButtons.addTinyMceToolbarButtons(this, editor, imgSizes);
-    // editor.on('init', e => {
-    //   // editor.selection.select(editor.getBody(), true);
-    //   // editor.selection.collapse(false);
+    if (editor.settings.language) {
+      this.tinymceWysiwygConfig.addTranslations(editor.settings.language, this.translateService, editor.editorManager);
+    }
+    // Attach DnnBridgeService
+    this.tinyMceDnnBridgeService.attachDnnBridgeService(this, editor);
 
-    //   this.host.setInitValues();
-    // });
+    const imgSizes = this.tinymceWysiwygConfig.svc().imgSizes;
+    TinyMceToolbarButtons.addTinyMceToolbarButtons(this, editor, imgSizes);
+    editor.on('init', e => {
+      // editor.selection.select(editor.getBody(), true);
+      // editor.selection.collapse(false);
 
-    // editor.on('change', e => {
-    //   console.log('[set value] Editor was change', editor.getContent());
-    //   this.changeCheck(e, editor.getContent());
-    // });
+      this.host.setInitValues();
+    });
+
+    editor.on('change', e => {
+      console.log('[set value] Editor was change', editor.getContent());
+      this.changeCheck(e, editor.getContent());
+    });
   }
 
   enableContentBlocksIfPossible(settings) {

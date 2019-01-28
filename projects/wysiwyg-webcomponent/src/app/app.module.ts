@@ -7,6 +7,7 @@ import { TinymceWysiwygComponent } from './tinymce-wysiwyg/tinymce-wysiwyg.compo
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { TinymceWysiwygConfig } from './services/tinymce-wysiwyg-config';
 import { TinyMceDnnBridgeService } from './services/tinymce-dnnbridge-service';
+import { TinyMceAdamService } from './services/tinymce-adam-service';
 
 @NgModule({
   declarations: [
@@ -19,16 +20,17 @@ import { TinyMceDnnBridgeService } from './services/tinymce-dnnbridge-service';
   ],
   providers: [
     TinymceWysiwygConfig,
-    TinyMceDnnBridgeService
+    TinyMceDnnBridgeService,
+    TinyMceAdamService,
   ],
   entryComponents: [AppComponent, TinymceWysiwygComponent]
 })
 export class AppModule {
   constructor(private injector: Injector) {
     const el = createCustomElement(TinymceWysiwygComponent, { injector });
-    if (customElements.get('wysiwyg-webcomponent')) {
-      console.log('postoji', customElements.get('wysiwyg-webcomponent'));
-    }
+    // if (customElements.get('wysiwyg-webcomponent')) {
+    //   console.log('postoji', customElements.get('wysiwyg-webcomponent'));
+    // }
     // try {
     customElements.define('wysiwyg-webcomponent', el);
     // } catch (error) {

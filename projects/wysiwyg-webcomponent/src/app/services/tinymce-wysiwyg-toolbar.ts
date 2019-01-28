@@ -8,8 +8,8 @@ export class TinyMceToolbarButtons {
      */
     static addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
         // call register once the editor-object is ready
-        editor.on('init', function () {
-            console.log('editor SetContent init registerTinyMceFormats');
+        editor.on('init', () => {
+            console.log('editor SetContent init registerTinyMceFormats', this);
             this.registerTinyMceFormats(editor, vm.host, imgSizes);
         });
 
@@ -20,7 +20,7 @@ export class TinyMceToolbarButtons {
             type: 'splitbutton',
             icon: ' eav-icon-file-pdf',
             title: 'Link.AdamFile.Tooltip',
-            onclick: function () {
+            onclick: () => {
                 vm.toggleAdam(false);
             },
             menu: [
@@ -28,14 +28,14 @@ export class TinyMceToolbarButtons {
                     text: 'Link.AdamFile',
                     tooltip: 'Link.AdamFile.Tooltip',
                     icon: ' eav-icon-file-pdf',
-                    onclick: function () {
+                    onclick: () => {
                         vm.toggleAdam(false);
                     }
                 }, {
                     text: 'Link.DnnFile',
                     tooltip: 'Link.DnnFile.Tooltip',
                     icon: ' eav-icon-file',
-                    onclick: function () {
+                    onclick: () => {
                         vm.openDnnDialog('documentmanager');
                     }
                 }
@@ -48,17 +48,17 @@ export class TinyMceToolbarButtons {
             icon: 'link',
             title: 'Link',
             onPostRender: this.initOnPostRender('link', editor),
-            onclick: function () {
+            onclick: () => {
                 editor.execCommand('mceLink');
             },
 
             menu: [
-                { icon: 'link', text: 'Link', onclick: function () { editor.execCommand('mceLink'); } },
+                { icon: 'link', text: 'Link', onclick: () => { editor.execCommand('mceLink'); } },
                 {
                     text: 'Link.Page',
                     tooltip: 'Link.Page.Tooltip',
                     icon: ' eav-icon-sitemap',
-                    onclick: function () {
+                    onclick: () => {
                         vm.openDnnDialog('pagepicker');
                     }
                 }
@@ -69,7 +69,7 @@ export class TinyMceToolbarButtons {
             icon: ' eav-icon-anchor',
             text: 'Anchor',
             tooltip: 'Link.Anchor.Tooltip',
-            onclick: function () { editor.execCommand('mceAnchor'); }
+            onclick: () => { editor.execCommand('mceAnchor'); }
         });
         editor.addButton('linkgroup', linkgroup);
         editor.addButton('linkgrouppro', linkgroupPro);
@@ -80,7 +80,7 @@ export class TinyMceToolbarButtons {
             type: 'splitbutton',
             text: '',
             icon: 'image',
-            onclick: function () {
+            onclick: () => {
                 vm.toggleAdam(true);
             },
             menu: [
@@ -88,26 +88,26 @@ export class TinyMceToolbarButtons {
                     text: 'Image.AdamImage',
                     tooltip: 'Image.AdamImage.Tooltip',
                     icon: 'image',
-                    onclick: function () {
+                    onclick: () => {
                         vm.toggleAdam(true);
                     }
                 }, {
                     text: 'Image.DnnImage',
                     tooltip: 'Image.DnnImage.Tooltip',
                     icon: 'image',
-                    onclick: function () {
+                    onclick: () => {
                         vm.toggleAdam(true, true);
                     }
                 }, {
                     text: 'Insert\/edit image', // i18n tinyMce standard
                     icon: 'image',
-                    onclick: function () { editor.execCommand('mceImage'); }
+                    onclick: () => { editor.execCommand('mceImage'); }
 
                 },
                 // note: all these use i18n from tinyMce standard
-                { icon: 'alignleft', tooltip: 'Align left', onclick: function () { editor.execCommand('JustifyLeft'); } },
-                { icon: 'aligncenter', tooltip: 'Align center', onclick: function () { editor.execCommand('JustifyCenter'); } },
-                { icon: 'alignright', tooltip: 'Align right', onclick: function () { editor.execCommand('JustifyRight'); } }
+                { icon: 'alignleft', tooltip: 'Align left', onclick: () => { editor.execCommand('JustifyLeft'); } },
+                { icon: 'aligncenter', tooltip: 'Align center', onclick: () => { editor.execCommand('JustifyCenter'); } },
+                { icon: 'alignright', tooltip: 'Align right', onclick: () => { editor.execCommand('JustifyRight'); } }
             ]
         });
 
@@ -120,9 +120,9 @@ export class TinyMceToolbarButtons {
             cmd: 'italic',
             onPostRender: this.initOnPostRender('italic', editor),
             menu: [
-                { icon: 'strikethrough', text: 'Strikethrough', onclick: function () { editor.execCommand('strikethrough'); } },
-                { icon: 'superscript', text: 'Superscript', onclick: function () { editor.execCommand('superscript'); } },
-                { icon: 'subscript', text: 'Subscript', onclick: function () { editor.execCommand('subscript'); } }
+                { icon: 'strikethrough', text: 'Strikethrough', onclick: () => { editor.execCommand('strikethrough'); } },
+                { icon: 'superscript', text: 'Superscript', onclick: () => { editor.execCommand('superscript'); } },
+                { icon: 'subscript', text: 'Subscript', onclick: () => { editor.execCommand('subscript'); } }
             ]
         });
 
@@ -140,10 +140,10 @@ export class TinyMceToolbarButtons {
                     icon: 'bullist',
                     text: 'Bullet list',
                     onPostRender: this.initOnPostRender('bullist', editor),
-                    onclick: function () { editor.execCommand('InsertUnorderedList'); }
+                    onclick: () => { editor.execCommand('InsertUnorderedList'); }
                 },
-                { icon: 'outdent', text: 'Outdent', onclick: function () { editor.execCommand('Outdent'); } },
-                { icon: 'indent', text: 'Indent', onclick: function () { editor.execCommand('Indent'); } }
+                { icon: 'outdent', text: 'Outdent', onclick: () => { editor.execCommand('Outdent'); } },
+                { icon: 'indent', text: 'Indent', onclick: () => { editor.execCommand('Indent'); } }
             ]
         });
 
@@ -151,13 +151,13 @@ export class TinyMceToolbarButtons {
         editor.addButton('modestandard', {
             icon: ' eav-icon-cancel',
             tooltip: 'SwitchMode.Standard',
-            onclick: function () { this.switchModes('standard'); }
+            onclick: () => { this.switchModes('standard', editor); }
         });
 
         editor.addButton('modeadvanced', {
             icon: ' eav-icon-pro',
             tooltip: 'SwitchMode.Pro',
-            onclick: function () { this.switchModes('advanced'); }
+            onclick: () => { this.switchModes('advanced', editor); }
         });
         //#endregion
 
@@ -171,11 +171,11 @@ export class TinyMceToolbarButtons {
         ['h3', 'Heading 3', 'H3'],
         ['h4', 'Heading 4', 'Heading 4'],
         ['h5', 'Heading 5', 'Heading 5'],
-        ['h6', 'Heading 6', 'Heading 6']].forEach(function (tag) {
+        ['h6', 'Heading 6', 'Heading 6']].forEach((tag) => {
             editor.addButton(tag[0], {
                 tooltip: tag[1],
                 text: tag[2],
-                onclick: function () { editor.execCommand('mceToggleFormat', false, tag[0]); },
+                onclick: () => { editor.execCommand('mceToggleFormat', false, tag[0]); },
                 onPostRender: function () {
                     const self = this,
                         setup = function () {
@@ -206,7 +206,7 @@ export class TinyMceToolbarButtons {
             icon: ' eav-icon-content-block',
             classes: 'btn-addcontentblock',
             tooltip: 'ContentBlock.Add',
-            onclick: function () {
+            onclick: () => {
                 const guid = MathHelper.uuid().toLowerCase(); // requires the uuid-generator to be included
                 editor.insertContent('<hr sxc=\'sxc-content-block\' guid=\'' + guid + '\' />');
             }
@@ -247,7 +247,7 @@ export class TinyMceToolbarButtons {
 
             editor.addButton('resizeimg100', {
                 icon: ' eav-icon-resize-horizontal', tooltip: '100%',
-                onclick: function () { editor.formatter.apply('imgwidth100'); },
+                onclick: () => { editor.formatter.apply('imgwidth100'); },
                 onPostRender: this.initOnPostRender('imgwidth100', editor)
             });
 
@@ -311,9 +311,8 @@ export class TinyMceToolbarButtons {
         // editor.theme.renderUI(editor);
 
         // refresh editor toolbar when it's NOT in inline mode (inline false)
-        // TODO:
-        // tinymce.remove(editor);
-        // tinymce.init(editor.settings);
+        editor.editorManager.remove(editor);
+        editor.editorManager.init(editor.settings);
 
         editor.execCommand('mceFocus');
 
@@ -327,7 +326,7 @@ export class TinyMceToolbarButtons {
     }
 
     static makeImgFormatCall(size, editor) {
-        return function () {
+        return () => {
             editor.formatter.apply('imgwidth' + size);
         };
     }

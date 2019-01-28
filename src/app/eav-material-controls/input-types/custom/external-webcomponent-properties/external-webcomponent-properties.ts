@@ -11,4 +11,3 @@ export class ExternalWebComponentProperties {
     disabled: boolean;
     // options: any
 }
-
