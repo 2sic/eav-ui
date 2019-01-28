@@ -163,7 +163,8 @@ export class InputFieldHelper {
             case InputTypesConstants.stringWysiwygTinymce:
             case InputTypesConstants.external:
             case 'custom-my-field-test':
-                return InputTypesConstants.external;
+                // return InputTypesConstants.external;
+                return InputTypesConstants.externalWebComponent;
             default:
                 return InputTypesConstants.stringDefault;
         }

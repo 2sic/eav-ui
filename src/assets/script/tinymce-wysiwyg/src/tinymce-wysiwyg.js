@@ -81,7 +81,6 @@ import { attachDnnBridgeService } from './tinymce-dnnbridge-service.js';
             options = this.config.setLanguageOptions(this.currentLang, options);
 
             tinymce.init(options);
-
         }
 
         /**

@@ -3,20 +3,29 @@ import { NgModule, Injector } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
+import { TinymceWysiwygComponent } from './tinymce-wysiwyg/tinymce-wysiwyg.component';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { TinymceWysiwygConfig } from './services/tinymce-wysiwyg-config';
+import { TinyMceDnnBridgeService } from './services/tinymce-dnnbridge-service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TinymceWysiwygComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    EditorModule
   ],
-  providers: [],
-  entryComponents: [AppComponent]
+  providers: [
+    TinymceWysiwygConfig,
+    TinyMceDnnBridgeService
+  ],
+  entryComponents: [AppComponent, TinymceWysiwygComponent]
 })
 export class AppModule {
   constructor(private injector: Injector) {
-    const el = createCustomElement(AppComponent, { injector });
+    const el = createCustomElement(TinymceWysiwygComponent, { injector });
     if (customElements.get('wysiwyg-webcomponent')) {
       console.log('postoji', customElements.get('wysiwyg-webcomponent'));
     }
@@ -28,4 +37,5 @@ export class AppModule {
   }
   ngDoBootstrap() { }
 }
+
 

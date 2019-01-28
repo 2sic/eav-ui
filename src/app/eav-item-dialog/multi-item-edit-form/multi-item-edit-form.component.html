@@ -12,12 +12,6 @@
               <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ formError[key] | translate}}</p>
             </span>
           </mat-error> -->
-
-          <hr>
-          <wysiwyg-webcomponent name="Ante"></wysiwyg-webcomponent>
-
-          <hr>
-
           <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
             <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)" [defaultLanguage]="(defaultLanguage$ | async)"
               [features]="(features$ | async)" (itemFormValueChange)="formValueChange($event)"></app-item-edit-form>

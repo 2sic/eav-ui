@@ -98,7 +98,7 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
     }
-
+    console.log('createComponent inputType:', fieldConfig.inputType);
     const componentType = this.readComponentType(fieldConfig.inputType);
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
@@ -112,7 +112,6 @@ export class EavFieldDirective implements OnInit {
 
       const factory = this.resolver.resolveComponentFactory(<Type<any>>componentType);
       const ref = container.createComponent(factory);
-
       Object.assign(ref.instance, {
         group: this.group,
         config: fieldConfig,
