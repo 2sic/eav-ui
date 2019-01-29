@@ -17,6 +17,7 @@ import { CenterSelectedService } from './eav-language-switcher-services/center-s
 export class EavLanguageSwitcherComponent implements AfterViewInit {
   @ViewChild('scrollable') headerRef: ElementRef;
   @ViewChildren('buttons', { read: ElementRef }) buttonsRef: QueryList<ElementRef>;
+  moveThreshold = 2;
 
   @Input() languages: Language[];
 
@@ -37,7 +38,7 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
     this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
-    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
+    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef, this.moveThreshold);
   }
 
   /**
@@ -45,6 +46,10 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
    * @param language
    */
   selectLanguage(language: Language) {
+    const stop = this.centerSelectedService.stopClickIfMouseMoved();
+    if (stop) {
+      return;
+    }
     this.languageService.updateCurrentLanguage(language.key);
   }
 }

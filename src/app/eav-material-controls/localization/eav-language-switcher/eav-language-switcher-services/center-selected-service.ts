@@ -9,14 +9,14 @@ export class CenterSelectedService {
   private positionX: number;
   private positionY: number;
   private moveThreshold: number;
+  private stopClick = false;
 
-  constructor() {
-    this.moveThreshold = 2;
-  }
+  constructor() { }
 
-  initCenterSelected(renderer: Renderer2, headerRef: ElementRef, buttonsRef: QueryList<ElementRef>): void {
+  initCenterSelected(renderer: Renderer2, headerRef: ElementRef, buttonsRef: QueryList<ElementRef>, moveThreshold: number): void {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
+    this.moveThreshold = moveThreshold;
     const buttons = [];
     buttonsRef.forEach(element => {
       buttons.push(element.nativeElement);
@@ -24,31 +24,33 @@ export class CenterSelectedService {
 
     buttons.forEach(button => {
       this.renderer.listen(button, 'mousedown', this.saveInitialPosition.bind(this));
+      this.renderer.listen('document', 'mouseup', this.checkIfMouseMoved.bind(this));
       this.renderer.listen(button, 'click', this.doMove.bind(this));
     });
   }
 
+  stopClickIfMouseMoved() {
+    return this.stopClick;
+  }
+
   private saveInitialPosition(event: any): void {
+    this.stopClick = false;
     this.positionX = event.pageX;
     this.positionY = event.pageY;
   }
 
-  private stopIfMouseMoved(event: any): boolean {
+  private checkIfMouseMoved(event: any): void {
     const newPositionX = event.pageX;
     const newPositionY = event.pageY;
 
     const newTotal = newPositionX + newPositionY;
     const oldTotal = this.positionX + this.positionY;
 
-    if (Math.abs(oldTotal - newTotal) > this.moveThreshold) {
-      return true;
-    }
-    return false;
+    this.stopClick = Math.abs(oldTotal - newTotal) > this.moveThreshold;
   }
 
   private doMove(event: any): void {
-    const stop = this.stopIfMouseMoved(event);
-    if (stop) {
+    if (this.stopClick) {
       return;
     }
     console.log('Petar doMove');
