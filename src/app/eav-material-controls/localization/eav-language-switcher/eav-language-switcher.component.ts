@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
-import { SaveStatusDialogComponent } from '../../dialogs/save-status-dialog/save-status-dialog.component';
-import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 
 @Component({
   selector: 'app-eav-language-switcher',
@@ -20,22 +17,7 @@ export class EavLanguageSwitcherComponent {
 
   @Input() allControlsAreDisabled: boolean;
 
-  // publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
-  versioningOptions;
-
-  get publishMode() {
-    return this.multiFormDialogRef.componentInstance.publishMode;
-  }
-
-  constructor(private languageService: LanguageService,
-    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>,
-    private dialog: MatDialog) {
-    // this.currentLanguage$ = languageService.getCurrentLanguage();
-  }
-
-  closeDialog() {
-    this.multiFormDialogRef.componentInstance.closeDialog();
-  }
+  constructor(private languageService: LanguageService) { }
 
   /**
    * on select tab changed update current language in store
@@ -43,22 +25,5 @@ export class EavLanguageSwitcherComponent {
    */
   selectLanguage(language: Language) {
     this.languageService.updateCurrentLanguage(language.key);
-  }
-
-  public openSaveSatusDialog() {
-    // Open dialog
-    const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
-      panelClass: 'c-save-status-dialog',
-      autoFocus: false,
-      width: '350px',
-      // height: '80vh',
-      // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
-    });
-
-    dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
-    // Close dialog
-    dialogRef.afterClosed().subscribe(result => {
-      this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
-    });
   }
 }

@@ -15,8 +15,10 @@ import {
   MatIconModule,
   MatMenuModule,
   MatSnackBarModule,
-  MatDialogModule
+  MatDialogModule,
+  MatDividerModule,
 } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
@@ -29,12 +31,14 @@ import { ContentTypeEffects } from '../shared/effects/content-type.effects';
 import { EavEffects } from '../shared/effects/eav.effects';
 import { TranslateModule } from '@ngx-translate/core';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
+import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 
 @NgModule({
   declarations: [
     MultiItemEditFormComponent,
     ItemEditFormComponent,
-    OpenMultiItemDialogComponent
+    OpenMultiItemDialogComponent,
+    MultiItemEditFormHeaderComponent
   ],
   imports: [
     CommonModule,
@@ -52,6 +56,8 @@ import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/o
     EavDynamicFormModule,
     EavMaterialControlsModule,
     MatDialogModule,
+    MatDividerModule,
+    FlexLayoutModule,
     StoreModule.forFeature('eavItemDialog', reducers),
     EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
     TranslateModule.forChild()

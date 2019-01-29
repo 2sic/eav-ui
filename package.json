@@ -36,6 +36,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "core-js": "^2.6.1",
+    "dragscroll": "0.0.8",
     "ng-pick-datetime": "^7.0.0",
     "ngx-drag-and-drop-lists": "^1.2.5",
     "ngx-dropzone-wrapper": "^7.1.0",

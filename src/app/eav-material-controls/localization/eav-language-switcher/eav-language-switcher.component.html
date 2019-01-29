@@ -1,31 +1,9 @@
-<!-- <mat-tab-group *ngIf="currentLanguage" (selectedTabChange)="selectedTabChanged($event)" [selectedIndex]="languages.indexOf(getLanguage(currentLanguage))">
-  <mat-tab *ngFor="let language of languages" [label]="language.name.substring(0, language.name.indexOf('(') > 0 ? language.name.indexOf('(') - 1 : 100 )"></mat-tab> -->
-<!-- [disabled]="!formsAreValid" -->
-<!-- </mat-tab-group> -->
-
-<mat-card>
-  <!-- [mat-dialog-close]="true" -->
-  <button mat-icon-button fxLayoutAlign="center center" (click)="closeDialog()">
-    <mat-icon>clear</mat-icon>
+<div class="scrollable" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
+  fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
+  <button mat-flat-button *ngFor="let language of languages" [disabled]="!formsAreValid && currentLanguage !== language.key && !allControlsAreDisabled"
+    [color]="currentLanguage===language.key? 'accent' : 'white'" (click)="selectLanguage(language)">
+    {{language.name.substring(0, language.name.indexOf('(') > 0
+    ? language.name.indexOf('(') - 1
+    : 100).toUpperCase()}}
   </button>
-  <div fxFlex="auto" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px" fxLayoutGap.md="16px"
-    fxLayoutGap.gt-md="24px" class="u-add-scrollbar u-hide-scrollbar">
-    <div></div>
-    <button mat-flat-button *ngFor="let language of languages" [disabled]="!formsAreValid && currentLanguage !== language.key && !allControlsAreDisabled"
-      [color]="currentLanguage===language.key? 'accent' : 'white'" (click)="selectLanguage(language)">
-      {{language.name.substring(0, language.name.indexOf('(') > 0
-      ? language.name.indexOf('(') - 1
-      : 100).toUpperCase()}}
-    </button>
-    <div></div>
-  </div>
-  <div fxLayoutAlign="end center">
-    <button mat-button (click)="openSaveSatusDialog()">
-      Status:
-      <span>
-        {{ ('SaveMode.' + publishMode | translate : '').toUpperCase() }}
-      </span>
-    </button>
-  </div>
-</mat-card>
-<mat-divider></mat-divider>
+</div>
