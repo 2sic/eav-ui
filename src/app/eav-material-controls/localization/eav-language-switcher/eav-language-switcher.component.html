@@ -1,6 +1,6 @@
 <div class="scrollable" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
-  <button mat-flat-button *ngFor="let language of languages" [disabled]="!formsAreValid && currentLanguage !== language.key && !allControlsAreDisabled"
+  <button class="buttons" mat-flat-button *ngFor="let language of languages" [disabled]="!formsAreValid && currentLanguage !== language.key && !allControlsAreDisabled"
     [color]="currentLanguage===language.key? 'accent' : 'white'" (click)="selectLanguage(language)">
     {{language.name.substring(0, language.name.indexOf('(') > 0
     ? language.name.indexOf('(') - 1
