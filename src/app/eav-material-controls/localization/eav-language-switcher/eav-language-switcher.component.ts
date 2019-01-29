@@ -5,7 +5,9 @@ import {
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
 
-import { LangSwitchHelper } from './eav-language-switcher.helper';
+import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
+import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
+import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
 
 @Component({
   selector: 'app-eav-language-switcher',
@@ -14,7 +16,7 @@ import { LangSwitchHelper } from './eav-language-switcher.helper';
 })
 export class EavLanguageSwitcherComponent implements AfterViewInit {
   @ViewChild('scrollable') headerRef: ElementRef;
-  @ViewChildren('buttons') buttonsRef: QueryList<ElementRef>;
+  @ViewChildren('buttons', { read: ElementRef }) buttonsRef: QueryList<ElementRef>;
 
   @Input() languages: Language[];
 
@@ -24,13 +26,18 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
 
   @Input() allControlsAreDisabled: boolean;
 
-  constructor(private languageService: LanguageService, private renderer: Renderer2) { }
+  constructor(
+    private languageService: LanguageService,
+    private renderer: Renderer2,
+    private mouseScrollService: MouseScrollService,
+    private touchScrollService: TouchScrollService,
+    private centerSelectedService: CenterSelectedService
+  ) { }
 
   ngAfterViewInit() {
-    const langSwitchHelper: LangSwitchHelper = new LangSwitchHelper;
-    langSwitchHelper.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
-    langSwitchHelper.initMouseScroll(this.renderer, this.headerRef);
-    langSwitchHelper.initTouchScroll(this.renderer, this.headerRef);
+    this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
+    this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
+    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
   }
 
   /**
