@@ -1,4 +1,6 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import {
+  Component, Input, ViewChild, ViewChildren, AfterViewInit, ElementRef, QueryList, Renderer2
+} from '@angular/core';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
@@ -11,6 +13,9 @@ import { LangSwitchHelper } from './eav-language-switcher.helper';
   styleUrls: ['./eav-language-switcher.component.scss']
 })
 export class EavLanguageSwitcherComponent implements AfterViewInit {
+  @ViewChild('scrollable') headerRef: ElementRef;
+  @ViewChildren('buttons') buttonsRef: QueryList<ElementRef>;
+
   @Input() languages: Language[];
 
   @Input() currentLanguage: string;
@@ -19,13 +24,13 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
 
   @Input() allControlsAreDisabled: boolean;
 
-  constructor(private languageService: LanguageService) { }
+  constructor(private languageService: LanguageService, private renderer: Renderer2) { }
 
   ngAfterViewInit() {
-    const langSwitchHelper = new LangSwitchHelper;
-    langSwitchHelper.initCenterSelected();
-    langSwitchHelper.initMouseScroll();
-    langSwitchHelper.initTouchScroll();
+    const langSwitchHelper: LangSwitchHelper = new LangSwitchHelper;
+    langSwitchHelper.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
+    langSwitchHelper.initMouseScroll(this.renderer, this.headerRef);
+    langSwitchHelper.initTouchScroll(this.renderer, this.headerRef);
   }
 
   /**
