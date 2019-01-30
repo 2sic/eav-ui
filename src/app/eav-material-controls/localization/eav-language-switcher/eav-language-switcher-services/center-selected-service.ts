@@ -8,15 +8,14 @@ export class CenterSelectedService {
   private renderer: Renderer2;
   private positionX: number;
   private positionY: number;
-  private moveThreshold: number;
+  private moveThreshold = 2; // Pixels for which header can be scrolled while clicking to still register as click
   private stopClick = false;
 
   constructor() { }
 
-  initCenterSelected(renderer: Renderer2, headerRef: ElementRef, buttonsRef: QueryList<ElementRef>, moveThreshold: number): void {
+  initCenterSelected(renderer: Renderer2, headerRef: ElementRef, buttonsRef: QueryList<ElementRef>): void {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
-    this.moveThreshold = moveThreshold;
     const buttons = [];
     buttonsRef.forEach(element => {
       buttons.push(element.nativeElement);

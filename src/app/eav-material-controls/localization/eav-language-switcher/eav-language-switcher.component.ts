@@ -20,7 +20,6 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
   @ViewChildren('buttons', { read: ElementRef }) buttonsRef: QueryList<ElementRef>;
   @ViewChild('leftShadow') leftShadowRef: ElementRef;
   @ViewChild('rightShadow') rightShadowRef: ElementRef;
-  moveThreshold = 2;
 
   @Input() languages: Language[];
 
@@ -43,7 +42,7 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
     this.showShadowsService.initShadowsCalculation(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
     this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
     this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
-    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef, this.moveThreshold);
+    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
   }
 
   /**
