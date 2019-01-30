@@ -1,17 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import {
+  Component, Input, ViewChild, ViewChildren, AfterViewInit, ElementRef, QueryList, Renderer2
+} from '@angular/core';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
-import { SaveStatusDialogComponent } from '../../dialogs/save-status-dialog/save-status-dialog.component';
-import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+
+import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
+import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
+import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
 
 @Component({
   selector: 'app-eav-language-switcher',
   templateUrl: './eav-language-switcher.component.html',
   styleUrls: ['./eav-language-switcher.component.scss']
 })
-export class EavLanguageSwitcherComponent {
+export class EavLanguageSwitcherComponent implements AfterViewInit {
+  @ViewChild('scrollable') headerRef: ElementRef;
+  @ViewChildren('buttons', { read: ElementRef }) buttonsRef: QueryList<ElementRef>;
+  moveThreshold = 2;
+
   @Input() languages: Language[];
 
   @Input() currentLanguage: string;
@@ -20,21 +27,18 @@ export class EavLanguageSwitcherComponent {
 
   @Input() allControlsAreDisabled: boolean;
 
-  // publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
-  versioningOptions;
+  constructor(
+    private languageService: LanguageService,
+    private renderer: Renderer2,
+    private mouseScrollService: MouseScrollService,
+    private touchScrollService: TouchScrollService,
+    private centerSelectedService: CenterSelectedService
+  ) { }
 
-  get publishMode() {
-    return this.multiFormDialogRef.componentInstance.publishMode;
-  }
-
-  constructor(private languageService: LanguageService,
-    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>,
-    private dialog: MatDialog) {
-    // this.currentLanguage$ = languageService.getCurrentLanguage();
-  }
-
-  closeDialog() {
-    this.multiFormDialogRef.componentInstance.closeDialog();
+  ngAfterViewInit() {
+    this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
+    this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
+    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef, this.moveThreshold);
   }
 
   /**
@@ -42,23 +46,10 @@ export class EavLanguageSwitcherComponent {
    * @param language
    */
   selectLanguage(language: Language) {
+    const stop = this.centerSelectedService.stopClickIfMouseMoved();
+    if (stop) {
+      return;
+    }
     this.languageService.updateCurrentLanguage(language.key);
-  }
-
-  public openSaveSatusDialog() {
-    // Open dialog
-    const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
-      panelClass: 'c-save-status-dialog',
-      autoFocus: false,
-      width: '350px',
-      // height: '80vh',
-      // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
-    });
-
-    dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
-    // Close dialog
-    dialogRef.afterClosed().subscribe(result => {
-      this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
-    });
   }
 }

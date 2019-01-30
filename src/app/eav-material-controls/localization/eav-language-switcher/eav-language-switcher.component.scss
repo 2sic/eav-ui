@@ -1,9 +1,8 @@
 @import "../../../../assets/style/variables.scss";
 
-.mat-card {
-    padding:16px 24px 16px 24px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+.scrollable {
+    overflow: hidden;
+    scroll-behavior: smooth;
 }
 
 .mat-flat-button {
@@ -12,4 +11,5 @@
         border: 1px solid rgba($editUI-foreground-color, 0.44);
         max-height: 36px;
         line-height: 36px;
+        min-width: auto;
 }
