@@ -36,7 +36,7 @@ export class TinymceWysiwygComponent implements OnInit {
   set disabled(value: boolean) {
     console.log('set disabled: ', value);
     this._disabled = value;
-    this.setOptions(value);
+    // this.setOptions(value);
   }
   get disabled(): boolean { return this._disabled; }
   @Input()
@@ -46,6 +46,25 @@ export class TinymceWysiwygComponent implements OnInit {
     this.setValue(value);
   }
   get value(): any { return this._value; }
+
+  @Input()
+  set adamSetValueCallback(value: any) {
+    this.adamSetValue(value);
+  }
+  get adamSetValueCallback(): any { return this.adamSetValue; }
+
+  @Input()
+  set adamAfterUploadCallback(value: any) {
+    this.adamAfterUpload(value);
+  }
+  get adamAfterUploadCallback(): any { return this.adamAfterUpload; }
+
+  // @Input()
+  // set dnnBridgeprocessResult(value: any) {
+  //   console.log('set afterUploadCallback: ', value);
+  //   this.processResultOfDnnBridge(value);
+  // }
+  // get dnnBridgeprocessResult(): any { return this.adamAfterUpload; }
 
   _id: string;
   _config: any;
@@ -59,6 +78,9 @@ export class TinymceWysiwygComponent implements OnInit {
   adam: any;
   editor: any;
   setAdamConfig: any;
+  adamSetValue: any;
+  adamAfterUpload: any;
+  processResultOfDnnBridge: any;
 
   constructor(public tinymceWysiwygConfig: TinymceWysiwygConfig,
     public tinyMceDnnBridgeService: TinyMceDnnBridgeService,
@@ -66,12 +88,6 @@ export class TinymceWysiwygComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('wysiwyg config:', this.config);
-    console.log('wysiwyg form:', this.form);
-    console.log('wysiwyg host:', this.host);
-    console.log('wysiwyg disabled:', this.disabled);
-    console.log('wysiwyg value:', this.value);
-
     const settings = {
       enableContentBlocks: false,
       // auto_focus: false,
@@ -84,9 +100,9 @@ export class TinymceWysiwygComponent implements OnInit {
     // });
 
     const selectorOptions = {
-      // selector: 'textarea#' + this.id,
+      // selector: 'editor#' + this.id,
       body_class: 'field-string-wysiwyg-mce-box', // when inline=false
-      content_css: 'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css',
+      content_css: 'assets/elements/assets/style/tinymce-wysiwyg.css',
       height: '100%',
       branding: false,
       setup: this.tinyMceInitCallback.bind(this),
@@ -97,8 +113,6 @@ export class TinymceWysiwygComponent implements OnInit {
 
     const currentLang = this.translateService.currentLang;
     this.options = this.tinymceWysiwygConfig.setLanguageOptions(currentLang, tempOptions);
-
-    // tinymce.init(options);
   }
 
   // /**
@@ -128,7 +142,6 @@ export class TinymceWysiwygComponent implements OnInit {
   //  * @param {*} disabled
   //  */
   setOptions(disabled) {
-    console.log('set options disabled:', disabled);
     const isReadOnly = this.editor.editorManager.get(this.id).readonly;
     if (disabled && !isReadOnly) {
       this.editor.editorManager.get(this.id).setMode('readonly');
@@ -143,8 +156,6 @@ export class TinymceWysiwygComponent implements OnInit {
   //  * @param {*} newValue
   //  */
   setValue(newValue) {
-    console.log('[set value] tynimce id:', this.id);
-    console.log('[set value] editor:', this.editor);
     const oldValue = this.editor.editorManager.get(this.id).getContent();
     if (newValue !== oldValue) {
       this.editor.editorManager.get(this.id).setContent(newValue);
@@ -159,6 +170,8 @@ export class TinymceWysiwygComponent implements OnInit {
     console.log('editor:', editor.editorManager);
     // set editor
     this.editor = editor;
+    // this.setValue(this.value);
+    // this.setOptions(this.disabled);
     // Attach adam
     this.tinyMceAdamService.attachAdam(this, editor.editorManager);
     // Set Adam configuration
@@ -185,7 +198,6 @@ export class TinymceWysiwygComponent implements OnInit {
     editor.on('init', e => {
       // editor.selection.select(editor.getBody(), true);
       // editor.selection.collapse(false);
-
       this.host.setInitValues();
     });
 

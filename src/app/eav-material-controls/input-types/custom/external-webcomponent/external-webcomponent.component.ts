@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -37,7 +37,6 @@ export class ExternalWebcomponentComponent implements OnInit {
   //     this.externalFactory = value;
   //   }
   // }
-
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
@@ -58,7 +57,8 @@ export class ExternalWebcomponentComponent implements OnInit {
     private eavService: EavService,
     private translateService: TranslateService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private _ngZone: NgZone) {
     this.eavConfig = eavService.getEavConfiguration();
   }
 
@@ -66,11 +66,19 @@ export class ExternalWebcomponentComponent implements OnInit {
    * This is host methods which the external control sees
    */
   public externalInputTypeHost = {
-    update: (value: string) => this.update(value),
-    setInitValues: (value: string) => this.setInitValues(),
+    update: (value: string) => {
+      this._ngZone.run(() => this.update(value));
+    },
+    setInitValues: (value: string) => {
+      this._ngZone.run(() => this.setInitValues());
+    },
     attachAdam: () => this.attachAdam(),
-    openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => this.openDnnDialog(oldValue, params, callback, dialog),
-    getUrlOfIdDnnDialog: (value: string, callback: any) => this.getUrlOfIdDnnDialog(value, callback)
+    openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
+      this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
+    },
+    getUrlOfIdDnnDialog: (value: string, callback: any) => {
+      this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
+    },
   };
 
   ngOnInit() {
@@ -112,7 +120,6 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
-    console.log('openDnnDialog');
     this.dnnBridgeService.open(
       oldValue,
       params,
@@ -121,7 +128,6 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   getUrlOfIdDnnDialog(value: string, urlCallback: any) {
-    console.log('getUrlOfIdDnnDialog');
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
@@ -146,7 +152,6 @@ export class ExternalWebcomponentComponent implements OnInit {
    * Set initial values when external component is initialized
    */
   private setInitValues() {
-    console.log('setInitValues called');
     this.setExternalControlValues(this.group.controls[this.config.name].value);
     this.setExternalControlOptions();
   }
@@ -154,30 +159,35 @@ export class ExternalWebcomponentComponent implements OnInit {
   private attachAdam() {
     // TODO:
     // If adam registered then attach Adam
-    console.log('setInitValues');
     if (this.config.adam) {
       // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
 
-      // this.config.adam.updateCallback = (value) =>
-      //   this.externalFactory.adamSetValue
-      //     ? this.externalFactory.adamSetValue(value)
-      //     : alert('adam attached but adamSetValue method not exist');
+      this.config.adam.updateCallback = (value) =>
+        this.customEl.adamSetValueCallback
+          ? this.customEl.adamSetValueCallback = value
+          : alert('adam attached but adamSetValue method not exist');
 
-      // this.config.adam.afterUploadCallback = (value) =>
-      //   this.externalFactory.adamAfterUpload
-      //     ? this.externalFactory.adamAfterUpload(value)
-      //     : alert('adam attached but adamAfterUpload method not exist');
+      this.config.adam.afterUploadCallback = (value) =>
+        this.customEl.adamAfterUploadCallback
+          ? this.customEl.adamAfterUploadCallback = value
+          : alert('adam attached but adamAfterUpload method not exist');
 
       // return value from form
       this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
 
       return {
-        toggleAdam: (value1: any, value2: any) => this.config.adam.toggle(value1),
-        setAdamConfig: (adamConfig: AdamConfig) => this.config.adam.setConfig(adamConfig),
-        adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
+        toggleAdam: (value1: any, value2: any) => {
+          this._ngZone.run(() => this.config.adam.toggle(value1));
+        },
+        setAdamConfig: (adamConfig: AdamConfig) => {
+          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
+        },
+        adamModeImage: () => {
+          this._ngZone.run(() => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null);
+        },
       };
     }
   }

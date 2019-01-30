@@ -10,4 +10,8 @@ export class ExternalWebComponentProperties {
     value: any;
     disabled: boolean;
     // options: any
+
+    adamSetValueCallback: any;
+    adamAfterUploadCallback: any;
+    // dnnBridgeprocessResult: any;
 }

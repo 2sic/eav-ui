@@ -33,7 +33,6 @@ export class TinyMceAdamService {
         };
 
         vm.toggleAdam = (imagesOnly, usePortalRoot) => {
-            console.log('tinymce toggleAdam');
             vm.adam.adamModeImage = imagesOnly;
             vm.adam.toggleAdam({
                 showImagesOnly: imagesOnly,

@@ -2,20 +2,19 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class TinyMceDnnBridgeService {
-    attachDnnBridgeService(vm, editor) {
-        // const editor = editor;
-        const result: any = {};
+    result: any = {};
+
+    attachDnnBridgeService(vm, editor): void {
         // open the dialog - note: strong dependency on the buttons, not perfect here
         vm.openDnnDialog = (type) => {
-            console.log('attachDnnBridgeService openDnnDialog called');
+            // vm.host.openDnnDialog('', { Paths: null, FileFilter: null }, vm.processResultOfDnnBridge);
             vm.host.openDnnDialog('', { Paths: null, FileFilter: null }, vm.processResultOfDnnBridge);
         };
 
         // the callback when something was selected
         vm.processResultOfDnnBridge = (value) => {
-            // const result = value;
+            this.result = value;
             if (!value) { return; }
-            console.log('call getUrlOfIdDnnDialog', 'page:' + (value.id || value.FileId));
             vm.host.getUrlOfIdDnnDialog('page:' + (value.id || value.FileId), vm.urlCallback);
 
             //  return value;
@@ -33,7 +32,7 @@ export class TinyMceDnnBridgeService {
 
         vm.urlCallback = (data) => {
             const previouslySelected = editor.selection.getContent();
-            editor.insertContent('<a href=\"' + data + '\">' + (previouslySelected || result.name) + '</a>');
+            editor.insertContent('<a href=\"' + data + '\">' + (previouslySelected || this.result.name) + '</a>');
         };
     }
 }
