@@ -20,7 +20,6 @@ export class TouchScrollService {
   }
 
   private registerMobileScroll(): void {
-    console.log('Petar registerMobileScroll');
     const headerStyles = getComputedStyle(this.header);
     this.oldOverflowX = headerStyles['overflow-x'];
     this.renderer.setStyle(this.header, 'overflow-x', 'scroll');
@@ -30,7 +29,6 @@ export class TouchScrollService {
   }
 
   private removeMobileScroll(): void {
-    console.log('Petar removeMobileScroll');
     this.renderer.setStyle(this.header, 'overflow-x', this.oldOverflowX);
 
     this.headerTouchend();

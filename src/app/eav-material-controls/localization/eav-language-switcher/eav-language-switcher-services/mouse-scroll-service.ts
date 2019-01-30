@@ -15,7 +15,6 @@ export class MouseScrollService {
   constructor() { }
 
   initMouseScroll(renderer: Renderer2, headerRef: ElementRef): void {
-    console.log('Petar initMouseScroll');
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
 
@@ -23,7 +22,6 @@ export class MouseScrollService {
   }
 
   private registerScroll(event: any): void {
-    console.log('Petar registerScroll', event);
     const headerStyles = getComputedStyle(this.header);
     this.oldScrollBehavior = headerStyles['scroll-behavior'];
 
@@ -36,7 +34,6 @@ export class MouseScrollService {
   }
 
   private removeScroll(): void {
-    console.log('Petar removeScroll');
     this.renderer.setStyle(this.header, 'scroll-behavior', this.oldScrollBehavior);
 
     this.documentMousemove();
@@ -45,7 +42,6 @@ export class MouseScrollService {
   }
 
   private doScroll(event: any): void {
-    console.log('Petar doScroll', event);
     const newPositionX = event.pageX;
     if (newPositionX < this.positionX) {
       this.header.scrollLeft += this.positionX - newPositionX;

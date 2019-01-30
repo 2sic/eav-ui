@@ -53,7 +53,6 @@ export class CenterSelectedService {
     if (this.stopClick) {
       return;
     }
-    console.log('Petar doMove');
 
     const button = event.target;
     const buttonOffset = button.getBoundingClientRect().left;
