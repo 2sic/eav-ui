@@ -22,6 +22,9 @@ export class MouseScrollService {
   }
 
   private registerScroll(event: any): void {
+    if (event.button !== 0) {
+      return;
+    }
     const headerStyles = getComputedStyle(this.header);
     this.oldScrollBehavior = headerStyles['scroll-behavior'];
 
