@@ -13,3 +13,28 @@
         line-height: 36px;
         min-width: auto;
 }
+
+.scrollable__overlay {
+    position: relative;
+    &--left-shadow, &--right-shadow {
+        content: "";
+        position: absolute;
+        top: 0;
+        display: block;
+        z-index: 10;
+        
+        pointer-events: none;
+        
+        height: 100%;
+        width: 64px;
+        background-image: linear-gradient(90deg, white 8px, rgba(white, 0));
+    }
+    &--right-shadow {    
+        right: 0;
+        background-image: linear-gradient(270deg, white 8px, rgba(white, 0));
+    }
+}
+
+.hidden {
+    visibility: hidden;
+}

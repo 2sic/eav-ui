@@ -8,6 +8,7 @@ import { LanguageService } from '../../../shared/services/language.service';
 import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
 import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
 import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
+import { ShowShadowsService } from './eav-language-switcher-services/show-shadows-service';
 
 @Component({
   selector: 'app-eav-language-switcher',
@@ -17,6 +18,8 @@ import { CenterSelectedService } from './eav-language-switcher-services/center-s
 export class EavLanguageSwitcherComponent implements AfterViewInit {
   @ViewChild('scrollable') headerRef: ElementRef;
   @ViewChildren('buttons', { read: ElementRef }) buttonsRef: QueryList<ElementRef>;
+  @ViewChild('leftShadow') leftShadowRef: ElementRef;
+  @ViewChild('rightShadow') rightShadowRef: ElementRef;
   moveThreshold = 2;
 
   @Input() languages: Language[];
@@ -32,10 +35,12 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
     private renderer: Renderer2,
     private mouseScrollService: MouseScrollService,
     private touchScrollService: TouchScrollService,
-    private centerSelectedService: CenterSelectedService
+    private centerSelectedService: CenterSelectedService,
+    private showShadowsService: ShowShadowsService
   ) { }
 
   ngAfterViewInit() {
+    this.showShadowsService.initShadowsCalculation(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
     this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
     this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
     this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef, this.moveThreshold);
