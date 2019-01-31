@@ -28,11 +28,11 @@ import { TinyMceAdamService } from './services/tinymce-adam-service';
 export class AppModule {
   constructor(private injector: Injector) {
     const el = createCustomElement(TinymceWysiwygComponent, { injector });
-    // if (customElements.get('wysiwyg-webcomponent')) {
-    //   console.log('postoji', customElements.get('wysiwyg-webcomponent'));
+    // if (customElements.get('field-string-wysiwyg')) {
+    //   console.log('postoji', customElements.get('field-string-wysiwyg'));
     // }
     // try {
-    customElements.define('wysiwyg-webcomponent', el);
+    customElements.define('field-string-wysiwyg', el);
     // } catch (error) {
     //   console.log('error:', error);
     // }

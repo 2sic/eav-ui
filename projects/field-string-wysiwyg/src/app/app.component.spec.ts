@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'wysiwyg-webcomponent'`, () => {
+  it(`should have as title 'field-string-wysiwyg'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('wysiwyg-webcomponent');
+    expect(app.title).toEqual('field-string-wysiwyg');
   });
 
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to wysiwyg-webcomponent!');
+    expect(compiled.querySelector('h1').textContent).toContain('Welcome to field-string-wysiwyg!');
   });
 });

@@ -128,9 +128,9 @@
         }
       }
     },
-    "wysiwyg-webcomponent": {
-      "root": "projects/wysiwyg-webcomponent/",
-      "sourceRoot": "projects/wysiwyg-webcomponent/src",
+    "field-string-wysiwyg": {
+      "root": "projects/field-string-wysiwyg/",
+      "sourceRoot": "projects/field-string-wysiwyg/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
@@ -138,17 +138,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/wysiwyg-webcomponent",
-            "index": "projects/wysiwyg-webcomponent/src/index.html",
-            "main": "projects/wysiwyg-webcomponent/src/main.ts",
-            "polyfills": "projects/wysiwyg-webcomponent/src/polyfills.ts",
-            "tsConfig": "projects/wysiwyg-webcomponent/tsconfig.app.json",
+            "outputPath": "dist/field-string-wysiwyg",
+            "index": "projects/field-string-wysiwyg/src/index.html",
+            "main": "projects/field-string-wysiwyg/src/main.ts",
+            "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
+            "tsConfig": "projects/field-string-wysiwyg/tsconfig.app.json",
             "assets": [
-              "projects/wysiwyg-webcomponent/src/favicon.ico",
-              "projects/wysiwyg-webcomponent/src/assets"
+              "projects/field-string-wysiwyg/src/favicon.ico",
+              "projects/field-string-wysiwyg/src/assets"
             ],
             "styles": [
-              "projects/wysiwyg-webcomponent/src/styles.css"
+              "projects/field-string-wysiwyg/src/styles.css"
             ],
             "scripts": []
           },
@@ -156,8 +156,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/wysiwyg-webcomponent/src/environments/environment.ts",
-                  "with": "projects/wysiwyg-webcomponent/src/environments/environment.prod.ts"
+                  "replace": "projects/field-string-wysiwyg/src/environments/environment.ts",
+                  "with": "projects/field-string-wysiwyg/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -182,34 +182,34 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "wysiwyg-webcomponent:build"
+            "browserTarget": "field-string-wysiwyg:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "wysiwyg-webcomponent:build:production"
+              "browserTarget": "field-string-wysiwyg:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "wysiwyg-webcomponent:build"
+            "browserTarget": "field-string-wysiwyg:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/wysiwyg-webcomponent/src/test.ts",
-            "polyfills": "projects/wysiwyg-webcomponent/src/polyfills.ts",
-            "tsConfig": "projects/wysiwyg-webcomponent/tsconfig.spec.json",
-            "karmaConfig": "projects/wysiwyg-webcomponent/karma.conf.js",
+            "main": "projects/field-string-wysiwyg/src/test.ts",
+            "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
+            "tsConfig": "projects/field-string-wysiwyg/tsconfig.spec.json",
+            "karmaConfig": "projects/field-string-wysiwyg/karma.conf.js",
             "styles": [
-              "projects/wysiwyg-webcomponent/src/styles.css"
+              "projects/field-string-wysiwyg/src/styles.css"
             ],
             "scripts": [],
             "assets": [
-              "projects/wysiwyg-webcomponent/src/favicon.ico",
-              "projects/wysiwyg-webcomponent/src/assets"
+              "projects/field-string-wysiwyg/src/favicon.ico",
+              "projects/field-string-wysiwyg/src/assets"
             ]
           }
         },
@@ -217,8 +217,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/wysiwyg-webcomponent/tsconfig.app.json",
-              "projects/wysiwyg-webcomponent/tsconfig.spec.json"
+              "projects/field-string-wysiwyg/tsconfig.app.json",
+              "projects/field-string-wysiwyg/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -227,27 +227,27 @@
         }
       }
     },
-    "wysiwyg-webcomponent-e2e": {
-      "root": "projects/wysiwyg-webcomponent-e2e/",
+    "field-string-wysiwyg-e2e": {
+      "root": "projects/field-string-wysiwyg-e2e/",
       "projectType": "application",
       "prefix": "",
       "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/wysiwyg-webcomponent-e2e/protractor.conf.js",
-            "devServerTarget": "wysiwyg-webcomponent:serve"
+            "protractorConfig": "projects/field-string-wysiwyg-e2e/protractor.conf.js",
+            "devServerTarget": "field-string-wysiwyg:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "wysiwyg-webcomponent:serve:production"
+              "devServerTarget": "field-string-wysiwyg:serve:production"
             }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": "projects/wysiwyg-webcomponent-e2e/tsconfig.e2e.json",
+            "tsConfig": "projects/field-string-wysiwyg-e2e/tsconfig.e2e.json",
             "exclude": [
               "**/node_modules/**"
             ]

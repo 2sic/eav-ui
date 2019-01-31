@@ -21,7 +21,7 @@ import { ExternalWebComponentProperties } from '../external-webcomponent-propert
   styleUrls: ['./external-webcomponent.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-dropzone-wrapper', 'app-adam-attach-wrapper']
+  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
 })
 export class ExternalWebcomponentComponent implements OnInit {
   @ViewChild('container') elReference: ElementRef;
@@ -82,7 +82,7 @@ export class ExternalWebcomponentComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.customEl = document.createElement('wysiwyg-webcomponent') as any;
+    this.customEl = document.createElement('field-string-wysiwyg') as any;
 
     this.customEl.host = this.externalInputTypeHost;
     this.customEl.config = this.config;
