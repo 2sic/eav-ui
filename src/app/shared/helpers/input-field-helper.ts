@@ -83,7 +83,7 @@ export class InputFieldHelper {
         // default wrappers
         const wrappers: string[] = ['app-hidden-wrapper'];
         // entity-default wrappers
-        if (inputType === InputTypesConstants.entityDefault ||
+        if (InputTypesConstants.entityDefault ||
             inputType === InputTypesConstants.stringDropdownQuery ||
             inputType === InputTypesConstants.entityQuery ||
             inputType === InputTypesConstants.entityContentBlocks) {
@@ -96,6 +96,15 @@ export class InputFieldHelper {
                 wrappers.push('app-entity-expandable-wrapper');
             }
         }
+
+        if (inputType === InputTypesConstants.externalWebComponent) {
+            wrappers.push(...['app-dropzone-wrapper',
+                'app-eav-localization-wrapper',
+                'app-expandable-wrapper',
+                'app-adam-attach-wrapper']);
+        }
+
+
         return wrappers;
     }
 

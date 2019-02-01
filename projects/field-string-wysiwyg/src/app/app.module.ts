@@ -29,9 +29,10 @@ export class AppModule {
   constructor(private injector: Injector) {
     const el = createCustomElement(TinymceWysiwygComponent, { injector });
     // if (customElements.get('field-string-wysiwyg')) {
-    //   console.log('postoji', customElements.get('field-string-wysiwyg'));
+    //   console.log('exist', customElements.get('field-string-wysiwyg'));
     // }
     // try {
+    console.log('field-string-wysiwyg define', el);
     customElements.define('field-string-wysiwyg', el);
     // } catch (error) {
     //   console.log('error:', error);

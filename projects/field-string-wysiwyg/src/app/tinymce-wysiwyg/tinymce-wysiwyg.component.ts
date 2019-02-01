@@ -17,28 +17,12 @@ import { TinyMceAdamService } from '../services/tinymce-adam-service';
 })
 export class TinymceWysiwygComponent implements OnInit {
 
-  @Input()
-  set id(value: string) { this._id = value; }
-  get id(): string { return this._id; }
-  @Input()
-  set config(value: any) { this._config = value; }
-  get config(): any { return this._config; }
-  @Input()
-  set form(value: FormGroup) { this._form = value; }
-  get form(): FormGroup { return this._form; }
-  @Input()
-  set host(value: any) { this._host = value; }
-  get host(): any { return this._host; }
-  @Input()
-  set translateService(value: TranslateService) { this._translateService = value; }
-  get translateService(): TranslateService { return this._translateService; }
-  @Input()
-  set disabled(value: boolean) {
-    console.log('set disabled: ', value);
-    this._disabled = value;
-    // this.setOptions(value);
-  }
-  get disabled(): boolean { return this._disabled; }
+  @Input() config: any;
+  @Input() disabled: boolean;
+  @Input() form: FormGroup;
+  @Input() host: any;
+  @Input() id: string;
+  @Input() translateService: TranslateService;
   @Input()
   set value(value: any) {
     console.log('set value: ', value);
@@ -46,34 +30,18 @@ export class TinymceWysiwygComponent implements OnInit {
     this.setValue(value);
   }
   get value(): any { return this._value; }
-
   @Input()
   set adamSetValueCallback(value: any) {
     this.adamSetValue(value);
   }
   get adamSetValueCallback(): any { return this.adamSetValue; }
-
   @Input()
   set adamAfterUploadCallback(value: any) {
     this.adamAfterUpload(value);
   }
   get adamAfterUploadCallback(): any { return this.adamAfterUpload; }
 
-  // @Input()
-  // set dnnBridgeprocessResult(value: any) {
-  //   console.log('set afterUploadCallback: ', value);
-  //   this.processResultOfDnnBridge(value);
-  // }
-  // get dnnBridgeprocessResult(): any { return this.adamAfterUpload; }
-
-  _id: string;
-  _config: any;
-  _form: FormGroup;
-  _host: any;
   _value: any;
-  _disabled: boolean;
-  _translateService: TranslateService;
-  // config: TinymceWysiwygConfig;
   options: any;
   adam: any;
   editor: any;
@@ -90,19 +58,12 @@ export class TinymceWysiwygComponent implements OnInit {
   ngOnInit() {
     const settings = {
       enableContentBlocks: false,
-      // auto_focus: false,
     };
-
-    // TODO: add languages
-    // angular.extend($scope.tinymceOptions, {
-    //     language: lang2,
-    //     language_url: "../i18n/lib/tinymce/" + lang2 + ".js"
-    // });
 
     const selectorOptions = {
       // selector: 'editor#' + this.id,
       body_class: 'field-string-wysiwyg-mce-box', // when inline=false
-      content_css: 'assets/elements/assets/style/tinymce-wysiwyg.css',
+      // content_css: 'assets/elements/assets/style/tinymce-wysiwyg.css',
       height: '100%',
       branding: false,
       setup: this.tinyMceInitCallback.bind(this),
@@ -207,7 +168,7 @@ export class TinymceWysiwygComponent implements OnInit {
     });
   }
 
-  enableContentBlocksIfPossible(settings) {
+  private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
     if (this.config.allInputTypeNames.length === this.config.index + 1) {
       return;

@@ -13,6 +13,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { animate } from '@angular/animations';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,27 +22,19 @@ import { ExternalWebComponentProperties } from '../external-webcomponent-propert
   styleUrls: ['./external-webcomponent.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
+  // wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
 })
 export class ExternalWebcomponentComponent implements OnInit {
   @ViewChild('container') elReference: ElementRef;
 
   @Input() config: FieldConfig;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
-  // @Input()
-  // set factory(value: any) {
-  //   if (value) {
-  //     this.renderExternalComponent(value);
-  //     this.subscribeFormChange(value);
-  //     this.externalFactory = value;
-  //   }
-  // }
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
-
+  _ante: Function;
   customEl: NgElement & WithProperties<ExternalWebComponentProperties>;
-  loaded = true;
+  loadingSpinner = true;
   // externalFactory: any;
   updateTriggeredByControl = false;
 
@@ -63,7 +56,7 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   /**
-   * This is host methods which the external control sees
+   * This is host methods which the external control see
    */
   public externalInputTypeHost = {
     update: (value: string) => {
@@ -81,7 +74,25 @@ export class ExternalWebcomponentComponent implements OnInit {
     },
   };
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  private update(value: string) {
+    // TODO: validate value
+    this.group.controls[this.config.name].patchValue(value);
+    this.setDirty();
+    this.updateTriggeredByControl = true;
+  }
+
+  /**
+   * This methos is called when all scripts and styles are loaded
+   * (scripts are registering element, then we create that web component element)
+   */
+  public renderWebComponent = () => {
+    this._ngZone.run(() => this.createElementWebComponent());
+  }
+
+  private createElementWebComponent() {
+    // temp: harcoded - need to read from config
     this.customEl = document.createElement('field-string-wysiwyg') as any;
 
     this.customEl.host = this.externalInputTypeHost;
@@ -90,33 +101,11 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;
 
-    console.log('element created:', this.customEl);
     this.elReference.nativeElement.appendChild(this.customEl);
 
-    console.log('this.elReference.nativeElement:', this.elReference.nativeElement);
-
-    // temp
-    // this.customEl.value = 'ante';
-    // this.customEl.disabled = false;
-
     this.suscribeValueChanges();
-  }
-
-  // private renderExternalComponent(factory: any) {
-
-  //   // factory.initialize(this.externalInputTypeHost, this.config, this.group, this.translate, this.id);
-  //   // factory.render(this.elReference.nativeElement);
-
-  //   // this.suscribeValueChanges(factory);
-
-  //   //this.loaded = false;
-  // }
-
-  private update(value: string) {
-    // TODO: validate value
-    this.group.controls[this.config.name].patchValue(value);
-    this.setDirty();
-    this.updateTriggeredByControl = true;
+    this.subscribeFormChange();
+    this.loadingSpinner = false;
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
@@ -164,7 +153,6 @@ export class ExternalWebcomponentComponent implements OnInit {
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
-
       this.config.adam.updateCallback = (value) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
@@ -208,17 +196,17 @@ export class ExternalWebcomponentComponent implements OnInit {
    * This is subscribe for all setforms - even if is not changing value.
    * @param factory
    */
-  // private subscribeFormChange(factory: any) {
-  //   this.subscriptions.push(
-  //     this.eavService.formSetValueChange$.subscribe((item) => {
-  //       if (!this.updateTriggeredByControl) {
-  //         this.setExternalControlValues(factory, item[this.config.name]);
-  //         this.setExternalControlOptions(factory);
-  //       }
-  //       this.updateTriggeredByControl = false;
-  //     })
-  //   );
-  // }
+  private subscribeFormChange() {
+    this.subscriptions.push(
+      this.eavService.formSetValueChange$.subscribe((item) => {
+        if (!this.updateTriggeredByControl) {
+          this.setExternalControlValues(item[this.config.name]);
+          this.setExternalControlOptions();
+        }
+        this.updateTriggeredByControl = false;
+      })
+    );
+  }
 
   private setDirty() {
     this.group.controls[this.config.name].markAsDirty();
