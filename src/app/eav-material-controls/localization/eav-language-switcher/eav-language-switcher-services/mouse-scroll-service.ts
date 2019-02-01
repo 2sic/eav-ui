@@ -8,21 +8,22 @@ export class MouseScrollService {
   private header: HTMLElement;
   private oldScrollBehavior: string;
   private positionX: number;
-  private documentMousemove: Function;
-  private documentMouseup: Function;
-  private documentMouseleave: Function;
+  private listeners: Function[] = [];
+  private areButtonsDisabled: Function;
 
   constructor() { }
 
-  initMouseScroll(renderer: Renderer2, headerRef: ElementRef): void {
+  initMouseScroll(renderer: Renderer2, headerRef: ElementRef, areButtonsDisabled: Function): void {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
+    this.areButtonsDisabled = areButtonsDisabled;
 
     this.renderer.listen(this.header, 'mousedown', this.registerScroll.bind(this));
   }
 
   private registerScroll(event: any): void {
-    if (event.button !== 0) {
+    const disabled = this.areButtonsDisabled();
+    if (disabled || event.button !== 0) {
       return;
     }
     const headerStyles = getComputedStyle(this.header);
@@ -31,17 +32,18 @@ export class MouseScrollService {
     this.renderer.setStyle(this.header, 'scroll-behavior', 'auto');
     this.positionX = event.pageX;
 
-    this.documentMousemove = this.renderer.listen('document', 'mousemove', this.doScroll.bind(this));
-    this.documentMouseup = this.renderer.listen('document', 'mouseup', this.removeScroll.bind(this));
-    this.documentMouseleave = this.renderer.listen('document', 'mouseleave', this.removeScroll.bind(this));
+    this.listeners.push(this.renderer.listen('document', 'mousemove', this.doScroll.bind(this)));
+    this.listeners.push(this.renderer.listen('document', 'mouseup', this.removeScroll.bind(this)));
+    this.listeners.push(this.renderer.listen('document', 'mouseleave', this.removeScroll.bind(this)));
   }
 
   private removeScroll(): void {
     this.renderer.setStyle(this.header, 'scroll-behavior', this.oldScrollBehavior);
 
-    this.documentMousemove();
-    this.documentMouseup();
-    this.documentMouseleave();
+    this.listeners.forEach(listener => {
+      listener(); // Stop listener
+    });
+    this.listeners.splice(0, this.listeners.length);
   }
 
   private doScroll(event: any): void {

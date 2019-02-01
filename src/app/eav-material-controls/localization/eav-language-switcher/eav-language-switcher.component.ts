@@ -40,7 +40,7 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.showShadowsService.initShadowsCalculation(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
-    this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef);
+    this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef, this.areButtonsDisabled.bind(this));
     this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
     this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef, this.buttonsRef);
   }
@@ -55,5 +55,9 @@ export class EavLanguageSwitcherComponent implements AfterViewInit {
       return;
     }
     this.languageService.updateCurrentLanguage(language.key);
+  }
+
+  areButtonsDisabled(): boolean {
+    return !this.formsAreValid && !this.allControlsAreDisabled;
   }
 }
