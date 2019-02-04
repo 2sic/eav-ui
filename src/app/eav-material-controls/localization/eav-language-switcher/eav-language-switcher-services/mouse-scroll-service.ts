@@ -26,6 +26,8 @@ export class MouseScrollService {
     if (disabled || event.button !== 0) {
       return;
     }
+    const selection = window.getSelection();
+    selection.removeAllRanges();
     const headerStyles = getComputedStyle(this.header);
     this.oldScrollBehavior = headerStyles['scroll-behavior'];
 
