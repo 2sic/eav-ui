@@ -17,9 +17,9 @@
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-nav-list toggle *ngIf="showLanguages || selectedOption.language !== ''">
-  <!-- [disabled]="!hasLanguage(language.key)" -->
   <mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [ngClass]="selectedOption.language === language.key ? 'mat-list-item-focus' : ''">
     <span matLine>{{language.key}}</span>
+    <span *ngIf="!hasLanguage(language.key)">Disabled</span>
   </mat-list-item>
 </mat-nav-list>
 <mat-divider></mat-divider>
