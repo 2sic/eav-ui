@@ -71,7 +71,7 @@
         z-index:1;
     }
     
-    // important for tinyMCE
+    // // important for tinyMCE
     .mce-tinymce {
         display: flex; 
         flex-direction: column;
@@ -79,22 +79,6 @@
         align-items:stretch;
         border-width: 0px!important;
     }
-
-    .mce-panel {
-        height: 100%
-    }
-
-    /*Flex for iframe mode*/
-    div.wrap-float-label, .mce-stack-layout, .mce-edit-area {
-        display: flex!important;
-        flex-direction: column;
-        flex: 1;
-        align-items:stretch;
-    }
-
-    .mce-tinymce iframe{
-        flex: 1;
-    } 
 
     &--empty {
         .adam-dialog-container {

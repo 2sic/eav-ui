@@ -43,16 +43,16 @@
 /* } */
 
 /*Flex for iframe mode*/
-div.wrap-float-label, .mce-stack-layout, .mce-edit-area {
+/* div.wrap-float-label, .mce-stack-layout, .mce-edit-area {
     display: flex!important;
     flex-direction: column;
     flex: 1;
     align-items:stretch;
-}
+} */
 
-.mce-tinymce iframe{
+/* .mce-tinymce iframe{
     flex: 1;
-} 
+}  */
 
 /*Editing area*/
  .mce-container-body .mce-edit-area {
@@ -151,3 +151,28 @@ hr[sxc]::after {
 }*/
 
 
+
+    /* // important for tinyMCE */
+    /* .mce-tinymce {
+        display: flex; 
+        flex-direction: column;
+        flex: 1;
+        align-items:stretch;
+        border-width: 0px!important;
+    } */
+
+    .c-ew__dialog-content .mce-panel {
+        height: 100%
+    }
+
+    /*Flex for iframe mode*/
+    .c-ew__dialog-content div.wrap-float-label, .c-ew__dialog-content .mce-stack-layout, .c-ew__dialog-content .mce-edit-area {
+        display: flex!important;
+        flex-direction: column;
+        flex: 1;
+        align-items:stretch;
+    }
+
+    .c-ew__dialog-content .mce-tinymce iframe{
+        flex: 1;
+    } 
