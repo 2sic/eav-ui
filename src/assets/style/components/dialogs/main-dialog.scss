@@ -8,3 +8,11 @@
     // max-width: 960px;
     bottom: 10px;
 }
+
+app-collapsible-wrapper {
+    app-collapsible-wrapper:last-child {
+        mat-card:last-child {
+            margin: 0;
+        }
+    }
+}

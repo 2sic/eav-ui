@@ -164,8 +164,15 @@ export class ItemService {
     settingsTranslated: EavAttributesTranslated, currentLanguage: string, defaultLanguage: string): any {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
-    this.updateItemAttributeValue(item.entity.id, attribute.name,
-      defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+    const exists = item.entity.attributes.hasOwnProperty(attribute.name);
+    if (!exists) {
+      this.addAttributeValue(item.entity.id, attribute.name,
+        defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+    } else {
+      this.updateItemAttributeValue(item.entity.id, attribute.name,
+        defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+    }
+    
     return defaultValue;
   }
 
