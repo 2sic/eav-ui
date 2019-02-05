@@ -25,6 +25,7 @@ export class InputTypesConstants {
     public static readonly hyperlinkLibrary: string = 'hyperlink-library';
     // custom/files
     public static readonly external: string = 'external';
+    public static readonly externalWebComponent: string = 'external-webcomponent';
     // old types
     public static readonly dropdown: string = 'dropdown';
     public static readonly wysiwyg: string = 'wysiwyg';

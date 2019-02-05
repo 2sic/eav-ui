@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -82,6 +82,7 @@ import {
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
+import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
 
 @NgModule({
     declarations: [
@@ -129,6 +130,7 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
+        ExternalWebcomponentComponent,
     ],
     imports: [
         // DndDraggable,
@@ -193,9 +195,11 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
         DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
-        CollapsibleFieldWrapperComponent
+        CollapsibleFieldWrapperComponent,
+        ExternalWebcomponentComponent
     ],
     exports: [EavLanguageSwitcherComponent],
-    providers: [FileTypeService, ValidationMessagesService]
+    providers: [FileTypeService, ValidationMessagesService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class EavMaterialControlsModule { }
