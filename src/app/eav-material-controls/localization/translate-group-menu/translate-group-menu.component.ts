@@ -423,34 +423,22 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * @param defaultLanguage
    */
   private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
-    console.log('Petar 1', this.infoMessage);
     // Determine is control disabled or enabled and info message
     if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-      // this.infoMessage = '';
-      // this.infoMessageLabel = '';
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
         .join(', ');
 
       this.infoMessageLabel = 'LangMenu.In';
-      // this.translationState = new LinkToOtherLanguageData('translate', '');
-      console.log('Petar 2', this.infoMessage);
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
       this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
         .join(', ');
 
       this.infoMessageLabel = 'LangMenu.In';
-      // const readOnlyElements: EavDimensions<string>[] = LocalizationHelper.getAttributeValueTranslation(attributes,
-      //   currentLanguage, defaultLanguage)
-      //   .dimensions.filter(f => f.value !== currentLanguage);
-      // this.translationState = new LinkToOtherLanguageData('linkReadOnly', readOnlyElements[0].value);
-      console.log('Petar 3', this.infoMessage);
     } else {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.UseDefault';
-      //  this.translationState = new LinkToOtherLanguageData('dontTranslate', '');
-      console.log('Petar 4', this.infoMessage);
     }
   }
 }
