@@ -70,7 +70,8 @@ export class EavAdminUiService {
                 dialogType,
                 item
             }
-        });
+        }
+        );
     }
 
     // TODO: unite all modals function in one.

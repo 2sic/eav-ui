@@ -14,13 +14,13 @@
 
     // prevent drop on page - can only drop on dropzone
     const dropzoneId = 'dropzone'
-    window.addEventListener('dragover', e => {
+    window.addEventListener('dragover', function (e) {
       e = e || event
       if (e.target.id !== dropzoneId) {
         e.preventDefault()
       }
     })
-    window.addEventListener('drop', e => {
+    window.addEventListener('drop', function (e) {
       e = e || event
       if (e.target.id !== dropzoneId) {
         e.preventDefault()
@@ -45,9 +45,18 @@
   <!--fontawesome  -->
   <link rel="stylesheet" href="assets/style/font-awesome/css/solid.min.css" />
   <link rel="stylesheet" href="assets/style/font-awesome/css/fontawesome.min.css" />
+  <script src="assets/elements/scripts-bundle.js"></script>
+  <script>
+    ng.core.enableProdMode();
+  </script>
+
 </head>
 
-<body>
+<body id="eavApp">
+  <script>
+    // Fix for IE11 - document.activeElement is not set in iframe
+    document.getElementById('eavApp').focus();
+  </script>
   <app-root></app-root>
 </body>
 
