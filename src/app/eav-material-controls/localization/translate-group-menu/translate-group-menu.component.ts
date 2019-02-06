@@ -47,8 +47,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
   translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
-  infoMessage;
-  infoMessageLabel;
+  infoMessage: string;
+  infoMessageLabel: string;
 
   private subscriptions: Subscription[] = [];
 
@@ -67,7 +67,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.subscribeToEntityHeaderFromStore();
-
   }
 
   ngOnDestroy() {
