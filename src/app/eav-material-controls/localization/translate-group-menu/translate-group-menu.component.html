@@ -18,7 +18,11 @@
 </div>
 
 <div *ngIf="(currentLanguage !== defaultLanguage) && !config.isParentGroup" fxLayoutAlign="end center">
-  <div fxLayoutAlign="end center">
+  <div fxLayoutAlign="end center" class="shared-languages-container">
+    <div class="shared-languages mat-caption color__accent" [ngClass]="{
+      'shared-languages--disabled': inputDisabled
+    }">
+      {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}</div>
     <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2" [ngClass]="getTranslationStateClass()">
       <i class="fas fa-language" style="font-size: 20px"></i>
     </button>
