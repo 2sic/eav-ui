@@ -12,12 +12,10 @@ export class TinyMceAdamService {
             }
 
             const fileName = fileItem.Name.substr(0, fileItem.Name.lastIndexOf('.'));
-            console.log('setAdamValue fileName', fileName);
 
             const content = modeImage
                 ? '<img src="' + fileItem.FullPath + '" + alt="' + fileName + '">'
                 : '<a href="' + fileItem.FullPath + '">' + fileName + '</a>';
-            console.log('setAdamValue content:', content);
             // var body = vm.editor.getBody();
             // vm.editor.selection.setCursorLocation(body, 0);
             // debugger;
@@ -28,7 +26,6 @@ export class TinyMceAdamService {
         };
 
         vm.adamAfterUpload = (fileItem) => {
-            console.log('adamAfterUpload');
             vm.adamSetValue(fileItem, fileItem.Type === 'image');
         };
 
@@ -41,7 +38,6 @@ export class TinyMceAdamService {
         };
 
         vm.setAdamConfig = (adamConfig) => {
-            console.log('tinymce setAdamConfig', adamConfig);
             vm.adam.setAdamConfig(adamConfig);
         };
     }

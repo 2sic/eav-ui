@@ -9,7 +9,6 @@ export class TinyMceToolbarButtons {
     static addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
         // call register once the editor-object is ready
         editor.on('init', () => {
-            console.log('editor SetContent init registerTinyMceFormats', this);
             this.registerTinyMceFormats(editor, vm.host, imgSizes);
         });
 
@@ -285,7 +284,6 @@ export class TinyMceToolbarButtons {
             }
         };
     }
-
     //#endregion
 
     //#region register formats
@@ -301,7 +299,6 @@ export class TinyMceToolbarButtons {
 
     //#region mode switching and the buttons for it
     static switchModes(mode, editor) {
-        console.log('switchModes1', editor.settings.modes[mode].toolbar);
         editor.settings.toolbar = editor.settings.modes[mode].toolbar;
         editor.settings.menubar = editor.settings.modes[mode].menubar;
         // editor.settings.contextmenu = editor.settings.modes[mode].contextmenu; - doesn't work at the moment

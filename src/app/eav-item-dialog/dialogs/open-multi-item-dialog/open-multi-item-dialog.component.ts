@@ -18,17 +18,16 @@ export class OpenMultiItemDialogComponent implements OnInit {
 
   constructor(private dialog: MatDialog,
     private eavAdminUiService: EavAdminUiService) {
-
     // Open dialog
     this.dialogRef = this.eavAdminUiService.openItemEditWithContent(this.dialog, MultiItemEditFormComponent);
-
     // Close dialog
     this.dialogRef.afterClosed().subscribe(result => {
       this.afterClosedDialog();
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   /**
    * Triggered after dialog is closed

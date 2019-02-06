@@ -8,7 +8,9 @@ export const SlideLeftRightAnimation = [
         transition('* => *',
             [
                 animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
-                    style({ transform: 'translateX(+10%)' }),
+                    style({
+                        transform: 'translateX(+10%)' /*standard */
+                    }),
                     style({ transform: 'translateX(+20%)' }),
                     style({ transform: 'translateX(+30%)' }),
                     style({ transform: 'translateX(+40%)' }),
@@ -38,7 +40,13 @@ export const SlideLeftRightAnimation = [
         transition('void => *', animate(0)),
         transition('* => *', [
             animate('200ms cubic-bezier(0.4, 0.0, 0.2, 1)', keyframes([
-                style({ transform: 'translateX(-10%)' }),
+                style({
+                    // '-webkit-transform': 'translateX(-10%)', /* android, safari, chrome */
+                    // '-moz-transform': 'translateX(-10%)', /* old firefox */
+                    // '-o-transform': 'translateX(-10%)', /* old opera */
+                    // '-ms-transform': 'translateX(-10%)', /* old IE */
+                    transform: 'translateX(-10%)' /*standard */
+                }),
                 style({ transform: 'translateX(-20%)' }),
                 style({ transform: 'translateX(-30%)' }),
                 style({ transform: 'translateX(-40%)' }),

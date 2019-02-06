@@ -25,7 +25,6 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() translateService: TranslateService;
   @Input()
   set value(value: any) {
-    console.log('set value: ', value);
     this._value = value;
     this.setValue(value);
   }
@@ -128,11 +127,8 @@ export class TinymceWysiwygComponent implements OnInit {
   //  * @param {*} editor
   //  */
   tinyMceInitCallback(editor) {
-    console.log('editor:', editor.editorManager);
     // set editor
     this.editor = editor;
-    // this.setValue(this.value);
-    // this.setOptions(this.disabled);
     // Attach adam
     this.tinyMceAdamService.attachAdam(this, editor.editorManager);
     // Set Adam configuration
@@ -163,7 +159,6 @@ export class TinymceWysiwygComponent implements OnInit {
     });
 
     editor.on('change', e => {
-      console.log('[set value] Editor was change', editor.getContent());
       this.changeCheck(e, editor.getContent());
     });
   }
