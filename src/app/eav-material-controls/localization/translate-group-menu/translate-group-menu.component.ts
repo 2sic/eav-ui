@@ -423,19 +423,22 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * @param defaultLanguage
    */
   private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
-    // Determine is control disabled or enabled and info message
-    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-        .join(', ');
+    // Determine whether control is disabled or enabled and info message
+    const isEditableTranslationExist = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
+    const isReadonlyTranslationExist = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
 
-      this.infoMessageLabel = 'LangMenu.In';
-    } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-      this.infoMessage = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''))
-        .join(', ');
+    if (isEditableTranslationExist || isReadonlyTranslationExist) {
+      const dimensions = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''));
 
-      this.infoMessageLabel = 'LangMenu.In';
+      const isShared = dimensions.length > 1;
+      if (isShared) {
+        this.infoMessage = dimensions.join(', ');
+        this.infoMessageLabel = 'LangMenu.In';
+      } else {
+        this.infoMessage = '';
+        this.infoMessageLabel = '';
+      }
     } else {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.UseDefault';
