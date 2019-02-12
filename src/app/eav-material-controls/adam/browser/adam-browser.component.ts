@@ -10,6 +10,11 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
+import { MatDialog } from '@angular/material';
+import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { MetadataConstants } from '../../../shared/constants';
+import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 
 
 @Component({
@@ -36,9 +41,6 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 export class AdamBrowserComponent implements OnInit {
 
   @Input() config: FieldConfig;
-  // TODO: temp need to change
-  // eavConfig.metadataOfCmsObject
-  @Input() metadataOfCmsObject: any;
 
   // Identity fields
   // @Input() contentTypeName: any;
@@ -88,7 +90,9 @@ export class AdamBrowserComponent implements OnInit {
   constructor(private adamService: AdamService,
     private fileTypeService: FileTypeService,
     private eavService: EavService,
-    private featureService: FeatureService) {
+    private featureService: FeatureService,
+    private eavAdminUiService: EavAdminUiService,
+    private dialog: MatDialog) {
 
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -153,12 +157,31 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
-  editMetadata(item) {
+  addItemMetadata(item: AdamItem) {
     const items = [
       this.itemDefinition(item, this.getMetadataType(item))
     ];
-    // TODO:
-    // eavAdminDialogs.openEditItems(items, vm.refresh);
+
+    const metadataFor = new EavFor(items[0].Metadata.Key, items[0].Metadata.TargetType);
+    const persistedData: AdminDialogPersistedData = {
+      metadataFor
+    };
+    const dialogRef = this.eavAdminUiService
+      .openItemNewEntity(this.dialog, MultiItemEditFormComponent, items[0].ContentTypeName, persistedData);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        item.MetadataId = result[Object.keys(result)[0]];
+      }
+    });
+  }
+
+  editItemMetadata(metadataId) {
+    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Petar editItemMetadata result', result);
+    });
   }
 
   goUp = () => {
@@ -290,7 +313,7 @@ export class AdamBrowserComponent implements OnInit {
         Metadata: {
           Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
           KeyType: 'string',
-          TargetType: this.metadataOfCmsObject
+          TargetType: MetadataConstants.MetadataOfCmsObject
         },
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
@@ -308,5 +331,3 @@ export class AdamBrowserComponent implements OnInit {
 
   private loadFileList = () => this.svc.liveListLoad();
 }
-
-

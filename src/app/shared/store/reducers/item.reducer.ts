@@ -142,6 +142,24 @@ export function itemReducer(state = initialState, action: fromItems.Actions): It
                 }
             };
         }
+        case fromItems.ADD_ITEM_ENTITY_PROPERTY: {
+            return {
+                ...state,
+                ...{
+                    items: state.items.map(item => {
+                        return (item.entity.id === action.id)
+                            ? {
+                                ...item,
+                                entity: {
+                                    ...item.entity,
+                                    [action.propertyKey]: action.propertyValue
+                                }
+                            }
+                            : item;
+                    })
+                }
+            };
+        }
         case fromItems.ADD_ITEM_ATTRIBUTE_VALUE: {
             console.log('ADD_ITEM_ATTRIBUTE_VALUE: ', action);
             return {
