@@ -16,12 +16,15 @@
   </mat-list-item>
 </mat-nav-list>
 <mat-divider></mat-divider>
-<mat-nav-list toggle *ngIf="showLanguages || selectedOption.language !== ''">
-  <!-- [disabled]="!hasLanguage(language.key)" -->
-  <mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [ngClass]="selectedOption.language === language.key ? 'mat-list-item-focus' : ''">
-    <span matLine>{{language.key}}</span>
-  </mat-list-item>
-</mat-nav-list>
+<mat-action-list *ngIf="showLanguages || selectedOption.language !== ''">
+  <button mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [disabled]="!hasLanguage(language.key)"
+    [ngClass]="{
+    'mat-list-item-focus': selectedOption.language === language.key,
+    'mat-list-item--disabled': !hasLanguage(language.key)
+  }">
+    {{language.key}}
+  </button>
+</mat-action-list>
 <mat-divider></mat-divider>
 <mat-dialog-actions fxLayoutAlign="end center">
   <button mat-button (click)="linkOtherLanguage()" color="accent" [disabled]="okButtonDisabled()" [mat-dialog-close]="selectedOption">

@@ -29,6 +29,9 @@ export const REMOVE_ITEM_ATTRIBUTE_DIMENSION = '[Item] REMOVE_ITEM_ATTRIBUTE_DIM
 // Item Header
 export const UPDATE_ITEM_HEADER = '[Item] UPDATE_ITEM_HEADER';
 
+// Metadata
+export const ADD_ITEM_ENTITY_PROPERTY = '[Item] ADD_ITEM_ENTITY_PROPERTY';
+
 /**
  * Load
  */
@@ -59,6 +62,11 @@ export class AddItemAttributeDimensionAction implements Action {
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
         public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean, public guid: string) { }
+}
+
+export class AddItemEntityProperty implements Action {
+    readonly type = ADD_ITEM_ENTITY_PROPERTY;
+    constructor(public id: number, public propertyKey: string, public propertyValue: any) { }
 }
 
 /**
@@ -140,6 +148,7 @@ export type Actions
     | AddItemAttributeAction
     | AddItemAttributeValueAction
     | AddItemAttributeDimensionAction
+    | AddItemEntityProperty
     | UpdateItemAction
     | UpdateItemAttributeAction
     | UpdateItemAttributeValueAction

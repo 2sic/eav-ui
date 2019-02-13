@@ -47,6 +47,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
   translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
+  infoMessage: string;
+  infoMessageLabel: string;
 
   private subscriptions: Subscription[] = [];
 
@@ -65,7 +67,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.subscribeToEntityHeaderFromStore();
-
   }
 
   ngOnDestroy() {
@@ -246,6 +247,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
       this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+      this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -411,6 +413,35 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     // set Adam disabled state
     if (this.config.adam) {
       this.config.adam.disabled = this.group.controls[this.config.name].disabled;
+    }
+  }
+
+  /**
+   * set info message
+   * @param attributes
+   * @param currentLanguage
+   * @param defaultLanguage
+   */
+  private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
+    // Determine whether control is disabled or enabled and info message
+    const isEditableTranslationExist = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
+    const isReadonlyTranslationExist = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
+
+    if (isEditableTranslationExist || isReadonlyTranslationExist) {
+      const dimensions = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''));
+
+      const isShared = dimensions.length > 1;
+      if (isShared) {
+        this.infoMessage = dimensions.join(', ');
+        this.infoMessageLabel = 'LangMenu.In';
+      } else {
+        this.infoMessage = '';
+        this.infoMessageLabel = '';
+      }
+    } else {
+      this.infoMessage = '';
+      this.infoMessageLabel = 'LangMenu.UseDefault';
     }
   }
 }

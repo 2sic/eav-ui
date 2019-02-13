@@ -132,7 +132,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
     // TODO: finisih this - bug form closed when new entity closed
     // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
 
-    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType);
+    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType, null);
 
     dialogRef.afterClosed().subscribe(result => {
       // dialogRef.componentInstance;

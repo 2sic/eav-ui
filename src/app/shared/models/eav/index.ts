@@ -10,5 +10,5 @@ export { EavHeader } from './eav-header';
 export { Language } from './language';
 export { EavAttributesTranslated } from './eav-attributes-translated';
 export { InputType } from './input-type';
-
-
+export { EavFor } from './eav-for';
+export { AdminDialogPersistedData } from './admin-dialog-persisted-data';

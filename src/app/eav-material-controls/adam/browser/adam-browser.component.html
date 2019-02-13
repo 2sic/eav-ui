@@ -106,8 +106,8 @@
           <i class="eav-icon-link-ext" style="font-size: larger"></i>
         </a>
       </div>
-      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)" *ngIf="getMetadataType(item)"
-        appClickStopPropagation matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
+      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
+        *ngIf="getMetadataType(item)" appClickStopPropagation matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
 

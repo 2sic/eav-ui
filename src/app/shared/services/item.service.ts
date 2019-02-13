@@ -7,7 +7,7 @@ import { map, catchError, tap, filter, delay } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated, AdminDialogPersistedData, EavFor } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -207,6 +207,22 @@ export class ItemService {
         // tap(data => console.log('getItemFromJsonItem1: ', data)),
         catchError(error => this.handleError(error))
       );
+  }
+
+  public loadPersistedData(persistedData: AdminDialogPersistedData): void {
+    if (!persistedData) {
+      return;
+    }
+    const metadataFor: EavFor = persistedData.metadataFor;
+    if (metadataFor) {
+      this.addMetadataFor(metadataFor);
+    }
+  }
+
+  private addMetadataFor(metadataFor: EavFor): void {
+    const entityId = 0; // We are adding metadata For to a new entity
+    const propertyKey = 'For';
+    this.store.dispatch(new itemActions.AddItemEntityProperty(entityId, propertyKey, metadataFor));
   }
 
   private handleError(error: any) {
