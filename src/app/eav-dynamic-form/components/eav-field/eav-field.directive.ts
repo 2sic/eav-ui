@@ -134,6 +134,7 @@ export class EavFieldDirective implements OnInit {
   private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
     console.log('createExternalWebComponent');
     const ref: any = this.createComponent(container, fieldConfig);
+    // ref.instance.renderWebComponent();
     // // TODO: read data from config
     // Start loading all external dependencies (start with css). This method recursively load all dependencies.
     this.loadWebComponentScripts(
@@ -166,13 +167,10 @@ export class EavFieldDirective implements OnInit {
         increment++;
         const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
         if (nextScript) {
-          console.log('nextScript', name);
           this.loadWebComponentScripts(increment, name, type, styles, scripts, fileType, renderWebComponentCallback);
         } else if (fileType === FileTypeConstants.css) {
-          console.log('nextScript css', name);
           this.loadWebComponentScripts(0, name, type, styles, scripts, FileTypeConstants.javaScript, renderWebComponentCallback);
         } else { // when scripts load is finish then call registered factory
-          console.log('all scripts and styles are loaded create component', type);
           renderWebComponentCallback();
         }
       }

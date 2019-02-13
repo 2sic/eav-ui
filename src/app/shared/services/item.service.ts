@@ -172,7 +172,6 @@ export class ItemService {
       this.updateItemAttributeValue(item.entity.id, attribute.name,
         defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
     }
-    
     return defaultValue;
   }
 

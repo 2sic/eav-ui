@@ -246,7 +246,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       null
     );
     // set default value if needed
-    if (isEmpty(value) && typeof value != typeof true && typeof value != typeof 1) {
+    if (isEmpty(value) && typeof value !== typeof true && typeof value !== typeof 1) {
       value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
         this.currentLanguage, this.defaultLanguage);
       //  defaultValueIsSet = true;
@@ -276,7 +276,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       wrappers: wrappers,
       features: this.features
     };
-  }  
+  }
 
   /**
    * Create fieldConfig for title field group with collapsible wrapper

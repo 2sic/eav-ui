@@ -9,15 +9,20 @@ export class ScriptLoaderService {
 
   public load(script: ScriptModel, fileType: string): Observable<ScriptModel> {
     return new Observable<ScriptModel>((observer: Observer<ScriptModel>) => {
-      const existingScript = this.scripts.find(s => s.name === script.name);
-
+      // const existingScript = this.scripts.find(s => s.name === script.name);
+      const existingScript = this.scripts.find(s => s.filePath === script.filePath);
       // Complete if already loaded
-      if (existingScript && existingScript.loaded) {
-        observer.next(existingScript);
-        observer.complete();
+      if (existingScript) {
+        if (existingScript.loaded) {
+          observer.next(existingScript);
+          observer.complete();
+        } else {
+          existingScript.htmlScriptElement.addEventListener('load', () => {
+            observer.next(existingScript);
+            observer.complete();
+          });
+        }
       } else {
-        // Add the script
-        this.scripts = [...this.scripts, script];
         // Load the script
         let scriptElement;
 
@@ -37,19 +42,20 @@ export class ScriptLoaderService {
             console.log('wrong file type');
             break;
         }
-
-        scriptElement.onload = () => {
+        scriptElement.addEventListener('load', () => {
           script.loaded = true;
-          // Settimeout for testing slow load of scripts
-          // setTimeout(() => {
           observer.next(script);
           observer.complete();
-          // }, 5000);
-        };
+        });
 
         scriptElement.onerror = (error: any) => {
           observer.error('Couldnt load script ' + script.filePath);
         };
+
+        script.htmlScriptElement = scriptElement;
+
+        // Add the script
+        this.scripts.push(script);
 
         document.getElementsByTagName('head')[0].appendChild(scriptElement);
       }
@@ -71,4 +77,5 @@ export interface ScriptModel {
   name: string;
   filePath: string;
   loaded: boolean;
+  htmlScriptElement?: HTMLScriptElement;
 }

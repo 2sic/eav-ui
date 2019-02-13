@@ -443,5 +443,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.extendedSaveButtonIsReduced = true;
     }, 5000);
   }
+
+  // Temp
+  // isIEOrEdge() {
+  //   return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
+  // }
 }
 

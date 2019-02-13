@@ -32,7 +32,6 @@ export class ExternalWebcomponentComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
-  _ante: Function;
   customEl: NgElement & WithProperties<ExternalWebComponentProperties>;
   loadingSpinner = true;
   // externalFactory: any;
