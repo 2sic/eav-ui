@@ -17,10 +17,10 @@
 </mat-nav-list>
 <mat-divider></mat-divider>
 <mat-action-list *ngIf="showLanguages || selectedOption.language !== ''">
-  <button mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [disabled]="!hasLanguage(language.key)"
+  <button mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [disabled]="disableLanguage(language.key)"
     [ngClass]="{
     'mat-list-item-focus': selectedOption.language === language.key,
-    'mat-list-item--disabled': !hasLanguage(language.key)
+    'mat-list-item--disabled': disableLanguage(language.key)
   }">
     {{language.key}}
   </button>

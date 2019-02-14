@@ -20,6 +20,8 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   languages$: Observable<Language[]>;
   languages: Language[];
+  currentLanguage$: Observable<string>;
+  currentLanguage = '';
 
   private subscriptions: Subscription[] = [];
 
@@ -42,10 +44,16 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   */
   private loadlanguagesFromStore() {
     this.languages$ = this.languageService.selectAllLanguages();
+    this.currentLanguage$ = this.languageService.getCurrentLanguage();
 
     this.subscriptions.push(
       this.languages$.subscribe(languages => {
         this.languages = languages;
+      })
+    );
+    this.subscriptions.push(
+      this.currentLanguage$.subscribe(currentLanguage => {
+        this.currentLanguage = currentLanguage;
       })
     );
   }
@@ -95,10 +103,18 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
     console.log(this.selectedOption);
   }
 
-  hasLanguage = (languageKey) => {
+  disableLanguage(languageKey: string): boolean {
+    const isCurrentLanguage = languageKey === this.currentLanguage;
+    const hasTranslation = this.hasTranslation(languageKey);
+
+    return isCurrentLanguage || !hasTranslation;
+  }
+
+  hasTranslation(languageKey: string): boolean {
     return this.data.attributes
-      ? LocalizationHelper.isEditableOrReadonlyTranslationExist(this.data.attributes[this.data.attributeKey],
+      ? LocalizationHelper.isEditableTranslationExist(this.data.attributes[this.data.attributeKey],
         languageKey, this.data.defaultLanguage)
       : false;
   }
+
 }
