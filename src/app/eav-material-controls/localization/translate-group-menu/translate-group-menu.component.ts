@@ -14,6 +14,7 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { ValidationHelper } from '../../validators/validation-helper';
 import isEqual from 'lodash/isEqual';
+import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 
 @Component({
   selector: 'app-translate-group-menu',
@@ -424,17 +425,25 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
     // Determine whether control is disabled or enabled and info message
-    const isEditableTranslationExist = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
-    const isReadonlyTranslationExist = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
+    const isEditableTranslationExist: boolean = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
+    const isReadonlyTranslationExist: boolean = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
 
     if (isEditableTranslationExist || isReadonlyTranslationExist) {
-      const dimensions = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map((d: EavDimensions<string>) => d.value.replace('~', ''));
+      let dimensions: string[] = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+        .dimensions.map(d => d.value.replace('~', ''));
 
-      const isShared = dimensions.length > 1;
+      dimensions = dimensions.filter(d => !d.includes(currentLanguage));
+
+      const isShared = dimensions.length > 0;
       if (isShared) {
+        dimensions = TranslateGroupMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
         this.infoMessage = dimensions.join(', ');
-        this.infoMessageLabel = 'LangMenu.In';
+
+        if (isEditableTranslationExist) {
+          this.infoMessageLabel = 'LangMenu.In';
+        } else if (isReadonlyTranslationExist) {
+          this.infoMessageLabel = 'LangMenu.From';
+        }
       } else {
         this.infoMessage = '';
         this.infoMessageLabel = '';
