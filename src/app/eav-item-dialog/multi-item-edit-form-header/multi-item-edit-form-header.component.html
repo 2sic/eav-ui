@@ -1,6 +1,7 @@
 <mat-card fxLayout="row" fxLayoutAlign="start center">
   <button mat-icon-button fxLayoutAlign="start center" (click)="closeDialog()">
-    <mat-icon>clear</mat-icon>
+    <mat-icon *ngIf="isParentDialog">clear</mat-icon>
+    <mat-icon *ngIf="!isParentDialog">arrow_back</mat-icon>
   </button>
   <div fxFlex="auto" style="width:100px;">
     <app-eav-language-switcher *ngIf="languages.length > 0" [languages]="languages" [currentLanguage]="currentLanguage"

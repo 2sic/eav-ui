@@ -12,8 +12,10 @@ export class EavAdminUiService {
     /**
       * Open a modal dialog containing the given component.
       */
-    public openItemEditWithContent = (dialog: MatDialog, component: any): MatDialogRef<{}, any> => {
-        return this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent, null);
+    public openItemEditWithContent = (
+        dialog: MatDialog, component: any, persistedData: AdminDialogPersistedData
+    ): MatDialogRef<{}, any> => {
+        return this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent, persistedData);
     }
 
     /**

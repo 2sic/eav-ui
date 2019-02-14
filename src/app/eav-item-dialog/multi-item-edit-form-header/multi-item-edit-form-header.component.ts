@@ -18,6 +18,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() formsAreValid: boolean;
 
   @Input() allControlsAreDisabled: boolean;
+  @Input() isParentDialog: boolean;
 
   constructor(public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>, private dialog: MatDialog) { }
 
