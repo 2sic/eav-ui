@@ -105,9 +105,16 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   disableLanguage(languageKey: string): boolean {
     const isCurrentLanguage = languageKey === this.currentLanguage;
-    const hasTranslation = this.hasTranslation(languageKey);
+    if (isCurrentLanguage) {
+      return true;
+    }
 
-    return isCurrentLanguage || !hasTranslation;
+    const hasTranslation = this.hasTranslation(languageKey);
+    if (!hasTranslation) {
+      return true;
+    }
+
+    return !hasTranslation;
   }
 
   hasTranslation(languageKey: string): boolean {
