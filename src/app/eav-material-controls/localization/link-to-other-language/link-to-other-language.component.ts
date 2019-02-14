@@ -114,7 +114,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    return !hasTranslation;
+    return false;
   }
 
   hasTranslation(languageKey: string): boolean {
