@@ -55,8 +55,10 @@
 <body id="eav-app">
   <script>
     // Fix for IE11 - document.activeElement is not set in iframe
-    // TOOD: sett only for IE EXPLORER - add if
-    document.getElementById('eav-app').focus();
+    const isIE = navigator.userAgent.includes("MSIE") || navigator.userAgent.includes("Trident") || !!document.documentMode;
+    if (isIE) {
+      document.getElementById('eav-app').focus();
+    }
   </script>
   <app-root></app-root>
 </body>
