@@ -35,7 +35,7 @@ export class TinyMceToolbarButtons {
                     tooltip: 'Link.DnnFile.Tooltip',
                     icon: ' eav-icon-file',
                     onclick: () => {
-                        vm.openDnnDialog('documentmanager');
+                        vm.toggleAdam(false, true);
                     }
                 }
             ]
