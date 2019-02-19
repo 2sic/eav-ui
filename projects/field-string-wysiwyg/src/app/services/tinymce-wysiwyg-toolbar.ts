@@ -267,19 +267,18 @@ export class TinyMceToolbarButtons {
     static initOnPostRender(name, editor) { // copied/modified from
         // tslint:disable-next-line:max-line-length
         // https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
-        return () => {
-            // const self = this; // keep ref to the current button?
-            const watchChange = () => {
+        return function () {
+            const self = this; // keep ref to the current button?
+
+            function watchChange() {
                 editor.formatter.formatChanged(name, function (state) {
-                    this.active(state);
-                }
-                );
-            };
+                    self.active(state);
+                });
+            }
+
             if (editor.formatter) {
                 watchChange();
             } else {
-                // TODO: test
-                // editor.on('init', () => watchChange());
                 editor.on('init', watchChange);
             }
         };
