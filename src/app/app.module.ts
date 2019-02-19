@@ -37,7 +37,7 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
+  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.js');
 }
 
 @NgModule({
