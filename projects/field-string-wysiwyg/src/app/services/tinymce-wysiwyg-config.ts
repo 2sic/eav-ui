@@ -98,7 +98,8 @@ export class TinymceWysiwygConfig {
             object_resizing: false, // don't allow manual scaling of images
 
             // General looks
-            skin: 'lightgray',
+            // skin: 'lightgray',
+            skin_url: 'assets/elements/assets/style/tinymce-wysiwyg-skins/2sxc-blue',
             theme: 'modern',
             statusbar: false,    // doesn't work in inline :(
 
