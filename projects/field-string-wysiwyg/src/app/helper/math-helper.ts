@@ -34,10 +34,10 @@ Dual licensed under the MIT and GPL licenses.
  */
 export class MathHelper {
     // Private array of chars to use
-    CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    private static CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
     public static uuid = function (len?, radix?) {
-        const chars = this.CHARS, uuid = [];
+        const chars = MathHelper.CHARS, uuid = [];
         radix = radix || chars.length;
 
         if (len) {
@@ -69,7 +69,7 @@ export class MathHelper {
     // A more performant, but slightly bulkier, RFC4122v4 solution.  We boost performance
     // by minimizing calls to random()
     public static uuidFast = function () {
-        const chars = this.CHARS, uuid = new Array(36);
+        const chars = MathHelper.CHARS, uuid = new Array(36);
         let rnd = 0, r;
         for (let i = 0; i < 36; i++) {
             if (i === 8 || i === 13 || i === 18 || i === 23) {
