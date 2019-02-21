@@ -27,9 +27,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
-  showDashedBorder = false;
-
-  private enterTarget: any;
 
   get disabled() {
     return this.group.controls[this.config.name].disabled;
@@ -82,11 +79,9 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
-    this.showDashedBorder = false;
   }
 
   public onUploadSuccess(args: any): void {
-    this.showDashedBorder = false;
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
@@ -101,26 +96,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     } else {
       alert('Upload failed because: ' + response.Error);
     }
-  }
-
-  public dragenter(args: any): void {
-    this.enterTarget = event.target;
-    this.showDashedBorder = true;
-  }
-
-  public dragleave(args: any): void {
-    if (this.enterTarget === args.target) {
-      // true leave
-      this.showDashedBorder = false;
-    }
-  }
-
-  public onDrop(args: any): void {
-    this.showDashedBorder = false;
-  }
-
-  onProccesing(args: any): void {
-    console.log('proccesing', args);
   }
 
   /**
