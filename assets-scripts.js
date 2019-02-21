@@ -1,5 +1,7 @@
 const fs = require('fs-extra');
 const concat = require('concat');
+const chalk = require('chalk');
+const chalkSuccess = chalk.green;
 
 (async function build() {
     await fs.copy('./node_modules/@webcomponents/custom-elements', './src/assets/custom-elements');
@@ -24,4 +26,17 @@ const concat = require('concat');
     ];
     await fs.ensureDir('./src/assets/elements');
     await concat(files, './src/assets/elements/scripts-bundle.js');
+})();
+
+(function buildLanguages() {
+    const languagesDir = './src/i18n';
+    const languagesTempDir = './src/assets/i18n';
+
+    const files = fs.readdirSync(languagesDir);
+    fs.ensureDirSync(languagesTempDir);
+
+    files.forEach(file => {
+        fs.copySync(languagesDir + '/' + file, languagesTempDir + '/' + file.replace('.json', '.js'));
+    });
+    console.log(chalkSuccess('Build languages success!'));
 })();
