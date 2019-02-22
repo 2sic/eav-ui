@@ -62,7 +62,7 @@ export class TinymceWysiwygComponent implements OnInit {
     const selectorOptions = {
       // selector: 'editor#' + this.id,
       body_class: 'field-string-wysiwyg-mce-box', // when inline=false
-      content_css: 'assets/elements/assets/style/tinymce-wysiwyg.css',
+      content_css: 'assets/elements/field-string-wysiwyg/assets/style/tinymce-wysiwyg.css',
       height: '100%',
       branding: false,
       setup: this.tinyMceInitCallback.bind(this),

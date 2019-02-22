@@ -141,8 +141,8 @@ export class EavFieldDirective implements OnInit {
       0,
       fieldConfig.name,
       fieldConfig.name,
-      ['assets/elements/assets/style/tinymce-wysiwyg.css'],
-      ['assets/elements/field-string-wysiwyg.js'],
+      ['assets/elements/field-string-wysiwyg/assets/style/tinymce-wysiwyg.css'],
+      ['assets/elements/field-string-wysiwyg/main.js'],
       FileTypeConstants.css,
       ref.instance.renderWebComponent);
   }
