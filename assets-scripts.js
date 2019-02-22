@@ -3,7 +3,7 @@ const concat = require('concat');
 const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
-(async function build() {
+(async function buildAngularScripts() {
     await fs.copy('./node_modules/@webcomponents/custom-elements', './src/assets/custom-elements');
     await fs.copy('./node_modules/core-js/client', './src/assets/core-js');
     await fs.copy('./node_modules/zone.js/dist', './src/assets/zone.js');
@@ -26,17 +26,18 @@ const chalkSuccess = chalk.green;
     ];
     await fs.ensureDir('./src/assets/elements');
     await concat(files, './src/assets/elements/scripts-bundle.js');
+    console.log(chalkSuccess('Build Angular scripts success!'));
 })();
 
-(function buildLanguages() {
+(async function buildLanguages() {
     const languagesDir = './src/i18n';
-    const languagesTempDir = './src/assets/i18n';
+    const languagesTempDir = './src/assets/auto-generated/i18n';
 
-    const files = fs.readdirSync(languagesDir);
-    fs.ensureDirSync(languagesTempDir);
+    const files = await fs.readdir(languagesDir);
+    await fs.ensureDir(languagesTempDir);
 
-    files.forEach(file => {
-        fs.copySync(languagesDir + '/' + file, languagesTempDir + '/' + file.replace('.json', '.js'));
+    files.forEach(async file => {
+        await fs.copy(languagesDir + '/' + file, languagesTempDir + '/' + file.replace('.json', '.js'));
     });
     console.log(chalkSuccess('Build languages success!'));
 })();
