@@ -1,6 +1,12 @@
-<div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled"
-  (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
-  <!-- <div class="dropzone-content"> -->
-  <ng-container #fieldComponent></ng-container>
-  <!-- </div> -->
+<div class="dropzone-parent" style="position: relative;" [ngClass]="{
+'eav-dragging': showImage && !disabled
+}">
+  <div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled"
+    (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (dragenter)="onDragEnter($event)"
+    (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+    <!-- <div class="dropzone-content"> -->
+    <ng-container #fieldComponent></ng-container>
+    <!-- </div> -->
+  </div>
+  <div class="dropzone-image" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;"></div>
 </div>

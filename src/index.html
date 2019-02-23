@@ -15,10 +15,16 @@
     // prevent drop on page - can only drop on dropzone, add eav-dragging class
     const dropzoneId = 'dropzone';
     const draggingClass = 'eav-dragging';
+    let timeouts = [];
     window.addEventListener('dragover', function (event) {
       if (event.target.id !== dropzoneId) {
         event.preventDefault();
       }
+      for (let i = 0; i < timeouts.length; i++) {
+        const timeout = timeouts[i];
+        clearTimeout(timeout);
+      }
+      timeouts = [];
       document.body.classList.add(draggingClass);
     });
     window.addEventListener('drop', function (event) {
@@ -27,8 +33,11 @@
       }
       document.body.classList.remove(draggingClass);
     });
-    window.addEventListener('dragleave', function () {
-      document.body.classList.remove(draggingClass);
+    window.addEventListener('dragleave', function (event) {
+      const timeout = setTimeout(function () {
+        document.body.classList.remove(draggingClass);
+      }, 50);
+      timeouts.push(timeout);
     });
   </script>
 

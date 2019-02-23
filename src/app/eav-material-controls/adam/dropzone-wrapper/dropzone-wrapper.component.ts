@@ -27,6 +27,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
+  showImage = false;
+  private enterTarget: any;
 
   get disabled() {
     return this.group.controls[this.config.name].disabled;
@@ -98,6 +100,23 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     }
   }
 
+  public onDragEnter(event: any): void {
+    console.log('Petar onDragEnter', event.target);
+    this.enterTarget = event.target;
+    this.showImage = true;
+  }
+
+  public onDragLeave(event: any): void {
+    console.log('Petar onDragLeave', event.target);
+    if (this.enterTarget === event.target) {
+      // true leave
+      this.showImage = false;
+    }
+  }
+
+  public onDrop(event: any): void {
+    this.showImage = false;
+  }
   /**
    * triger click on clickable element for load open
    */
