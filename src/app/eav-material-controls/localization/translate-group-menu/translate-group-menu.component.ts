@@ -430,14 +430,13 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
     if (isEditableTranslationExist || isReadonlyTranslationExist) {
       let dimensions: string[] = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map(d => d.value.replace('~', ''));
+        .dimensions.map(d => d.value);
 
       dimensions = dimensions.filter(d => !d.includes(currentLanguage));
 
       const isShared = dimensions.length > 0;
       if (isShared) {
-        dimensions = TranslateGroupMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
-        this.infoMessage = dimensions.join(', ');
+        this.infoMessage = TranslateGroupMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage);
 
         if (isEditableTranslationExist) {
           this.infoMessageLabel = 'LangMenu.In';

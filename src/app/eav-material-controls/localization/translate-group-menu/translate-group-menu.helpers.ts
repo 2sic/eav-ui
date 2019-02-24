@@ -1,34 +1,74 @@
 export class TranslateGroupMenuHelpers {
 
-  public static calculateShortDimensions(dimensions: string[], currentLanguage: string): string[] {
-    const dimensionsTemp: Map<string, string[]> = new Map();
-    const currentLanguageFirstLetters = currentLanguage.slice(0, currentLanguage.indexOf('-'));
+  public static calculateSharedInfoMessage(dimensions: string[], currentLanguage: string): string {
+    dimensions = TranslateGroupMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
+    const result = TranslateGroupMenuHelpers.calculateEditAndReadDimensions(dimensions);
+    const editableDimensions = result.editableDimensions;
+    const readOnlyDimensions = result.readOnlyDimensions;
+    let infoMessage = '';
 
-    dimensionsTemp[currentLanguageFirstLetters] = [];
-    dimensionsTemp[currentLanguageFirstLetters].push(currentLanguageFirstLetters);
+    const editableExist = editableDimensions.length > 0;
+    const readOnlyExist = readOnlyDimensions.length > 0;
+    if (editableExist && readOnlyExist) {
+      infoMessage = `${editableDimensions.join(', ')}, (${readOnlyDimensions.join(', ')})`;
+    } else if (editableExist) {
+      infoMessage = editableDimensions.join(', ');
+    } else if (readOnlyExist) {
+      infoMessage = `(${readOnlyDimensions.join(', ')})`;
+    }
+
+    return infoMessage;
+  }
+
+  private static calculateShortDimensions(dimensions: string[], currentLanguage: string): string[] {
+    const dimensionsMap: Map<string, string[]> = new Map();
+    const shortCurrentLanguage = currentLanguage.slice(0, currentLanguage.indexOf('-'));
+
+    dimensionsMap[shortCurrentLanguage] = [];
+    dimensionsMap[shortCurrentLanguage].push(shortCurrentLanguage);
 
     dimensions.forEach(dimension => {
-      const firstLetters = dimension.slice(0, dimension.indexOf('-'));
+      const shortDimension = dimension.slice(0, dimension.indexOf('-'));
+      const shortNoReadOnly = shortDimension.replace('~', '');
 
-      if (!dimensionsTemp[firstLetters]) {
-        dimensionsTemp[firstLetters] = [];
-        dimensionsTemp[firstLetters].push(dimension);
+      if (!dimensionsMap[shortNoReadOnly]) {
+        dimensionsMap[shortNoReadOnly] = [];
+        dimensionsMap[shortNoReadOnly].push(dimension);
       } else {
-        dimensionsTemp[firstLetters].push(dimension);
+        dimensionsMap[shortNoReadOnly].push(dimension);
       }
     });
 
     dimensions = dimensions.map(dimension => {
-      const firstLetters = dimension.slice(0, dimension.indexOf('-'));
+      const shortDimension = dimension.slice(0, dimension.indexOf('-'));
+      const shortNoReadOnly = shortDimension.replace('~', '');
 
-      if (dimensionsTemp[firstLetters].length > 1) {
+      if (dimensionsMap[shortNoReadOnly].length > 1) {
         return dimension;
       } else {
-        return firstLetters;
+        return shortDimension;
       }
     });
 
     return dimensions;
+  }
+
+  private static calculateEditAndReadDimensions(dimensions: string[]) {
+    const editableDimensions: string[] = [];
+    const readOnlyDimensions: string[] = [];
+
+    dimensions.forEach(dimension => {
+      if (!dimension.includes('~')) {
+        editableDimensions.push(dimension);
+      } else {
+        readOnlyDimensions.push(dimension.replace('~', ''));
+      }
+    });
+
+    return {
+      editableDimensions,
+      readOnlyDimensions
+    };
   }
 
 }
