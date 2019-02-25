@@ -5,7 +5,7 @@ export class TinymceWysiwygConfig {
     svc = () => {
         return {
             // cdn root
-            cdnRoot: '//cdn.tinymce.com/4',
+            // cdnRoot: '//cdn.tinymce.com/4',
             // these are the sizes we can auto-resize to
             imgSizes: [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10],
 
@@ -74,7 +74,7 @@ export class TinymceWysiwygConfig {
         const modes = this.buildModes(settings);
         const svc = this.svc();
         return {
-            baseURL: svc.cdnRoot,
+            // baseURL: svc.cdnRoot, // main script is loaded as a dependency to this webcomponent in eav-field.directive.ts
             // inline: true, // use the div, not an iframe
             automatic_uploads: false, // we're using our own upload mechanism
             modes: modes, // for later switch to another mode
