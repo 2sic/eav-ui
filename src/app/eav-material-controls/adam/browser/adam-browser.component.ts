@@ -143,8 +143,12 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
+  allowEdit(): boolean {
+    return this.svc.getAllowEdit();
+  }
+
   allowCreateFolder(): boolean {
-    return this.svc.folders.length < this.folderDepth;
+    return (this.allowEdit()) && (this.svc.folders.length < this.folderDepth);
   }
 
   del(item) {

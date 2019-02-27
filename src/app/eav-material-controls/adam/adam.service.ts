@@ -32,6 +32,24 @@ export class AdamService {
     const folders = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
     const startingSubfolder = subfolder;
+    let allowEdit: boolean;
+
+    const getAllowEdit = () => {
+      // return true;
+      return allowEdit;
+    };
+
+    const checkAllowEdit = (items) => {
+      const currentFolder = items.find(item => item.Name === '.');
+      if (currentFolder) {
+        allowEdit = currentFolder.AllowEdit;
+        // return currentFolder.AllowEdit;
+      } else {
+        // currentFolder missing
+        allowEdit = false;
+        // return false;
+      }
+    };
 
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
     const addFullPath = (value: AdamItem, key) => {
@@ -104,7 +122,6 @@ export class AdamService {
     };
 
     const getAll = (): Observable<AdamItem[]> => {
-
       console.log('GET ALL subfolder:', subfolder);
       // maybe create model for data
       return this.httpClient.get(url + '/items',
@@ -118,6 +135,7 @@ export class AdamService {
         .pipe(
           map((data: any) => {
             data.forEach(addFullPath);
+            checkAllowEdit(data);
             return data;
           }),
           tap(data => console.log('items subfolder: ', subfolder)),
@@ -197,6 +215,7 @@ export class AdamService {
       deleteItem,
       rename,
       liveListReload: null,
+      getAllowEdit,
     };
 
     svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));
