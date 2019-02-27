@@ -4,18 +4,21 @@
 
     <!-- info for dropping stuff here -->
     <!--  [disabled]="disabled"-->
-    <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)" matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
+    <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
+      matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <i class="eav-icon-up-circled2"></i>
         <div class="adam-short-label">upload to
-          <i ngClass="{{adamModeConfig.usePortalRoot ? 'eav-icon-globe' : 'eav-icon-apple'}}" style="font-size: larger"></i>
+          <i ngClass="{{adamModeConfig.usePortalRoot ? 'eav-icon-globe' : 'eav-icon-apple'}}"
+            style="font-size: larger"></i>
         </div>
       </div>
     </div>
 
     <!-- info for paste image from clipboard here -->
     <!-- TODO: disable -->
-    <div *ngIf="!clipboardPasteImageFunctionalityDisabled" class="dz-preview dropzone-adam paste-image" matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
+    <div *ngIf="!clipboardPasteImageFunctionalityDisabled" class="dz-preview dropzone-adam paste-image"
+      matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <i class="eav-icon-file-image"></i>
         <div class="adam-short-label">paste image</div>
@@ -53,7 +56,8 @@
 
     <!-- folder list - not always shown -->
     <ng-container *ngIf="showFolders">
-      <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
+      <div class="dz-preview"
+        *ngFor="let item of (items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
         (click)="goIntoFolder(item)">
         <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
           <i class="eav-icon-folder-empty"></i>
@@ -71,7 +75,8 @@
           </div>
         </div>
         <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)"
-          matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}" appClickStopPropagation *ngIf="getMetadataType(item)">
+          matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}" appClickStopPropagation
+          *ngIf="getMetadataType(item)">
           <i class="eav-icon-tag" style="font-size: larger"></i>
         </span>
       </div>
@@ -79,8 +84,10 @@
 
     <!-- files -->
     <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
-    <div class="dz-preview" *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
-      (click)="select(item)" [ngClass]="{ 'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id }">
+    <div class="dz-preview"
+      *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
+      (click)="select(item)"
+      [ngClass]="{ 'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id }">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <i [ngClass]="icon(item)"></i>
         <div class="adam-short-label">{{ item.Name }}</div>
@@ -106,8 +113,10 @@
           <i class="eav-icon-link-ext" style="font-size: larger"></i>
         </a>
       </div>
-      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
-        *ngIf="getMetadataType(item)" appClickStopPropagation matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
+      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}"
+        (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
+        *ngIf="getMetadataType(item)" appClickStopPropagation
+        matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
         <i class="eav-icon-tag" style="font-size: larger"></i>
       </span>
 
@@ -117,7 +126,8 @@
           <title>Check</title>
           <defs></defs>
           <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
-            <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z"
+            <path
+              d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z"
               id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF"
               sketch:type="MSShapeGroup"></path>
           </g>

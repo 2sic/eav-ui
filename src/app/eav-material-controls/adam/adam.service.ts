@@ -28,6 +28,7 @@ export class AdamService {
     // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
     const folders = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
+    const startingSubfolder = subfolder;
 
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
     const addFullPath = (value: AdamItem, key) => {
@@ -74,6 +75,7 @@ export class AdamService {
       subPath = subPath.replace('//', '/');
       if (subPath[subPath.length - 1] === '/') {
         subPath = subPath.substr(0, subPath.length - 1);
+        subPath = (!!startingSubfolder) ? startingSubfolder + '/' + subPath : subPath;
       }
 
       childFolder.Subfolder = subPath;
@@ -92,7 +94,7 @@ export class AdamService {
       if (folders.length > 0) {
         subfolder = folders[folders.length - 1].Subfolder;
       } else {
-        subfolder = '';
+        subfolder = startingSubfolder || '';
       }
       reload();
       return subfolder;
