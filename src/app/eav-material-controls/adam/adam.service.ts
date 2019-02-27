@@ -9,16 +9,19 @@ import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
 import { EavService } from '../../shared/services/eav.service';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
+import { SanitizeService } from './sanitize.service';
 
 @Injectable()
 export class AdamService {
 
   private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient,
+  constructor(
+    private httpClient: HttpClient,
     private svcCreatorService: SvcCreatorService,
-    private eavService: EavService) {
-
+    private eavService: EavService,
+    private sanitizeSvc: SanitizeService
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -50,7 +53,7 @@ export class AdamService {
         {
           params: {
             subfolder: subfolder,
-            newFolder: newfolder,
+            newFolder: this.sanitizeSvc.sanitizeName(newfolder),
             usePortalRoot: serviceConfig.usePortalRoot,
             appId: this.eavConfig.appId
           }
@@ -154,7 +157,7 @@ export class AdamService {
             isFolder: item.IsFolder,
             id: item.Id,
             usePortalRoot: serviceConfig.usePortalRoot,
-            newName: newName,
+            newName: this.sanitizeSvc.sanitizeName(newName),
             appId: this.eavConfig.appId
           }
         })
@@ -170,6 +173,7 @@ export class AdamService {
 
     // get the correct url for uploading as it is needed by external services (dropzone)
     const uploadUrl = (targetSubfolder: string): string => {
+      targetSubfolder = this.sanitizeSvc.sanitizePath(targetSubfolder);
       let urlUpl = (targetSubfolder === '')
         ? url
         : url + '?subfolder=' + targetSubfolder;
