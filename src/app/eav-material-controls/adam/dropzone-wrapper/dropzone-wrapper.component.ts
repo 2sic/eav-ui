@@ -46,6 +46,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
     this.dropzoneConfig = {
+      // spm 2019.02.28. Check whether usePortalRoot should always be false
       url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
       maxFiles: 1,
       autoReset: null,

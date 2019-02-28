@@ -98,7 +98,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.subFolder = this.config.settings.Paths;
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -119,11 +119,11 @@ export class AdamBrowserComponent implements OnInit {
 
   initConfig() {
     this.subFolder = this.subFolder || '';
-    this.showImagesOnly = this.showImagesOnly || false;
+    this.showImagesOnly = this.showImagesOnly || false; // spm 2019.02.28. test this line against old angular
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
     // if true, the initial folder can have files, otherwise only subfolders
-    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true;
+    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true; // spm 2019.02.28. test this line against old angular
     this.metadataContentTypes = this.metadataContentTypes || '';
 
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
@@ -143,8 +143,12 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
+  allowEdit(): boolean {
+    return this.svc.getAllowEdit();
+  }
+
   allowCreateFolder(): boolean {
-    return this.svc.folders.length < this.folderDepth;
+    return (this.allowEdit()) && (this.svc.folders.length < this.folderDepth);
   }
 
   del(item) {
