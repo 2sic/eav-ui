@@ -1,6 +1,9 @@
 <div [formGroup]="group">
-  <mat-checkbox [formControlName]="config.name" labelPosition="start">
+  <mat-slide-toggle
+    [formControlName]="config.name"
+    [checked]="config.value"
+    [disabled]="config.disabled">
     {{config.label}}
-  </mat-checkbox>
+  </mat-slide-toggle>
   <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
 </div>

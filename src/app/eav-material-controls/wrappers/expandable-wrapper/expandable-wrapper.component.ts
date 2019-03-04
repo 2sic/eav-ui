@@ -21,20 +21,18 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
   dialogIsOpen = false;
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.name].value.replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
   }
-
-  get id() {
-    return `${this.config.entityId}${this.config.index}`;
-  }
-
-  get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
-  }
+  get id() { return `${this.config.entityId}${this.config.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
+  get touched() { return this.group.controls[this.config.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.name].disabled; }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
-  ngOnInit() {
+  ngOnInit() { }
 
+  setTouched() {
+    this.group.controls[this.config.name].markAsTouched();
   }
 }

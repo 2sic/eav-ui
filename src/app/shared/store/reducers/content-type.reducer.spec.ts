@@ -20,7 +20,8 @@ describe(`contentTypeReducer`, () => {
                     '2SexyContent',
                     'description',
                     [],
-                    [])
+                    [],
+                    undefined)
             );
 
             const expectedResult: ContentTypeState = { contentTypes: [newContentType] };

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap } from 'rxjs/operators';
 
 import { ContentTypeService } from '../services/content-type.service';
@@ -18,9 +18,9 @@ export class ContentTypeEffects {
      * Efect on Action (LOAD_EAV_CONTENTTYPES) load ContentType and sent it to store with action LoadContentTypesSuccessAction
      */
     @Effect() loadContentType$ = this.actions$
-        .ofType(contentTypeActions.LOAD_CONTENT_TYPE)
-        .pipe(switchMap((action: fromContentType.LoadContentTypeAction) => {
-            return this.contentTypeService.getContentTypeFromJsonContentType1(action.path)
-                .pipe(map(contentType => new contentTypeActions.LoadContentTypeSuccessAction(contentType)));
-        }));
+        .pipe(ofType(contentTypeActions.LOAD_CONTENT_TYPE),
+            switchMap((action: fromContentType.LoadContentTypeAction) => {
+                return this.contentTypeService.getContentTypeFromJsonContentType1(action.path)
+                    .pipe(map(contentType => new contentTypeActions.LoadContentTypeSuccessAction(contentType)));
+            }));
 }

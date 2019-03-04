@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
 
 import 'reflect-metadata';
@@ -90,8 +90,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   ngOnInit() {
-    console.log('[Empty Entity] formDialogData', this.formDialogData);
-
     this.loadItemsData();
     this.setLanguageConfig();
     this.reduceExtendedSaveButton();
@@ -126,7 +124,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // reset form errors
     this.formErrors = [];
   }
-
 
   /**
    * close form dialog or if close is disabled show a message
@@ -167,6 +164,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
+    this.itemService.loadPersistedData(this.formDialogData.persistedData);
     this.inputTypeService.loadInputTypes(data.InputTypes);
     this.contentTypeService.loadContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
@@ -338,7 +336,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private saveFormMessagesSubscribe() {
     this.subscriptions.push(this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS)
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
         if (this.formIsSaved) {
@@ -353,7 +351,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         // }
       }));
     this.subscriptions.push(this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR)
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR))
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
         console.log('error END', action.error);
         // TODO show error message
@@ -383,12 +381,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           && (!itemEditFormComponent.item.header.group || itemEditFormComponent.item.header.group.slotCanBeEmpty === false)) {
           this.formsAreValid = false;
         }
-
         // set form dirty
         if (itemEditFormComponent.form.dirty) {
           this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
         }
-
         // set all form are disabled
         if (!itemEditFormComponent.allControlsAreDisabled) {
           this.allControlsAreDisabled = false;
@@ -403,12 +399,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
-
     this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
     this.publishMode = draftShouldBranch
       ? 'branch' // it's a branch, so it must have been saved as a draft-branch
       : isPublished ? 'show' : 'hide';
-
     // if publish mode is prohibited, revert to default
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
       this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
@@ -450,5 +444,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.extendedSaveButtonIsReduced = true;
     }, 5000);
   }
+
+  // Temp
+  // isIEOrEdge() {
+  //   return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
+  // }
 }
 

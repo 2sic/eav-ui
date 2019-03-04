@@ -5,6 +5,10 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
     var editor = editor;
     //#region helpers like initOnPostRender(name)
 
+    //TODO: translate:
+    // if ($scope.tinymceOptions.language)
+    //             tinyMceHelpers.addTranslations(editor, $scope.tinymceOptions.language);
+
     // helper function to add activate/deactivate to buttons like alignleft, alignright etc.
     function initOnPostRender(name) { // copied/modified from https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
         return function () {
@@ -19,15 +23,9 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
                 watchChange();
             }
             else {
-                // this work only in inline mode
-                //  editor.on("init", watchChange());
-                // this work only when not in inline mode
-
-                // TODO:
-                // editor.on('SetContent', function (e) {
-                //     console.log('editor SetContent', editor.formatter);
-                //     watchChange()
-                // });
+                editor.on('init', function () {
+                    watchChange();
+                });
             }
         };
     }
@@ -46,6 +44,7 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
 
     // call register once the editor-object is ready
     editor.on('init', function () {
+        console.log('editor SetContent init registerTinyMceFormats');
         registerTinyMceFormats(editor, vm.host);
     });
 
@@ -155,7 +154,6 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
             { icon: "superscript", text: "Superscript", onclick: function () { editor.execCommand("superscript"); } },
             { icon: "subscript", text: "Subscript", onclick: function () { editor.execCommand("subscript"); } }
         ]
-
     });
 
     // drop-down with italic, strikethrough, ...
@@ -171,7 +169,6 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
             { icon: "outdent", text: "Outdent", onclick: function () { editor.execCommand("Outdent"); } },
             { icon: "indent", text: "Indent", onclick: function () { editor.execCommand("Indent"); } }
         ]
-
     });
 
     //#region mode switching and the buttons for it
@@ -260,8 +257,7 @@ export function addTinyMceToolbarButtons(vm, editor, imgSizes) {
         tooltip: "ContentBlock.Add",
         onclick: function () {
             var guid = Math.uuid().toLowerCase(); // requires the uuid-generator to be included
-
-            editor.insertContent("<hr sxc=\"sxc-content-block\" guid=\"" + guid + "\" />");
+            editor.insertContent('<hr sxc=\"sxc-content-block\" guid=\"' + guid + '\" />');
         }
     });
     // #endregion

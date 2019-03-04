@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -21,40 +21,34 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
-  @Input() availableEntities: EntityInfo[];
   @Input() autoCompleteInputControl: any;
+  // by default data is in array format, but can be stringformat
+  @Input() isStringFormat = false;
+  @Input() freeTextMode = false;
+
+  @Output()
+  callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
 
   chosenEntities: any[];
 
   // private contentType: FieldMaskService;
-  // private availableEntities: EntityInfo[] = [];
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
+  get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
   get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
-
   get entityType() { return this.config.settings.EntityType || ''; }
-
   // get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
-
-  get enableCreate() { return this.config.settings.EnableCreate || true; }
-
-  get enableEdit() { return this.config.settings.EnableEdit || true; }
-
-  get enableRemove() { return this.config.settings.EnableRemove || true; }
-
+  get enableCreate() { return this.config.settings.EnableCreate === false ? false : true; }
+  get enableEdit() { return this.config.settings.EnableEdit === false ? false : true; }
+  get enableRemove() { return this.config.settings.EnableRemove === false ? false : true; }
   get enableDelete() { return this.config.settings.EnableDelete || false; }
-
   get disabled() { return this.group.controls[this.config.name].disabled; }
-
   // get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-
   get dndListConfig() { return { allowedTypes: [this.config.name] }; }
-
   get separator() { return this.config.settings.Separator || ','; }
-
-  get value() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
@@ -65,7 +59,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setChosenEntities(this.value);
+    this.setChosenEntities(this.controlValue);
     this.chosenEntitiesSubscribeToChanges();
   }
 
@@ -73,17 +67,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  getEntityText = (value): string => {
-    if (value === null) {
+  getEntityText = (entityId): string => {
+    if (entityId === null) {
       return 'empty slot';
     }
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Text :
-        this.entityTextDefault ? this.entityTextDefault : value;
-    }
+    const entities = this.availableEntities.filter(f => f.Value === entityId);
+    return entities.length > 0 ? entities[0].Text :
+      this.entityTextDefault ? this.entityTextDefault : entityId;
 
-    return value;
   }
 
   private getEntityId = (value): string => {
@@ -116,14 +107,15 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
    * @param value
    */
   removeSlot(item: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
-    // this.group.patchValue({ [this.config.name]: entityValues.filter(entity => entity !== value) });
-    this.group.controls[this.config.name].patchValue(entityValues);
 
+    this.patchValue(entityValues);
     if (entityValues.length === 0) {
       // focus if list dont have any alement more
-      setTimeout(() => this.autoCompleteInputControl.nativeElement.focus());
+      setTimeout(() => {
+        this.autoCompleteInputControl.nativeElement.focus();
+      });
     }
   }
 
@@ -159,17 +151,17 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   levelUp(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
     entityValues.splice(index - 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
+    this.patchValue(entityValues);
   }
 
   levelDown(value: string, index: number) {
-    const entityValues: string[] = [...this.group.controls[this.config.name].value];
+    const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
     entityValues.splice(index + 1, 0, ...[value]);
-    this.group.controls[this.config.name].patchValue(entityValues);
+    this.patchValue(entityValues);
   }
 
 
@@ -177,7 +169,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     const oldIndex = list.indexOf(item);
     const newIndex = list.findIndex(i => i.name === item.name);
     list.splice(list.indexOf(item), 1);
-    // TEMP FIX Sorting list by moving an item up the list
+    // TEMP FIX Sorting list by moving an item up in the list
     // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
     if (newIndex < oldIndex) {
       list.splice(newIndex - 1, 0, item);
@@ -185,20 +177,32 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     }
 
     const entityList = this.mapFromNameListToEntityList(list);
-    this.group.controls[this.config.name].patchValue(entityList);
+    this.patchValue(entityList);
   }
 
   private setData() {
-    this.setChosenEntities(this.value);
+    const chosenListIsChanged = this.setChosenEntities(this.controlValue);
+    if (chosenListIsChanged) { this.setDirty(); }
     // TODO: call this in parent
     // this.setAvailableEntities();
+    this.callAvailableEntities.emit();
   }
 
-  private setChosenEntities(values: string[]) {
+  /**
+   * set chosen entities list and if change return true
+   * @param values
+   */
+  private setChosenEntities(values: string[]): boolean {
     const updatedValues = this.mapFromEntityListToNameList(values);
     if (this.chosenEntities !== updatedValues) {
       this.chosenEntities = updatedValues;
+      return true;
     }
+    return false;
+  }
+
+  private setDirty() {
+    this.group.controls[this.config.name].markAsDirty();
   }
 
   /**
@@ -209,7 +213,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
-      this.setChosenEntities(this.value);
+      this.setChosenEntities(this.controlValue);
     }));
   }
 
@@ -225,5 +229,15 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       return [];
     }
     return nameList.map(v => v.name);
+  }
+
+  private patchValue(entityValues: string[]) {
+    if (this.isStringFormat) {
+      const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
+      this.group.controls[this.config.name].patchValue(stringEntityValue);
+    } else {
+      this.group.controls[this.config.name].patchValue(entityValues);
+    }
+    this.setDirty();
   }
 }

@@ -1,0 +1,13 @@
+<div class="adam-dialog-container">
+  <div class="adam-dialog-content">
+    <ng-container #fieldComponent></ng-container>
+  </div>
+  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config">
+  </adam-browser>
+  <div class="{{'field-' + config.index}}">
+    <div class="dropzone-previews">
+    </div>
+    <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
+  </div>
+  <adam-hint class="field-hints"></adam-hint>
+</div>

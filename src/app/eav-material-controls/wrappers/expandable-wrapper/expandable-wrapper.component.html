@@ -1,31 +1,45 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
-  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
+  <div class="c-ew__backdrop" (click)="dialogIsOpen = false"></div>
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
-      <mat-card class="c-ew--border-radius mat-elevation-z0" fxLayout="row">
-        <button mat-icon-button type="button" fxLayoutAlign="center center" (click)="dialogIsOpen = false">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="mat-display-1">{{config.label}}</span>
       </mat-card>
     </div>
-    <div class='u-add-scrollbar u-hide-scrollbar'>
+    <div>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content c-ew--border-radius" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+      <div class="c-ew__dialog-content u-border-radius-bottom  u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>
   </div>
 </div>
 <div>
-  <div matRipple (click)="dialogIsOpen = true" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple" [ngClass]="inputInvalid ? 'c-ew__preview--input-invalid' : ''">
+  <div matRipple (click)="!disabled ? dialogIsOpen = true : null; setTouched();" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple"
+    [ngClass]="{
+      'c-ew__preview--invalid' : inputInvalid && touched,
+      'c-ew__preview--disabled': disabled
+    }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="!inputInvalid" class="c-ew__color--primary" [ngClass]="value && value.length > 0 ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
-      <mat-label *ngIf="inputInvalid" class="mat-error" [ngClass]="value ? 'mat-caption' : 'mat-empty'">{{config.label}}
-        {{config.required ? '*': '' }}</mat-label>
-      <div *ngIf="value" [innerHtml]="value"></div>
+      <mat-label [ngClass]="{
+        'mat-caption' : value && value.length > 0,
+        'mat-empty' : !(value && value.length > 0),
+        'mat-error' : inputInvalid && touched && !disabled,
+        'color__primary' : !(inputInvalid && touched) && !disabled,
+        'color__label-disabled' : disabled
+      }">
+        {{config.label}}
+        {{config.required? '*': '' }}
+      </mat-label>
+      <div *ngIf="value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}" [innerHtml]="value">
+      </div>
     </div>
   </div>
-  <app-field-helper-text [config]="config" [group]="group" haveDirtyTouched="fasle"></app-field-helper-text>
+  <!-- hasDirtyTouched="fasle"  -->
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </div>

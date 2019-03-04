@@ -20,8 +20,8 @@ export class FieldMaskService {
     this.model = model;
     this.fields = this.fieldList();
 
-    if (overloadPreCleanValues) { // got an overload...
-      this.preClean = overloadPreCleanValues;
+    if (this.overloadPreCleanValues) { // got an overload...
+      this.preClean = this.overloadPreCleanValues;
     }
   }
 
@@ -56,7 +56,6 @@ export class FieldMaskService {
       value = value.replace('[' + e + ']', cleaned);
     });
 
-    console.log('resolve:', value);
     return value;
   }
 }

@@ -14,6 +14,7 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { ValidationHelper } from '../../validators/validation-helper';
 import isEqual from 'lodash/isEqual';
+import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 
 @Component({
   selector: 'app-translate-group-menu',
@@ -47,6 +48,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
   translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
+  infoMessage: string;
+  infoMessageLabel: string;
 
   private subscriptions: Subscription[] = [];
 
@@ -65,7 +68,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.subscribeToEntityHeaderFromStore();
-
   }
 
   ngOnDestroy() {
@@ -220,8 +222,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-
-
   getTranslationStateClass() {
     if (!this.translationState) {
       return '';
@@ -248,6 +248,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
       this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+      this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -321,14 +322,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private translateAllConfiguration(currentLanguage: string) {
     this.config.settings = LocalizationHelper.translateSettings(this.config.fullSettings, this.currentLanguage, this.defaultLanguage);
     this.config.label = this.config.settings.Name ? this.config.settings.Name : null;
-    // important - a hidden field don't have validations and is not required
-    const visibleInEditUI = (this.config.settings.VisibleInEditUI === false) ? false : true;
-    this.config.validation = visibleInEditUI
-      ? ValidationHelper.setDefaultValidations(this.config.settings)
-      : [];
-    this.config.required = this.config.settings.Required && visibleInEditUI
-      ? this.config.settings.Required
-      : false;
+    this.config.validation = ValidationHelper.getValidations(this.config.settings);
+    this.config.required = ValidationHelper.isRequired(this.config.settings);
   }
 
   private subscribeToCurrentLanguageFromStore() {
@@ -419,6 +414,42 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     // set Adam disabled state
     if (this.config.adam) {
       this.config.adam.disabled = this.group.controls[this.config.name].disabled;
+    }
+  }
+
+  /**
+   * set info message
+   * @param attributes
+   * @param currentLanguage
+   * @param defaultLanguage
+   */
+  private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
+    // Determine whether control is disabled or enabled and info message
+    const isEditableTranslationExist: boolean = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
+    const isReadonlyTranslationExist: boolean = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
+
+    if (isEditableTranslationExist || isReadonlyTranslationExist) {
+      let dimensions: string[] = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+        .dimensions.map(d => d.value);
+
+      dimensions = dimensions.filter(d => !d.includes(currentLanguage));
+
+      const isShared = dimensions.length > 0;
+      if (isShared) {
+        this.infoMessage = TranslateGroupMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage);
+
+        if (isEditableTranslationExist) {
+          this.infoMessageLabel = 'LangMenu.In';
+        } else if (isReadonlyTranslationExist) {
+          this.infoMessageLabel = 'LangMenu.From';
+        }
+      } else {
+        this.infoMessage = '';
+        this.infoMessageLabel = '';
+      }
+    } else {
+      this.infoMessage = '';
+      this.infoMessageLabel = 'LangMenu.UseDefault';
     }
   }
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
@@ -53,7 +53,7 @@ import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
-import { DropzoneComponent } from './adam/dropzone/dropzone.component';
+import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
 import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
@@ -71,6 +71,18 @@ import { TranslateGroupMenuComponent } from './localization/translate-group-menu
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
+import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-default-main-search/entity-default-main-search.component';
+import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
+import {
+    HyperlinkDefaultExpandableWrapperComponent
+} from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
+import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
+import {
+    HyperlinkLibraryExpandableWrapperComponent
+} from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
+import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
+import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
 
 @NgModule({
     declarations: [
@@ -93,7 +105,7 @@ import { EntityDefaultListComponent } from './input-types/entity/entity-default-
         ExternalComponent,
         AdamBrowserComponent,
         AdamHintComponent,
-        DropzoneComponent,
+        AdamAttachWrapperComponent,
         HyperlinkLibraryComponent,
         EavLanguageSwitcherComponent,
         FilterPipe,
@@ -111,6 +123,14 @@ import { EntityDefaultListComponent } from './input-types/entity/entity-default-
         LinkToOtherLanguageComponent,
         EntityExpandableWrapperComponent,
         EntityDefaultListComponent,
+        EntityDefaultMainSearchComponent,
+        EntityQueryComponent,
+        HyperlinkDefaultExpandableWrapperComponent,
+        DropzoneWrapperComponent,
+        HyperlinkLibraryExpandableWrapperComponent,
+        EntityContentBlockComponent,
+        CollapsibleFieldWrapperComponent,
+        ExternalWebcomponentComponent,
     ],
     imports: [
         // DndDraggable,
@@ -141,6 +161,7 @@ import { EntityDefaultListComponent } from './input-types/entity/entity-default-
         OwlNativeDateTimeModule,
         ReactiveFormsModule,
         MatRippleModule,
+        MatChipsModule,
         // FontAwesomeModule,
         TranslateModule.forChild(),
     ],
@@ -148,10 +169,11 @@ import { EntityDefaultListComponent } from './input-types/entity/entity-default-
         BooleanDefaultComponent,
         CollapsibleWrapperComponent,
         DatetimeDefaultComponent,
-        DropzoneComponent,
+        AdamAttachWrapperComponent,
         EavLocalizationComponent,
         EmptyDefaultComponent,
         EntityDefaultComponent,
+        EntityQueryComponent,
         EntityExpandableWrapperComponent,
         ExpandableWrapperComponent,
         ExternalComponent,
@@ -169,8 +191,15 @@ import { EntityDefaultListComponent } from './input-types/entity/entity-default-
         StringUrlPathComponent,
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
+        HyperlinkDefaultExpandableWrapperComponent,
+        DropzoneWrapperComponent,
+        HyperlinkLibraryExpandableWrapperComponent,
+        EntityContentBlockComponent,
+        CollapsibleFieldWrapperComponent,
+        ExternalWebcomponentComponent
     ],
     exports: [EavLanguageSwitcherComponent],
-    providers: [FileTypeService, ValidationMessagesService]
+    providers: [FileTypeService, ValidationMessagesService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class EavMaterialControlsModule { }

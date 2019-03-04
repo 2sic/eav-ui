@@ -10,6 +10,11 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
+import { MatDialog } from '@angular/material';
+import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { MetadataConstants } from '../../../shared/constants';
+import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 
 
 @Component({
@@ -36,9 +41,6 @@ import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 export class AdamBrowserComponent implements OnInit {
 
   @Input() config: FieldConfig;
-  // TODO: temp need to change
-  // eavConfig.metadataOfCmsObject
-  @Input() metadataOfCmsObject: any;
 
   // Identity fields
   // @Input() contentTypeName: any;
@@ -88,13 +90,15 @@ export class AdamBrowserComponent implements OnInit {
   constructor(private adamService: AdamService,
     private fileTypeService: FileTypeService,
     private eavService: EavService,
-    private featureService: FeatureService) {
+    private featureService: FeatureService,
+    private eavAdminUiService: EavAdminUiService,
+    private dialog: MatDialog) {
 
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-
+    this.subFolder = this.config.settings.Paths;
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -115,10 +119,11 @@ export class AdamBrowserComponent implements OnInit {
 
   initConfig() {
     this.subFolder = this.subFolder || '';
-    this.showImagesOnly = this.showImagesOnly || false;
+    this.showImagesOnly = this.showImagesOnly || false; // spm 2019.02.28. test this line against old angular
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
-    this.allowAssetsInRoot = this.allowAssetsInRoot || true; // if true, the initial folder can have files, otherwise only subfolders
+    // if true, the initial folder can have files, otherwise only subfolders
+    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true; // spm 2019.02.28. test this line against old angular
     this.metadataContentTypes = this.metadataContentTypes || '';
 
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
@@ -138,8 +143,12 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
+  allowEdit(): boolean {
+    return this.svc.getAllowEdit();
+  }
+
   allowCreateFolder(): boolean {
-    return this.svc.folders.length < this.folderDepth;
+    return (this.allowEdit()) && (this.svc.folders.length < this.folderDepth);
   }
 
   del(item) {
@@ -152,12 +161,31 @@ export class AdamBrowserComponent implements OnInit {
     }
   }
 
-  editMetadata(item) {
+  addItemMetadata(item: AdamItem) {
     const items = [
       this.itemDefinition(item, this.getMetadataType(item))
     ];
-    // TODO:
-    // eavAdminDialogs.openEditItems(items, vm.refresh);
+
+    const metadataFor = new EavFor(items[0].Metadata.Key, items[0].Metadata.TargetType);
+    const persistedData: AdminDialogPersistedData = {
+      metadataFor
+    };
+    const dialogRef = this.eavAdminUiService
+      .openItemNewEntity(this.dialog, MultiItemEditFormComponent, items[0].ContentTypeName, persistedData);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        item.MetadataId = result[Object.keys(result)[0]];
+      }
+    });
+  }
+
+  editItemMetadata(metadataId) {
+    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Petar editItemMetadata result', result);
+    });
   }
 
   goUp = () => {
@@ -289,7 +317,7 @@ export class AdamBrowserComponent implements OnInit {
         Metadata: {
           Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
           KeyType: 'string',
-          TargetType: this.metadataOfCmsObject
+          TargetType: MetadataConstants.MetadataOfCmsObject
         },
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
@@ -307,5 +335,3 @@ export class AdamBrowserComponent implements OnInit {
 
   private loadFileList = () => this.svc.liveListLoad();
 }
-
-

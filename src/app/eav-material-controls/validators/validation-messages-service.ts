@@ -37,7 +37,7 @@ export class ValidationMessagesService {
   // }
 
   // return list of error messages
-  public validationMessages() {
+  public validationMessages(): any {
     const messages = {
       required: (config: FieldConfig) => {
         return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
@@ -70,7 +70,7 @@ export class ValidationMessagesService {
   // check_dirty true will only emit errors if the field is touched
   // check_dirty false will check all fields independent of
   // being touched or not. Use this as the last check before submitting
-  public validateForm(formToValidate: FormGroup, checkDirty?: boolean) {
+  public validateForm(formToValidate: FormGroup, checkDirty?: boolean): any {
     const form = formToValidate;
     const formErrors = {};
     Object.keys(form.controls).forEach(key => {

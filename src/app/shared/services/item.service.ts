@@ -7,12 +7,14 @@ import { map, catchError, tap, filter, delay } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated, AdminDialogPersistedData, EavFor } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
+import { AttributeDef } from '../models/eav/attribute-def';
+import { InputFieldHelper } from '../helpers/input-field-helper';
 
 @Injectable()
 export class ItemService {
@@ -91,7 +93,6 @@ export class ItemService {
     isReadOnly: boolean,
     guid: string,
     type: string) {
-
     let newLanguageValue = languageKey;
 
     if (isReadOnly) {
@@ -158,6 +159,22 @@ export class ItemService {
         }));
   }
 
+  /** Set default value and add that attribute in store */
+  public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string,
+    settingsTranslated: EavAttributesTranslated, currentLanguage: string, defaultLanguage: string): any {
+    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
+
+    const exists = item.entity.attributes.hasOwnProperty(attribute.name);
+    if (!exists) {
+      this.addAttributeValue(item.entity.id, attribute.name,
+        defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+    } else {
+      this.updateItemAttributeValue(item.entity.id, attribute.name,
+        defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+    }
+    return defaultValue;
+  }
+
   // public selectItemById(id: number): Observable<Item> {
   //   return this.store.select(fromStore.getItemById(id));
   // }
@@ -190,6 +207,22 @@ export class ItemService {
         // tap(data => console.log('getItemFromJsonItem1: ', data)),
         catchError(error => this.handleError(error))
       );
+  }
+
+  public loadPersistedData(persistedData: AdminDialogPersistedData): void {
+    if (!persistedData) {
+      return;
+    }
+    const metadataFor: EavFor = persistedData.metadataFor;
+    if (metadataFor) {
+      this.addMetadataFor(metadataFor);
+    }
+  }
+
+  private addMetadataFor(metadataFor: EavFor): void {
+    const entityId = 0; // We are adding metadata For to a new entity
+    const propertyKey = 'For';
+    this.store.dispatch(new itemActions.AddItemEntityProperty(entityId, propertyKey, metadataFor));
   }
 
   private handleError(error: any) {

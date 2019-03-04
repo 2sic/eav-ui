@@ -1,10 +1,8 @@
-@import "./theme.scss";
 @import "../../../../assets/style/variables.scss";
+@import "../../../../assets/style/theme/material-colors.scss";
 
-$background:map-get($editUI-light-theme, background);
-
-.menu-item-selected{
-    background: mat-color($background, 'hover');
+.menu-item-selected {
+    background: $edit-ui-selected-option;
 }
 
 .eav-localization-lock-open { 
@@ -20,6 +18,28 @@ $background:map-get($editUI-light-theme, background);
         color: blue; 
     }
     &-link-read-write {
-        color: red; 
+        color: blue; 
+    }
+}
+
+.shared-languages {
+    position: relative;
+    left: -20px;
+    top: -10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 16px;
+    cursor: default;
+    color: rgba($editUI-foreground-color, 0.44);
+
+    &--disabled {
+        color: rgba($editUI-foreground-color, 0.24);
+    }
+}
+
+.shared-languages-container:hover {
+    .color__accent {
+        color: map_get($mat-eav-item-dialog-secondary, 500);
     }
 }

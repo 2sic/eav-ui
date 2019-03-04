@@ -13,7 +13,7 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
+  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit {
   @Input() config: FieldConfig;
@@ -24,7 +24,6 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   };
 
   get folderDepth() {
-    console.log('this.config.settings.FolderDepth', this.config.settings.FolderDepth);
     return this.config.settings.FolderDepth || '';
   }
 
@@ -33,7 +32,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   }
 
   get allowAssetsInRoot() {
-    return this.config.settings.AllowAssetsInRoot || true;
+    return this.config.settings.AllowAssetsInRoot === false ? false : true;
   }
 
   constructor() { }
@@ -52,7 +51,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
 
       // return value from form
       // this.config.adam.getValueCallback = () =>
-      this.config.adam.afterUploadCallback = (fileItem) => { };
+      // this.config.adam.afterUploadCallback = (fileItem) => { };
 
       console.log('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,

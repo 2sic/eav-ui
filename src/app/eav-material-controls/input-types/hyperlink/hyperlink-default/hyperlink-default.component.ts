@@ -18,21 +18,20 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone', 'app-eav-localization-wrapper'],
+  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfig;
   group: FormGroup;
 
-  showPreview;
+  showPreview = true;
   toggleAdamValue = false;
   link = '';
-  showFieldHints;
+
 
   // TODOD: temp
   private eavConfig;
 
-  // adam: any;
   private subscriptions: Subscription[] = [];
 
   private adamModeConfig: AdamModeConfig = {
@@ -91,10 +90,10 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   thumbnailUrl(size: number, quote: boolean) {
     let result = this.link;
     if (size === 1) {
-      result = result + '?w=64&h=64&mode=crop';
+      result = result + '?w=72&h=72&mode=crop';
     }
     if (size === 2) {
-      result = result + '?w=500&h=400&mode=max';
+      result = result + '?w=960&h=960&mode=max';
     }
     const qt = quote ? '"' : '';
     return qt + result + qt;
@@ -128,7 +127,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.processResultOfPagePicker.bind(this),
       this.dialog);
   }
-
   //#endregion dnn page picker
 
   //#region new adam: callbacks only
@@ -174,12 +172,13 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.config.name);
 
     if (urlFromId$) {
-      this.subscriptions.push(
-        urlFromId$.subscribe((data) => {
-          if (data) {
-            this.link = data;
-          }
-        }));
+      // this.subscriptions.push(
+      urlFromId$.subscribe((data) => {
+        if (data) {
+          this.link = data;
+        }
+      });
+      // );
     } else {
       this.link = value;
     }
@@ -225,8 +224,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       //     0, // folderDepth
       //     '', // metadataContentTypes
       //     '', // subFolder
-
-
     }
   }
 

@@ -2,6 +2,7 @@ import { EavAttributes } from './eav-attributes';
 // import { EavAttributes } from './eav-attributes';
 import { EavType } from './eav-type';
 import { Entity1 } from '../json-format-v1/entity1';
+import { EavFor } from './eav-for';
 
 export class EavEntity {
     // appId ???
@@ -13,8 +14,18 @@ export class EavEntity {
     attributes: EavAttributes;
     owner: string;
     metadata: EavEntity[];
+    For?: EavFor;
 
-    constructor(id: number, version: number, guid: string, type: EavType, attributes: EavAttributes, owner: string, metadata: EavEntity[]) {
+    constructor(
+        id: number,
+        version: number,
+        guid: string,
+        type: EavType,
+        attributes: EavAttributes,
+        owner: string,
+        metadata: EavEntity[],
+        For?: EavFor
+    ) {
         this.id = id;
         this.version = version;
         this.guid = guid;
@@ -22,6 +33,7 @@ export class EavEntity {
         this.attributes = attributes;
         this.owner = owner;
         this.metadata = metadata;
+        this.For = For;
     }
 
     /**
@@ -41,6 +53,10 @@ export class EavEntity {
         }
         const eavAttributes = EavAttributes.create(item.Attributes);
         const eavMetaData = this.createArray(item.Metadata);
+        let eavFor: EavFor;
+        if (item.For) {
+            eavFor = new EavFor(item.For.String, item.For.Target);
+        }
 
         return new EavEntity(
             item.Id,
@@ -49,7 +65,9 @@ export class EavEntity {
             new EavType(item.Type.Id, item.Type.Name),
             eavAttributes,
             item.Owner,
-            eavMetaData);
+            eavMetaData,
+            eavFor
+        );
     }
 
     /**

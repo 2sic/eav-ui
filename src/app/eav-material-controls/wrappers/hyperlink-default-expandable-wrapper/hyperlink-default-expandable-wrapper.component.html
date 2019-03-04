@@ -1,0 +1,60 @@
+<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+  <div class="c-ew__backdrop" (click)="dialogIsOpen = false"></div>
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="dialogIsOpen = false">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.label}}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      </div>
+      <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        <ng-container #fieldComponent></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
+    'c-ew__preview--disabled': disabled
+  }">
+    <div matPrefix fxLayoutAlign="start center" class="thumbnail-before-input" [ngClass]="{
+      'icon-before-input': value && !isImage(), 
+      'thumbnail-before-input--disabled': disabled
+    }"
+      [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}" (click)="!disabled ? dialogIsOpen = true : ''">
+      <!-- <a *ngIf="!disabled && value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
+        matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
+      </a> -->
+      <i *ngIf="value && !isImage()" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right"></i>
+    </div>
+    <div class="c-ew__preview-field--short" fxFlex="auto">
+      <mat-form-field appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'" class="mat-form-field-hyperlink">
+        <input matInput type="text" [placeholder]="config.label" (change)="setValue($event)" [disabled]="disabled"
+          (keyup)="setValue($event)" [value]="value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
+        {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
+        ADAM - sponsored with ♥ by 2sic.com"
+          matTooltipPosition="above" (blur)="setTouched()">
+        <span matSuffix>
+          <button mat-icon-button tabindex="-1" [disabled]="disabled" type="button" (click)="dialogIsOpen = true">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </span>
+        <mat-label [ngClass]="{'mat-error' : inputInvalid && touched}">
+          {{config.label}}
+          {{config.required ? '*': '' }}
+        </mat-label>
+
+        <mat-hint align="start" class="c-ew__preview-field-hint">drop files here</mat-hint>
+        <mat-hint align="end" class="c-ew__preview-field-hint">ADAM - sponsored with ♥ by 2sic.com</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- hasDirtyTouched="fasle" -->
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</div>

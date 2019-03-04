@@ -1,4 +1,5 @@
 
+@import "../variables.scss";
 
 .u-hide-scrollbar {
     -ms-overflow-style: none;  // IE 10+
@@ -15,4 +16,21 @@
 
 .u-display-none {
     display: none !important;
+}
+
+.u-border-radius {
+    border-radius: $edit-ui-dialog-border-radius;
+}
+
+.u-border-radius-top { 
+    border-radius:$edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0 ;
+}
+
+.u-border-radius-bottom { 
+    border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+} 
+
+// small shadow top
+.u-shadow-top {
+    box-shadow: 0 -3px 3px -1px rgba(0,0,0,0.25);
 }

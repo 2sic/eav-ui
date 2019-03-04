@@ -118,4 +118,21 @@ export class Helper {
             return (<string>value).split(separator);
         }
     }
+
+    /**
+    * convert string array value in string value if a value is type array
+    * @param value
+    * @param separator
+    */
+    static convertArrayToString(value: any, separator: string): string {
+        if (!value) {
+            return '';
+        }
+
+        if (value instanceof Array) {
+            return value.join(separator);
+        } else {
+            return <string>value;
+        }
+    }
 }

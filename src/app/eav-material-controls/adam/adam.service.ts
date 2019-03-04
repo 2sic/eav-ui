@@ -9,16 +9,19 @@ import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
 import { EavService } from '../../shared/services/eav.service';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
+import { SanitizeService } from './sanitize.service';
 
 @Injectable()
 export class AdamService {
 
   private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient,
+  constructor(
+    private httpClient: HttpClient,
     private svcCreatorService: SvcCreatorService,
-    private eavService: EavService) {
-
+    private eavService: EavService,
+    private sanitizeSvc: SanitizeService
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -28,6 +31,25 @@ export class AdamService {
     // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
     const folders = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
+    const startingSubfolder = subfolder;
+    let allowEdit: boolean;
+
+    const getAllowEdit = () => {
+      // return true;
+      return allowEdit;
+    };
+
+    const checkAllowEdit = (items) => {
+      const currentFolder = items.find(item => item.Name === '.');
+      if (currentFolder) {
+        allowEdit = currentFolder.AllowEdit;
+        // return currentFolder.AllowEdit;
+      } else {
+        // currentFolder missing
+        allowEdit = false;
+        // return false;
+      }
+    };
 
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
     const addFullPath = (value: AdamItem, key) => {
@@ -49,7 +71,7 @@ export class AdamService {
         {
           params: {
             subfolder: subfolder,
-            newFolder: newfolder,
+            newFolder: this.sanitizeSvc.sanitizeName(newfolder),
             usePortalRoot: serviceConfig.usePortalRoot,
             appId: this.eavConfig.appId
           }
@@ -74,6 +96,7 @@ export class AdamService {
       subPath = subPath.replace('//', '/');
       if (subPath[subPath.length - 1] === '/') {
         subPath = subPath.substr(0, subPath.length - 1);
+        subPath = (!!startingSubfolder) ? startingSubfolder + '/' + subPath : subPath;
       }
 
       childFolder.Subfolder = subPath;
@@ -92,14 +115,13 @@ export class AdamService {
       if (folders.length > 0) {
         subfolder = folders[folders.length - 1].Subfolder;
       } else {
-        subfolder = '';
+        subfolder = startingSubfolder || '';
       }
       reload();
       return subfolder;
     };
 
     const getAll = (): Observable<AdamItem[]> => {
-
       console.log('GET ALL subfolder:', subfolder);
       // maybe create model for data
       return this.httpClient.get(url + '/items',
@@ -113,6 +135,7 @@ export class AdamService {
         .pipe(
           map((data: any) => {
             data.forEach(addFullPath);
+            checkAllowEdit(data);
             return data;
           }),
           tap(data => console.log('items subfolder: ', subfolder)),
@@ -152,7 +175,7 @@ export class AdamService {
             isFolder: item.IsFolder,
             id: item.Id,
             usePortalRoot: serviceConfig.usePortalRoot,
-            newName: newName,
+            newName: this.sanitizeSvc.sanitizeName(newName),
             appId: this.eavConfig.appId
           }
         })
@@ -168,6 +191,7 @@ export class AdamService {
 
     // get the correct url for uploading as it is needed by external services (dropzone)
     const uploadUrl = (targetSubfolder: string): string => {
+      targetSubfolder = this.sanitizeSvc.sanitizePath(targetSubfolder);
       let urlUpl = (targetSubfolder === '')
         ? url
         : url + '?subfolder=' + targetSubfolder;
@@ -191,6 +215,7 @@ export class AdamService {
       deleteItem,
       rename,
       liveListReload: null,
+      getAllowEdit,
     };
 
     svc = Object.assign(svc, this.svcCreatorService.implementLiveList(getAll, 'true'));

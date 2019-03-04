@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, DialogPosition } from '@angular/material';
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
+import { AdminDialogPersistedData } from '../models/eav';
 
 @Injectable()
 export class EavAdminUiService {
@@ -11,22 +12,29 @@ export class EavAdminUiService {
     /**
       * Open a modal dialog containing the given component.
       */
-    public openItemEditWithContent = (dialog: MatDialog, component: any): MatDialogRef<{}, any> => {
-        return this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent);
+    public openItemEditWithContent = (
+        dialog: MatDialog, component: any, persistedData: AdminDialogPersistedData
+    ): MatDialogRef<{}, any> => {
+        return this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent, persistedData);
     }
 
     /**
      * Open a modal dialog containing the given component. With EntityId.
      */
     public openItemEditWithEntityId = (dialog: MatDialog, component: any, entityId: string): MatDialogRef<{}, any> => {
-        return this.openModalDialog(dialog, component, entityId, null, DialogTypeConstants.itemEditWithEntityId);
+        return this.openModalDialog(dialog, component, entityId, null, DialogTypeConstants.itemEditWithEntityId, null);
     }
 
     /**
     * Open a modal dialog containing the given component. With ContentTypeName
     */
-    public openItemNewEntity = (dialog: MatDialog, component: any, contentTypeName: any): MatDialogRef<{}, any> => {
-        return this.openModalDialog(dialog, component, null, contentTypeName, DialogTypeConstants.itemNewEntity);
+    public openItemNewEntity = (
+        dialog: MatDialog,
+        component: any,
+        contentTypeName: any,
+        persistedData: AdminDialogPersistedData
+    ): MatDialogRef<{}, any> => {
+        return this.openModalDialog(dialog, component, null, contentTypeName, DialogTypeConstants.itemNewEntity, persistedData);
     }
 
     /**
@@ -37,7 +45,8 @@ export class EavAdminUiService {
         component: any,
         entityId: string,
         contentTypeName: any,
-        dialogType: DialogTypeConstants
+        dialogType: DialogTypeConstants,
+        persistedData: AdminDialogPersistedData
     ): MatDialogRef<{}, any> => {
         let item = null;
         switch (dialogType) {
@@ -68,9 +77,11 @@ export class EavAdminUiService {
             // disableClose = true,
             data: <AdminDialogData>{
                 dialogType,
-                item
+                item,
+                persistedData
             }
-        });
+        }
+        );
     }
 
     // TODO: unite all modals function in one.

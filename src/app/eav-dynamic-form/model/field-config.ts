@@ -2,6 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 import { EavAttributes, EavAttributesTranslated, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { Feature } from '../../shared/models/feature/feature';
+import { EntityInfo } from '../../shared/models/eav/entity-info';
 
 export interface FieldConfig {
     entityId?: number;
@@ -13,6 +14,7 @@ export interface FieldConfig {
     options?: string[];
     placeholder?: string;
     inputType: string;
+    allInputTypeNames?: string[];
     isParentGroup?: boolean;
     type?: string;
     validation?: ValidatorFn[];
@@ -27,4 +29,7 @@ export interface FieldConfig {
     index?: number;
     adam?: AdamBrowserComponent;
     features?: Feature[];
+    availableEntities?: EntityInfo[];
+    enableCollapseField?: boolean;
+    collapseField?: boolean;
 }

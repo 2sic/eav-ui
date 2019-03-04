@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   // tslint:disable-next-line:component-selector
   selector: 'adam-hint',
   templateUrl: './adam-hint.component.html',
-  styleUrls: ['./adam-hint.component.css']
+  styleUrls: ['./adam-hint.component.scss']
 })
 export class AdamHintComponent implements OnInit {
 

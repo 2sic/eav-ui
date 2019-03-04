@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -27,6 +27,7 @@ import { InputTypeService } from './shared/services/input-type.service';
 import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
+import { QueryService } from './shared/services/query.service';
 
 const routes: Routes = [
   {
@@ -36,7 +37,7 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './../i18n/ng-edit/', '.json');
+  return new TranslateHttpLoader(http, './assets/auto-generated/i18n/', '.js');
 }
 
 @NgModule({
@@ -76,12 +77,13 @@ export function createTranslateLoader(http: HttpClient) {
     DnnBridgeService,
     EntityService,
     EavAdminUiService,
+    QueryService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HeaderInterceptor,
       multi: true
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -63,10 +63,12 @@ export class EavFieldDirective implements OnInit {
       // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig);
     } else {
-
+      console.log('create createFieldOrGroup:', fieldConfig.inputType);
       if (fieldConfig.inputType === InputTypesConstants.external) {
         console.log('create external');
         this.createExternalComponent(container, fieldConfig);
+      } else if (fieldConfig.inputType === InputTypesConstants.externalWebComponent) {
+        this.createExternalWebComponent(container, fieldConfig);
       } else {
         console.log('create non external', fieldConfig.inputType);
         // this.createFieldComponent(container, fieldConfig, group);
@@ -94,11 +96,11 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig): ComponentRef<any> {
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, callback?: Function): ComponentRef<any> {
     if (fieldConfig.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
     }
-
+    console.log('createComponent inputType:', fieldConfig.inputType);
     const componentType = this.readComponentType(fieldConfig.inputType);
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
@@ -115,7 +117,7 @@ export class EavFieldDirective implements OnInit {
 
       Object.assign(ref.instance, {
         group: this.group,
-        config: fieldConfig,
+        config: fieldConfig
       });
 
       return ref;
@@ -129,8 +131,59 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+    console.log('createExternalWebComponent');
+    const ref: any = this.createComponent(container, fieldConfig);
+    // ref.instance.renderWebComponent();
+    // // TODO: read data from config
+    // Start loading all external dependencies (start with css). This method recursively load all dependencies.
+    this.loadWebComponentScripts(
+      0,
+      fieldConfig.name,
+      fieldConfig.name,
+      ['assets/elements/field-string-wysiwyg/assets/style/tinymce-wysiwyg.css'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/elements/field-string-wysiwyg/main.js'],
+      FileTypeConstants.css,
+      ref.instance.renderWebComponent);
+  }
 
+  private loadWebComponentScripts(
+    increment: number,
+    name: string,
+    type: string,
+    styles: string[],
+    scripts: string[],
+    fileType: string,
+    renderWebComponentCallback: any) {
+    // : Observable<boolean> {
+    // return new Observable<boolean>((observer: Observer<boolean>) => {
+    const scriptModel: ScriptModel = {
+      name: `${fileType}${name}${increment}`,
+      filePath: (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment],
+      loaded: false
+    };
+    this.scriptLoaderService.load(scriptModel, fileType).subscribe(s => {
+      if (s.loaded) {
+        increment++;
+        const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
+        if (nextScript) {
+          this.loadWebComponentScripts(increment, name, type, styles, scripts, fileType, renderWebComponentCallback);
+        } else if (fileType === FileTypeConstants.css) {
+          this.loadWebComponentScripts(0, name, type, styles, scripts, FileTypeConstants.javaScript, renderWebComponentCallback);
+        } else { // when scripts load is finish then call registered factory
+          renderWebComponentCallback();
+        }
+      }
+    });
+    // });
+  }
+
+  /**
+   * Create and register external commponent
+   * @param container
+   * @param fieldConfig
+   */
+  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
@@ -148,7 +201,9 @@ export class EavFieldDirective implements OnInit {
       fieldConfig.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
+      ['http://cdn.tinymce.com/4.6/tinymce.min.js',
+        'assets/script/tinymce-wysiwyg/src/libs/math.uuid.js',
+        'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
       // ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
       FileTypeConstants.css);
   }
@@ -177,7 +232,6 @@ export class EavFieldDirective implements OnInit {
       }
     });
   }
-
   /**
    * First read component reference with NAME and external component (factory) with TYPE,
    * and then add external component (factory) to component (input type) reference.

@@ -4,11 +4,27 @@ import { CustomValidators } from './custom-validators';
 
 export class ValidationHelper {
 
+    public static getValidations(settings: EavAttributesTranslated): ValidatorFn[] {
+        // important - a hidden field dont have validations and is not required
+        const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
+        return visibleInEditUI
+            ? ValidationHelper.setDefaultValidations(settings)
+            : [];
+    }
+
+    public static isRequired(settings: EavAttributesTranslated): boolean {
+        const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
+
+        return settings.Required && visibleInEditUI
+            ? settings.Required
+            : false;
+    }
+
     /**
-    * TODO: see can i write this in module configuration ???
-    * @param inputType
-    */
-    public static setDefaultValidations(settings: EavAttributesTranslated): ValidatorFn[] {
+   * TODO: see can i write this in module configuration ???
+   * @param inputType
+   */
+    private static setDefaultValidations(settings: EavAttributesTranslated): ValidatorFn[] {
 
         const validation: ValidatorFn[] = [];
 

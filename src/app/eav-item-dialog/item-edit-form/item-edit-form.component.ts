@@ -15,12 +15,11 @@ import { ValidatorFn } from '@angular/forms';
 
 import {
   ContentType,
-  EavAttributesTranslated,
-  EavHeader,
   Item,
   EavAttributes,
+  EavAttributesTranslated,
 } from '../../shared/models/eav';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
@@ -32,6 +31,9 @@ import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import isEmpty from 'lodash/isEmpty';
+import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
+import { EavConfiguration } from '../../shared/models/eav-configuration';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -65,11 +67,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get allControlsAreDisabled() {
-    const asd = this.checkAreAllControlsDisabled();
-    return asd;
+    return this.checkAreAllControlsDisabled();
   }
 
-  private eavConfig;
+  private eavConfig: EavConfiguration;
   private currentLanguageValue: string;
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
 
@@ -103,11 +104,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /** Observe is item form is saved */
   formSaveObservable(): Observable<Action> {
     return this.actions$
-      .ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES)
-      .pipe(filter((action: fromItems.SaveItemAttributesValuesAction) =>
-        this.item.entity.id === 0
-          ? this.item.entity.guid === action.item.entity.guid
-          : this.item.entity.id === action.item.entity.id));
+      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
+        filter((action: fromItems.SaveItemAttributesValuesAction) =>
+          this.item.entity.id === 0
+            ? this.item.entity.guid === action.item.entity.guid
+            : this.item.entity.id === action.item.entity.id));
   }
 
   /**
@@ -130,7 +131,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     if (this.form.form.valid ||
       this.allControlsAreDisabled ||
       (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
-      this.eavService.saveItem(this.eavConfig.appId, this.item, values, this.currentLanguage, this.defaultLanguage);
+      this.eavService.saveItem(Number(this.eavConfig.appId), this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }
 
@@ -162,12 +163,11 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private loadContentTypeFromStore() {
+    const id = this.item.entity.type === null
+      ? this.item.header.contentTypeName
+      : this.item.entity.type.id;
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(
-      this.item.entity.type === null
-        ? this.item.header.contentTypeName
-        : this.item.entity.type.id
-    );
+    this.contentType$ = this.contentTypeService.getContentTypeById(id);
     // create form fields from content type
     this.itemFields$ = this.loadContentTypeFormFields();
   }
@@ -180,8 +180,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       .pipe(
         switchMap((data: ContentType) => {
           try {
-            const parentFieldGroup = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
-            let currentFieldGroup = parentFieldGroup;
+            const parentFieldGroup: FieldConfig = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
+            let currentFieldGroup: FieldConfig = parentFieldGroup;
+
+            const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
             // loop through contentType attributes
             data.contentType.attributes.forEach((attribute, index) => {
               try {
@@ -196,8 +198,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                   currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
                   parentFieldGroup.fieldGroup.push(currentFieldGroup);
                 } else { // all other fields (not group empty)
-                  const formlyFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index);
-                  currentFieldGroup.fieldGroup.push(formlyFieldConfig);
+                  const formFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
+                  currentFieldGroup.fieldGroup.push(formFieldConfig);
                 }
               } catch (error) {
                 console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -215,25 +217,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  private buildFieldFromDefinition(attribute: AttributeDef, index: number): FieldConfig {
+  private buildFieldFromDefinition(attribute: AttributeDef, index: number, allInputTypeNames: string[]): FieldConfig {
     try {
-      if (attribute.settings.InputType || attribute.type) {
-        // if (attribute.settings.InputType.values[0].value.startWith('custom')) {
-        //   return this.loadFieldFromDefinition(attribute, InputTypesConstants.external, index);
-        // } else {
-        //   return this.loadFieldFromDefinition(attribute, attribute.settings.InputType.values[0].value, index);
-        // }
-
-        if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
-          const inputTypeName = this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
-          return this.buildInputTypeFieldConfig(attribute, inputTypeName, index);
-        } else {
-          const inputTypeFromOldName = this.getInputTypeNameOldConfig(attribute.type);
-          return this.buildInputTypeFieldConfig(attribute, inputTypeFromOldName, index);
-        }
-      } else {
-        return this.buildInputTypeFieldConfig(attribute, InputTypesConstants.stringDefault, index);
-      }
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+      return this.buildInputTypeFieldConfig(attribute, index, allInputTypeNames, inputTypeName);
     } catch (error) {
       console.error(`Error loading input fields: ${error}.
       Attribute name: ${attribute.name}
@@ -243,78 +230,15 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /** read new inputField settings */
-  private getInputTypeNameNewConfig(inputTypeName: string): string {
-    switch (inputTypeName) {
-      case InputTypesConstants.stringDefault:
-      case InputTypesConstants.stringUrlPath:
-      case InputTypesConstants.booleanDefault:
-      case InputTypesConstants.stringDropdown:
-      case InputTypesConstants.datetimeDefault:
-      case InputTypesConstants.numberDefault:
-      case InputTypesConstants.stringFontIconPicker:
-      case InputTypesConstants.entityDefault:
-      case InputTypesConstants.hyperlinkDefault:
-      case InputTypesConstants.hyperlinkLibrary:
-        return inputTypeName;
-      case InputTypesConstants.stringWysiwyg:
-      case InputTypesConstants.stringWysiwygTinymce:
-      case InputTypesConstants.external:
-      case 'custom-my-field-test':
-        return InputTypesConstants.external;
-      default:
-        return InputTypesConstants.stringDefault;
-    }
-  }
-
-  /** read old inputField settings  */
-  private getInputTypeNameOldConfig(inputTypeName: string): string {
-    switch (inputTypeName) {
-      case InputTypesConstants.default:
-      case InputTypesConstants.string:
-        return InputTypesConstants.stringDefault;
-      case InputTypesConstants.stringUrlPath:
-        return InputTypesConstants.stringUrlPath;
-      case InputTypesConstants.boolean:
-        return InputTypesConstants.booleanDefault;
-      case InputTypesConstants.dropdown:
-        return InputTypesConstants.stringDropdown;
-      case InputTypesConstants.stringDropdownQuery:
-        return InputTypesConstants.stringDropdownQuery;
-      case InputTypesConstants.datetime:
-        return InputTypesConstants.datetimeDefault;
-      case InputTypesConstants.number:
-        return InputTypesConstants.numberDefault;
-      case InputTypesConstants.stringFontIconPicker:
-        return InputTypesConstants.stringFontIconPicker;
-      case InputTypesConstants.entity:
-        return InputTypesConstants.entityDefault;
-      case InputTypesConstants.hyperlink:
-        return InputTypesConstants.hyperlinkDefault;
-      case InputTypesConstants.hyperlinkLibrary:
-        return InputTypesConstants.hyperlinkLibrary;
-      case InputTypesConstants.external:
-      case InputTypesConstants.wysiwyg:
-        return InputTypesConstants.external;
-      default:
-        return InputTypesConstants.stringDefault;
-    }
-  }
-
   /**
    * Load inputType FieldConfig from AttributeDef
    */
-  private buildInputTypeFieldConfig(attribute: AttributeDef, inputType: string, index: number): FieldConfig {
-    const settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
-    // important - a hidden field dont have validations and is not required
-    const visibleInEditUI = (settingsTranslated.VisibleInEditUI === false) ? false : true;
-    // set validation for all input types
-    const validationList: ValidatorFn[] = visibleInEditUI
-      ? ValidationHelper.setDefaultValidations(settingsTranslated)
-      : [];
-    const required = settingsTranslated.Required && visibleInEditUI
-      ? settingsTranslated.Required
-      : false;
+  private buildInputTypeFieldConfig(attribute: AttributeDef, index: number, allInputTypeNames: string[], inputType: string): FieldConfig {
+    const settingsTranslated: EavAttributesTranslated = LocalizationHelper.translateSettings(
+      attribute.settings, this.currentLanguage, this.defaultLanguage
+    );
+    const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
+    const required: boolean = ValidationHelper.isRequired(settingsTranslated);
     let value = LocalizationHelper.translate(
       this.currentLanguage,
       this.defaultLanguage,
@@ -322,19 +246,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       null
     );
     // set default value if needed
-    // let defaultValueIsSet = false;
-    if (value === undefined || value === null) {
-      value = this.setDefaultValue(attribute, inputType, settingsTranslated);
+    if (isEmpty(value) && typeof value !== typeof true && typeof value !== typeof 1) {
+      value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
+        this.currentLanguage, this.defaultLanguage);
       //  defaultValueIsSet = true;
     }
     // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
     const disabled: boolean = settingsTranslated.Disabled;
-    const label = this.getFieldLabel(attribute, settingsTranslated, null);
+    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated, null);
+    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
 
-    const wrappers = this.setWrappers(inputType, settingsTranslated);
-
-
-    console.log('disabled:', disabled);
     return {
       disabled: disabled,
       entityId: this.item.entity.id,
@@ -344,33 +265,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       index: index,
       label: label,
       name: attribute.name,
-      placeholder: `Enter ${attribute.name}`, // TODO: need see what to use placeholder or label or both
+      placeholder: `Enter ${attribute.name}`, // TODO: need to see what to use placeholder or label or both
       required: required,
       settings: settingsTranslated,
-      inputType: inputType, // TODO see do we need this
+      inputType: inputType,
+      allInputTypeNames: allInputTypeNames, // TODO: maybe better way
       type: attribute.type,
       validation: validationList,
       value: value,
-      wrappers: wrappers, // ['app-hidden-wrapper'],
+      wrappers: wrappers,
       features: this.features
     };
-  }
-
-  private setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
-    // default wrappers
-    const wrappers: string[] = ['app-hidden-wrapper'];
-
-    // entity-default wrappers
-    if (inputType === InputTypesConstants.entityDefault ||
-      InputTypesConstants.stringDropdownQuery) {
-      // wrappers.push('app-eav-localization-wrapper');
-      const allowMultiValue = settingsTranslated.AllowMultiValue || false;
-      if (allowMultiValue) {
-        wrappers.push('app-entity-expandable-wrapper');
-      }
-    }
-
-    return wrappers;
   }
 
   /**
@@ -383,8 +288,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     defaultValue: string,
     isParentGroup: boolean
   ): FieldConfig => {
-    let settingsTranslated = null;
-    let fullSettings = null;
+    let settingsTranslated: EavAttributesTranslated = null;
+    let fullSettings: EavAttributes = null;
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
@@ -394,8 +299,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       fullSettings = contentTypeSettings;
     }
 
-    const label = this.getFieldLabel(attribute, settingsTranslated, defaultValue);
-    const name = attribute !== null ? attribute.name : defaultValue;
+    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated, defaultValue);
+    const name: string = attribute !== null ? attribute.name : defaultValue;
 
     return {
       entityId: this.item.entity.id,
@@ -412,89 +317,5 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       //  type: attribute.type,
       wrappers: ['app-collapsible-wrapper'],
     };
-  }
-
-  private getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated, defaultValue: any): string => {
-    return attribute !== null
-      ? (settingsTranslated !== null && settingsTranslated.Name)
-        ? settingsTranslated.Name
-        : attribute.name
-      : defaultValue;
-  }
-
-  // private getFieldDisabled = (
-  //   attribute: AttributeDef,
-  //   settingsTranslated: EavAttributesTranslated,
-  //   defaultValueIsSet: boolean
-  // ): boolean => {
-
-  //   return settingsTranslated.Disabled
-  //     ? true
-  //   : this.item.entity.id === 0 || defaultValueIsSet
-  //     ? false
-  //   : !LocalizationHelper.isEditableTranslationExist(
-  //     this.item.entity.attributes[attribute.name],
-  //     this.currentLanguage,
-  //     this.defaultLanguage
-  //   );
-  // }
-
-  /** Set default value and add that attribute in store */
-  private setDefaultValue(attribute: AttributeDef, inputType: string, settingsTranslated: EavAttributesTranslated): any {
-    const value = this.parseDefaultValue(attribute.name, inputType, settingsTranslated, this.item.header);
-    this.itemService.addAttributeValue(
-      this.item.entity.id,
-      attribute.name,
-      value,
-      this.currentLanguage,
-      false,
-      this.item.entity.guid,
-      attribute.type);
-    return value;
-  }
-
-  private parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
-    let defaultValue = settings.DefaultValue;
-
-    if (header.prefill && header.prefill[attributeKey]) {
-      defaultValue = header.prefill[attributeKey];
-    }
-
-    switch (inputType) {
-      case InputTypesConstants.booleanDefault:
-        return defaultValue !== undefined && defaultValue !== null
-          ? defaultValue.toLowerCase() === 'true'
-          : false;
-      case InputTypesConstants.datetimeDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
-          ? new Date(defaultValue)
-          : null;
-      case InputTypesConstants.numberDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
-          ? Number(defaultValue)
-          : '';
-      case InputTypesConstants.entityDefault:
-        if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
-          return []; // no default value
-        }
-        // 3 possibilities
-        if (defaultValue.constructor === Array) { return defaultValue; }  // possibility 1) an array
-
-        // for possibility 2 & 3, do some variation checking
-        if (defaultValue.indexOf('{') > -1) { // string has { } characters, we must switch them to quotes
-          defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
-        }
-
-        if (defaultValue.indexOf(',') !== -1 && defaultValue.indexOf('[') === -1) { // list but no array, add brackets
-          defaultValue = '[' + defaultValue + ']';
-        }
-
-        return (defaultValue.indexOf('[') === 0) // possibility 2) an array with guid strings
-          ? JSON.parse(defaultValue) // if it's a string containing an array
-          : [defaultValue.replace(/"/g, '')]; //  possibility 3) just a guid string, but might have quotes
-
-      default:
-        return defaultValue ? defaultValue : '';
-    }
   }
 }
