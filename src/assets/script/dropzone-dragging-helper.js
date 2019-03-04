@@ -89,10 +89,9 @@ const draggingClass = 'eav-dragging';
   }
 
   function clearAllDropzonesAndListeners() {
+    if (!dropzones) return;
     clearListeners(listeners);
-    if (dropzones) {
-      clearClassFromElements(draggingClass, dropzones);
-    }
+    clearClassFromElements(draggingClass, dropzones);
     dropzones = null;
   }
 })();
