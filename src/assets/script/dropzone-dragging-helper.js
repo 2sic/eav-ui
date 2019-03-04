@@ -97,12 +97,12 @@ const draggingClass = 'eav-dragging';
   }
 })();
 
-// addDraggingClass helpers
+// add draggingClass helpers
 function clearTimeouts(timeoutsArray) {
   for (let i = 0; i < timeoutsArray.length; i++) {
     clearTimeout(timeoutsArray[i]);
   }
-  timeoutsArray = [];
+  timeoutsArray.splice(0, timeoutsArray.length);
 }
 function clearClassFromElements(cssClass, elementsArray) {
   for (let i = 0; i < elementsArray.length; i++) {
@@ -116,5 +116,5 @@ function clearListeners(listenersArray) {
     const func = listenersArray[i].func;
     element.removeEventListener(type, func);
   }
-  listenersArray = [];
+  listenersArray.splice(0, listenersArray.length);
 }
