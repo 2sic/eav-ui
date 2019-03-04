@@ -20,10 +20,7 @@ const draggingClass = 'eav-dragging';
 (function addDraggingClassToBody() {
   let timeouts = [];
   window.addEventListener('dragover', function () {
-    timeouts.forEach(timeout => {
-      clearTimeout(timeout);
-    });
-    timeouts = [];
+    clearTimeouts(timeouts);
     document.body.classList.add(draggingClass);
   });
   window.addEventListener('drop', function () {
@@ -49,19 +46,14 @@ const draggingClass = 'eav-dragging';
   let previousDropzoneIndex;
 
   window.addEventListener('dragover', function () {
-    windowTimeouts.forEach(timeout => {
-      clearTimeout(timeout);
-    });
-    windowTimeouts = [];
+    clearTimeouts(windowTimeouts);
     initDropzones();
   });
   window.addEventListener('drop', function () {
     clearAllDropzonesAndListeners();
   });
   window.addEventListener('dragleave', function () {
-    const timeout = setTimeout(function () {
-      clearAllDropzonesAndListeners()
-    }, 50);
+    const timeout = setTimeout(clearAllDropzonesAndListeners, 50);
     windowTimeouts.push(timeout);
   });
 
@@ -69,31 +61,23 @@ const draggingClass = 'eav-dragging';
     if (dropzones) return;
     dropzones = document.querySelectorAll('.dropzone');
 
-    dropzones.forEach((dropzone, index) => {
-      const addClassBind = addClass.bind(null, dropzone, index);
+    for (let i = 0; i < dropzones.length; i++) {
+      const dropzone = dropzones[i];
+      const addClassBind = addClass.bind(null, dropzone, i);
       dropzone.addEventListener('dragover', addClassBind);
+      dropzone.addEventListener('drop', clearAllDropzonesAndListeners);
       dropzone.addEventListener('dragleave', addClearDropzonesTimeout);
-      dropzone.addEventListener('drop', addClearDropzonesTimeout);
       listeners.push({ el: dropzone, type: 'dragover', func: addClassBind });
       listeners.push({ el: dropzone, type: 'dragleave', func: addClearDropzonesTimeout });
-      listeners.push({ el: dropzone, type: 'drop', func: addClearDropzonesTimeout });
-    });
+    }
   }
 
   function addClass(dropzone, index) {
-    windowTimeouts.forEach(timeout => {
-      clearTimeout(timeout);
-    });
-    windowTimeouts = [];
-    dropzoneTimeouts.forEach(dropzoneTimeout => {
-      clearTimeout(dropzoneTimeout);
-    });
-    dropzoneTimeouts = [];
+    clearTimeouts(windowTimeouts);
+    clearTimeouts(dropzoneTimeouts);
     activeDropzoneIndex = index;
     if (activeDropzoneIndex !== previousDropzoneIndex) {
-      dropzones.forEach(dropzone => {
-        dropzone.classList.remove(draggingClass);
-      });
+      clearClassFromElements(draggingClass, dropzones);
       previousDropzoneIndex = index;
     }
     dropzone.classList.add(draggingClass);
@@ -105,18 +89,32 @@ const draggingClass = 'eav-dragging';
   }
 
   function clearAllDropzonesAndListeners() {
-    listeners.forEach(listener => {
-      const element = listener.el;
-      const type = listener.type;
-      const func = listener.func;
-      element.removeEventListener(type, func);
-    });
-    listeners = [];
+    clearListeners(listeners);
     if (dropzones) {
-      dropzones.forEach(dropzone => {
-        dropzone.classList.remove(draggingClass);
-      });
+      clearClassFromElements(draggingClass, dropzones);
     }
     dropzones = null;
   }
 })();
+
+// addDraggingClass helpers
+function clearTimeouts(timeoutsArray) {
+  for (let i = 0; i < timeoutsArray.length; i++) {
+    clearTimeout(timeoutsArray[i]);
+  }
+  timeoutsArray = [];
+}
+function clearClassFromElements(cssClass, elementsArray) {
+  for (let i = 0; i < elementsArray.length; i++) {
+    elementsArray[i].classList.remove(cssClass);
+  }
+}
+function clearListeners(listenersArray) {
+  for (let i = 0; i < listenersArray.length; i++) {
+    const element = listenersArray[i].el;
+    const type = listenersArray[i].type;
+    const func = listenersArray[i].func;
+    element.removeEventListener(type, func);
+  }
+  listenersArray = [];
+}
