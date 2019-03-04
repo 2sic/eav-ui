@@ -1,14 +1,17 @@
-.eav-dragging .dropzone, .dropzone.dz-drag-hover {
-    min-height: 0;
-    outline: 2px dashed #0069BF;
-    background: white;
-    padding: 0;
-    border-radius: 5px;
-    transition: outline-color 0.5s;
-}
+// .eav-dragging .dropzone, .dropzone.dz-drag-hover {
+//     min-height: 0;
+//     outline: 2px dashed #0069BF;
+//     background: white;
+//     padding: 0;
+//     border-radius: 5px;
+//     transition: outline-color 0.5s;
+// }
 .dropzone-image {
     pointer-events: none;
 }
-.eav-dragging .dropzone-image {
-    background-color: lightblue;
+// .eav-dragging .dropzone-image {
+//     background-color: lightblue;
+// }
+.eav-dragging .c-ew__preview-field--short {
+    background-color: lightcoral;
 }
