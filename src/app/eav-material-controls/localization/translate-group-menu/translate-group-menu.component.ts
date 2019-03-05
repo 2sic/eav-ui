@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 
-import { EavValue, EavAttributes, EavValues, EavDimensions } from '../../../shared/models/eav';
+import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item } from '../../../shared/models/eav';
 import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ItemService } from '../../../shared/services/item.service';
@@ -15,6 +15,8 @@ import { TranslationLinkTypeConstants } from '../../../shared/constants/type-con
 import { ValidationHelper } from '../../validators/validation-helper';
 import isEqual from 'lodash/isEqual';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
+import { InputTypeService } from '../../../shared/services/input-type.service';
+import { ContentTypeService } from '../../../shared/services/content-type.service';
 
 @Component({
   selector: 'app-translate-group-menu',
@@ -29,7 +31,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   set toggleTranslateField(value: boolean) {
     if (this.currentLanguage !== this.defaultLanguage) {
       if (this.group.controls[this.config.name].disabled) {
-        this.translateUnlink(this.config.name);
+        this.translateUnlink(this.config.name, this.config.inputType);
       } else {
         this.linkToDefault(this.config.name);
       }
@@ -55,7 +57,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   constructor(private dialog: MatDialog,
     private languageService: LanguageService,
-    private itemService: ItemService) {
+    private itemService: ItemService,
+    private inputTypeService: InputTypeService,
+    private contentTypeService: ContentTypeService) {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }
@@ -72,6 +76,18 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  isTranslateEnabled(attributeType: string) {
+    let inputType;
+    const thisInputType$ = this.inputTypeService.getContentTypeById(attributeType);
+    thisInputType$.subscribe(type => {
+      inputType = type;
+    });
+    // console.log('Petar isTranslateEnabled thisInputType', inputType);
+    // console.log('Petar isTranslateEnabled config', this.config);
+    // return attributeType !== 'string-default' && attributeType !== 'String';
+    return !inputType.DisableI18n;
   }
 
   openLinkToOtherLanguage() {
@@ -94,7 +110,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  translateUnlink(attributeKey: string) {
+  translateUnlink(attributeKey: string, attributeType: string) {
+    console.log('Petar translateUnlink attributeKey', attributeKey, 'Petar attributeType', attributeType);
+    const isTranslateEnabled = this.isTranslateEnabled(attributeType);
+    if (!isTranslateEnabled) {
+      return;
+    }
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
@@ -118,10 +139,43 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
+  /*
+    private loadContentTypeFromStore() {
+    const id = this.item.entity.type === null
+      ? this.item.header.contentTypeName
+      : this.item.entity.type.id;
+    // Load content type for item from store
+    this.contentType$ = this.contentTypeService.getContentTypeById(id);
+    // create form fields from content type
+    this.itemFields$ = this.loadContentTypeFormFields();
+  }
+  */
   translateAll() {
     this.setTranslationState(TranslationLinkTypeConstants.translate, '');
     Object.keys(this.attributes).forEach(attributeKey => {
-      this.translateUnlink(attributeKey);
+      // fetch real attribute name
+      // 1. fetch item with id or guid
+      const thisItemId = this.config.entityId;
+      let item: Item;
+      const item$ = this.itemService.selectItemById(thisItemId);
+      item$.subscribe(itm => {
+        item = itm;
+      });
+      const id = item.entity.type === null
+        ? item.header.contentTypeName
+        : item.entity.type.id;
+      // Load content type for item from store
+      const contentType$ = this.contentTypeService.getContentTypeById(id);
+      let contentType;
+      contentType$.subscribe(cntntType => {
+        contentType = cntntType;
+      });
+      // console.log('Petar translateAll contentType', contentType, 'configName', attributeKey);
+      const attributeDef = contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+
+      // 2. take item type and fetch real input type
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+      this.translateUnlink(attributeKey, inputTypeName);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -258,7 +312,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       // need be sure that we have a language selected when a link option is clicked
       switch (this.translationState.linkType) {
         case TranslationLinkTypeConstants.translate:
-          this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name);
+          this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.dontTranslate:
           this.config.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.name);
