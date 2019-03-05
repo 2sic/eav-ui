@@ -1,7 +1,10 @@
+const dropzoneId = 'dropzone';
+const dropzoneClass = '.dropzone';
+const draggingClass = 'eav-dragging';
+
 /**
  * prevent drop on page - can only drop on dropzone, add eav-dragging class
  */
-const dropzoneId = 'dropzone';
 window.addEventListener('dragover', function (event) {
   if (event.target.id !== dropzoneId) {
     event.preventDefault();
@@ -16,7 +19,6 @@ window.addEventListener('drop', function (event) {
 /**
  * add draggingClass to body when something is dragged over
  */
-const draggingClass = 'eav-dragging';
 (function addDraggingClassToBody() {
   let timeouts = [];
   window.addEventListener('dragover', function () {
@@ -59,16 +61,17 @@ const draggingClass = 'eav-dragging';
 
   function initDropzones() {
     if (dropzones) return;
-    dropzones = document.querySelectorAll('.dropzone');
+    dropzones = document.querySelectorAll(dropzoneClass);
 
     for (let i = 0; i < dropzones.length; i++) {
       const dropzone = dropzones[i];
       const addClassBind = addClass.bind(null, dropzone, i);
       dropzone.addEventListener('dragover', addClassBind);
       dropzone.addEventListener('drop', clearAllDropzonesAndListeners);
-      dropzone.addEventListener('dragleave', addClearDropzonesTimeout);
+      dropzone.addEventListener('dragleave', addClearClassesTimeout);
       listeners.push({ el: dropzone, type: 'dragover', func: addClassBind });
-      listeners.push({ el: dropzone, type: 'dragleave', func: addClearDropzonesTimeout });
+      listeners.push({ el: dropzone, type: 'drop', func: clearAllDropzonesAndListeners });
+      listeners.push({ el: dropzone, type: 'dragleave', func: addClearClassesTimeout });
     }
   }
 
@@ -83,8 +86,9 @@ const draggingClass = 'eav-dragging';
     dropzone.classList.add(draggingClass);
   }
 
-  function addClearDropzonesTimeout() {
-    const timeout = setTimeout(clearAllDropzonesAndListeners, 50);
+  function addClearClassesTimeout() {
+    const clearClassesBind = clearClassFromElements.bind(null, draggingClass, dropzones);
+    const timeout = setTimeout(clearClassesBind, 50);
     dropzoneTimeouts.push(timeout);
   }
 
