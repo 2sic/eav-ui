@@ -35,7 +35,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       if (this.group.controls[this.config.name].disabled) {
         this.translateUnlink(this.config.name, this.config.inputType);
       } else {
-        this.linkToDefault(this.config.name);
+        this.linkToDefault(this.config.name, this.config.inputType);
       }
     }
   }
@@ -106,8 +106,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  translateUnlink(attributeKey: string, attributeType: string) {
-    if (!this.isTranslateEnabled(attributeType)) {
+  translateUnlink(attributeKey: string, inputTypeName: string) {
+    if (!this.isTranslateEnabled(inputTypeName)) {
       return;
     }
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
@@ -127,7 +127,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-  linkToDefault(attributeKey: string) {
+  linkToDefault(attributeKey: string, inputTypeName: string) {
+    if (!this.isTranslateEnabled(inputTypeName)) {
+      return;
+    }
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
 
     this.refreshControlConfig(attributeKey);
@@ -148,7 +151,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.setTranslationState(TranslationLinkTypeConstants.dontTranslate, '');
 
     Object.keys(this.attributes).forEach(attributeKey => {
-      this.linkToDefault(attributeKey);
+      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+      this.linkToDefault(attributeKey, inputTypeName);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -278,7 +283,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
           this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.dontTranslate:
-          this.config.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.name);
+          this.config.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.linkReadOnly:
           this.config.isParentGroup
@@ -418,9 +423,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * Fetch inputType definition to check if input field of this type shouldn't be translated
    * @param attributeType new attribute type defined in contentTypes
    */
-  private isTranslateEnabled(attributeType: string) {
+  private isTranslateEnabled(inputTypeName: string) {
     let inputType: InputType;
-    this.inputTypeService.getContentTypeById(attributeType).pipe(take(1)).subscribe(type => inputType = type);
+    this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
     return !inputType.DisableI18n;
   }
 

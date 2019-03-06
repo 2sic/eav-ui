@@ -35,7 +35,7 @@
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'translate' }">
       Translate
     </button>
-    <button mat-menu-item type="button" (click)="linkToDefault(config.name)"
+    <button mat-menu-item type="button" (click)="linkToDefault(config.name, config.inputType)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'dontTranslate'}">
       Don't translate
     </button>
