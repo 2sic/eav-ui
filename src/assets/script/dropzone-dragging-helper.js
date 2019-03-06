@@ -1,5 +1,6 @@
 const dropzoneId = 'dropzone';
-const dropzoneClass = '.dropzone';
+const dropzoneClass = 'dropzone';
+const dropzoneDisabledClass = 'dropzone-disabled';
 const draggingClass = 'eav-dragging';
 
 /**
@@ -61,7 +62,8 @@ window.addEventListener('drop', function (event) {
 
   function initDropzones() {
     if (dropzones) return;
-    dropzones = document.querySelectorAll(dropzoneClass);
+    const dropzonesSelector = '.' + dropzoneClass + ':not(.' + dropzoneDisabledClass + ')';
+    dropzones = document.querySelectorAll(dropzonesSelector);
 
     for (let i = 0; i < dropzones.length; i++) {
       const dropzone = dropzones[i];
