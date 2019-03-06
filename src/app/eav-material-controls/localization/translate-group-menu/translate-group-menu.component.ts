@@ -162,7 +162,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   copyFromAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkCopyFrom, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      this.copyFrom(languageKey, attributeKey);
+      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+      this.copyFrom(languageKey, attributeKey, inputTypeName);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -173,7 +175,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * If value of current language don't exist then add new value
    * @param copyFromLanguageKey
    */
-  copyFrom(copyFromLanguageKey: string, attributeKey: string) {
+  copyFrom(copyFromLanguageKey: string, attributeKey: string, inputTypeName: string) {
+    if (!this.isTranslateEnabled(inputTypeName)) {
+      return;
+    }
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
       copyFromLanguageKey,
@@ -208,13 +213,18 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   linkReadOnlyAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      this.linkReadOnly(languageKey, attributeKey);
+      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+      this.linkReadOnly(languageKey, attributeKey, inputTypeName);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
   }
 
-  linkReadOnly(languageKey: string, attributeKey: string) {
+  linkReadOnly(languageKey: string, attributeKey: string, inputTypeName: string) {
+    if (!this.isTranslateEnabled(inputTypeName)) {
+      return;
+    }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
@@ -229,13 +239,18 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   linkReadWriteAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      this.linkReadWrite(languageKey, attributeKey);
+      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+      this.linkReadWrite(languageKey, attributeKey, inputTypeName);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
   }
 
-  linkReadWrite(languageKey: string, attributeKey: string) {
+  linkReadWrite(languageKey: string, attributeKey: string, inputTypeName: string) {
+    if (!this.isTranslateEnabled(inputTypeName)) {
+      return;
+    }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
     this.itemService.addItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage,
@@ -288,17 +303,17 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         case TranslationLinkTypeConstants.linkReadOnly:
           this.config.isParentGroup
             ? this.linkReadOnlyAll(this.translationState.language)
-            : this.linkReadOnly(this.translationState.language, this.config.name);
+            : this.linkReadOnly(this.translationState.language, this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.linkReadWrite:
           this.config.isParentGroup
             ? this.linkReadWriteAll(this.translationState.language)
-            : this.linkReadWrite(this.translationState.language, this.config.name);
+            : this.linkReadWrite(this.translationState.language, this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.linkCopyFrom:
           this.config.isParentGroup
             ? this.copyFromAll(this.translationState.language)
-            : this.copyFrom(this.translationState.language, this.config.name);
+            : this.copyFrom(this.translationState.language, this.config.name, this.config.inputType);
           break;
         default:
           break;
@@ -426,7 +441,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private isTranslateEnabled(inputTypeName: string) {
     let inputType: InputType;
     this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
-    return !inputType.DisableI18n;
+    // return !inputType.DisableI18n;
+    return false;
   }
 
   private readTranslationState(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
