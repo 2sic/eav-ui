@@ -1,5 +1,5 @@
 .eav-dragging .dropzone:not(.dropzone-disabled), .eav-dragging.dropzone:not(.dropzone-disabled) {
     .c-ew__preview {
-        background-color: lightcoral !important;
+        background-color: $dropzone-background !important;
     }
 }
