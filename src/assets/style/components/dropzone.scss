@@ -1,3 +1,5 @@
-.eav-dragging .c-ew__preview-field--short {
-    background-color: lightcoral;
+.eav-dragging .dropzone, .eav-dragging.dropzone {
+    .c-ew__preview {
+        background-color: lightcoral !important;
+    }
 }
