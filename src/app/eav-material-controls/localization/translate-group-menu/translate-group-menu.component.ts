@@ -441,8 +441,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private isTranslateEnabled(inputTypeName: string) {
     let inputType: InputType;
     this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
-    // return !inputType.DisableI18n;
-    return false;
+    return !inputType.DisableI18n;
   }
 
   private readTranslationState(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
