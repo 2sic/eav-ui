@@ -291,9 +291,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
     if (!isEqual(this.translationState, actionResult)) {
-      this.setTranslationState(actionResult.linkType, actionResult.language);
       // need be sure that we have a language selected when a link option is clicked
-      switch (this.translationState.linkType) {
+      switch (actionResult.linkType) {
         case TranslationLinkTypeConstants.translate:
           this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name, this.config.inputType);
           break;
@@ -302,18 +301,18 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
           break;
         case TranslationLinkTypeConstants.linkReadOnly:
           this.config.isParentGroup
-            ? this.linkReadOnlyAll(this.translationState.language)
-            : this.linkReadOnly(this.translationState.language, this.config.name, this.config.inputType);
+            ? this.linkReadOnlyAll(actionResult.language)
+            : this.linkReadOnly(actionResult.language, this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.linkReadWrite:
           this.config.isParentGroup
-            ? this.linkReadWriteAll(this.translationState.language)
-            : this.linkReadWrite(this.translationState.language, this.config.name, this.config.inputType);
+            ? this.linkReadWriteAll(actionResult.language)
+            : this.linkReadWrite(actionResult.language, this.config.name, this.config.inputType);
           break;
         case TranslationLinkTypeConstants.linkCopyFrom:
           this.config.isParentGroup
-            ? this.copyFromAll(this.translationState.language)
-            : this.copyFrom(this.translationState.language, this.config.name, this.config.inputType);
+            ? this.copyFromAll(actionResult.language)
+            : this.copyFrom(actionResult.language, this.config.name, this.config.inputType);
           break;
         default:
           break;
