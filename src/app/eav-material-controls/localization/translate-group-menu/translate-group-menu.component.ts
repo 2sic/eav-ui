@@ -440,6 +440,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private isTranslateEnabled(inputTypeName: string) {
     let inputType: InputType;
     this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
+    if (!inputType) {
+      // spm 2019-03-07
+      // Input type won't be found for string-wysiwyg-tinymce as it is named external-webcomponent.
+      // TODO: figure out how to handle external-webcomponents translations
+      return false;
+    }
     return !inputType.DisableI18n;
   }
 
