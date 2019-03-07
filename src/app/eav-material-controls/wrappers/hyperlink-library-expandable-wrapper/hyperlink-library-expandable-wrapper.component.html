@@ -13,7 +13,8 @@
     <div>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
+      <div
+        class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <ng-container #fieldComponent></ng-container>
       </div>
@@ -22,7 +23,8 @@
 </div>
 <!-- preview -->
 <div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple"
+  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
+    class="c-ew__preview mat-ripple"
     [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{
@@ -35,10 +37,12 @@
         {{config.label}}
         {{config.required ? '*': '' }}
       </mat-label>
-      <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
+      <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px"
+        class="c-ew__preview-content">
         <!-- folder list - not always shown -->
         <ng-container *ngIf="config.adam && config.adam.showFolders">
-          <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
+          <div fxLayout="row" fxLayoutAlign="start start"
+            *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
             <div class="adam-browse-background-icon">
               <i class="eav-icon-folder-empty"></i>
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
@@ -46,7 +50,8 @@
           </div>
         </ng-container>
         <!-- file list -->
-        <div *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
+        <div
+          *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
           <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
             <i [ngClass]="icon(item)"></i>
             <div class="adam-short-label mat-caption">{{ item.Name }}</div>
@@ -63,7 +68,8 @@
         </div>
         <div fxFlex="auto"></div>
         <div>
-          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="end end">ADAM - sponsored with ♥ by 2sic.com</mat-hint>
+          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="end end">ADAM - sponsored with ♥ by 2sic.com
+          </mat-hint>
         </div>
       </div>
     </div>
