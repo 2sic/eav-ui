@@ -121,7 +121,7 @@ hr[sxc]::after {
         border-width: 0px!important;
     } */
 
-    .c-ew__dialog-content .mce-panel {
+    .c-ew__dialog-content .mce-tinymce {
         height: 100%
     }
 
