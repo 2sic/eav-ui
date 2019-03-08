@@ -33,9 +33,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   set toggleTranslateField(value: boolean) {
     if (this.currentLanguage !== this.defaultLanguage) {
       if (this.group.controls[this.config.name].disabled) {
-        this.translateUnlink(this.config.name, this.config.inputType);
+        this.translateUnlink(this.config.name);
       } else {
-        this.linkToDefault(this.config.name, this.config.inputType);
+        this.linkToDefault(this.config.name);
       }
     }
   }
@@ -106,8 +106,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  translateUnlink(attributeKey: string, inputTypeName: string) {
-    if (!this.isTranslateEnabled(inputTypeName)) {
+  translateUnlink(attributeKey: string) {
+    if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
@@ -127,8 +127,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-  linkToDefault(attributeKey: string, inputTypeName: string) {
-    if (!this.isTranslateEnabled(inputTypeName)) {
+  linkToDefault(attributeKey: string) {
+    if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
     this.itemService.removeItemAttributeDimension(this.config.entityId, attributeKey, this.currentLanguage, this.config.entityGuid);
@@ -139,9 +139,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   translateAll() {
     this.setTranslationState(TranslationLinkTypeConstants.translate, '');
     Object.keys(this.attributes).forEach(attributeKey => {
-      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
-      this.translateUnlink(attributeKey, inputTypeName);
+      this.translateUnlink(attributeKey);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -151,9 +149,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.setTranslationState(TranslationLinkTypeConstants.dontTranslate, '');
 
     Object.keys(this.attributes).forEach(attributeKey => {
-      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
-      this.linkToDefault(attributeKey, inputTypeName);
+      this.linkToDefault(attributeKey);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -162,9 +158,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   copyFromAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkCopyFrom, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
-      this.copyFrom(languageKey, attributeKey, inputTypeName);
+      this.copyFrom(languageKey, attributeKey);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
@@ -175,8 +169,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * If value of current language don't exist then add new value
    * @param copyFromLanguageKey
    */
-  copyFrom(copyFromLanguageKey: string, attributeKey: string, inputTypeName: string) {
-    if (!this.isTranslateEnabled(inputTypeName)) {
+  copyFrom(copyFromLanguageKey: string, attributeKey: string) {
+    if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
@@ -213,16 +207,14 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   linkReadOnlyAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
-      this.linkReadOnly(languageKey, attributeKey, inputTypeName);
+      this.linkReadOnly(languageKey, attributeKey);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
   }
 
-  linkReadOnly(languageKey: string, attributeKey: string, inputTypeName: string) {
-    if (!this.isTranslateEnabled(inputTypeName)) {
+  linkReadOnly(languageKey: string, attributeKey: string) {
+    if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
@@ -239,16 +231,14 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   linkReadWriteAll(languageKey) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
-      const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
-      this.linkReadWrite(languageKey, attributeKey, inputTypeName);
+      this.linkReadWrite(languageKey, attributeKey);
     });
 
     this.languageService.triggerLocalizationWrapperMenuChange();
   }
 
-  linkReadWrite(languageKey: string, attributeKey: string, inputTypeName: string) {
-    if (!this.isTranslateEnabled(inputTypeName)) {
+  linkReadWrite(languageKey: string, attributeKey: string) {
+    if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
@@ -294,25 +284,25 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       // need be sure that we have a language selected when a link option is clicked
       switch (actionResult.linkType) {
         case TranslationLinkTypeConstants.translate:
-          this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name, this.config.inputType);
+          this.config.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.name);
           break;
         case TranslationLinkTypeConstants.dontTranslate:
-          this.config.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.name, this.config.inputType);
+          this.config.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.name);
           break;
         case TranslationLinkTypeConstants.linkReadOnly:
           this.config.isParentGroup
             ? this.linkReadOnlyAll(actionResult.language)
-            : this.linkReadOnly(actionResult.language, this.config.name, this.config.inputType);
+            : this.linkReadOnly(actionResult.language, this.config.name);
           break;
         case TranslationLinkTypeConstants.linkReadWrite:
           this.config.isParentGroup
             ? this.linkReadWriteAll(actionResult.language)
-            : this.linkReadWrite(actionResult.language, this.config.name, this.config.inputType);
+            : this.linkReadWrite(actionResult.language, this.config.name);
           break;
         case TranslationLinkTypeConstants.linkCopyFrom:
           this.config.isParentGroup
             ? this.copyFromAll(actionResult.language)
-            : this.copyFrom(actionResult.language, this.config.name, this.config.inputType);
+            : this.copyFrom(actionResult.language, this.config.name);
           break;
         default:
           break;
@@ -437,13 +427,13 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * Fetch inputType definition to check if input field of this type shouldn't be translated
    * @param attributeType new attribute type defined in contentTypes
    */
-  private isTranslateEnabled(inputTypeName: string) {
+  private isTranslateEnabled(attributeKey: string) {
+    const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+    const inputTypeName = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef, true);
     let inputType: InputType;
     this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
     if (!inputType) {
-      // spm 2019-03-07
-      // Input type won't be found for string-wysiwyg-tinymce as it is named external-webcomponent.
-      // TODO: figure out how to handle external-webcomponents translations
+      console.warn(`No input type match was found for ${inputTypeName}. Translation is disabled for ${attributeKey} field.`);
       return false;
     }
     return !inputType.DisableI18n;

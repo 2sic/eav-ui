@@ -67,11 +67,17 @@ export class InputFieldHelper {
         return typesList;
     }
 
-    static getInputTypeNameFromAttribute(attribute: AttributeDef): string {
+    static getInputTypeNameFromAttribute(attribute: AttributeDef, realName?: boolean): string {
         if (attribute.settings.InputType || attribute.type) {
             if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
+                if (realName) {
+                    return attribute.settings.InputType.values[0].value;
+                }
                 return this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
             } else {
+                if (realName) {
+                    return this.getRealInputTypeNameOldConfig(attribute.type);
+                }
                 return this.getInputTypeNameOldConfig(attribute.type);
             }
         } else {
@@ -210,6 +216,38 @@ export class InputFieldHelper {
                 return InputTypesConstants.external;
             default:
                 return InputTypesConstants.stringDefault;
+        }
+    }
+
+    /** read old inputField settings, but real value  */
+    private static getRealInputTypeNameOldConfig(inputTypeName: string): string {
+        switch (inputTypeName) {
+            case InputTypesConstants.stringUrlPath:
+            case InputTypesConstants.stringFontIconPicker:
+            case InputTypesConstants.hyperlinkLibrary:
+            case InputTypesConstants.external:
+                return inputTypeName;
+            case InputTypesConstants.default:
+            case InputTypesConstants.string:
+                return InputTypesConstants.stringDefault;
+            case InputTypesConstants.boolean:
+                return InputTypesConstants.booleanDefault;
+            case InputTypesConstants.dropdown:
+                return InputTypesConstants.stringDropdown;
+            case InputTypesConstants.empty:
+                return InputTypesConstants.emptyDefault;
+            case InputTypesConstants.datetime:
+                return InputTypesConstants.datetimeDefault;
+            case InputTypesConstants.number:
+                return InputTypesConstants.numberDefault;
+            case InputTypesConstants.entity:
+                return InputTypesConstants.entityDefault;
+            case InputTypesConstants.hyperlink:
+                return InputTypesConstants.hyperlinkDefault;
+            case InputTypesConstants.wysiwyg:
+                return InputTypesConstants.stringWysiwyg;
+            default:
+                return inputTypeName;
         }
     }
 }

@@ -20,7 +20,7 @@
   </mat-menu>
 </div>
 
-<div *ngIf="(currentLanguage !== defaultLanguage) && !config.isParentGroup  && isTranslateEnabled(config.inputType)"
+<div *ngIf="(currentLanguage !== defaultLanguage) && !config.isParentGroup  && isTranslateEnabled(config.name)"
   fxLayoutAlign="end center">
   <div fxLayoutAlign="end center" class="shared-languages-container">
     <div class="shared-languages mat-caption color__accent" [ngClass]="{
