@@ -19,6 +19,19 @@ export function inputTypeReducer(state = initialState, action: fromInputType.Act
                 }
             };
         }
+        case fromInputType.ADD_INPUT_TYPE_SUCCESS: {
+            const newInputTypes = action.newInputTypes
+                .filter(newInputType => !state.inputTypes.some(inputType => inputType.Type === newInputType.Type));
+            if (newInputTypes.length === 0) {
+                return state;
+            }
+            return {
+                ...state,
+                ...{
+                    inputTypes: [...state.inputTypes, ...newInputTypes]
+                }
+            };
+        }
         default: {
             return state;
         }

@@ -4,6 +4,7 @@ import { InputType } from '../../models/eav';
 
 // export const LOAD_INPUT_TYPE = 'LOAD_INPUT_TYPE';
 export const LOAD_INPUT_TYPE_SUCCESS = 'LOAD_INPUT_TYPE_SUCCESS';
+export const ADD_INPUT_TYPE_SUCCESS = 'ADD_INPUT_TYPE_SUCCESS';
 
 
 export class LoadInputTypeSuccessAction implements Action {
@@ -13,5 +14,13 @@ export class LoadInputTypeSuccessAction implements Action {
     }
 }
 
+export class AddInputTypeSuccessAction implements Action {
+    readonly type = ADD_INPUT_TYPE_SUCCESS;
+
+    constructor(public newInputTypes: InputType[]) {
+    }
+}
+
 export type Actions
-    = LoadInputTypeSuccessAction;
+    = LoadInputTypeSuccessAction
+    | AddInputTypeSuccessAction;

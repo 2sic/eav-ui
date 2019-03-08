@@ -165,7 +165,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
     this.itemService.loadPersistedData(this.formDialogData.persistedData);
-    this.inputTypeService.loadInputTypes(data.InputTypes);
+    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      this.inputTypeService.loadInputTypes(data.InputTypes);
+    } else {
+      this.inputTypeService.addInputTypes(data.InputTypes);
+    }
     this.contentTypeService.loadContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
