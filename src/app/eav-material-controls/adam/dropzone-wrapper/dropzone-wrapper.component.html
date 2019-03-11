@@ -1,6 +1,6 @@
 <div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled"
-  (error)="onUploadError($event)" (success)="onUploadSuccess($event)">
-  <!-- <div class="dropzone-content"> -->
+  (error)="onUploadError($event)" (success)="onUploadSuccess($event)" [ngClass]="{
+    'dropzone-disabled': disabled
+  }">
   <ng-container #fieldComponent></ng-container>
-  <!-- </div> -->
 </div>

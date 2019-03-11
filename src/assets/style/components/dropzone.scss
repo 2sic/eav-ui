@@ -1,8 +1,10 @@
-.eav-dragging .dropzone, .dropzone.dz-drag-hover {
-    min-height: 0;
-    outline: 2px dashed #0069BF;
-    background: white;
-    padding: 0;
-    border-radius: 5px;
-    transition: outline-color 0.5s;
+.eav-dragging .dropzone:not(.dropzone-disabled) {
+    .c-ew__preview {
+        background-color: $dropzone-background !important;
+    }
+}
+.eav-dragging.dropzone:not(.dropzone-disabled) {
+    .c-ew__preview {
+        background-color: $dropzone-active-background !important;
+    }
 }

@@ -112,4 +112,3 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   //   console.log('adamModeImage', this.adamModeImage);
   // }
 }
-
