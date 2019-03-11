@@ -128,11 +128,11 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-  // public selectItemById(id: number): Observable<Item> {
-  //   return this.store
-  //     .select(fromStore.getItems)
-  //     .pipe(map(data => data.find(obj => obj.entity.id === id)));
-  // }
+  public selectItemById(id: number): Observable<Item> {
+    return this.store
+      .select(fromStore.getItems)
+      .pipe(map(data => data.find(obj => obj.entity.id === id)));
+  }
 
   /**
    * Observe header for item from store
