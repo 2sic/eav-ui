@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError as observableThrowError, Observable, of } from 'rxjs';
+import { throwError, Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import { UrlConstants } from '../constants/url-constants';
@@ -33,6 +33,6 @@ export class QueryService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return observableThrowError(errMsg);
+    return throwError(errMsg);
   }
 }
