@@ -427,7 +427,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * Fetch inputType definition to check if input field of this type shouldn't be translated
    * @param attributeType new attribute type defined in contentTypes
    */
-  private isTranslateEnabled(attributeKey: string) {
+  public isTranslateEnabled(attributeKey: string) {
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
     const inputTypeName = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef, true);
     let inputType: InputType;
