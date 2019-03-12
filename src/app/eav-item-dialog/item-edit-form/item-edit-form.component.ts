@@ -179,40 +179,34 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     return this.contentType$
       .pipe(
         switchMap((data: ContentType) => {
-          try {
-            const parentFieldGroup: FieldConfig = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
-            let currentFieldGroup: FieldConfig = parentFieldGroup;
+          const parentFieldGroup: FieldConfig = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
+          let currentFieldGroup: FieldConfig = parentFieldGroup;
 
-            const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
-            // loop through contentType attributes
-            data.contentType.attributes.forEach((attribute, index) => {
-              try {
-                // if input type is empty-default create new field group and than continue to add fields to that group
-                const isEmptyInputType = (attribute.settings.InputType &&
-                  attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) ||
-                  attribute.type === InputTypesConstants.empty;
-                if (isEmptyInputType) { // group-fields (empty)
-                  const collapsed = attribute.settings.DefaultCollapsed
-                    ? attribute.settings.DefaultCollapsed.values[0].value
-                    : false;
-                  currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
-                  parentFieldGroup.fieldGroup.push(currentFieldGroup);
-                } else { // all other fields (not group empty)
-                  const formFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
-                  currentFieldGroup.fieldGroup.push(formFieldConfig);
-                }
-              } catch (error) {
-                console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
-                throw error;
+          const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+          // loop through contentType attributes
+          data.contentType.attributes.forEach((attribute, index) => {
+            try {
+              // if input type is empty-default create new field group and than continue to add fields to that group
+              const isEmptyInputType = (attribute.settings.InputType &&
+                attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) ||
+                attribute.type === InputTypesConstants.empty;
+              if (isEmptyInputType) { // group-fields (empty)
+                const collapsed = attribute.settings.DefaultCollapsed
+                  ? attribute.settings.DefaultCollapsed.values[0].value
+                  : false;
+                currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
+                parentFieldGroup.fieldGroup.push(currentFieldGroup);
+              } else { // all other fields (not group empty)
+                const formFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
+                currentFieldGroup.fieldGroup.push(formFieldConfig);
               }
-            });
+            } catch (error) {
+              console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
+              throw error;
+            }
+          });
 
-            return of([parentFieldGroup]);
-          } catch (error) {
-            console.error(`Error loading content type: ${error}.
-            Content type data: ${JSON.stringify(data)}`, data);
-            throw error;
-          }
+          return of([parentFieldGroup]);
         })
       );
   }
