@@ -1,0 +1,40 @@
+{
+  // "compileOnSave": true,
+  "compilerOptions": {
+    //"outFile": "../../dist-test/inpage/inpage.min.js",
+    // "outDir": "compiled",
+    "noEmitOnError": false,
+    "noImplicitAny": true,
+    //"noFallthroughCasesInSwitch": true,
+    //"allowUnreachableCode": false,
+    //"allowUnusedLabels": false,
+    "removeComments": false,
+    "sourceMap": true,
+    "inlineSources": false,
+    "target": "es5",
+    "allowJs": true,
+    // "module": "commonjs",
+    "lib": [
+      "es2015.promise",
+      "es5",
+      "es6",
+      "dom"
+    ]
+  },
+  "include": [
+    "./src/*.ts"
+  ],
+  "exclude": [
+    "_reports",
+    "bin",
+    "compiled",
+    "coverage",
+    "dist",
+    "docs",
+    "lib",
+    "node_modules",
+    //"node_modules/@typings",
+    //"typings",
+    "obj"
+  ]
+}

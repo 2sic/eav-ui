@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, NgZone } from '@angula
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -14,6 +14,7 @@ import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { animate } from '@angular/animations';
+import { LanguageService } from '../../../../shared/services/language.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -36,6 +37,8 @@ export class ExternalWebcomponentComponent implements OnInit {
   loadingSpinner = true;
   // externalFactory: any;
   updateTriggeredByControl = false;
+  currentLanguage$: Observable<string>;
+  currentLanguage: string;
 
   get inputInvalid() {
     return this.group.controls[this.config.name].invalid;
@@ -45,13 +48,17 @@ export class ExternalWebcomponentComponent implements OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
-  constructor(private validationMessagesService: ValidationMessagesService,
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
     private translateService: TranslateService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
-    private _ngZone: NgZone) {
+    private _ngZone: NgZone,
+    private languageService: LanguageService,
+  ) {
     this.eavConfig = eavService.getEavConfiguration();
+    this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   /**
@@ -92,7 +99,14 @@ export class ExternalWebcomponentComponent implements OnInit {
 
   private createElementWebComponent() {
     // temp: harcoded - need to read from config
-    this.customEl = document.createElement('field-string-wysiwyg') as any;
+    this.customEl = document.createElement('field-custom-gps') as any;
+    this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
+      this.currentLanguage = lan;
+      console.log('Petar changed language', this.currentLanguage);
+      // on current language change reset form errors
+      this.customEl.setAttribute('language', this.currentLanguage);
+    }));
+    this.customEl.addEventListener('field-custom-gps', (data) => console.log('Petar from host', data));
 
     this.customEl.host = this.externalInputTypeHost;
     this.customEl.config = this.config;
