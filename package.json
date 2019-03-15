@@ -13,7 +13,8 @@
     "build-elements": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js --prod",
     "develop-elements": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js",
     "develop-elements-watch": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js --watch",
-    "develop-custom-gps": "tsc --project ./projects/field-custom-gps --outFile ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-custom-gps/main.js",
+    "develop-custom-gps": "webpack --entry ./projects/field-custom-gps/src/main.ts --config ./projects/field-custom-gps/webpack.config.js --output-path ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-custom-gps",
+    "develop-custom-gps-watch": "webpack --entry ./projects/field-custom-gps/src/main.ts --config ./projects/field-custom-gps/webpack.config.js --output-path ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-custom-gps --watch",
     "build-all": "npm run build && npm run build-elements",
     "develop-all": "npm run develop && npm run develop-elements",
     "test": "ng test",
@@ -80,9 +81,11 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "ngrx-store-freeze": "^0.2.4",
     "protractor": "^5.4.2",
+    "ts-loader": "^5.3.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",
     "typescript": "^3.2.4",
-    "webpack-bundle-analyzer": "^3.0.3"
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.2.3"
   }
 }

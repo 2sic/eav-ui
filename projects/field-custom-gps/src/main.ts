@@ -1,39 +1,38 @@
-class SxcCustomElement extends HTMLElement {
-  host: any;
-}
+import { EavCustomInputField } from '../../shared/eav-custom-input-field';
 
 // Create a class for the element
-class FieldCustomGps extends SxcCustomElement {
-  static get observedAttributes() {
-    return ['language'];
-  }
-
+class FieldCustomGps extends EavCustomInputField {
+  shadow: ShadowRoot;
   myInput: HTMLInputElement;
+  myTestValue: string;
+
   constructor() {
+    console.log('Petar order EavCustomInputField constructor');
     super();
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
-    const myInput = document.createElement('input');
-    myInput.value = 'Hello World';
-    shadowRoot.appendChild(myInput);
-    this.myInput = myInput;
+    this.shadow = this.attachShadow({ mode: 'open' });
+    this.myInput = document.createElement('input');
+    this.shadow.appendChild(this.myInput);
+    this.myTestValue = 'It works!!!';
   }
 
   connectedCallback() {
-    this.host.setInitValues();
-    console.log('Petar from web component, language:', this.getAttribute('language'));
+    console.log('Petar order EavCustomInputField connectedCallback');
+    // @ts-ignore
+    // this.host.setInitValues();
+    // this.host.update(this.myInput.value);
+    // this.connector.data.update('Hello world!');
+    // @ts-ignore
+    this.myInput.value = this.connector.data.field.value;
     const _this = this;
-    this.myInput.addEventListener('blur', function () {
-      const customEvent = new CustomEvent('field-custom-gps', { bubbles: true, detail: { inputValue: _this.myInput.value } });
-      _this.dispatchEvent(customEvent);
-      _this.host.update(_this.myInput.value);
+    this.myInput.addEventListener('change', function () {
+      _this.connector.data.update(_this.myInput.value);
     });
-  }
-
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (name === 'language') {
-      console.log('Petar from web component, language:', newValue);
+    function myChangeFunction(newValue: string) {
+      console.log('Petar change called in child. myTestValue:', this.myTestValue, 'newValue:', newValue);
+      this.myInput.value = newValue;
     }
+    this.connector.onChange(myChangeFunction.bind(this));
   }
 }
 

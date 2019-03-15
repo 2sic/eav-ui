@@ -25,6 +25,7 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() translateService: TranslateService;
   @Input()
   set value(value: any) {
+    console.log('Petar Petar wysiwyg order: set value(value: any)', value);
     this._value = value;
     this.setValue(value);
   }
@@ -120,6 +121,7 @@ export class TinymceWysiwygComponent implements OnInit {
     if (newValue !== oldValue) {
       this.editor.editorManager.get(this.id).setContent(newValue);
     }
+    console.log('Petar wysiwyg order: setValue(newValue)', 'old:', oldValue, 'new:', newValue);
   }
 
   // /**
@@ -156,10 +158,13 @@ export class TinymceWysiwygComponent implements OnInit {
       // editor.selection.select(editor.getBody(), true);
       // editor.selection.collapse(false);
       this.host.setInitValues();
+      console.log('Petar wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
     });
 
     editor.on('change', e => {
       this.changeCheck(e, editor.getContent());
+      console.log('Petar wysiwyg order: editor.on change => this.changeCheck(e, editor.getContent()); => this.host.update(value);',
+        editor.getContent());
     });
   }
 

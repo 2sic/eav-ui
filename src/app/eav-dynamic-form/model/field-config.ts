@@ -3,8 +3,9 @@ import { EavAttributes, EavAttributesTranslated, EavHeader } from '../../shared/
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { Feature } from '../../shared/models/feature/feature';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
+import { FieldConfiguration } from '../../../../projects/shared/field-config';
 
-export interface FieldConfig {
+export interface FieldConfig extends FieldConfiguration {
     entityId?: number;
     entityGuid?: string;
     header?: EavHeader;
@@ -18,7 +19,7 @@ export interface FieldConfig {
     isParentGroup?: boolean;
     type?: string;
     validation?: ValidatorFn[];
-    value?: any;
+    // value?: any;
     wrappers?: string[];
     required?: boolean;
     // pattern?: string;

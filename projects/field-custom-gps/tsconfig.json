@@ -1,29 +1,13 @@
 {
-  // "compileOnSave": true,
   "compilerOptions": {
-    //"outFile": "../../dist-test/inpage/inpage.min.js",
-    // "outDir": "compiled",
-    "noEmitOnError": false,
-    "noImplicitAny": true,
-    //"noFallthroughCasesInSwitch": true,
-    //"allowUnreachableCode": false,
-    //"allowUnusedLabels": false,
-    "removeComments": false,
+    "outDir": "./dist/",
     "sourceMap": true,
-    "inlineSources": false,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "module": "commonjs",
     "target": "es5",
-    "allowJs": true,
-    // "module": "commonjs",
-    "lib": [
-      "es2015.promise",
-      "es5",
-      "es6",
-      "dom"
-    ]
+    "allowJs": true
   },
-  "include": [
-    "./src/*.ts"
-  ],
   "exclude": [
     "_reports",
     "bin",
@@ -33,8 +17,50 @@
     "docs",
     "lib",
     "node_modules",
-    //"node_modules/@typings",
-    //"typings",
     "obj"
   ]
 }
+// {
+//   // "compileOnSave": true,
+//   "compilerOptions": {
+//     //"outFile": "../../dist-test/inpage/inpage.min.js",
+//     // "outDir": "compiled",
+//     "noEmitOnError": false,
+//     "noImplicitAny": true,
+//     //"noFallthroughCasesInSwitch": true,
+//     //"allowUnreachableCode": false,
+//     //"allowUnusedLabels": false,
+//     "removeComments": false,
+//     "sourceMap": true,
+//     "inlineSources": false,
+//     "target": "es5",
+//     "allowJs": true,
+//     "module": "commonjs",
+//     "lib": [
+//       "es2015.promise",
+//       "es5",
+//       "es6",
+//       "dom"
+//     ]
+//   },
+//   "files": [
+//     "./src/main.ts"
+//   ],
+//   // "include": [
+//   //   "./src/*.ts",
+//   //   // "../shared/*.ts"
+//   // ],
+//   "exclude": [
+//     "_reports",
+//     "bin",
+//     "compiled",
+//     "coverage",
+//     "dist",
+//     "docs",
+//     "lib",
+//     "node_modules",
+//     //"node_modules/@typings",
+//     //"typings",
+//     "obj"
+//   ]
+// }

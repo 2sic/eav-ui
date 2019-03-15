@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, NgZone } from '@angula
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, of, Subject, BehaviorSubject } from 'rxjs';
 
 import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -15,6 +15,7 @@ import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { animate } from '@angular/animations';
 import { LanguageService } from '../../../../shared/services/language.service';
+import { Connector } from '../../../../../../projects/shared/connector';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -87,6 +88,7 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.group.controls[this.config.name].patchValue(value);
     this.setDirty();
     this.updateTriggeredByControl = true;
+    console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.name].value);
   }
 
   /**
@@ -99,14 +101,13 @@ export class ExternalWebcomponentComponent implements OnInit {
 
   private createElementWebComponent() {
     // temp: harcoded - need to read from config
+    // this.customEl = document.createElement('field-string-wysiwyg') as any;
     this.customEl = document.createElement('field-custom-gps') as any;
     this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
       this.currentLanguage = lan;
       console.log('Petar changed language', this.currentLanguage);
-      // on current language change reset form errors
       this.customEl.setAttribute('language', this.currentLanguage);
     }));
-    this.customEl.addEventListener('field-custom-gps', (data) => console.log('Petar from host', data));
 
     this.customEl.host = this.externalInputTypeHost;
     this.customEl.config = this.config;
@@ -114,11 +115,33 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;
 
+    /*
+    let i = 0;
+    const simpleObservable$ = new BehaviorSubject<number>(i);
+    const subscription = simpleObservable$.subscribe((value) => console.log('Petar learning to create observables:', value));
+    simpleObservable$.next(i++);
+    simpleObservable$.next(i++);
+    simpleObservable$.next(i++);
+    subscription.unsubscribe();
+    */
+
+    this.customEl.connector = this.buildConnector();
+    console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
+    this.customEl.connector.callback('Hello from the host!');
+  }
+
+  buildConnector(): Connector {
+    const connector = new Connector();
+    connector.data = {
+      field: this.group.controls[this.config.name],
+      update: this.externalInputTypeHost.update
+    };
+    return connector;
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
