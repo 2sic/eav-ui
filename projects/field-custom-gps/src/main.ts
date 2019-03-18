@@ -24,15 +24,24 @@ class FieldCustomGps extends EavCustomInputField {
     // this.connector.data.update('Hello world!');
     // @ts-ignore
     this.myInput.value = this.connector.data.field.value;
+
+    // old way
     const _this = this;
     this.myInput.addEventListener('change', function () {
       _this.connector.data.update(_this.myInput.value);
     });
+
+    // with functions
     function myChangeFunction(newValue: string) {
       console.log('Petar change called in child. myTestValue:', this.myTestValue, 'newValue:', newValue);
       this.myInput.value = newValue;
     }
     this.connector.onChange(myChangeFunction.bind(this));
+
+    // with observable
+    this.connector.data.myObservable.subscribe(newValue => {
+      this.myInput.value = newValue;
+    });
   }
 }
 

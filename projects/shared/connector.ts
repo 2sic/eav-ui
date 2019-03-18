@@ -17,6 +17,7 @@ export interface ConnectorData {
     // value$: Observable<any>;
     // getValue(): any;
     field: any;
+    myObservable: Observable<any>;
     update(newValue: string): any;
     // onChange(changeEvent: OnChangeCallback): any;
 }

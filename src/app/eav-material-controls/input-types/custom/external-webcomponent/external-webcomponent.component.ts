@@ -49,6 +49,9 @@ export class ExternalWebcomponentComponent implements OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
+  myIndex = 0;
+  simpleObservable$: BehaviorSubject<number>;
+
   constructor(
     private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
@@ -60,6 +63,8 @@ export class ExternalWebcomponentComponent implements OnInit {
   ) {
     this.eavConfig = eavService.getEavConfiguration();
     this.currentLanguage$ = languageService.getCurrentLanguage();
+
+    this.simpleObservable$ = new BehaviorSubject<number>(this.myIndex);
   }
 
   /**
@@ -115,30 +120,36 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;
 
-    /*
-    let i = 0;
-    const simpleObservable$ = new BehaviorSubject<number>(i);
-    const subscription = simpleObservable$.subscribe((value) => console.log('Petar learning to create observables:', value));
-    simpleObservable$.next(i++);
-    simpleObservable$.next(i++);
-    simpleObservable$.next(i++);
-    subscription.unsubscribe();
-    */
-
     this.customEl.connector = this.buildConnector();
+    // const subscription = simpleObservable$.subscribe((value) => console.log('Petar learning to create observables:', value));
+    // simpleObservable$.next(i++);
+    // simpleObservable$.next(i++);
+    // simpleObservable$.next(i++);
+    // subscription.unsubscribe();
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
+
+    // with functions
     this.customEl.connector.callback('Hello from the host!');
+
+    // with observable
+    this.simpleObservable$.next(this.myIndex++);
+    const _this = this;
+    window.addEventListener('click', () => {
+      _this.simpleObservable$.next(_this.myIndex++);
+      // this.customEl.connector.callback(`Hello from the host! ${_this.myIndex++}`);
+    });
   }
 
   buildConnector(): Connector {
     const connector = new Connector();
     connector.data = {
       field: this.group.controls[this.config.name],
+      myObservable: this.simpleObservable$.asObservable(),
       update: this.externalInputTypeHost.update
     };
     return connector;
