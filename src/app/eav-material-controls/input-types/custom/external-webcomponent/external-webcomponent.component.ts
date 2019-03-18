@@ -49,8 +49,8 @@ export class ExternalWebcomponentComponent implements OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
-  myIndex = 0;
-  simpleObservable$: BehaviorSubject<number>;
+  myObservable$: BehaviorSubject<string>;
+  valueChangeListeners: Function[];
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -63,8 +63,6 @@ export class ExternalWebcomponentComponent implements OnInit {
   ) {
     this.eavConfig = eavService.getEavConfiguration();
     this.currentLanguage$ = languageService.getCurrentLanguage();
-
-    this.simpleObservable$ = new BehaviorSubject<number>(this.myIndex);
   }
 
   /**
@@ -121,36 +119,30 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.translateService = this.translateService;
 
     this.customEl.connector = this.buildConnector();
-    // const subscription = simpleObservable$.subscribe((value) => console.log('Petar learning to create observables:', value));
-    // simpleObservable$.next(i++);
-    // simpleObservable$.next(i++);
-    // simpleObservable$.next(i++);
-    // subscription.unsubscribe();
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
-
-    // with functions
-    this.customEl.connector.callback('Hello from the host!');
-
-    // with observable
-    this.simpleObservable$.next(this.myIndex++);
-    const _this = this;
-    window.addEventListener('click', () => {
-      _this.simpleObservable$.next(_this.myIndex++);
-      // this.customEl.connector.callback(`Hello from the host! ${_this.myIndex++}`);
-    });
   }
 
   buildConnector(): Connector {
+    this.myObservable$ = new BehaviorSubject<string>('');
+    this.valueChangeListeners = [];
+    function addValueChangeListener(listener: Function) {
+      this.valueChangeListeners.push(listener);
+    }
+    function removeValueChangedListener(listener: Function) {
+      this.valueChangeListeners.splice(this.valueChangeListeners.indexOf(listener), 1);
+    }
     const connector = new Connector();
     connector.data = {
       field: this.group.controls[this.config.name],
-      myObservable: this.simpleObservable$.asObservable(),
-      update: this.externalInputTypeHost.update
+      update: this.externalInputTypeHost.update,
+      myObservable: this.myObservable$.asObservable(),
+      addValueChangeListener: addValueChangeListener.bind(this),
+      removeValueChangeListener: removeValueChangedListener.bind(this)
     };
     return connector;
   }
@@ -235,6 +227,9 @@ export class ExternalWebcomponentComponent implements OnInit {
       this.group.controls[this.config.name].valueChanges.subscribe((item) => {
         this.setExternalControlValues(item);
         this.setExternalControlOptions();
+
+        this.myObservable$.next(this.group.controls[this.config.name].value);
+        this.valueChangeListeners.forEach(listener => listener(this.group.controls[this.config.name].value));
       })
     );
   }

@@ -5,10 +5,6 @@ export class Connector {
     state: any; // todo should contain field state like disabled, language, etc.
     form: any; // todo should contain read/write of other fields
     data: ConnectorData; // current field data, read/write or get other languages
-    callback: Function;
-    onChange = (callback: Function) => {
-        this.callback = callback;
-    }
 }
 
 type OnChangeCallback = (n: any) => void;
@@ -20,6 +16,8 @@ export interface ConnectorData {
     myObservable: Observable<any>;
     update(newValue: string): any;
     // onChange(changeEvent: OnChangeCallback): any;
+    addValueChangeListener(callback: Function): void;
+    removeValueChangeListener(callback: Function): void;
 }
 
 // let data: ConnectorData;
