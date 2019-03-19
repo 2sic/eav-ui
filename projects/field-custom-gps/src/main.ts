@@ -1,15 +1,17 @@
 import { EavCustomInputField } from '../../shared/eav-custom-input-field';
 import { Subscription } from 'rxjs';
+import { ValueChangeListenerCallback } from '../../shared/connector';
+import { MyEventListenerModel } from './models';
 
 // Create a class for the element
 class FieldCustomGps extends EavCustomInputField {
   shadow: ShadowRoot;
   myInputOldWay: HTMLInputElement;
-  myOldWayListeners: any[];
+  myOldWayListeners: MyEventListenerModel[];
   myInputWithObservable: HTMLInputElement;
   mySubscriptions: Subscription[];
   myInputWithFunctions: HTMLInputElement;
-  myFunctionListeners: Function[];
+  myFunctionListeners: ValueChangeListenerCallback[];
 
   constructor() {
     console.log('Petar order EavCustomInputField constructor');
@@ -47,7 +49,8 @@ class FieldCustomGps extends EavCustomInputField {
     }
     const oldWayUpdateBound = oldWayUpdate.bind(this);
     this.myInputOldWay.addEventListener('change', oldWayUpdateBound);
-    this.myOldWayListeners.push({ element: this.myInputOldWay, type: 'change', func: oldWayUpdateBound });
+    const oldWayListener: MyEventListenerModel = { element: this.myInputOldWay, type: 'change', listener: oldWayUpdateBound };
+    this.myOldWayListeners.push(oldWayListener);
 
     // with observable
     const subscription = this.connector.data.myObservable.subscribe(newValue => {
@@ -68,8 +71,8 @@ class FieldCustomGps extends EavCustomInputField {
     this.myOldWayListeners.forEach(oldWayListener => {
       const element = oldWayListener.element;
       const type = oldWayListener.type;
-      const func = oldWayListener.func;
-      element.removeEventListener(type, func);
+      const listener = oldWayListener.listener;
+      element.removeEventListener(type, listener);
     });
     this.mySubscriptions.forEach(subscription => {
       subscription.unsubscribe();

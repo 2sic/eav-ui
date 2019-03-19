@@ -7,18 +7,15 @@ export class Connector {
     data: ConnectorData; // current field data, read/write or get other languages
 }
 
-type OnChangeCallback = (n: any) => void;
-
-export interface ConnectorData {
+export class ConnectorData {
     // value$: Observable<any>;
     // getValue(): any;
     field: any;
     myObservable: Observable<any>;
-    update(newValue: string): any;
-    // onChange(changeEvent: OnChangeCallback): any;
-    addValueChangeListener(callback: Function): void;
-    removeValueChangeListener(callback: Function): void;
+    update: ConnectorDataUpdate;
+    addValueChangeListener: (callback: ValueChangeListenerCallback) => void;
+    removeValueChangeListener: (callback: ValueChangeListenerCallback) => void;
 }
 
-// let data: ConnectorData;
-// data.onChange((newValue) => {this.value = newValue;});
+export type ConnectorDataUpdate = (newValue: string) => void;
+export type ValueChangeListenerCallback = (newValue: string) => void;

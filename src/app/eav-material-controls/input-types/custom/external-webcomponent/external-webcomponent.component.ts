@@ -15,7 +15,7 @@ import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { animate } from '@angular/animations';
 import { LanguageService } from '../../../../shared/services/language.service';
-import { Connector } from '../../../../../../projects/shared/connector';
+import { Connector, ValueChangeListenerCallback } from '../../../../../../projects/shared/connector';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -50,7 +50,7 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   myObservable$: BehaviorSubject<string>;
-  valueChangeListeners: Function[];
+  valueChangeListeners: ValueChangeListenerCallback[];
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -127,14 +127,15 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.loadingSpinner = false;
   }
 
-  buildConnector(): Connector {
+  buildConnector() {
     this.myObservable$ = new BehaviorSubject<string>('');
     this.valueChangeListeners = [];
-    function addValueChangeListener(listener: Function) {
-      this.valueChangeListeners.push(listener);
+    const _this = this;
+    function addValueChangeListener(listener: ValueChangeListenerCallback) {
+      _this.valueChangeListeners.push(listener);
     }
-    function removeValueChangedListener(listener: Function) {
-      this.valueChangeListeners.splice(this.valueChangeListeners.indexOf(listener), 1);
+    function removeValueChangedListener(listener: ValueChangeListenerCallback) {
+      _this.valueChangeListeners.splice(_this.valueChangeListeners.indexOf(listener), 1);
     }
     const connector = new Connector();
     connector.data = {
