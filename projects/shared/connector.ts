@@ -1,21 +1,26 @@
 import { Observable } from 'rxjs/Observable';
 
-export class Connector {
+export interface Connector {
     config$: Observable<any>; // todo should contain the field configuration, like default values etc.
     state: any; // todo should contain field state like disabled, language, etc.
     form: any; // todo should contain read/write of other fields
-    data: ConnectorData; // current field data, read/write or get other languages
+    data: ConnectorDataObservable; // current field data, read/write or get other languages
 }
 
-export class ConnectorData {
-    // value$: Observable<any>;
-    // getValue(): any;
+export interface ConnectorDataObservable extends ConnectorData {
+    fieldValueChanged$: Observable<string>;
+}
+
+export interface ConnectorData {
     field: any;
-    myObservable: Observable<any>;
-    update: ConnectorDataUpdate;
-    addValueChangeListener: (callback: ValueChangeListenerCallback) => void;
-    removeValueChangeListener: (callback: ValueChangeListenerCallback) => void;
+    /**
+     * Client updates value in host
+     * @param newValue - New value of the field from the client
+     */
+    update: (newValue: string) => void;
+    /**
+     * Client adds callback functions to be executed every time value changes in the host
+     * @param callback - Function to be executed every time value changes in the host
+     */
+    onValueChange: (callback: (newValue: string) => void) => void;
 }
-
-export type ConnectorDataUpdate = (newValue: string) => void;
-export type ValueChangeListenerCallback = (newValue: string) => void;

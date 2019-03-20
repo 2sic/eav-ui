@@ -1,6 +1,5 @@
 import { EavCustomInputField } from '../../shared/eav-custom-input-field';
 import { Subscription } from 'rxjs';
-import { ValueChangeListenerCallback } from '../../shared/connector';
 import { MyEventListenerModel } from './models';
 
 // Create a class for the element
@@ -11,7 +10,6 @@ class FieldCustomGps extends EavCustomInputField {
   myInputWithObservable: HTMLInputElement;
   mySubscriptions: Subscription[];
   myInputWithFunctions: HTMLInputElement;
-  myFunctionListeners: ValueChangeListenerCallback[];
 
   constructor() {
     console.log('Petar order EavCustomInputField constructor');
@@ -24,7 +22,6 @@ class FieldCustomGps extends EavCustomInputField {
     this.mySubscriptions = [];
     this.myInputWithObservable = this.createInput('With observables:');
 
-    this.myFunctionListeners = [];
     this.myInputWithFunctions = this.createInput('With valueChangeListeners:');
   }
 
@@ -53,18 +50,18 @@ class FieldCustomGps extends EavCustomInputField {
     this.myOldWayListeners.push(oldWayListener);
 
     // with observable
-    const subscription = this.connector.data.myObservable.subscribe(newValue => {
+    const subscription = this.connector.data.fieldValueChanged$.subscribe(newValue => {
       this.myInputWithObservable.value = newValue;
     });
     this.mySubscriptions.push(subscription);
 
     // with functions
+    this.myInputWithFunctions.value = this.connector.data.field.value;
     function myOnChangeFunction(newValue: string) {
       this.myInputWithFunctions.value = newValue;
     }
     const myOnChangeFunctionBound = myOnChangeFunction.bind(this);
-    this.myFunctionListeners.push(myOnChangeFunctionBound);
-    this.connector.data.addValueChangeListener(myOnChangeFunctionBound);
+    this.connector.data.onValueChange(myOnChangeFunctionBound);
   }
 
   disconnectedCallback() {
@@ -76,9 +73,6 @@ class FieldCustomGps extends EavCustomInputField {
     });
     this.mySubscriptions.forEach(subscription => {
       subscription.unsubscribe();
-    });
-    this.myFunctionListeners.forEach(functionListener => {
-      this.connector.data.removeValueChangeListener(functionListener);
     });
   }
 }

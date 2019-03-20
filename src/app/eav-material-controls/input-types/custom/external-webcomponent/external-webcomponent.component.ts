@@ -15,7 +15,7 @@ import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { animate } from '@angular/animations';
 import { LanguageService } from '../../../../shared/services/language.service';
-import { Connector, ValueChangeListenerCallback } from '../../../../../../projects/shared/connector';
+import { ConnectorInstance } from './connector';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -49,8 +49,7 @@ export class ExternalWebcomponentComponent implements OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
-  myObservable$: BehaviorSubject<string>;
-  valueChangeListeners: ValueChangeListenerCallback[];
+  fieldValueChanged$: BehaviorSubject<string>;
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -118,34 +117,15 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;
 
-    this.customEl.connector = this.buildConnector();
+    const fieldCurrentValue: string = this.group.controls[this.config.name].value;
+    this.fieldValueChanged$ = new BehaviorSubject<string>(fieldCurrentValue);
+    this.customEl.connector = new ConnectorInstance(null, null, null, this, this.fieldValueChanged$.asObservable());
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
-  }
-
-  buildConnector() {
-    this.myObservable$ = new BehaviorSubject<string>('');
-    this.valueChangeListeners = [];
-    const _this = this;
-    function addValueChangeListener(listener: ValueChangeListenerCallback) {
-      _this.valueChangeListeners.push(listener);
-    }
-    function removeValueChangedListener(listener: ValueChangeListenerCallback) {
-      _this.valueChangeListeners.splice(_this.valueChangeListeners.indexOf(listener), 1);
-    }
-    const connector = new Connector();
-    connector.data = {
-      field: this.group.controls[this.config.name],
-      update: this.externalInputTypeHost.update,
-      myObservable: this.myObservable$.asObservable(),
-      addValueChangeListener: addValueChangeListener.bind(this),
-      removeValueChangeListener: removeValueChangedListener.bind(this)
-    };
-    return connector;
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
@@ -229,8 +209,7 @@ export class ExternalWebcomponentComponent implements OnInit {
         this.setExternalControlValues(item);
         this.setExternalControlOptions();
 
-        this.myObservable$.next(this.group.controls[this.config.name].value);
-        this.valueChangeListeners.forEach(listener => listener(this.group.controls[this.config.name].value));
+        this.fieldValueChanged$.next(this.group.controls[this.config.name].value);
       })
     );
   }
