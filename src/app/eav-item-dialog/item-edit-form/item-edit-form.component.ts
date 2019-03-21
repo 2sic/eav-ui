@@ -252,10 +252,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     return {
       disabled: disabled,
-      entityId: this.item.entity.id,
-      entityGuid: this.item.entity.guid,
+      itemConfig: {
+        entityId: this.item.entity.id,
+        entityGuid: this.item.entity.guid,
+        header: this.item.header,
+      },
       fullSettings: attribute.settings,
-      header: this.item.header,
       index: index,
       label: label,
       name: attribute.name,
@@ -263,12 +265,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       required: required,
       settings: settingsTranslated,
       inputType: inputType,
-      allInputTypeNames: allInputTypeNames, // TODO: maybe better way
+      formConfig: {
+        allInputTypeNames: allInputTypeNames, // TODO: maybe better way
+        features: this.features,
+      },
       type: attribute.type,
       validation: validationList,
       value: value,
       wrappers: wrappers,
-      features: this.features
     };
   }
 
@@ -297,12 +301,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const name: string = attribute !== null ? attribute.name : defaultValue;
 
     return {
-      entityId: this.item.entity.id,
-      entityGuid: this.item.entity.guid,
+      itemConfig: {
+        entityId: this.item.entity.id,
+        entityGuid: this.item.entity.guid,
+        header: this.item.header,
+      },
       fullSettings: fullSettings,
       collapse: collapse,
       fieldGroup: [],
-      header: this.item.header,
       label: label,
       name: name,
       settings: settingsTranslated,

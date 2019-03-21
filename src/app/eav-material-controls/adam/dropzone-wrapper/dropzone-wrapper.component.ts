@@ -39,8 +39,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   ngOnInit() {
     //  this.config.adam = this.adamRef;
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
-    const contentType = this.config.header.contentTypeName;
-    const entityGuid = this.config.header.guid;
+    const contentType = this.config.itemConfig.header.contentTypeName;
+    const entityGuid = this.config.itemConfig.header.guid;
     const field = this.config.name;
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);

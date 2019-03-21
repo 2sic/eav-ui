@@ -29,7 +29,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private subscriptions: Subscription[] = [];
 
   get value() { return this.group.controls[this.config.name].value; }
-  get id() { return `${this.config.entityId}${this.config.index}`; }
+  get id() { return `${this.config.itemConfig.entityId}${this.config.index}`; }
   get inputInvalid() { return this.group.controls[this.config.name].invalid; }
   get touched() { return this.group.controls[this.config.name].touched || false; }
   get disabled() { return this.group.controls[this.config.name].disabled; }
@@ -94,8 +94,8 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
-      this.config.header.contentTypeName,
-      this.config.header.guid,
+      this.config.itemConfig.header.contentTypeName,
+      this.config.itemConfig.header.guid,
       this.config.name);
 
     if (urlFromId$) {

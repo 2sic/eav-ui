@@ -34,7 +34,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   get slotCanBeEmpty() {
-    return this.config.header.group ? this.config.header.group.slotCanBeEmpty || false : false;
+    return this.config.itemConfig.header.group ? this.config.itemConfig.header.group.slotCanBeEmpty || false : false;
   }
 
   constructor(private itemService: ItemService) { }
@@ -42,7 +42,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   ngOnInit() {
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
-        this.itemService.selectHeaderByEntityId(this.config.entityId, this.config.entityGuid).subscribe(header => {
+        this.itemService.selectHeaderByEntityId(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid).subscribe(header => {
           if (header.group) {
             this.slotIsUsedChecked = !header.group.slotIsEmpty;
           }

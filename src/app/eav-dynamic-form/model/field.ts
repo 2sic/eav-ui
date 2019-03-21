@@ -1,6 +1,6 @@
 import { Input } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { TotalConfiguration, FieldConfig } from './field-config';
+import { FieldConfig } from './field-config';
 
 export interface Field {
     config: FieldConfig;
