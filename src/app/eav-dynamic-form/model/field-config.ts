@@ -3,29 +3,39 @@ import { EavAttributes, EavAttributesTranslated, EavHeader } from '../../shared/
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { Feature } from '../../shared/models/feature/feature';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
-import { FieldConfiguration } from '../../../../projects/shared/field-config';
 
-export interface FieldConfig extends FieldConfiguration {
+export interface TotalConfiguration {
+    fieldConfig: FieldConfig;
+    itemConfig: ItemConfig;
+    formConfig: FormConfig;
+}
+
+export interface FieldConfig {
+    // transfer all field which are field specific to the fieldconfiguration class
+    // rename FieldConfiguration to CurrentFieldConfig
+    // and make currentfieldconfig be extended from fieldconfig
+    // make new class ItemConfiguration with entityid, etc.
+    // make new class/interface FormConfiguration for inputtypes, "all inputtypes" etc.
     entityId?: number;
     entityGuid?: string;
     header?: EavHeader;
-    disabled?: boolean;
-    label?: string;
-    name: string;
+    disabled?: boolean; // fieldConfig
+    label?: string; // fieldConfig
+    name: string; // fieldConfig
     options?: string[];
-    placeholder?: string;
-    inputType: string;
+    placeholder?: string; // fieldConfig
+    inputType: string; // fieldConfig
     allInputTypeNames?: string[];
-    isParentGroup?: boolean;
-    type?: string;
-    validation?: ValidatorFn[];
-    // value?: any;
-    wrappers?: string[];
-    required?: boolean;
+    isParentGroup?: boolean; // fieldConfig
+    type?: string; // fieldConfig
+    validation?: ValidatorFn[]; // fieldConfig
+    value?: any; // fieldConfig
+    wrappers?: string[]; // fieldConfig
+    required?: boolean; // fieldConfig
     // pattern?: string;
     settings?: EavAttributesTranslated;
     fullSettings?: EavAttributes;
-    collapse?: boolean;
+    collapse?: boolean; // fieldConfig
     fieldGroup?: FieldConfig[];
     index?: number;
     adam?: AdamBrowserComponent;
@@ -33,4 +43,12 @@ export interface FieldConfig extends FieldConfiguration {
     availableEntities?: EntityInfo[];
     enableCollapseField?: boolean;
     collapseField?: boolean;
+}
+
+export interface ItemConfig {
+    placeholder?: any;
+}
+
+export interface FormConfig {
+    placeholder?: any;
 }

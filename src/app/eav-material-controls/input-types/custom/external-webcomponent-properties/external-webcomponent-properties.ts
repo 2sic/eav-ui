@@ -1,8 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Connector } from '../../../../../../projects/shared/connector';
+import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 
-export class ExternalWebComponentProperties {
-    connector: Connector;
+export class ExternalWebComponentProperties<T> {
+    connector: ConnectorObservable<T>;
     id: string;
     config: any;
     form: any;

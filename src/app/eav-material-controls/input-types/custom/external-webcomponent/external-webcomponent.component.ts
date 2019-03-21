@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,15 +26,16 @@ import { ConnectorInstance } from './connector';
 @InputType({
   // wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
 })
-export class ExternalWebcomponentComponent implements OnInit {
+export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   @ViewChild('container') elReference: ElementRef;
 
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
 
   private subscriptions: Subscription[] = [];
+  private subjects: BehaviorSubject<any>[] = [];
   private eavConfig: EavConfiguration;
-  customEl: NgElement & WithProperties<ExternalWebComponentProperties>;
+  customEl: NgElement & WithProperties<ExternalWebComponentProperties<string>>;
   loadingSpinner = true;
   // externalFactory: any;
   updateTriggeredByControl = false;
@@ -49,7 +50,7 @@ export class ExternalWebcomponentComponent implements OnInit {
     return `${this.config.entityId}${this.config.index}`;
   }
 
-  fieldValueChanged$: BehaviorSubject<string>;
+  value$: BehaviorSubject<string>;
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -118,8 +119,9 @@ export class ExternalWebcomponentComponent implements OnInit {
     this.customEl.translateService = this.translateService;
 
     const fieldCurrentValue: string = this.group.controls[this.config.name].value;
-    this.fieldValueChanged$ = new BehaviorSubject<string>(fieldCurrentValue);
-    this.customEl.connector = new ConnectorInstance(null, null, null, this, this.fieldValueChanged$.asObservable());
+    this.value$ = new BehaviorSubject<string>(fieldCurrentValue);
+    this.subjects.push(this.value$);
+    this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable());
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
@@ -209,7 +211,7 @@ export class ExternalWebcomponentComponent implements OnInit {
         this.setExternalControlValues(item);
         this.setExternalControlOptions();
 
-        this.fieldValueChanged$.next(this.group.controls[this.config.name].value);
+        this.value$.next(this.group.controls[this.config.name].value);
       })
     );
   }
@@ -265,4 +267,16 @@ export class ExternalWebcomponentComponent implements OnInit {
   //     this.config.adam.disabled = this.group.controls[this.config.name].disabled;
   //   }
   // }
+
+  ngOnDestroy() {
+    return;
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+    this.subjects.forEach(subject => {
+      subject.complete();
+    });
+    this.customEl.parentNode.removeChild(this.customEl);
+    this.customEl = null;
+  }
 }

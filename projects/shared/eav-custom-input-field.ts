@@ -1,5 +1,9 @@
-import { Connector } from './connector';
+import { Connector, ConnectorObservable } from './connector';
 
-export class EavCustomInputField extends HTMLElement {
-  connector: Connector;
+export class EavCustomInputField<T> extends HTMLElement {
+  connector: Connector<T>;
+}
+
+export class EavCustomInputFieldObservable<T> extends EavCustomInputField<T> {
+  connector: ConnectorObservable<T>;
 }

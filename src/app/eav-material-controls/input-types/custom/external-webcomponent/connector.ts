@@ -1,57 +1,42 @@
-import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { Connector, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
+import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
 import { ExternalWebcomponentComponent } from './external-webcomponent.component';
 
-export class ConnectorInstance implements Connector {
-    config$: Observable<any>; // todo should contain the field configuration, like default values etc.
-    state: any; // todo should contain field state like disabled, language, etc.
-    form: any; // todo should contain read/write of other fields
-    data: ConnectorDataObservable; // current field data, read/write or get other languages
+export class ConnectorInstance<T> implements ConnectorObservable<T> {
+    state$: any; // todo should contain field state like disabled, language, etc.
+    data: ConnectorDataObservable<T>;
 
     constructor(
-        config$: Observable<any>,
-        state: any, form: any,
-        private host: ExternalWebcomponentComponent,
-        private fieldValueChanged$: Observable<string>
+        host: ExternalWebcomponentComponent,
+        value$: Observable<T>
     ) {
-        this.config$ = config$;
-        this.state = state;
-        this.form = form;
-        this.data = new ConnectorDataInstance(host, fieldValueChanged$);
+        this.data = new ConnectorDataInstance<T>(host, value$);
     }
 }
 
-export class ConnectorDataInstance implements ConnectorDataObservable {
+export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
     field: any;
-    fieldValueChanged$: Observable<string>;
-    clientValueChangeListeners: ((newValue: string) => void)[];
-    subscriptions: Subscription[];
+    value$: Observable<T>;
+    clientValueChangeListeners: ((newValue: T) => void)[];
 
     constructor(
         private host: ExternalWebcomponentComponent,
-        fieldValueChanged$: Observable<string>
+        value$: Observable<T>
     ) {
-        this.subscriptions = [];
         this.clientValueChangeListeners = [];
         this.field = host.group.controls[host.config.name];
-        this.fieldValueChanged$ = fieldValueChanged$;
-        const subscription = this.fieldValueChanged$.subscribe(newValue => {
+        this.value$ = value$;
+        // Host will complete this observable. Therefore unsubscribe is not required
+        this.value$.subscribe(newValue => {
             this.clientValueChangeListeners.forEach(clientListener => clientListener(newValue));
         });
-        this.subscriptions.push(subscription);
     }
 
-    update(newValue: string) {
-        this.host.externalInputTypeHost.update(newValue);
+    update(newValue: T) {
+        this.host.externalInputTypeHost.update(newValue as unknown as string);
     }
 
-    onValueChange(callback: (newValue: string) => void) {
+    onValueChange(callback: (newValue: T) => void) {
         this.clientValueChangeListeners.push(callback);
-    }
-
-    onDestroy() {
-        this.clientValueChangeListeners.splice(0);
-        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 }

@@ -1,26 +1,42 @@
 import { Observable } from 'rxjs/Observable';
+// import { EavAttributesTranslated } from 'src/app/shared/models/eav';
 
-export interface Connector {
-    config$: Observable<any>; // todo should contain the field configuration, like default values etc.
-    state: any; // todo should contain field state like disabled, language, etc.
-    form: any; // todo should contain read/write of other fields
-    data: ConnectorDataObservable; // current field data, read/write or get other languages
+export interface ConnectorObservable<T> extends Connector<T> {
+    state$: any; // todo should contain field state like disabled, language, etc.
+    data: ConnectorDataObservable<T>; // current field data, read/write or get other languages
 }
 
-export interface ConnectorDataObservable extends ConnectorData {
-    fieldValueChanged$: Observable<string>;
+export interface Connector<T> {
+    /** this should be a field configuration. This is basically field settings from field config */
+    // settings: EavAttributesTranslated;
+
+    /** todo should contain field state like disabled, language, etc. */
+    // state: any;
+
+    /** read / update stuff for the other fields or form */
+    // form: any;
+
+    /** current field data, read/write or get other languages */
+    data: ConnectorData<T>;
+
+    /** this is fired whenever anything changes - incl. config, language, etc. */
+    // onStateChange: (callback: () => void) => void;
 }
 
-export interface ConnectorData {
-    field: any;
+export interface ConnectorDataObservable<T> extends ConnectorData<T> {
+    value$: Observable<T>;
+}
+
+export interface ConnectorData<T> {
+    field: any; // todo: probably remove this
     /**
      * Client updates value in host
      * @param newValue - New value of the field from the client
      */
-    update: (newValue: string) => void;
+    update: (newValue: T) => void;
     /**
      * Client adds callback functions to be executed every time value changes in the host
      * @param callback - Function to be executed every time value changes in the host
      */
-    onValueChange: (callback: (newValue: string) => void) => void;
+    onValueChange: (callback: (newValue: T) => void) => void;
 }

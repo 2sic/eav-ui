@@ -1,14 +1,12 @@
-import { EavCustomInputField } from '../../shared/eav-custom-input-field';
-import { Subscription } from 'rxjs';
+import { EavCustomInputField, EavCustomInputFieldObservable } from '../../shared/eav-custom-input-field';
 import { MyEventListenerModel } from './models';
 
 // Create a class for the element
-class FieldCustomGps extends EavCustomInputField {
+class FieldCustomGps extends EavCustomInputFieldObservable<string> {
   shadow: ShadowRoot;
   myInputOldWay: HTMLInputElement;
   myOldWayListeners: MyEventListenerModel[];
   myInputWithObservable: HTMLInputElement;
-  mySubscriptions: Subscription[];
   myInputWithFunctions: HTMLInputElement;
 
   constructor() {
@@ -19,7 +17,6 @@ class FieldCustomGps extends EavCustomInputField {
     this.myOldWayListeners = [];
     this.myInputOldWay = this.createInput('Old way:');
 
-    this.mySubscriptions = [];
     this.myInputWithObservable = this.createInput('With observables:');
 
     this.myInputWithFunctions = this.createInput('With valueChangeListeners:');
@@ -50,10 +47,10 @@ class FieldCustomGps extends EavCustomInputField {
     this.myOldWayListeners.push(oldWayListener);
 
     // with observable
-    const subscription = this.connector.data.fieldValueChanged$.subscribe(newValue => {
+    // Host will complete observable in ngOnDestroy and there is no need to call unsubscribe()
+    this.connector.data.value$.subscribe(newValue => {
       this.myInputWithObservable.value = newValue;
     });
-    this.mySubscriptions.push(subscription);
 
     // with functions
     this.myInputWithFunctions.value = this.connector.data.field.value;
@@ -70,9 +67,6 @@ class FieldCustomGps extends EavCustomInputField {
       const type = oldWayListener.type;
       const listener = oldWayListener.listener;
       element.removeEventListener(type, listener);
-    });
-    this.mySubscriptions.forEach(subscription => {
-      subscription.unsubscribe();
     });
   }
 }
