@@ -20,9 +20,9 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   @Input() config: FieldConfig;
   @Input() group: FormGroup;
 
-  get label() { return this.config.settings.Label || ''; }
+  get label() { return this.config.currentFieldConfig.settings.Label || ''; }
 
-  get value() { return this.config.settings.Value || ''; }
+  get value() { return this.config.currentFieldConfig.settings.Value || ''; }
 
   // constructor() {
   // }

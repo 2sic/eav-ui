@@ -24,15 +24,15 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   };
 
   get folderDepth() {
-    return this.config.settings.FolderDepth || '';
+    return this.config.currentFieldConfig.settings.FolderDepth || '';
   }
 
   get metadataContentTypes() {
-    return this.config.settings.MetadataContentTypes || '';
+    return this.config.currentFieldConfig.settings.MetadataContentTypes || '';
   }
 
   get allowAssetsInRoot() {
-    return this.config.settings.AllowAssetsInRoot === false ? false : true;
+    return this.config.currentFieldConfig.settings.AllowAssetsInRoot === false ? false : true;
   }
 
   constructor() { }
@@ -42,16 +42,16 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   }
 
   private attachAdam() {
-    if (this.config.adam) {
+    if (this.config.currentFieldConfig.adam) {
       // callbacks - functions called from adam
-      this.config.adam.updateCallback = (fileItem) => { };
+      this.config.currentFieldConfig.adam.updateCallback = (fileItem) => { };
 
       // binding for dropzone
-      this.config.adam.afterUploadCallback = (fileItem) => { };
+      this.config.currentFieldConfig.adam.afterUploadCallback = (fileItem) => { };
 
       // return value from form
-      // this.config.adam.getValueCallback = () =>
-      // this.config.adam.afterUploadCallback = (fileItem) => { };
+      // this.config.currentFieldConfig.adam.getValueCallback = () =>
+      // this.config.currentFieldConfig.adam.afterUploadCallback = (fileItem) => { };
 
       console.log('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
@@ -62,7 +62,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
         metadataContentTypes: this.metadataContentTypes
       }));
       // set adam configuration (initial config)
-      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
+      this.config.currentFieldConfig.adam.setConfig(Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         allowAssetsInRoot: this.allowAssetsInRoot,
         autoLoad: true,
@@ -71,7 +71,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
         metadataContentTypes: this.metadataContentTypes
       }));
 
-      // this.config.adam.setConfig(
+      // this.config.currentFieldConfig.adam.setConfig(
       //   new AdamConfig(this.adamModeConfig,
       //     this.allowAssetsInRoot,
       //     true, // autoLoad

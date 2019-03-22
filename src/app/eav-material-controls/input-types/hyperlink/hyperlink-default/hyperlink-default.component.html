@@ -1,11 +1,11 @@
 <div class="c-hld-buttons" fxLayout="row" fxLayoutAlign="end end" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
-  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled" (click)="toggleAdam()"
-    matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
+  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled"
+    (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
     <i class="eav-icon-apple" style="font-size: larger;line-height: 28px;padding: 0 2px 0 0;"></i>
   </button>
-  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled" (click)="openPageDialog()"
-    matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
+  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
+    (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
     <i class="eav-icon-sitemap" style="font-size: larger;line-height: 24px;"></i>
   </button>
   <button mat-mini-fab *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button"
@@ -17,15 +17,15 @@
       <i class="eav-icon-apple"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.settings.ShowPagePicker" (click)="openPageDialog()">
+    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowPagePicker" (click)="openPageDialog()">
       <i class="eav-icon-sitemap" xicon="home"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuPage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.settings.ShowImageManager" (click)="toggleAdam(true, true)">
+    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowImageManager" (click)="toggleAdam(true, true)">
       <i class="eav-icon-file-image" xicon="picture"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuImage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.settings.ShowFileManager" (click)="toggleAdam(true, false)">
+    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowFileManager" (click)="toggleAdam(true, false)">
       <i class="eav-icon-file" xicon="file"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
     </button>
@@ -36,12 +36,12 @@
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius">
       <mat-form-field [formGroup]="group" appearance="fill" color="accent" class="mat-form-field-hyperlink">
-        <input matInput type="text" [formControlName]="config.name" [placeholder]="config.label" [required]="config.required"
-          [required]="config.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
+        <input matInput type="text" [formControlName]="config.currentFieldConfig.name"
+          [placeholder]="config.currentFieldConfig.label" [required]="config.currentFieldConfig.required"
+          [required]="config.currentFieldConfig.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
-      ADAM - sponsored with ♥ by 2sic.com"
-          matTooltipPosition="above">
-        <mat-label>{{config.label}}</mat-label>
+      ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
+        <mat-label>{{config.currentFieldConfig.label}}</mat-label>
         <mat-hint *ngIf="value" align="start" class="c-hld-field-hint">
           <a href="{{link}}" target="_blank" tabindex="-1">
             <span>&nbsp;... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
@@ -53,9 +53,10 @@
           <img [src]="thumbnailUrl(2)" class="c-hld-image" />
         </div>
       </div>
-      <div [ngClass]="{'c-hld-icon': value && !isImage()}" [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
-        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}"
-          matTooltipPosition="right">
+      <div [ngClass]="{'c-hld-icon': value && !isImage()}"
+        [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
+        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
+          matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
         </a>
       </div>
     </mat-card>

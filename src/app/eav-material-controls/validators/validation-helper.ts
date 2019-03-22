@@ -43,7 +43,9 @@ export class ValidationHelper {
             validation.push(Validators.pattern(pattern));
         }
 
-        // this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals}})?$` : null;
+        // this.decimal = this.config.currentFieldConfig.settings.Decimals
+        // ? `^[0-9]+(\.[0-9]{1,${this.config.currentFieldConfig.settings.Decimals}})?$`
+        // : null;
         // const patternDecimals = settings.Decimals ? `^[0-9]+(\.[0-9]{1,${settings.Decimals}})?$` : '';
         // if (patternDecimals) {
         //     validation.push(Validators.pattern(patternDecimals));

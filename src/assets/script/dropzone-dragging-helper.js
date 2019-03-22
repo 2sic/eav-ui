@@ -38,7 +38,6 @@ window.addEventListener('drop', function (event) {
     initDropzones();
   });
   window.addEventListener('drop', function () {
-    document.body.classList.remove(draggingClass);
     clearAllDropzonesAndListeners();
   });
   window.addEventListener('dragleave', function () {
@@ -88,6 +87,7 @@ window.addEventListener('drop', function (event) {
 
   function clearAllDropzonesAndListeners() {
     if (!dropzones) return;
+    document.body.classList.remove(draggingClass);
     clearListeners(dropzonesListeners);
     clearClassFromElements(draggingClass, dropzones);
     dropzones = null;

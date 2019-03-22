@@ -24,7 +24,7 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
         value$: Observable<T>
     ) {
         this.clientValueChangeListeners = [];
-        this.field = host.group.controls[host.config.name];
+        this.field = host.group.controls[host.config.currentFieldConfig.name];
         this.value$ = value$;
         // Host will complete this observable. Therefore unsubscribe is not required
         this.value$.subscribe(newValue => {

@@ -43,11 +43,11 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   currentLanguage: string;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get id() {
-    return `${this.config.itemConfig.entityId}${this.config.index}`;
+    return `${this.config.itemConfig.entityId}${this.config.currentFieldConfig.index}`;
   }
 
   value$: BehaviorSubject<string>;
@@ -88,10 +88,10 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private update(value: string) {
     // TODO: validate value
-    this.group.controls[this.config.name].patchValue(value);
+    this.group.controls[this.config.currentFieldConfig.name].patchValue(value);
     this.setDirty();
     this.updateTriggeredByControl = true;
-    console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.name].value);
+    console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.currentFieldConfig.name].value);
   }
 
   /**
@@ -118,7 +118,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;
 
-    const fieldCurrentValue: string = this.group.controls[this.config.name].value;
+    const fieldCurrentValue: string = this.group.controls[this.config.currentFieldConfig.name].value;
     this.value$ = new BehaviorSubject<string>(fieldCurrentValue);
     this.subjects.push(this.value$);
     this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable());
@@ -144,7 +144,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
       value,
       this.config.itemConfig.header.contentTypeName,
       this.config.itemConfig.header.guid,
-      this.config.name);
+      this.config.currentFieldConfig.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -163,40 +163,42 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
    * Set initial values when external component is initialized
    */
   private setInitValues() {
-    this.setExternalControlValues(this.group.controls[this.config.name].value);
+    this.setExternalControlValues(this.group.controls[this.config.currentFieldConfig.name].value);
     this.setExternalControlOptions();
   }
 
   private attachAdam() {
     // TODO:
     // If adam registered then attach Adam
-    if (this.config.adam) {
+    if (this.config.currentFieldConfig.adam) {
       // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
-      this.config.adam.updateCallback = (value) =>
+      this.config.currentFieldConfig.adam.updateCallback = (value) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
           : alert('adam attached but adamSetValue method not exist');
 
-      this.config.adam.afterUploadCallback = (value) =>
+      this.config.currentFieldConfig.adam.afterUploadCallback = (value) =>
         this.customEl.adamAfterUploadCallback
           ? this.customEl.adamAfterUploadCallback = value
           : alert('adam attached but adamAfterUpload method not exist');
 
       // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+      this.config.currentFieldConfig.adam.getValueCallback = () => this.group.controls[this.config.currentFieldConfig.name].value;
 
       return {
         toggleAdam: (value1: any, value2: any) => {
-          this._ngZone.run(() => this.config.adam.toggle(value1));
+          this._ngZone.run(() => this.config.currentFieldConfig.adam.toggle(value1));
         },
         setAdamConfig: (adamConfig: AdamConfig) => {
-          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
+          this._ngZone.run(() => this.config.currentFieldConfig.adam.setConfig(adamConfig));
         },
         adamModeImage: () => {
-          this._ngZone.run(() => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null);
+          this._ngZone.run(() => (this.config && this.config.currentFieldConfig.adam)
+            ? this.config.currentFieldConfig.adam.showImagesOnly
+            : null);
         },
       };
     }
@@ -207,11 +209,11 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
    */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
         this.setExternalControlValues(item);
         this.setExternalControlOptions();
 
-        this.value$.next(this.group.controls[this.config.name].value);
+        this.value$.next(this.group.controls[this.config.currentFieldConfig.name].value);
       })
     );
   }
@@ -224,7 +226,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe((item) => {
         if (!this.updateTriggeredByControl) {
-          this.setExternalControlValues(item[this.config.name]);
+          this.setExternalControlValues(item[this.config.currentFieldConfig.name]);
           this.setExternalControlOptions();
         }
         this.updateTriggeredByControl = false;
@@ -233,7 +235,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   }
 
   private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
+    this.group.controls[this.config.currentFieldConfig.name].markAsDirty();
   }
 
   /**
@@ -256,15 +258,15 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   private setExternalControlOptions() {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
-      this.customEl.disabled = this.group.controls[this.config.name].disabled;
+      this.customEl.disabled = this.group.controls[this.config.currentFieldConfig.name].disabled;
       // this.setAdamOptions();
     }
   }
 
   // private setAdamOptions() {
   //   // set Adam disabled state
-  //   if (this.config.adam) {
-  //     this.config.adam.disabled = this.group.controls[this.config.name].disabled;
+  //   if (this.config.currentFieldConfig.adam) {
+  //     this.config.currentFieldConfig.adam.disabled = this.group.controls[this.config.currentFieldConfig.name].disabled;
   //   }
   // }
 

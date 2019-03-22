@@ -28,11 +28,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private eavConfig;
   private subscriptions: Subscription[] = [];
 
-  get value() { return this.group.controls[this.config.name].value; }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-  get touched() { return this.group.controls[this.config.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.name].disabled; }
+  get value() { return this.group.controls[this.config.currentFieldConfig.name].value; }
+  get id() { return `${this.config.itemConfig.entityId}${this.config.currentFieldConfig.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
+  get touched() { return this.group.controls[this.config.currentFieldConfig.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.currentFieldConfig.name].disabled; }
 
   constructor(private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
@@ -61,7 +61,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   setValue(val) {
     if (val.target.value !== this.value) {
-      this.group.controls[this.config.name].patchValue(val.target.value);
+      this.group.controls[this.config.currentFieldConfig.name].patchValue(val.target.value);
       this.setDirty();
     }
   }
@@ -79,7 +79,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   setTouched() {
-    this.group.controls[this.config.name].markAsTouched();
+    this.group.controls[this.config.currentFieldConfig.name].markAsTouched();
   }
 
   /**
@@ -96,7 +96,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
       value,
       this.config.itemConfig.header.contentTypeName,
       this.config.itemConfig.header.guid,
-      this.config.name);
+      this.config.currentFieldConfig.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -117,13 +117,13 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
         this.setLink(item);
       })
     );
   }
 
   private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
+    this.group.controls[this.config.currentFieldConfig.name].markAsDirty();
   }
 }

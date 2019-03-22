@@ -1,4 +1,5 @@
-<div *ngIf="(currentLanguage !== defaultLanguage) && config.isParentGroup" fxLayoutAlign="end center">
+<div *ngIf="(currentLanguage !== defaultLanguage) && config.currentFieldConfig.isParentGroup"
+  fxLayoutAlign="end center">
   <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu">
     <span fxLayoutAlign="end center">
       TRANSLATE &nbsp;&nbsp;<i class="fas fa-language" style="font-size: 20px;"></i>
@@ -20,7 +21,8 @@
   </mat-menu>
 </div>
 
-<div *ngIf="(currentLanguage !== defaultLanguage) && !config.isParentGroup  && isTranslateEnabled(config.name)"
+<div
+  *ngIf="(currentLanguage !== defaultLanguage) && !config.currentFieldConfig.isParentGroup  && isTranslateEnabled(config.currentFieldConfig.name)"
   fxLayoutAlign="end center">
   <div fxLayoutAlign="end center" class="shared-languages-container">
     <div class="shared-languages mat-caption color__accent" [ngClass]="{
@@ -32,11 +34,13 @@
     </button>
   </div>
   <mat-menu #rootMenu2="matMenu" [overlapTrigger]="true">
-    <button mat-menu-item type="button" (click)="translateUnlink(config.name, config.inputType)"
+    <button mat-menu-item type="button"
+      (click)="translateUnlink(config.currentFieldConfig.name, config.currentFieldConfig.inputType)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'translate' }">
       Translate
     </button>
-    <button mat-menu-item type="button" (click)="linkToDefault(config.name, config.inputType)"
+    <button mat-menu-item type="button"
+      (click)="linkToDefault(config.currentFieldConfig.name, config.currentFieldConfig.inputType)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'dontTranslate'}">
       Don't translate
     </button>

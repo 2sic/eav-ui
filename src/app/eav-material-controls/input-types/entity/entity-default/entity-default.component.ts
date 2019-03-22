@@ -40,13 +40,13 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
   private fieldMaskService: FieldMaskService;
 
-  get entityType(): string { return this.config.settings.EntityType || ''; }
+  get entityType(): string { return this.config.currentFieldConfig.settings.EntityType || ''; }
 
-  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting === false ? false : true; }
+  get enableAddExisting(): boolean { return this.config.currentFieldConfig.settings.EnableAddExisting === false ? false : true; }
 
-  get separator() { return this.config.settings.Separator || ','; }
+  get separator() { return this.config.currentFieldConfig.settings.Separator || ','; }
 
-  get value() { return this.group.controls[this.config.name].value; }
+  get value() { return this.group.controls[this.config.currentFieldConfig.name].value; }
 
   constructor(private entityService: EntityService,
     private eavService: EavService) {
@@ -60,7 +60,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     // this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
     // // this.setData();
-    // this.setAvailableEntities(this.config.inputType);
+    // this.setAvailableEntities(this.config.currentFieldConfig.inputType);
     // // this.chosenEntitiesSubscribeToChanges();
 
     // Initialize url parameters mask
@@ -95,7 +95,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
         : this.value;
     } catch (err) { }
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-      this.config.availableEntities = [...items];
+      this.config.currentFieldConfig.availableEntities = [...items];
     });
   }
 

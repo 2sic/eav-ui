@@ -29,11 +29,11 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
   private fieldMaskService: FieldMaskService;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get autoGenerateMask(): string {
-    return this.config.settings.AutoGenerateMask || null;
+    return this.config.currentFieldConfig.settings.AutoGenerateMask || null;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -57,8 +57,8 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 
     // clean on value change
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        this.clean(this.config.name, false);
+      this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
+        this.clean(this.config.currentFieldConfig.name, false);
       })
     );
   }
@@ -72,7 +72,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
    * @param fieldMaskService
    */
   private sourcesChangedTryToUpdate(fieldMaskService: FieldMaskService) {
-    const formControlValue = this.group.controls[this.config.name].value;
+    const formControlValue = this.group.controls[this.config.currentFieldConfig.name].value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (formControlValue && formControlValue !== this.lastAutoCopy) {
       return;
@@ -83,7 +83,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
     const cleaned = Helper.stripNonUrlCharacters(orig, this.enableSlashes, true);
     if (cleaned) {
       this.lastAutoCopy = cleaned;
-      this.group.controls[this.config.name].patchValue(cleaned, { emitEvent: false });
+      this.group.controls[this.config.currentFieldConfig.name].patchValue(cleaned, { emitEvent: false });
     }
   }
 

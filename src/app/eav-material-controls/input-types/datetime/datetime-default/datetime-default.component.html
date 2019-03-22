@@ -1,25 +1,29 @@
-<div *ngIf="config.settings.UseTimePicker && config.settings.UseTimePicker === true; then useTimePickerTemplate else notUseTimePickerTemplate"></div>
+<div
+  *ngIf="config.currentFieldConfig.settings.UseTimePicker && config.currentFieldConfig.settings.UseTimePicker === true; then useTimePickerTemplate else notUseTimePickerTemplate">
+</div>
 
 <ng-template #notUseTimePickerTemplate>
   <mat-form-field [formGroup]="group" appearance="fill" color="accent">
-    <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.name"
-      [placeholder]="config.label" [required]='config.required'>
+    <input matInput [matDatepicker]="picker" class="form-control material"
+      [formControlName]="config.currentFieldConfig.name" [placeholder]="config.currentFieldConfig.label"
+      [required]='config.currentFieldConfig.required'>
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
-    <mat-label>{{config.label}}</mat-label>
+    <mat-label>{{config.currentFieldConfig.label}}</mat-label>
   </mat-form-field>
 </ng-template>
 
 <ng-template #useTimePickerTemplate>
   <mat-form-field [formGroup]="group" appearance="fill" color="accent">
-    <input matInput [formControlName]="config.name" [owlDateTime]="picker" [placeholder]="config.label" [required]='config.required'>
+    <input matInput [formControlName]="config.currentFieldConfig.name" [owlDateTime]="picker"
+      [placeholder]="config.currentFieldConfig.label" [required]='config.currentFieldConfig.required'>
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>
     <button matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
       <mat-icon class="mat-24">today</mat-icon>
     </button>
-    <mat-label>{{config.label}}</mat-label>
+    <mat-label>{{config.currentFieldConfig.label}}</mat-label>
   </mat-form-field>
 </ng-template>
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

@@ -19,15 +19,15 @@ export class FieldHelperTextComponent implements OnInit {
   isFullText = false;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.currentFieldConfig.name].disabled;
   }
 
   getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.name], this.config);
+    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.currentFieldConfig.name], this.config);
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }

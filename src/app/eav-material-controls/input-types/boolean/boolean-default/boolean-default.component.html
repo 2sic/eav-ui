@@ -1,9 +1,7 @@
 <div [formGroup]="group">
-  <mat-slide-toggle
-    [formControlName]="config.name"
-    [checked]="config.value"
-    [disabled]="config.disabled">
-    {{config.label}}
+  <mat-slide-toggle [formControlName]="config.currentFieldConfig.name" [checked]="config.currentFieldConfig.value"
+    [disabled]="config.currentFieldConfig.disabled">
+    {{config.currentFieldConfig.label}}
   </mat-slide-toggle>
   <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
 </div>

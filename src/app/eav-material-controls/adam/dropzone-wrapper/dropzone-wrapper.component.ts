@@ -29,7 +29,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   url: string;
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.currentFieldConfig.name].disabled;
   }
 
   constructor(private eavService: EavService) {
@@ -37,11 +37,11 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngOnInit() {
-    //  this.config.adam = this.adamRef;
+    //  this.config.currentFieldConfig.adam = this.adamRef;
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
     const contentType = this.config.itemConfig.header.contentTypeName;
     const entityGuid = this.config.itemConfig.header.guid;
-    const field = this.config.name;
+    const field = this.config.currentFieldConfig.name;
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
@@ -66,16 +66,16 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       dictDefaultMessage: '',
       addRemoveLinks: false,
       // '.field-' + field.toLowerCase() + ' .dropzone-previews',
-      previewsContainer: '.dropzone-previews', // '.field-' + this.config.index + ' .dropzone-previews',
+      previewsContainer: '.dropzone-previews', // '.field-' + this.config.currentFieldConfig.index + ' .dropzone-previews',
       // we need a clickable, because otherwise the entire area is clickable.
       // so i'm just making the preview clickable, as it's not important
-      clickable: '.dropzone-previews' // '.field-' + this.config.index + ' .invisible-clickable'  // " .dropzone-adam"
+      clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
   }
 
   ngAfterViewInit() {
-    this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
-    this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
+    this.dropzoneConfig.previewsContainer = '.field-' + this.config.currentFieldConfig.index + ' .dropzone-previews';
+    this.dropzoneConfig.clickable = '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable';
   }
 
   public onUploadError(args: any): void {
@@ -85,12 +85,12 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   public onUploadSuccess(args: any): void {
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
-      if (this.config.adam) {
-        this.config.adam.svc.addFullPath(response); // calculate additional infos
-        this.config.adam.afterUploadCallback(response);
+      if (this.config.currentFieldConfig.adam) {
+        this.config.currentFieldConfig.adam.svc.addFullPath(response); // calculate additional infos
+        this.config.currentFieldConfig.adam.afterUploadCallback(response);
         // Reset dropzone
         this.dropzoneRef.reset();
-        this.config.adam.refresh();
+        this.config.currentFieldConfig.adam.refresh();
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }

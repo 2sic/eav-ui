@@ -39,27 +39,27 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   };
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.currentFieldConfig.name].value;
   }
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.currentFieldConfig.name].disabled;
   }
 
   // ensureDefaultConfig();
   get showAdam() {
-    // this.config.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
+    // this.config.currentFieldConfig.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
     // then the wrapper will enable/disable the field, depending on the dimension state\
     // so if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
-    return this.config.settings.ShowAdam ? this.config.settings.ShowAdam : true;
+    return this.config.currentFieldConfig.settings.ShowAdam ? this.config.currentFieldConfig.settings.ShowAdam : true;
   }
 
   get fileFilter() {
-    return this.config.settings.FileFilter || '';
+    return this.config.currentFieldConfig.settings.FileFilter || '';
   }
 
   get buttons(): string {
-    return this.config.settings.Buttons ? this.config.settings.Buttons : 'adam,more';
+    return this.config.currentFieldConfig.settings.Buttons ? this.config.currentFieldConfig.settings.Buttons : 'adam,more';
   }
 
   constructor(private fileTypeService: FileTypeService,
@@ -112,7 +112,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private processResultOfPagePicker(value) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (value) {
-      this.setFormValue(this.config.name, `page:${value.id}`);
+      this.setFormValue(this.config.currentFieldConfig.name, `page:${value.id}`);
     }
   }
 
@@ -121,8 +121,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     this.dnnBridgeService.open(
       this.value,
       {
-        Paths: this.config.settings.Paths ? this.config.settings.Paths : '',
-        FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
+        Paths: this.config.currentFieldConfig.settings.Paths ? this.config.currentFieldConfig.settings.Paths : '',
+        FileFilter: this.config.currentFieldConfig.settings.FileFilter ? this.config.currentFieldConfig.settings.FileFilter : ''
       },
       this.processResultOfPagePicker.bind(this),
       this.dialog);
@@ -132,11 +132,11 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region new adam: callbacks only
 
   setValue(fileItem) {
-    this.setFormValue(this.config.name, `File:${fileItem.Id}`);
+    this.setFormValue(this.config.currentFieldConfig.name, `File:${fileItem.Id}`);
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
-    this.config.adam.toggle({
+    this.config.currentFieldConfig.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot
     });
@@ -148,7 +148,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
  */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
         console.log('suscribeValueChanges CHANGE');
         this.setLink(item);
       })
@@ -169,7 +169,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       value,
       this.config.itemConfig.header.contentTypeName,
       this.config.itemConfig.header.guid,
-      this.config.name);
+      this.config.currentFieldConfig.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -185,18 +185,18 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   private attachAdam() {
-    if (this.config.adam) {
+    if (this.config.currentFieldConfig.adam) {
       // callbacks - functions called from adam
-      this.config.adam.updateCallback = (value) => this.setValue(value);
+      this.config.currentFieldConfig.adam.updateCallback = (value) => this.setValue(value);
 
       // binding for dropzone
-      this.config.adam.afterUploadCallback = (value) => this.setValue(value);
+      this.config.currentFieldConfig.adam.afterUploadCallback = (value) => this.setValue(value);
 
       // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+      this.config.currentFieldConfig.adam.getValueCallback = () => this.group.controls[this.config.currentFieldConfig.name].value;
 
       // set adam configuration (initial config)
-      // this.config.adam.setConfig(
+      // this.config.currentFieldConfig.adam.setConfig(
       //   new AdamConfig(this.adamModeConfig,
       //     true, // allowAssetsRoot
       //     false, // autoLoad
@@ -212,7 +212,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
         fileFilter: this.fileFilter
       }));
 
-      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
+      this.config.currentFieldConfig.adam.setConfig(Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         fileFilter: this.fileFilter
       }));

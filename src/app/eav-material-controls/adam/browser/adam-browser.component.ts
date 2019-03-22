@@ -98,7 +98,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subFolder = this.config.settings.Paths;
+    this.subFolder = this.config.currentFieldConfig.settings.Paths;
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -184,7 +184,7 @@ export class AdamBrowserComponent implements OnInit {
     const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Petar editItemMetadata result', result);
+      console.log('editItemMetadata result', result);
     });
   }
 

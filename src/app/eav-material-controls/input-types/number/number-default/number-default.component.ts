@@ -20,15 +20,15 @@ export class NumberDefaultComponent implements Field, OnInit {
   group: FormGroup;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get max() {
-    return this.config.settings.Max;
+    return this.config.currentFieldConfig.settings.Max;
   }
 
   get min() {
-    return this.config.settings.Min;
+    return this.config.currentFieldConfig.settings.Min;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -36,7 +36,9 @@ export class NumberDefaultComponent implements Field, OnInit {
   ngOnInit(): void {
 
 
-    // this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals}})?$` : null;
+    // this.decimal = this.config.currentFieldConfig.settings.Decimals
+    // ? `^[0-9]+(\.[0-9]{1,${this.config.currentFieldConfig.settings.Decimals}})?$`
+    // : null;
 
   }
 

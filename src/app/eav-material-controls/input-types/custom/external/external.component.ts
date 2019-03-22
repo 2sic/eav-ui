@@ -50,11 +50,11 @@ export class ExternalComponent implements FieldExternal, OnInit {
   updateTriggeredByControl = false;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get id() {
-    return `${this.config.itemConfig.entityId}${this.config.index}`;
+    return `${this.config.itemConfig.entityId}${this.config.currentFieldConfig.index}`;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService,
@@ -72,7 +72,9 @@ export class ExternalComponent implements FieldExternal, OnInit {
     update: (value: string) => this.update(value),
     setInitValues: (value: string) => this.setInitValues(),
     // toggleAdam: (value1, value2) => this.toggleAdam(value1, value2),
-    // adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
+    // adamModeImage: () => (this.config && this.config.currentFieldConfig.adam)
+    // ? this.config.currentFieldConfig.adam.showImagesOnly
+    // : null,
     attachAdam: () => this.attachAdam(),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => this.openDnnDialog(oldValue, params, callback, dialog),
     getUrlOfIdDnnDialog: (value: string, callback: any) => this.getUrlOfIdDnnDialog(value, callback)
@@ -84,8 +86,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
     factory.initialize(this.externalInputTypeHost, this.config, this.group, this.translate, this.id);
     factory.render(this.elReference.nativeElement);
 
-    // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.name].value);
-    // this.setExternalControlValues(factory, this.group.controls[this.config.name].value);
+    // factory.writeValue(this.elReference.nativeElement, this.group.controls[this.config.currentFieldConfig.name].value);
+    // this.setExternalControlValues(factory, this.group.controls[this.config.currentFieldConfig.name].value);
 
     this.suscribeValueChanges(factory);
     // this.subscribeToCurrentLanguageFromStore(factory);
@@ -94,7 +96,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
   private update(value: string) {
     // TODO: validate value
-    this.group.controls[this.config.name].patchValue(value);
+    this.group.controls[this.config.currentFieldConfig.name].patchValue(value);
     this.setDirty();
     this.updateTriggeredByControl = true;
   }
@@ -115,7 +117,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
       value,
       this.config.itemConfig.header.contentTypeName,
       this.config.itemConfig.header.guid,
-      this.config.name);
+      this.config.currentFieldConfig.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -134,7 +136,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
    * Set initial values when external component is initialized
    */
   private setInitValues() {
-    this.setExternalControlValues(this.externalFactory, this.group.controls[this.config.name].value);
+    this.setExternalControlValues(this.externalFactory, this.group.controls[this.config.currentFieldConfig.name].value);
     this.setExternalControlOptions(this.externalFactory);
   }
 
@@ -142,29 +144,31 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // TODO:
     // If adam registered then attach Adam
     console.log('setInitValues');
-    if (this.config.adam) {
+    if (this.config.currentFieldConfig.adam) {
       console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
 
-      this.config.adam.updateCallback = (value) =>
+      this.config.currentFieldConfig.adam.updateCallback = (value) =>
         this.externalFactory.adamSetValue
           ? this.externalFactory.adamSetValue(value)
           : alert('adam attached but adamSetValue method not exist');
 
-      this.config.adam.afterUploadCallback = (value) =>
+      this.config.currentFieldConfig.adam.afterUploadCallback = (value) =>
         this.externalFactory.adamAfterUpload
           ? this.externalFactory.adamAfterUpload(value)
           : alert('adam attached but adamAfterUpload method not exist');
 
       // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+      this.config.currentFieldConfig.adam.getValueCallback = () => this.group.controls[this.config.currentFieldConfig.name].value;
 
       return {
-        toggleAdam: (value1: any, value2: any) => this.config.adam.toggle(value1),
-        setAdamConfig: (adamConfig: AdamConfig) => this.config.adam.setConfig(adamConfig),
-        adamModeImage: () => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null,
+        toggleAdam: (value1: any, value2: any) => this.config.currentFieldConfig.adam.toggle(value1),
+        setAdamConfig: (adamConfig: AdamConfig) => this.config.currentFieldConfig.adam.setConfig(adamConfig),
+        adamModeImage: () => (this.config && this.config.currentFieldConfig.adam)
+          ? this.config.currentFieldConfig.adam.showImagesOnly
+          : null,
       };
     }
   }
@@ -174,7 +178,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
    */
   private suscribeValueChanges(factory: any) {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
         this.setExternalControlValues(factory, item);
         this.setExternalControlOptions(factory);
       })
@@ -189,7 +193,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe((item) => {
         if (!this.updateTriggeredByControl) {
-          this.setExternalControlValues(factory, item[this.config.name]);
+          this.setExternalControlValues(factory, item[this.config.currentFieldConfig.name]);
           this.setExternalControlOptions(factory);
         }
         this.updateTriggeredByControl = false;
@@ -198,7 +202,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
+    this.group.controls[this.config.currentFieldConfig.name].markAsDirty();
   }
 
 
@@ -224,7 +228,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   private setExternalControlOptions(factory: any) {
     // if container have value
     if (this.elReference.nativeElement.innerHTML) {
-      factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.name].disabled);
+      factory.setOptions(this.elReference.nativeElement, this.group.controls[this.config.currentFieldConfig.name].disabled);
       // this.setAdamOptions();
     }
   }
@@ -233,8 +237,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
 
   // private setAdamOptions() {
   //   // set Adam disabled state
-  //   if (this.config.adam) {
-  //     this.config.adam.disabled = this.group.controls[this.config.name].disabled;
+  //   if (this.config.currentFieldConfig.adam) {
+  //     this.config.currentFieldConfig.adam.disabled = this.group.controls[this.config.currentFieldConfig.name].disabled;
   //   }
   // }
 }

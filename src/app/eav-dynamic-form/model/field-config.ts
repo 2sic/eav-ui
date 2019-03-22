@@ -10,6 +10,12 @@ export interface FieldConfig {
     // and make currentfieldconfig be extended from fieldconfig
     // make new class ItemConfiguration with entityid, etc.
     // make new class/interface FormConfiguration for inputtypes, "all inputtypes" etc.
+    currentFieldConfig?: CurrentFieldConfig;
+    itemConfig?: ItemConfig;
+    formConfig?: FormConfig;
+}
+
+export interface CurrentFieldConfig {
     disabled?: boolean;
     label?: string;
     name: string;
@@ -32,8 +38,6 @@ export interface FieldConfig {
     availableEntities?: EntityInfo[];
     enableCollapseField?: boolean;
     collapseField?: boolean;
-    itemConfig?: ItemConfig;
-    formConfig?: FormConfig;
 }
 
 export interface ItemConfig {

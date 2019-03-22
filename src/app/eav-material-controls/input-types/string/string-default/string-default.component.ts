@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, Input, ViewContainerRef, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
@@ -22,12 +22,12 @@ export class StringDefaultComponent implements Field {
   group: FormGroup;
 
   get rowCount() {
-    return this.config.settings.RowCount ? this.config.settings.RowCount : 1;
+    return this.config.currentFieldConfig.settings.RowCount ? this.config.currentFieldConfig.settings.RowCount : 1;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 }

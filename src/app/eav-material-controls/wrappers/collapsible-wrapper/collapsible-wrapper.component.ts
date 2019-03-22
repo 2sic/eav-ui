@@ -26,11 +26,11 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
 
   get notes() {
-    return this.config.settings ? (this.config.settings.Notes || '') : '';
+    return this.config.currentFieldConfig.settings ? (this.config.currentFieldConfig.settings.Notes || '') : '';
   }
 
   get editInstructions() {
-    return this.config.settings ? (this.config.settings.EditInstructions || '') : '';
+    return this.config.currentFieldConfig.settings ? (this.config.currentFieldConfig.settings.EditInstructions || '') : '';
   }
 
   get slotCanBeEmpty() {
@@ -61,9 +61,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   toggleSlotIsEmpty = function () {
     if (this.header.group) {
       const updateHeader = { ...this.header, group: { ...this.header.group, slotIsEmpty: this.slotIsUsedChecked } };
-      this.itemService.updateItemHeader(this.config.entityId, this.config.entityGuid, updateHeader);
+      this.itemService.updateItemHeader(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid, updateHeader);
     } else { // if header group undefined create empty group object
-      this.itemService.updateItemHeader(this.config.entityId, this.config.entityGuid,
+      this.itemService.updateItemHeader(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid,
         { ...this.header, group: new EavGroupAssignment() });
     }
   };

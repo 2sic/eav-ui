@@ -43,13 +43,13 @@ export class ValidationMessagesService {
         return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
       },
       // minLength: (config: FieldConfig) => {
-      //   return `Should have atleast ${config.settings.MinLength} characters`;
+      //   return `Should have atleast ${config.currentFieldConfig.settings.MinLength} characters`;
       // },
       // maxLength: (config: FieldConfig) => {
-      //   return `This value should be less than ${config.settings.MaxLength} characters`;
+      //   return `This value should be less than ${config.currentFieldConfig.settings.MaxLength} characters`;
       // },
       min: (config: FieldConfig) => {
-        // return config ? `This value should be more than ${config.settings.Min}` : `ValidationMessage.NotValid`;
+        // return config ? `This value should be more than ${config.currentFieldConfig.settings.Min}` : `ValidationMessage.NotValid`;
         return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
       },
       max: (config: FieldConfig) => {

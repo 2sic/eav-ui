@@ -4,7 +4,7 @@
   </div>
   <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config">
   </adam-browser>
-  <div class="{{'field-' + config.index}}">
+  <div class="{{'field-' + config.currentFieldConfig.index}}">
     <div class="dropzone-previews">
     </div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>

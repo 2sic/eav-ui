@@ -26,7 +26,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   private eavConfig: EavConfiguration;
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.currentFieldConfig.name].disabled;
   }
 
   constructor(private eavService: EavService) {
@@ -34,7 +34,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   }
 
   ngOnInit() {
-    this.config.adam = this.adamRef;
+    this.config.currentFieldConfig.adam = this.adamRef;
     // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
     // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
@@ -42,7 +42,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
     // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
     const entityGuid = this.config.itemConfig.header.guid;
     // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
-    const field = this.config.name;
+    const field = this.config.currentFieldConfig.name;
     // const field = 'HyperLinkStaticName';
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
   }

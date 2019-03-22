@@ -26,19 +26,19 @@ export class StringDropdownComponent implements Field, OnInit {
   private _oldOptions: string[] = [];
 
   get enableTextEntry() {
-    return this.config.settings.EnableTextEntry || false;
+    return this.config.currentFieldConfig.settings.EnableTextEntry || false;
   }
 
   get notes() {
-    return this.config.settings.Notes || '';
+    return this.config.currentFieldConfig.settings.Notes || '';
   }
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.currentFieldConfig.name].invalid;
   }
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.currentFieldConfig.name].value;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -69,8 +69,8 @@ export class StringDropdownComponent implements Field, OnInit {
   */
   private setOptionsFromDropdownValues(): any {
     let options = [];
-    if (this.config.settings.DropdownValues) {
-      const dropdownValues = this.config.settings.DropdownValues;
+    if (this.config.currentFieldConfig.settings.DropdownValues) {
+      const dropdownValues = this.config.currentFieldConfig.settings.DropdownValues;
       options = dropdownValues.replace(/\r/g, '').split('\n');
       options = options.map(e => {
         const s = e.split(':');

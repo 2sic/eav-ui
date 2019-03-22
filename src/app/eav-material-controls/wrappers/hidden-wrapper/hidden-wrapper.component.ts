@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, Input } from '@angular/core';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
+import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
 
 @Component({
   selector: 'app-hidden-wrapper',
@@ -9,11 +10,11 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 export class HiddenWrapperComponent implements FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config;
+  @Input() config: FieldConfig;
 
   get visibleInEditUI() {
 
-    return (this.config.settings.VisibleInEditUI === false) ? false : true;
+    return (this.config.currentFieldConfig.settings.VisibleInEditUI === false) ? false : true;
   }
 
 }

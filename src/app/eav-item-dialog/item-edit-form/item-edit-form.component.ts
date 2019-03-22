@@ -195,10 +195,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                   ? attribute.settings.DefaultCollapsed.values[0].value
                   : false;
                 currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
-                parentFieldGroup.fieldGroup.push(currentFieldGroup);
+                parentFieldGroup.currentFieldConfig.fieldGroup.push(currentFieldGroup);
               } else { // all other fields (not group empty)
                 const formFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
-                currentFieldGroup.fieldGroup.push(formFieldConfig);
+                currentFieldGroup.currentFieldConfig.fieldGroup.push(formFieldConfig);
               }
             } catch (error) {
               console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -251,28 +251,30 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
 
     return {
-      disabled: disabled,
+      currentFieldConfig: {
+        disabled: disabled,
+        fullSettings: attribute.settings,
+        index: index,
+        label: label,
+        name: attribute.name,
+        placeholder: `Enter ${attribute.name}`, // TODO: need to see what to use placeholder or label or both
+        required: required,
+        settings: settingsTranslated,
+        inputType: inputType,
+        type: attribute.type,
+        validation: validationList,
+        value: value,
+        wrappers: wrappers,
+      },
       itemConfig: {
         entityId: this.item.entity.id,
         entityGuid: this.item.entity.guid,
         header: this.item.header,
       },
-      fullSettings: attribute.settings,
-      index: index,
-      label: label,
-      name: attribute.name,
-      placeholder: `Enter ${attribute.name}`, // TODO: need to see what to use placeholder or label or both
-      required: required,
-      settings: settingsTranslated,
-      inputType: inputType,
       formConfig: {
         allInputTypeNames: allInputTypeNames, // TODO: maybe better way
         features: this.features,
       },
-      type: attribute.type,
-      validation: validationList,
-      value: value,
-      wrappers: wrappers,
     };
   }
 
@@ -306,16 +308,18 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         entityGuid: this.item.entity.guid,
         header: this.item.header,
       },
-      fullSettings: fullSettings,
-      collapse: collapse,
-      fieldGroup: [],
-      label: label,
-      name: name,
-      settings: settingsTranslated,
-      inputType: InputTypesConstants.emptyDefault,
-      isParentGroup: isParentGroup,
-      //  type: attribute.type,
-      wrappers: ['app-collapsible-wrapper'],
+      currentFieldConfig: {
+        fullSettings: fullSettings,
+        collapse: collapse,
+        fieldGroup: [],
+        label: label,
+        name: name,
+        settings: settingsTranslated,
+        inputType: InputTypesConstants.emptyDefault,
+        isParentGroup: isParentGroup,
+        //  type: attribute.type,
+        wrappers: ['app-collapsible-wrapper'],
+      }
     };
   }
 }
