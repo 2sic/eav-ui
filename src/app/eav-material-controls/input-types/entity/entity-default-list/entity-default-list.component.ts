@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -19,7 +19,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 })
 export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() autoCompleteInputControl: any;
   // by default data is in array format, but can be stringformat

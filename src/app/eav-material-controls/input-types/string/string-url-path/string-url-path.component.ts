@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { Helper } from '../../../../shared/helpers/helper';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { Subscription } from 'rxjs';
@@ -20,7 +20,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
 })
 export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 
-  config: FieldConfig;
+  config: FieldConfigSet;
   group: FormGroup;
 
   private enableSlashes = true;

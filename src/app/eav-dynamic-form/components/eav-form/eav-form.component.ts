@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
-import { FieldConfig } from '../../model/field-config';
+import { FieldConfigSet } from '../../model/field-config';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -15,7 +15,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
 
   @Input()
-  config: FieldConfig[] = [];
+  config: FieldConfigSet[] = [];
 
   @Output()
   submit: EventEmitter<any> = new EventEmitter<any>();
@@ -64,7 +64,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * Create form from configuration
    * @param fieldConfigArray
    */
-  private createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
+  private createControlsInFormGroup(fieldConfigArray: FieldConfigSet[]) {
     try {
       // const group = this.formBuilder.group({});
       fieldConfigArray.forEach(fieldConfig => {
@@ -88,7 +88,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    *  Create form control
    * @param config
    */
-  private createControl(config: FieldConfig) {
+  private createControl(config: FieldConfigSet) {
     try {
       // tslint:disable-next-line:prefer-const
       let { disabled, validation, value } = config.currentFieldConfig;

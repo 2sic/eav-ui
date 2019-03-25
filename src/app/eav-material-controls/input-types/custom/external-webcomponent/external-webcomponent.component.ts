@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable, of, Subject, BehaviorSubject } from 'rxjs';
 
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { ValidationMessagesService } from '../../../../eav-material-controls/validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -29,7 +29,7 @@ import { ConnectorInstance } from './connector';
 export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   @ViewChild('container') elReference: ElementRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   private subscriptions: Subscription[] = [];

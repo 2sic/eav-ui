@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { FieldExternal } from '../../../../eav-dynamic-form/model/field-external';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -31,7 +31,7 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 })
 export class ExternalComponent implements FieldExternal, OnInit {
   @ViewChild('container') elReference: ElementRef;
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
   @Input()
   set factory(value: any) {

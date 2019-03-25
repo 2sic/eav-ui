@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, E
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
@@ -19,7 +19,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewInputControl') previewInputControl;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;

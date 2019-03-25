@@ -8,7 +8,7 @@ import {
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];

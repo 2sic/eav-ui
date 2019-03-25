@@ -5,7 +5,7 @@ import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit } from '@
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 
 @Component({
@@ -17,7 +17,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   ngOnInit() {

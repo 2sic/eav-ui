@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
@@ -19,7 +19,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
 @InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];

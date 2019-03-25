@@ -11,7 +11,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 
@@ -24,7 +24,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   currentLanguage$: Observable<string>;

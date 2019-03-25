@@ -14,7 +14,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { FieldConfig } from '../../model/field-config';
+import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
@@ -26,7 +26,7 @@ import { FileTypeConstants } from '../../../shared/constants/type-constants';
 })
 export class EavFieldDirective implements OnInit {
   @Input()
-  config: FieldConfig[];
+  config: FieldConfigSet[];
 
   @Input()
   group: FormGroup;
@@ -58,7 +58,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     if (fieldConfig.currentFieldConfig.fieldGroup) {
       // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig);
@@ -82,7 +82,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     if (fieldConfig.currentFieldConfig.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.currentFieldConfig.wrappers);
     }
@@ -96,7 +96,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, callback?: Function): ComponentRef<any> {
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet, callback?: Function): ComponentRef<any> {
     if (fieldConfig.currentFieldConfig.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.currentFieldConfig.wrappers);
     }
@@ -131,7 +131,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     console.log('createExternalWebComponent');
     const ref: any = this.createComponent(container, fieldConfig);
     // ref.instance.renderWebComponent();
@@ -185,7 +185,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
@@ -279,7 +279,7 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    * @param wrappers
    */
-  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfig, wrappers: string[]): ViewContainerRef {
+  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrappers: string[]): ViewContainerRef {
 
     wrappers.forEach(wrapperName => {
       container = this.createWrapper(container, fieldConfig, wrapperName);
@@ -294,7 +294,7 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    * @param wrapper
    */
-  private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfig, wrapper: string): ViewContainerRef {
+  private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrapper: string): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
 
     // create component from component type

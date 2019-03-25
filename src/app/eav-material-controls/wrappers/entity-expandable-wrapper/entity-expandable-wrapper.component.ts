@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, E
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EavService } from '../../../shared/services/eav.service';
@@ -19,7 +19,7 @@ import { Helper } from '../../../shared/helpers/helper';
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;

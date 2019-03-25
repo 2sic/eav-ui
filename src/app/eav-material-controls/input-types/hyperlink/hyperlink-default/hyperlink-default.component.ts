@@ -5,7 +5,7 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { MatDialog } from '@angular/material';
@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
   wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   showPreview = true;

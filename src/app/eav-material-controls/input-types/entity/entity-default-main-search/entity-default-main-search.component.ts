@@ -13,7 +13,7 @@ import { Observable, Subscription, merge, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -35,7 +35,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   @ViewChild('autoCompleteInput') autoCompleteInputControl;
   @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() error = '';
 

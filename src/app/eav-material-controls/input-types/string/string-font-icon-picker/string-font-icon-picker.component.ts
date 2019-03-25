@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -21,7 +21,7 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
   wrapper: ['app-eav-localization-wrapper'],
 })
 export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   icons = [];

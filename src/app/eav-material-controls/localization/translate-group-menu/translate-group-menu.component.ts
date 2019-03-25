@@ -6,7 +6,7 @@ import { take } from 'rxjs/operators/take';
 import isEqual from 'lodash/isEqual';
 
 import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ItemService } from '../../../shared/services/item.service';
 import { LanguageService } from '../../../shared/services/language.service';
@@ -27,7 +27,7 @@ import { ContentTypeService } from '../../../shared/services/content-type.servic
 })
 export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input()
   set toggleTranslateField(value: boolean) {

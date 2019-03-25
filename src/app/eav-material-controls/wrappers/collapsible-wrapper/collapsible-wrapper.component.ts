@@ -3,7 +3,7 @@ import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy } from
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
@@ -16,7 +16,7 @@ import { FormGroup } from '@angular/forms';
 export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
   // slotIsUsed = false;
   slotIsUsedChecked = false;

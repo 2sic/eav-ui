@@ -2,7 +2,7 @@ import { Component, ViewChild, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
@@ -17,7 +17,7 @@ import { EntityQueryComponent } from '../../entity/entity-query/entity-query.com
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   get label() { return this.config.currentFieldConfig.settings.Label || ''; }

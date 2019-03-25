@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterContentInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
@@ -19,7 +19,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   public dropzoneConfig: DropzoneConfigInterface;

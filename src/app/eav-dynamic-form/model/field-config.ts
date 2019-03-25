@@ -5,8 +5,7 @@ import { Feature } from '../../shared/models/feature/feature';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
 import { FieldConfigBase } from '../../../../projects/shared/field-config-base';
 
-// todo: rename to FieldConfigSet
-export interface FieldConfig {
+export interface FieldConfigSet {
     // todo: rename to field
     currentFieldConfig?: CurrentFieldConfig;
     // todo: rename to entity
@@ -18,7 +17,7 @@ export interface FieldConfig {
 }
 
 // todo: move this to the entities- fields (in own file)
-export interface EntityFieldConfigSet extends FieldConfig {
+export interface EntityFieldConfigSet extends FieldConfigSet {
     cache: EntityInfo[];
 }
 
@@ -40,7 +39,7 @@ export interface CurrentFieldConfig extends FieldConfigBase {
     settings?: EavAttributesTranslated;
     fullSettings?: EavAttributes;
     collapse?: boolean;
-    fieldGroup?: FieldConfig[];
+    fieldGroup?: FieldConfigSet[];
     // index?: number;
     adam?: AdamBrowserComponent; // move from currentFieldConfig to FieldConfig as adam
     availableEntities?: EntityInfo[]; // move from currentFieldConfig to FieldConfig as cache

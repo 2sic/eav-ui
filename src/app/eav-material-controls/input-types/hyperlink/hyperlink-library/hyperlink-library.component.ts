@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 
@@ -16,7 +16,7 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-adam-attach-wrapper'],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   adamModeConfig: AdamModeConfig = {

@@ -25,7 +25,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { Feature } from '../../shared/models/feature/feature';
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -75,7 +75,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
 
   contentType$: Observable<ContentType>;
-  itemFields$: Observable<FieldConfig[]>;
+  itemFields$: Observable<FieldConfigSet[]>;
   formIsValid = false;
 
   constructor(
@@ -175,12 +175,12 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * load FieldConfig for all fields from content type attributes
    */
-  private loadContentTypeFormFields = (): Observable<FieldConfig[]> => {
+  private loadContentTypeFormFields = (): Observable<FieldConfigSet[]> => {
     return this.contentType$
       .pipe(
         switchMap((data: ContentType) => {
-          const parentFieldGroup: FieldConfig = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
-          let currentFieldGroup: FieldConfig = parentFieldGroup;
+          const parentFieldGroup: FieldConfigSet = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
+          let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
           const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
           // loop through contentType attributes
@@ -197,7 +197,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                 currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
                 parentFieldGroup.currentFieldConfig.fieldGroup.push(currentFieldGroup);
               } else { // all other fields (not group empty)
-                const formFieldConfig: FieldConfig = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
+                const formFieldConfig: FieldConfigSet = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
                 currentFieldGroup.currentFieldConfig.fieldGroup.push(formFieldConfig);
               }
             } catch (error) {
@@ -211,7 +211,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  private buildFieldFromDefinition(attribute: AttributeDef, index: number, allInputTypeNames: string[]): FieldConfig {
+  private buildFieldFromDefinition(attribute: AttributeDef, index: number, allInputTypeNames: string[]): FieldConfigSet {
     try {
       const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
       return this.buildInputTypeFieldConfig(attribute, index, allInputTypeNames, inputTypeName);
@@ -227,7 +227,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Load inputType FieldConfig from AttributeDef
    */
-  private buildInputTypeFieldConfig(attribute: AttributeDef, index: number, allInputTypeNames: string[], inputType: string): FieldConfig {
+  private buildInputTypeFieldConfig(attribute: AttributeDef, index: number, allInputTypeNames: string[],
+    inputType: string): FieldConfigSet {
     const settingsTranslated: EavAttributesTranslated = LocalizationHelper.translateSettings(
       attribute.settings, this.currentLanguage, this.defaultLanguage
     );
@@ -287,7 +288,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     collapse: boolean,
     defaultValue: string,
     isParentGroup: boolean
-  ): FieldConfig => {
+  ): FieldConfigSet => {
     let settingsTranslated: EavAttributesTranslated = null;
     let fullSettings: EavAttributes = null;
 

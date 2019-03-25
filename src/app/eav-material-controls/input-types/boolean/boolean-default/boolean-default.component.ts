@@ -3,7 +3,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 
 @Component({
@@ -16,7 +16,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   wrapper: ['app-eav-localization-wrapper'],
 })
 export class BooleanDefaultComponent implements Field {
-  config: FieldConfig;
+  config: FieldConfigSet;
   group: FormGroup;
   @ViewChild(MatCheckbox) matCheckbox: MatCheckbox;
 
