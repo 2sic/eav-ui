@@ -7,8 +7,7 @@ import { FieldConfigBase } from '../../../../projects/shared/field-config-base';
 
 export interface FieldConfigSet {
     field?: CurrentFieldConfig;
-    // todo: rename to entity
-    itemConfig?: ItemConfig;
+    entity?: ItemConfig;
     // todo: rename to form
     formConfig?: FormConfig;
     adam?: AdamBrowserComponent;

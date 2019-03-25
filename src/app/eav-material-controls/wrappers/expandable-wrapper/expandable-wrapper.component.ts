@@ -24,7 +24,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
     return this.group.controls[this.config.field.name].value
       .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
   }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.field.index}`; }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get touched() { return this.group.controls[this.config.field.name].touched || false; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }

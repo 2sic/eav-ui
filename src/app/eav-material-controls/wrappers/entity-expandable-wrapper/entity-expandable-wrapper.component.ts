@@ -26,7 +26,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
   get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.field.index}`; }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get enableAddExisting() { return this.config.field.settings.EnableAddExisting || false; }
   get entityType() { return this.config.field.settings.EntityType || ''; }

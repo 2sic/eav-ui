@@ -267,7 +267,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         value: value,
         wrappers: wrappers,
       },
-      itemConfig: {
+      entity: {
         entityId: this.item.entity.id,
         entityGuid: this.item.entity.guid,
         header: this.item.header,
@@ -304,7 +304,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const name: string = attribute !== null ? attribute.name : defaultValue;
 
     return {
-      itemConfig: {
+      entity: {
         entityId: this.item.entity.id,
         entityGuid: this.item.entity.guid,
         header: this.item.header,

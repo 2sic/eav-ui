@@ -71,7 +71,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid);
+    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
     // subscribe to language data
@@ -110,8 +110,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
-    this.itemService.removeItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      this.config.itemConfig.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      this.config.entity.entityGuid);
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
       this.attributes[attributeKey],
       this.defaultLanguage,
@@ -119,8 +119,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     );
     if (defaultValue) {
       const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
-      this.itemService.addAttributeValue(this.config.itemConfig.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.itemConfig.entityGuid, fieldType);
+      this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey, defaultValue.value,
+        this.currentLanguage, false, this.config.entity.entityGuid, fieldType);
     } else {
       console.log(this.currentLanguage + ': Cant copy value from ' + this.defaultLanguage + ' because that value does not exist.');
     }
@@ -132,8 +132,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
-    this.itemService.removeItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      this.config.itemConfig.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      this.config.entity.entityGuid);
 
     this.refreshControlConfig(attributeKey);
   }
@@ -192,12 +192,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
       if (valueAlreadyExist) {
         // Copy attribute value where language is languageKey to value where language is current language
-        this.itemService.updateItemAttributeValue(this.config.itemConfig.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.itemConfig.entityGuid);
+        this.itemService.updateItemAttributeValue(this.config.entity.entityId, attributeKey,
+          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.entity.entityGuid);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.itemService.addAttributeValue(this.config.itemConfig.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, false, this.config.itemConfig.entityGuid,
+        this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey,
+          attributeValueTranslation.value, this.currentLanguage, false, this.config.entity.entityGuid,
           this.config.field.type);
       }
     } else {
@@ -221,10 +221,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      this.config.itemConfig.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, true, this.config.itemConfig.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      this.config.entity.entityGuid);
+    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
 
     // TODO: investigate can only triger current language change to disable controls ???
     // this.languageService.updateCurrentLanguage(this.currentLanguage);
@@ -246,10 +246,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      this.config.itemConfig.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.itemConfig.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, false, this.config.itemConfig.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      this.config.entity.entityGuid);
+    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
+      languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
 
     this.refreshControlConfig(attributeKey);
   }
@@ -394,9 +394,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToEntityHeaderFromStore() {
-    if (this.config.itemConfig.header.group && this.config.itemConfig.header.group.slotCanBeEmpty) {
+    if (this.config.entity.header.group && this.config.entity.header.group.slotCanBeEmpty) {
       this.subscriptions.push(
-        this.itemService.selectHeaderByEntityId(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid).subscribe(header => {
+        this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
           if (header.group && !this.config.field.isParentGroup) {
             this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
             this.setControlDisable(this.attributes[this.config.field.name], this.config.field.name,
@@ -412,7 +412,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   private subscribeToItemFromStore() {
     this.subscriptions.push(
-      this.itemService.selectItemById(this.config.itemConfig.entityId).subscribe(item => {
+      this.itemService.selectItemById(this.config.entity.entityId).subscribe(item => {
         this.item = item;
       })
     );

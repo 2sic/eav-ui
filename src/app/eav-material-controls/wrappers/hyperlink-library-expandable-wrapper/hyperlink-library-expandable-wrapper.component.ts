@@ -25,7 +25,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   dialogIsOpen = false;
 
   get value() { return this.group.controls[this.config.field.name].value; }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.field.index}`; }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
 

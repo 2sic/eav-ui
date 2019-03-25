@@ -54,7 +54,7 @@ export class ExternalComponent implements FieldExternal, OnInit {
   }
 
   get id() {
-    return `${this.config.itemConfig.entityId}${this.config.field.index}`;
+    return `${this.config.entity.entityId}${this.config.field.index}`;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService,
@@ -115,8 +115,8 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
-      this.config.itemConfig.header.contentTypeName,
-      this.config.itemConfig.header.guid,
+      this.config.entity.header.contentTypeName,
+      this.config.entity.header.guid,
       this.config.field.name);
 
     if (urlFromId$) {
