@@ -26,11 +26,11 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   error = '';
   private fieldMaskService: FieldMaskService;
 
-  get query() { return this.config.currentFieldConfig.settings.Query || ''; }
+  get query() { return this.config.field.settings.Query || ''; }
 
-  get streamName() { return this.config.currentFieldConfig.settings.StreamName || 'Default'; }
+  get streamName() { return this.config.field.settings.StreamName || 'Default'; }
 
-  get urlParameters() { return this.config.currentFieldConfig.settings.UrlParameters || ''; }
+  get urlParameters() { return this.config.field.settings.UrlParameters || ''; }
 
   constructor(
     private queryService: QueryService,
@@ -60,7 +60,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   // ajax call to get the entities
   getAvailableEntities() {
     if (!this.query) {
-      alert(`No query defined for ${this.config.currentFieldConfig.name} - can't load entities`);
+      alert(`No query defined for ${this.config.field.name} - can't load entities`);
     }
 
     const params = this.fieldMaskService.resolve(); // always get the latest definition
@@ -75,7 +75,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
         } else if (!data[this.streamName]) {
           this.error = this.translate.instant('FieldType.EntityQuery.QueryStreamNotFound') + this.streamName;
         } else { // everything ok - set data to select
-          this.config.currentFieldConfig.availableEntities = data[this.streamName].map(this.queryEntityMapping);
+          this.config.field.availableEntities = data[this.streamName].map(this.queryEntityMapping);
         }
         // $scope.indicateReload = false;
       });

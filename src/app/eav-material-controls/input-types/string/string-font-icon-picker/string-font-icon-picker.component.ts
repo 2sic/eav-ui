@@ -31,23 +31,23 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
 
   get files(): string {
-    return this.config.currentFieldConfig.settings.Files ? this.config.currentFieldConfig.settings.Files : '';
+    return this.config.field.settings.Files ? this.config.field.settings.Files : '';
   }
 
   get prefix(): string {
-    return this.config.currentFieldConfig.settings.CssPrefix ? this.config.currentFieldConfig.settings.CssPrefix : '';
+    return this.config.field.settings.CssPrefix ? this.config.field.settings.CssPrefix : '';
   }
 
   get previewCss(): string {
-    return this.config.currentFieldConfig.settings.PreviewCss ? this.config.currentFieldConfig.settings.PreviewCss : '';
+    return this.config.field.settings.PreviewCss ? this.config.field.settings.PreviewCss : '';
   }
 
   get value() {
-    return this.group.controls[this.config.currentFieldConfig.name].value;
+    return this.group.controls[this.config.field.name].value;
   }
 
   get inputInvalid() {
-    return this.group.controls[this.config.currentFieldConfig.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   constructor(private scriptLoaderService: ScriptLoaderService,
@@ -132,7 +132,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   *  with update on click trigger value change to open autocomplete
   */
   update() {
-    this.group.controls[this.config.currentFieldConfig.name].patchValue(this.value);
+    this.group.controls[this.config.field.name].patchValue(this.value);
   }
 
   private filterStates(value: string): string[] {
@@ -141,7 +141,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   private getFilteredIcons = () => {
-    return this.group.controls[this.config.currentFieldConfig.name].valueChanges
+    return this.group.controls[this.config.field.name].valueChanges
       .pipe(
         startWith(''),
         map(icon => icon ? this.filterStates(icon) : this.icons.slice())

@@ -13,8 +13,8 @@
         <!-- Single element -->
         <div *ngIf="!allowMultiValue" class="dnd-element-content" dndNoDrag>
           <div>
-            <mat-label class="mat-caption">{{config.currentFieldConfig.label}}
-              {{config.currentFieldConfig.required ? '*': '' }}</mat-label>
+            <mat-label class="mat-caption">{{config.field.label}}
+              {{config.field.required ? '*': '' }}</mat-label>
           </div>
           <div fxLayout="row" fxLayoutAlign="start center">
             <mat-icon>link</mat-icon>

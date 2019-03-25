@@ -6,7 +6,7 @@
         <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="mat-display-1">{{config.currentFieldConfig.label}}</span>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.field.label}}</span>
       </mat-card>
     </div>
     <div>
@@ -37,8 +37,8 @@
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <mat-form-field appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'"
         class="mat-form-field-hyperlink">
-        <input matInput type="text" [placeholder]="config.currentFieldConfig.label" (change)="setValue($event)"
-          [disabled]="disabled" (keyup)="setValue($event)" [value]="value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
+        <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)" [disabled]="disabled"
+          (keyup)="setValue($event)" [value]="value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
         {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
         ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
         <span matSuffix>
@@ -47,8 +47,8 @@
           </button>
         </span>
         <mat-label [ngClass]="{'mat-error' : inputInvalid && touched}">
-          {{config.currentFieldConfig.label}}
-          {{config.currentFieldConfig.required ? '*': '' }}
+          {{config.field.label}}
+          {{config.field.required ? '*': '' }}
         </mat-label>
 
         <mat-hint align="start" class="c-ew__preview-field-hint">drop files here</mat-hint>

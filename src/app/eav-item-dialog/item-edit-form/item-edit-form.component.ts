@@ -195,10 +195,10 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                   ? attribute.settings.DefaultCollapsed.values[0].value
                   : false;
                 currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
-                parentFieldGroup.currentFieldConfig.fieldGroup.push(currentFieldGroup);
+                parentFieldGroup.field.fieldGroup.push(currentFieldGroup);
               } else { // all other fields (not group empty)
                 const formFieldConfig: FieldConfigSet = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
-                currentFieldGroup.currentFieldConfig.fieldGroup.push(formFieldConfig);
+                currentFieldGroup.field.fieldGroup.push(formFieldConfig);
               }
             } catch (error) {
               console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -252,7 +252,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
 
     return {
-      currentFieldConfig: {
+      field: {
         disabled: disabled,
         fullSettings: attribute.settings,
         index: index,
@@ -309,7 +309,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         entityGuid: this.item.entity.guid,
         header: this.item.header,
       },
-      currentFieldConfig: {
+      field: {
         fullSettings: fullSettings,
         collapse: collapse,
         fieldGroup: [],

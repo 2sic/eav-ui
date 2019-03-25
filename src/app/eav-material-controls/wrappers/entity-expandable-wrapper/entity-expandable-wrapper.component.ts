@@ -24,15 +24,15 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   dialogIsOpen = false;
 
-  get availableEntities(): EntityInfo[] { return this.config.currentFieldConfig.availableEntities || []; }
-  get value() { return Helper.convertValueToArray(this.group.controls[this.config.currentFieldConfig.name].value, this.separator); }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.currentFieldConfig.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
-  get enableAddExisting() { return this.config.currentFieldConfig.settings.EnableAddExisting || false; }
-  get entityType() { return this.config.currentFieldConfig.settings.EntityType || ''; }
-  get separator() { return this.config.currentFieldConfig.settings.Separator || ','; }
-  get touched() { return this.group.controls[this.config.currentFieldConfig.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.currentFieldConfig.name].disabled; }
+  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
+  get id() { return `${this.config.itemConfig.entityId}${this.config.field.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get enableAddExisting() { return this.config.field.settings.EnableAddExisting || false; }
+  get entityType() { return this.config.field.settings.EntityType || ''; }
+  get separator() { return this.config.field.settings.Separator || ','; }
+  get touched() { return this.group.controls[this.config.field.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
 

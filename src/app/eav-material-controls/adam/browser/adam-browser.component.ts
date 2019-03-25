@@ -98,7 +98,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subFolder = this.config.currentFieldConfig.settings.Paths;
+    this.subFolder = this.config.field.settings.Paths;
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);

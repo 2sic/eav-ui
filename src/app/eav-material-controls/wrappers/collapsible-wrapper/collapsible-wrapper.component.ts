@@ -26,11 +26,11 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
 
   get notes() {
-    return this.config.currentFieldConfig.settings ? (this.config.currentFieldConfig.settings.Notes || '') : '';
+    return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
   }
 
   get editInstructions() {
-    return this.config.currentFieldConfig.settings ? (this.config.currentFieldConfig.settings.EditInstructions || '') : '';
+    return this.config.field.settings ? (this.config.field.settings.EditInstructions || '') : '';
   }
 
   get slotCanBeEmpty() {

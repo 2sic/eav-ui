@@ -14,7 +14,7 @@ export class HiddenWrapperComponent implements FieldWrapper {
 
   get visibleInEditUI() {
 
-    return (this.config.currentFieldConfig.settings.VisibleInEditUI === false) ? false : true;
+    return (this.config.field.settings.VisibleInEditUI === false) ? false : true;
   }
 
 }

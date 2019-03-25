@@ -17,15 +17,15 @@
       <i class="eav-icon-apple"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowPagePicker" (click)="openPageDialog()">
+    <button mat-menu-item *ngIf="config.field.settings.ShowPagePicker" (click)="openPageDialog()">
       <i class="eav-icon-sitemap" xicon="home"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuPage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowImageManager" (click)="toggleAdam(true, true)">
+    <button mat-menu-item *ngIf="config.field.settings.ShowImageManager" (click)="toggleAdam(true, true)">
       <i class="eav-icon-file-image" xicon="picture"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuImage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.currentFieldConfig.settings.ShowFileManager" (click)="toggleAdam(true, false)">
+    <button mat-menu-item *ngIf="config.field.settings.ShowFileManager" (click)="toggleAdam(true, false)">
       <i class="eav-icon-file" xicon="file"></i>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
     </button>
@@ -36,12 +36,11 @@
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius">
       <mat-form-field [formGroup]="group" appearance="fill" color="accent" class="mat-form-field-hyperlink">
-        <input matInput type="text" [formControlName]="config.currentFieldConfig.name"
-          [placeholder]="config.currentFieldConfig.label" [required]="config.currentFieldConfig.required"
-          [required]="config.currentFieldConfig.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
+        <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
+          [required]="config.field.required" [required]="config.field.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
       ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
-        <mat-label>{{config.currentFieldConfig.label}}</mat-label>
+        <mat-label>{{config.field.label}}</mat-label>
         <mat-hint *ngIf="value" align="start" class="c-hld-field-hint">
           <a href="{{link}}" target="_blank" tabindex="-1">
             <span>&nbsp;... {{link.substr(link.lastIndexOf("/"), 100)}}</span>

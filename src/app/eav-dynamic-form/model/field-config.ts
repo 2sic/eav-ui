@@ -6,8 +6,7 @@ import { EntityInfo } from '../../shared/models/eav/entity-info';
 import { FieldConfigBase } from '../../../../projects/shared/field-config-base';
 
 export interface FieldConfigSet {
-    // todo: rename to field
-    currentFieldConfig?: CurrentFieldConfig;
+    field?: CurrentFieldConfig;
     // todo: rename to entity
     itemConfig?: ItemConfig;
     // todo: rename to form

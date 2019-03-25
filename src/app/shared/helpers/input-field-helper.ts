@@ -10,10 +10,10 @@ export class InputFieldHelper {
      * @param attributeKey
      */
     static getFieldType(config: FieldConfigSet, attributeKey: string): string {
-        if (config.currentFieldConfig.type) {
-            return config.currentFieldConfig.type;
+        if (config.field.type) {
+            return config.field.type;
         } else {
-            return this.getFieldTypeFromFieldGroup(config.currentFieldConfig.fieldGroup, attributeKey);
+            return this.getFieldTypeFromFieldGroup(config.field.fieldGroup, attributeKey);
         }
     }
 
@@ -26,14 +26,14 @@ export class InputFieldHelper {
     static getFieldTypeFromFieldGroup(fieldGroup: FieldConfigSet[], attributeKey: string) {
         let type;
         fieldGroup.forEach(config => {
-            if (config.currentFieldConfig.fieldGroup) {
-                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(config.currentFieldConfig.fieldGroup, attributeKey);
+            if (config.field.fieldGroup) {
+                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(config.field.fieldGroup, attributeKey);
                 if (typeFromFieldGroup) {
                     type = typeFromFieldGroup;
                 }
             } else {
-                if (config.currentFieldConfig.name === attributeKey) {
-                    type = config.currentFieldConfig.type;
+                if (config.field.name === attributeKey) {
+                    type = config.field.type;
                 }
             }
         });

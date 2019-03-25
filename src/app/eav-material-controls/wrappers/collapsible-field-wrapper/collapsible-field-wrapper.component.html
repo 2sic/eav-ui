@@ -1,18 +1,17 @@
 <div fxLayout="row" fxLayoutAlign="start center"
-  [ngClass]="config.currentFieldConfig.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
-  <div fxFlex="auto" fxLayoutAlign="start center"
-    (click)="config.currentFieldConfig.collapseField = !config.currentFieldConfig.collapseField" class="mat-caption">
-    <div *ngIf="config.currentFieldConfig.enableCollapseField" fxLayoutAlign="start center" class="mat-caption">
-      <i *ngIf="config.currentFieldConfig.collapseField" class="material-icons">keyboard_arrow_down</i>
-      <i *ngIf="!config.currentFieldConfig.collapseField" class="material-icons">keyboard_arrow_up</i>
+  [ngClass]="config.field.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
+  <div fxFlex="auto" fxLayoutAlign="start center" (click)="config.field.collapseField = !config.field.collapseField"
+    class="mat-caption">
+    <div *ngIf="config.field.enableCollapseField" fxLayoutAlign="start center" class="mat-caption">
+      <i *ngIf="config.field.collapseField" class="material-icons">keyboard_arrow_down</i>
+      <i *ngIf="!config.field.collapseField" class="material-icons">keyboard_arrow_up</i>
       <span>&nbsp;</span>
-      <span>{{config.currentFieldConfig.label }}&nbsp;{{config.currentFieldConfig.required? '*': '' }}</span>
+      <span>{{config.field.label }}&nbsp;{{config.field.required? '*': '' }}</span>
     </div>
   </div>
 </div>
-<div
-  [ngStyle]="{ 'display': !(config.currentFieldConfig.collapseField && config.currentFieldConfig.enableCollapseField) ? 'block' : 'none' }">
+<div [ngStyle]="{ 'display': !(config.field.collapseField && config.field.enableCollapseField) ? 'block' : 'none' }">
   <ng-container #fieldComponent></ng-container>
 </div>
-<app-field-helper-text *ngIf="config.currentFieldConfig.collapseField && config.currentFieldConfig.enableCollapseField"
-  [config]="config" [group]="group"></app-field-helper-text>
+<app-field-helper-text *ngIf="config.field.collapseField && config.field.enableCollapseField" [config]="config"
+  [group]="group"></app-field-helper-text>

@@ -18,8 +18,8 @@
           </a>
           <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
             allowMultiValue ?
-            ('FieldType.Entity.Choose' | translate) : config.currentFieldConfig.label}}
-            {{config.currentFieldConfig.required ? '*': '' }}</mat-label>
+            ('FieldType.Entity.Choose' | translate) : config.field.label}}
+            {{config.field.required ? '*': '' }}</mat-label>
         </mat-form-field>
 
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
@@ -44,14 +44,14 @@
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
-  <input matInput type="text" [required]='config.currentFieldConfig.required' [id]="id"
-    [formControlName]="config.currentFieldConfig.name" [placeholder]="config.currentFieldConfig.placeholder">
+  <input matInput type="text" [required]='config.field.required' [id]="id" [formControlName]="config.field.name"
+    [placeholder]="config.field.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">
     <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
     <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
   </a>
-  <mat-label>{{config.currentFieldConfig.label}}</mat-label>
+  <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>
 
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

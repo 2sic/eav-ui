@@ -68,10 +68,10 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     try {
       // const group = this.formBuilder.group({});
       fieldConfigArray.forEach(fieldConfig => {
-        if (fieldConfig.currentFieldConfig.fieldGroup) {
-          this.createControlsInFormGroup(fieldConfig.currentFieldConfig.fieldGroup);
+        if (fieldConfig.field.fieldGroup) {
+          this.createControlsInFormGroup(fieldConfig.field.fieldGroup);
         } else {
-          this.form.addControl(fieldConfig.currentFieldConfig.name, this.createControl(fieldConfig));
+          this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
         }
       }
       );
@@ -91,7 +91,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   private createControl(config: FieldConfigSet) {
     try {
       // tslint:disable-next-line:prefer-const
-      let { disabled, validation, value } = config.currentFieldConfig;
+      let { disabled, validation, value } = config.field;
       return this.formBuilder.control({ disabled, value }, validation);
     } catch (error) {
       console.error(`Error creating form control: ${error}

@@ -42,7 +42,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   get inputDisabled() {
-    return this.group.controls[this.config.currentFieldConfig.name].disabled;
+    return this.group.controls[this.config.field.name].disabled;
   }
 
   ngOnInit() {

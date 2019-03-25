@@ -6,7 +6,7 @@
         <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="mat-display-1">{{config.currentFieldConfig.label}}</span>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.field.label}}</span>
       </mat-card>
     </div>
     <div>
@@ -33,8 +33,8 @@
         'color__primary' : !(inputInvalid && touched) && !disabled,
         'color__label-disabled' : disabled
       }">
-        {{config.currentFieldConfig.label}}
-        {{config.currentFieldConfig.required? '*': '' }}
+        {{config.field.label}}
+        {{config.field.required? '*': '' }}
       </mat-label>
       <div *ngIf="value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"
         [innerHtml]="value">

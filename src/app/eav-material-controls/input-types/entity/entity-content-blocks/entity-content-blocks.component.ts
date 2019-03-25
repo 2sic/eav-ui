@@ -21,15 +21,15 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
   @Input() group: FormGroup;
 
   ngOnInit() {
-    this.config.currentFieldConfig.settings.AllowMultiValue = false;
-    this.config.currentFieldConfig.settings.EnableRemove = true;
-    this.config.currentFieldConfig.settings.AllowMultiValue = true; // for correct UI showing "remove"
-    this.config.currentFieldConfig.settings.EnableAddExisting = false; // disable manual select existing
-    this.config.currentFieldConfig.settings.EnableCreate = false; // disable manual create
-    this.config.currentFieldConfig.settings.EnableEdit = false;
-    this.config.currentFieldConfig.settings.EntityType = 'ContentGroupReference';
-    this.config.currentFieldConfig.enableCollapseField = true;   // ui option to allow collapsing
-    this.config.currentFieldConfig.collapseField = true;   // ui option to allow collapsing
+    this.config.field.settings.AllowMultiValue = false;
+    this.config.field.settings.EnableRemove = true;
+    this.config.field.settings.AllowMultiValue = true; // for correct UI showing "remove"
+    this.config.field.settings.EnableAddExisting = false; // disable manual select existing
+    this.config.field.settings.EnableCreate = false; // disable manual create
+    this.config.field.settings.EnableEdit = false;
+    this.config.field.settings.EntityType = 'ContentGroupReference';
+    this.config.field.enableCollapseField = true;   // ui option to allow collapsing
+    this.config.field.collapseField = true;   // ui option to allow collapsing
 
     // important for calling a FieldMaskService from extended component
     super.ngOnInit();

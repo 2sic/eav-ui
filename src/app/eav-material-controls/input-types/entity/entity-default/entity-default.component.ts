@@ -40,13 +40,13 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
   private fieldMaskService: FieldMaskService;
 
-  get entityType(): string { return this.config.currentFieldConfig.settings.EntityType || ''; }
+  get entityType(): string { return this.config.field.settings.EntityType || ''; }
 
-  get enableAddExisting(): boolean { return this.config.currentFieldConfig.settings.EnableAddExisting === false ? false : true; }
+  get enableAddExisting(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
 
-  get separator() { return this.config.currentFieldConfig.settings.Separator || ','; }
+  get separator() { return this.config.field.settings.Separator || ','; }
 
-  get value() { return this.group.controls[this.config.currentFieldConfig.name].value; }
+  get value() { return this.group.controls[this.config.field.name].value; }
 
   constructor(private entityService: EntityService,
     private eavService: EavService) {
@@ -95,7 +95,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
         : this.value;
     } catch (err) { }
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-      this.config.currentFieldConfig.availableEntities = [...items];
+      this.config.field.availableEntities = [...items];
     });
   }
 

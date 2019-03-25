@@ -20,15 +20,15 @@ export class NumberDefaultComponent implements Field, OnInit {
   group: FormGroup;
 
   get inputInvalid() {
-    return this.group.controls[this.config.currentFieldConfig.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   get max() {
-    return this.config.currentFieldConfig.settings.Max;
+    return this.config.field.settings.Max;
   }
 
   get min() {
-    return this.config.currentFieldConfig.settings.Min;
+    return this.config.field.settings.Min;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }

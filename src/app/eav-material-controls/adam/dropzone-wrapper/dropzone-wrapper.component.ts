@@ -29,7 +29,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   url: string;
 
   get disabled() {
-    return this.group.controls[this.config.currentFieldConfig.name].disabled;
+    return this.group.controls[this.config.field.name].disabled;
   }
 
   constructor(private eavService: EavService) {
@@ -41,7 +41,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
     const contentType = this.config.itemConfig.header.contentTypeName;
     const entityGuid = this.config.itemConfig.header.guid;
-    const field = this.config.currentFieldConfig.name;
+    const field = this.config.field.name;
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
@@ -74,8 +74,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngAfterViewInit() {
-    this.dropzoneConfig.previewsContainer = '.field-' + this.config.currentFieldConfig.index + ' .dropzone-previews';
-    this.dropzoneConfig.clickable = '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable';
+    this.dropzoneConfig.previewsContainer = '.field-' + this.config.field.index + ' .dropzone-previews';
+    this.dropzoneConfig.clickable = '.field-' + this.config.field.index + ' .invisible-clickable';
   }
 
   public onUploadError(args: any): void {
@@ -85,12 +85,12 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   public onUploadSuccess(args: any): void {
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
-      if (this.config.currentFieldConfig.adam) {
-        this.config.currentFieldConfig.adam.svc.addFullPath(response); // calculate additional infos
-        this.config.currentFieldConfig.adam.afterUploadCallback(response);
+      if (this.config.field.adam) {
+        this.config.field.adam.svc.addFullPath(response); // calculate additional infos
+        this.config.field.adam.afterUploadCallback(response);
         // Reset dropzone
         this.dropzoneRef.reset();
-        this.config.currentFieldConfig.adam.refresh();
+        this.config.field.adam.refresh();
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }

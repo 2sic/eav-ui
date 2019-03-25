@@ -24,10 +24,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   dialogIsOpen = false;
 
-  get value() { return this.group.controls[this.config.currentFieldConfig.name].value; }
-  get id() { return `${this.config.itemConfig.entityId}${this.config.currentFieldConfig.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
-  get disabled() { return this.group.controls[this.config.currentFieldConfig.name].disabled; }
+  get value() { return this.group.controls[this.config.field.name].value; }
+  get id() { return `${this.config.itemConfig.entityId}${this.config.field.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
   constructor(private fileTypeService: FileTypeService) { }
 

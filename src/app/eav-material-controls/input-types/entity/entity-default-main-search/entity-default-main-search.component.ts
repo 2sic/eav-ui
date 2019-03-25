@@ -52,24 +52,24 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   // private availableEntities: EntityInfo[] = [];
   private subscriptions: Subscription[] = [];
 
-  get availableEntities(): EntityInfo[] { return this.config.currentFieldConfig.availableEntities || []; }
-  get allowMultiValue(): boolean { return this.config.currentFieldConfig.settings.AllowMultiValue || false; }
-  get enableTextEntry(): boolean { return this.config.currentFieldConfig.settings.EnableTextEntry || false; }
-  get entityType(): string { return this.config.currentFieldConfig.settings.EntityType || ''; }
-  get enableAddExisting(): boolean { return this.config.currentFieldConfig.settings.EnableAddExisting === false ? false : true; }
-  get enableCreate(): boolean { return this.config.currentFieldConfig.settings.EnableAddExisting === false ? false : true; }
-  get enableEdit(): boolean { return this.config.currentFieldConfig.settings.EnableEdit === false ? false : true; }
-  get enableRemove(): boolean { return this.config.currentFieldConfig.settings.EnableRemove === false ? false : true; }
-  get enableDelete(): boolean { return this.config.currentFieldConfig.settings.EnableDelete || false; }
-  get separator() { return this.config.currentFieldConfig.settings.Separator || ','; }
-  get disabled(): boolean { return this.group.controls[this.config.currentFieldConfig.name].disabled; }
-  get inputInvalid(): boolean { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
+  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get allowMultiValue(): boolean { return this.config.field.settings.AllowMultiValue || false; }
+  get enableTextEntry(): boolean { return this.config.field.settings.EnableTextEntry || false; }
+  get entityType(): string { return this.config.field.settings.EntityType || ''; }
+  get enableAddExisting(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
+  get enableCreate(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
+  get enableEdit(): boolean { return this.config.field.settings.EnableEdit === false ? false : true; }
+  get enableRemove(): boolean { return this.config.field.settings.EnableRemove === false ? false : true; }
+  get enableDelete(): boolean { return this.config.field.settings.EnableDelete || false; }
+  get separator() { return this.config.field.settings.Separator || ','; }
+  get disabled(): boolean { return this.group.controls[this.config.field.name].disabled; }
+  get inputInvalid(): boolean { return this.group.controls[this.config.field.name].invalid; }
   get chosenEntities() { return this.entityDefaultListComponent.chosenEntities; }
-  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.currentFieldConfig.name].value, this.separator); }
-  get touched() { return this.group.controls[this.config.currentFieldConfig.name].touched || false; }
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
+  get touched() { return this.group.controls[this.config.field.name].touched || false; }
 
   getErrorMessage = () => this.validationMessagesService
-    .getErrorMessage(this.group.controls[this.config.currentFieldConfig.name], this.config, true)
+    .getErrorMessage(this.group.controls[this.config.field.name], this.config, true)
 
   constructor(private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
@@ -197,19 +197,19 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   private patchValue(entityValues: string[]) {
     if (this.isStringFormat) {
       const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
-      this.group.controls[this.config.currentFieldConfig.name].patchValue(stringEntityValue);
+      this.group.controls[this.config.field.name].patchValue(stringEntityValue);
     } else {
-      this.group.controls[this.config.currentFieldConfig.name].patchValue(entityValues);
+      this.group.controls[this.config.field.name].patchValue(entityValues);
     }
     this.setDirty();
   }
 
   private setDirty() {
-    this.group.controls[this.config.currentFieldConfig.name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsDirty();
   }
 
   setTouched() {
-    this.group.controls[this.config.currentFieldConfig.name].markAsTouched();
+    this.group.controls[this.config.field.name].markAsTouched();
   }
 
   getPlaceholder() {

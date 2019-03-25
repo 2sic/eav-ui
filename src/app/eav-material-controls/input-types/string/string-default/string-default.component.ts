@@ -22,12 +22,12 @@ export class StringDefaultComponent implements Field {
   group: FormGroup;
 
   get rowCount() {
-    return this.config.currentFieldConfig.settings.RowCount ? this.config.currentFieldConfig.settings.RowCount : 1;
+    return this.config.field.settings.RowCount ? this.config.field.settings.RowCount : 1;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get inputInvalid() {
-    return this.group.controls[this.config.currentFieldConfig.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 }

@@ -22,6 +22,6 @@ export class DatetimeDefaultComponent implements Field {
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   get inputInvalid() {
-    return this.group.controls[this.config.currentFieldConfig.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 }

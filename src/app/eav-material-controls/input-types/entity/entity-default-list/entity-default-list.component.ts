@@ -36,19 +36,19 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
-  get availableEntities(): EntityInfo[] { return this.config.currentFieldConfig.availableEntities || []; }
-  get allowMultiValue() { return this.config.currentFieldConfig.settings.AllowMultiValue || false; }
-  get entityType() { return this.config.currentFieldConfig.settings.EntityType || ''; }
+  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get allowMultiValue() { return this.config.field.settings.AllowMultiValue || false; }
+  get entityType() { return this.config.field.settings.EntityType || ''; }
   // get enableAddExisting() { return this.config.currentFieldConfig.settings.EnableAddExisting || true; }
-  get enableCreate() { return this.config.currentFieldConfig.settings.EnableCreate === false ? false : true; }
-  get enableEdit() { return this.config.currentFieldConfig.settings.EnableEdit === false ? false : true; }
-  get enableRemove() { return this.config.currentFieldConfig.settings.EnableRemove === false ? false : true; }
-  get enableDelete() { return this.config.currentFieldConfig.settings.EnableDelete || false; }
-  get disabled() { return this.group.controls[this.config.currentFieldConfig.name].disabled; }
+  get enableCreate() { return this.config.field.settings.EnableCreate === false ? false : true; }
+  get enableEdit() { return this.config.field.settings.EnableEdit === false ? false : true; }
+  get enableRemove() { return this.config.field.settings.EnableRemove === false ? false : true; }
+  get enableDelete() { return this.config.field.settings.EnableDelete || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
   // get inputInvalid() { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
-  get dndListConfig() { return { allowedTypes: [this.config.currentFieldConfig.name] }; }
-  get separator() { return this.config.currentFieldConfig.settings.Separator || ','; }
-  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.currentFieldConfig.name].value, this.separator); }
+  get dndListConfig() { return { allowedTypes: [this.config.field.name] }; }
+  get separator() { return this.config.field.settings.Separator || ','; }
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
@@ -202,14 +202,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   private setDirty() {
-    this.group.controls[this.config.currentFieldConfig.name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsDirty();
   }
 
   /**
   * subscribe to form value changes
   */
   private chosenEntitiesSubscribeToChanges() {
-    this.subscriptions.push(this.group.controls[this.config.currentFieldConfig.name].valueChanges.subscribe((item) => {
+    this.subscriptions.push(this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
@@ -221,7 +221,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     if (!entityList) {
       return [];
     }
-    return entityList.map(v => ({ 'name': v, 'type': this.config.currentFieldConfig.name }));
+    return entityList.map(v => ({ 'name': v, 'type': this.config.field.name }));
   }
 
   private mapFromNameListToEntityList = (nameList: any[]): string[] => {
@@ -234,9 +234,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private patchValue(entityValues: string[]) {
     if (this.isStringFormat) {
       const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
-      this.group.controls[this.config.currentFieldConfig.name].patchValue(stringEntityValue);
+      this.group.controls[this.config.field.name].patchValue(stringEntityValue);
     } else {
-      this.group.controls[this.config.currentFieldConfig.name].patchValue(entityValues);
+      this.group.controls[this.config.field.name].patchValue(entityValues);
     }
     this.setDirty();
   }

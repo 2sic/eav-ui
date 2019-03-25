@@ -24,15 +24,15 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   };
 
   get folderDepth() {
-    return this.config.currentFieldConfig.settings.FolderDepth || '';
+    return this.config.field.settings.FolderDepth || '';
   }
 
   get metadataContentTypes() {
-    return this.config.currentFieldConfig.settings.MetadataContentTypes || '';
+    return this.config.field.settings.MetadataContentTypes || '';
   }
 
   get allowAssetsInRoot() {
-    return this.config.currentFieldConfig.settings.AllowAssetsInRoot === false ? false : true;
+    return this.config.field.settings.AllowAssetsInRoot === false ? false : true;
   }
 
   constructor() { }
@@ -42,12 +42,12 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   }
 
   private attachAdam() {
-    if (this.config.currentFieldConfig.adam) {
+    if (this.config.field.adam) {
       // callbacks - functions called from adam
-      this.config.currentFieldConfig.adam.updateCallback = (fileItem) => { };
+      this.config.field.adam.updateCallback = (fileItem) => { };
 
       // binding for dropzone
-      this.config.currentFieldConfig.adam.afterUploadCallback = (fileItem) => { };
+      this.config.field.adam.afterUploadCallback = (fileItem) => { };
 
       // return value from form
       // this.config.currentFieldConfig.adam.getValueCallback = () =>
@@ -62,7 +62,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
         metadataContentTypes: this.metadataContentTypes
       }));
       // set adam configuration (initial config)
-      this.config.currentFieldConfig.adam.setConfig(Object.assign(new AdamConfig(), {
+      this.config.field.adam.setConfig(Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         allowAssetsInRoot: this.allowAssetsInRoot,
         autoLoad: true,

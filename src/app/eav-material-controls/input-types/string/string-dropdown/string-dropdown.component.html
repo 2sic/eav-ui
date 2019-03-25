@@ -1,14 +1,13 @@
 <mat-form-field [formGroup]="group" appearance="fill" color="accent">
-  <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.currentFieldConfig.name"
-    [required]='config.currentFieldConfig.required' [placeholder]="config.currentFieldConfig.placeholder">
+  <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.field.name"
+    [required]='config.field.required' [placeholder]="config.field.placeholder">
     <mat-option value=""></mat-option>
     <mat-option *ngFor="let item of selectOptions" [value]="item.value">
       {{item.label}}
     </mat-option>
   </mat-select>
   <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material"
-    [required]='config.currentFieldConfig.required' [formControlName]="config.currentFieldConfig.name"
-    [placeholder]="config.currentFieldConfig.placeholder">
+    [required]='config.field.required' [formControlName]="config.field.name" [placeholder]="config.field.placeholder">
   <a matSuffix *ngIf="enableTextEntry"
     [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
     (click)="freeTextModeChange($event)">
@@ -17,6 +16,6 @@
     <!-- <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i> -->
     <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
   </a>
-  <mat-label>{{config.currentFieldConfig.label}}</mat-label>
+  <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

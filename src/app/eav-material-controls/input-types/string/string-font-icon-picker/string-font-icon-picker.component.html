@@ -2,16 +2,15 @@
   <div matPrefix class="thumbnail-before-input">
     <i class="glyphicon {{value}} icon-preview"></i>
   </div>
-  <input matInput type="text" class="form-control material" [formControlName]="config.currentFieldConfig.name"
-    [placeholder]="config.currentFieldConfig.label" [required]="config.currentFieldConfig.required"
-    [matAutocomplete]="auto" (click)="update()">
-  <mat-label>{{config.currentFieldConfig.label}}</mat-label>
+  <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
+    [placeholder]="config.field.label" [required]="config.field.required" [matAutocomplete]="auto" (click)="update()">
+  <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 <mat-autocomplete #auto="matAutocomplete">
   <mat-option *ngFor="let icn of filteredIcons | async" [value]="icn.class">
-    <a (click)="setIcon(icn.class, config.currentFieldConfig.name)">
-      <i class="{{config.currentFieldConfig.settings.PreviewCss}} {{icn.class}} icon-preview"></i>
+    <a (click)="setIcon(icn.class, config.field.name)">
+      <i class="{{config.field.settings.PreviewCss}} {{icn.class}} icon-preview"></i>
       <span>{{icn.class}}</span>
     </a>
   </mat-option>
