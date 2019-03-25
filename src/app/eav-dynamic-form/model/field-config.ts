@@ -6,7 +6,7 @@ import { EntityInfo } from '../../shared/models/eav/entity-info';
 import { FieldConfigBase } from '../../../../projects/shared/field-config-base';
 
 export interface FieldConfigSet {
-    field?: CurrentFieldConfig;
+    field?: FieldConfig;
     entity?: ItemConfig;
     form?: FormConfig;
     adam?: AdamBrowserComponent;
@@ -18,8 +18,7 @@ export interface EntityFieldConfigSet extends FieldConfigSet {
     cache: EntityInfo[];
 }
 
-// todo: rename to FieldConfig
-export interface CurrentFieldConfig extends FieldConfigBase {
+export interface FieldConfig extends FieldConfigBase {
     // disabled?: boolean;
     // label?: string;
     // name: string;
