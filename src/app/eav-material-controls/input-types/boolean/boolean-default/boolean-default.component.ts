@@ -5,6 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,7 +14,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
   styleUrls: ['./boolean-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class BooleanDefaultComponent implements Field {
   config: FieldConfigSet;

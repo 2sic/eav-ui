@@ -8,6 +8,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { Subscription } from 'rxjs';
 import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,7 +17,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
   styleUrls: ['./string-url-path.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 

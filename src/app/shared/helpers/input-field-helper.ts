@@ -2,6 +2,7 @@ import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavAttributesTranslated, EavHeader } from '../models/eav';
+import { WrappersConstants } from '../constants/wrappers-constants';
 
 export class InputFieldHelper {
     /**
@@ -87,7 +88,7 @@ export class InputFieldHelper {
 
     static setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
         // default wrappers
-        const wrappers: string[] = ['app-hidden-wrapper'];
+        const wrappers: string[] = [WrappersConstants.hiddenWrapper];
         // entity-default wrappers
         if (InputTypesConstants.entityDefault ||
             inputType === InputTypesConstants.stringDropdownQuery ||
@@ -95,19 +96,19 @@ export class InputFieldHelper {
             inputType === InputTypesConstants.entityContentBlocks) {
             const allowMultiValue = settingsTranslated.AllowMultiValue || false;
             if (inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-collapsible-field-wrapper');
+                wrappers.push(WrappersConstants.collapsibleFieldWrapper);
             }
             if (allowMultiValue ||
                 inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-entity-expandable-wrapper');
+                wrappers.push(WrappersConstants.entityExpandableWrapper);
             }
         }
 
         if (inputType === InputTypesConstants.externalWebComponent) {
-            wrappers.push(...['app-dropzone-wrapper',
-                'app-eav-localization-wrapper',
-                'app-expandable-wrapper',
-                'app-adam-attach-wrapper']);
+            wrappers.push(...[WrappersConstants.dropzoneWrapper,
+            WrappersConstants.eavLocalizationWrapper,
+            WrappersConstants.expandableWrapper,
+            WrappersConstants.adamAttachWrapper]);
         }
 
 

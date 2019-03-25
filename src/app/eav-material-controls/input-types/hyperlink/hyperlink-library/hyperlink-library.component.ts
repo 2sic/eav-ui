@@ -5,6 +5,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,7 +14,8 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-adam-attach-wrapper'],
+  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
+  WrappersConstants.hyperlinkLibraryExpandableWrapper, WrappersConstants.adamAttachWrapper],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit {
   @Input() config: FieldConfigSet;

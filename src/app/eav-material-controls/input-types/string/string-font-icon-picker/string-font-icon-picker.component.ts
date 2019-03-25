@@ -10,6 +10,7 @@ import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/sc
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,7 +19,7 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
   styleUrls: ['./string-font-icon-picker.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;

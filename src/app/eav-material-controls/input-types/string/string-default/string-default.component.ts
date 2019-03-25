@@ -5,6 +5,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,7 +14,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   styleUrls: ['./string-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringDefaultComponent implements Field {
   @ViewChild('errorComponent', { read: ViewContainerRef }) errorComponent: ViewContainerRef;

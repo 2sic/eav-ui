@@ -18,6 +18,7 @@ import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { MatDialog } from '@angular/material';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 
 @Component({
@@ -27,7 +28,8 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
   styleUrls: ['./external.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-dropzone-wrapper', 'app-adam-attach-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper, WrappersConstants.expandableWrapper, WrappersConstants.dropzoneWrapper,
+  WrappersConstants.adamAttachWrapper],
 })
 export class ExternalComponent implements FieldExternal, OnInit {
   @ViewChild('container') elReference: ElementRef;
