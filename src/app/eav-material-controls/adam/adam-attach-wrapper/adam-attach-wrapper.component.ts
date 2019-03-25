@@ -34,7 +34,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   }
 
   ngOnInit() {
-    this.config.field.adam = this.adamRef;
+    this.config.adam = this.adamRef;
     // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
     // const url = UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);

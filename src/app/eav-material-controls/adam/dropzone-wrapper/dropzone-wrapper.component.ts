@@ -85,12 +85,12 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   public onUploadSuccess(args: any): void {
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
-      if (this.config.field.adam) {
-        this.config.field.adam.svc.addFullPath(response); // calculate additional infos
-        this.config.field.adam.afterUploadCallback(response);
+      if (this.config.adam) {
+        this.config.adam.svc.addFullPath(response); // calculate additional infos
+        this.config.adam.afterUploadCallback(response);
         // Reset dropzone
         this.dropzoneRef.reset();
-        this.config.field.adam.refresh();
+        this.config.adam.refresh();
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }

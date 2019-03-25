@@ -144,30 +144,30 @@ export class ExternalComponent implements FieldExternal, OnInit {
     // TODO:
     // If adam registered then attach Adam
     console.log('setInitValues');
-    if (this.config.field.adam) {
+    if (this.config.adam) {
       console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
 
-      this.config.field.adam.updateCallback = (value) =>
+      this.config.adam.updateCallback = (value) =>
         this.externalFactory.adamSetValue
           ? this.externalFactory.adamSetValue(value)
           : alert('adam attached but adamSetValue method not exist');
 
-      this.config.field.adam.afterUploadCallback = (value) =>
+      this.config.adam.afterUploadCallback = (value) =>
         this.externalFactory.adamAfterUpload
           ? this.externalFactory.adamAfterUpload(value)
           : alert('adam attached but adamAfterUpload method not exist');
 
       // return value from form
-      this.config.field.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
       return {
-        toggleAdam: (value1: any, value2: any) => this.config.field.adam.toggle(value1),
-        setAdamConfig: (adamConfig: AdamConfig) => this.config.field.adam.setConfig(adamConfig),
-        adamModeImage: () => (this.config && this.config.field.adam)
-          ? this.config.field.adam.showImagesOnly
+        toggleAdam: (value1: any, value2: any) => this.config.adam.toggle(value1),
+        setAdamConfig: (adamConfig: AdamConfig) => this.config.adam.setConfig(adamConfig),
+        adamModeImage: () => (this.config && this.config.adam)
+          ? this.config.adam.showImagesOnly
           : null,
       };
     }

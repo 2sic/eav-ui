@@ -170,34 +170,34 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   private attachAdam() {
     // TODO:
     // If adam registered then attach Adam
-    if (this.config.field.adam) {
+    if (this.config.adam) {
       // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
-      this.config.field.adam.updateCallback = (value) =>
+      this.config.adam.updateCallback = (value) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
           : alert('adam attached but adamSetValue method not exist');
 
-      this.config.field.adam.afterUploadCallback = (value) =>
+      this.config.adam.afterUploadCallback = (value) =>
         this.customEl.adamAfterUploadCallback
           ? this.customEl.adamAfterUploadCallback = value
           : alert('adam attached but adamAfterUpload method not exist');
 
       // return value from form
-      this.config.field.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
       return {
         toggleAdam: (value1: any, value2: any) => {
-          this._ngZone.run(() => this.config.field.adam.toggle(value1));
+          this._ngZone.run(() => this.config.adam.toggle(value1));
         },
         setAdamConfig: (adamConfig: AdamConfig) => {
-          this._ngZone.run(() => this.config.field.adam.setConfig(adamConfig));
+          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
         },
         adamModeImage: () => {
-          this._ngZone.run(() => (this.config && this.config.field.adam)
-            ? this.config.field.adam.showImagesOnly
+          this._ngZone.run(() => (this.config && this.config.adam)
+            ? this.config.adam.showImagesOnly
             : null);
         },
       };

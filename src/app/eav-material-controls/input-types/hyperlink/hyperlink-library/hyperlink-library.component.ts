@@ -42,12 +42,12 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   }
 
   private attachAdam() {
-    if (this.config.field.adam) {
+    if (this.config.adam) {
       // callbacks - functions called from adam
-      this.config.field.adam.updateCallback = (fileItem) => { };
+      this.config.adam.updateCallback = (fileItem) => { };
 
       // binding for dropzone
-      this.config.field.adam.afterUploadCallback = (fileItem) => { };
+      this.config.adam.afterUploadCallback = (fileItem) => { };
 
       // return value from form
       // this.config.currentFieldConfig.adam.getValueCallback = () =>
@@ -62,7 +62,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
         metadataContentTypes: this.metadataContentTypes
       }));
       // set adam configuration (initial config)
-      this.config.field.adam.setConfig(Object.assign(new AdamConfig(), {
+      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         allowAssetsInRoot: this.allowAssetsInRoot,
         autoLoad: true,

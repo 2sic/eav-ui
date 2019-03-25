@@ -27,9 +27,9 @@
     class="c-ew__preview mat-ripple"
     [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label *ngIf="config.field.adam" class="c-ew__color--primary" [ngClass]="{
-          'mat-caption' : (config.field.adam.items$ | async)?.length > 0,
-          'mat-empty' : !((config.field.adam.items$ | async)?.length > 0),
+      <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{
+          'mat-caption' : (config.adam.items$ | async)?.length > 0,
+          'mat-empty' : !((config.adam.items$ | async)?.length > 0),
           'mat-error' : inputInvalid && !disabled,
           'color__primary' : !(inputInvalid) && !disabled,
           'color__label-disabled' : disabled
@@ -37,12 +37,12 @@
         {{config.field.label}}
         {{config.field.required ? '*': '' }}
       </mat-label>
-      <div *ngIf="config.field.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px"
+      <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px"
         class="c-ew__preview-content">
         <!-- folder list - not always shown -->
-        <ng-container *ngIf="config.field.adam && config.field.adam.showFolders">
+        <ng-container *ngIf="config.adam && config.adam.showFolders">
           <div fxLayout="row" fxLayoutAlign="start start"
-            *ngFor="let item of (config.field.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
+            *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
             <div class="adam-browse-background-icon">
               <i class="eav-icon-folder-empty"></i>
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
@@ -51,7 +51,7 @@
         </ng-container>
         <!-- file list -->
         <div
-          *ngFor="let item of (config.field.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.field.adam.allowedFileTypes | orderby : 'Name')">
+          *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
           <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
             <i [ngClass]="icon(item)"></i>
             <div class="adam-short-label mat-caption">{{ item.Name }}</div>

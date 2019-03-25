@@ -488,8 +488,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    *  */
   private setAdamDisable() {
     // set Adam disabled state
-    if (this.config.field.adam) {
-      this.config.field.adam.disabled = this.group.controls[this.config.field.name].disabled;
+    if (this.config.adam) {
+      this.config.adam.disabled = this.group.controls[this.config.field.name].disabled;
     }
   }
 

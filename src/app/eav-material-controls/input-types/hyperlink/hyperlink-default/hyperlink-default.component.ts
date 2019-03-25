@@ -136,7 +136,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
-    this.config.field.adam.toggle({
+    this.config.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot
     });
@@ -185,15 +185,15 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   private attachAdam() {
-    if (this.config.field.adam) {
+    if (this.config.adam) {
       // callbacks - functions called from adam
-      this.config.field.adam.updateCallback = (value) => this.setValue(value);
+      this.config.adam.updateCallback = (value) => this.setValue(value);
 
       // binding for dropzone
-      this.config.field.adam.afterUploadCallback = (value) => this.setValue(value);
+      this.config.adam.afterUploadCallback = (value) => this.setValue(value);
 
       // return value from form
-      this.config.field.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
       // set adam configuration (initial config)
       // this.config.currentFieldConfig.adam.setConfig(
@@ -212,7 +212,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
         fileFilter: this.fileFilter
       }));
 
-      this.config.field.adam.setConfig(Object.assign(new AdamConfig(), {
+      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         fileFilter: this.fileFilter
       }));

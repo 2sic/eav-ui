@@ -38,7 +38,7 @@ export interface CurrentFieldConfig extends FieldConfigBase {
     collapse?: boolean;
     fieldGroup?: FieldConfigSet[];
     // index?: number;
-    adam?: AdamBrowserComponent; // move from currentFieldConfig to FieldConfig as adam
+    // adam?: AdamBrowserComponent; // move from currentFieldConfig to FieldConfig as adam
     availableEntities?: EntityInfo[]; // move from currentFieldConfig to FieldConfig as cache
     enableCollapseField?: boolean;
     collapseField?: boolean;
