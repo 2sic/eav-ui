@@ -170,10 +170,10 @@ export class TinymceWysiwygComponent implements OnInit {
 
   private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
-    if (this.config.formConfig.allInputTypeNames.length === this.config.field.index + 1) {
+    if (this.config.form.allInputTypeNames.length === this.config.field.index + 1) {
       return;
     }
-    const nextField = this.config.formConfig.allInputTypeNames[this.config.field.index + 1];
+    const nextField = this.config.form.allInputTypeNames[this.config.field.index + 1];
     if (nextField === 'entity-content-blocks') {
       settings.enableContentBlocks = true;
     }

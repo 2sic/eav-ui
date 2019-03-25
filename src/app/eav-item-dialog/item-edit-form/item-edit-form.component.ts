@@ -272,7 +272,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         entityGuid: this.item.entity.guid,
         header: this.item.header,
       },
-      formConfig: {
+      form: {
         allInputTypeNames: allInputTypeNames, // TODO: maybe better way
         features: this.features,
       },

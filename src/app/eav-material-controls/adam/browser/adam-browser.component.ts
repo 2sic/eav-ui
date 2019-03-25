@@ -129,7 +129,7 @@ export class AdamBrowserComponent implements OnInit {
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
 
     // if feature clipboardPasteImageFunctionality enabled
-    const featureEnabled = this.featureService.isEnabledNow(this.config.formConfig.features, 'f6b8d6da-4744-453b-9543-0de499aa2352');
+    const featureEnabled = this.featureService.isEnabledNow(this.config.form.features, 'f6b8d6da-4744-453b-9543-0de499aa2352');
     this.clipboardPasteImageFunctionalityDisabled = (featureEnabled === false);
   }
 
