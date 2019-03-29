@@ -1,4 +1,4 @@
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavAttributesTranslated, EavHeader } from '../models/eav';
@@ -14,7 +14,8 @@ export class InputFieldHelper {
         if (config.field.type) {
             return config.field.type;
         } else {
-            return this.getFieldTypeFromFieldGroup(config.field.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            return this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
         }
     }
 
@@ -27,8 +28,9 @@ export class InputFieldHelper {
     static getFieldTypeFromFieldGroup(fieldGroup: FieldConfigSet[], attributeKey: string) {
         let type;
         fieldGroup.forEach(config => {
-            if (config.field.fieldGroup) {
-                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(config.field.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            if (field.fieldGroup) {
+                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
                 if (typeFromFieldGroup) {
                     type = typeFromFieldGroup;
                 }

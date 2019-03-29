@@ -6,7 +6,7 @@ import { take } from 'rxjs/operators/take';
 import isEqual from 'lodash/isEqual';
 
 import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ItemService } from '../../../shared/services/item.service';
 import { LanguageService } from '../../../shared/services/language.service';
@@ -28,6 +28,7 @@ import { ContentTypeService } from '../../../shared/services/content-type.servic
 export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   @Input() config: FieldConfigSet;
+  fieldConfig: FieldConfigGroup;
   @Input() group: FormGroup;
   @Input()
   set toggleTranslateField(value: boolean) {
@@ -71,6 +72,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.fieldConfig = this.config.field as FieldConfigGroup;
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
@@ -276,7 +278,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   private refreshControlConfig(attributeKey: string) {
-    if (!this.config.field.isParentGroup) {
+    if (!this.fieldConfig.isParentGroup) {
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
       this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.field.name], this.currentLanguage, this.defaultLanguage);
@@ -289,23 +291,23 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       // need be sure that we have a language selected when a link option is clicked
       switch (actionResult.linkType) {
         case TranslationLinkTypeConstants.translate:
-          this.config.field.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.field.name);
+          this.fieldConfig.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.field.name);
           break;
         case TranslationLinkTypeConstants.dontTranslate:
-          this.config.field.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.field.name);
+          this.fieldConfig.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.field.name);
           break;
         case TranslationLinkTypeConstants.linkReadOnly:
-          this.config.field.isParentGroup
+          this.fieldConfig.isParentGroup
             ? this.linkReadOnlyAll(actionResult.language)
             : this.linkReadOnly(actionResult.language, this.config.field.name);
           break;
         case TranslationLinkTypeConstants.linkReadWrite:
-          this.config.field.isParentGroup
+          this.fieldConfig.isParentGroup
             ? this.linkReadWriteAll(actionResult.language)
             : this.linkReadWrite(actionResult.language, this.config.field.name);
           break;
         case TranslationLinkTypeConstants.linkCopyFrom:
-          this.config.field.isParentGroup
+          this.fieldConfig.isParentGroup
             ? this.copyFromAll(actionResult.language)
             : this.copyFrom(actionResult.language, this.config.field.name);
           break;
@@ -397,7 +399,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (this.config.entity.header.group && this.config.entity.header.group.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          if (header.group && !this.config.field.isParentGroup) {
+          if (header.group && !this.fieldConfig.isParentGroup) {
             this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
             this.setControlDisable(this.attributes[this.config.field.name], this.config.field.name,
               this.currentLanguage, this.defaultLanguage);
@@ -475,7 +477,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private subscribeMenuChange() {
     this.subscriptions.push(
       this.languageService.localizationWrapperMenuChange$.subscribe(s => {
-        if (!this.config.field.isParentGroup) {
+        if (!this.fieldConfig.isParentGroup) {
           this.refreshControlConfig(this.config.field.name);
         }
       })

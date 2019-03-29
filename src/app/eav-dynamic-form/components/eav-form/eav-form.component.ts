@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
-import { FieldConfigSet } from '../../model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -68,8 +68,9 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     try {
       // const group = this.formBuilder.group({});
       fieldConfigArray.forEach(fieldConfig => {
-        if (fieldConfig.field.fieldGroup) {
-          this.createControlsInFormGroup(fieldConfig.field.fieldGroup);
+        const field = fieldConfig.field as FieldConfigGroup;
+        if (field.fieldGroup) {
+          this.createControlsInFormGroup(field.fieldGroup);
         } else {
           this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
         }

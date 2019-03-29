@@ -1,4 +1,4 @@
-<div *ngIf="(currentLanguage !== defaultLanguage) && config.field.isParentGroup" fxLayoutAlign="end center">
+<div *ngIf="(currentLanguage !== defaultLanguage) && fieldConfig.isParentGroup" fxLayoutAlign="end center">
   <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu">
     <span fxLayoutAlign="end center">
       TRANSLATE &nbsp;&nbsp;<i class="fas fa-language" style="font-size: 20px;"></i>
@@ -21,7 +21,7 @@
 </div>
 
 <div
-  *ngIf="(currentLanguage !== defaultLanguage) && !config.field.isParentGroup  && isTranslateEnabled(config.field.name)"
+  *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup  && isTranslateEnabled(config.field.name)"
   fxLayoutAlign="end center">
   <div fxLayoutAlign="end center" class="shared-languages-container">
     <div class="shared-languages mat-caption color__accent" [ngClass]="{

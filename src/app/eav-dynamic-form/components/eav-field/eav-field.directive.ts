@@ -14,7 +14,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { FieldConfigSet } from '../../model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
@@ -59,7 +59,8 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    */
   private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    if (fieldConfig.field.fieldGroup) {
+    const field = fieldConfig.field as FieldConfigGroup;
+    if (field.fieldGroup) {
       // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig);
     } else {
@@ -86,7 +87,8 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    fieldConfig.field.fieldGroup.forEach(controlConfiguration => {
+    const field = fieldConfig.field as FieldConfigGroup;
+    field.fieldGroup.forEach(controlConfiguration => {
       this.createFieldOrGroup(container, controlConfiguration);
     });
   }

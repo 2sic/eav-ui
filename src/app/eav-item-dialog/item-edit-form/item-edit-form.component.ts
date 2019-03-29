@@ -25,7 +25,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { Feature } from '../../shared/models/feature/feature';
-import { FieldConfigSet, ItemConfig, FormConfig, FieldConfig, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -193,12 +193,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
                 // group-fields (empty)
                 currentFieldGroup = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
                   data.contentType.settings, false);
-                parentFieldGroup.field.fieldGroup.push(currentFieldGroup);
+                const field = parentFieldGroup.field as FieldConfigGroup;
+                field.fieldGroup.push(currentFieldGroup);
               } else {
                 // all other fields (not group empty)
                 const fieldConfigSet = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
                   data.contentType.settings, null);
-                currentFieldGroup.field.fieldGroup.push(fieldConfigSet);
+                const field = currentFieldGroup.field as FieldConfigGroup;
+                field.fieldGroup.push(fieldConfigSet);
               }
             } catch (error) {
               console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -229,8 +231,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
-    isParentGroup: boolean): FieldConfig {
-    let fieldConfig: FieldConfig;
+    isParentGroup: boolean): FieldConfigAngular {
+    let fieldConfig: FieldConfigAngular;
     let settingsTranslated: EavAttributesTranslated;
     let fullSettings: EavAttributes;
     const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
@@ -247,9 +249,6 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated) || 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
-    console.log('Petar buildFieldConfig wrappers', wrappers);
-    console.log('Petar buildFieldConfig inputType', inputType);
-    // disablei18n?
 
     if (isEmptyInputType) {
       const collapse = attribute && attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;

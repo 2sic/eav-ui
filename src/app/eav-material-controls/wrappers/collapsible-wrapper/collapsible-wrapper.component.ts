@@ -17,15 +17,13 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
+  fieldConfig: FieldConfigGroup;
   group: FormGroup;
   // slotIsUsed = false;
   slotIsUsedChecked = false;
   header: EavHeader;
 
   private subscriptions: Subscription[] = [];
-
-  // collapsed = false; // spm use private property, not from config
-  // isParentGroup = false; // spm use private property, not from config
 
   get notes() {
     return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
@@ -42,6 +40,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   constructor(private itemService: ItemService) { }
 
   ngOnInit() {
+    this.fieldConfig = this.config.field as FieldConfigGroup;
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
@@ -53,9 +52,6 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
         })
       );
     }
-    // const fieldConfig = this.config.field as FieldConfigGroup; // spm use private property, not from config
-    // this.collapsed = fieldConfig.settings.Collapsed || false;
-    // this.isParentGroup = fieldConfig.isParentGroup || false;
   }
 
   ngOnDestroy() {
