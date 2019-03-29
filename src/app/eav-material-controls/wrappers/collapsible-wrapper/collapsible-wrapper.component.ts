@@ -3,7 +3,7 @@ import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy } from
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
@@ -24,6 +24,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   private subscriptions: Subscription[] = [];
 
+  // collapsed = false; // spm use private property, not from config
+  // isParentGroup = false; // spm use private property, not from config
 
   get notes() {
     return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
@@ -51,6 +53,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
         })
       );
     }
+    // const fieldConfig = this.config.field as FieldConfigGroup; // spm use private property, not from config
+    // this.collapsed = fieldConfig.settings.Collapsed || false;
+    // this.isParentGroup = fieldConfig.isParentGroup || false;
   }
 
   ngOnDestroy() {

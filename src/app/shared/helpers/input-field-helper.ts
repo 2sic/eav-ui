@@ -41,12 +41,12 @@ export class InputFieldHelper {
         return type;
     }
 
-    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated, defaultValue: any): string => {
+    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated): string => {
         return attribute !== null
             ? (settingsTranslated !== null && settingsTranslated.Name)
                 ? settingsTranslated.Name
                 : attribute.name
-            : defaultValue;
+            : null;
     }
 
     /**
@@ -87,19 +87,26 @@ export class InputFieldHelper {
     }
 
     static setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
+        // empty inputtype wrappers
+        const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
+            || (inputType === InputTypesConstants.empty);
+        if (isEmptyInputType) {
+            return [WrappersConstants.collapsibleWrapper];
+        }
         // default wrappers
         const wrappers: string[] = [WrappersConstants.hiddenWrapper];
         // entity-default wrappers
-        if (InputTypesConstants.entityDefault ||
-            inputType === InputTypesConstants.stringDropdownQuery ||
-            inputType === InputTypesConstants.entityQuery ||
-            inputType === InputTypesConstants.entityContentBlocks) {
+        const isEntityType = (inputType === InputTypesConstants.entityDefault)
+            || (inputType === InputTypesConstants.stringDropdownQuery)
+            || (inputType === InputTypesConstants.entityQuery)
+            || (inputType === InputTypesConstants.entityContentBlocks);
+
+        if (isEntityType) {
             const allowMultiValue = settingsTranslated.AllowMultiValue || false;
             if (inputType === InputTypesConstants.entityContentBlocks) {
                 wrappers.push(WrappersConstants.collapsibleFieldWrapper);
             }
-            if (allowMultiValue ||
-                inputType === InputTypesConstants.entityContentBlocks) {
+            if (allowMultiValue || inputType === InputTypesConstants.entityContentBlocks) {
                 wrappers.push(WrappersConstants.entityExpandableWrapper);
             }
         }
@@ -110,7 +117,6 @@ export class InputFieldHelper {
             WrappersConstants.expandableWrapper,
             WrappersConstants.adamAttachWrapper]);
         }
-
 
         return wrappers;
     }

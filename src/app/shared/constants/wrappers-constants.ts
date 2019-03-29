@@ -1,4 +1,6 @@
 export class WrappersConstants {
+    // empty specific wrappers
+    public static readonly collapsibleWrapper: string = 'app-collapsible-wrapper';
     // default wrappers
     public static readonly hiddenWrapper: string = 'app-hidden-wrapper';
     public static readonly dropzoneWrapper: string = 'app-dropzone-wrapper';

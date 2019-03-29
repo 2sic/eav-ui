@@ -25,7 +25,7 @@ import { ContentTypeService } from '../../shared/services/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { Feature } from '../../shared/models/feature/feature';
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, ItemConfig, FormConfig, FieldConfig, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -172,33 +172,33 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     this.itemFields$ = this.loadContentTypeFormFields();
   }
 
-  /**
-   * load FieldConfig for all fields from content type attributes
-   */
-  private loadContentTypeFormFields = (): Observable<FieldConfigSet[]> => {
+  private loadContentTypeFormFields(): Observable<FieldConfigSet[]> {
     return this.contentType$
       .pipe(
         switchMap((data: ContentType) => {
-          const parentFieldGroup: FieldConfigSet = this.buildEmptyFieldGroup(null, data.contentType.settings, false, 'Edit Item', true);
+          const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+          // build first empty
+          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, allInputTypeNames,
+            InputTypesConstants.emptyDefault, data.contentType.settings, true);
           let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
-          const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
           // loop through contentType attributes
           data.contentType.attributes.forEach((attribute, index) => {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
-              const isEmptyInputType = (attribute.settings.InputType &&
-                attribute.settings.InputType.values[0].value === InputTypesConstants.emptyDefault) ||
-                attribute.type === InputTypesConstants.empty;
-              if (isEmptyInputType) { // group-fields (empty)
-                const collapsed = attribute.settings.DefaultCollapsed
-                  ? attribute.settings.DefaultCollapsed.values[0].value
-                  : false;
-                currentFieldGroup = this.buildEmptyFieldGroup(attribute, null, collapsed, 'Edit Item', false);
+              const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+              const isEmptyInputType = (inputTypeName === InputTypesConstants.emptyDefault) ||
+                (inputTypeName === InputTypesConstants.empty);
+              if (isEmptyInputType) {
+                // group-fields (empty)
+                currentFieldGroup = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
+                  data.contentType.settings, false);
                 parentFieldGroup.field.fieldGroup.push(currentFieldGroup);
-              } else { // all other fields (not group empty)
-                const formFieldConfig: FieldConfigSet = this.buildFieldFromDefinition(attribute, index, allInputTypeNames);
-                currentFieldGroup.field.fieldGroup.push(formFieldConfig);
+              } else {
+                // all other fields (not group empty)
+                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
+                  data.contentType.settings, null);
+                currentFieldGroup.field.fieldGroup.push(fieldConfigSet);
               }
             } catch (error) {
               console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -211,116 +211,93 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       );
   }
 
-  private buildFieldFromDefinition(attribute: AttributeDef, index: number, allInputTypeNames: string[]): FieldConfigSet {
-    try {
-      const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
-      return this.buildInputTypeFieldConfig(attribute, index, allInputTypeNames, inputTypeName);
-    } catch (error) {
-      console.error(`Error loading input fields: ${error}.
-      Attribute name: ${attribute.name}
-      Attribute input type: ${attribute.settings.InputType && attribute.settings.InputType.values[0].value
-          ? attribute.settings.InputType.values[0].value : attribute.type}`);
-      throw error;
-    }
-  }
-
-  /**
-   * Load inputType FieldConfig from AttributeDef
-   */
-  private buildInputTypeFieldConfig(attribute: AttributeDef, index: number, allInputTypeNames: string[],
-    inputType: string): FieldConfigSet {
-    const settingsTranslated: EavAttributesTranslated = LocalizationHelper.translateSettings(
-      attribute.settings, this.currentLanguage, this.defaultLanguage
-    );
-    const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
-    const required: boolean = ValidationHelper.isRequired(settingsTranslated);
-    let value = LocalizationHelper.translate(
-      this.currentLanguage,
-      this.defaultLanguage,
-      this.item.entity.attributes[attribute.name],
-      null
-    );
-    // set default value if needed
-    if (isEmpty(value) && typeof value !== typeof true && typeof value !== typeof 1) {
-      value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
-        this.currentLanguage, this.defaultLanguage);
-      //  defaultValueIsSet = true;
-    }
-    // this.getFieldDisabled(attribute, settingsTranslated, defaultValueIsSet);
-    const disabled: boolean = settingsTranslated.Disabled;
-    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated, null);
-    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
-
-    return {
-      field: {
-        disabled: disabled,
-        fullSettings: attribute.settings,
-        index: index,
-        label: label,
-        name: attribute.name,
-        placeholder: `Enter ${attribute.name}`, // TODO: need to see what to use placeholder or label or both
-        required: required,
-        settings: settingsTranslated,
-        inputType: inputType,
-        type: attribute.type,
-        validation: validationList,
-        value: value,
-        wrappers: wrappers,
-      },
-      entity: {
-        entityId: this.item.entity.id,
-        entityGuid: this.item.entity.guid,
-        header: this.item.header,
-      },
-      form: {
-        allInputTypeNames: allInputTypeNames, // TODO: maybe better way
-        features: this.features,
-      },
+  private buildFieldConfigSet(attribute: AttributeDef, index: number, allInputTypeNames: string[], inputType: string,
+    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigSet {
+    const entity: ItemConfig = {
+      entityId: this.item.entity.id,
+      entityGuid: this.item.entity.guid,
+      header: this.item.header,
     };
+    const form: FormConfig = {
+      allInputTypeNames: allInputTypeNames,
+      features: this.features,
+    };
+    const field = this.buildFieldConfig(attribute, index, inputType, contentTypeSettings, isParentGroup);
+
+    const fieldConfigSet: FieldConfigSet = { field, entity, form };
+    return fieldConfigSet;
   }
 
-  /**
-   * Create fieldConfig for title field group with collapsible wrapper
-   */
-  private buildEmptyFieldGroup = (
-    attribute: AttributeDef,
-    contentTypeSettings: EavAttributes,
-    collapse: boolean,
-    defaultValue: string,
-    isParentGroup: boolean
-  ): FieldConfigSet => {
-    let settingsTranslated: EavAttributesTranslated = null;
-    let fullSettings: EavAttributes = null;
+  private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
+    isParentGroup: boolean): FieldConfig {
+    let fieldConfig: FieldConfig;
+    let settingsTranslated: EavAttributesTranslated;
+    let fullSettings: EavAttributes;
+    const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
+      || (inputType === InputTypesConstants.empty);
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
       fullSettings = attribute.settings;
-    } else if (contentTypeSettings) {
+    } else if (isEmptyInputType && contentTypeSettings) {
       settingsTranslated = LocalizationHelper.translateSettings(contentTypeSettings, this.currentLanguage, this.defaultLanguage);
       fullSettings = contentTypeSettings;
     }
 
-    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated, defaultValue);
-    const name: string = attribute !== null ? attribute.name : defaultValue;
+    const name: string = attribute ? attribute.name : 'Edit Item';
+    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated) || 'Edit Item';
+    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
+    console.log('Petar buildFieldConfig wrappers', wrappers);
+    console.log('Petar buildFieldConfig inputType', inputType);
+    // disablei18n?
 
-    return {
-      entity: {
-        entityId: this.item.entity.id,
-        entityGuid: this.item.entity.guid,
-        header: this.item.header,
-      },
-      field: {
+    if (isEmptyInputType) {
+      const collapse = attribute && attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
+
+      fieldConfig = {
         fullSettings: fullSettings,
-        collapse: collapse,
-        fieldGroup: [],
+        collapse: collapse, // empty specific
+        fieldGroup: [], // empty specific
         label: label,
         name: name,
         settings: settingsTranslated,
-        inputType: InputTypesConstants.emptyDefault,
-        isParentGroup: isParentGroup,
-        //  type: attribute.type,
-        wrappers: ['app-collapsible-wrapper'],
+        inputType: inputType,
+        isParentGroup: isParentGroup, // empty specific
+        wrappers: wrappers,
+      } as FieldConfigGroup;
+    } else {
+      const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
+      const required: boolean = ValidationHelper.isRequired(settingsTranslated);
+      let value = LocalizationHelper.translate(
+        this.currentLanguage,
+        this.defaultLanguage,
+        this.item.entity.attributes[name],
+        null
+      );
+      // set default value if needed
+      if (isEmpty(value) && typeof value !== typeof true && typeof value !== typeof 1) {
+        value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
+          this.currentLanguage, this.defaultLanguage);
       }
-    };
+      const disabled: boolean = settingsTranslated.Disabled;
+
+      fieldConfig = {
+        disabled: disabled, // other fields specific
+        fullSettings: fullSettings,
+        index: index, // other fields specific
+        label: label,
+        name: name,
+        placeholder: `Enter ${name}`,  // other fields specific
+        required: required, // other fields specific
+        settings: settingsTranslated,
+        inputType: inputType,
+        type: attribute.type, // other fields specific
+        validation: validationList, // other fields specific
+        value: value, // other fields specific
+        wrappers: wrappers,
+      };
+    }
+    return fieldConfig;
   }
+
 }
