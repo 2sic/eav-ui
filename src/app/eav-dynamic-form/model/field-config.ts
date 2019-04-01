@@ -34,7 +34,7 @@ export interface FieldConfigAngular extends FieldConfig {
   // pattern?: string;
   settings?: EavAttributesTranslated;
   fullSettings?: EavAttributes;
-  collapse?: boolean; // spm todo: remove, only use as local var in group
+  // collapse?: boolean; // spm todo: remove, only use as local var in group
   // fieldGroup?: FieldConfigSet[]; // spm todo extract to FieldConfigGroup
   // index?: number;
   // adam?: AdamBrowserComponent; // spm move from currentFieldConfig to FieldConfig as adam

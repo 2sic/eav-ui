@@ -22,6 +22,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   // slotIsUsed = false;
   slotIsUsedChecked = false;
   header: EavHeader;
+  collapse = false;
 
   private subscriptions: Subscription[] = [];
 

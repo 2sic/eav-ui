@@ -251,11 +251,8 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
 
     if (isEmptyInputType) {
-      const collapse = attribute && attribute.settings.DefaultCollapsed ? attribute.settings.DefaultCollapsed.values[0].value : false;
-
       fieldConfig = {
         fullSettings: fullSettings,
-        collapse: collapse, // empty specific
         fieldGroup: [], // empty specific
         label: label,
         name: name,
