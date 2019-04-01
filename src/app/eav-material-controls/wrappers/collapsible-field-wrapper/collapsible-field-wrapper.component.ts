@@ -13,6 +13,8 @@ export class CollapsibleFieldWrapperComponent implements FieldWrapper, OnInit {
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
+  enableCollapseField = true;
+  collapseField = true;
 
   constructor() { }
 

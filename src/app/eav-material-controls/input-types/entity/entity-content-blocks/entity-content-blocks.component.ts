@@ -28,8 +28,6 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
     this.config.field.settings.EnableCreate = false; // disable manual create
     this.config.field.settings.EnableEdit = false;
     this.config.field.settings.EntityType = 'ContentGroupReference';
-    this.config.field.enableCollapseField = true;   // ui option to allow collapsing
-    this.config.field.collapseField = true;   // ui option to allow collapsing
 
     // important for calling a FieldMaskService from extended component
     super.ngOnInit();

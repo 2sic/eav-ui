@@ -39,8 +39,8 @@ export interface FieldConfigAngular extends FieldConfig {
   // index?: number;
   // adam?: AdamBrowserComponent; // spm move from currentFieldConfig to FieldConfig as adam
   availableEntities?: EntityInfo[]; // spm move from currentFieldConfig to FieldConfig as cache
-  enableCollapseField?: boolean; // spm todo: remove, only local var in content-block. Default to true
-  collapseField?: boolean; // spm todo: remove, only local var in content-block. For content-block default to true
+  // enableCollapseField?: boolean; // spm todo: remove, only local var in content-block. Default to true
+  // collapseField?: boolean; // spm todo: remove, only local var in content-block. For content-block default to true
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {
