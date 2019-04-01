@@ -252,14 +252,14 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
 
     if (isEmptyInputType) {
       fieldConfig = {
-        fullSettings: fullSettings,
-        fieldGroup: [], // empty specific
-        label: label,
-        name: name,
-        settings: settingsTranslated,
-        inputType: inputType,
         isParentGroup: isParentGroup, // empty specific
+        fieldGroup: [], // empty specific
+        settings: settingsTranslated,
+        fullSettings: fullSettings,
         wrappers: wrappers,
+        name: name,
+        label: label,
+        inputType: inputType,
       } as FieldConfigGroup;
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
@@ -278,19 +278,19 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       const disabled: boolean = settingsTranslated.Disabled;
 
       fieldConfig = {
-        disabled: disabled, // other fields specific
+        initialValue: initialValue, // other fields specific
+        validation: validationList, // other fields specific
+        settings: settingsTranslated,
         fullSettings: fullSettings,
+        wrappers: wrappers,
+        name: name,
         index: index, // other fields specific
         label: label,
-        name: name,
         placeholder: `Enter ${name}`,  // other fields specific
-        required: required, // other fields specific
-        settings: settingsTranslated,
         inputType: inputType,
         type: attribute.type, // other fields specific
-        validation: validationList, // other fields specific
-        initialValue: initialValue, // other fields specific
-        wrappers: wrappers,
+        required: required, // other fields specific
+        disabled: disabled, // other fields specific
       };
     }
     return fieldConfig;
