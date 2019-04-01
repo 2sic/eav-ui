@@ -22,7 +22,7 @@ export interface FieldConfigAngular extends FieldConfig {
   // disabled?: boolean;
   // label?: string;
   // name: string;
-  options?: string[]; // spm todo double check if this is used
+  // options?: string[]; // spm todo double check if this is used
   // placeholder?: string; // spm move to base
   // inputType: string; // spm move to base
   // isParentGroup?: boolean; // spm todo extract to FieldConfigGroup
