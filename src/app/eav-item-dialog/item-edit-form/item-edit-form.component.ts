@@ -264,15 +264,15 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
       const required: boolean = ValidationHelper.isRequired(settingsTranslated);
-      let value = LocalizationHelper.translate(
+      let initialValue = LocalizationHelper.translate(
         this.currentLanguage,
         this.defaultLanguage,
         this.item.entity.attributes[name],
         null
       );
       // set default value if needed
-      if (isEmpty(value) && typeof value !== typeof true && typeof value !== typeof 1) {
-        value = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
+      if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1) {
+        initialValue = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
           this.currentLanguage, this.defaultLanguage);
       }
       const disabled: boolean = settingsTranslated.Disabled;
@@ -289,7 +289,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
         inputType: inputType,
         type: attribute.type, // other fields specific
         validation: validationList, // other fields specific
-        value: value, // other fields specific
+        initialValue: initialValue, // other fields specific
         wrappers: wrappers,
       };
     }

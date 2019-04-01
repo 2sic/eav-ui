@@ -14,7 +14,7 @@ export interface FieldConfigSet {
 
 export interface FieldConfigAngular extends FieldConfig {
   validation?: ValidatorFn[];
-  value?: any; // spm redo value check in boolean-default and maybe rename this to initialValue. It's only used to initialize controls
+  initialValue?: any;
   wrappers?: string[];
   // pattern?: string;
   settings?: EavAttributesTranslated;

@@ -92,8 +92,8 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   private createControl(config: FieldConfigSet) {
     try {
       // tslint:disable-next-line:prefer-const
-      let { disabled, validation, value } = config.field;
-      return this.formBuilder.control({ disabled, value }, validation);
+      let { disabled, validation, initialValue } = config.field;
+      return this.formBuilder.control({ disabled, value: initialValue }, validation);
     } catch (error) {
       console.error(`Error creating form control: ${error}
       Config: ${config}`);
