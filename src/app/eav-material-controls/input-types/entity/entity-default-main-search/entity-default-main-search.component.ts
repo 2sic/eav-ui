@@ -13,7 +13,7 @@ import { Observable, Subscription, merge, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -35,7 +35,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   @ViewChild('autoCompleteInput') autoCompleteInputControl;
   @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
-  @Input() config: FieldConfigSet;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
   @Input() error = '';
 
@@ -52,7 +52,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   // private availableEntities: EntityInfo[] = [];
   private subscriptions: Subscription[] = [];
 
-  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get allowMultiValue(): boolean { return this.config.field.settings.AllowMultiValue || false; }
   get enableTextEntry(): boolean { return this.config.field.settings.EnableTextEntry || false; }
   get entityType(): string { return this.config.field.settings.EntityType || ''; }

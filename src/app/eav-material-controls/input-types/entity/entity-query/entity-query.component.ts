@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
@@ -19,7 +19,7 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
 @InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfigSet;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
@@ -75,7 +75,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
         } else if (!data[this.streamName]) {
           this.error = this.translate.instant('FieldType.EntityQuery.QueryStreamNotFound') + this.streamName;
         } else { // everything ok - set data to select
-          this.config.field.availableEntities = data[this.streamName].map(this.queryEntityMapping);
+          this.config.cache = data[this.streamName].map(this.queryEntityMapping);
         }
         // $scope.indicateReload = false;
       });

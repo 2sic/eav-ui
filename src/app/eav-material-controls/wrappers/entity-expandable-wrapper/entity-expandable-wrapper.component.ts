@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, E
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../shared/models/entity/entity-field-config-set';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EavService } from '../../../shared/services/eav.service';
@@ -19,12 +19,12 @@ import { Helper } from '../../../shared/helpers/helper';
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfigSet;
+  @Input() config: EntityFieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;
 
-  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }

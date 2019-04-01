@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -19,7 +19,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 })
 export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
-  @Input() config: FieldConfigSet;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
   @Input() autoCompleteInputControl: any;
   // by default data is in array format, but can be stringformat
@@ -36,7 +36,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
-  get availableEntities(): EntityInfo[] { return this.config.field.availableEntities || []; }
+  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get allowMultiValue() { return this.config.field.settings.AllowMultiValue || false; }
   get entityType() { return this.config.field.settings.EntityType || ''; }
   // get enableAddExisting() { return this.config.currentFieldConfig.settings.EnableAddExisting || true; }

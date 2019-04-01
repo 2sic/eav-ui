@@ -8,7 +8,7 @@ import {
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfigSet;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
@@ -95,7 +95,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
         : this.value;
     } catch (err) { }
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-      this.config.field.availableEntities = [...items];
+      this.config.cache = [...items];
     });
   }
 

@@ -2,7 +2,6 @@ import { ValidatorFn } from '@angular/forms';
 import { EavAttributes, EavAttributesTranslated, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { Feature } from '../../shared/models/feature/feature';
-import { EntityInfo } from '../../shared/models/eav/entity-info';
 import { FieldConfig } from '../../../../projects/shared/field-config';
 
 export interface FieldConfigSet {
@@ -11,11 +10,6 @@ export interface FieldConfigSet {
   form?: FormConfig;
   adam?: AdamBrowserComponent;
   cache?: any;
-}
-
-// spm todo: move this to the entities- fields (in own file)
-export interface EntityFieldConfigSet extends FieldConfigSet {
-  cache: EntityInfo[];
 }
 
 export interface FieldConfigAngular extends FieldConfig {
@@ -38,7 +32,7 @@ export interface FieldConfigAngular extends FieldConfig {
   // fieldGroup?: FieldConfigSet[]; // spm todo extract to FieldConfigGroup
   // index?: number;
   // adam?: AdamBrowserComponent; // spm move from currentFieldConfig to FieldConfig as adam
-  availableEntities?: EntityInfo[]; // spm move from currentFieldConfig to FieldConfig as cache
+  // availableEntities?: EntityInfo[]; // spm move from currentFieldConfig to FieldConfig as cache
   // enableCollapseField?: boolean; // spm todo: remove, only local var in content-block. Default to true
   // collapseField?: boolean; // spm todo: remove, only local var in content-block. For content-block default to true
 }
