@@ -28,7 +28,10 @@ export interface ConnectorDataObservable<T> extends ConnectorData<T> {
 }
 
 export interface ConnectorData<T> {
-    field: any; // todo: probably remove this
+    /**
+     * Current value of the field
+     */
+    value: T;
     /**
      * Client updates value in host
      * @param newValue - New value of the field from the client

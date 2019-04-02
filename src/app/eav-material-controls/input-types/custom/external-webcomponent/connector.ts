@@ -15,19 +15,18 @@ export class ConnectorInstance<T> implements ConnectorObservable<T> {
 }
 
 export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
-    field: any;
     value$: Observable<T>;
-    clientValueChangeListeners: ((newValue: T) => void)[];
+    value: T;
+    clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
     constructor(
         private host: ExternalWebcomponentComponent,
         value$: Observable<T>
     ) {
-        this.clientValueChangeListeners = [];
-        this.field = host.group.controls[host.config.field.name];
         this.value$ = value$;
         // Host will complete this observable. Therefore unsubscribe is not required
         this.value$.subscribe(newValue => {
+            this.value = newValue;
             this.clientValueChangeListeners.forEach(clientListener => clientListener(newValue));
         });
     }

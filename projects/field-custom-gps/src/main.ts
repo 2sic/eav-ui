@@ -4,25 +4,20 @@ import { MyEventListenerModel } from './models';
 // Create a class for the element
 class FieldCustomGps extends EavCustomInputFieldObservable<string> {
   shadow: ShadowRoot;
-  myInputOldWay: HTMLInputElement;
-  myOldWayListeners: MyEventListenerModel[];
   myInputWithObservable: HTMLInputElement;
   myInputWithFunctions: HTMLInputElement;
+  eventListeners: MyEventListenerModel[] = [];
 
   constructor() {
-    console.log('Petar order EavCustomInputField constructor');
     super();
+    console.log('Petar order EavCustomInputField constructor');
     this.shadow = this.attachShadow({ mode: 'open' });
 
-    this.myOldWayListeners = [];
-    this.myInputOldWay = this.createInput('Old way:');
-
     this.myInputWithObservable = this.createInput('With observables:');
-
     this.myInputWithFunctions = this.createInput('With valueChangeListeners:');
   }
 
-  createInput(labelText: string) {
+  private createInput(labelText: string) {
     const container = document.createElement('div');
     const label = document.createElement('label');
     label.innerText = labelText;
@@ -36,36 +31,41 @@ class FieldCustomGps extends EavCustomInputFieldObservable<string> {
   connectedCallback() {
     console.log('Petar order EavCustomInputField connectedCallback');
 
-    // old way
-    this.myInputOldWay.value = this.connector.data.field.value;
-    function oldWayUpdate() {
-      this.connector.data.update(this.myInputOldWay.value);
-    }
-    const oldWayUpdateBound = oldWayUpdate.bind(this);
-    this.myInputOldWay.addEventListener('change', oldWayUpdateBound);
-    const oldWayListener: MyEventListenerModel = { element: this.myInputOldWay, type: 'change', listener: oldWayUpdateBound };
-    this.myOldWayListeners.push(oldWayListener);
-
     // with observable
     // Host will complete observable in ngOnDestroy and there is no need to call unsubscribe()
     this.connector.data.value$.subscribe(newValue => {
       this.myInputWithObservable.value = newValue;
     });
 
+    const withObservableUpdateBound = this.updateValue.bind(this);
+    this.myInputWithObservable.addEventListener('change', withObservableUpdateBound);
+    const withObservableListener = { element: this.myInputWithObservable, type: 'change', listener: withObservableUpdateBound };
+    this.eventListeners.push(withObservableListener);
+
     // with functions
-    this.myInputWithFunctions.value = this.connector.data.field.value;
+    this.myInputWithFunctions.value = this.connector.data.value;
     function myOnChangeFunction(newValue: string) {
       this.myInputWithFunctions.value = newValue;
     }
     const myOnChangeFunctionBound = myOnChangeFunction.bind(this);
     this.connector.data.onValueChange(myOnChangeFunctionBound);
+
+    const withFunctionsUpdateBound = this.updateValue.bind(this);
+    this.myInputWithFunctions.addEventListener('change', withFunctionsUpdateBound);
+    const withFunctionsListener = { element: this.myInputWithFunctions, type: 'change', listener: withFunctionsUpdateBound };
+    this.eventListeners.push(withFunctionsListener);
+  }
+
+  private updateValue(event: Event) {
+    const newValue = (<HTMLInputElement>event.target).value;
+    this.connector.data.update(newValue);
   }
 
   disconnectedCallback() {
-    this.myOldWayListeners.forEach(oldWayListener => {
-      const element = oldWayListener.element;
-      const type = oldWayListener.type;
-      const listener = oldWayListener.listener;
+    this.eventListeners.forEach(eventListener => {
+      const element = eventListener.element;
+      const type = eventListener.type;
+      const listener = eventListener.listener;
       element.removeEventListener(type, listener);
     });
   }
