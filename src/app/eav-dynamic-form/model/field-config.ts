@@ -18,7 +18,6 @@ export interface FieldConfigAngular extends FieldConfig {
   settings: EavAttributesTranslated;
   fullSettings: EavAttributes;
   wrappers: string[];
-  // pattern?: string;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {
