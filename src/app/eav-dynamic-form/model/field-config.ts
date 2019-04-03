@@ -1,9 +1,10 @@
 import { ValidatorFn } from '@angular/forms';
-import { EavAttributes, EavAttributesTranslated, EavHeader } from '../../shared/models/eav';
+import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { Feature } from '../../shared/models/feature/feature';
 import { FieldConfig } from '../../../../projects/shared/field-config';
 
+// spm split these interfaces into separate files
 export interface FieldConfigSet {
   field: FieldConfigAngular;
   entity: ItemConfig;
@@ -15,7 +16,6 @@ export interface FieldConfigSet {
 export interface FieldConfigAngular extends FieldConfig {
   initialValue: any;
   validation: ValidatorFn[];
-  settings: EavAttributesTranslated;
   fullSettings: EavAttributes;
   wrappers: string[];
 }
@@ -32,6 +32,6 @@ export interface ItemConfig {
 }
 
 export interface FormConfig {
-  allInputTypeNames: string[]; // should be changed!!!
+  allInputTypeNames: string[]; // spm should be changed!!!
   features: Feature[];
 }

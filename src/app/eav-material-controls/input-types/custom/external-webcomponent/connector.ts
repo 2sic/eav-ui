@@ -1,9 +1,11 @@
 import { Observable } from 'rxjs/Observable';
 import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
 import { ExternalWebcomponentComponent } from './external-webcomponent.component';
+// import { FieldConfig } from '../../../../../../projects/shared/field-config';
 
 export class ConnectorInstance<T> implements ConnectorObservable<T> {
-    state$: any; // todo should contain field state like disabled, language, etc.
+    // field$: Observable<FieldConfig>;
+    // field: FieldConfig;
     data: ConnectorDataObservable<T>;
 
     constructor(

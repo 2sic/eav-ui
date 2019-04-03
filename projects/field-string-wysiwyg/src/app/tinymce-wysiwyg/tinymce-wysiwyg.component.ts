@@ -21,7 +21,7 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() disabled: boolean;
   @Input() form: FormGroup;
   @Input() host: any;
-  @Input() id: string;
+  @Input() id: string; // spm id = `tinymce-wysiwyg-${name}`
   @Input() translateService: TranslateService;
   @Input()
   set value(value: any) {

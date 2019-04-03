@@ -1,7 +1,7 @@
 import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { EavAttributesTranslated, EavHeader } from '../models/eav';
+import { FieldSettings, EavHeader } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
 
 export class InputFieldHelper {
@@ -43,12 +43,8 @@ export class InputFieldHelper {
         return type;
     }
 
-    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated): string => {
-        return attribute !== null
-            ? (settingsTranslated !== null && settingsTranslated.Name)
-                ? settingsTranslated.Name
-                : attribute.name
-            : null;
+    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: FieldSettings): string => {
+        return settingsTranslated && settingsTranslated.Name || attribute.name;
     }
 
     /**
@@ -88,7 +84,7 @@ export class InputFieldHelper {
         }
     }
 
-    static setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
+    static setWrappers(inputType: string, settingsTranslated: FieldSettings) {
         // empty inputtype wrappers
         const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
             || (inputType === InputTypesConstants.empty);
@@ -123,7 +119,7 @@ export class InputFieldHelper {
         return wrappers;
     }
 
-    static parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
+    static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
         let defaultValue = settings.DefaultValue;
 
         if (header.prefill && header.prefill[attributeKey]) {

@@ -5,7 +5,7 @@ import { ValidatorFn } from '@angular/forms';
 import isEmpty from 'lodash/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, EavAttributesTranslated, ContentType, Item } from '../../../shared/models/eav';
+import { EavAttributes, FieldSettings, ContentType, Item } from '../../../shared/models/eav';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../../shared/constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
@@ -100,7 +100,7 @@ export class BuildFieldsService {
   private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
     isParentGroup: boolean): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
-    let settingsTranslated: EavAttributesTranslated;
+    let settingsTranslated: FieldSettings;
     let fullSettings: EavAttributes;
     const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
       || (inputType === InputTypesConstants.empty);
@@ -114,7 +114,7 @@ export class BuildFieldsService {
     }
 
     const name: string = attribute ? attribute.name : 'Edit Item';
-    const label: string = InputFieldHelper.getFieldLabel(attribute, settingsTranslated) || 'Edit Item';
+    const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
 
     if (isEmptyInputType) {

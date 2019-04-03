@@ -114,6 +114,8 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
     this.customEl.host = this.externalInputTypeHost;
     this.customEl.config = this.config;
+    // spm add FormGroup just for wysiwyg and custom-gps and don't let other users know. Hide it with custom inteface
+    // spm pass language service secretly as well
     this.customEl.form = this.group;
     this.customEl.id = this.id;
     this.customEl.translateService = this.translateService;

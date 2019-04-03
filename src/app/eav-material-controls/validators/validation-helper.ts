@@ -1,10 +1,10 @@
 import { ValidatorFn, Validators } from '@angular/forms';
-import { EavAttributesTranslated } from '../../shared/models/eav';
+import { FieldSettings } from '../../shared/models/eav';
 import { CustomValidators } from './custom-validators';
 
 export class ValidationHelper {
 
-    public static getValidations(settings: EavAttributesTranslated): ValidatorFn[] {
+    public static getValidations(settings: FieldSettings): ValidatorFn[] {
         // important - a hidden field dont have validations and is not required
         const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
         return visibleInEditUI
@@ -12,7 +12,7 @@ export class ValidationHelper {
             : [];
     }
 
-    public static isRequired(settings: EavAttributesTranslated): boolean {
+    public static isRequired(settings: FieldSettings): boolean {
         const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
 
         return settings.Required && visibleInEditUI
@@ -24,7 +24,7 @@ export class ValidationHelper {
    * TODO: see can i write this in module configuration ???
    * @param inputType
    */
-    private static setDefaultValidations(settings: EavAttributesTranslated): ValidatorFn[] {
+    private static setDefaultValidations(settings: FieldSettings): ValidatorFn[] {
 
         const validation: ValidatorFn[] = [];
 

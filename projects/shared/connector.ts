@@ -1,17 +1,14 @@
 import { Observable } from 'rxjs/Observable';
-// import { EavAttributesTranslated } from 'src/app/shared/models/eav';
+// import { FieldConfig } from './field-config';
 
 export interface ConnectorObservable<T> extends Connector<T> {
-    state$: any; // todo should contain field state like disabled, language, etc.
+    // field$: Observable<FieldConfig>;
     data: ConnectorDataObservable<T>; // current field data, read/write or get other languages
 }
 
 export interface Connector<T> {
-    /** this should be a field configuration. This is basically field settings from field config */
-    // settings: EavAttributesTranslated;
-
-    /** todo should contain field state like disabled, language, etc. */
-    // state: any;
+    /** Contains field configuration */
+    // field: FieldConfig;
 
     /** read / update stuff for the other fields or form */
     // form: any;
@@ -24,16 +21,15 @@ export interface Connector<T> {
 }
 
 export interface ConnectorDataObservable<T> extends ConnectorData<T> {
+    /** Observable which returns new value on each value update */
     value$: Observable<T>;
 }
 
 export interface ConnectorData<T> {
-    /**
-     * Current value of the field
-     */
+    /** Current value of the field */
     value: T;
     /**
-     * Client updates value in host
+     * Client updates value in the host
      * @param newValue - New value of the field from the client
      */
     update: (newValue: T) => void;
