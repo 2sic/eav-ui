@@ -1,7 +1,7 @@
 import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { FieldSettings, EavHeader } from '../models/eav';
+import { FieldSettings, EavHeader, Item } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
 
 export class InputFieldHelper {
@@ -41,6 +41,10 @@ export class InputFieldHelper {
             }
         });
         return type;
+    }
+
+    static getContentTypeId(item: Item): string {
+        return item.entity.type ? item.entity.type.id : item.header.contentTypeName;
     }
 
     static getFieldLabel = (attribute: AttributeDef, settingsTranslated: FieldSettings): string => {

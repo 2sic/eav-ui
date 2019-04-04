@@ -28,10 +28,10 @@ export interface FieldConfigGroup extends FieldConfigAngular {
 export interface ItemConfig {
   entityId: number;
   entityGuid: string;
+  contentTypeId: string;
   header: EavHeader;
 }
 
 export interface FormConfig {
-  allInputTypeNames: string[]; // spm should be changed!!!
   features: Feature[];
 }

@@ -15,6 +15,7 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
+import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -145,11 +146,9 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private loadContentTypeFromStore() {
-    const id = this.item.entity.type === null
-      ? this.item.header.contentTypeName
-      : this.item.entity.type.id;
+    const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     // Load content type for item from store
-    this.contentType$ = this.contentTypeService.getContentTypeById(id);
+    this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
     // create form fields from content type
     this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.features, this.currentLanguage,
       this.defaultLanguage);

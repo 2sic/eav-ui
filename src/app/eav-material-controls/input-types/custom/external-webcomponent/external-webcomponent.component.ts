@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
+import { NgElement, WithProperties } from '@angular/elements';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable, of, Subject, BehaviorSubject } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -11,11 +13,12 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { NgElement, WithProperties } from '@angular/elements';
 import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
-import { animate } from '@angular/animations';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
+import { ContentTypeService } from '../../../../shared/services/content-type.service';
+import { ContentType } from '../../../../shared/models/eav';
+import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -60,6 +63,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private _ngZone: NgZone,
     private languageService: LanguageService,
+    private contentTypeService: ContentTypeService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
     this.currentLanguage$ = languageService.getCurrentLanguage();
@@ -112,8 +116,15 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     //   this.customEl.setAttribute('language', this.currentLanguage);
     // }));
 
+    let allInputTypeNames: string[];
+    const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
+    contentType$.pipe(first()).subscribe(data => {
+      allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+    });
+    this.customEl.hiddenProps = {
+      allInputTypeNames: allInputTypeNames,
+    };
     this.customEl.host = this.externalInputTypeHost;
-    this.customEl.config = this.config;
     // spm add FormGroup just for wysiwyg and custom-gps and don't let other users know. Hide it with custom inteface
     // spm pass language service secretly as well
     this.customEl.form = this.group;

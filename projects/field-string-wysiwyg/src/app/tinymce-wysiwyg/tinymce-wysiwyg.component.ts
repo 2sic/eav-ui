@@ -5,6 +5,9 @@ import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { TinyMceAdamService } from '../services/tinymce-adam-service';
+import { ConnectorObservable } from '../../../../shared/connector';
+// tslint:disable-next-line:max-line-length
+import { HiddenProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 // import { attachAdam } from './tinymce-adam-service.js'
@@ -16,8 +19,8 @@ import { TinyMceAdamService } from '../services/tinymce-adam-service';
   styleUrls: ['./tinymce-wysiwyg.component.scss']
 })
 export class TinymceWysiwygComponent implements OnInit {
-
-  @Input() config: any;
+  @Input() connector: ConnectorObservable<string>;
+  @Input() hiddenProps: HiddenProps;
   @Input() disabled: boolean;
   @Input() form: FormGroup;
   @Input() host: any;
@@ -170,10 +173,10 @@ export class TinymceWysiwygComponent implements OnInit {
 
   private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
-    if (this.config.form.allInputTypeNames.length === this.config.field.index + 1) {
+    if (this.hiddenProps.allInputTypeNames.length === this.connector.field.index + 1) {
       return;
     }
-    const nextField = this.config.form.allInputTypeNames[this.config.field.index + 1];
+    const nextField = this.hiddenProps.allInputTypeNames[this.connector.field.index + 1];
     if (nextField === 'entity-content-blocks') {
       settings.enableContentBlocks = true;
     }

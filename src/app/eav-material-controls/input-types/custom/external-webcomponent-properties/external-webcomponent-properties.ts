@@ -3,8 +3,8 @@ import { ConnectorObservable } from '../../../../../../projects/shared/connector
 
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
+    hiddenProps: HiddenProps;
     id: string;
-    config: any;
     form: any;
     host: any;
     translateService: TranslateService;
@@ -16,4 +16,8 @@ export class ExternalWebComponentProperties<T> {
     adamSetValueCallback: any;
     adamAfterUploadCallback: any;
     // dnnBridgeprocessResult: any;
+}
+
+export class HiddenProps {
+    allInputTypeNames: string[];
 }

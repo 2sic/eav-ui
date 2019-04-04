@@ -43,10 +43,9 @@ export class BuildFieldsService {
     return this.contentType$
       .pipe(
         switchMap((data: ContentType) => {
-          const allInputTypeNames: string[] = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
           // build first empty
-          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, allInputTypeNames,
-            InputTypesConstants.emptyDefault, data.contentType.settings, true);
+          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, InputTypesConstants.emptyDefault,
+            data.contentType.settings, true);
           let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
           // loop through contentType attributes
@@ -58,14 +57,12 @@ export class BuildFieldsService {
                 (inputTypeName === InputTypesConstants.empty);
               if (isEmptyInputType) {
                 // group-fields (empty)
-                currentFieldGroup = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
-                  data.contentType.settings, false);
+                currentFieldGroup = this.buildFieldConfigSet(attribute, index, inputTypeName, data.contentType.settings, false);
                 const field = parentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(currentFieldGroup);
               } else {
                 // all other fields (not group empty)
-                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, allInputTypeNames, inputTypeName,
-                  data.contentType.settings, null);
+                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, inputTypeName, data.contentType.settings, null);
                 const field = currentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(fieldConfigSet);
               }
@@ -80,15 +77,15 @@ export class BuildFieldsService {
       );
   }
 
-  private buildFieldConfigSet(attribute: AttributeDef, index: number, allInputTypeNames: string[], inputType: string,
-    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigSet {
+  private buildFieldConfigSet(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
+    isParentGroup: boolean): FieldConfigSet {
     const entity: ItemConfig = {
       entityId: this.item.entity.id,
       entityGuid: this.item.entity.guid,
+      contentTypeId: InputFieldHelper.getContentTypeId(this.item),
       header: this.item.header,
     };
     const form: FormConfig = {
-      allInputTypeNames: allInputTypeNames,
       features: this.features,
     };
     const field = this.buildFieldConfig(attribute, index, inputType, contentTypeSettings, isParentGroup);
