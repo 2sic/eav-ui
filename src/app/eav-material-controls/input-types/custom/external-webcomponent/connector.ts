@@ -1,17 +1,19 @@
 import { Observable } from 'rxjs/Observable';
 import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
 import { ExternalWebcomponentComponent } from './external-webcomponent.component';
-// import { FieldConfig } from '../../../../../../projects/shared/field-config';
+import { FieldConfig } from '../../../../../../projects/shared/field-config';
 
 export class ConnectorInstance<T> implements ConnectorObservable<T> {
-    // field$: Observable<FieldConfig>;
-    // field: FieldConfig;
+    field$: Observable<FieldConfig>;
+    field: FieldConfig;
     data: ConnectorDataObservable<T>;
 
     constructor(
         host: ExternalWebcomponentComponent,
-        value$: Observable<T>
+        value$: Observable<T>,
+        field: FieldConfig,
     ) {
+        this.field = field;
         this.data = new ConnectorDataInstance<T>(host, value$);
     }
 }

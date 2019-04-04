@@ -104,13 +104,13 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private createElementWebComponent() {
     // temp: harcoded - need to read from config
-    // this.customEl = document.createElement('field-string-wysiwyg') as any;
-    this.customEl = document.createElement('field-custom-gps') as any;
-    this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
-      this.currentLanguage = lan;
-      console.log('Petar changed language', this.currentLanguage);
-      this.customEl.setAttribute('language', this.currentLanguage);
-    }));
+    this.customEl = document.createElement('field-string-wysiwyg') as any;
+    // this.customEl = document.createElement('field-custom-gps') as any;
+    // this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
+    //   this.currentLanguage = lan;
+    //   console.log('Petar changed language', this.currentLanguage);
+    //   this.customEl.setAttribute('language', this.currentLanguage);
+    // }));
 
     this.customEl.host = this.externalInputTypeHost;
     this.customEl.config = this.config;
@@ -123,7 +123,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject<string>(fieldCurrentValue);
     this.subjects.push(this.value$);
-    this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable());
+    this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable(), this.config.field);
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 

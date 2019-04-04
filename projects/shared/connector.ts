@@ -1,14 +1,15 @@
 import { Observable } from 'rxjs/Observable';
-// import { FieldConfig } from './field-config';
+import { FieldConfig } from './field-config';
 
 export interface ConnectorObservable<T> extends Connector<T> {
-    // field$: Observable<FieldConfig>;
+    /** Observable on field configuration */
+    field$: Observable<FieldConfig>;
     data: ConnectorDataObservable<T>; // current field data, read/write or get other languages
 }
 
 export interface Connector<T> {
-    /** Contains field configuration */
-    // field: FieldConfig;
+    /** Current field configuration */
+    field: FieldConfig;
 
     /** read / update stuff for the other fields or form */
     // form: any;
@@ -21,7 +22,7 @@ export interface Connector<T> {
 }
 
 export interface ConnectorDataObservable<T> extends ConnectorData<T> {
-    /** Observable which returns new value on each value update */
+    /** Observable on field value */
     value$: Observable<T>;
 }
 
