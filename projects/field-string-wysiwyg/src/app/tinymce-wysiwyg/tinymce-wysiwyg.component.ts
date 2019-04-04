@@ -24,7 +24,6 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() disabled: boolean;
   @Input() form: FormGroup;
   @Input() host: any;
-  @Input() id: string; // spm id = `tinymce-wysiwyg-${name}`
   @Input() translateService: TranslateService;
   @Input()
   set value(value: any) {
@@ -44,6 +43,7 @@ export class TinymceWysiwygComponent implements OnInit {
   }
   get adamAfterUploadCallback(): any { return this.adamAfterUpload; }
 
+  id: string;
   _value: any;
   options: any;
   adam: any;
@@ -59,6 +59,7 @@ export class TinymceWysiwygComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.id = `tinymce-wysiwyg-${this.connector.field.name}`;
     const settings = {
       enableContentBlocks: false,
     };
