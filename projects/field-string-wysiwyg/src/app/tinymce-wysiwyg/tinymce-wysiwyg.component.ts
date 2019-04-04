@@ -22,7 +22,6 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() connector: ConnectorObservable<string>;
   @Input() hiddenProps: HiddenProps;
   @Input() disabled: boolean;
-  @Input() form: FormGroup;
   @Input() host: any;
   @Input() translateService: TranslateService;
   @Input()

@@ -4,7 +4,6 @@ import { ConnectorObservable } from '../../../../../../projects/shared/connector
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
     hiddenProps: HiddenProps;
-    form: any;
     host: any;
     translateService: TranslateService;
 
