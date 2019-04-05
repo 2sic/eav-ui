@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { skip, first } from 'rxjs/operators';
+
 import { TinymceWysiwygConfig } from '../services/tinymce-wysiwyg-config';
 import { TinyMceDnnBridgeService } from '../services/tinymce-dnnbridge-service';
 import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
-import { FormGroup } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
 import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
@@ -25,13 +26,6 @@ export class TinymceWysiwygComponent implements OnInit {
   @Input() host: any;
   @Input() translateService: TranslateService;
   @Input()
-  set value(value: any) {
-    console.log('Petar Petar wysiwyg order: set value(value: any)', value);
-    this._value = value;
-    this.setValue(value);
-  }
-  get value(): any { return this._value; }
-  @Input()
   set adamSetValueCallback(value: any) {
     this.adamSetValue(value);
   }
@@ -43,7 +37,7 @@ export class TinymceWysiwygComponent implements OnInit {
   get adamAfterUploadCallback(): any { return this.adamAfterUpload; }
 
   id: string;
-  _value: any;
+  initialValue: any;
   options: any;
   adam: any;
   editor: any;
@@ -59,6 +53,12 @@ export class TinymceWysiwygComponent implements OnInit {
 
   ngOnInit() {
     this.id = `tinymce-wysiwyg-${this.connector.field.name}`;
+    this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
+      this.initialValue = firstValue;
+    });
+    this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
+      this.setValue(newValue);
+    });
     const settings = {
       enableContentBlocks: false,
     };

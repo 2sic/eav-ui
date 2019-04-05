@@ -76,9 +76,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     update: (value: string) => {
       this._ngZone.run(() => this.update(value));
     },
-    setInitValues: (value: string) => {
-      this._ngZone.run(() => this.setInitValues());
-    },
     attachAdam: () => this.attachAdam(),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
@@ -170,14 +167,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Set initial values when external component is initialized
-   */
-  private setInitValues() {
-    this.setExternalControlValues(this.group.controls[this.config.field.name].value);
-    this.setExternalControlOptions();
-  }
-
   private attachAdam() {
     // TODO:
     // If adam registered then attach Adam
@@ -217,28 +206,28 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   /**
    * subscribe to form value changes for this field
+   * spm 2019.04.05 why do we subscribe to value changes of this field if we also subscribe to value change on the entire form?
    */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
-        this.setExternalControlValues(item);
-        this.setExternalControlOptions();
-
-        this.value$.next(this.group.controls[this.config.field.name].value);
+      this.group.controls[this.config.field.name].valueChanges.subscribe(newValue => {
+        this.value$.next(newValue);
+        this.setExternalControlOptions(); // sets disabled
       })
     );
   }
 
   /**
    * This is subscribe for all setforms - even if is not changing value.
-   * @param factory
    */
   private subscribeFormChange() {
     this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe((item) => {
+      // spm 2019.04.05. why do we subscribe to changes with manually created service
+      // instead of using reactive form form.valueChanges.subscribe?
+      this.eavService.formSetValueChange$.subscribe(formSet => {
         if (!this.updateTriggeredByControl) {
-          this.setExternalControlValues(item[this.config.field.name]);
-          this.setExternalControlOptions();
+          this.value$.next(formSet[this.config.field.name].value);
+          this.setExternalControlOptions(); // sets disabled
         }
         this.updateTriggeredByControl = false;
       })
@@ -247,20 +236,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private setDirty() {
     this.group.controls[this.config.field.name].markAsDirty();
-  }
-
-  /**
-   * write value from the form into the view in external component
-   * @param factory
-   * @param value
-   */
-  private setExternalControlValues(value: string) {
-    // if container have value
-    if (this.elReference.nativeElement.innerHTML) {
-      if (value) {
-        this.customEl.value = value;
-      }
-    }
   }
 
   /**
@@ -282,6 +257,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy() {
+    // spm 2019.04.05. figure out which subscriptions we have to end manually
     return;
     this.subscriptions.forEach(subscription => {
       subscription.unsubscribe();
