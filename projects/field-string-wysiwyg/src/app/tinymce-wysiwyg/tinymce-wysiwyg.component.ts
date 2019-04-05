@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { skip, first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { TinymceWysiwygConfig } from '../services/tinymce-wysiwyg-config';
 import { TinyMceDnnBridgeService } from '../services/tinymce-dnnbridge-service';
@@ -9,7 +10,6 @@ import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
 import { HiddenProps, FieldState } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
-import { Subscription } from 'rxjs';
 import { InputTypeName } from '../../../../../src/app/shared/helpers/input-field-models';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
@@ -55,10 +55,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.id = `tinymce-wysiwyg-${this.connector.field.name}`;
-    this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
-      this.initialValue = firstValue;
-    });
+    this.calculateInitialValues();
     this.subscribeToFormChanges();
 
     const settings = {
@@ -176,12 +173,23 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     });
   }
 
+  private calculateInitialValues(): void {
+    // spm 2019.04.05. id will clash if we open the same entity as a sub form, e.g. in entity-default field
+    this.id = `tinymce-wysiwyg-${this.connector.field.name}`;
+    this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
+      this.initialValue = firstValue;
+    });
+    this.hiddenProps.fieldStates$.pipe(first()).subscribe((fieldStates: FieldState[]) => {
+      this.disabled = fieldStates.find(fieldState => fieldState.name === this.connector.field.name).disabled;
+    });
+  }
+
   private subscribeToFormChanges(): void {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
         this.setValue(newValue);
       }),
-      this.hiddenProps.fieldStates$.subscribe((fieldStates: FieldState[]) => {
+      this.hiddenProps.fieldStates$.pipe(skip(1)).subscribe((fieldStates: FieldState[]) => {
         this.disabled = fieldStates.find(fieldState => fieldState.name === this.connector.field.name).disabled;
       })
     );

@@ -13,7 +13,8 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { ExternalWebComponentProperties, FieldState } from '../external-webcomponent-properties/external-webcomponent-properties';
+// tslint:disable-next-line:max-line-length
+import { ExternalWebComponentProperties, FieldState, HiddenProps } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
@@ -109,52 +110,19 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     // temp: harcoded - need to read from config
     this.customEl = document.createElement('field-string-wysiwyg') as any;
     // this.customEl = document.createElement('field-custom-gps') as any;
-    // this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
-    //   this.currentLanguage = lan;
-    //   console.log('Petar changed language', this.currentLanguage);
-    //   this.customEl.setAttribute('language', this.currentLanguage);
-    // }));
 
-    let allInputTypeNames: InputTypeName[];
-    const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
-    contentType$.pipe(first()).subscribe(data => {
-      allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
-    });
-
-    const initialFieldStates: FieldState[] = this.calculateFieldStates();
-    this.fieldStates$ = new BehaviorSubject(initialFieldStates);
-    this.customEl.hiddenProps = {
-      allInputTypeNames: allInputTypeNames,
-      fieldStates$: this.fieldStates$,
-    };
     this.customEl.host = this.externalInputTypeHost;
     // spm pass language service secretly as well
     this.customEl.translateService = this.translateService;
 
-    const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
-    this.value$ = new BehaviorSubject(fieldCurrentValue);
-    this.subjects.push(this.value$);
-    this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable(), this.config.field);
+    this.customEl.hiddenProps = this.calculateHiddenProps();
+    this.customEl.connector = this.buildConnector();
     console.log('Petar order host createElementWebComponent');
     this.elReference.nativeElement.appendChild(this.customEl);
 
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
-  }
-
-  private calculateFieldStates(): FieldState[] {
-    const fieldStates: FieldState[] = [];
-    Object.keys(this.group.controls).forEach(key => {
-      const control = this.group.get(key);
-      fieldStates.push({
-        name: key,
-        value: control.value,
-        disabled: control.disabled,
-      });
-    });
-
-    return fieldStates;
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
@@ -221,6 +189,53 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
         },
       };
     }
+  }
+
+  private buildConnector(): ConnectorInstance<string> {
+    const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
+    this.value$ = new BehaviorSubject(fieldCurrentValue);
+    this.subjects.push(this.value$);
+    const connector = new ConnectorInstance<string>(this, this.value$.asObservable(), this.config.field);
+
+    return connector;
+  }
+
+  private calculateHiddenProps(): HiddenProps {
+    // this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
+    //   this.currentLanguage = lan;
+    //   console.log('Petar changed language', this.currentLanguage);
+    //   this.customEl.setAttribute('language', this.currentLanguage);
+    // }));
+
+    let allInputTypeNames: InputTypeName[];
+    const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
+    contentType$.pipe(first()).subscribe(data => {
+      allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+    });
+
+    const initialFieldStates: FieldState[] = this.calculateFieldStates();
+    this.fieldStates$ = new BehaviorSubject(initialFieldStates);
+    this.subjects.push(this.fieldStates$);
+    const hiddenProps: HiddenProps = {
+      allInputTypeNames: allInputTypeNames,
+      fieldStates$: this.fieldStates$,
+    };
+
+    return hiddenProps;
+  }
+
+  private calculateFieldStates(): FieldState[] {
+    const fieldStates: FieldState[] = [];
+    Object.keys(this.group.controls).forEach(key => {
+      const control = this.group.get(key);
+      fieldStates.push({
+        name: key,
+        value: control.value,
+        disabled: control.disabled,
+      });
+    });
+
+    return fieldStates;
   }
 
   /**
