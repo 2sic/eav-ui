@@ -13,12 +13,13 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ExternalWebComponentProperties, FieldState } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
 import { ContentType } from '../../../../shared/models/eav';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
+import { InputTypeName } from '../../../../shared/helpers/input-field-models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -54,6 +55,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   }
 
   value$: BehaviorSubject<string>;
+  fieldStates$: BehaviorSubject<FieldState[]>;
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -113,21 +115,24 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     //   this.customEl.setAttribute('language', this.currentLanguage);
     // }));
 
-    let allInputTypeNames: string[];
+    let allInputTypeNames: InputTypeName[];
     const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(first()).subscribe(data => {
       allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
     });
+
+    const initialFieldStates: FieldState[] = this.calculateFieldStates();
+    this.fieldStates$ = new BehaviorSubject(initialFieldStates);
     this.customEl.hiddenProps = {
       allInputTypeNames: allInputTypeNames,
+      fieldStates$: this.fieldStates$,
     };
     this.customEl.host = this.externalInputTypeHost;
-    // spm add FormGroup just for wysiwyg and custom-gps and don't let other users know. Hide it with custom inteface
     // spm pass language service secretly as well
     this.customEl.translateService = this.translateService;
 
     const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
-    this.value$ = new BehaviorSubject<string>(fieldCurrentValue);
+    this.value$ = new BehaviorSubject(fieldCurrentValue);
     this.subjects.push(this.value$);
     this.customEl.connector = new ConnectorInstance<string>(this, this.value$.asObservable(), this.config.field);
     console.log('Petar order host createElementWebComponent');
@@ -136,6 +141,20 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     this.suscribeValueChanges();
     this.subscribeFormChange();
     this.loadingSpinner = false;
+  }
+
+  private calculateFieldStates(): FieldState[] {
+    const fieldStates: FieldState[] = [];
+    Object.keys(this.group.controls).forEach(key => {
+      const control = this.group.get(key);
+      fieldStates.push({
+        name: key,
+        value: control.value,
+        disabled: control.disabled,
+      });
+    });
+
+    return fieldStates;
   }
 
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
@@ -206,13 +225,14 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   /**
    * subscribe to form value changes for this field
-   * spm 2019.04.05 why do we subscribe to value changes of this field if we also subscribe to value change on the entire form?
    */
   private suscribeValueChanges() {
     this.subscriptions.push(
       this.group.controls[this.config.field.name].valueChanges.subscribe(newValue => {
+        // do when this control updates the form
         this.value$.next(newValue);
-        this.setExternalControlOptions(); // sets disabled
+        const newFieldStates: FieldState[] = this.calculateFieldStates();
+        this.fieldStates$.next(newFieldStates);
       })
     );
   }
@@ -226,8 +246,11 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
       // instead of using reactive form form.valueChanges.subscribe?
       this.eavService.formSetValueChange$.subscribe(formSet => {
         if (!this.updateTriggeredByControl) {
-          this.value$.next(formSet[this.config.field.name].value);
-          this.setExternalControlOptions(); // sets disabled
+          // do when some other control updated the form
+          const newValue = formSet[this.config.field.name];
+          this.value$.next(newValue);
+          const newFieldStates: FieldState[] = this.calculateFieldStates();
+          this.fieldStates$.next(newFieldStates);
         }
         this.updateTriggeredByControl = false;
       })
@@ -236,17 +259,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private setDirty() {
     this.group.controls[this.config.field.name].markAsDirty();
-  }
-
-  /**
-   * refresh only exteranl component options
-   */
-  private setExternalControlOptions() {
-    // if container have value
-    if (this.elReference.nativeElement.innerHTML) {
-      this.customEl.disabled = this.group.controls[this.config.field.name].disabled;
-      // this.setAdamOptions();
-    }
   }
 
   // private setAdamOptions() {

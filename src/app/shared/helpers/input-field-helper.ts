@@ -3,6 +3,7 @@ import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { FieldSettings, EavHeader, Item } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
+import { InputTypeName } from './input-field-models';
 
 export class InputFieldHelper {
     /**
@@ -55,12 +56,14 @@ export class InputFieldHelper {
      *  Get input type names from content type attributes
      * @param attributesList
      */
-    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): string[] {
-        const typesList: string[] = [];
+    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): InputTypeName[] {
+        const typesList: InputTypeName[] = [];
 
         attributesList.forEach((attribute, index) => {
             try {
-                typesList.push(this.getInputTypeNameFromAttribute(attribute));
+                const name = attribute.name;
+                const inputType = this.getInputTypeNameFromAttribute(attribute);
+                typesList.push({ name, inputType });
             } catch (error) {
                 console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
                 throw error;

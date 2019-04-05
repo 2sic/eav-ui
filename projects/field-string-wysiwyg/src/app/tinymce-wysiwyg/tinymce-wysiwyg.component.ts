@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { skip, first } from 'rxjs/operators';
 
@@ -8,7 +8,9 @@ import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
 import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
-import { HiddenProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
+import { HiddenProps, FieldState } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
+import { Subscription } from 'rxjs';
+import { InputTypeName } from '../../../../../src/app/shared/helpers/input-field-models';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 // import { attachAdam } from './tinymce-adam-service.js'
@@ -19,10 +21,9 @@ import { HiddenProps } from '../../../../../src/app/eav-material-controls/input-
   templateUrl: './tinymce-wysiwyg.component.html',
   styleUrls: ['./tinymce-wysiwyg.component.scss']
 })
-export class TinymceWysiwygComponent implements OnInit {
+export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   @Input() connector: ConnectorObservable<string>;
   @Input() hiddenProps: HiddenProps;
-  @Input() disabled: boolean;
   @Input() host: any;
   @Input() translateService: TranslateService;
   @Input()
@@ -38,6 +39,7 @@ export class TinymceWysiwygComponent implements OnInit {
 
   id: string;
   initialValue: any;
+  disabled: boolean;
   options: any;
   adam: any;
   editor: any;
@@ -45,6 +47,7 @@ export class TinymceWysiwygComponent implements OnInit {
   adamSetValue: any;
   adamAfterUpload: any;
   processResultOfDnnBridge: any;
+  private subscriptions: Subscription[] = [];
 
   constructor(public tinymceWysiwygConfig: TinymceWysiwygConfig,
     public tinyMceDnnBridgeService: TinyMceDnnBridgeService,
@@ -56,9 +59,8 @@ export class TinymceWysiwygComponent implements OnInit {
     this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
-    this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
-      this.setValue(newValue);
-    });
+    this.subscribeToFormChanges();
+
     const settings = {
       enableContentBlocks: false,
     };
@@ -77,6 +79,10 @@ export class TinymceWysiwygComponent implements OnInit {
 
     const currentLang = this.translateService.currentLang;
     this.options = this.tinymceWysiwygConfig.setLanguageOptions(currentLang, tempOptions);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   // /**
@@ -160,7 +166,6 @@ export class TinymceWysiwygComponent implements OnInit {
     editor.on('init', e => {
       // editor.selection.select(editor.getBody(), true);
       // editor.selection.collapse(false);
-      this.host.setInitValues();
       console.log('Petar wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
     });
 
@@ -171,13 +176,24 @@ export class TinymceWysiwygComponent implements OnInit {
     });
   }
 
+  private subscribeToFormChanges(): void {
+    this.subscriptions.push(
+      this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
+        this.setValue(newValue);
+      }),
+      this.hiddenProps.fieldStates$.subscribe((fieldStates: FieldState[]) => {
+        this.disabled = fieldStates.find(fieldState => fieldState.name === this.connector.field.name).disabled;
+      })
+    );
+  }
+
   private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
     if (this.hiddenProps.allInputTypeNames.length === this.connector.field.index + 1) {
       return;
     }
-    const nextField = this.hiddenProps.allInputTypeNames[this.connector.field.index + 1];
-    if (nextField === 'entity-content-blocks') {
+    const nextField: InputTypeName = this.hiddenProps.allInputTypeNames[this.connector.field.index + 1];
+    if (nextField.inputType === 'entity-content-blocks') {
       settings.enableContentBlocks = true;
     }
   }
