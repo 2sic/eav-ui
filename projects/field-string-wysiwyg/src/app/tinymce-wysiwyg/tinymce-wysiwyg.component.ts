@@ -91,7 +91,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     // do validity checks
     const isValid = this.validateValue(value);
     if (isValid) {
-      this.host.update(value);
+      this.connector.data.update(value);
     }
   }
 

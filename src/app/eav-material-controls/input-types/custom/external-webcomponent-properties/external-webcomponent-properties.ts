@@ -14,6 +14,11 @@ export class ExternalWebComponentProperties<T> {
     // dnnBridgeprocessResult: any;
 }
 
+/** Props and methods available to the connector to communicate with the host */
+export class Host<T> {
+    update: (value: T) => void;
+}
+
 export class HiddenProps {
     allInputTypeNames: InputTypeName[];
     fieldStates$: Observable<FieldState[]>;

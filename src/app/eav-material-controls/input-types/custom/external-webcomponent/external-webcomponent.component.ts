@@ -14,7 +14,7 @@ import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 // tslint:disable-next-line:max-line-length
-import { ExternalWebComponentProperties, FieldState, HiddenProps } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ExternalWebComponentProperties, FieldState, HiddenProps, Host } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
@@ -76,21 +76,27 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
    * This is host methods which the external control see
    */
   public externalInputTypeHost = {
-    update: (value: string) => {
-      this._ngZone.run(() => this.update(value));
-    },
+    // spm 2019.04.08. move to hiddenProps
     attachAdam: () => this.attachAdam(),
+    // spm 2019.04.08. move to hiddenProps
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
+    // spm 2019.04.08. move to hiddenProps
     getUrlOfIdDnnDialog: (value: string, callback: any) => {
       this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
     },
   };
 
+  host: Host<string | number | boolean> = {
+    update: value => {
+      this._ngZone.run(() => this.update(value));
+    },
+  };
+
   ngOnInit() { }
 
-  private update(value: string) {
+  private update(value: string | number | boolean) {
     // TODO: validate value
     this.group.controls[this.config.field.name].patchValue(value);
     this.setDirty();
@@ -125,6 +131,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     this.loadingSpinner = false;
   }
 
+  // spm 2019.04.08. move to hiddenProps
   openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
     this.dnnBridgeService.open(
       oldValue,
@@ -133,6 +140,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
       this.dialog);
   }
 
+  // spm 2019.04.08. move to hiddenProps
   getUrlOfIdDnnDialog(value: string, urlCallback: any) {
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
@@ -195,7 +203,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject(fieldCurrentValue);
     this.subjects.push(this.value$);
-    const connector = new ConnectorInstance<string>(this, this.value$.asObservable(), this.config.field);
+    const connector = new ConnectorInstance<string>(this.host, this.value$.asObservable(), this.config.field);
 
     return connector;
   }
