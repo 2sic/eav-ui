@@ -1,11 +1,10 @@
-import { EavCustomInputField, EavCustomInputFieldObservable } from '../../shared/eav-custom-input-field';
+import { EavCustomInputField } from '../../shared/eav-custom-input-field';
 import { MyEventListenerModel } from './models';
 
 // Create a class for the element
-class FieldCustomGps extends EavCustomInputFieldObservable<string> {
+class FieldCustomGps extends EavCustomInputField<string> {
   shadow: ShadowRoot;
-  myInputWithObservable: HTMLInputElement;
-  myInputWithFunctions: HTMLInputElement;
+  myInput: HTMLInputElement;
   eventListeners: MyEventListenerModel[] = [];
 
   constructor() {
@@ -13,8 +12,7 @@ class FieldCustomGps extends EavCustomInputFieldObservable<string> {
     console.log('Petar order EavCustomInputField constructor');
     this.shadow = this.attachShadow({ mode: 'open' });
 
-    this.myInputWithObservable = this.createInput('With observables:');
-    this.myInputWithFunctions = this.createInput('With valueChangeListeners:');
+    this.myInput = this.createInput('Latitude and longitude:');
   }
 
   private createInput(labelText: string) {
@@ -31,29 +29,23 @@ class FieldCustomGps extends EavCustomInputFieldObservable<string> {
   connectedCallback() {
     console.log('Petar order EavCustomInputField connectedCallback');
 
-    // with observable
-    // Host will complete observable in ngOnDestroy and there is no need to call unsubscribe()
-    this.connector.data.value$.subscribe(newValue => {
-      this.myInputWithObservable.value = newValue;
-    });
+    // set value first time
+    this.myInput.value = this.connector.data.value;
 
-    const withObservableUpdateBound = this.updateValue.bind(this);
-    this.myInputWithObservable.addEventListener('change', withObservableUpdateBound);
-    const withObservableListener = { element: this.myInputWithObservable, type: 'change', listener: withObservableUpdateBound };
-    this.eventListeners.push(withObservableListener);
+    // add functions to be executed when value changes from the host
+    const onValueChangeBound = this.onValueChange.bind(this);
+    this.connector.data.onValueChange(onValueChangeBound);
 
-    // with functions
-    this.myInputWithFunctions.value = this.connector.data.value;
-    function myOnChangeFunction(newValue: string) {
-      this.myInputWithFunctions.value = newValue;
-    }
-    const myOnChangeFunctionBound = myOnChangeFunction.bind(this);
-    this.connector.data.onValueChange(myOnChangeFunctionBound);
+    // add event listener on our input
+    const updateValueBound = this.updateValue.bind(this);
+    this.myInput.addEventListener('change', updateValueBound);
 
-    const withFunctionsUpdateBound = this.updateValue.bind(this);
-    this.myInputWithFunctions.addEventListener('change', withFunctionsUpdateBound);
-    const withFunctionsListener = { element: this.myInputWithFunctions, type: 'change', listener: withFunctionsUpdateBound };
-    this.eventListeners.push(withFunctionsListener);
+    const listener = { element: this.myInput, type: 'change', listener: updateValueBound };
+    this.eventListeners.push(listener);
+  }
+
+  private onValueChange(newValue: string) {
+    this.myInput.value = newValue;
   }
 
   private updateValue(event: Event) {
