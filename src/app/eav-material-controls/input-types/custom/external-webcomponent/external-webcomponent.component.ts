@@ -14,7 +14,7 @@ import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 // tslint:disable-next-line:max-line-length
-import { ExternalWebComponentProperties, FieldState, HiddenProps, Host } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ExternalWebComponentProperties, FieldState, HiddenProps, ConnectorHost } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
@@ -40,7 +40,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private subjects: BehaviorSubject<any>[] = [];
   private eavConfig: EavConfiguration;
-  customEl: NgElement & WithProperties<ExternalWebComponentProperties<string>>;
+  customEl: NgElement & WithProperties<ExternalWebComponentProperties<any>>;
   loadingSpinner = true;
   // externalFactory: any;
   updateTriggeredByControl = false;
@@ -55,7 +55,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     return `${this.config.entity.entityId}${this.config.field.index}`;
   }
 
-  value$: BehaviorSubject<string>;
+  value$: BehaviorSubject<any>;
   fieldStates$: BehaviorSubject<FieldState[]>;
 
   constructor(
@@ -75,28 +75,20 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   /**
    * This is host methods which the external control see
    */
+  // spm 2019.04.08. move to hiddenProps
   public externalInputTypeHost = {
-    // spm 2019.04.08. move to hiddenProps
     attachAdam: () => this.attachAdam(),
-    // spm 2019.04.08. move to hiddenProps
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
-    // spm 2019.04.08. move to hiddenProps
     getUrlOfIdDnnDialog: (value: string, callback: any) => {
       this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
     },
   };
 
-  host: Host<string | number | boolean> = {
-    update: value => {
-      this._ngZone.run(() => this.update(value));
-    },
-  };
-
   ngOnInit() { }
 
-  private update(value: string | number | boolean) {
+  private update(value: any) {
     // TODO: validate value
     this.group.controls[this.config.field.name].patchValue(value);
     this.setDirty();
@@ -199,11 +191,15 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildConnector(): ConnectorInstance<string> {
-    const fieldCurrentValue: string = this.group.controls[this.config.field.name].value;
-    this.value$ = new BehaviorSubject(fieldCurrentValue);
+  private buildConnector(): ConnectorInstance<any> {
+    const connectorHost: ConnectorHost<any> = {
+      update: value => {
+        this._ngZone.run(() => this.update(value));
+      },
+    };
+    this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
     this.subjects.push(this.value$);
-    const connector = new ConnectorInstance<string>(this.host, this.value$.asObservable(), this.config.field);
+    const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field);
 
     return connector;
   }

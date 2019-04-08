@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
 import { FieldConfig } from '../../../../../../projects/shared/field-config';
-import { Host } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ConnectorHost } from '../external-webcomponent-properties/external-webcomponent-properties';
 
 export class ConnectorInstance<T> implements ConnectorObservable<T> {
     field$: Observable<FieldConfig>;
@@ -9,12 +9,12 @@ export class ConnectorInstance<T> implements ConnectorObservable<T> {
     data: ConnectorDataObservable<T>;
 
     constructor(
-        host: Host<T>,
+        connectorHost: ConnectorHost<T>,
         value$: Observable<T>,
         field: FieldConfig,
     ) {
         this.field = field;
-        this.data = new ConnectorDataInstance<T>(host, value$);
+        this.data = new ConnectorDataInstance<T>(connectorHost, value$);
     }
 }
 
@@ -24,7 +24,7 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
     clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
     constructor(
-        private host: Host<T>,
+        private connectorHost: ConnectorHost<T>,
         value$: Observable<T>
     ) {
         this.value$ = value$;
@@ -36,7 +36,7 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
     }
 
     update(newValue: T) {
-        this.host.update(newValue);
+        this.connectorHost.update(newValue);
     }
 
     onValueChange(callback: (newValue: T) => void) {

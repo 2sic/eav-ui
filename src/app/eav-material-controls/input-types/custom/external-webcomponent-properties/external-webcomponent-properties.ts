@@ -1,6 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
-import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { Observable } from 'rxjs/Observable';
+
+import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { InputTypeName } from '../../../../shared/helpers/input-field-models';
 
 export class ExternalWebComponentProperties<T> {
@@ -14,8 +15,9 @@ export class ExternalWebComponentProperties<T> {
     // dnnBridgeprocessResult: any;
 }
 
+// spm 2019.04.08. split to separate files
 /** Props and methods available to the connector to communicate with the host */
-export class Host<T> {
+export class ConnectorHost<T> {
     update: (value: T) => void;
 }
 
