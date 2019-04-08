@@ -26,6 +26,8 @@ export class InputTypesConstants {
     // custom/files
     public static readonly external: string = 'external';
     public static readonly externalWebComponent: string = 'external-webcomponent';
+    public static readonly customGPS: string = 'custom-gps';
+    public static readonly custom: string = 'Custom';
     // old types
     public static readonly dropdown: string = 'dropdown';
     public static readonly wysiwyg: string = 'wysiwyg';

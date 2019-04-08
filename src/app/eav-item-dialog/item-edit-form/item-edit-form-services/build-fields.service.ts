@@ -45,24 +45,27 @@ export class BuildFieldsService {
         switchMap((data: ContentType) => {
           // build first empty
           const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, InputTypesConstants.emptyDefault,
-            data.contentType.settings, true);
+            null, data.contentType.settings, true);
           let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
           // loop through contentType attributes
           data.contentType.attributes.forEach((attribute, index) => {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
-              const inputTypeName: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
-              const isEmptyInputType = (inputTypeName === InputTypesConstants.emptyDefault) ||
-                (inputTypeName === InputTypesConstants.empty);
+              const inputType: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+              const fullInputType: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute, true);
+              const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault) ||
+                (inputType === InputTypesConstants.empty);
               if (isEmptyInputType) {
                 // group-fields (empty)
-                currentFieldGroup = this.buildFieldConfigSet(attribute, index, inputTypeName, data.contentType.settings, false);
+                currentFieldGroup = this.buildFieldConfigSet(attribute, index, inputType, fullInputType,
+                  data.contentType.settings, false);
                 const field = parentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(currentFieldGroup);
               } else {
                 // all other fields (not group empty)
-                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, inputTypeName, data.contentType.settings, null);
+                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, inputType, fullInputType,
+                  data.contentType.settings, null);
                 const field = currentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(fieldConfigSet);
               }
@@ -77,8 +80,8 @@ export class BuildFieldsService {
       );
   }
 
-  private buildFieldConfigSet(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
-    isParentGroup: boolean): FieldConfigSet {
+  private buildFieldConfigSet(attribute: AttributeDef, index: number, inputType: string, fullInputType: string,
+    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigSet {
     const entity: ItemConfig = {
       entityId: this.item.entity.id,
       entityGuid: this.item.entity.guid,
@@ -88,14 +91,14 @@ export class BuildFieldsService {
     const form: FormConfig = {
       features: this.features,
     };
-    const field = this.buildFieldConfig(attribute, index, inputType, contentTypeSettings, isParentGroup);
+    const field = this.buildFieldConfig(attribute, index, inputType, fullInputType, contentTypeSettings, isParentGroup);
 
     const fieldConfigSet: FieldConfigSet = { field, entity, form };
     return fieldConfigSet;
   }
 
-  private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, contentTypeSettings: EavAttributes,
-    isParentGroup: boolean): FieldConfigAngular {
+  private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, fullInputType: string,
+    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
     let fullSettings: EavAttributes;
@@ -112,7 +115,7 @@ export class BuildFieldsService {
 
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
-    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, settingsTranslated);
+    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, fullInputType, settingsTranslated);
 
     if (isEmptyInputType) {
       fieldConfig = {
@@ -152,6 +155,7 @@ export class BuildFieldsService {
         label: label,
         placeholder: `Enter ${name}`,  // other fields specific
         inputType: inputType,
+        fullInputType: fullInputType, // other fields specific
         type: attribute.type, // other fields specific
         required: required, // other fields specific
         disabled: disabled, // other fields specific

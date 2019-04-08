@@ -106,8 +106,8 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private createElementWebComponent() {
     // temp: harcoded - need to read from config
-    this.customEl = document.createElement('field-string-wysiwyg') as any;
-    // this.customEl = document.createElement('field-custom-gps') as any;
+    const customElName = `field-${this.config.field.fullInputType}`;
+    this.customEl = document.createElement(customElName) as any;
 
     this.customEl.host = this.externalInputTypeHost;
     // spm pass language service secretly as well

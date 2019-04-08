@@ -91,7 +91,7 @@ export class InputFieldHelper {
         }
     }
 
-    static setWrappers(inputType: string, settingsTranslated: FieldSettings) {
+    static setWrappers(inputType: string, fullInputType: string, settingsTranslated: FieldSettings) {
         // empty inputtype wrappers
         const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
             || (inputType === InputTypesConstants.empty);
@@ -117,10 +117,23 @@ export class InputFieldHelper {
         }
 
         if (inputType === InputTypesConstants.externalWebComponent) {
-            wrappers.push(...[WrappersConstants.dropzoneWrapper,
-            WrappersConstants.eavLocalizationWrapper,
-            WrappersConstants.expandableWrapper,
-            WrappersConstants.adamAttachWrapper]);
+            if (fullInputType === InputTypesConstants.stringWysiwyg) {
+                wrappers.push(
+                    WrappersConstants.dropzoneWrapper,
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapper,
+                    WrappersConstants.adamAttachWrapper
+                );
+            } else if (fullInputType === InputTypesConstants.customGPS) {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapper,
+                );
+            } else {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                );
+            }
         }
 
         return wrappers;
@@ -188,6 +201,7 @@ export class InputFieldHelper {
                 return inputTypeName;
             case InputTypesConstants.stringWysiwyg:
             case InputTypesConstants.stringWysiwygTinymce:
+            case InputTypesConstants.customGPS:
             case InputTypesConstants.external:
             case 'custom-my-field-test':
                 // return InputTypesConstants.external;
