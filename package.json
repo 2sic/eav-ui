@@ -45,6 +45,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@tinymce/tinymce-angular": "^2.5.0",
+    "@types/google-maps": "^3.2.0",
     "@webcomponents/custom-elements": "^1.2.1",
     "core-js": "^2.6.1",
     "document-register-element": "^1.8.1",
