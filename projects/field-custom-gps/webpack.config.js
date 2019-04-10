@@ -10,7 +10,15 @@ module.exports = {
         test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/
-      }
+      },
+      {
+        test: /\.html$/i,
+        use: 'raw-loader',
+      },
+      {
+        test: /\.css$/,
+        use: 'raw-loader',
+      },
     ]
   },
   resolve: {

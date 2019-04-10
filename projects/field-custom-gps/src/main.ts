@@ -1,70 +1,17 @@
 import { EavCustomInputField } from '../../shared/eav-custom-input-field';
 import { MyEventListenerModel } from './models';
+import { buildTemplate } from './helpers';
 import { } from 'google-maps';
 
 // Create a class for the element
 class FieldCustomGps extends EavCustomInputField<string> {
-  template = `
-  <div class="custom-gps-container">
-    <div class="map-info">
-      <label for="lat">Lat:</label>
-      <input id="lat" type="number" />
-      <span>, </span>
-      <label for="lng">Lng:</label>
-      <input id="lng" type="number" />
-    </div>
-
-    <div class="map-info">
-      <a ng-click="showMap = !showMap" class="btn btn-default" ng-click="autoSelect">
-        <span icon="map-marker">Icon-map-marker</span>
-      </a>
-
-      <!-- spm implement addressMask-->
-      <a class="btn btn-default" ng-click="autoSelect()" ng-show="hasAddressMask">
-        <span icon="search">Icon-search</span>
-      </a>
-      <span id="formatted-address"></span>
-    </div>
-
-    <div id="map"></div>
-
-    <!--
-        <div>
-          <div ng-if=\"debug.on\">
-            <h4>debug info</h4>
-            <div>lat field name: '{{latField}}' lng field name: '{{longField}}'</div>
-            <pre>{{value | json}}</pre>
-          </div>
-        -->
-    </div>
-  </div>
-  `;
-
-  css = `
-  <style>
-    .custom-gps-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    #map {
-      flex: 1 1 auto;
-      width: 100%;
-    }
-    .map-info {
-      flex: 0 0 32px;
-      display: flex;
-      align-items: center;
-    }
-  </style>
-  `;
-
   shadow: ShadowRoot;
   eventListeners: MyEventListenerModel[] = [];
 
   latField: HTMLInputElement;
   lngField: HTMLInputElement;
   formattedAddress: HTMLSpanElement;
+  mapsApiKey = 'AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
   defaultCoordinates: google.maps.LatLngLiteral = { lat: 47.17465989999999, lng: 9.469142499999975 };
   mapContainer: HTMLDivElement;
   map: google.maps.Map;
@@ -74,8 +21,7 @@ class FieldCustomGps extends EavCustomInputField<string> {
     super();
     console.log('Petar order EavCustomInputField constructor');
     this.shadow = this.attachShadow({ mode: 'open' });
-    this.shadow.innerHTML = this.template;
-    this.shadow.innerHTML += this.css;
+    this.shadow.innerHTML = buildTemplate();
   }
 
   connectedCallback() {
@@ -87,7 +33,7 @@ class FieldCustomGps extends EavCustomInputField<string> {
 
     // spm add logic to not load google maps script twice
     const script = document.createElement('script');
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${this.mapsApiKey}`;
     script.onload = this.mapLoaded.bind(this);
     this.shadow.appendChild(script);
   }
