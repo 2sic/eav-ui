@@ -183,6 +183,9 @@ export class InputFieldHelper {
 
     /** read new inputField settings */
     private static getInputTypeNameNewConfig(inputTypeName: string): string {
+        // spm 2019.04.10. always return inputTypeName unless empty, then return string-default
+        // also if not recognized flag it as external
+        // make exeption for wysiwyg because of alternate names
         switch (inputTypeName) {
             case InputTypesConstants.stringDefault:
             case InputTypesConstants.stringUrlPath:
@@ -207,39 +210,40 @@ export class InputFieldHelper {
                 // return InputTypesConstants.external;
                 return InputTypesConstants.externalWebComponent;
             default:
+                // spm default fallback shoould be ${type.toLowerCase()-default}
+                // as a last resort go back to stringDefault if empty
                 return InputTypesConstants.stringDefault;
         }
     }
 
     /** read old inputField settings  */
-    private static getInputTypeNameOldConfig(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.default:
-            case InputTypesConstants.string:
-                return InputTypesConstants.stringDefault;
+    private static getInputTypeNameOldConfig(typeName: string): string {
+        switch (typeName) {
+            // cases where typename = inputTypeName
             case InputTypesConstants.stringUrlPath:
-                return InputTypesConstants.stringUrlPath;
-            case InputTypesConstants.boolean:
-                return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.dropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.empty:
-                return InputTypesConstants.emptyDefault;
-            case InputTypesConstants.datetime:
-                return InputTypesConstants.datetimeDefault;
-            case InputTypesConstants.number:
-                return InputTypesConstants.numberDefault;
             case InputTypesConstants.stringFontIconPicker:
-                return InputTypesConstants.stringFontIconPicker;
-            case InputTypesConstants.entity:
-                return InputTypesConstants.entityDefault;
-            case InputTypesConstants.hyperlink:
-                return InputTypesConstants.hyperlinkDefault;
             case InputTypesConstants.hyperlinkLibrary:
-                return InputTypesConstants.hyperlinkLibrary;
+                return typeName;
+
+            // Convert old names, which were in use before the inputType existed
+            case InputTypesConstants.oldTypeDefault:
+                return InputTypesConstants.stringDefault;
+            case InputTypesConstants.oldTypeDropdown:
+                return InputTypesConstants.stringDropdown;
             case InputTypesConstants.external:
-            case InputTypesConstants.wysiwyg:
-                return InputTypesConstants.external;
+            case InputTypesConstants.oldTypeWysiwyg:
+                return InputTypesConstants.external; // todo: spm string-wysiwyg
+
+            // convert "-default"
+            case InputTypesConstants.string:
+            case InputTypesConstants.empty:
+            case InputTypesConstants.datetime:
+            case InputTypesConstants.number:
+            case InputTypesConstants.entity:
+            case InputTypesConstants.hyperlink:
+            case InputTypesConstants.boolean:
+                return typeName.toLocaleLowerCase() + '-default'; // todo: spm: constant
+
             default:
                 return InputTypesConstants.stringDefault;
         }
@@ -253,12 +257,12 @@ export class InputFieldHelper {
             case InputTypesConstants.hyperlinkLibrary:
             case InputTypesConstants.external:
                 return inputTypeName;
-            case InputTypesConstants.default:
+            case InputTypesConstants.oldTypeDefault:
             case InputTypesConstants.string:
                 return InputTypesConstants.stringDefault;
             case InputTypesConstants.boolean:
                 return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.dropdown:
+            case InputTypesConstants.oldTypeDropdown:
                 return InputTypesConstants.stringDropdown;
             case InputTypesConstants.empty:
                 return InputTypesConstants.emptyDefault;
@@ -270,7 +274,7 @@ export class InputFieldHelper {
                 return InputTypesConstants.entityDefault;
             case InputTypesConstants.hyperlink:
                 return InputTypesConstants.hyperlinkDefault;
-            case InputTypesConstants.wysiwyg:
+            case InputTypesConstants.oldTypeWysiwyg:
                 return InputTypesConstants.stringWysiwyg;
             default:
                 return inputTypeName;
