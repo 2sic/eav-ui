@@ -62,11 +62,10 @@ class FieldCustomGps extends EavCustomInputField<string> {
   shadow: ShadowRoot;
   eventListeners: MyEventListenerModel[] = [];
 
-  value: string;
   latField: HTMLInputElement;
   lngField: HTMLInputElement;
   formattedAddress: HTMLSpanElement;
-  defaultCoordinates = { lat: 47.17465989999999, lng: 9.469142499999975 };
+  defaultCoordinates: google.maps.LatLngLiteral = { lat: 47.17465989999999, lng: 9.469142499999975 };
   mapContainer: HTMLDivElement;
   map: google.maps.Map;
   marker: google.maps.Marker;
@@ -86,34 +85,12 @@ class FieldCustomGps extends EavCustomInputField<string> {
     this.formattedAddress = <HTMLSpanElement>this.shadow.querySelector('#formatted-address');
     this.mapContainer = <HTMLDivElement>this.shadow.querySelector('#map');
 
-    // set value first time
-    this.value = this.connector.data.value;
     // spm add logic to not load google maps script twice
     const script = document.createElement('script');
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
     script.onload = this.mapLoaded.bind(this);
     this.shadow.appendChild(script);
-
-    // // add functions to be executed when value changes from the host
-    // const onValueChangeBound = this.onValueChange.bind(this);
-    // this.connector.data.onValueChange(onValueChangeBound);
-
-    // // add event listener on our input
-    // const updateValueBound = this.updateValue.bind(this);
-    // this.myInput.addEventListener('change', updateValueBound);
-
-    // const listener = { element: this.myInput, type: 'change', listener: updateValueBound };
-    // this.eventListeners.push(listener);
   }
-
-  // private onValueChange(newValue: string) {
-  //   this.myInput.value = newValue;
-  // }
-
-  // private updateValue(event: Event) {
-  //   const newValue = (<HTMLInputElement>event.target).value;
-  //   this.connector.data.update(newValue);
-  // }
 
   mapLoaded(): void {
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: this.defaultCoordinates });
@@ -121,46 +98,60 @@ class FieldCustomGps extends EavCustomInputField<string> {
 
     const _this = this;
     this.marker.addListener('dragend', function (event: google.maps.MouseEvent) {
-      _this.markerDragend(event);
+      const newLatLng: google.maps.LatLngLiteral = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+      _this.updatePosition(newLatLng);
+      _this.updateFields(newLatLng);
+      _this.saveValue(newLatLng);
     });
 
-    if (this.value) {
-      const position = this.readValue();
-      this.updatePosition(position);
+    this.connector.data.onValueChange(this.onControlChangedValue.bind(this));
+    // spm add listener to value changes in Longitute and Latitude fields in the form
+    // spm add listeners to value changes in Longitute and Latitude fields in this component
+
+    if (this.connector.data.value) {
+      const latLng: google.maps.LatLngLiteral = this.readValue();
+      this.updatePosition(latLng);
+      this.updateFields(latLng);
     }
   }
 
-  markerDragend(event: google.maps.MouseEvent): void {
-    const newPosition = { lat: event.latLng.lat(), lng: event.latLng.lng() };
-    this.updatePosition(newPosition);
+  updatePosition(latLng: google.maps.LatLngLiteral): void {
+    this.map.setCenter(latLng);
+    this.marker.setPosition(latLng);
   }
 
-  updatePosition(position: any): void {
-    this.writeValue(position);
-    this.map.setCenter(position);
-    this.marker.setPosition(position);
+  updateFields(latLng: google.maps.LatLngLiteral): void {
+    this.latField.value = latLng.lat.toString();
+    this.lngField.value = latLng.lng.toString();
+    this.formattedAddress.innerText = latLng.lat + ',' + latLng.lng;
   }
 
-  readValue() {
-    return JSON.parse(this.value.replace('latitude', 'lat').replace('longitude', 'lng'));
+  saveValue(newLatLng: google.maps.LatLngLiteral) {
+    const newValue = JSON.stringify(newLatLng).replace('lat', 'latitude').replace('lng', 'longitude');
+    this.connector.data.update(newValue);
   }
 
-  writeValue(newValue: any): void {
-    this.latField.value = newValue.lat;
-    this.lngField.value = newValue.lng;
-    this.formattedAddress.innerText = newValue.lat + ',' + newValue.lng;
-    this.value = JSON.stringify(newValue).replace('lat', 'latitude').replace('lng', 'longitude');
-    this.connector.data.update(this.value);
+  readValue(): google.maps.LatLngLiteral {
+    const latLng: google.maps.LatLngLiteral = JSON.parse(this.connector.data.value.replace('latitude', 'lat').replace('longitude', 'lng'));
+    return latLng;
+  }
+
+  onControlChangedValue(): void {
+    const currentPosition = this.marker.getPosition();
+    const newLatLng: google.maps.LatLngLiteral = this.readValue();
+
+    // if value was updated from the outside it will be different from the current marker position
+    const positionChanged = (currentPosition.lat() !== newLatLng.lat) || (currentPosition.lng() !== newLatLng.lng);
+    console.log('Petar onControlChangedValue newLatLng', newLatLng, 'positionChanged:', positionChanged);
+    if (!positionChanged) {
+      return;
+    }
+
+    this.updatePosition(newLatLng);
+    this.updateFields(newLatLng);
   }
 
   disconnectedCallback() {
-    this.eventListeners.forEach(eventListener => {
-      const element = eventListener.element;
-      const type = eventListener.type;
-      const listener = eventListener.listener;
-      element.removeEventListener(type, listener);
-    });
-    // spm clear all google maps event listeners
     google.maps.event.clearInstanceListeners(this.marker);
     google.maps.event.clearInstanceListeners(this.map);
   }
