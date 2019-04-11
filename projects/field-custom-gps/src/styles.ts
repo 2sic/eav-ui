@@ -1,13 +1,8 @@
+export const styles = `
 .custom-gps-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-#map {
-  flex: 1 1 auto;
-  width: 100%;
-  display: block;
 }
 
 .map-info {
@@ -15,3 +10,10 @@
   display: flex;
   align-items: center;
 }
+
+.map-info__map {
+  flex: 1 1 auto;
+  width: 100%;
+  display: block;
+}
+`;

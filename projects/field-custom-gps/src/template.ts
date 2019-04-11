@@ -1,3 +1,4 @@
+export const template = `
 <div class="custom-gps-container">
   <div class="map-info">
     <label for="lat">Lat:</label>
@@ -19,5 +20,6 @@
     <span id="formatted-address"></span>
   </div>
 
-  <div id="map"></div>
+  <div id="map" class="map-info__map"></div>
 </div>
+`;

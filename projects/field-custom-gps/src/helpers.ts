@@ -1,6 +1,6 @@
-import template from './template.html';
-import css from './styles.css';
+import { template } from './template';
+import { styles } from './styles';
 
 export function buildTemplate(): string {
-  return `${template}<style>\n${css}\n</style>`;
+  return `${template}<style>\n${styles}\n</style>`;
 }
