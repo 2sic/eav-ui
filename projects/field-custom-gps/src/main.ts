@@ -148,7 +148,21 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
       });
     }
 
-    // spm add listeners to value changes in Longitute and Latitude fields in this component
+    // spm add listeners to value changes in Longitute and Latitude fields in this template
+    const onLatLngChangeBound = this.onLatLngChange.bind(this);
+    this.latField.addEventListener('change', onLatLngChangeBound);
+    this.lngField.addEventListener('change', onLatLngChangeBound);
+
+    this.eventListeners.push({ element: this.latField, type: 'change', listener: onLatLngChangeBound });
+    this.eventListeners.push({ element: this.lngField, type: 'change', listener: onLatLngChangeBound });
+  }
+
+  onLatLngChange() {
+    const newLatLng: google.maps.LatLngLiteral = {
+      lat: parseFloat(this.latField.value),
+      lng: parseFloat(this.lngField.value),
+    };
+    this.saveValue(newLatLng);
   }
 
   onControlChangedValue(): void {
@@ -169,6 +183,13 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   disconnectedCallback() {
     google.maps.event.clearInstanceListeners(this.marker);
     google.maps.event.clearInstanceListeners(this.map);
+
+    this.eventListeners.forEach(eventListener => {
+      const element = eventListener.element;
+      const type = eventListener.type;
+      const listener = eventListener.listener;
+      element.removeEventListener(type, listener);
+    });
   }
 }
 
