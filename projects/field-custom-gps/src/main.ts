@@ -5,42 +5,57 @@ import { } from 'google-maps';
 
 // Create a class for the element
 class FieldCustomGps extends EavCustomInputField<string> {
-  shadow: ShadowRoot;
+  elementInitialized = false;
   eventListeners: MyEventListenerModel[] = [];
 
   latField: HTMLInputElement;
   lngField: HTMLInputElement;
   formattedAddress: HTMLSpanElement;
-  mapsApiKey = 'AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
+  mapApiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + 'AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
   defaultCoordinates: google.maps.LatLngLiteral = { lat: 47.17465989999999, lng: 9.469142499999975 };
   mapContainer: HTMLDivElement;
   map: google.maps.Map;
   marker: google.maps.Marker;
 
   constructor() {
+    // Always call super first in constructor
     super();
-    console.log('Petar order EavCustomInputField constructor');
-    this.shadow = this.attachShadow({ mode: 'open' });
-    this.shadow.innerHTML = buildTemplate();
   }
 
   connectedCallback() {
-    console.log('Petar order EavCustomInputField connectedCallback');
-    this.latField = <HTMLInputElement>this.shadow.querySelector('#lat');
-    this.lngField = <HTMLInputElement>this.shadow.querySelector('#lng');
-    this.formattedAddress = <HTMLSpanElement>this.shadow.querySelector('#formatted-address');
-    this.mapContainer = <HTMLDivElement>this.shadow.querySelector('#map');
+    // spm prevents connectedCallback from being called more than once. Don't know if it's necessary
+    if (this.elementInitialized) {
+      return;
+    }
+    this.elementInitialized = true;
 
-    // spm add logic to not load google maps script twice
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${this.mapsApiKey}`;
-    script.onload = this.mapLoaded.bind(this);
-    this.shadow.appendChild(script);
+    this.innerHTML = buildTemplate();
+    this.latField = <HTMLInputElement>this.querySelector('#lat');
+    this.lngField = <HTMLInputElement>this.querySelector('#lng');
+    this.formattedAddress = <HTMLSpanElement>this.querySelector('#formatted-address');
+    this.mapContainer = <HTMLDivElement>this.querySelector('#map');
+
+    const mapScriptLoaded = !!document.querySelector(`script[src="${this.mapApiUrl}"]`);
+    console.log('FieldCustomGps connectedCallback mapScriptLoaded', mapScriptLoaded);
+    if (!mapScriptLoaded) {
+      const script = document.createElement('script');
+      script.src = this.mapApiUrl;
+      script.onload = this.mapLoaded.bind(this);
+      this.appendChild(script);
+    } else {
+      this.mapLoaded();
+    }
   }
 
   mapLoaded(): void {
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: this.defaultCoordinates });
     this.marker = new google.maps.Marker({ position: this.defaultCoordinates, map: this.map, draggable: true });
+
+    if (this.connector.data.value) {
+      const latLng: google.maps.LatLngLiteral = this.readValue();
+      this.updatePosition(latLng);
+      this.updateFields(latLng);
+    }
 
     const _this = this;
     this.marker.addListener('dragend', function (event: google.maps.MouseEvent) {
@@ -53,12 +68,6 @@ class FieldCustomGps extends EavCustomInputField<string> {
     this.connector.data.onValueChange(this.onControlChangedValue.bind(this));
     // spm add listener to value changes in Longitute and Latitude fields in the form
     // spm add listeners to value changes in Longitute and Latitude fields in this component
-
-    if (this.connector.data.value) {
-      const latLng: google.maps.LatLngLiteral = this.readValue();
-      this.updatePosition(latLng);
-      this.updateFields(latLng);
-    }
   }
 
   updatePosition(latLng: google.maps.LatLngLiteral): void {

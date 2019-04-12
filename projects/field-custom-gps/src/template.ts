@@ -1,7 +1,7 @@
 export const template = `
 <div class="custom-gps-container">
   <div class="map-info">
-    <label for="lat">Lat:</label>
+    <label for="lat">Lat1:</label>
     <input id="lat" type="number" />
     <span>, </span>
     <label for="lng">Lng:</label>
