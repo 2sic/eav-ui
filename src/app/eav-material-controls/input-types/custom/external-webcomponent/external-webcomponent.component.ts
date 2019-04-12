@@ -91,9 +91,15 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   private update(value: any) {
     // TODO: validate value
     this.group.controls[this.config.field.name].patchValue(value);
-    this.setDirty();
+    this.group.controls[this.config.field.name].markAsDirty();
     this.updateTriggeredByControl = true;
     console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
+  }
+
+  private updateField(name: string, value: any) {
+    this.group.controls[name].patchValue(value);
+    this.group.controls[name].markAsDirty();
+    this.updateTriggeredByControl = false;
   }
 
   /**
@@ -223,6 +229,9 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     const hiddenProps: HiddenProps = {
       allInputTypeNames: allInputTypeNames,
       fieldStates$: this.fieldStates$,
+      updateField: (name, value) => {
+        this._ngZone.run(() => this.updateField(name, value));
+      }
     };
 
     return hiddenProps;
@@ -274,10 +283,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
         this.updateTriggeredByControl = false;
       })
     );
-  }
-
-  private setDirty() {
-    this.group.controls[this.config.field.name].markAsDirty();
   }
 
   // private setAdamOptions() {

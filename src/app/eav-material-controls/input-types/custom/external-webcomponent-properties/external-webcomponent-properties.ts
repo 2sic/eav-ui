@@ -24,6 +24,7 @@ export class ConnectorHost<T> {
 export class HiddenProps {
     allInputTypeNames: InputTypeName[];
     fieldStates$: Observable<FieldState[]>;
+    updateField: (name: string, value: any) => void;
 }
 
 export class FieldState {
