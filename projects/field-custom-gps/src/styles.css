@@ -1,4 +1,3 @@
-export const styles = `
 .custom-gps-container {
   display: flex;
   flex-direction: column;
@@ -16,4 +15,3 @@ export const styles = `
   width: 100%;
   display: block;
 }
-`;
