@@ -93,6 +93,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   }
 
   private updateField(name: string, value: any) {
+    if (!this.group.controls[name] || this.group.controls[name].disabled) { return; }
     this.group.controls[name].patchValue(value);
     this.group.controls[name].markAsDirty();
     this.updateTriggeredByControl = false;

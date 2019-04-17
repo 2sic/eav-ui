@@ -45,7 +45,18 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     this.lngInput = <HTMLInputElement>this.querySelector('#lng');
     this.formattedAddress = <HTMLSpanElement>this.querySelector('#formatted-address');
     this.mapContainer = <HTMLDivElement>this.querySelector('#map');
-    this.initConnectedFormFields();
+
+    const allInputNames = this.hiddenProps.allInputTypeNames.map(inputType => inputType.name);
+    if (allInputNames.indexOf(this.connector.field.settings.LatField) !== -1) {
+      this.latFieldName = this.connector.field.settings.LatField;
+    }
+    if (allInputNames.indexOf(this.connector.field.settings.LongField) !== -1) {
+      this.lngFieldName = this.connector.field.settings.LongField;
+    }
+
+    // spm add addressMask initialization and resolver logic
+    this.addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
+    console.log('FieldCustomGps connectedCallback settings', this.connector.field.settings);
 
     const mapScriptLoaded = !!(window as any).google;
     if (mapScriptLoaded) {
@@ -58,23 +69,26 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     }
   }
 
-  private initConnectedFormFields() {
-    const allInputNames = this.hiddenProps.allInputTypeNames.map(inputType => inputType.name);
-    if (allInputNames.indexOf(this.connector.field.settings.LatField) !== -1) {
-      this.latFieldName = this.connector.field.settings.LatField;
-    }
-    if (allInputNames.indexOf(this.connector.field.settings.LongField) !== -1) {
-      this.lngFieldName = this.connector.field.settings.LongField;
-    }
-
-    // spm add addressMask initialization and resolver logic
-    this.addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    console.log('FieldCustomGps connectedCallback settings', this.connector.field.settings);
-  }
-
   private mapLoaded(): void {
+    console.log('FieldCustomGps mapLoaded called');
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: this.defaultCoordinates });
     this.marker = new google.maps.Marker({ position: this.defaultCoordinates, map: this.map, draggable: true });
+
+    // first value read
+    if (this.connector.data.value) {
+      this.gpsFieldValue = this.connector.data.value;
+      const value = parseLatLng(this.connector.data.value);
+      if (this.latFieldName) {
+        this.latFieldValue = value.lat;
+      }
+      if (this.lngFieldName) {
+        this.lngFieldValue = value.lng;
+      }
+      this.latInput.value = value.lat.toString();
+      this.lngInput.value = value.lng.toString();
+      this.map.setCenter(value);
+      this.marker.setPosition(value);
+    }
 
     this.subscribeToFormChanges();
 
@@ -112,16 +126,22 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
    * When Latitude or Longitude fields are updated we just have to update GPS field and the change will propagate to all values.
    */
   private subscribeToFormChanges() {
-    this.hiddenProps.fieldStates$.subscribe(fieldStates => {
-      const gpsFieldState = fieldStates.filter(fieldState => fieldState.name === this.connector.field.name)[0];
-      const latFieldState = fieldStates.filter(fieldState => fieldState.name === this.latFieldName)[0];
-      const lngFieldState = fieldStates.filter(fieldState => fieldState.name === this.lngFieldName)[0];
+    console.log('FieldCustomGps subscribeToFormChanges called');
 
-      if (gpsFieldState && gpsFieldState.value !== this.gpsFieldValue) {
-        this.gpsFieldValue = gpsFieldState.value;
-        console.log('FieldCustomGps mapLoaded GPS field changed');
+    this.hiddenProps.formSetValueChange$.subscribe(formSet => {
+      console.log('FieldCustomGps subscribeToFormChanges values subscription', formSet);
+      const gpsFieldValue = formSet[this.connector.field.name];
+      const latFieldValue = formSet[this.latFieldName];
+      const lngFieldValue = formSet[this.lngFieldName];
+      const shouldUpdateGpsField = !this.hiddenProps.formGroup.controls[this.connector.field.name].disabled;
+      const shouldUpdateLatField = this.latFieldName && !this.hiddenProps.formGroup.controls[this.latFieldName].disabled;
+      const shouldUpdateLngField = this.lngFieldName && !this.hiddenProps.formGroup.controls[this.lngFieldName].disabled;
 
-        const value = parseLatLng(gpsFieldState.value);
+      if (shouldUpdateGpsField && this.gpsFieldValue !== gpsFieldValue) {
+        console.log('FieldCustomGps mapLoaded GPS field changed', 'old:', this.gpsFieldValue, 'new:', gpsFieldValue);
+        this.gpsFieldValue = gpsFieldValue;
+
+        const value = parseLatLng(gpsFieldValue);
         if (this.latInput.value !== value.lat.toString()) {
           this.latInput.value = value.lat.toString();
         }
@@ -139,34 +159,43 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
           this.marker.setPosition(value);
         }
 
-        if (this.latFieldValue !== value.lat) {
+        if (shouldUpdateLatField && this.latFieldValue !== value.lat) {
           this.latFieldValue = value.lat;
-          this.hiddenProps.updateField(this.latFieldName, value.lat);
+          if (latFieldValue !== value.lat) {
+            this.hiddenProps.updateField(this.latFieldName, value.lat);
+          }
         }
-        if (this.lngFieldValue !== value.lng) {
+
+        if (shouldUpdateLngField && this.lngFieldValue !== value.lng) {
           this.lngFieldValue = value.lng;
-          this.hiddenProps.updateField(this.lngFieldName, value.lng);
+          if (lngFieldValue !== value.lat) {
+            this.hiddenProps.updateField(this.lngFieldName, value.lng);
+          }
         }
         return;
       }
 
-      if (latFieldState && latFieldState.value !== this.latFieldValue) {
-        this.latFieldValue = latFieldState.value;
-        console.log('FieldCustomGps mapLoaded Latitude field changed');
+      if (shouldUpdateLatField && this.latFieldValue !== latFieldValue) {
+        console.log('FieldCustomGps mapLoaded Latitude field changed', 'old:', this.latFieldValue, 'new', latFieldValue);
+        this.latFieldValue = latFieldValue;
 
-        const latLng = parseLatLng(gpsFieldState.value);
-        latLng.lat = latFieldState.value;
-        this.connector.data.update(stringifyLatLng(latLng));
+        if (shouldUpdateGpsField) {
+          const latLng = parseLatLng(gpsFieldValue);
+          latLng.lat = latFieldValue;
+          this.connector.data.update(stringifyLatLng(latLng));
+        }
         return;
       }
 
-      if (lngFieldState && lngFieldState.value !== this.lngFieldValue) {
-        this.lngFieldValue = lngFieldState.value;
-        console.log('FieldCustomGps mapLoaded Longitude field changed');
+      if (shouldUpdateLngField && this.lngFieldValue !== lngFieldValue) {
+        console.log('FieldCustomGps mapLoaded Longitude field changed', 'old:', this.lngFieldValue, 'new', lngFieldValue);
+        this.lngFieldValue = lngFieldValue;
 
-        const latLng = parseLatLng(gpsFieldState.value);
-        latLng.lng = lngFieldState.value;
-        this.connector.data.update(stringifyLatLng(latLng));
+        if (shouldUpdateGpsField) {
+          const latLng = parseLatLng(gpsFieldValue);
+          latLng.lng = lngFieldValue;
+          this.connector.data.update(stringifyLatLng(latLng));
+        }
         return;
       }
     });
