@@ -14,7 +14,7 @@ import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 // tslint:disable-next-line:max-line-length
-import { ExternalWebComponentProperties, FieldState, HiddenProps, ConnectorHost } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ExternalWebComponentProperties, HiddenProps, ConnectorHost } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ConnectorInstance } from './connector';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
@@ -44,8 +44,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   loadingSpinner = true;
   // externalFactory: any;
   updateTriggeredByControl = false;
-  currentLanguage$: Observable<string>;
-  currentLanguage: string;
 
   get inputInvalid() {
     return this.group.controls[this.config.field.name].invalid;
@@ -56,7 +54,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   }
 
   value$: BehaviorSubject<any>;
-  fieldStates$: BehaviorSubject<FieldState[]>;
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
@@ -69,7 +66,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
     private contentTypeService: ContentTypeService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
-    this.currentLanguage$ = languageService.getCurrentLanguage();
   }
 
   /**
@@ -211,44 +207,22 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   }
 
   private calculateHiddenProps(): HiddenProps {
-    // this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
-    //   this.currentLanguage = lan;
-    //   console.log('Petar changed language', this.currentLanguage);
-    //   this.customEl.setAttribute('language', this.currentLanguage);
-    // }));
-
     let allInputTypeNames: InputTypeName[];
     const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(first()).subscribe(data => {
       allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
     });
 
-    const initialFieldStates: FieldState[] = this.calculateFieldStates();
-    this.fieldStates$ = new BehaviorSubject(initialFieldStates);
-    this.subjects.push(this.fieldStates$);
     const hiddenProps: HiddenProps = {
       allInputTypeNames: allInputTypeNames,
-      fieldStates$: this.fieldStates$,
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
-      }
+      },
+      formGroup: this.group,
+      formSetValueChange$: this.eavService.formSetValueChange$,
     };
 
     return hiddenProps;
-  }
-
-  private calculateFieldStates(): FieldState[] {
-    const fieldStates: FieldState[] = [];
-    Object.keys(this.group.controls).forEach(key => {
-      const control = this.group.get(key);
-      fieldStates.push({
-        name: key,
-        value: control.value,
-        disabled: control.disabled,
-      });
-    });
-
-    return fieldStates;
   }
 
   /**
@@ -259,8 +233,6 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
       this.group.controls[this.config.field.name].valueChanges.subscribe(newValue => {
         // do when this control updates the form
         this.value$.next(newValue);
-        const newFieldStates: FieldState[] = this.calculateFieldStates();
-        this.fieldStates$.next(newFieldStates);
       })
     );
   }
@@ -270,15 +242,11 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
    */
   private subscribeFormChange() {
     this.subscriptions.push(
-      // spm 2019.04.05. why do we subscribe to changes with manually created service
-      // instead of using reactive form form.valueChanges.subscribe?
       this.eavService.formSetValueChange$.subscribe(formSet => {
         if (!this.updateTriggeredByControl) {
           // do when some other control updated the form
           const newValue = formSet[this.config.field.name];
           this.value$.next(newValue);
-          const newFieldStates: FieldState[] = this.calculateFieldStates();
-          this.fieldStates$.next(newFieldStates);
         }
         this.updateTriggeredByControl = false;
       })

@@ -179,9 +179,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
-    this.hiddenProps.fieldStates$.pipe(first()).subscribe((fieldStates: FieldState[]) => {
-      this.disabled = fieldStates.find(fieldState => fieldState.name === this.connector.field.name).disabled;
-    });
+    this.disabled = this.hiddenProps.formGroup.controls[this.connector.field.name].disabled;
   }
 
   private subscribeToFormChanges(): void {
@@ -189,8 +187,9 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
         this.setValue(newValue);
       }),
-      this.hiddenProps.fieldStates$.pipe(skip(1)).subscribe((fieldStates: FieldState[]) => {
-        this.disabled = fieldStates.find(fieldState => fieldState.name === this.connector.field.name).disabled;
+      // spm 2019.04.17. disabled check doesn't work when field is translated without value change
+      this.hiddenProps.formSetValueChange$.subscribe(formSet => {
+        this.disabled = this.hiddenProps.formGroup.controls[this.connector.field.name].disabled;
       })
     );
   }

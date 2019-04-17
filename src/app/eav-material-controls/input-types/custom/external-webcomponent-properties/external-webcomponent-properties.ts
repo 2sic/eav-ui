@@ -1,5 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
+import { FormGroup } from '@angular/forms';
 
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { InputTypeName } from '../../../../shared/helpers/input-field-models';
@@ -23,8 +24,9 @@ export class ConnectorHost<T> {
 
 export class HiddenProps {
     allInputTypeNames: InputTypeName[];
-    fieldStates$: Observable<FieldState[]>;
     updateField: (name: string, value: any) => void;
+    formGroup: FormGroup;
+    formSetValueChange$: Observable<any>;
 }
 
 export class FieldState {
