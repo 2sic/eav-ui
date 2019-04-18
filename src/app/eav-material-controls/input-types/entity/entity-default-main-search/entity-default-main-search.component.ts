@@ -20,7 +20,7 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
-import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';

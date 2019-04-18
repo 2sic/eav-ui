@@ -8,7 +8,7 @@ import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

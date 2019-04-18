@@ -1,5 +1,6 @@
 import { EavExperimentalInputField, MyEventListenerModel } from './models';
 import { buildTemplate, parseLatLng, stringifyLatLng } from './helpers';
+import { FieldMaskService } from '../../shared/field-mask.service';
 import { } from 'google-maps';
 
 // Create a class for the element
@@ -9,6 +10,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   defaultCoordinates: google.maps.LatLngLiteral;
   eventListeners: MyEventListenerModel[];
   fieldInitialized: boolean;
+  fieldMaskService: FieldMaskService;
   formattedAddressContainer: HTMLSpanElement;
   geocoder: google.maps.Geocoder;
   gpsFieldValue: string;
@@ -60,9 +62,11 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     }
 
     this.addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
+    this.fieldMaskService = new FieldMaskService(this.addressMask, null, null, this.hiddenProps.formGroup.controls);
+    console.log('FieldCustomGps connectedCallback addressMask:', this.addressMask);
     if (this.addressMask) {
       this.addressMaskContainer.classList.remove('hidden');
-      this.formattedAddressContainer.innerText = this.calculateFormattedAddress();
+      this.formattedAddressContainer.innerText = this.fieldMaskService.resolve();
     }
 
     const mapScriptLoaded = !!(window as any).google;
@@ -132,7 +136,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private autoSelect() {
-    const address = this.calculateFormattedAddress();
+    const address = this.fieldMaskService.resolve();
     this.geocoder.geocode({
       address: address
     }, (results, status) => {
@@ -149,18 +153,6 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     });
   }
 
-  private calculateFormattedAddress(): string {
-    let address = this.addressMask;
-    const tokenRe = /\[.*?\]/ig;
-    const matches = address.match(tokenRe);
-    matches.forEach(match => {
-      const staticName = match.replace(/[\[\]]/ig, '');
-      const replaceValue = this.hiddenProps.formGroup.controls[staticName] ? this.hiddenProps.formGroup.controls[staticName].value : '';
-      address = address.replace(match, replaceValue);
-    });
-    return address;
-  }
-
   /**
    * On each change we save a local copy of the form fields to figure out which of the fields has been updated.
    * When GPS field is updated we have to update all values.
@@ -170,7 +162,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     console.log('FieldCustomGps subscribeToFormChanges called');
 
     this.hiddenProps.formSetValueChange$.subscribe(formSet => {
-      this.formattedAddressContainer.innerText = this.calculateFormattedAddress();
+      this.formattedAddressContainer.innerText = this.fieldMaskService.resolve();
 
       console.log('FieldCustomGps subscribeToFormChanges values subscription', formSet);
       const gpsFieldValue = formSet[this.connector.field.name];
