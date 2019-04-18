@@ -202,8 +202,10 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   disconnectedCallback() {
-    google.maps.event.clearInstanceListeners(this.marker);
-    google.maps.event.clearInstanceListeners(this.map);
+    if (!!(window as any).google) {
+      google.maps.event.clearInstanceListeners(this.marker);
+      google.maps.event.clearInstanceListeners(this.map);
+    }
 
     this.eventListeners.forEach(eventListener => {
       const element = eventListener.element;
