@@ -95,10 +95,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
     event.stopPropagation();
   }
 
-  // maybeReload() {
-  //   console.log('call maybeReload');
-  // }
-
   optionSelected(event) {
     this.addEntity(event.option.value);
     this.autoCompleteInputControl.nativeElement.value = null;

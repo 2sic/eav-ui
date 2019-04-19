@@ -40,17 +40,13 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   ngOnInit() {
     // Initialize url parameters mask
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.maybeReload, null, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(this.urlParameters, null, this.group.controls);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
   }
 
   ngOnDestroy(): void {
-  }
-
-  maybeReload() {
-    console.log('call maybeReload');
   }
 
   callAvailableEntities(value) {

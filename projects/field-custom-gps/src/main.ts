@@ -10,7 +10,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   defaultCoordinates: google.maps.LatLngLiteral;
   eventListeners: MyEventListenerModel[];
   fieldInitialized: boolean;
-  fieldMaskService: FieldMaskService;
+  addressMaskService: FieldMaskService;
   formattedAddressContainer: HTMLSpanElement;
   geocoder: google.maps.Geocoder;
   gpsFieldValue: string;
@@ -62,11 +62,11 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     }
 
     this.addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.fieldMaskService = new FieldMaskService(this.addressMask, null, null, this.hiddenProps.formGroup.controls);
+    this.addressMaskService = new FieldMaskService(this.addressMask, null, this.hiddenProps.formGroup.controls);
     console.log('FieldCustomGps connectedCallback addressMask:', this.addressMask);
     if (this.addressMask) {
       this.addressMaskContainer.classList.remove('hidden');
-      this.formattedAddressContainer.innerText = this.fieldMaskService.resolve();
+      this.formattedAddressContainer.innerText = this.addressMaskService.resolve();
     }
 
     const mapScriptLoaded = !!(window as any).google;
@@ -136,7 +136,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private autoSelect() {
-    const address = this.fieldMaskService.resolve();
+    const address = this.addressMaskService.resolve();
     this.geocoder.geocode({
       address: address
     }, (results, status) => {
@@ -162,7 +162,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     console.log('FieldCustomGps subscribeToFormChanges called');
 
     this.hiddenProps.formSetValueChange$.subscribe(formSet => {
-      this.formattedAddressContainer.innerText = this.fieldMaskService.resolve();
+      this.formattedAddressContainer.innerText = this.addressMaskService.resolve();
 
       console.log('FieldCustomGps subscribeToFormChanges values subscription', formSet);
       const gpsFieldValue = formSet[this.connector.field.name];

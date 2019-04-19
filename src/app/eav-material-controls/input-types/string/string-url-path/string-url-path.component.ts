@@ -42,7 +42,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
   ngOnInit() {
     const sourceMask = this.autoGenerateMask;
     // this will contain the auto-resolve type (based on other contentType-field)
-    this.fieldMaskService = new FieldMaskService(sourceMask, null, this.preCleane, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(sourceMask, this.preCleane, this.group.controls);
 
     // set initial value
     this.sourcesChangedTryToUpdate(this.fieldMaskService);
