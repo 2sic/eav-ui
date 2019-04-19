@@ -1,15 +1,19 @@
 <div class="custom-gps-container">
   <div class="map-info">
-    <label for="lat">Lat:</label>
-    <input id="lat" type="number" />
-    <span>, </span>
-    <label for="lng">Lng:</label>
-    <input id="lng" type="number" />
+    <div class="input-component">
+      <label for="lat">Lat:</label>
+      <input id="lat" type="number" step="0.001" />
+    </div>
+    &nbsp;
+    <div class="input-component">
+      <label for="lng">Lng:</label>
+      <input id="lng" type="number" step="0.001" />
+    </div>
   </div>
 
   <div id="address-mask-container" class="map-info hidden">
-    <a id="icon-search" class="btn btn-default">
-      <span icon="search">Icon-search</span>
+    <a id="icon-search" class="btn">
+      <span class="eav-icon-search" icon="search"></span>
     </a>
     <span id="formatted-address-container"></span>
   </div>
