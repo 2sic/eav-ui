@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -14,6 +14,7 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 })
 export class ExpandableWrapperV2Component implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('previewContainer') previewContainer: ElementRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
@@ -31,7 +32,11 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit {
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const previewElName = `field-${this.config.field.fullInputType}-preview`;
+    const previewEl = document.createElement(previewElName) as any;
+    this.previewContainer.nativeElement.appendChild(previewEl);
+  }
 
   setTouched() {
     this.group.controls[this.config.field.name].markAsTouched();

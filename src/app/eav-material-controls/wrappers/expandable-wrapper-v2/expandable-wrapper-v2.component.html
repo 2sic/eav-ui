@@ -36,9 +36,7 @@
         {{config.field.label}}
         {{config.field.required? '*': '' }}
       </mat-label>
-      <div *ngIf="value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"
-        [innerHtml]="value">
-      </div>
+      <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
     </div>
   </div>
   <!-- hasDirtyTouched="fasle"  -->

@@ -1,8 +1,12 @@
-import { EavExperimentalInputField, MyEventListenerModel } from './models';
-import { buildTemplate, parseLatLng, stringifyLatLng } from './helpers';
-import { FieldMaskService } from '../../shared/field-mask.service';
-import { } from 'google-maps';
 import { Subscription } from 'rxjs';
+import { } from 'google-maps';
+
+import { EavExperimentalInputField, MyEventListenerModel } from '../shared/models';
+import { buildTemplate } from '../shared/helpers';
+import { parseLatLng, stringifyLatLng } from './main.helpers';
+import * as template from './main.html';
+import * as styles from './main.css';
+import { FieldMaskService } from '../../../shared/field-mask.service';
 
 // Create a class for the element
 class FieldCustomGps extends EavExperimentalInputField<string> {
@@ -48,7 +52,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
 
-    this.innerHTML = buildTemplate();
+    this.innerHTML = buildTemplate(template, styles);
     this.latInput = <HTMLInputElement>this.querySelector('#lat');
     this.lngInput = <HTMLInputElement>this.querySelector('#lng');
     this.addressMaskContainer = <HTMLDivElement>this.querySelector('#address-mask-container');

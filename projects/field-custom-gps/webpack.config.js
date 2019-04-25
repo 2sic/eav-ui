@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './projects/field-custom-gps/src/main.ts',
+  entry: ['./projects/field-custom-gps/src/main/main.ts', './projects/field-custom-gps/src/preview/preview.ts'],
   devtool: 'inline-source-map',
   module: {
     rules: [
