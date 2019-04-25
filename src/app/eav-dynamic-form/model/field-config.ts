@@ -18,6 +18,7 @@ export interface FieldConfigAngular extends FieldConfig {
   validation: ValidatorFn[];
   fullSettings: EavAttributes;
   wrappers: string[];
+  expanded: boolean;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

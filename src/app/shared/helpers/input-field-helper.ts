@@ -127,7 +127,7 @@ export class InputFieldHelper {
             } else if (fullInputType === InputTypesConstants.customGPS) {
                 wrappers.push(
                     WrappersConstants.eavLocalizationWrapper,
-                    WrappersConstants.expandableWrapper,
+                    WrappersConstants.expandableWrapperV2,
                 );
             } else {
                 wrappers.push(

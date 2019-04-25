@@ -1,3 +1,2 @@
-<!-- <field-string-wysiwyg [name]="config.currentFieldConfig.name" [host]="externalInputTypeHost" [config]="config" [group]="group"></field-string-wysiwyg> -->
 <mat-spinner *ngIf="loadingSpinner"></mat-spinner>
-<div #container style="height:100%"></div>
+<app-connector [config]="config" [group]="group" *ngIf="!loadingSpinner && shouldShowConnector()"></app-connector>

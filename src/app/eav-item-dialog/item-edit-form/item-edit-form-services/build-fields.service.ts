@@ -150,6 +150,7 @@ export class BuildFieldsService {
         settings: settingsTranslated,
         fullSettings: fullSettings,
         wrappers: wrappers,
+        expanded: false,
         name: name,
         index: index, // other fields specific
         label: label,

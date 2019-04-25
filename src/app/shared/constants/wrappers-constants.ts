@@ -6,6 +6,7 @@ export class WrappersConstants {
     public static readonly dropzoneWrapper: string = 'app-dropzone-wrapper';
     public static readonly eavLocalizationWrapper: string = 'app-eav-localization-wrapper';
     public static readonly expandableWrapper: string = 'app-expandable-wrapper';
+    public static readonly expandableWrapperV2: string = 'app-expandable-wrapper-v2';
     public static readonly adamAttachWrapper: string = 'app-adam-attach-wrapper';
     // entity specific wrappers
     public static readonly collapsibleFieldWrapper: string = 'app-collapsible-field-wrapper';
