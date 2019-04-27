@@ -1,8 +1,7 @@
 import { EavCustomInputField } from '../../../shared/eav-custom-input-field';
-import { buildTemplate } from '../shared/helpers';
+import { buildTemplate, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
-import { parseLatLng } from '../main/main.helpers';
 
 class FieldCustomGpsPreview extends EavCustomInputField<string> {
   latContainer: HTMLSpanElement;

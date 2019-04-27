@@ -6,7 +6,7 @@ export class EavExperimentalInputField<T> extends EavCustomInputField<T> {
   hiddenProps: HiddenProps;
 }
 
-export class MyEventListenerModel {
+export class ElementEventListener {
   element: HTMLElement;
   type: string;
   listener: EventListenerOrEventListenerObject;
