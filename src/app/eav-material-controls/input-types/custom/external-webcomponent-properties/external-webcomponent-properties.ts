@@ -7,7 +7,7 @@ import { InputTypeName } from '../../../../shared/helpers/input-field-models';
 
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
-    hiddenProps: HiddenProps;
+    experimental: ExperimentalProps;
     host: any;
     translateService: TranslateService;
 
@@ -22,7 +22,7 @@ export class ConnectorHost<T> {
     update: (value: T) => void;
 }
 
-export class HiddenProps {
+export class ExperimentalProps {
     allInputTypeNames: InputTypeName[];
     updateField: (name: string, value: any) => void;
     formGroup: FormGroup;

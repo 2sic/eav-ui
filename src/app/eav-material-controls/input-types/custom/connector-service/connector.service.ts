@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 // tslint:disable-next-line:max-line-length
-import { ExternalWebComponentProperties, ConnectorHost, HiddenProps } from '../external-webcomponent-properties/external-webcomponent-properties';
+import { ExternalWebComponentProperties, ConnectorHost, ExperimentalProps } from '../external-webcomponent-properties/external-webcomponent-properties';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -45,7 +45,7 @@ export class ConnectorService {
   /**
    * This is host methods which the external control see
    */
-  // spm 2019.04.08. move to hiddenProps
+  // spm 2019.04.08. move to experimentalProps
   private externalInputTypeHost = {
     attachAdam: () => this.attachAdam(),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
@@ -56,7 +56,7 @@ export class ConnectorService {
     },
   };
 
-  // spm 2019.04.08. move to hiddenProps
+  // spm 2019.04.08. move to experimentalProps
   private openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
     this.dnnBridgeService.open(
       oldValue,
@@ -65,7 +65,7 @@ export class ConnectorService {
       this.dialog);
   }
 
-  // spm 2019.04.08. move to hiddenProps
+  // spm 2019.04.08. move to experimentalProps
   private getUrlOfIdDnnDialog(value: string, urlCallback: any) {
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
@@ -134,7 +134,7 @@ export class ConnectorService {
     // spm pass language service secretly as well
     this.customEl.translateService = this.translateService;
 
-    this.customEl.hiddenProps = this.calculateHiddenProps();
+    this.customEl.experimental = this.calculateExperimentalProps();
     this.customEl.connector = this.buildConnector();
     console.log('Petar order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
@@ -156,14 +156,14 @@ export class ConnectorService {
     return connector;
   }
 
-  private calculateHiddenProps(): HiddenProps {
+  private calculateExperimentalProps(): ExperimentalProps {
     let allInputTypeNames: InputTypeName[];
     const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(first()).subscribe(data => {
       allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
     });
 
-    const hiddenProps: HiddenProps = {
+    const experimentalProps: ExperimentalProps = {
       allInputTypeNames: allInputTypeNames,
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
@@ -172,7 +172,7 @@ export class ConnectorService {
       formSetValueChange$: this.eavService.formSetValueChange$,
     };
 
-    return hiddenProps;
+    return experimentalProps;
   }
 
   /**

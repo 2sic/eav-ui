@@ -9,7 +9,7 @@ import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
 import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
-import { HiddenProps, FieldState } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
+import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 import { InputTypeName } from '../../../../../src/app/shared/helpers/input-field-models';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
@@ -23,7 +23,7 @@ import { InputTypeName } from '../../../../../src/app/shared/helpers/input-field
 })
 export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   @Input() connector: ConnectorObservable<string>;
-  @Input() hiddenProps: HiddenProps;
+  @Input() experimental: ExperimentalProps;
   @Input() host: any;
   @Input() translateService: TranslateService;
   @Input()
@@ -179,7 +179,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
-    this.disabled = this.hiddenProps.formGroup.controls[this.connector.field.name].disabled;
+    this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
   }
 
   private subscribeToFormChanges(): void {
@@ -188,18 +188,18 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
         this.setValue(newValue);
       }),
       // spm 2019.04.17. disabled check doesn't work when field is translated without value change
-      this.hiddenProps.formSetValueChange$.subscribe(formSet => {
-        this.disabled = this.hiddenProps.formGroup.controls[this.connector.field.name].disabled;
+      this.experimental.formSetValueChange$.subscribe(formSet => {
+        this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
       })
     );
   }
 
   private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
-    if (this.hiddenProps.allInputTypeNames.length === this.connector.field.index + 1) {
+    if (this.experimental.allInputTypeNames.length === this.connector.field.index + 1) {
       return;
     }
-    const nextField: InputTypeName = this.hiddenProps.allInputTypeNames[this.connector.field.index + 1];
+    const nextField: InputTypeName = this.experimental.allInputTypeNames[this.connector.field.index + 1];
     if (nextField.inputType === 'entity-content-blocks') {
       settings.enableContentBlocks = true;
     }

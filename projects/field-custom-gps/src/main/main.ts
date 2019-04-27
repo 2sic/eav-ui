@@ -47,7 +47,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     const formattedAddressContainer = <HTMLSpanElement>this.querySelector('#formatted-address-container');
     this.mapContainer = this.querySelector('#map');
 
-    const allInputNames = this.hiddenProps.allInputTypeNames.map(inputType => inputType.name);
+    const allInputNames = this.experimental.allInputTypeNames.map(inputType => inputType.name);
     if (allInputNames.indexOf(this.connector.field.settings.LatField) !== -1) {
       this.latFieldName = this.connector.field.settings.LatField;
     }
@@ -56,7 +56,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     }
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMaskService = new FieldMaskService(addressMask, null, this.hiddenProps.formGroup.controls);
+    this.addressMaskService = new FieldMaskService(addressMask, null, this.experimental.formGroup.controls);
     console.log('FieldCustomGps addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
@@ -110,10 +110,10 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   private updateForm(latLng: google.maps.LatLngLiteral) {
     this.connector.data.update(stringifyLatLng(latLng));
     if (this.latFieldName) {
-      this.hiddenProps.updateField(this.latFieldName, latLng.lat);
+      this.experimental.updateField(this.latFieldName, latLng.lat);
     }
     if (this.lngFieldName) {
-      this.hiddenProps.updateField(this.lngFieldName, latLng.lng);
+      this.experimental.updateField(this.lngFieldName, latLng.lng);
     }
   }
 
