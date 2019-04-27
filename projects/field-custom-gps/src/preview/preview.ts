@@ -1,12 +1,14 @@
+import { EavCustomInputField } from '../../../shared/eav-custom-input-field';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
+import { parseLatLng } from '../main/main.helpers';
 
-// Create a class for the element
-class FieldCustomGpsPreview extends HTMLElement {
+class FieldCustomGpsPreview extends EavCustomInputField<string> {
+  latContainer: HTMLSpanElement;
+  lngContainer: HTMLSpanElement;
 
   constructor() {
-    // Always call super first in constructor
     super();
     console.log('FieldCustomGpsPreview constructor called');
   }
@@ -14,8 +16,17 @@ class FieldCustomGpsPreview extends HTMLElement {
   connectedCallback() {
     console.log('FieldCustomGpsPreview connectedCallback called');
     this.innerHTML = buildTemplate(template, styles);
-    const valueContainer = <HTMLSpanElement>this.querySelector('#value-container');
-    valueContainer.innerText = 'My data';
+    this.latContainer = this.querySelector('#lat-container');
+    this.lngContainer = this.querySelector('#lng-container');
+    this.updateHtml(this.connector.data.value);
+
+    this.connector.data.onValueChange(this.updateHtml.bind(this));
+  }
+
+  updateHtml(value: string) {
+    const latLng = parseLatLng(value);
+    this.latContainer.innerText = latLng.lat.toString();
+    this.lngContainer.innerText = latLng.lng.toString();
   }
 
   disconnectedCallback() {
@@ -23,5 +34,4 @@ class FieldCustomGpsPreview extends HTMLElement {
   }
 }
 
-// Define the new element
 customElements.define('field-custom-gps-preview', FieldCustomGpsPreview);

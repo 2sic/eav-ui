@@ -26,7 +26,7 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   ngOnInit() {
-    // load external scripts here. When they are loaded update loadingSpinner = false;
+    // spm load external scripts here. When they are loaded update loadingSpinner = false;
   }
 
   /**
