@@ -54,11 +54,16 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  scrollableDown(event: MouseEvent) {
+    this.mouseScrollService.scrollableDown(event);
+  }
+
   areButtonsDisabled(): boolean {
     return !this.formsAreValid && !this.allControlsAreDisabled;
   }
 
   ngOnDestroy() {
     this.centerSelectedService.destroy();
+    this.mouseScrollService.destroy();
   }
 }

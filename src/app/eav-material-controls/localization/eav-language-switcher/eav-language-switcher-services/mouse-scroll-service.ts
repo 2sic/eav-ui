@@ -1,31 +1,33 @@
-import { Injectable, Renderer2, ElementRef } from '@angular/core';
+import { Renderer2, ElementRef } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class MouseScrollService {
   private renderer: Renderer2;
   private header: HTMLElement;
   private oldScrollBehavior: string;
   private positionX: number;
-  private listeners: Function[] = [];
-  private areButtonsDisabled: Function;
+  private listeners: (() => void)[] = [];
+  private areButtonsDisabled: () => boolean;
 
   constructor() { }
 
-  initMouseScroll(renderer: Renderer2, headerRef: ElementRef, areButtonsDisabled: Function): void {
+  initMouseScroll(renderer: Renderer2, headerRef: ElementRef, areButtonsDisabled: () => boolean) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
     this.areButtonsDisabled = areButtonsDisabled;
-
-    this.renderer.listen(this.header, 'mousedown', this.registerScroll.bind(this));
   }
 
-  private registerScroll(event: any): void {
+  scrollableDown(event: MouseEvent) {
+    this.registerScroll(event);
+  }
+
+  destroy() {
+    this.listeners.forEach(listener => listener());
+  }
+
+  private registerScroll(event: MouseEvent) {
     const disabled = this.areButtonsDisabled();
-    if (disabled || event.button !== 0) {
-      return;
-    }
+    if (disabled || event.button !== 0) { return; }
+
     const selection = window.getSelection();
     selection.removeAllRanges();
     const headerStyles = getComputedStyle(this.header);
@@ -39,16 +41,14 @@ export class MouseScrollService {
     this.listeners.push(this.renderer.listen('document', 'mouseleave', this.removeScroll.bind(this)));
   }
 
-  private removeScroll(): void {
+  private removeScroll() {
     this.renderer.setStyle(this.header, 'scroll-behavior', this.oldScrollBehavior);
 
-    this.listeners.forEach(listener => {
-      listener(); // Stop listener
-    });
+    this.listeners.forEach(listener => listener());
     this.listeners.splice(0, this.listeners.length);
   }
 
-  private doScroll(event: any): void {
+  private doScroll(event: MouseEvent) {
     const newPositionX = event.pageX;
     if (newPositionX < this.positionX) {
       this.header.scrollLeft += this.positionX - newPositionX;
