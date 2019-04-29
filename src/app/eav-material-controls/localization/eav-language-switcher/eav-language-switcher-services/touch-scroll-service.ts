@@ -6,14 +6,12 @@ export class TouchScrollService {
   private oldOverflowX: string;
   private listeners: (() => void)[] = [];
 
-  constructor() { }
-
-  initTouchScroll(renderer: Renderer2, headerRef: ElementRef) {
+  constructor(renderer: Renderer2, headerRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
   }
 
-  scrollableTouchStart(event: MouseEvent) {
+  headerTouchStart(event: MouseEvent) {
     this.registerMobileScroll();
   }
 

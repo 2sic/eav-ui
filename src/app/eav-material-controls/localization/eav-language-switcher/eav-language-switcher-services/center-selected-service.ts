@@ -9,9 +9,7 @@ export class CenterSelectedService {
   private stopClick = false;
   private listeners: (() => void)[] = [];
 
-  constructor() { }
-
-  initCenterSelected(renderer: Renderer2, headerRef: ElementRef) {
+  constructor(renderer: Renderer2, headerRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
 

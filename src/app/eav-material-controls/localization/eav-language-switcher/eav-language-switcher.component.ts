@@ -28,18 +28,13 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   constructor(
     private languageService: LanguageService,
     private renderer: Renderer2,
-  ) {
-    this.showShadowsService = new ShowShadowsService();
-    this.mouseScrollService = new MouseScrollService();
-    this.touchScrollService = new TouchScrollService();
-    this.centerSelectedService = new CenterSelectedService();
-  }
+  ) { }
 
   ngAfterViewInit() {
-    this.showShadowsService.initShadowsCalculation(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
-    this.mouseScrollService.initMouseScroll(this.renderer, this.headerRef, this.areButtonsDisabled.bind(this));
-    this.touchScrollService.initTouchScroll(this.renderer, this.headerRef);
-    this.centerSelectedService.initCenterSelected(this.renderer, this.headerRef);
+    this.showShadowsService = new ShowShadowsService(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
+    this.mouseScrollService = new MouseScrollService(this.renderer, this.headerRef, this.areButtonsDisabled.bind(this));
+    this.touchScrollService = new TouchScrollService(this.renderer, this.headerRef);
+    this.centerSelectedService = new CenterSelectedService(this.renderer, this.headerRef);
   }
 
   areButtonsDisabled(): boolean {
@@ -53,7 +48,7 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     this.showShadowsService.destroy();
   }
 
-  lngButtonDown(event: MouseEvent) {
+  lngButtonMouseDown(event: MouseEvent) {
     this.centerSelectedService.lngButtonDown(event);
   }
 
@@ -65,15 +60,15 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  scrollableDown(event: MouseEvent) {
-    this.mouseScrollService.scrollableDown(event);
+  headerMouseDown(event: MouseEvent) {
+    this.mouseScrollService.headerMouseDown(event);
   }
 
-  scrollableScroll(event: MouseEvent) {
-    this.showShadowsService.scrollableScroll(event);
+  headerScroll(event: MouseEvent) {
+    this.showShadowsService.headerScroll(event);
   }
 
-  scrollableTouchStart(event: MouseEvent) {
-    this.touchScrollService.scrollableTouchStart(event);
+  headerTouchStart(event: MouseEvent) {
+    this.touchScrollService.headerTouchStart(event);
   }
 }

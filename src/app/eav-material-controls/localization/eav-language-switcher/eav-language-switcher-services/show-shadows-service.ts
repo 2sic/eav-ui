@@ -9,9 +9,7 @@ export class ShowShadowsService {
   private hidden = 'hidden'; // CSS class which hides shadows
   private listeners: (() => void)[] = [];
 
-  constructor() { }
-
-  initShadowsCalculation(renderer: Renderer2, headerRef: ElementRef, leftShadowRef: ElementRef, rightShadowRef: ElementRef) {
+  constructor(renderer: Renderer2, headerRef: ElementRef, leftShadowRef: ElementRef, rightShadowRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
     this.leftShadow = leftShadowRef.nativeElement;
@@ -21,7 +19,7 @@ export class ShowShadowsService {
     this.listeners.push(this.renderer.listen('window', 'resize', this.calculateShadows.bind(this)));
   }
 
-  scrollableScroll(event: MouseEvent) {
+  headerScroll(event: MouseEvent) {
     this.calculateShadows();
   }
 

@@ -8,15 +8,13 @@ export class MouseScrollService {
   private listeners: (() => void)[] = [];
   private areButtonsDisabled: () => boolean;
 
-  constructor() { }
-
-  initMouseScroll(renderer: Renderer2, headerRef: ElementRef, areButtonsDisabled: () => boolean) {
+  constructor(renderer: Renderer2, headerRef: ElementRef, areButtonsDisabled: () => boolean) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
     this.areButtonsDisabled = areButtonsDisabled;
   }
 
-  scrollableDown(event: MouseEvent) {
+  headerMouseDown(event: MouseEvent) {
     this.registerScroll(event);
   }
 
