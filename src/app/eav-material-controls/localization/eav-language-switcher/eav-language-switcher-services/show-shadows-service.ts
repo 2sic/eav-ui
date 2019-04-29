@@ -1,8 +1,5 @@
-import { Injectable, Renderer2, ElementRef } from '@angular/core';
+import { Renderer2, ElementRef } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class ShowShadowsService {
   private renderer: Renderer2;
   private header: HTMLElement;
@@ -10,21 +7,29 @@ export class ShowShadowsService {
   private rightShadow: HTMLElement;
   private maxScrollLeft: number;
   private hidden = 'hidden'; // CSS class which hides shadows
+  private listeners: (() => void)[] = [];
 
   constructor() { }
 
-  initShadowsCalculation(renderer: Renderer2, headerRef: ElementRef, leftShadowRef: ElementRef, rightShadowRef: ElementRef): void {
+  initShadowsCalculation(renderer: Renderer2, headerRef: ElementRef, leftShadowRef: ElementRef, rightShadowRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
     this.leftShadow = leftShadowRef.nativeElement;
     this.rightShadow = rightShadowRef.nativeElement;
 
     this.calculateShadows();
-    this.renderer.listen('window', 'resize', this.calculateShadows.bind(this));
-    this.renderer.listen(this.header, 'scroll', this.calculateShadows.bind(this));
+    this.listeners.push(this.renderer.listen('window', 'resize', this.calculateShadows.bind(this)));
   }
 
-  private calculateShadows(): void {
+  scrollableScroll(event: MouseEvent) {
+    this.calculateShadows();
+  }
+
+  destroy() {
+    this.listeners.forEach(listener => listener());
+  }
+
+  private calculateShadows() {
     this.maxScrollLeft = this.header.scrollWidth - this.header.clientWidth;
 
     if (this.maxScrollLeft === 0) {
@@ -38,22 +43,22 @@ export class ShowShadowsService {
     }
   }
 
-  private hideBoth(): void {
+  private hideBoth() {
     this.renderer.addClass(this.leftShadow, this.hidden);
     this.renderer.addClass(this.rightShadow, this.hidden);
   }
 
-  private hideLeft(): void {
+  private hideLeft() {
     this.renderer.addClass(this.leftShadow, this.hidden);
     this.renderer.removeClass(this.rightShadow, this.hidden);
   }
 
-  private hideRight(): void {
+  private hideRight() {
     this.renderer.removeClass(this.leftShadow, this.hidden);
     this.renderer.addClass(this.rightShadow, this.hidden);
   }
 
-  private showBoth(): void {
+  private showBoth() {
     this.renderer.removeClass(this.leftShadow, this.hidden);
     this.renderer.removeClass(this.rightShadow, this.hidden);
   }

@@ -29,10 +29,10 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private languageService: LanguageService,
     private renderer: Renderer2,
   ) {
+    this.showShadowsService = new ShowShadowsService();
     this.mouseScrollService = new MouseScrollService();
     this.touchScrollService = new TouchScrollService();
     this.centerSelectedService = new CenterSelectedService();
-    this.showShadowsService = new ShowShadowsService();
   }
 
   ngAfterViewInit() {
@@ -58,6 +58,10 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     this.mouseScrollService.scrollableDown(event);
   }
 
+  scrollableScroll(event: MouseEvent) {
+    this.showShadowsService.scrollableScroll(event);
+  }
+
   areButtonsDisabled(): boolean {
     return !this.formsAreValid && !this.allControlsAreDisabled;
   }
@@ -65,5 +69,6 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.centerSelectedService.destroy();
     this.mouseScrollService.destroy();
+    this.showShadowsService.destroy();
   }
 }
