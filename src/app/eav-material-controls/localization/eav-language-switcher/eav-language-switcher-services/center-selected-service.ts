@@ -1,8 +1,5 @@
-import { Injectable, Renderer2, ElementRef, QueryList } from '@angular/core';
+import { Renderer2, ElementRef } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class CenterSelectedService {
   private header: HTMLElement;
   private renderer: Renderer2;
@@ -10,35 +7,44 @@ export class CenterSelectedService {
   private positionY: number;
   private moveThreshold = 2; // Pixels for which header can be scrolled while clicking to still register as click
   private stopClick = false;
+  private listeners: (() => void)[] = [];
 
   constructor() { }
 
-  initCenterSelected(renderer: Renderer2, headerRef: ElementRef, buttonsRef: QueryList<ElementRef>): void {
+  initCenterSelected(renderer: Renderer2, headerRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
-    const buttons = [];
-    buttonsRef.forEach(element => {
-      buttons.push(element.nativeElement);
-    });
 
-    buttons.forEach(button => {
-      this.renderer.listen(button, 'mousedown', this.saveInitialPosition.bind(this));
-      this.renderer.listen('document', 'mouseup', this.checkIfMouseMoved.bind(this));
-      this.renderer.listen(button, 'click', this.doMove.bind(this));
-    });
+    this.listeners.push(this.renderer.listen('document', 'mouseup', this.checkIfMouseMoved.bind(this)));
+  }
+
+  lngButtonDown(event: MouseEvent) {
+    this.saveInitialPosition(event);
+  }
+
+  lngButtonClick(event: MouseEvent) {
+    this.doMove(event);
   }
 
   stopClickIfMouseMoved() {
     return this.stopClick;
   }
 
-  private saveInitialPosition(event: any): void {
+  destroy() {
+    this.listeners.forEach(listener => listener());
+  }
+
+  private saveInitialPosition(event: MouseEvent) {
     this.stopClick = false;
     this.positionX = event.pageX;
     this.positionY = event.pageY;
   }
 
-  private checkIfMouseMoved(event: any): void {
+  private checkIfMouseMoved(event: MouseEvent) {
+    if (!this.positionX || !this.positionY) {
+      this.stopClick = false;
+      return;
+    }
     const newPositionX = event.pageX;
     const newPositionY = event.pageY;
 
@@ -46,14 +52,14 @@ export class CenterSelectedService {
     const oldTotal = this.positionX + this.positionY;
 
     this.stopClick = Math.abs(oldTotal - newTotal) > this.moveThreshold;
+    this.positionX = null;
+    this.positionY = null;
   }
 
-  private doMove(event: any): void {
-    if (this.stopClick) {
-      return;
-    }
+  private doMove(event: MouseEvent) {
+    if (this.stopClick) { return; }
 
-    const button = event.target;
+    const button = <HTMLButtonElement>event.target;
     const buttonOffset = button.getBoundingClientRect().left;
     const buttonWidth = button.getBoundingClientRect().width;
     const headerOffset = this.header.getBoundingClientRect().left;
