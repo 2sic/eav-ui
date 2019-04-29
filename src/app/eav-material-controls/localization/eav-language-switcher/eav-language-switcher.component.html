@@ -3,7 +3,7 @@
   <div #rightShadow class="scrollable__overlay--right-shadow"></div>
   <div #scrollable class="scrollable" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.lt-sm="8px"
     fxLayoutGap.sm="16px" fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px" (mousedown)="scrollableDown($event)"
-    (scroll)="scrollableScroll($event)">
+    (scroll)="scrollableScroll($event)" (touchstart)="scrollableTouchStart($event)">
     <button mat-flat-button *ngFor="let language of languages"
       [disabled]="!formsAreValid && currentLanguage !== language.key && !allControlsAreDisabled"
       [color]="currentLanguage===language.key? 'accent' : 'white'" (mousedown)="lngButtonDown($event)"
