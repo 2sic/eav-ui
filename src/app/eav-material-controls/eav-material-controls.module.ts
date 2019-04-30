@@ -44,7 +44,8 @@ import {
     StringDropdownQueryComponent,
     StringFontIconPickerComponent,
     NumberDefaultComponent,
-    HyperlinkDefaultPagepickerComponent
+    HyperlinkDefaultPagepickerComponent,
+    StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
@@ -97,6 +98,7 @@ import { ConnectorComponent } from './input-types/custom/connector/connector.com
         StringDropdownComponent,
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
+        StringTemplatePickerComponent,
         BooleanDefaultComponent,
         DatetimeDefaultComponent,
         EmptyDefaultComponent,
@@ -194,6 +196,7 @@ import { ConnectorComponent } from './input-types/custom/connector/connector.com
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
         StringUrlPathComponent,
+        StringTemplatePickerComponent,
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,

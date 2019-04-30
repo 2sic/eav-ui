@@ -5,6 +5,7 @@ export class InputTypesConstants {
     public static readonly stringDropdown: string = 'string-dropdown';
     public static readonly stringDropdownQuery: string = 'string-dropdown-query';
     public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
+    public static readonly stringTemplatePicker: string = 'string-template-picker';
     public static readonly stringWysiwyg: string = 'string-wysiwyg';
     public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
     // boolean
