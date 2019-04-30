@@ -26,10 +26,13 @@ export class InputTypesConstants {
     // custom/files
     public static readonly external: string = 'external';
     public static readonly externalWebComponent: string = 'external-webcomponent';
+    public static readonly customGPS: string = 'custom-gps';
+    public static readonly custom: string = 'Custom';
     // old types
-    public static readonly dropdown: string = 'dropdown';
-    public static readonly wysiwyg: string = 'wysiwyg';
-    public static readonly default: string = 'default';
+    public static readonly oldTypeDropdown: string = 'dropdown';
+    public static readonly oldTypeWysiwyg: string = 'wysiwyg';
+    public static readonly oldTypeDefault: string = 'default';
+    // spm 2019.04.10. move to different constants file as types. Maybe such file already exists
     // attribute.type for old types
     public static readonly string: string = 'String';
     public static readonly hyperlink: string = 'Hyperlink';

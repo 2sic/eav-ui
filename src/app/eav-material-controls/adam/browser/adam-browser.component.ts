@@ -9,7 +9,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
 import { MatDialog } from '@angular/material';
 import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
@@ -40,7 +40,7 @@ import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 })
 export class AdamBrowserComponent implements OnInit {
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
 
   // Identity fields
   // @Input() contentTypeName: any;
@@ -98,7 +98,7 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subFolder = this.config.settings.Paths;
+    this.subFolder = this.config.field.settings.Paths;
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -129,7 +129,7 @@ export class AdamBrowserComponent implements OnInit {
     this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
 
     // if feature clipboardPasteImageFunctionality enabled
-    const featureEnabled = this.featureService.isEnabledNow(this.config.features, 'f6b8d6da-4744-453b-9543-0de499aa2352');
+    const featureEnabled = this.featureService.isEnabledNow(this.config.form.features, 'f6b8d6da-4744-453b-9543-0de499aa2352');
     this.clipboardPasteImageFunctionalityDisabled = (featureEnabled === false);
   }
 
@@ -184,7 +184,7 @@ export class AdamBrowserComponent implements OnInit {
     const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Petar editItemMetadata result', result);
+      console.log('editItemMetadata result', result);
     });
   }
 

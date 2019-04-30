@@ -1,19 +1,9 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
 
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
-import { ValidationMessagesService } from '../../../../eav-material-controls/validators/validation-messages-service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { NgElement, WithProperties } from '@angular/elements';
-import { ExternalWebComponentProperties } from '../external-webcomponent-properties/external-webcomponent-properties';
-import { animate } from '@angular/animations';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -25,61 +15,18 @@ import { animate } from '@angular/animations';
   // wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
 })
 export class ExternalWebcomponentComponent implements OnInit {
-  @ViewChild('container') elReference: ElementRef;
-
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  private subscriptions: Subscription[] = [];
-  private eavConfig: EavConfiguration;
-  customEl: NgElement & WithProperties<ExternalWebComponentProperties>;
   loadingSpinner = true;
-  // externalFactory: any;
-  updateTriggeredByControl = false;
 
-  get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+  constructor(
+    private _ngZone: NgZone,
+  ) {
   }
 
-  get id() {
-    return `${this.config.entityId}${this.config.index}`;
-  }
-
-  constructor(private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService,
-    private translateService: TranslateService,
-    private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
-    private _ngZone: NgZone) {
-    this.eavConfig = eavService.getEavConfiguration();
-  }
-
-  /**
-   * This is host methods which the external control see
-   */
-  public externalInputTypeHost = {
-    update: (value: string) => {
-      this._ngZone.run(() => this.update(value));
-    },
-    setInitValues: (value: string) => {
-      this._ngZone.run(() => this.setInitValues());
-    },
-    attachAdam: () => this.attachAdam(),
-    openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
-      this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
-    },
-    getUrlOfIdDnnDialog: (value: string, callback: any) => {
-      this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
-    },
-  };
-
-  ngOnInit() { }
-
-  private update(value: string) {
-    // TODO: validate value
-    this.group.controls[this.config.name].patchValue(value);
-    this.setDirty();
-    this.updateTriggeredByControl = true;
+  ngOnInit() {
+    // spm load external scripts here. When they are loaded update loadingSpinner = false;
   }
 
   /**
@@ -91,155 +38,12 @@ export class ExternalWebcomponentComponent implements OnInit {
   }
 
   private createElementWebComponent() {
-    // temp: harcoded - need to read from config
-    this.customEl = document.createElement('field-string-wysiwyg') as any;
-
-    this.customEl.host = this.externalInputTypeHost;
-    this.customEl.config = this.config;
-    this.customEl.form = this.group;
-    this.customEl.id = this.id;
-    this.customEl.translateService = this.translateService;
-
-    this.elReference.nativeElement.appendChild(this.customEl);
-
-    this.suscribeValueChanges();
-    this.subscribeFormChange();
+    console.log('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
     this.loadingSpinner = false;
   }
 
-  openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
-    this.dnnBridgeService.open(
-      oldValue,
-      params,
-      callback,
-      this.dialog);
+  shouldShowConnector() {
+    if (!this.config.field.wrappers.includes(WrappersConstants.expandableWrapperV2)) { return true; }
+    return this.config.field.expanded;
   }
-
-  getUrlOfIdDnnDialog(value: string, urlCallback: any) {
-    // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
-      value,
-      this.config.header.contentTypeName,
-      this.config.header.guid,
-      this.config.name);
-
-    if (urlFromId$) {
-      // this.subscriptions.push(
-      urlFromId$.subscribe((data) => {
-        if (data) {
-          urlCallback(data);
-        }
-      });
-      // );
-    } else {
-      urlCallback(value);
-    }
-  }
-
-  /**
-   * Set initial values when external component is initialized
-   */
-  private setInitValues() {
-    this.setExternalControlValues(this.group.controls[this.config.name].value);
-    this.setExternalControlOptions();
-  }
-
-  private attachAdam() {
-    // TODO:
-    // If adam registered then attach Adam
-    if (this.config.adam) {
-      // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
-      // set update callback = external method setAdamValue
-
-      // callbacks - functions called from adam
-      this.config.adam.updateCallback = (value) =>
-        this.customEl.adamSetValueCallback
-          ? this.customEl.adamSetValueCallback = value
-          : alert('adam attached but adamSetValue method not exist');
-
-      this.config.adam.afterUploadCallback = (value) =>
-        this.customEl.adamAfterUploadCallback
-          ? this.customEl.adamAfterUploadCallback = value
-          : alert('adam attached but adamAfterUpload method not exist');
-
-      // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
-
-      return {
-        toggleAdam: (value1: any, value2: any) => {
-          this._ngZone.run(() => this.config.adam.toggle(value1));
-        },
-        setAdamConfig: (adamConfig: AdamConfig) => {
-          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
-        },
-        adamModeImage: () => {
-          this._ngZone.run(() => (this.config && this.config.adam) ? this.config.adam.showImagesOnly : null);
-        },
-      };
-    }
-  }
-
-  /**
-   * subscribe to form value changes for this field
-   */
-  private suscribeValueChanges() {
-    this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        this.setExternalControlValues(item);
-        this.setExternalControlOptions();
-      })
-    );
-  }
-
-  /**
-   * This is subscribe for all setforms - even if is not changing value.
-   * @param factory
-   */
-  private subscribeFormChange() {
-    this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe((item) => {
-        if (!this.updateTriggeredByControl) {
-          this.setExternalControlValues(item[this.config.name]);
-          this.setExternalControlOptions();
-        }
-        this.updateTriggeredByControl = false;
-      })
-    );
-  }
-
-  private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
-  }
-
-  /**
-   * write value from the form into the view in external component
-   * @param factory
-   * @param value
-   */
-  private setExternalControlValues(value: string) {
-    // if container have value
-    if (this.elReference.nativeElement.innerHTML) {
-      if (value) {
-        this.customEl.value = value;
-      }
-    }
-  }
-
-  /**
-   * refresh only exteranl component options
-   */
-  private setExternalControlOptions() {
-    // if container have value
-    if (this.elReference.nativeElement.innerHTML) {
-      this.customEl.disabled = this.group.controls[this.config.name].disabled;
-      // this.setAdamOptions();
-    }
-  }
-
-  // private setAdamOptions() {
-  //   // set Adam disabled state
-  //   if (this.config.adam) {
-  //     this.config.adam.disabled = this.group.controls[this.config.name].disabled;
-  //   }
-  // }
 }

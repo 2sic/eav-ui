@@ -7,7 +7,7 @@ import { map, catchError, tap, filter, delay } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated, AdminDialogPersistedData, EavFor } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader, FieldSettings, AdminDialogPersistedData, EavFor } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -161,7 +161,7 @@ export class ItemService {
 
   /** Set default value and add that attribute in store */
   public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string,
-    settingsTranslated: EavAttributesTranslated, currentLanguage: string, defaultLanguage: string): any {
+    settingsTranslated: FieldSettings, currentLanguage: string, defaultLanguage: string): any {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
     const exists = item.entity.attributes.hasOwnProperty(attribute.name);

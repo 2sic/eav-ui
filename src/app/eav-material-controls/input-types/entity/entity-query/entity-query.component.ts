@@ -3,12 +3,12 @@ import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,18 +19,18 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
 @InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
   error = '';
   private fieldMaskService: FieldMaskService;
 
-  get query() { return this.config.settings.Query || ''; }
+  get query() { return this.config.field.settings.Query || ''; }
 
-  get streamName() { return this.config.settings.StreamName || 'Default'; }
+  get streamName() { return this.config.field.settings.StreamName || 'Default'; }
 
-  get urlParameters() { return this.config.settings.UrlParameters || ''; }
+  get urlParameters() { return this.config.field.settings.UrlParameters || ''; }
 
   constructor(
     private queryService: QueryService,
@@ -40,17 +40,13 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   ngOnInit() {
     // Initialize url parameters mask
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.maybeReload, null, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(this.urlParameters, null, this.group.controls);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
   }
 
   ngOnDestroy(): void {
-  }
-
-  maybeReload() {
-    console.log('call maybeReload');
   }
 
   callAvailableEntities(value) {
@@ -60,7 +56,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   // ajax call to get the entities
   getAvailableEntities() {
     if (!this.query) {
-      alert(`No query defined for ${this.config.name} - can't load entities`);
+      alert(`No query defined for ${this.config.field.name} - can't load entities`);
     }
 
     const params = this.fieldMaskService.resolve(); // always get the latest definition
@@ -75,7 +71,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
         } else if (!data[this.streamName]) {
           this.error = this.translate.instant('FieldType.EntityQuery.QueryStreamNotFound') + this.streamName;
         } else { // everything ok - set data to select
-          this.config.availableEntities = data[this.streamName].map(this.queryEntityMapping);
+          this.config.cache = data[this.streamName].map(this.queryEntityMapping);
         }
         // $scope.indicateReload = false;
       });

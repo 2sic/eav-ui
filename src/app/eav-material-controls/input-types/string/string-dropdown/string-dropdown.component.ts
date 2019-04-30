@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,10 +14,10 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   styleUrls: ['./string-dropdown.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringDropdownComponent implements Field, OnInit {
-  config: FieldConfig;
+  config: FieldConfigSet;
   group: FormGroup;
 
   freeTextMode = false;
@@ -26,19 +27,19 @@ export class StringDropdownComponent implements Field, OnInit {
   private _oldOptions: string[] = [];
 
   get enableTextEntry() {
-    return this.config.settings.EnableTextEntry || false;
+    return this.config.field.settings.EnableTextEntry || false;
   }
 
   get notes() {
-    return this.config.settings.Notes || '';
+    return this.config.field.settings.Notes || '';
   }
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.field.name].value;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -69,8 +70,8 @@ export class StringDropdownComponent implements Field, OnInit {
   */
   private setOptionsFromDropdownValues(): any {
     let options = [];
-    if (this.config.settings.DropdownValues) {
-      const dropdownValues = this.config.settings.DropdownValues;
+    if (this.config.field.settings.DropdownValues) {
+      const dropdownValues = this.config.field.settings.DropdownValues;
       options = dropdownValues.replace(/\r/g, '').split('\n');
       options = options.map(e => {
         const s = e.split(':');

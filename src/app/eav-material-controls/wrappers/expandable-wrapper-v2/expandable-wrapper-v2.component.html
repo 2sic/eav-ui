@@ -1,0 +1,44 @@
+<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="closeDialog()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.field.label}}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      </div>
+      <div class="c-ew__dialog-content u-border-radius-bottom  u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        <ng-container #fieldComponent></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div matRipple (click)="!disabled ? expandDialog() : null; setTouched();" matRippleSpeedFactor="0.6"
+    class="c-ew__preview mat-ripple" [ngClass]="{
+      'c-ew__preview--invalid' : inputInvalid && touched,
+      'c-ew__preview--disabled': disabled
+    }">
+    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <mat-label [ngClass]="{
+        'mat-caption' : value && value.length > 0,
+        'mat-empty' : !(value && value.length > 0),
+        'mat-error' : inputInvalid && touched && !disabled,
+        'color__primary' : !(inputInvalid && touched) && !disabled,
+        'color__label-disabled' : disabled
+      }">
+        {{config.field.label}}
+        {{config.field.required? '*': '' }}
+      </mat-label>
+      <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
+    </div>
+  </div>
+  <!-- hasDirtyTouched="fasle"  -->
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</div>

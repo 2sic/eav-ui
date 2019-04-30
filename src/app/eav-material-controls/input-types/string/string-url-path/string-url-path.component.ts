@@ -3,11 +3,12 @@ import { FormGroup } from '@angular/forms';
 
 import { Helper } from '../../../../shared/helpers/helper';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { Subscription } from 'rxjs';
-import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,11 +17,11 @@ import { FieldMaskService } from '../../../../shared/services/field-mask.service
   styleUrls: ['./string-url-path.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 
-  config: FieldConfig;
+  config: FieldConfigSet;
   group: FormGroup;
 
   private enableSlashes = true;
@@ -29,11 +30,11 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
   private fieldMaskService: FieldMaskService;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   get autoGenerateMask(): string {
-    return this.config.settings.AutoGenerateMask || null;
+    return this.config.field.settings.AutoGenerateMask || null;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -41,7 +42,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
   ngOnInit() {
     const sourceMask = this.autoGenerateMask;
     // this will contain the auto-resolve type (based on other contentType-field)
-    this.fieldMaskService = new FieldMaskService(sourceMask, null, this.preCleane, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(sourceMask, this.preCleane, this.group.controls);
 
     // set initial value
     this.sourcesChangedTryToUpdate(this.fieldMaskService);
@@ -57,8 +58,8 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
 
     // clean on value change
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
-        this.clean(this.config.name, false);
+      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
+        this.clean(this.config.field.name, false);
       })
     );
   }
@@ -72,7 +73,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
    * @param fieldMaskService
    */
   private sourcesChangedTryToUpdate(fieldMaskService: FieldMaskService) {
-    const formControlValue = this.group.controls[this.config.name].value;
+    const formControlValue = this.group.controls[this.config.field.name].value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (formControlValue && formControlValue !== this.lastAutoCopy) {
       return;
@@ -83,7 +84,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
     const cleaned = Helper.stripNonUrlCharacters(orig, this.enableSlashes, true);
     if (cleaned) {
       this.lastAutoCopy = cleaned;
-      this.group.controls[this.config.name].patchValue(cleaned, { emitEvent: false });
+      this.group.controls[this.config.field.name].patchValue(cleaned, { emitEvent: false });
     }
   }
 

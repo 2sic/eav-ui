@@ -1,4 +1,4 @@
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 
@@ -39,26 +39,26 @@ export class ValidationMessagesService {
   // return list of error messages
   public validationMessages(): any {
     const messages = {
-      required: (config: FieldConfig) => {
+      required: (config: FieldConfigSet) => {
         return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
       },
       // minLength: (config: FieldConfig) => {
-      //   return `Should have atleast ${config.settings.MinLength} characters`;
+      //   return `Should have atleast ${config.currentFieldConfig.settings.MinLength} characters`;
       // },
       // maxLength: (config: FieldConfig) => {
-      //   return `This value should be less than ${config.settings.MaxLength} characters`;
+      //   return `This value should be less than ${config.currentFieldConfig.settings.MaxLength} characters`;
       // },
-      min: (config: FieldConfig) => {
-        // return config ? `This value should be more than ${config.settings.Min}` : `ValidationMessage.NotValid`;
+      min: (config: FieldConfigSet) => {
+        // return config ? `This value should be more than ${config.currentFieldConfig.settings.Min}` : `ValidationMessage.NotValid`;
         return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
       },
-      max: (config: FieldConfig) => {
+      max: (config: FieldConfigSet) => {
         return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
       },
-      pattern: (config: FieldConfig) => {
+      pattern: (config: FieldConfigSet) => {
         return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
       },
-      decimals: (config: FieldConfig) => {
+      decimals: (config: FieldConfigSet) => {
         return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
       },
     };
@@ -99,7 +99,7 @@ export class ValidationMessagesService {
    * get validation error for control
    * @param control
    */
-  public getErrorMessage(control: AbstractControl, config: FieldConfig, touched?: boolean): string {
+  public getErrorMessage(control: AbstractControl, config: FieldConfigSet, touched?: boolean): string {
     let formError = '';
     if (control) {
       const messages = this.validationMessages();

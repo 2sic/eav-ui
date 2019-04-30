@@ -6,13 +6,14 @@
         <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="dialogIsOpen = false">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="mat-display-1">{{config.label}}</span>
+        <span fxLayoutAlign="center center" class="mat-display-1">{{config.field.label}}</span>
       </mat-card>
     </div>
     <div>
       <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
         <div class="mdc-layout-grid">
           <div class="mdc-layout-grid__inner">
             <mat-card class="mdc-layout-grid__cell--span-12 u-border-radius">
@@ -25,8 +26,8 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6" class="c-ew__preview mat-ripple"
-    [ngClass]="{
+  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
+    class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': disabled
     }">
@@ -38,8 +39,8 @@
         'color__primary' : !(inputInvalid && touched) && !disabled,
         'color__label-disabled' : disabled
       }">
-        {{config.label}}
-        {{config.required? '*': '' }}
+        {{config.field.label}}
+        {{config.field.required? '*': '' }}
       </mat-label>
       <div fxLayout="row" fxLayoutAlign="start start">
         <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"

@@ -5,7 +5,7 @@ import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit } from '@
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 
 @Component({
@@ -17,19 +17,17 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 
-  @Input() config: FieldConfig;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   ngOnInit() {
-    this.config.settings.AllowMultiValue = false;
-    this.config.settings.EnableRemove = true;
-    this.config.settings.AllowMultiValue = true; // for correct UI showing "remove"
-    this.config.settings.EnableAddExisting = false; // disable manual select existing
-    this.config.settings.EnableCreate = false; // disable manual create
-    this.config.settings.EnableEdit = false;
-    this.config.settings.EntityType = 'ContentGroupReference';
-    this.config.enableCollapseField = true;   // ui option to allow collapsing
-    this.config.collapseField = true;   // ui option to allow collapsing
+    this.config.field.settings.AllowMultiValue = false;
+    this.config.field.settings.EnableRemove = true;
+    this.config.field.settings.AllowMultiValue = true; // for correct UI showing "remove"
+    this.config.field.settings.EnableAddExisting = false; // disable manual select existing
+    this.config.field.settings.EnableCreate = false; // disable manual create
+    this.config.field.settings.EnableEdit = false;
+    this.config.field.settings.EntityType = 'ContentGroupReference';
 
     // important for calling a FieldMaskService from extended component
     super.ngOnInit();

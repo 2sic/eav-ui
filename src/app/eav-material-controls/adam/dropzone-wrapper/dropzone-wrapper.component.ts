@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterContentInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
@@ -19,7 +19,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   public dropzoneConfig: DropzoneConfigInterface;
@@ -29,7 +29,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   url: string;
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.field.name].disabled;
   }
 
   constructor(private eavService: EavService) {
@@ -37,11 +37,11 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngOnInit() {
-    //  this.config.adam = this.adamRef;
+    //  this.config.currentFieldConfig.adam = this.adamRef;
     const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
-    const contentType = this.config.header.contentTypeName;
-    const entityGuid = this.config.header.guid;
-    const field = this.config.name;
+    const contentType = this.config.entity.header.contentTypeName;
+    const entityGuid = this.config.entity.header.guid;
+    const field = this.config.field.name;
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
@@ -66,16 +66,16 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       dictDefaultMessage: '',
       addRemoveLinks: false,
       // '.field-' + field.toLowerCase() + ' .dropzone-previews',
-      previewsContainer: '.dropzone-previews', // '.field-' + this.config.index + ' .dropzone-previews',
+      previewsContainer: '.dropzone-previews', // '.field-' + this.config.currentFieldConfig.index + ' .dropzone-previews',
       // we need a clickable, because otherwise the entire area is clickable.
       // so i'm just making the preview clickable, as it's not important
-      clickable: '.dropzone-previews' // '.field-' + this.config.index + ' .invisible-clickable'  // " .dropzone-adam"
+      clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
   }
 
   ngAfterViewInit() {
-    this.dropzoneConfig.previewsContainer = '.field-' + this.config.index + ' .dropzone-previews';
-    this.dropzoneConfig.clickable = '.field-' + this.config.index + ' .invisible-clickable';
+    this.dropzoneConfig.previewsContainer = '.field-' + this.config.field.index + ' .dropzone-previews';
+    this.dropzoneConfig.clickable = '.field-' + this.config.field.index + ' .invisible-clickable';
   }
 
   public onUploadError(args: any): void {

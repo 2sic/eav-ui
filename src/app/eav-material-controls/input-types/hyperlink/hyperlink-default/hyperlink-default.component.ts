@@ -5,11 +5,12 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { MatDialog } from '@angular/material';
 import { Subscription } from 'rxjs';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,10 +19,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-default-expandable-wrapper', 'app-adam-attach-wrapper'],
+  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
+  WrappersConstants.hyperlinkDefaultExpandableWrapper, WrappersConstants.adamAttachWrapper],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   showPreview = true;
@@ -39,27 +41,27 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   };
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.field.name].value;
   }
 
   get disabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.field.name].disabled;
   }
 
   // ensureDefaultConfig();
   get showAdam() {
-    // this.config.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
+    // this.config.currentFieldConfig.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
     // then the wrapper will enable/disable the field, depending on the dimension state\
     // so if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
-    return this.config.settings.ShowAdam ? this.config.settings.ShowAdam : true;
+    return this.config.field.settings.ShowAdam ? this.config.field.settings.ShowAdam : true;
   }
 
   get fileFilter() {
-    return this.config.settings.FileFilter || '';
+    return this.config.field.settings.FileFilter || '';
   }
 
   get buttons(): string {
-    return this.config.settings.Buttons ? this.config.settings.Buttons : 'adam,more';
+    return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more';
   }
 
   constructor(private fileTypeService: FileTypeService,
@@ -112,7 +114,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private processResultOfPagePicker(value) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (value) {
-      this.setFormValue(this.config.name, `page:${value.id}`);
+      this.setFormValue(this.config.field.name, `page:${value.id}`);
     }
   }
 
@@ -121,8 +123,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     this.dnnBridgeService.open(
       this.value,
       {
-        Paths: this.config.settings.Paths ? this.config.settings.Paths : '',
-        FileFilter: this.config.settings.FileFilter ? this.config.settings.FileFilter : ''
+        Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
+        FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : ''
       },
       this.processResultOfPagePicker.bind(this),
       this.dialog);
@@ -132,7 +134,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region new adam: callbacks only
 
   setValue(fileItem) {
-    this.setFormValue(this.config.name, `File:${fileItem.Id}`);
+    this.setFormValue(this.config.field.name, `File:${fileItem.Id}`);
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
@@ -148,7 +150,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
  */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
         console.log('suscribeValueChanges CHANGE');
         this.setLink(item);
       })
@@ -167,9 +169,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
-      this.config.header.contentTypeName,
-      this.config.header.guid,
-      this.config.name);
+      this.config.entity.header.contentTypeName,
+      this.config.entity.header.guid,
+      this.config.field.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -193,10 +195,10 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.config.adam.afterUploadCallback = (value) => this.setValue(value);
 
       // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.name].value;
+      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
       // set adam configuration (initial config)
-      // this.config.adam.setConfig(
+      // this.config.currentFieldConfig.adam.setConfig(
       //   new AdamConfig(this.adamModeConfig,
       //     true, // allowAssetsRoot
       //     false, // autoLoad

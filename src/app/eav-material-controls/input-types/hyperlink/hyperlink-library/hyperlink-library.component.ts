@@ -2,9 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,10 +14,11 @@ import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-
   styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
-  wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-hyperlink-library-expandable-wrapper', 'app-adam-attach-wrapper'],
+  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
+  WrappersConstants.hyperlinkLibraryExpandableWrapper, WrappersConstants.adamAttachWrapper],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   adamModeConfig: AdamModeConfig = {
@@ -24,15 +26,15 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
   };
 
   get folderDepth() {
-    return this.config.settings.FolderDepth || '';
+    return this.config.field.settings.FolderDepth || '';
   }
 
   get metadataContentTypes() {
-    return this.config.settings.MetadataContentTypes || '';
+    return this.config.field.settings.MetadataContentTypes || '';
   }
 
   get allowAssetsInRoot() {
-    return this.config.settings.AllowAssetsInRoot === false ? false : true;
+    return this.config.field.settings.AllowAssetsInRoot === false ? false : true;
   }
 
   constructor() { }
@@ -50,8 +52,8 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
       this.config.adam.afterUploadCallback = (fileItem) => { };
 
       // return value from form
-      // this.config.adam.getValueCallback = () =>
-      // this.config.adam.afterUploadCallback = (fileItem) => { };
+      // this.config.currentFieldConfig.adam.getValueCallback = () =>
+      // this.config.currentFieldConfig.adam.afterUploadCallback = (fileItem) => { };
 
       console.log('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
@@ -71,7 +73,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit {
         metadataContentTypes: this.metadataContentTypes
       }));
 
-      // this.config.adam.setConfig(
+      // this.config.currentFieldConfig.adam.setConfig(
       //   new AdamConfig(this.adamModeConfig,
       //     this.allowAssetsInRoot,
       //     true, // autoLoad

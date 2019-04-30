@@ -1,0 +1,65 @@
+.custom-gps-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.map-info {
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  padding-left: 10px;
+  border-bottom: 1px solid #e1e1e1;
+  background: white;
+}
+
+.map-info label,
+.map-info #icon-search {
+  margin-right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 4px;
+}
+
+.map-info input {
+  margin-right: 8px;
+  padding: 4px 16px;
+  border: none;
+  background: transparent;
+  outline: none !important;
+}
+
+.map-info__map {
+  flex: 1 1 auto;
+  width: 100%;
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.btn {
+  border: 1px solid silver;
+  border-radius: 4px;
+}
+.btn:hover {
+  background-color: rgba(69, 79, 99, 0.08);
+  cursor: pointer;
+}
+
+.input-component {
+  display: flex;
+  background-color: rgba(69, 79, 99, 0.08);
+  padding: 4px;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid silver;
+  margin: 8px 0;
+}
+.input-component:hover {
+  border-bottom: 1px solid #0087f4;
+}

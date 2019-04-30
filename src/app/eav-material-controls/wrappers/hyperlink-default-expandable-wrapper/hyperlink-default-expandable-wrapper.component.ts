@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, E
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
@@ -19,7 +19,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewInputControl') previewInputControl;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;
@@ -28,11 +28,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private eavConfig;
   private subscriptions: Subscription[] = [];
 
-  get value() { return this.group.controls[this.config.name].value; }
-  get id() { return `${this.config.entityId}${this.config.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-  get touched() { return this.group.controls[this.config.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.name].disabled; }
+  get value() { return this.group.controls[this.config.field.name].value; }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get touched() { return this.group.controls[this.config.field.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
   constructor(private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
@@ -61,7 +61,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   setValue(val) {
     if (val.target.value !== this.value) {
-      this.group.controls[this.config.name].patchValue(val.target.value);
+      this.group.controls[this.config.field.name].patchValue(val.target.value);
       this.setDirty();
     }
   }
@@ -79,7 +79,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   setTouched() {
-    this.group.controls[this.config.name].markAsTouched();
+    this.group.controls[this.config.field.name].markAsTouched();
   }
 
   /**
@@ -94,9 +94,9 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
-      this.config.header.contentTypeName,
-      this.config.header.guid,
-      this.config.name);
+      this.config.entity.header.contentTypeName,
+      this.config.entity.header.guid,
+      this.config.field.name);
 
     if (urlFromId$) {
       // this.subscriptions.push(
@@ -117,13 +117,13 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   */
   private suscribeValueChanges() {
     this.subscriptions.push(
-      this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
         this.setLink(item);
       })
     );
   }
 
   private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsDirty();
   }
 }

@@ -1,7 +1,9 @@
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { EavAttributesTranslated, EavHeader } from '../models/eav';
+import { FieldSettings, EavHeader, Item } from '../models/eav';
+import { WrappersConstants } from '../constants/wrappers-constants';
+import { InputTypeName } from './input-field-models';
 
 export class InputFieldHelper {
     /**
@@ -9,11 +11,12 @@ export class InputFieldHelper {
      * @param config
      * @param attributeKey
      */
-    static getFieldType(config: FieldConfig, attributeKey: string): string {
-        if (config.type) {
-            return config.type;
+    static getFieldType(config: FieldConfigSet, attributeKey: string): string {
+        if (config.field.type) {
+            return config.field.type;
         } else {
-            return this.getFieldTypeFromFieldGroup(config.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            return this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
         }
     }
 
@@ -23,41 +26,44 @@ export class InputFieldHelper {
      * @param fieldGroup
      * @param attributeKey
      */
-    static getFieldTypeFromFieldGroup(fieldGroup: FieldConfig[], attributeKey: string) {
+    static getFieldTypeFromFieldGroup(fieldGroup: FieldConfigSet[], attributeKey: string) {
         let type;
         fieldGroup.forEach(config => {
-            if (config.fieldGroup) {
-                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(config.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            if (field.fieldGroup) {
+                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
                 if (typeFromFieldGroup) {
                     type = typeFromFieldGroup;
                 }
             } else {
-                if (config.name === attributeKey) {
-                    type = config.type;
+                if (config.field.name === attributeKey) {
+                    type = config.field.type;
                 }
             }
         });
         return type;
     }
 
-    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated, defaultValue: any): string => {
-        return attribute !== null
-            ? (settingsTranslated !== null && settingsTranslated.Name)
-                ? settingsTranslated.Name
-                : attribute.name
-            : defaultValue;
+    static getContentTypeId(item: Item): string {
+        return item.entity.type ? item.entity.type.id : item.header.contentTypeName;
+    }
+
+    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: FieldSettings): string => {
+        return settingsTranslated && settingsTranslated.Name || attribute.name;
     }
 
     /**
      *  Get input type names from content type attributes
      * @param attributesList
      */
-    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): string[] {
-        const typesList: string[] = [];
+    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): InputTypeName[] {
+        const typesList: InputTypeName[] = [];
 
         attributesList.forEach((attribute, index) => {
             try {
-                typesList.push(this.getInputTypeNameFromAttribute(attribute));
+                const name = attribute.name;
+                const inputType = this.getInputTypeNameFromAttribute(attribute);
+                typesList.push({ name, inputType });
             } catch (error) {
                 console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
                 throw error;
@@ -85,36 +91,55 @@ export class InputFieldHelper {
         }
     }
 
-    static setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
+    static setWrappers(inputType: string, fullInputType: string, settingsTranslated: FieldSettings) {
+        // empty inputtype wrappers
+        const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
+            || (inputType === InputTypesConstants.empty);
+        if (isEmptyInputType) {
+            return [WrappersConstants.collapsibleWrapper];
+        }
         // default wrappers
-        const wrappers: string[] = ['app-hidden-wrapper'];
+        const wrappers: string[] = [WrappersConstants.hiddenWrapper];
         // entity-default wrappers
-        if (InputTypesConstants.entityDefault ||
-            inputType === InputTypesConstants.stringDropdownQuery ||
-            inputType === InputTypesConstants.entityQuery ||
-            inputType === InputTypesConstants.entityContentBlocks) {
+        const isEntityType = (inputType === InputTypesConstants.entityDefault)
+            || (inputType === InputTypesConstants.stringDropdownQuery)
+            || (inputType === InputTypesConstants.entityQuery)
+            || (inputType === InputTypesConstants.entityContentBlocks);
+
+        if (isEntityType) {
             const allowMultiValue = settingsTranslated.AllowMultiValue || false;
             if (inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-collapsible-field-wrapper');
+                wrappers.push(WrappersConstants.collapsibleFieldWrapper);
             }
-            if (allowMultiValue ||
-                inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-entity-expandable-wrapper');
+            if (allowMultiValue || inputType === InputTypesConstants.entityContentBlocks) {
+                wrappers.push(WrappersConstants.entityExpandableWrapper);
             }
         }
 
         if (inputType === InputTypesConstants.externalWebComponent) {
-            wrappers.push(...['app-dropzone-wrapper',
-                'app-eav-localization-wrapper',
-                'app-expandable-wrapper',
-                'app-adam-attach-wrapper']);
+            if (fullInputType === InputTypesConstants.stringWysiwyg) {
+                wrappers.push(
+                    WrappersConstants.dropzoneWrapper,
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapper,
+                    WrappersConstants.adamAttachWrapper
+                );
+            } else if (fullInputType === InputTypesConstants.customGPS) {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapperV2,
+                );
+            } else {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                );
+            }
         }
-
 
         return wrappers;
     }
 
-    static parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
+    static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
         let defaultValue = settings.DefaultValue;
 
         if (header.prefill && header.prefill[attributeKey]) {
@@ -158,6 +183,9 @@ export class InputFieldHelper {
 
     /** read new inputField settings */
     private static getInputTypeNameNewConfig(inputTypeName: string): string {
+        // spm 2019.04.10. always return inputTypeName unless empty, then return string-default
+        // also if not recognized flag it as external
+        // make exeption for wysiwyg because of alternate names
         switch (inputTypeName) {
             case InputTypesConstants.stringDefault:
             case InputTypesConstants.stringUrlPath:
@@ -176,44 +204,46 @@ export class InputFieldHelper {
                 return inputTypeName;
             case InputTypesConstants.stringWysiwyg:
             case InputTypesConstants.stringWysiwygTinymce:
+            case InputTypesConstants.customGPS:
             case InputTypesConstants.external:
             case 'custom-my-field-test':
                 // return InputTypesConstants.external;
                 return InputTypesConstants.externalWebComponent;
             default:
+                // spm default fallback shoould be ${type.toLowerCase()-default}
+                // as a last resort go back to stringDefault if empty
                 return InputTypesConstants.stringDefault;
         }
     }
 
     /** read old inputField settings  */
-    private static getInputTypeNameOldConfig(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.default:
-            case InputTypesConstants.string:
-                return InputTypesConstants.stringDefault;
+    private static getInputTypeNameOldConfig(typeName: string): string {
+        switch (typeName) {
+            // cases where typename = inputTypeName
             case InputTypesConstants.stringUrlPath:
-                return InputTypesConstants.stringUrlPath;
-            case InputTypesConstants.boolean:
-                return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.dropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.empty:
-                return InputTypesConstants.emptyDefault;
-            case InputTypesConstants.datetime:
-                return InputTypesConstants.datetimeDefault;
-            case InputTypesConstants.number:
-                return InputTypesConstants.numberDefault;
             case InputTypesConstants.stringFontIconPicker:
-                return InputTypesConstants.stringFontIconPicker;
-            case InputTypesConstants.entity:
-                return InputTypesConstants.entityDefault;
-            case InputTypesConstants.hyperlink:
-                return InputTypesConstants.hyperlinkDefault;
             case InputTypesConstants.hyperlinkLibrary:
-                return InputTypesConstants.hyperlinkLibrary;
+                return typeName;
+
+            // Convert old names, which were in use before the inputType existed
+            case InputTypesConstants.oldTypeDefault:
+                return InputTypesConstants.stringDefault;
+            case InputTypesConstants.oldTypeDropdown:
+                return InputTypesConstants.stringDropdown;
             case InputTypesConstants.external:
-            case InputTypesConstants.wysiwyg:
-                return InputTypesConstants.external;
+            case InputTypesConstants.oldTypeWysiwyg:
+                return InputTypesConstants.external; // todo: spm string-wysiwyg
+
+            // convert "-default"
+            case InputTypesConstants.string:
+            case InputTypesConstants.empty:
+            case InputTypesConstants.datetime:
+            case InputTypesConstants.number:
+            case InputTypesConstants.entity:
+            case InputTypesConstants.hyperlink:
+            case InputTypesConstants.boolean:
+                return typeName.toLocaleLowerCase() + '-default'; // todo: spm: constant
+
             default:
                 return InputTypesConstants.stringDefault;
         }
@@ -227,12 +257,12 @@ export class InputFieldHelper {
             case InputTypesConstants.hyperlinkLibrary:
             case InputTypesConstants.external:
                 return inputTypeName;
-            case InputTypesConstants.default:
+            case InputTypesConstants.oldTypeDefault:
             case InputTypesConstants.string:
                 return InputTypesConstants.stringDefault;
             case InputTypesConstants.boolean:
                 return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.dropdown:
+            case InputTypesConstants.oldTypeDropdown:
                 return InputTypesConstants.stringDropdown;
             case InputTypesConstants.empty:
                 return InputTypesConstants.emptyDefault;
@@ -244,7 +274,7 @@ export class InputFieldHelper {
                 return InputTypesConstants.entityDefault;
             case InputTypesConstants.hyperlink:
                 return InputTypesConstants.hyperlinkDefault;
-            case InputTypesConstants.wysiwyg:
+            case InputTypesConstants.oldTypeWysiwyg:
                 return InputTypesConstants.stringWysiwyg;
             default:
                 return inputTypeName;

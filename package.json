@@ -13,8 +13,10 @@
     "build-elements": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js --prod",
     "develop-elements": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js",
     "develop-elements-watch": "ng build field-string-wysiwyg --output-hashing none --output-path=../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-string-wysiwyg --single-bundle true --extraWebpackConfig ../../webpack.extra.js --watch",
-    "build-all": "npm run build && npm run build-elements",
-    "develop-all": "npm run develop && npm run develop-elements",
+    "develop-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js --output-path ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-custom-gps",
+    "develop-custom-gps-watch": "webpack --config ./projects/field-custom-gps/webpack.config.js --output-path ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/assets/elements/field-custom-gps --watch",
+    "build-all": "npm run build && npm run build-elements && npm run develop-custom-gps",
+    "develop-all": "npm run develop && npm run develop-elements && npm run develop-custom-gps",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -43,6 +45,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@tinymce/tinymce-angular": "^2.5.0",
+    "@types/google-maps": "^3.2.0",
     "@webcomponents/custom-elements": "^1.2.1",
     "core-js": "^2.6.1",
     "document-register-element": "^1.8.1",
@@ -79,9 +82,12 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "ngrx-store-freeze": "^0.2.4",
     "protractor": "^5.4.2",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^5.3.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",
     "typescript": "^3.2.4",
-    "webpack-bundle-analyzer": "^3.0.3"
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.2.3"
   }
 }

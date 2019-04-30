@@ -1,25 +1,30 @@
-<mat-card [ngClass]="config.isParentGroup ? 'mat-card-group-parent' :'mat-card-group-child'">
-    <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="config.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
+<mat-card [ngClass]="fieldConfig.isParentGroup ? 'mat-card-group-parent' :'mat-card-group-child'">
+    <div fxLayout="row" fxLayoutAlign="start center"
+        [ngClass]="fieldConfig.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
 
-        <div fxFlex="auto" fxLayoutAlign="start center" (click)="config.collapse = !config.collapse">
-            <div fxLayoutAlign="start center" class="mat-card-title-group" [ngClass]="config.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
-                <i *ngIf="config.collapse" class="material-icons">keyboard_arrow_down</i>
-                <i *ngIf="!config.collapse" class="material-icons">keyboard_arrow_up</i>
+        <div fxFlex="auto" fxLayoutAlign="start center" (click)="collapse = !collapse">
+            <div fxLayoutAlign="start center" class="mat-card-title-group"
+                [ngClass]="fieldConfig.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
+                <i *ngIf="collapse" class="material-icons">keyboard_arrow_down</i>
+                <i *ngIf="!collapse" class="material-icons">keyboard_arrow_up</i>
                 <span>&nbsp;</span>
-                <span>{{config.label ? config.label :
+                <span>{{config.field.label ? config.field.label :
                     'EditEntity.DefaultTitle' | translate }}</span>
             </div>
         </div>
-        <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()" [checked]="slotIsUsedChecked">
+        <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
+            [checked]="slotIsUsedChecked">
         </mat-slide-toggle>
-        <app-translate-group-menu *ngIf="config.isParentGroup" fxLayoutAlign="end center" [config]="config" [group]="group"></app-translate-group-menu>
+        <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
+            [group]="group"></app-translate-group-menu>
     </div>
     <mat-divider></mat-divider>
-    <!-- [style]="config.collapse ? 'display: none;' : ''" -->
-    <mat-card-content [ngStyle]="{ 'display': config.collapse ? 'none' : 'block' }" [ngClass]="config.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
+    <mat-card-content [ngStyle]="{ 'display': collapse ? 'none' : 'block' }"
+        [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes || editInstructions"><span></span>
+                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes || editInstructions">
+                    <span></span>
                     <div [innerHtml]='notes'></div>
                     <div [innerHtml]='editInstructions'></div>
                 </div>
