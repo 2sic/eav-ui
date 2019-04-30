@@ -56,7 +56,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     }
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMaskService = new FieldMaskService(addressMask, null, this.experimental.formGroup.controls);
+    this.addressMaskService = new FieldMaskService(addressMask, this.experimental.formGroup.controls, null, null);
     console.log('FieldCustomGps addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
