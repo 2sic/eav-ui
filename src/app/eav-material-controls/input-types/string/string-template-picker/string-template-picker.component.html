@@ -1,3 +1,19 @@
-<p>
-  string-template-picker works!
-</p>
+<div class="stp-field" fxLayout="row">
+  <div class="stp-field__field-short" fxLayoutAlign="start center">
+    <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+      <mat-select [formControlName]="config.field.name">
+        <mat-option value="">(no file selected)</mat-option>
+        <mat-option *ngFor="let item of isValidFile(templates, file.ext)" [value]="item">
+          {{item}}
+        </mat-option>
+      </mat-select>
+      <mat-label>{{config.field.label}}</mat-label>
+    </mat-form-field>
+  </div>
+  <div class="stp-field__create-icon" fxLayoutAlign="end center">
+    <button mat-icon-button type="button" (click)="add()" [disabled]="group.controls[config.field.name].disabled">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
+<app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>

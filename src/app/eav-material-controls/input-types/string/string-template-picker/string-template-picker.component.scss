@@ -1,0 +1,14 @@
+.stp-field {
+  width: 100%;
+  height: 100%;
+}
+
+.stp-field__create-icon {
+  width: 48px;
+  height: 56px;
+}
+
+.stp-field__field-short {
+  width: calc(100% - 48px);
+  max-width: calc(100% - 48px);
+}
