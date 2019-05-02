@@ -66,7 +66,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     // Initialize url parameters mask
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(sourceMask, null, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(sourceMask, this.group.controls, null, null);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
