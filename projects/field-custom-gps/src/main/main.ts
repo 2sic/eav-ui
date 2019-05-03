@@ -2,12 +2,12 @@ import { } from 'google-maps';
 
 import { EavExperimentalInputField, ElementEventListener } from '../shared/models';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
+import { defaultCoordinates } from '../shared/constants';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 
 class FieldCustomGps extends EavExperimentalInputField<string> {
-  defaultCoordinates: google.maps.LatLngLiteral;
   eventListeners: ElementEventListener[];
   fieldInitialized: boolean;
   addressMaskService: FieldMaskService;
@@ -27,7 +27,6 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     console.log('FieldCustomGps constructor called');
     const mapApiKey = 'AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
     this.mapApiUrl = `https://maps.googleapis.com/maps/api/js?key=${mapApiKey}`;
-    this.defaultCoordinates = { lat: 47.17465989999999, lng: 9.469142499999975 };
     this.fieldInitialized = false;
     this.eventListeners = [];
   }
@@ -76,12 +75,16 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
 
   private mapScriptLoaded() {
     console.log('FieldCustomGps mapScriptLoaded called');
-    this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: this.defaultCoordinates });
-    this.marker = new google.maps.Marker({ position: this.defaultCoordinates, map: this.map, draggable: true });
+    this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates });
+    this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
 
     // set initial values
-    this.updateHtml(parseLatLng(this.connector.data.value));
+    if (!this.connector.data.value) {
+      this.updateHtml(defaultCoordinates);
+    } else {
+      this.updateHtml(parseLatLng(this.connector.data.value));
+    }
 
     // listen to inputs, iconSearch and marker. Update inputs, map, marker and form
     const onLatLngInputChangeBound = this.onLatLngInputChange.bind(this);
@@ -101,8 +104,8 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral) {
-    this.latInput.value = latLng.lat.toString();
-    this.lngInput.value = latLng.lng.toString();
+    this.latInput.value = latLng.lat ? latLng.lat.toString() : '';
+    this.lngInput.value = latLng.lng ? latLng.lng.toString() : '';
     this.map.setCenter(latLng);
     this.marker.setPosition(latLng);
   }
@@ -120,8 +123,8 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   private onLatLngInputChange() {
     console.log('FieldCustomGps input changed');
     const latLng: google.maps.LatLngLiteral = {
-      lat: parseFloat(this.latInput.value),
-      lng: parseFloat(this.lngInput.value),
+      lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
+      lng: this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null,
     };
     this.updateHtml(latLng);
     this.updateForm(latLng);
