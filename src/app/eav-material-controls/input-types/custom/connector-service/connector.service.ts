@@ -26,7 +26,7 @@ export class ConnectorService {
   private customEl: NgElement & WithProperties<ExternalWebComponentProperties<any>>;
   private eavConfig: EavConfiguration;
   private value$: BehaviorSubject<any>;
-  private updateTriggeredByControl = false;
+  private previousValue: any;
 
   constructor(
     private _ngZone: NgZone,
@@ -139,7 +139,6 @@ export class ConnectorService {
     console.log('Petar order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
 
-    this.suscribeValueChanges();
     this.subscribeFormChange();
   }
 
@@ -149,6 +148,7 @@ export class ConnectorService {
         this._ngZone.run(() => this.update(value));
       },
     };
+    this.previousValue = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
     this.subjects.push(this.value$);
     const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field);
@@ -176,29 +176,15 @@ export class ConnectorService {
   }
 
   /**
-   * subscribe to form value changes for this field
-   */
-  private suscribeValueChanges() {
-    this.subscriptions.push(
-      this.group.controls[this.config.field.name].valueChanges.subscribe(newValue => {
-        // do when this control updates the form
-        this.value$.next(newValue);
-      })
-    );
-  }
-
-  /**
    * This is subscribe for all setforms - even if is not changing value.
    */
   private subscribeFormChange() {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe(formSet => {
-        if (!this.updateTriggeredByControl) {
-          // do when some other control updated the form
-          const newValue = formSet[this.config.field.name];
-          this.value$.next(newValue);
-        }
-        this.updateTriggeredByControl = false;
+        const newValue = formSet[this.config.field.name];
+        if (this.previousValue === newValue) { return; }
+        this.previousValue = newValue;
+        this.value$.next(newValue);
       })
     );
   }
@@ -207,7 +193,6 @@ export class ConnectorService {
     // TODO: validate value
     this.group.controls[this.config.field.name].patchValue(value);
     this.group.controls[this.config.field.name].markAsDirty();
-    this.updateTriggeredByControl = true;
     console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
   }
 
@@ -215,11 +200,6 @@ export class ConnectorService {
     if (!this.group.controls[name] || this.group.controls[name].disabled) { return; }
     this.group.controls[name].patchValue(value);
     this.group.controls[name].markAsDirty();
-    if (name === this.config.field.name) {
-      this.updateTriggeredByControl = true;
-    } else {
-      this.updateTriggeredByControl = false;
-    }
   }
 
   public destroy() {
