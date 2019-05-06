@@ -28,7 +28,7 @@ export class InputTypesConstants {
     public static readonly external: string = 'external';
     public static readonly externalWebComponent: string = 'external-webcomponent';
     public static readonly customGPS: string = 'custom-gps';
-    public static readonly custom: string = 'Custom';
+    public static readonly customDefault: string = 'custom-default';
     // old types
     public static readonly oldTypeDropdown: string = 'dropdown';
     public static readonly oldTypeWysiwyg: string = 'wysiwyg';
@@ -44,4 +44,5 @@ export class InputTypesConstants {
     public static readonly datetime: string = 'DateTime';
     public static readonly entity: string = 'Entity';
     public static readonly empty: string = 'Empty';
+    public static readonly custom: string = 'Custom';
 }

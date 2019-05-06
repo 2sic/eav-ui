@@ -86,6 +86,7 @@ import { EntityContentBlockComponent } from './input-types/entity/entity-content
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
 import { ConnectorComponent } from './input-types/custom/connector/connector.component';
+import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 
 @NgModule({
     declarations: [
@@ -137,6 +138,7 @@ import { ConnectorComponent } from './input-types/custom/connector/connector.com
         CollapsibleFieldWrapperComponent,
         ExternalWebcomponentComponent,
         ConnectorComponent,
+        CustomDefaultComponent,
     ],
     imports: [
         // DndDraggable,
@@ -206,6 +208,7 @@ import { ConnectorComponent } from './input-types/custom/connector/connector.com
         CollapsibleFieldWrapperComponent,
         ExternalWebcomponentComponent,
         ConnectorComponent,
+        CustomDefaultComponent,
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService],

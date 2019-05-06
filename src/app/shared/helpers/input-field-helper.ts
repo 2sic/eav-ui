@@ -199,6 +199,7 @@ export class InputFieldHelper {
             case InputTypesConstants.entityContentBlocks:
             case InputTypesConstants.hyperlinkDefault:
             case InputTypesConstants.hyperlinkLibrary:
+            case InputTypesConstants.customDefault:
                 return { inputType: inputTypeName, isExternal: false };
 
             // our external components
