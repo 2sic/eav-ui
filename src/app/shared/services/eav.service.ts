@@ -1,10 +1,10 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { throwError, Observable, Subject } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 
 import { Item } from '../models/eav/item';
 import { ItemService } from './item.service';
@@ -14,8 +14,6 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
-import { AttributeDef } from '../models/eav/attribute-def';
-
 
 @Injectable()
 export class EavService {
@@ -52,7 +50,7 @@ export class EavService {
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
 
     // maybe create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
+    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
       body)
       .pipe(
         map((data: any) => {
@@ -96,7 +94,7 @@ export class EavService {
   public savemany(appId: string, partOfPage: string, body: string): Observable<any> {
     console.log('start submit');
     // TODO: create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
+    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
       body)
       .pipe(
         map((data: any) => {

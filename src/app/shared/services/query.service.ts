@@ -1,15 +1,22 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError, Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { UrlConstants } from '../constants/url-constants';
+import { EavConfiguration } from '../models/eav-configuration';
+import { EavService } from './eav.service';
 
 @Injectable()
 export class QueryService {
+  private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   /**
@@ -19,7 +26,8 @@ export class QueryService {
    * @param ctName
    */
   public getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, ignoreErrors: boolean): Observable<any> {
-    return this.httpClient.get(`${UrlConstants.apiRoot}app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`)
+    // tslint:disable-next-line:max-line-length
+    return this.httpClient.get(`${this.eavConfig.portalroot + UrlConstants.apiRoot}app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`)
       .pipe(
         map((data: any) => {
           return data;

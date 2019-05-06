@@ -3,14 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { UrlConstants } from '../constants/url-constants';
+import { EavConfiguration } from '../models/eav-configuration';
+import { EavService } from './eav.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppAssetsService {
+  private eavConfig: EavConfiguration;
+
   constructor(
     private httpClient: HttpClient,
-  ) { }
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
 
   createSvc(appId: string, global: boolean): AssetsSvc {
     const params = {
@@ -20,14 +27,14 @@ export class AppAssetsService {
 
     const getAll = () => {
       return this.httpClient.get(
-        `${UrlConstants.apiRoot}app-sys/appassets/list`,
+        `${this.eavConfig.portalroot + UrlConstants.apiRoot}app-sys/appassets/list`,
         { params: Object.assign({}, params, { withSubfoders: 'true' }) }
       );
     };
 
     const create = (path: string, content: any) => {
       return this.httpClient.post(
-        `${UrlConstants.apiRoot}app-sys/appassets/create`,
+        `${this.eavConfig.portalroot + UrlConstants.apiRoot}app-sys/appassets/create`,
         { content: content || '' },
         { params: Object.assign({}, params, { path: path }) },
       );

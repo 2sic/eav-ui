@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterContentInit, AfterViewInit, ElementRef } from '@angular/core';
-import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+
+import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
-import { FormGroup } from '@angular/forms';
-
+import { UrlConstants } from '../../../shared/constants/url-constants';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -38,7 +38,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   ngOnInit() {
     //  this.config.currentFieldConfig.adam = this.adamRef;
-    const serviceRoot = this.eavConfig.portalroot + 'desktopmodules/2sxc/api/';
+    const serviceRoot = this.eavConfig.portalroot + UrlConstants.apiRoot;
     const contentType = this.config.entity.header.contentTypeName;
     const entityGuid = this.config.entity.header.guid;
     const field = this.config.field.name;

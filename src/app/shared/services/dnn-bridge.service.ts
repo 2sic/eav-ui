@@ -2,23 +2,29 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { throwError, Observable } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
-import { UrlHelper } from '../helpers/url-helper';
 import { UrlConstants } from '../constants/url-constants';
 import { DnnBridgeConnector } from '../models/dnn-bridge/dnn-bridge-connector';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { EavAdminUiService } from './eav-admin-ui.service';
-import {
-  HyperlinkDefaultPagepickerComponent
-} from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';
+// tslint:disable-next-line:max-line-length
+import { HyperlinkDefaultPagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';
+import { EavConfiguration } from '../models/eav-configuration';
+import { EavService } from './eav.service';
 
 @Injectable()
 export class DnnBridgeService {
-  constructor(private httpClient: HttpClient,
-    private eavAdminUiService: EavAdminUiService) { }
+  private eavConfig: EavConfiguration;
+
+  constructor(
+    private httpClient: HttpClient,
+    private eavAdminUiService: EavAdminUiService,
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
 
   open(oldValue: any, params: any, callback: any, dialog: MatDialog) {
     const type = 'pagepicker';
@@ -58,7 +64,7 @@ export class DnnBridgeService {
     const linkLowered = idCode.toLowerCase();
 
     if (linkLowered.indexOf('file:') !== -1 || linkLowered.indexOf('page:') !== -1) {
-      return this.httpClient.get(UrlConstants.apiRoot + 'dnn/Hyperlink/ResolveHyperlink?hyperlink='
+      return this.httpClient.get(this.eavConfig.portalroot + UrlConstants.apiRoot + 'dnn/Hyperlink/ResolveHyperlink?hyperlink='
         + encodeURIComponent(idCode)
         + (guid ? '&guid=' + guid : '')
         + (contentType ? '&contentType=' + contentType : '')
