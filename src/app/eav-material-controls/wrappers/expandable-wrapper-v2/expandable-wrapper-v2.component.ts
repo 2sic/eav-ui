@@ -45,7 +45,7 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
 
   ngOnInit() {
     console.log('ExpandableWrapperV2 created');
-    const previewElName = `field-${this.config.field.fullInputType}-preview`;
+    const previewElName = `field-${this.config.field.inputType}-preview`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group);
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);

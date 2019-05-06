@@ -159,7 +159,6 @@ export class BuildFieldsService {
         label: label,
         placeholder: `Enter ${name}`,  // other fields specific
         inputType: calculatedInputType.inputType,
-        fullInputType: calculatedInputType.inputType,
         type: attribute.type, // other fields specific
         required: required, // other fields specific
         disabled: disabled, // other fields specific

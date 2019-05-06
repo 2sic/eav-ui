@@ -31,7 +31,7 @@ export class ConnectorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Connector created');
-    const customElName = `field-${this.config.field.fullInputType}`;
+    const customElName = `field-${this.config.field.inputType}`;
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.customElContainer, this.config, this.group);
     this.customElConnector.createElementWebComponent(this.config, this.group, this.customElContainer, customElName);

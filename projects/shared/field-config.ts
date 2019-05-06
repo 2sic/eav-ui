@@ -17,9 +17,6 @@ export interface FieldConfig {
   /** Input type of the field. e.g. string-default, string-dropdown, etc. */
   inputType: string;
 
-  /** spm remove */
-  fullInputType: string;
-
   /** Data type of the field. e.g. String, Hyperlink, Entity, etc. */
   type: string;
 
