@@ -4,6 +4,7 @@ import { AttributeDef } from '../models/eav/attribute-def';
 import { FieldSettings, EavHeader, Item } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
 import { InputTypeName } from './input-field-models';
+import { CalculatedInputType } from '../models/input-type/calculated-input-type';
 
 export class InputFieldHelper {
     /**
@@ -62,8 +63,8 @@ export class InputFieldHelper {
         attributesList.forEach((attribute, index) => {
             try {
                 const name = attribute.name;
-                const inputType = this.getInputTypeNameFromAttribute(attribute);
-                typesList.push({ name, inputType });
+                const calculatedInputType = this.getInputTypeNameFromAttribute(attribute);
+                typesList.push({ name: name, inputType: calculatedInputType.inputType });
             } catch (error) {
                 console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
                 throw error;
@@ -73,26 +74,25 @@ export class InputFieldHelper {
         return typesList;
     }
 
-    static getInputTypeNameFromAttribute(attribute: AttributeDef, realName?: boolean): string {
-        if (attribute.settings.InputType || attribute.type) {
-            if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
-                if (realName) {
-                    return attribute.settings.InputType.values[0].value;
-                }
-                return this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
-            } else {
-                if (realName) {
-                    return this.getRealInputTypeNameOldConfig(attribute.type);
-                }
-                return this.getInputTypeNameOldConfig(attribute.type);
-            }
+    static getInputTypeNameFromAttribute(attribute: AttributeDef): CalculatedInputType {
+        // can't read input type at all so return string-default
+        if (!(attribute.settings.InputType || attribute.type)) {
+            return { inputType: InputTypesConstants.stringDefault, isExternal: false };
+        }
+
+        // read input type using new or old config
+        if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
+            return this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
         } else {
-            return InputTypesConstants.stringDefault;
+            return this.getInputTypeNameOldConfig(attribute.type);
         }
     }
 
-    static setWrappers(inputType: string, fullInputType: string, settingsTranslated: FieldSettings) {
+    static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings) {
         // empty inputtype wrappers
+        const inputType = calculatedInputType.inputType;
+        const isExternal = calculatedInputType.isExternal;
+
         const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
             || (inputType === InputTypesConstants.empty);
         if (isEmptyInputType) {
@@ -116,15 +116,15 @@ export class InputFieldHelper {
             }
         }
 
-        if (inputType === InputTypesConstants.externalWebComponent) {
-            if (fullInputType === InputTypesConstants.stringWysiwyg) {
+        if (isExternal) {
+            if (inputType === InputTypesConstants.stringWysiwyg) {
                 wrappers.push(
                     WrappersConstants.dropzoneWrapper,
                     WrappersConstants.eavLocalizationWrapper,
                     WrappersConstants.expandableWrapper,
                     WrappersConstants.adamAttachWrapper
                 );
-            } else if (fullInputType === InputTypesConstants.customGPS) {
+            } else if (inputType === InputTypesConstants.customGPS) {
                 wrappers.push(
                     WrappersConstants.eavLocalizationWrapper,
                     WrappersConstants.expandableWrapperV2,
@@ -182,11 +182,9 @@ export class InputFieldHelper {
     }
 
     /** read new inputField settings */
-    private static getInputTypeNameNewConfig(inputTypeName: string): string {
-        // spm 2019.04.10. always return inputTypeName unless empty, then return string-default
-        // also if not recognized flag it as external
-        // make exeption for wysiwyg because of alternate names
+    private static getInputTypeNameNewConfig(inputTypeName: string): CalculatedInputType {
         switch (inputTypeName) {
+            // inputTypeName === inputType
             case InputTypesConstants.stringDefault:
             case InputTypesConstants.stringUrlPath:
             case InputTypesConstants.booleanDefault:
@@ -201,38 +199,36 @@ export class InputFieldHelper {
             case InputTypesConstants.entityContentBlocks:
             case InputTypesConstants.hyperlinkDefault:
             case InputTypesConstants.hyperlinkLibrary:
-                return inputTypeName;
+                return { inputType: inputTypeName, isExternal: false };
+
+            // our external components
             case InputTypesConstants.stringWysiwyg:
             case InputTypesConstants.stringWysiwygTinymce:
             case InputTypesConstants.customGPS:
-            case InputTypesConstants.external:
-            case 'custom-my-field-test':
-                // return InputTypesConstants.external;
-                return InputTypesConstants.externalWebComponent;
+                return { inputType: inputTypeName, isExternal: true };
+
+            // other external components
             default:
-                // spm default fallback shoould be ${type.toLowerCase()-default}
-                // as a last resort go back to stringDefault if empty
-                return InputTypesConstants.stringDefault;
+                return { inputType: inputTypeName, isExternal: true };
         }
     }
 
     /** read old inputField settings  */
-    private static getInputTypeNameOldConfig(typeName: string): string {
+    private static getInputTypeNameOldConfig(typeName: string): CalculatedInputType {
         switch (typeName) {
-            // cases where typename = inputTypeName
+            // cases where typename === inputTypeName
             case InputTypesConstants.stringUrlPath:
             case InputTypesConstants.stringFontIconPicker:
             case InputTypesConstants.hyperlinkLibrary:
-                return typeName;
+                return { inputType: typeName, isExternal: false };
 
             // Convert old names, which were in use before the inputType existed
             case InputTypesConstants.oldTypeDefault:
-                return InputTypesConstants.stringDefault;
+                return { inputType: InputTypesConstants.stringDefault, isExternal: false };
             case InputTypesConstants.oldTypeDropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.external:
+                return { inputType: InputTypesConstants.stringDropdown, isExternal: false };
             case InputTypesConstants.oldTypeWysiwyg:
-                return InputTypesConstants.external; // todo: spm string-wysiwyg
+                return { inputType: InputTypesConstants.stringWysiwyg, isExternal: false };
 
             // convert "-default"
             case InputTypesConstants.string:
@@ -242,42 +238,11 @@ export class InputFieldHelper {
             case InputTypesConstants.entity:
             case InputTypesConstants.hyperlink:
             case InputTypesConstants.boolean:
-                return typeName.toLocaleLowerCase() + '-default'; // todo: spm: constant
+            case InputTypesConstants.custom:
+                return { inputType: typeName.toLocaleLowerCase() + InputTypesConstants.defaultSuffix, isExternal: false };
 
             default:
-                return InputTypesConstants.stringDefault;
-        }
-    }
-
-    /** read old inputField settings, but real value  */
-    private static getRealInputTypeNameOldConfig(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.stringUrlPath:
-            case InputTypesConstants.stringFontIconPicker:
-            case InputTypesConstants.hyperlinkLibrary:
-            case InputTypesConstants.external:
-                return inputTypeName;
-            case InputTypesConstants.oldTypeDefault:
-            case InputTypesConstants.string:
-                return InputTypesConstants.stringDefault;
-            case InputTypesConstants.boolean:
-                return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.oldTypeDropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.empty:
-                return InputTypesConstants.emptyDefault;
-            case InputTypesConstants.datetime:
-                return InputTypesConstants.datetimeDefault;
-            case InputTypesConstants.number:
-                return InputTypesConstants.numberDefault;
-            case InputTypesConstants.entity:
-                return InputTypesConstants.entityDefault;
-            case InputTypesConstants.hyperlink:
-                return InputTypesConstants.hyperlinkDefault;
-            case InputTypesConstants.oldTypeWysiwyg:
-                return InputTypesConstants.stringWysiwyg;
-            default:
-                return inputTypeName;
+                return { inputType: typeName.toLocaleLowerCase() + InputTypesConstants.defaultSuffix, isExternal: false };
         }
     }
 }

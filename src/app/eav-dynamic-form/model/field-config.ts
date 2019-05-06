@@ -19,6 +19,7 @@ export interface FieldConfigAngular extends FieldConfig {
   fullSettings: EavAttributes;
   wrappers: string[];
   expanded: boolean;
+  isExternal: boolean;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

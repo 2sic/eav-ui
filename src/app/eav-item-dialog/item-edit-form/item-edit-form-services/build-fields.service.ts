@@ -14,6 +14,7 @@ import { ValidationHelper } from '../../../eav-material-controls/validators/vali
 import { ItemService } from '../../../shared/services/item.service';
 import { Injectable } from '@angular/core';
 import { Feature } from '../../../shared/models/feature/feature';
+import { CalculatedInputType } from '../../../shared/models/input-type/calculated-input-type';
 
 @Injectable({
   providedIn: 'root'
@@ -44,27 +45,27 @@ export class BuildFieldsService {
       .pipe(
         switchMap((data: ContentType) => {
           // build first empty
-          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, InputTypesConstants.emptyDefault,
-            null, data.contentType.settings, true);
+          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null,
+            { inputType: InputTypesConstants.emptyDefault, isExternal: false },
+            data.contentType.settings, true);
           let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
           // loop through contentType attributes
           data.contentType.attributes.forEach((attribute, index) => {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
-              const inputType: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
-              const fullInputType: string = InputFieldHelper.getInputTypeNameFromAttribute(attribute, true);
-              const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault) ||
-                (inputType === InputTypesConstants.empty);
+              const calculatedInputType: CalculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+              const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault)
+                || (calculatedInputType.inputType === InputTypesConstants.empty);
               if (isEmptyInputType) {
                 // group-fields (empty)
-                currentFieldGroup = this.buildFieldConfigSet(attribute, index, inputType, fullInputType,
+                currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType,
                   data.contentType.settings, false);
                 const field = parentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(currentFieldGroup);
               } else {
                 // all other fields (not group empty)
-                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, inputType, fullInputType,
+                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, calculatedInputType,
                   data.contentType.settings, null);
                 const field = currentFieldGroup.field as FieldConfigGroup;
                 field.fieldGroup.push(fieldConfigSet);
@@ -80,7 +81,7 @@ export class BuildFieldsService {
       );
   }
 
-  private buildFieldConfigSet(attribute: AttributeDef, index: number, inputType: string, fullInputType: string,
+  private buildFieldConfigSet(attribute: AttributeDef, index: number, calculatedInputType: CalculatedInputType,
     contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigSet {
     const entity: ItemConfig = {
       entityId: this.item.entity.id,
@@ -91,19 +92,19 @@ export class BuildFieldsService {
     const form: FormConfig = {
       features: this.features,
     };
-    const field = this.buildFieldConfig(attribute, index, inputType, fullInputType, contentTypeSettings, isParentGroup);
+    const field = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, isParentGroup);
 
     const fieldConfigSet: FieldConfigSet = { field, entity, form };
     return fieldConfigSet;
   }
 
-  private buildFieldConfig(attribute: AttributeDef, index: number, inputType: string, fullInputType: string,
+  private buildFieldConfig(attribute: AttributeDef, index: number, calculatedInputType: CalculatedInputType,
     contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
     let fullSettings: EavAttributes;
-    const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
-      || (inputType === InputTypesConstants.empty);
+    const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault)
+      || (calculatedInputType.inputType === InputTypesConstants.empty);
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
@@ -115,7 +116,7 @@ export class BuildFieldsService {
 
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
-    const wrappers: string[] = InputFieldHelper.setWrappers(inputType, fullInputType, settingsTranslated);
+    const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
 
     if (isEmptyInputType) {
       fieldConfig = {
@@ -124,9 +125,10 @@ export class BuildFieldsService {
         settings: settingsTranslated,
         fullSettings: fullSettings,
         wrappers: wrappers,
+        isExternal: calculatedInputType.isExternal,
         name: name,
         label: label,
-        inputType: inputType,
+        inputType: calculatedInputType.inputType,
       } as FieldConfigGroup;
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
@@ -139,7 +141,7 @@ export class BuildFieldsService {
       );
       // set default value if needed
       if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1) {
-        initialValue = this.itemService.setDefaultValue(this.item, attribute, inputType, settingsTranslated,
+        initialValue = this.itemService.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
           this.currentLanguage, this.defaultLanguage);
       }
       const disabled: boolean = settingsTranslated.Disabled;
@@ -151,12 +153,13 @@ export class BuildFieldsService {
         fullSettings: fullSettings,
         wrappers: wrappers,
         expanded: false,
+        isExternal: calculatedInputType.isExternal,
         name: name,
         index: index, // other fields specific
         label: label,
         placeholder: `Enter ${name}`,  // other fields specific
-        inputType: inputType,
-        fullInputType: fullInputType, // other fields specific
+        inputType: calculatedInputType.inputType,
+        fullInputType: calculatedInputType.inputType,
         type: attribute.type, // other fields specific
         required: required, // other fields specific
         disabled: disabled, // other fields specific

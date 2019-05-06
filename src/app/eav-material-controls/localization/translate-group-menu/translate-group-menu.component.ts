@@ -438,11 +438,13 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   public isTranslateEnabled(attributeKey: string) {
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-    const inputTypeName = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef, true);
+    const calculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+
     let inputType: InputType;
-    this.inputTypeService.getContentTypeById(inputTypeName).pipe(take(1)).subscribe(type => inputType = type);
+    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => inputType = type);
     if (!inputType) {
-      console.warn(`No input type match was found for ${inputTypeName}. Translation is disabled for ${attributeKey} field.`);
+      // tslint:disable-next-line:max-line-length
+      console.warn(`No input type match was found for ${calculatedInputType.inputType}. Translation is disabled for ${attributeKey} field.`);
       return false;
     }
     return !inputType.DisableI18n;

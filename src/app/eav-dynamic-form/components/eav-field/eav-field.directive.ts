@@ -68,7 +68,7 @@ export class EavFieldDirective implements OnInit {
       if (fieldConfig.field.inputType === InputTypesConstants.external) {
         console.log('create external');
         this.createExternalComponent(container, fieldConfig);
-      } else if (fieldConfig.field.inputType === InputTypesConstants.externalWebComponent) {
+      } else if (fieldConfig.field.isExternal) {
         this.createExternalWebComponent(container, fieldConfig);
       } else {
         console.log('create non external', fieldConfig.field.inputType);
@@ -102,8 +102,13 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    console.log('createComponent inputType:', fieldConfig.field.inputType);
-    const componentType = this.readComponentType(fieldConfig.field.inputType);
+    console.log('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
+    let componentType: Type<any>;
+    if (fieldConfig.field.isExternal) {
+      componentType = this.readComponentType(InputTypesConstants.externalWebComponent);
+    } else {
+      componentType = this.readComponentType(fieldConfig.field.inputType);
+    }
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
     // console.log('reading wrapper:', inputTypeAnnotations);
