@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: ['./projects/field-custom-gps/src/main/main.ts', './projects/field-custom-gps/src/preview/preview.ts'],
   devtool: 'inline-source-map',
   module: {
@@ -26,10 +26,6 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
-    // path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, '../../src/assets/dist/elements/field-custom-gps'),
   },
-  // watch: true,
-  // watchOptions: {
-  //   aggregateTimeout: 600
-  // }
 };

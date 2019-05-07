@@ -11,7 +11,7 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -138,7 +138,8 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "outputPath": "dist/field-string-wysiwyg",
+            "singleBundle": true,
+            "outputPath": "./src/assets/dist/elements/field-string-wysiwyg",
             "index": "projects/field-string-wysiwyg/src/index.html",
             "main": "projects/field-string-wysiwyg/src/main.ts",
             "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
