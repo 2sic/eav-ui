@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -11,9 +13,9 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 @InputType({
 })
 export class CustomDefaultComponent {
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
-  constructor() {
-    console.log('CustomDefaultComponent constructor called');
-  }
+  constructor() { }
 
 }
