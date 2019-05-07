@@ -42,4 +42,4 @@ testem.log
 Thumbs.db
 
 # Custom
-auto-generated
+dist

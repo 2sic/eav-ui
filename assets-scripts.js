@@ -15,14 +15,14 @@ const chalkSuccess = chalk.green;
         './node_modules/@angular/platform-browser/bundles/platform-browser.umd.min.js',
         './node_modules/@angular/elements/bundles/elements.umd.min.js'
     ];
-    await fs.ensureDir('./src/assets/auto-generated/elements');
-    await concat(files, './src/assets/auto-generated/elements/scripts-bundle.js');
+    await fs.ensureDir('./src/assets/dist/elements');
+    await concat(files, './src/assets/dist/elements/scripts-bundle.js');
     console.log(chalkSuccess('Build Angular scripts success!'));
 })();
 
 (async function buildLanguages() {
     const languagesDir = './src/i18n';
-    const languagesTempDir = './src/assets/auto-generated/i18n';
+    const languagesTempDir = './src/assets/dist/i18n';
 
     const files = await fs.readdir(languagesDir);
     await fs.ensureDir(languagesTempDir);
