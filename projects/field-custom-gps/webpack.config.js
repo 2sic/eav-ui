@@ -30,6 +30,6 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, '../../src/assets/dist/elements/field-custom-gps'),
+    path: path.resolve(__dirname, '../../src/assets/elements/field-custom-gps'),
   },
 };

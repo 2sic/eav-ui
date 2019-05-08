@@ -139,7 +139,7 @@
           "builder": "ngx-build-plus:build",
           "options": {
             "singleBundle": true,
-            "outputPath": "./src/assets/dist/elements/field-string-wysiwyg",
+            "outputPath": "./src/assets/elements/field-string-wysiwyg",
             "index": "projects/field-string-wysiwyg/src/index.html",
             "main": "projects/field-string-wysiwyg/src/main.ts",
             "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",

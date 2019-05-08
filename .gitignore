@@ -42,4 +42,5 @@ testem.log
 Thumbs.db
 
 # Custom
-dist
+src/assets/elements
+src/assets/i18n
