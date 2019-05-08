@@ -122,12 +122,12 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   //  * This function can be triggered from outside when value changed
   //  * @param {*} newValue
   //  */
-  setValue(newValue) {
+  setValue(newValue = '') {
     const oldValue = this.editor.editorManager.get(this.id).getContent();
+    console.log('TinymceWysiwygComponent setValue', 'id:', this.id, 'old:', oldValue, 'new:', newValue);
     if (newValue !== oldValue) {
       this.editor.editorManager.get(this.id).setContent(newValue);
     }
-    console.log('Petar wysiwyg order: setValue(newValue)', 'old:', oldValue, 'new:', newValue);
   }
 
   // /**
@@ -175,7 +175,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
 
   private calculateInitialValues(): void {
     // spm 2019.04.05. id will clash if we open the same entity as a sub form, e.g. in entity-default field
-    this.id = `tinymce-wysiwyg-${this.connector.field.name}`;
+    this.id = `string-wysiwyg-tinymce-${Math.random() * Math.pow(10, 17)}-${this.connector.field.name}`;
     this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
