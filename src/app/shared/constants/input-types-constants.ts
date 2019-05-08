@@ -7,7 +7,6 @@ export class InputTypesConstants {
     public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
     public static readonly stringTemplatePicker: string = 'string-template-picker';
     public static readonly stringWysiwyg: string = 'string-wysiwyg';
-    public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
     // boolean
     public static readonly booleanDefault: string = 'boolean-default';
     // datetime
@@ -33,6 +32,9 @@ export class InputTypesConstants {
     public static readonly oldTypeDropdown: string = 'dropdown';
     public static readonly oldTypeWysiwyg: string = 'wysiwyg';
     public static readonly oldTypeDefault: string = 'default';
+    public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
+    public static readonly stringWysiwygAdv: string = 'string-wysiwyg-adv';
+    public static readonly stringWysiwygDnn: string = 'string-wysiwyg-dnn';
     // default suffix
     public static readonly defaultSuffix: string = '-default';
     // spm 2019.04.10. move to different constants file as types. Maybe such file already exists

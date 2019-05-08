@@ -98,6 +98,13 @@ export class InputFieldHelper {
             case InputTypesConstants.oldTypeWysiwyg:
                 return InputTypesConstants.stringWysiwyg;
 
+            case InputTypesConstants.stringWysiwygTinymce:
+                return InputTypesConstants.stringWysiwyg;
+            case InputTypesConstants.stringWysiwygAdv:
+                return InputTypesConstants.stringWysiwyg;
+            case InputTypesConstants.stringWysiwygDnn:
+                return InputTypesConstants.stringWysiwyg;
+
             default: return inputTypeName;
         }
     }
