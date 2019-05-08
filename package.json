@@ -70,6 +70,7 @@
     "@types/jasminewd2": "^2.0.6",
     "@types/node": "^10.12.18",
     "chalk": "^2.4.2",
+    "clean-webpack-plugin": "^2.0.2",
     "codelyzer": "^4.5.0",
     "concat": "^1.0.3",
     "concurrently": "^4.1.0",

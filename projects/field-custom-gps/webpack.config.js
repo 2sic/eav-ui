@@ -1,8 +1,12 @@
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'development',
   entry: ['./projects/field-custom-gps/src/main/main.ts', './projects/field-custom-gps/src/preview/preview.ts'],
+  plugins: [
+    new CleanWebpackPlugin(),
+  ],
   devtool: 'inline-source-map',
   module: {
     rules: [
