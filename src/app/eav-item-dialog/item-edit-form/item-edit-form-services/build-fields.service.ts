@@ -1,7 +1,8 @@
+import { Injectable } from '@angular/core';
+import { ValidatorFn } from '@angular/forms';
+import { of } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { ValidatorFn } from '@angular/forms';
 import isEmpty from 'lodash/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
@@ -12,9 +13,8 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
 import { ItemService } from '../../../shared/services/item.service';
-import { Injectable } from '@angular/core';
 import { Feature } from '../../../shared/models/feature/feature';
-import { CalculatedInputType } from '../../../shared/models/input-type/calculated-input-type';
+import { CalculatedInputType } from '../../../shared/helpers/input-field-models';
 
 @Injectable({
   providedIn: 'root'
