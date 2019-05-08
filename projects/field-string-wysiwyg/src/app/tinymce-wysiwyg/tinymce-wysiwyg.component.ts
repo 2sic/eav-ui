@@ -10,7 +10,7 @@ import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
 import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
-import { InputTypeName } from '../../../../../src/app/shared/helpers/input-field-models';
+import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
 // import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
 // import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
 // import { attachAdam } from './tinymce-adam-service.js'

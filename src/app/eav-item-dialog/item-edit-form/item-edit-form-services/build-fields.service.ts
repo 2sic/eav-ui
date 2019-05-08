@@ -14,7 +14,7 @@ import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
 import { ItemService } from '../../../shared/services/item.service';
 import { Feature } from '../../../shared/models/feature/feature';
-import { CalculatedInputType } from '../../../shared/helpers/input-field-models';
+import { CalculatedInputType } from '../../../shared/models/input-field-models';
 
 @Injectable({
   providedIn: 'root'

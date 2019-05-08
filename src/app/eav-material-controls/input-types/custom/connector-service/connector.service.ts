@@ -14,7 +14,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { ConnectorInstance } from '../external-webcomponent/connector';
-import { InputTypeName } from '../../../../shared/helpers/input-field-models';
+import { InputTypeName } from '../../../../shared/models/input-field-models';
 import { ContentType } from '../../../../shared/models/eav';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';

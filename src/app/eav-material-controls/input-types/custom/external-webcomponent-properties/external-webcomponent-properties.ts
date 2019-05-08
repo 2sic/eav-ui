@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
-import { InputTypeName } from '../../../../shared/helpers/input-field-models';
+import { InputTypeName } from '../../../../shared/models/input-field-models';
 
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;

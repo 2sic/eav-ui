@@ -3,7 +3,7 @@ import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { FieldSettings, EavHeader, Item } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
-import { InputTypeName, CalculatedInputType } from './input-field-models';
+import { InputTypeName, CalculatedInputType } from '../models/input-field-models';
 
 export class InputFieldHelper {
     /**
