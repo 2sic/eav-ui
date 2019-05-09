@@ -23,9 +23,6 @@ export class StringDropdownComponent implements Field, OnInit {
   freeTextMode = false;
   selectOptions = [];
 
-  private _selectOptions: string[] = [];
-  private _oldOptions: string[] = [];
-
   get enableTextEntry() {
     return this.config.field.settings.EnableTextEntry || false;
   }
@@ -69,6 +66,8 @@ export class StringDropdownComponent implements Field, OnInit {
   * Read settings Dropdown values
   */
   private setOptionsFromDropdownValues(): any {
+    const currentValue = this.group.controls[this.config.field.name].value;
+    let currentValueFound = false;
     let options = [];
     if (this.config.field.settings.DropdownValues) {
       const dropdownValues = this.config.field.settings.DropdownValues;
@@ -78,15 +77,20 @@ export class StringDropdownComponent implements Field, OnInit {
         const maybeWantedEmptyVal = s[1];
         const key = s.shift(); // take first, shrink the array
         const val = s.join(':');
-        return {
+        const option = {
           label: key,
           value: (val) ? val : key
         };
+        if (option.value === currentValue) { currentValueFound = true; }
+        return option;
+      });
+    }
+    if (!currentValueFound) {
+      options.push({
+        label: currentValue,
+        value: currentValue,
       });
     }
     return options;
   }
-
-
-
 }
