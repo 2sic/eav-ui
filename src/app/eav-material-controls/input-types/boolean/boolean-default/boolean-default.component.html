@@ -1,5 +1,5 @@
 <div [formGroup]="group">
-  <mat-slide-toggle [formControlName]="config.field.name" [disabled]="disabled">
+  <mat-slide-toggle [formControlName]="config.field.name">
     {{config.field.label}}
   </mat-slide-toggle>
   <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
