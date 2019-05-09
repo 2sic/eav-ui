@@ -1,7 +1,6 @@
 <mat-form-field [formGroup]="group" appearance="fill" color="accent">
   <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.field.name"
     [required]='config.field.required' [placeholder]="config.field.placeholder">
-    <mat-option value=""></mat-option>
     <mat-option *ngFor="let item of selectOptions" [value]="item.value">
       {{item.label}}
     </mat-option>
