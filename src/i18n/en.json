@@ -85,7 +85,7 @@
 	"LangMenu": {
 		"UseDefault": "auto (default)",
 		"In": "in {{languages}}",
-        "From": "from {{languages}}",
+		"From": "from {{languages}}",
 		"EditableIn": "editable in {{languages}}",
 		"AlsoUsedIn": ", also used in {{more}}",
 		"NotImplemented": "This action is not implemented yet.",
@@ -149,7 +149,7 @@
 					"MenuPage": "Page Picker",
 					"MenuImage": "Image Manager",
 					"MenuDocs": "Document Manager",
-					"SponsoredLine": "<a href='http://2sxc.org/help?tag=adam' target='_blank' tooltip='ADAM is the Automatic Digital Assets Manager - click to discover more'>Adam</a> is sponsored with ♥ by <a tabindex='-1' href='http://2sic.com/' target='_blank'>2sic.com</a>"
+					"SponsoredLine": "<a href='https://2sxc.org/help?tag=adam' target='_blank' tooltip='ADAM is the Automatic Digital Assets Manager - click to discover more'>Adam</a> is sponsored with ♥ by <a tabindex='-1' href='https://www.2sic.com' target='_blank'>2sic.com</a>"
 				},
 				"FileManager": {},
 				"PagePicker": {
