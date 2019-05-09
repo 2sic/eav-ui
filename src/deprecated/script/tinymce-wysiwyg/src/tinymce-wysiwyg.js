@@ -1,7 +1,7 @@
-import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
-import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
-import { attachAdam } from './tinymce-adam-service.js'
-import { attachDnnBridgeService } from './tinymce-dnnbridge-service.js';
+import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js.js'
+import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js.js'
+import { attachAdam } from './tinymce-adam-service.js.js'
+import { attachDnnBridgeService } from './tinymce-dnnbridge-service.js.js';
 
 (function () {
 
