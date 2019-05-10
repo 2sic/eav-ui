@@ -18,13 +18,15 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              "src/ui.html"
             ],
             "styles": [
               "src/styles.scss"
             ],
             "scripts": [
-              "src/assets/script/clipboard-paste/paste.js",
+              "src/scripts/clipboard-paste/paste.js",
+              "src/scripts/dropzone-dragging-helper.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
@@ -40,7 +42,6 @@
               "optimization": true,
               "outputHashing": "none",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -164,7 +165,6 @@
               "optimization": true,
               "outputHashing": "none",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
