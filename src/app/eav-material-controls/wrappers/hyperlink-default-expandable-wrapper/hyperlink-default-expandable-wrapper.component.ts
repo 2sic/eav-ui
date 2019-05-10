@@ -112,15 +112,14 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   /**
-  * subscribe to form value changes. Only this field change
+  * subscribe to form value changes
   *
   */
   private suscribeValueChanges() {
-    this.subscriptions.push(
-      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
-        this.setLink(item);
-      })
-    );
+    const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      this.setLink(formSet[this.config.field.name]);
+    });
+    this.subscriptions.push(formSetSub);
   }
 
   private setDirty() {
