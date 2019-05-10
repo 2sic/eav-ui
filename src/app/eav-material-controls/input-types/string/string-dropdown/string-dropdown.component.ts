@@ -6,6 +6,7 @@ import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config'
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -39,11 +40,20 @@ export class StringDropdownComponent implements Field, OnInit {
     return this.group.controls[this.config.field.name].value;
   }
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
+    private eavService: EavService,
+  ) { }
 
   ngOnInit() {
     this.selectOptions = this.setOptionsFromDropdownValues();
     this.freeTextMode = this.setFreeTextMode();
+
+    this.eavService.formSetValueChange$.subscribe(
+      formSet => {
+        this.selectOptions = this.setOptionsFromDropdownValues();
+      }
+    );
   }
 
   freeTextModeChange(event) {
