@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
@@ -17,12 +18,13 @@ import { EavService } from '../../../../shared/services/eav.service';
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringDropdownComponent implements Field, OnInit {
+export class StringDropdownComponent implements Field, OnInit, OnDestroy {
   config: FieldConfigSet;
   group: FormGroup;
 
   freeTextMode = false;
   selectOptions = [];
+  subscriptions: Subscription[] = [];
 
   get enableTextEntry() {
     return this.config.field.settings.EnableTextEntry || false;
@@ -49,11 +51,10 @@ export class StringDropdownComponent implements Field, OnInit {
     this.selectOptions = this.setOptionsFromDropdownValues();
     this.freeTextMode = this.setFreeTextMode();
 
-    this.eavService.formSetValueChange$.subscribe(
-      formSet => {
-        this.selectOptions = this.setOptionsFromDropdownValues();
-      }
-    );
+    const updateOptionsSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      this.selectOptions = this.setOptionsFromDropdownValues();
+    });
+    this.subscriptions.push(updateOptionsSub);
   }
 
   freeTextModeChange(event) {
@@ -102,5 +103,9 @@ export class StringDropdownComponent implements Field, OnInit {
       });
     }
     return options;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
