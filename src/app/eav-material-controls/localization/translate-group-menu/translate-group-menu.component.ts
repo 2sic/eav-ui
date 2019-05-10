@@ -443,9 +443,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     let inputType: InputType;
     this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => inputType = type);
     if (!inputType) {
-      // tslint:disable-next-line:max-line-length
-      console.warn(`No input type match was found for ${calculatedInputType.inputType}. Translation is disabled for ${attributeKey} field.`);
-      return false;
+      // if you dont find it assume its translateable
+      return true;
     }
     return !inputType.DisableI18n;
   }
