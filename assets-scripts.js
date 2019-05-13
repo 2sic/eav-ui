@@ -16,7 +16,7 @@ const chalkSuccess = chalk.green;
         './node_modules/@angular/elements/bundles/elements.umd.min.js'
     ];
     await fs.ensureDir('./src/assets/elements');
-    await concat(files, './src/assets/elements/scripts-bundle.js');
+    await concat(files, './src/assets/elements/core.js');
     console.log(chalkSuccess('Build Angular scripts success!'));
 })();
 
