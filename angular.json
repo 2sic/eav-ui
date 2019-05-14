@@ -18,7 +18,6 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/favicon.ico",
               "src/ui.html"
             ],
             "styles": [
@@ -85,8 +84,7 @@
               "src/styles.scss"
             ],
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/assets"
             ]
           }
         },
@@ -146,7 +144,6 @@
             "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
             "tsConfig": "projects/field-string-wysiwyg/tsconfig.app.json",
             "assets": [
-              "projects/field-string-wysiwyg/src/favicon.ico",
               "projects/field-string-wysiwyg/src/assets"
             ],
             "styles": [
@@ -209,7 +206,6 @@
             ],
             "scripts": [],
             "assets": [
-              "projects/field-string-wysiwyg/src/favicon.ico",
               "projects/field-string-wysiwyg/src/assets"
             ]
           }
