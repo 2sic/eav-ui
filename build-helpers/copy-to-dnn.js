@@ -8,6 +8,15 @@ const fs = require('fs-extra');
 const sourcePath = 'dist';
 const sourcePathMain = 'dist/main';
 const outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+const args = process.argv.slice(2);
+let watchEnabled = false;
+
+args.forEach((val, index) => {
+  // console.log(`${index}: ${val}`);
+  if (val === '--watch') {
+    watchEnabled = true;
+  }
+});
 
 const calculatePaths = (path) => {
   path = path.replace(/\\/g, '/');
@@ -62,5 +71,10 @@ watcher
     console.log(chalkError(`Watcher error: ${error}`));
   })
   .on('ready', () => {
-    console.log(chalkSuccess('Initial scan complete. Ready for changes!'));
+    if (!watchEnabled) {
+      console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPath}`));
+      watcher.close();
+      return;
+    }
+    console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPath}. Watching for changes!`));
   });
