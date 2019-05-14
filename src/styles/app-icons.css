@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'app-icons';
-    src: url('../fonts/app-icons.eot?76626267');
-    src: url('../fonts/app-icons.eot?76626267#iefix') format('embedded-opentype'),
-         url('../fonts/app-icons.woff2?76626267') format('woff2'),
-         url('../fonts/app-icons.woff?76626267') format('woff'),
-         url('../fonts/app-icons.ttf?76626267') format('truetype'),
-         url('../fonts/app-icons.svg?76626267#app-icons') format('svg');
+    src: url('../assets/fonts/app-icons.eot?76626267');
+    src: url('../assets/fonts/app-icons.eot?76626267#iefix') format('embedded-opentype'),
+         url('../assets/fonts/app-icons.woff2?76626267') format('woff2'),
+         url('../assets/fonts/app-icons.woff?76626267') format('woff'),
+         url('../assets/fonts/app-icons.ttf?76626267') format('truetype'),
+         url('../assets/fonts/app-icons.svg?76626267#app-icons') format('svg');
     font-weight: normal;
     font-style: normal;
   }
