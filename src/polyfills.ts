@@ -64,3 +64,6 @@ import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+// spm hammerjs might have memory leaks. If problematic remove with:
+// https://stackoverflow.com/questions/51810143/remove-hammerjs-from-a-angular-material-project
+import 'hammerjs';
