@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { skip, first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -11,15 +11,13 @@ import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
 import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
-// import tinymceWysiwygConfig from './tinymce-wysiwyg-config.js'
-// import { addTinyMceToolbarButtons } from './tinymce-wysiwyg-toolbar.js'
-// import { attachAdam } from './tinymce-adam-service.js'
-// import { attachDnnBridgeService } from './tinymce-dnnbridge-service.js';
+import * as contentStyle from './tinymce-content.css';
 
 @Component({
   selector: 'app-tinymce-wysiwyg',
   templateUrl: './tinymce-wysiwyg.component.html',
-  styleUrls: ['./tinymce-wysiwyg.component.scss']
+  styleUrls: ['./tinymce-wysiwyg.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   @Input() connector: ConnectorObservable<string>;
@@ -65,7 +63,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     const selectorOptions = {
       // selector: 'editor#' + this.id,
       body_class: 'field-string-wysiwyg-mce-box', // when inline=false
-      content_css: 'elements/field-string-wysiwyg/assets/style/tinymce-wysiwyg.css',
+      content_style: contentStyle,
       height: '100%',
       branding: false,
       setup: this.tinyMceInitCallback.bind(this),
