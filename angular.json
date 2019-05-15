@@ -17,7 +17,6 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
-              "src/assets",
               "src/ui.html"
             ],
             "styles": [
@@ -139,13 +138,11 @@
           "options": {
             "singleBundle": true,
             "outputPath": "./dist/elements/field-string-wysiwyg",
-            "index": "projects/field-string-wysiwyg/src/index.html",
+            "index": "",
             "main": "projects/field-string-wysiwyg/src/main.ts",
             "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
             "tsConfig": "projects/field-string-wysiwyg/tsconfig.app.json",
-            "assets": [
-              "projects/field-string-wysiwyg/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "projects/field-string-wysiwyg/src/styles.css"
             ],
@@ -161,7 +158,7 @@
               ],
               "optimization": true,
               "outputHashing": "none",
-              "sourceMap": false,
+              "sourceMap": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

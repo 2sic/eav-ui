@@ -7,7 +7,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
   ],
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
