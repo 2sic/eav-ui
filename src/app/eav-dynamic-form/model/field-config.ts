@@ -20,6 +20,7 @@ export interface FieldConfigAngular extends FieldConfig {
   wrappers: string[];
   expanded: boolean;
   isExternal: boolean;
+  disableI18n: boolean;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

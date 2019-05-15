@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, FieldSettings, ContentType, Item } from '../../../shared/models/eav';
+import { EavAttributes, FieldSettings, ContentType, Item, InputType } from '../../../shared/models/eav';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../../shared/constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
@@ -15,6 +15,7 @@ import { ValidationHelper } from '../../../eav-material-controls/validators/vali
 import { ItemService } from '../../../shared/services/item.service';
 import { Feature } from '../../../shared/models/feature/feature';
 import { CalculatedInputType } from '../../../shared/models/input-field-models';
+import { InputTypeService } from '../../../shared/services/input-type.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,10 @@ export class BuildFieldsService {
   private currentLanguage: string;
   private defaultLanguage: string;
 
-  constructor(private itemService: ItemService) { }
+  constructor(
+    private itemService: ItemService,
+    private inputTypeService: InputTypeService,
+  ) { }
 
   public buildFields(
     contentType$: Observable<ContentType>,
@@ -117,6 +121,12 @@ export class BuildFieldsService {
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
+    let disableI18n = false;
+    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
+      if (type) {
+        disableI18n = type.DisableI18n;
+      }
+    });
 
     if (isEmptyInputType) {
       fieldConfig = {
@@ -126,6 +136,7 @@ export class BuildFieldsService {
         fullSettings: fullSettings,
         wrappers: wrappers,
         isExternal: calculatedInputType.isExternal,
+        disableI18n: disableI18n,
         name: name,
         label: label,
         inputType: calculatedInputType.inputType,
@@ -154,6 +165,7 @@ export class BuildFieldsService {
         wrappers: wrappers,
         expanded: false,
         isExternal: calculatedInputType.isExternal,
+        disableI18n: disableI18n,
         name: name,
         index: index, // other fields specific
         label: label,
