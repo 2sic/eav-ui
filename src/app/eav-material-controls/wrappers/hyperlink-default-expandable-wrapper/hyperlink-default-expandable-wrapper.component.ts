@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
+import { FormGroup, AbstractControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators/take';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -7,7 +9,7 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
-import { Subscription } from 'rxjs';
+import { EavConfiguration } from '../../../shared/models/eav-configuration';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -17,112 +19,106 @@ import { Subscription } from 'rxjs';
 })
 export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewInputControl') previewInputControl;
 
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
+
+  private eavConfig: EavConfiguration;
+  private subscriptions: Subscription[] = [];
+  private oldValue: any;
 
   dialogIsOpen = false;
+  control: AbstractControl;
   link = '';
+  thumbnailUrl = '';
+  tooltipUrl = '';
+  isImage: boolean;
+  iconClass: string;
 
-  private eavConfig;
-  private subscriptions: Subscription[] = [];
-
-  get value() { return this.group.controls[this.config.field.name].value; }
-  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
-  get touched() { return this.group.controls[this.config.field.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
-
-  constructor(private fileTypeService: FileTypeService,
+  constructor(
+    private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
-    private eavService: EavService) {
+    private eavService: EavService,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-    this.setLink(this.value);
+    this.control = this.group.controls[this.config.field.name];
+    this.setLink(this.control.value);
     this.suscribeValueChanges();
+  }
+
+  setValue(event) {
+    if (event.target.value === this.control.value) { return; }
+    this.control.patchValue(event.target.value);
+    this.control.markAsDirty();
+  }
+
+  setTouched() {
+    this.control.markAsTouched();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  isImage = () => this.fileTypeService.isImage(this.link);
-  icon = () => this.fileTypeService.getIconClass(this.link);
-
-  tooltipUrl = (str: string): string => {
-    if (!str) {
-      return '';
-    }
-    return str.replace(/\//g, '/&#8203;');
-  }
-
-  setValue(val) {
-    if (val.target.value !== this.value) {
-      this.group.controls[this.config.field.name].patchValue(val.target.value);
-      this.setDirty();
-    }
-  }
-
-  thumbnailUrl(size: number, quote: boolean) {
-    let result = this.link;
-    if (size === 1) {
-      result = result + '?w=70&h=70&mode=crop';
-    }
-    if (size === 2) {
-      result = result + '?w=500&h=400&mode=max';
-    }
-    const qt = quote ? '"' : '';
-    return qt + result + qt;
-  }
-
-  setTouched() {
-    this.group.controls[this.config.field.name].markAsTouched();
-  }
-
-  /**
-   * Update test-link if necessary - both when typing or if link was set by dialogs
-   * @param value
-   */
+  /** Update test-link if necessary - both when typing or if link was set by dialogs */
   private setLink(value: string) {
-    // const oldValue = this.value;
-    if (!value) {
-      return null;
-    }
+    if (!value) { return; }
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
+      this.eavConfig.appId,
       value,
       this.config.entity.header.contentTypeName,
       this.config.entity.header.guid,
-      this.config.field.name);
+      this.config.field.name
+    );
 
-    if (urlFromId$) {
-      // this.subscriptions.push(
-      urlFromId$.subscribe((data) => {
-        if (data) {
-          this.link = data;
-        }
-      });
-      // );
-    } else {
+    if (!urlFromId$) {
       this.link = value;
+      this.setValues();
     }
+
+    urlFromId$.pipe(take(1)).subscribe(data => {
+      if (!data) { return; }
+      this.link = data;
+      this.setValues();
+    });
   }
 
-  /**
-  * subscribe to form value changes
-  *
-  */
+  private setValues() {
+    this.thumbnailUrl = this.buildThumbnailUrl(this.link, 1, true);
+    this.isImage = this.fileTypeService.isImage(this.link);
+    this.iconClass = this.fileTypeService.getIconClass(this.link);
+    this.tooltipUrl = this.buildTooltipUrl(this.link);
+  }
+
+  /** Subscribe to form value changes */
   private suscribeValueChanges() {
+    this.oldValue = this.control.value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      if (formSet[this.config.field.name] === this.oldValue) { return; }
+      this.oldValue = formSet[this.config.field.name];
+
       this.setLink(formSet[this.config.field.name]);
     });
     this.subscriptions.push(formSetSub);
   }
 
-  private setDirty() {
-    this.group.controls[this.config.field.name].markAsDirty();
+  private buildThumbnailUrl(url: string, size: number, quote: boolean): string {
+    if (size === 1) {
+      url = url + '?w=70&h=70&mode=crop';
+    }
+    if (size === 2) {
+      url = url + '?w=500&h=400&mode=max';
+    }
+    const qt = quote ? '"' : '';
+    return 'url(' + qt + url + qt + ')';
+  }
+
+  private buildTooltipUrl(str: string): string {
+    if (!str) { return ''; }
+    return str.replace(/\//g, '/&#8203;');
   }
 }

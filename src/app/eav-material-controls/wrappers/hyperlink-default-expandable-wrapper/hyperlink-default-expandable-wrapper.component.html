@@ -21,32 +21,30 @@
 </div>
 <div>
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
-    'c-ew__preview--disabled': disabled
+    'c-ew__preview--disabled': control.disabled
   }">
     <div matPrefix fxLayoutAlign="start center" class="thumbnail-before-input" [ngClass]="{
-      'icon-before-input': value && !isImage(), 
-      'thumbnail-before-input--disabled': disabled
-    }" [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}"
-      (click)="!disabled ? dialogIsOpen = true : ''">
-      <!-- <a *ngIf="!disabled && value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
-        matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
-      </a> -->
-      <i *ngIf="value && !isImage()" [ngClass]="icon()" matTooltip="{{tooltipUrl(link)}}"
+      'icon-before-input': control.value && !isImage,
+      'thumbnail-before-input--disabled': control.disabled
+    }" [ngStyle]="{'background-image': control.value && isImage ? thumbnailUrl : ''}"
+      (click)="!control.disabled ? dialogIsOpen = true : ''">
+      <i *ngIf="control.value && !isImage" [ngClass]="iconClass" matTooltip="{{tooltipUrl}}"
         matTooltipPosition="right"></i>
     </div>
     <div class="c-ew__preview-field--short" fxFlex="auto">
-      <mat-form-field appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'"
+      <mat-form-field appearance="fill" [color]="control.invalid && control.touched ? 'warn' : 'accent'"
         class="mat-form-field-hyperlink">
-        <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)" [disabled]="disabled"
-          (keyup)="setValue($event)" [value]="value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
+        <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
+          [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
         {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
         ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
         <span matSuffix>
-          <button mat-icon-button tabindex="-1" [disabled]="disabled" type="button" (click)="dialogIsOpen = true">
+          <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button"
+            (click)="dialogIsOpen = true">
             <mat-icon>more_vert</mat-icon>
           </button>
         </span>
-        <mat-label [ngClass]="{'mat-error' : inputInvalid && touched}">
+        <mat-label [ngClass]="{'mat-error' : control.invalid && control.touched}">
           {{config.field.label}}
           {{config.field.required ? '*': '' }}
         </mat-label>
