@@ -30,6 +30,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   toggleAdamValue = false;
   link = '';
 
+  private oldValue: any;
+
 
   // TODOD: temp
   private eavConfig;
@@ -144,17 +146,16 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     });
   }
 
-  /**
- * subscribe to form value changes. Only this field change
- *
- */
+  /** Subscribe to form value changes */
   private suscribeValueChanges() {
-    this.subscriptions.push(
-      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
-        console.log('suscribeValueChanges CHANGE');
-        this.setLink(item);
-      })
-    );
+    this.oldValue = this.group.controls[this.config.field.name].value;
+    const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      if (formSet[this.config.field.name] === this.oldValue) { return; }
+      this.oldValue = formSet[this.config.field.name];
+
+      this.setLink(formSet[this.config.field.name]);
+    });
+    this.subscriptions.push(formSetSub);
   }
 
   /**
