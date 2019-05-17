@@ -1,33 +1,55 @@
 {
   "name": "eav-item-dialog-angular",
-  "version": "0.0.0",
+  "version": "10.00.00",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+
+    "//": "build shared parts - always in the same mode for both prod/dev",
     "build-core": "node ./build-helpers/build-core",
     "build-languages": "node ./build-helpers/build-languages",
     "pre-build": "npm run build-core && npm run build-languages",
-    "develop": "npm run pre-build && ng build",
-    "develop-watch": "npm run pre-build && ng build --watch",
-    "build": "npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod",
-    "build-watch": "npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
-    "develop-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js",
-    "develop-wysiwyg-watch": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js --watch",
-    "build-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js --prod",
-    "develop-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js",
-    "develop-custom-gps-watch": "webpack --config ./projects/field-custom-gps/webpack.config.js --watch",
-    "build-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js --mode=production",
-    "develop-all": "npm run develop-wysiwyg && npm run develop-custom-gps && npm run develop && npm run copy-to-dnn",
-    "develop-all-watch": "concurrently npm:develop-wysiwyg-watch npm:develop-custom-gps-watch npm:develop-watch npm:copy-to-dnn-watch",
-    "build-all": "npm run build-wysiwyg && npm run build-custom-gps && npm run build && npm run copy-to-dnn",
-    "build-all-watch": "npm run build-wysiwyg && npm run build-custom-gps && concurrently npm:build-watch npm:copy-to-dnn-watch",
+
+    "//": "Main system: develop builds",
+    "dev-main": "npm run pre-build && ng build",
+    "dev-main-watch": "npm run pre-build && ng build --watch",
+
+    "//": "Main system: production builds",
+    "prod-main": "npm run set-env-prod && npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod",
+    "prod-main-watch": "npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
+
+    "//": "WYSIWYG builds, dev and prod",
+    "dev-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js",
+    "dev-wysiwyg-watch": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js --watch",
+    "prod-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js --prod",
+
+    "//": "Custom GPS builds, dev and prod",
+    "dev-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js",
+    "dev-custom-gps-watch": "webpack --config ./projects/field-custom-gps/webpack.config.js --watch",
+    "prod-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js --mode=production",
+
+    "//": "Copy processes to move content from dist to the main system",
     "copy-to-dnn": "node ./build-helpers/copy-to-dnn",
     "copy-to-dnn-watch": "node ./build-helpers/copy-to-dnn --watch",
+
+    "//": "build many things at the same time",
+    "dev-all": "npm run dev-wysiwyg && npm run dev-custom-gps && npm run dev-main && npm run copy-to-dnn",
+    "dev-all-watch": "concurrently npm:dev-wysiwyg-watch npm:dev-custom-gps-watch npm:dev-main-watch npm:copy-to-dnn-watch",
+    "prod-all": "npm run set-env-prod && npm run prod-wysiwyg && npm run prod-custom-gps && npm run prod-main && npm run copy-to-dnn",
+    "prod-all-watch": "npm run prod-wysiwyg && npm run prod-custom-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
+
+    "//": "WIP! this will set the global environment variable to 'production', or something else.",
+    "//": "in production mode, the source-maps will be on another server",
+    "set-env-prod": "set NODE_ENV=production",
+    "set-env-dev": "set NODE_ENV=dev",
+
+    "//": "other stuff",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "bundle-report": "webpack-bundle-analyzer ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/stats.json"
+    "bundle-report": "webpack-bundle-analyzer ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/stats.json",
+
   },
   "private": true,
   "dependencies": {
