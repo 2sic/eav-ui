@@ -23,7 +23,9 @@ export class Entity1 {
         this.Attributes = Attributes;
         this.Owner = Owner;
         this.Metadata = Metadata;
-        this.For = For;
+        if (For) {
+            this.For = For;
+        }
     }
 
     /* public static create(item: Entity1): Entity1 {
@@ -40,10 +42,7 @@ export class Entity1 {
     public static create(entity: EavEntity): Entity1 {
         const attributes1 = Attributes1.create(entity.attributes);
         const metaData1 = this.createArray(entity.metadata);
-        let for1;
-        if (entity.For) {
-            for1 = new For1(entity.For.string, entity.For.target);
-        }
+        const for1 = entity.For ? new For1(entity.For) : null;
 
         return new Entity1(
             entity.id,

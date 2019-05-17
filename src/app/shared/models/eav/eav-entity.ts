@@ -33,7 +33,9 @@ export class EavEntity {
         this.attributes = attributes;
         this.owner = owner;
         this.metadata = metadata;
-        this.For = For;
+        if (For) {
+            this.For = For;
+        }
     }
 
     /**
@@ -53,10 +55,7 @@ export class EavEntity {
         }
         const eavAttributes = EavAttributes.create(item.Attributes);
         const eavMetaData = this.createArray(item.Metadata);
-        let eavFor: EavFor;
-        if (item.For) {
-            eavFor = new EavFor(item.For.String, item.For.Target);
-        }
+        const eavFor: EavFor = item.For ? new EavFor(item.For) : null;
 
         return new EavEntity(
             item.Id,
@@ -86,5 +85,3 @@ export class EavEntity {
         return eavMetaDataArray;
     }
 }
-
-

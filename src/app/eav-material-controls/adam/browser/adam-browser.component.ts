@@ -166,7 +166,10 @@ export class AdamBrowserComponent implements OnInit {
       this.itemDefinition(item, this.getMetadataType(item))
     ];
 
-    const metadataFor = new EavFor(items[0].Metadata.Key, items[0].Metadata.TargetType);
+    const metadataFor: EavFor = {
+      Target: items[0].Metadata.TargetType,
+      String: items[0].Metadata.Key,
+    };
     const persistedData: AdminDialogPersistedData = {
       metadataFor
     };
