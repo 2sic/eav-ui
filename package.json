@@ -1,5 +1,7 @@
 {
   "name": "eav-item-dialog-angular",
+
+  "//": "The version number is very important, as it's used for publishing the source maps",
   "version": "10.00.00",
   "license": "MIT",
   "scripts": {
@@ -12,12 +14,12 @@
     "pre-build": "npm run build-core && npm run build-languages",
 
     "//": "Main system: develop builds",
-    "dev-main": "npm run pre-build && ng build",
-    "dev-main-watch": "npm run pre-build && ng build --watch",
+    "dev-main": "ng build",
+    "dev-main-watch": "ng build --watch",
 
     "//": "Main system: production builds",
-    "prod-main": "npm run set-env-prod && npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod",
-    "prod-main-watch": "npm run pre-build && ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
+    "prod-main": "set NODE_ENV=production && ng build --extraWebpackConfig ./webpack.extra.js --prod",
+    "prod-main-watch": "ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
 
     "//": "WYSIWYG builds, dev and prod",
     "dev-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js",
@@ -25,30 +27,25 @@
     "prod-wysiwyg": "ng build field-string-wysiwyg --extraWebpackConfig ../../webpack.extra.js --prod",
 
     "//": "Custom GPS builds, dev and prod",
-    "dev-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js",
-    "dev-custom-gps-watch": "webpack --config ./projects/field-custom-gps/webpack.config.js --watch",
-    "prod-custom-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js --mode=production",
+    "dev-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js",
+    "dev-gps-watch": "webpack --config ./projects/field-custom-gps/webpack.config.js --watch",
+    "prod-gps": "webpack --config ./projects/field-custom-gps/webpack.config.js --mode=production",
 
     "//": "Copy processes to move content from dist to the main system",
     "copy-to-dnn": "node ./build-helpers/copy-to-dnn",
     "copy-to-dnn-watch": "node ./build-helpers/copy-to-dnn --watch",
 
     "//": "build many things at the same time",
-    "dev-all": "npm run dev-wysiwyg && npm run dev-custom-gps && npm run dev-main && npm run copy-to-dnn",
-    "dev-all-watch": "concurrently npm:dev-wysiwyg-watch npm:dev-custom-gps-watch npm:dev-main-watch npm:copy-to-dnn-watch",
-    "prod-all": "npm run set-env-prod && npm run prod-wysiwyg && npm run prod-custom-gps && npm run prod-main && npm run copy-to-dnn",
-    "prod-all-watch": "npm run prod-wysiwyg && npm run prod-custom-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
-
-    "//": "WIP! this will set the global environment variable to 'production', or something else.",
-    "//": "in production mode, the source-maps will be on another server",
-    "set-env-prod": "set NODE_ENV=production",
-    "set-env-dev": "set NODE_ENV=dev",
+    "dev-all": "npm run pre-build && npm run dev-wysiwyg && npm run dev-gps && npm run dev-main && npm run copy-to-dnn",
+    "dev-all-watch": "concurrently npm:pre-build npm:dev-wysiwyg-watch npm:dev-gps-watch npm:dev-main-watch npm:copy-to-dnn-watch",
+    "prod-all": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
+    "prod-all-watch": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
 
     "//": "other stuff",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "bundle-report": "webpack-bundle-analyzer ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/stats.json",
+    "bundle-report": "webpack-bundle-analyzer ../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/stats.json"
 
   },
   "private": true,

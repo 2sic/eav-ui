@@ -17,7 +17,8 @@ var configuration = {
   but have them when developing
 */
 
-const isProd = process.env.NODE_ENV === 'production';
+const nodeEnv = (process.env.NODE_ENV || 'development').trim(); // trim is important because of an issue with package.json
+const isProd = nodeEnv === 'production';
 const ifProd = x => isProd && x;
 var pjson = require('./package.json');
 
