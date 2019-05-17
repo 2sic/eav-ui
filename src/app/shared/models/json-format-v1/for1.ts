@@ -1,9 +1,13 @@
-export class For1 {
-    String: string;
-    Target: string;
+import { EavFor } from '../eav';
 
-    constructor(String: string, Target: string) {
-        this.String = String;
-        this.Target = Target;
-    }
+export class For1 {
+  [key: string]: any;
+
+  constructor(entityFor: EavFor) {
+    Object.keys(entityFor).forEach(key => {
+      if (entityFor.hasOwnProperty(key)) {
+        this[key] = entityFor[key];
+      }
+    });
+  }
 }
