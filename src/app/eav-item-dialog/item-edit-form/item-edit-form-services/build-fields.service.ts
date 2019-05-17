@@ -151,7 +151,7 @@ export class BuildFieldsService {
         null
       );
       // set default value if needed
-      if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1) {
+      if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1 && initialValue !== '') {
         initialValue = this.itemService.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
           this.currentLanguage, this.defaultLanguage);
       }
