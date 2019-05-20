@@ -18,7 +18,7 @@
     "dev-main-watch": "ng build --watch",
 
     "//": "Main system: production builds",
-    "prod-main": "set NODE_ENV=production && ng build --extraWebpackConfig ./webpack.extra.js --prod",
+    "prod-main": "ng build --extraWebpackConfig ./webpack.extra.js --prod",
     "prod-main-watch": "ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
 
     "//": "WYSIWYG builds, dev and prod",
@@ -38,8 +38,11 @@
     "//": "build many things at the same time",
     "dev-all": "npm run pre-build && npm run dev-wysiwyg && npm run dev-gps && npm run dev-main && npm run copy-to-dnn",
     "dev-all-watch": "concurrently npm:pre-build npm:dev-wysiwyg-watch npm:dev-gps-watch npm:dev-main-watch npm:copy-to-dnn-watch",
-    "prod-all": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
-    "prod-all-watch": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
+    "prod-all": "npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
+    "prod-all-watch": "npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
+
+    "//": "Make a release build. Modifies configuration in webpack-extra.js to load source maps from external server",
+    "release": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
 
     "//": "other stuff",
     "test": "ng test",

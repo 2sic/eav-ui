@@ -1,7 +1,8 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const setExternalSourceMaps = require('../../build-helpers/external-source-maps');
 
-module.exports = {
+const configuration = {
   mode: 'development',
   entry: ['./projects/field-custom-gps/src/main/main.ts', './projects/field-custom-gps/src/preview/preview.ts'],
   plugins: [
@@ -29,7 +30,12 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: 'main.js',
+    filename: 'gps-picker.js',
     path: path.resolve(__dirname, '../../dist/elements/field-custom-gps'),
   },
 };
+
+/* change source map generation based on production mode */
+setExternalSourceMaps(configuration, 'elements/field-custom-gps/');
+
+module.exports = configuration;
