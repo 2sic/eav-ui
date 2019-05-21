@@ -1,7 +1,8 @@
 <div *ngIf="(currentLanguage !== defaultLanguage) && fieldConfig.isParentGroup" fxLayoutAlign="end center">
   <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu">
     <span fxLayoutAlign="end center">
-      TRANSLATE &nbsp;&nbsp;<i class="eav-icon-language" style="font-size: 20px;"></i>
+      TRANSLATE &nbsp;&nbsp;
+      <mat-icon class="translate-icon">translate</mat-icon>
     </span>
   </button>
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
@@ -20,14 +21,15 @@
   </mat-menu>
 </div>
 
-<div *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup" fxLayoutAlign="end center">
+<div *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup && !fieldConfig.disableI18n"
+  fxLayoutAlign="end center">
   <div fxLayoutAlign="end center" class="shared-languages-container">
     <div class="shared-languages mat-caption color__accent" [ngClass]="{
       'shared-languages--disabled': inputDisabled
     }">
       {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}</div>
     <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2" [ngClass]="getTranslationStateClass()">
-      <i class="eav-icon-language" style="font-size: 20px"></i>
+      <mat-icon class="translate-icon">translate</mat-icon>
     </button>
   </div>
   <mat-menu #rootMenu2="matMenu" [overlapTrigger]="true">

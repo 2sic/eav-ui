@@ -12,4 +12,7 @@ declare module "*.json" {
   export default value;
 }
 
-
+declare module '!raw-loader!*' {
+  const contents: string;
+  export default contents;
+}

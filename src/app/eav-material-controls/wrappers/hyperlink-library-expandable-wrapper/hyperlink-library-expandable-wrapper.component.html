@@ -44,7 +44,7 @@
           <div fxLayout="row" fxLayoutAlign="start start"
             *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
             <div class="adam-browse-background-icon">
-              <i class="eav-icon-folder-empty"></i>
+              <mat-icon svgIcon="folder"></mat-icon>
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
             </div>
           </div>
@@ -53,7 +53,8 @@
         <div
           *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
           <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
-            <i [ngClass]="icon(item)"></i>
+            <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
+            <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
             <div class="adam-short-label mat-caption">{{ item.Name }}</div>
           </div>
           <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">

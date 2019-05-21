@@ -89,6 +89,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   isImage = () => this.fileTypeService.isImage(this.link);
 
+  isKnownType = () => this.fileTypeService.isKnownType(this.link);
+
   icon = () => this.fileTypeService.getIconClass(this.link);
 
   thumbnailUrl(size: number, quote: boolean) {

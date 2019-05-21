@@ -9,7 +9,7 @@
     <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-eye"></i>
+          <mat-icon matListIcon>visibility</mat-icon>
         </button>
       </div>
       <div fxFlex="80">
@@ -22,7 +22,7 @@
     <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-eye-close"></i>
+          <mat-icon matListIcon>visibility_off</mat-icon>
         </button>
       </div>
       <div fxFlex="80">
@@ -35,7 +35,7 @@
     <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
       <div fxFlex="20" fxFill>
         <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-git-branch"></i>
+          <mat-icon matListIcon svgIcon="draft-branch"></mat-icon>
         </button>
       </div>
       <div fxFlex="80">

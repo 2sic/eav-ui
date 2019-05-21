@@ -5,10 +5,9 @@ export class FileTypeService {
 
   constructor() { }
 
-  private iconPrefix = 'eav-icon-';
   private defaultIcon = 'file';
   private checkImgRegEx = /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
-  private extensions = {
+  private customExtensions = {
     doc: 'file-word',
     docx: 'file-word',
     xls: 'file-excel',
@@ -29,7 +28,10 @@ export class FileTypeService {
     css: 'file-code',
     xml: 'file-code',
     xsl: 'file-code',
-    vcf: 'user'
+  };
+
+  private matExtensions = {
+    vcf: 'person',
   };
 
   public getExtension = (filename) => {
@@ -37,11 +39,14 @@ export class FileTypeService {
   }
 
   public getIconClass = (filename) => {
-    return this.iconPrefix + (this.extensions[this.getExtension(filename)] || this.defaultIcon);
+    const ext = this.getExtension(filename);
+    return this.matExtensions[ext]
+      || this.customExtensions[ext]
+      || this.defaultIcon;
   }
 
   public isKnownType = (filename) => {
-    return this.extensions[this.getExtension(filename)] !== undefined;
+    return this.matExtensions[this.getExtension(filename)] !== undefined;
   }
 
   public isImage = (filename) => {

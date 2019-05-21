@@ -10,9 +10,7 @@
   <a matSuffix *ngIf="enableTextEntry"
     [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
     (click)="freeTextModeChange($event)">
-    <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
-    <!-- <mat-icon *ngIf="!freeTextMode">unfold_less</mat-icon> -->
-    <!-- <i *ngIf="freeTextMode" class="eav-icon-down-dir"></i> -->
+    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
     <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
   </a>
   <mat-label>{{config.field.label}}</mat-label>

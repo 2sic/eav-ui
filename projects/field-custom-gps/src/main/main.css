@@ -25,6 +25,13 @@
   padding: 4px;
 }
 
+.map-info #icon-search i {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  font-weight: bold;
+}
+
 .map-info input {
   margin-right: 8px;
   padding: 4px 16px;

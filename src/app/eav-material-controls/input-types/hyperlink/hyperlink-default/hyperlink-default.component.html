@@ -2,31 +2,34 @@
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled"
     (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
-    <i class="eav-icon-apple" style="font-size: larger;line-height: 28px;padding: 0 2px 0 0;"></i>
+    <mat-icon svgIcon="apple"></mat-icon>
   </button>
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
     (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
-    <i class="eav-icon-sitemap" style="font-size: larger;line-height: 24px;"></i>
+    <mat-icon svgIcon="sitemap"></mat-icon>
   </button>
   <button mat-mini-fab *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button"
     [matMenuTriggerFor]="menu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item *ngIf="showAdam" (click)="toggleAdam(false)">
-      <i class="eav-icon-apple"></i>
+    <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="showAdam" (click)="toggleAdam(false)">
+      <mat-icon svgIcon="apple"></mat-icon>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.field.settings.ShowPagePicker" (click)="openPageDialog()">
-      <i class="eav-icon-sitemap" xicon="home"></i>
+    <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowPagePicker"
+      (click)="openPageDialog()">
+      <mat-icon svgIcon="sitemap"></mat-icon>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuPage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.field.settings.ShowImageManager" (click)="toggleAdam(true, true)">
-      <i class="eav-icon-file-image" xicon="picture"></i>
+    <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowImageManager"
+      (click)="toggleAdam(true, true)">
+      <mat-icon svgIcon="file-image"></mat-icon>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuImage' | translate }}</span>
     </button>
-    <button mat-menu-item *ngIf="config.field.settings.ShowFileManager" (click)="toggleAdam(true, false)">
-      <i class="eav-icon-file" xicon="file"></i>
+    <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowFileManager"
+      (click)="toggleAdam(true, false)">
+      <mat-icon svgIcon="file"></mat-icon>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
     </button>
   </mat-menu>
@@ -54,8 +57,11 @@
       </div>
       <div [ngClass]="{'c-hld-icon': value && !isImage()}"
         [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
-        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" [ngClass]="icon()"
-          matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
+
+        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}"
+          matTooltipPosition="right">
+          <mat-icon *ngIf="isKnownType()">{{icon()}}</mat-icon>
+          <mat-icon *ngIf="!isKnownType()" svgIcon="{{icon()}}"></mat-icon>
         </a>
       </div>
     </mat-card>

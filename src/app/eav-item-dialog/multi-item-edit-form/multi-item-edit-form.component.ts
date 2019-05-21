@@ -28,6 +28,7 @@ import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
+import { LoadIconsService } from '../../shared/services/load-icons.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -67,7 +68,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private eavConfig: EavConfiguration;
 
-  constructor(public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     @Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
@@ -79,7 +81,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private languageService: LanguageService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private validationMessagesService: ValidationMessagesService) {
+    private validationMessagesService: ValidationMessagesService,
+    private loadIconsService: LoadIconsService,
+  ) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
     this.translate.setDefaultLang('en');
@@ -87,6 +91,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
     this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    this.loadIconsService.load();
   }
 
   ngOnInit() {

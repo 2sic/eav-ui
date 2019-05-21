@@ -13,7 +13,7 @@
             [disabled]="disabled" (blur)="setTouched()">
           <mat-icon matSuffix *ngIf="!enableTextEntry">arrow_drop_down</mat-icon>
           <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)">
-            <i class="eav-icon-i-cursor"></i>
+            <mat-icon>text_fields</mat-icon>
             <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
           </a>
           <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
@@ -48,7 +48,7 @@
     [placeholder]="config.field.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">
-    <i *ngIf="!freeTextMode" class="eav-icon-i-cursor"></i>
+    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
     <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
   </a>
   <mat-label>{{config.field.label}}</mat-label>

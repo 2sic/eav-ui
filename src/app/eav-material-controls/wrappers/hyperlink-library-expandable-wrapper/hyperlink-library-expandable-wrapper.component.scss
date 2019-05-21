@@ -87,10 +87,12 @@
                 width: 56px;
                 text-align: center;
             }
-            &-icon i {
-                  font-size: 2em;
-              }
-        
+            &-icon mat-icon {
+                font-size: 36px;
+                width: 36px;
+                height: 36px;
+            }
+
             &-image {
                 height: 56px;
                 width: 56px;

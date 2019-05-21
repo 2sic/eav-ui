@@ -34,6 +34,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   ngOnInit() {
   }
 
+  isKnownType(item: AdamItem) {
+    return this.fileTypeService.isKnownType(item.Name);
+  }
+
   icon(item: AdamItem) {
     return this.fileTypeService.getIconClass(item.Name);
   }

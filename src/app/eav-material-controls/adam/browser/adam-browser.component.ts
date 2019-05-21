@@ -231,6 +231,10 @@ export class AdamBrowserComponent implements OnInit {
     this.subFolder = subFolder;
   }
 
+  isKnownType(item: AdamItem) {
+    return this.fileTypeService.isKnownType(item.Name);
+  }
+
   icon(item: AdamItem) {
     return this.fileTypeService.getIconClass(item.Name);
   }
