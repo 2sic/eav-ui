@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48.svg';
+import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48-filled.svg';
 import draftBranch from '!raw-loader!../../../icons/font-awesome/draft-branch.svg';
 import file from '!raw-loader!../../../icons/font-awesome/file.svg';
 import fileArchive from '!raw-loader!../../../icons/font-awesome/file-archive.svg';

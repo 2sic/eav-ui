@@ -53,6 +53,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.loadMaterialIcons();
     this.calculateInitialValues();
     this.subscribeToFormChanges();
 
@@ -169,6 +170,16 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
       console.log('Petar wysiwyg order: editor.on change => this.changeCheck(e, editor.getContent()); => this.host.update(value);',
         editor.getContent());
     });
+  }
+
+  private loadMaterialIcons() {
+    const head = document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+    link.media = 'all';
+    head.appendChild(link);
   }
 
   private calculateInitialValues(): void {

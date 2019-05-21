@@ -92,3 +92,16 @@
 .mce-tab.mce-active {
     background-color: #0087f4!important;
 }
+
+.toolbar-icon svg, .toolbar-icon i {
+    fill: white;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.dropdown-icon svg {
+    margin-top: 0;
+    padding-right: 8px;
+}
