@@ -79,10 +79,37 @@ export class BuildFieldsService {
               throw error;
             }
           });
-
+          try {
+            this.calculateFieldPositionInGroup(parentFieldGroup.field as FieldConfigGroup);
+          } catch (error) {
+            console.error(`Error calculating last field in each group: ${error}`);
+          }
           return of([parentFieldGroup]);
         })
       );
+  }
+
+  private calculateFieldPositionInGroup(field: FieldConfigGroup) {
+    if (!field.fieldGroup) { return; }
+    if (field.fieldGroup.length === 0) { return; }
+
+    // take last non empty which doesn't have empty after
+    const nonEmpty = field.fieldGroup.filter(subField => {
+      const isEmptyInputType = (subField.field.inputType === InputTypesConstants.emptyDefault)
+        || (subField.field.inputType === InputTypesConstants.empty);
+      return !isEmptyInputType;
+    });
+    if (nonEmpty.length > 0) {
+      const nextExists = !!field.fieldGroup[nonEmpty.length]; // next would be empty
+      if (!nextExists) {
+        nonEmpty[nonEmpty.length - 1].field.isLastInGroup = true;
+      }
+    }
+
+    field.fieldGroup.forEach(subField => {
+      const subFld = subField.field as FieldConfigGroup;
+      this.calculateFieldPositionInGroup(subFld);
+    });
   }
 
   private buildFieldConfigSet(attribute: AttributeDef, index: number, calculatedInputType: CalculatedInputType,
@@ -128,6 +155,7 @@ export class BuildFieldsService {
         disableI18n = type.DisableI18n;
       }
     });
+    const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 
     if (isEmptyInputType) {
       fieldConfig = {
@@ -138,6 +166,7 @@ export class BuildFieldsService {
         wrappers: wrappers,
         isExternal: calculatedInputType.isExternal,
         disableI18n: disableI18n,
+        isLastInGroup: isLastInGroup,
         name: name,
         label: label,
         inputType: calculatedInputType.inputType,
@@ -167,6 +196,7 @@ export class BuildFieldsService {
         expanded: false,
         isExternal: calculatedInputType.isExternal,
         disableI18n: disableI18n,
+        isLastInGroup: isLastInGroup,
         name: name,
         index: index, // other fields specific
         label: label,

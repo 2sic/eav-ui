@@ -6,6 +6,15 @@
         // margin: 0px 0 0 12px;
         padding: 4px 0 12px 12px;
         min-height: 16px;
+
+        &--last {
+            padding-bottom: 0;
+
+            &--no-hint {
+                padding-top: 0;
+                min-height: 0;
+            }
+        }
         
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);

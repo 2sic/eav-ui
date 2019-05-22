@@ -1,13 +1,16 @@
-<div class="c-fht__container">
+<div class="c-fht__container" [ngClass]="{
+  'c-fht__container--last': config.field.isLastInGroup,
+  'c-fht__container--last--no-hint': config.field.isLastInGroup && !config.field.settings.Notes && !(control.invalid && !disableError)
+}">
   <mat-hint *ngIf="config.field.settings.Notes" class="mat-caption" (click)="isFullText = !isFullText"
-    [ngClass]="disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
-    fxLayoutAlign="start start">
+    [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
+    fxLayout="row" fxLayoutAlign="start start">
     <i class="material-icons" style="font-size: 14px;">info_outline</i>
     <span>&nbsp;</span>
     <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''"
       [innerHtml]="config.field.settings.Notes"></span>
   </mat-hint>
-  <mat-error *ngIf="inputInvalid && !disableError" class="mat-caption">
+  <mat-error *ngIf="control.invalid && !disableError" class="mat-caption">
     {{ getErrorMessage() | translate:{ param:config.field.settings } }}
   </mat-error>
 </div>

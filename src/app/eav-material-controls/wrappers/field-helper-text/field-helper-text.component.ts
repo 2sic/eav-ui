@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -17,14 +17,7 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() disableError = false;
 
   isFullText = false;
-
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
-  }
-
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled;
-  }
+  control: AbstractControl;
 
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.field.name], this.config);
@@ -33,5 +26,6 @@ export class FieldHelperTextComponent implements OnInit {
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
+    this.control = this.group.controls[this.config.field.name];
   }
 }

@@ -21,6 +21,7 @@ export interface FieldConfigAngular extends FieldConfig {
   expanded: boolean;
   isExternal: boolean;
   disableI18n: boolean;
+  isLastInGroup: boolean;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {
