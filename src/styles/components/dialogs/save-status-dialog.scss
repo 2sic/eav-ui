@@ -1,5 +1,5 @@
 
-// Save satatus dialog
+// Save status dialog
 
 .c-save-status-dialog {
     .mat-dialog-container {
@@ -7,16 +7,4 @@
         // background-color: $edit-ui-dialog-background-color;
         border-radius: $edit-ui-dialog-border-radius;
     }
-
-    &__header { 
-        padding: 24px;
-    }
-
-    &__actions{
-        padding-bottom:24px;
-    }
 }
-
-
-
-
