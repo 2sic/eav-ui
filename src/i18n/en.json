@@ -12,9 +12,12 @@
 		"Unpublished": "unpublished / draft"
 	},
 	"SaveMode": {
-		"show": "show",
-		"hide": "hide",
+    "show": "show",
+    "show.Tip": "Changes are public when saved",
+    "hide": "hide",
+    "hide.Tip": "This item is invisible to the public when saved",
     "branch": "draft",
+    "branch.Tip": "The public sees the original item, changes are only visible to editors",
     "Dialog": {
       "Title": "Save Mode",
       "Intro": "This determines how you will save. The default is show/publish.",
