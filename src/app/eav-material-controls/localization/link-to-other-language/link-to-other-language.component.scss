@@ -8,3 +8,35 @@
     cursor: default;
     color: $editUI-label-disabled-color;
 }
+
+.mat-card {
+    padding: 0;
+
+    &__header { 
+        padding: 16px;
+    }
+    &__title {
+        font-weight: bold;
+        padding-bottom: 16px;
+    }
+}
+
+.mat-list-item {
+    &__title {
+        font-weight: bold !important;
+    }
+    &__body {
+        white-space: normal !important;
+    }
+}
+
+.show-languages {
+    padding-top: 24px;
+
+    &__header {
+        padding: 16px;
+    }
+    &__title {
+        font-weight: bold;
+    }
+}

@@ -1,33 +1,89 @@
-<mat-nav-list toggle>
-  <mat-list-item (click)="dontTranslate()" [ngClass]="selectedOption.linkType === 'dontTranslate' ? 'mat-list-item-focus' : ''">
-    <span matLine>Don’t Translate</span>
-  </mat-list-item>
-  <mat-list-item (click)="translate()" [ngClass]="selectedOption.linkType === 'translate' ? 'mat-list-item-focus' : ''">
-    <span matLine>Translate ({{data.defaultLanguage}})</span>
-  </mat-list-item>
-  <mat-list-item (click)="linkCopyFrom()" [ngClass]="selectedOption.linkType === 'linkCopyFrom' ? 'mat-list-item-focus' : ''">
-    <span matLine>Translate (...)</span>
-  </mat-list-item>
-  <mat-list-item (click)="linkReadOnly()" [ngClass]="selectedOption.linkType === 'linkReadOnly' ? 'mat-list-item-focus' : ''">
-    <span matLine>Link read-only</span>
-  </mat-list-item>
-  <mat-list-item (click)="linkReadWrite()" [ngClass]="selectedOption.linkType === 'linkReadWrite' ? 'mat-list-item-focus' : ''">
-    <span matLine>Link read-write (shared)</span>
-  </mat-list-item>
-</mat-nav-list>
-<mat-divider></mat-divider>
-<mat-action-list *ngIf="showLanguages || selectedOption.language !== ''">
-  <button mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)" [disabled]="disableLanguage(language.key)"
-    [ngClass]="{
-    'mat-list-item-focus': selectedOption.language === language.key,
-    'mat-list-item--disabled': disableLanguage(language.key)
-  }">
-    {{language.key}}
-  </button>
-</mat-action-list>
-<mat-divider></mat-divider>
-<mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button (click)="linkOtherLanguage()" color="accent" [disabled]="okButtonDisabled()" [mat-dialog-close]="selectedOption">
-    OK
-  </button>
-</mat-dialog-actions>
+<mat-card>
+  <div class="mat-card__header">
+    <div class="mat-card__title">
+      {{'LangMenu.Dialog.Title' | translate: { name: data.attributeKey } }}
+    </div>
+    <div>{{'LangMenu.Dialog.Intro' | translate }}</div>
+  </div>
+
+  <mat-nav-list toggle>
+    <mat-divider></mat-divider>
+
+    <mat-list-item (click)="dontTranslate()"
+      [ngClass]="selectedOption.linkType === 'dontTranslate' ? 'mat-list-item-focus' : ''">
+      <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.NoTranslate.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">
+        {{'LangMenu.Dialog.NoTranslate.Body' | translate: { primary: data.defaultLanguage } }}
+      </div>
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+
+    <mat-list-item (click)="translate()"
+      [ngClass]="selectedOption.linkType === 'translate' ? 'mat-list-item-focus' : ''">
+      <div matLine class="mat-list-item__title">
+        {{'LangMenu.Dialog.FromPrimary.Title' | translate: { primary: data.defaultLanguage } }}
+      </div>
+      <div matLine class="mat-list-item__body">{{'LangMenu.Dialog.FromPrimary.Body' | translate }}</div>
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+
+    <mat-list-item (click)="linkCopyFrom()"
+      [ngClass]="selectedOption.linkType === 'linkCopyFrom' ? 'mat-list-item-focus' : ''">
+      <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.FromOther.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'LangMenu.Dialog.FromOther.Body' | translate }}</div>
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+
+    <mat-list-item (click)="linkReadOnly()"
+      [ngClass]="selectedOption.linkType === 'linkReadOnly' ? 'mat-list-item-focus' : ''">
+      <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.LinkReadOnly.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'LangMenu.Dialog.LinkReadOnly.Body' | translate }}</div>
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+
+    <mat-list-item (click)="linkReadWrite()"
+      [ngClass]="selectedOption.linkType === 'linkReadWrite' ? 'mat-list-item-focus' : ''">
+      <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.LinkShared.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'LangMenu.Dialog.LinkShared.Body' | translate }}</div>
+
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-nav-list>
+
+  <div *ngIf="showLanguages || selectedOption.language !== ''" class="show-languages">
+    <div class="show-languages__header">
+      <div class="show-languages__title">
+        <span *ngIf="selectedOption.linkType === 'linkCopyFrom'">
+          {{'LangMenu.Dialog.FromOther.Subtitle' | translate }}
+        </span>
+        <span *ngIf="selectedOption.linkType === 'linkReadOnly'">
+          {{'LangMenu.Dialog.LinkReadOnly.Subtitle' | translate }}
+        </span>
+        <span *ngIf="selectedOption.linkType === 'linkReadWrite'">
+          {{'LangMenu.Dialog.LinkShared.Subtitle' | translate }}
+        </span>
+      </div>
+    </div>
+
+    <mat-action-list>
+      <mat-divider></mat-divider>
+
+      <button mat-list-item *ngFor="let language of languages" (click)="selectLanguage(language.key)"
+        [disabled]="disableLanguage(language.key)" [ngClass]="{
+        'mat-list-item-focus': selectedOption.language === language.key,
+        'mat-list-item--disabled': disableLanguage(language.key)
+      }">{{language.key}}</button>
+
+      <mat-divider></mat-divider>
+    </mat-action-list>
+  </div>
+
+  <mat-dialog-actions fxLayoutAlign="end center">
+    <button mat-button (click)="linkOtherLanguage()" color="accent" [disabled]="okButtonDisabled()"
+      [mat-dialog-close]="selectedOption">OK</button>
+  </mat-dialog-actions>
+</mat-card>

@@ -93,7 +93,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(LinkToOtherLanguageComponent, {
       panelClass: 'c-link-to-other-language',
       autoFocus: false,
-      width: '280px',
+      width: '350px',
       data: new LinkToOtherLanguageData(this.translationState.linkType,
         this.translationState.language,
         this.defaultLanguage,

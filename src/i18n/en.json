@@ -123,7 +123,7 @@
         "Subtitle": "Language to translate from"
       },
       "LinkReadOnly": {
-        "Title": "Inherit to other languege (read-only)",
+        "Title": "Inherit from other language (read-only)",
         "Body": "Inherit value from another language but don't edit it.",
         "Subtitle": "Language to inherit from"
       },
