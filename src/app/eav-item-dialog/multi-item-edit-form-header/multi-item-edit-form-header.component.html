@@ -1,16 +1,36 @@
 <mat-card fxLayout="row" fxLayoutAlign="start center">
   <button mat-icon-button fxLayoutAlign="start center" (click)="closeDialog()">
-    <mat-icon *ngIf="isParentDialog">clear</mat-icon>
-    <mat-icon *ngIf="!isParentDialog">arrow_back</mat-icon>
+    <mat-icon
+      *ngIf="isParentDialog"
+      matTooltip="{{ 'Form.Buttons.Exit.Tip' | translate }}"
+    >
+      clear
+    </mat-icon>
+    <mat-icon
+      *ngIf="!isParentDialog"
+      matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}"
+    >
+      arrow_back
+    </mat-icon>
   </button>
   <div fxFlex="auto" style="width:100px;">
-    <app-eav-language-switcher *ngIf="languages.length > 0" [languages]="languages" [currentLanguage]="currentLanguage"
-      [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
+    <app-eav-language-switcher
+      *ngIf="languages.length > 0"
+      [languages]="languages"
+      [currentLanguage]="currentLanguage"
+      [formsAreValid]="formsAreValid"
+      [allControlsAreDisabled]="allControlsAreDisabled"
+    ></app-eav-language-switcher>
   </div>
-  <button mat-button fxLayoutAlign="end center" style="min-width: auto;" (click)="openSaveSatusDialog()">
+  <button
+    mat-button
+    fxLayoutAlign="end center"
+    style="min-width: auto;"
+    (click)="openSaveSatusDialog()"
+  >
     Status:
     <span>
-      {{ ('SaveMode.' + publishMode | translate : '').toUpperCase() }}
+      {{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}
     </span>
   </button>
 </mat-card>

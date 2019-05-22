@@ -17,6 +17,7 @@ import {
   MatSnackBarModule,
   MatDialogModule,
   MatDividerModule,
+  MatTooltipModule,
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -53,6 +54,7 @@ import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
+    MatTooltipModule,
     EavDynamicFormModule,
     EavMaterialControlsModule,
     MatDialogModule,

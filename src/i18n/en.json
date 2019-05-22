@@ -1,10 +1,12 @@
 {
-	"Button": {
-		"Save": "save",
-		"Cancel": "cancel",
-		"MoreOptions": "more options",
-		"SaveAndKeepOpen": "save but keep dialog open"
-	},
+  "Form": {
+    "Buttons": {
+      "Save": "SAVE (CTRL + S)",
+      "Save.Tip": "Click to save and close, use CTRL + S to save and keep open",
+      "Exit.Tip": "Exit - if something changed, you will be asked to save",
+      "Return.Tip": "Return to previous dialog"
+    }
+  },
 	"Status": {
 		"Published": "published",
 		"Unpublished": "unpublished / draft"

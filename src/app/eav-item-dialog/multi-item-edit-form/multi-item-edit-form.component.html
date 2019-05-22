@@ -27,12 +27,13 @@
     <div fxFlex="nogrow" class="c-multi-item-dialog__save-button">
       <button mat-fab dir="ltr" [ngClass]="{
         'mat-fab--compact' : extendedSaveButtonIsReduced,
-        'mat-fab--extended' : !extendedSaveButtonIsReduced, 
+        'mat-fab--extended' : !extendedSaveButtonIsReduced,
         'mat-fab--disabled' : !formsAreValid && !allControlsAreDisabled
       }"
-        (click)="saveAll(true)">
+        (click)="saveAll(true)"
+        matTooltip="{{'Form.Buttons.Save.Tip' | translate }}">
         <i class="material-icons">done</i>
-        {{extendedSaveButtonIsReduced ? '' : ('Button.Save' | translate).toUpperCase() + '(CTRL + S)' }}
+        {{extendedSaveButtonIsReduced ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
       </button>
     </div>
   </div>
