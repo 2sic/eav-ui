@@ -4,35 +4,35 @@
     background: $edit-ui-selected-option;
 }
 
-.c-save-status-dialog {
-    &__card {
-        padding: 0;
-    }
+.mat-card {
+    padding: 0;
 
-    &__header { 
+    &__header {
         padding: 16px;
     }
-
     &__title {
         font-weight: bold;
         padding-bottom: 16px;
     }
+}
 
-    &__actions {
-        padding-bottom: 24px;
+.mat-nav-list {
+    padding-bottom: 24px;
+}
 
-        &--short {
-            padding-top: 4px;
-            padding-bottom: 4px;
-        }
-
-        &--long {
-            padding-top: 12px;
-            padding-bottom: 12px;
-        }
-
-        &__desc {
-            white-space: normal !important;
-        }
+.mat-list-item {
+    &.short {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+    &.long {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+    &__title {
+        font-weight: bold !important;
+    }
+    &__body {
+        white-space: normal !important;
     }
 }

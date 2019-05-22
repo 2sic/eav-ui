@@ -1,31 +1,36 @@
-<mat-card class="c-save-status-dialog__card">
-  <div class="c-save-status-dialog__header">
-    <div class="c-save-status-dialog__title">{{'SaveMode.Dialog.Title' | translate }}</div>
+<mat-card>
+  <div class="mat-card__header">
+    <div class="mat-card__title">{{'SaveMode.Dialog.Title' | translate }}</div>
     <div>{{'SaveMode.Dialog.Intro' | translate }}</div>
   </div>
 
-  <mat-nav-list class="c-save-status-dialog__actions" toggle>
+  <mat-nav-list toggle>
     <mat-divider></mat-divider>
-    <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''"
-      class="c-save-status-dialog__actions--short">
+
+    <mat-list-item class="short" (click)="publishEntry()"
+      [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon color="accent">visibility</mat-icon>
-      <div mat-line><b>{{'SaveMode.Dialog.Show.Title' | translate }}</b></div>
-      <div mat-line class="c-save-status-dialog__actions__desc">{{'SaveMode.Dialog.Show.Body' | translate }}</div>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Show.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Show.Body' | translate }}</div>
     </mat-list-item>
+
     <mat-divider></mat-divider>
-    <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''"
-      class="c-save-status-dialog__actions--short">
+
+    <mat-list-item class="short" (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon color="accent">visibility_off</mat-icon>
-      <div mat-line><b>{{'SaveMode.Dialog.Hide.Title' | translate }}</b></div>
-      <div mat-line class="c-save-status-dialog__actions__desc">{{'SaveMode.Dialog.Hide.Body' | translate }}</div>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Hide.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Hide.Body' | translate }}</div>
     </mat-list-item>
+
     <mat-divider></mat-divider>
-    <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''"
-      class="c-save-status-dialog__actions--long">
+
+    <mat-list-item class="long" (click)="saveAsDraftEntry()"
+      [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon svgIcon="draft-branch" color="accent"></mat-icon>
-      <div mat-line><b>{{'SaveMode.Dialog.Branch.Title' | translate }}</b></div>
-      <div mat-line class="c-save-status-dialog__actions__desc">{{'SaveMode.Dialog.Branch.Body' | translate }}</div>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Branch.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Branch.Body' | translate }}</div>
     </mat-list-item>
+
     <mat-divider></mat-divider>
   </mat-nav-list>
 </mat-card>
