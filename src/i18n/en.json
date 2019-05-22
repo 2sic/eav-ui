@@ -2,19 +2,18 @@
   "Form": {
     "Buttons": {
       "Save": "SAVE (CTRL + S)",
-      "Save.Tip": "Click to save and close, use CTRL + S to save and keep open",
-      "Exit.Tip": "Exit - if something changed, you will be asked to save",
-      "Return.Tip": "Return to previous dialog"
+      "Save.Tip": "click to save and close, use CTRL + S to save and keep open",
+      "Exit.Tip": "exit - if something changed, you will be asked to save",
+      "Return.Tip": "return to previous dialog"
     }
   },
-	"Status": {
-		"Published": "published",
-		"Unpublished": "unpublished / draft"
-	},
 	"SaveMode": {
-		"show": "show",
-		"hide": "hide",
+    "show": "show",
+    "show.Tip": "changes are public",
+    "hide": "hide",
+    "hide.Tip": "this item is invisible to the public",
     "branch": "draft",
+    "branch.Tip": "the public sees the original item, changes are visible to editors",
     "Dialog": {
       "Title": "Save Mode",
       "Intro": "This determines how you will save. The default is show/publish.",
@@ -33,20 +32,12 @@
     }
 	},
 	"Message": {
-		"Saving": "saving...",
-		"Saved": "saved",
-		"ErrorWhileSaving": "There was an error while saving.",
-		"WillPublish": "will publish when saving",
-		"WontPublish": "will not publish when saving",
-		"PleaseCreateDefLang": "please edit this in the default language first.",
-		"ExitOk": "do you really want to exit?",
-		"Deleting": "deleting...",
-		"Ok": "ok",
-		"Error": "error",
-		"CantSaveProcessing": "can't save because something else is still being processed",
-		"CantSaveInvalid": "form not valid, can't save - errors on: <ul>{0}</ul>",
-		"FieldErrorList": "<li>{field} ({error})</li>"
-	},
+		"Saved": "saved"
+  },
+
+
+  "//": "Everything below this hasn't been verified yet - much may be unused",
+
 	"Errors": {
 		"UnclearError": "Something went wrong - maybe parts worked, maybe not. Sorry :(",
 		"InnerControlMustOverride": "Inner control must override this function.",
