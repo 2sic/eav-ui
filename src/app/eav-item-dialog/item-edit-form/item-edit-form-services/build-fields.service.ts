@@ -118,6 +118,7 @@ export class BuildFieldsService {
       fullSettings = contentTypeSettings;
     }
 
+    // these settings are recalculated in translate-group-menu translateAllConfiguration
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
