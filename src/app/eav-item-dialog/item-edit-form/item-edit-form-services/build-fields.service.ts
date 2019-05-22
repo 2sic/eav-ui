@@ -6,7 +6,7 @@ import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, FieldSettings, ContentType, Item, InputType } from '../../../shared/models/eav';
+import { EavAttributes, FieldSettings, ContentType, Item } from '../../../shared/models/eav';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../../shared/constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
@@ -59,8 +59,7 @@ export class BuildFieldsService {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
               const calculatedInputType: CalculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
-              const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault)
-                || (calculatedInputType.inputType === InputTypesConstants.empty);
+              const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
               if (isEmptyInputType) {
                 // group-fields (empty)
                 currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType,
@@ -91,24 +90,17 @@ export class BuildFieldsService {
 
   private calculateFieldPositionInGroup(field: FieldConfigGroup) {
     if (!field.fieldGroup) { return; }
-    if (field.fieldGroup.length === 0) { return; }
 
-    // take last non empty which doesn't have empty after
-    const nonEmpty = field.fieldGroup.filter(subField => {
-      const isEmptyInputType = (subField.field.inputType === InputTypesConstants.emptyDefault)
-        || (subField.field.inputType === InputTypesConstants.empty);
-      return !isEmptyInputType;
-    });
-    if (nonEmpty.length > 0) {
-      const nextExists = !!field.fieldGroup[nonEmpty.length]; // next would be empty
-      if (!nextExists) {
-        nonEmpty[nonEmpty.length - 1].field.isLastInGroup = true;
-      }
+    const childFieldSetsCount = field.fieldGroup.length;
+    if (childFieldSetsCount === 0) { return; }
+
+    const lastChildFieldSet = field.fieldGroup[childFieldSetsCount - 1];
+    if (lastChildFieldSet.field.inputType !== InputTypesConstants.emptyDefault) {
+      lastChildFieldSet.field.isLastInGroup = true;
     }
 
-    field.fieldGroup.forEach(subField => {
-      const subFld = subField.field as FieldConfigGroup;
-      this.calculateFieldPositionInGroup(subFld);
+    field.fieldGroup.forEach(childFieldSet => {
+      this.calculateFieldPositionInGroup(childFieldSet.field as FieldConfigGroup);
     });
   }
 
@@ -134,8 +126,7 @@ export class BuildFieldsService {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
     let fullSettings: EavAttributes;
-    const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault)
-      || (calculatedInputType.inputType === InputTypesConstants.empty);
+    const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
