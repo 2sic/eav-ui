@@ -3,36 +3,3 @@
 .mat-list-item-focus {
     background: $edit-ui-selected-option;
 }
-
-.mat-card {
-    padding: 0;
-
-    &__header {
-        padding: 16px;
-    }
-    &__title {
-        font-weight: bold;
-        padding-bottom: 16px;
-    }
-}
-
-.mat-nav-list {
-    padding-bottom: 24px;
-}
-
-.mat-list-item {
-    &.short {
-        padding-top: 4px;
-        padding-bottom: 4px;
-    }
-    &.long {
-        padding-top: 12px;
-        padding-bottom: 12px;
-    }
-    &__title {
-        font-weight: bold !important;
-    }
-    &__body {
-        white-space: normal !important;
-    }
-}

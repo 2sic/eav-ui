@@ -7,8 +7,7 @@
   <mat-nav-list toggle>
     <mat-divider></mat-divider>
 
-    <mat-list-item class="short" (click)="publishEntry()"
-      [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
+    <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon color="accent">visibility</mat-icon>
       <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Show.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Show.Body' | translate }}</div>
@@ -16,7 +15,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-list-item class="short" (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
+    <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon color="accent">visibility_off</mat-icon>
       <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Hide.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Hide.Body' | translate }}</div>
@@ -24,8 +23,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-list-item class="long" (click)="saveAsDraftEntry()"
-      [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
+    <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
       <mat-icon matListIcon svgIcon="draft-branch" color="accent"></mat-icon>
       <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Branch.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Branch.Body' | translate }}</div>
