@@ -25,6 +25,13 @@ export class TinyMceToolbarButtons {
             },
             onPostRender: () => {
                 replaceIcon('.eav-icon-file-pdf', icons.filePdf, ['toolbar-icon']);
+                const head = document.getElementsByTagName('head')[0];
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+                link.media = 'all';
+                head.appendChild(link);
             },
             menu: [
                 {

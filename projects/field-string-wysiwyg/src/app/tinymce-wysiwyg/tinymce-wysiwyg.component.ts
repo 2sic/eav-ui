@@ -53,7 +53,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadMaterialIcons();
+    // this.loadMaterialIcons();
     this.calculateInitialValues();
     this.subscribeToFormChanges();
 
@@ -172,15 +172,15 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadMaterialIcons() {
-    const head = document.getElementsByTagName('head')[0];
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-    link.media = 'all';
-    head.appendChild(link);
-  }
+  // private loadMaterialIcons() {
+  //   const head = document.getElementsByTagName('head')[0];
+  //   const link = document.createElement('link');
+  //   link.rel = 'stylesheet';
+  //   link.type = 'text/css';
+  //   link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+  //   link.media = 'all';
+  //   head.appendChild(link);
+  // }
 
   private calculateInitialValues(): void {
     // spm 2019.04.05. id will clash if we open the same entity as a sub form, e.g. in entity-default field
