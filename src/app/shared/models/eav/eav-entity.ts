@@ -79,9 +79,13 @@ export class EavEntity {
         }
         const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
         console.log('entity1Array:', entity1Array);
-        entity1Array.forEach(entity1 => {
-            eavMetaDataArray.push(EavEntity.create(entity1));
-        });
+        try {
+            entity1Array.forEach(entity1 => {
+                eavMetaDataArray.push(EavEntity.create(entity1));
+            });
+        } catch (error) {
+            console.error('Metadata failed to be build. Error:', error);
+        }
         return eavMetaDataArray;
     }
 }

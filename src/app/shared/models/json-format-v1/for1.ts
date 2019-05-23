@@ -1,13 +1,21 @@
 import { EavFor } from '../eav';
 
 export class For1 {
-  [key: string]: any;
+  Target: string;
+  Number?: number;
+  String?: string;
+  Guid?: string;
 
   constructor(entityFor: EavFor) {
-    Object.keys(entityFor).forEach(key => {
-      if (entityFor.hasOwnProperty(key)) {
-        this[key] = entityFor[key];
-      }
-    });
+    this.Target = entityFor.Target;
+    if (entityFor.Number) {
+      this.Number = entityFor.Number;
+    }
+    if (entityFor.String) {
+      this.String = entityFor.String;
+    }
+    if (entityFor.Guid) {
+      this.Guid = entityFor.Guid;
+    }
   }
 }
