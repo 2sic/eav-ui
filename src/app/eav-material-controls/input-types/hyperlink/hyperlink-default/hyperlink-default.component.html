@@ -2,7 +2,7 @@
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled"
     (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
-    <mat-icon svgIcon="apple"></mat-icon>
+    <mat-icon svgIcon="appleFilled"></mat-icon>
   </button>
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
     (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
@@ -14,7 +14,7 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="showAdam" (click)="toggleAdam(false)">
-      <mat-icon svgIcon="apple"></mat-icon>
+      <mat-icon svgIcon="appleFilled"></mat-icon>
       <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
     </button>
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowPagePicker"

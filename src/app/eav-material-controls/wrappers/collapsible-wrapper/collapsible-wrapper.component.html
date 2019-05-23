@@ -5,15 +5,15 @@
         <div fxFlex="auto" fxLayoutAlign="start center" (click)="collapse = !collapse">
             <div fxLayoutAlign="start center" class="mat-card-title-group"
                 [ngClass]="fieldConfig.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
-                <i *ngIf="collapse" class="material-icons">keyboard_arrow_down</i>
-                <i *ngIf="!collapse" class="material-icons">keyboard_arrow_up</i>
+                <mat-icon *ngIf="collapse">keyboard_arrow_down</mat-icon>
+                <mat-icon *ngIf="!collapse">keyboard_arrow_up</mat-icon>
                 <span>&nbsp;</span>
-                <span *ngIf="fieldConfig.isParentGroup">{{
+                <span class="title" *ngIf="fieldConfig.isParentGroup">{{
                         config.entity.header.title
                         ? config.entity.header.title
                         : 'EditEntity.DefaultTitle' | translate
                     }}</span>
-                <span *ngIf="!fieldConfig.isParentGroup">{{
+                <span class="title" *ngIf="!fieldConfig.isParentGroup">{{
                     config.field.label
                     ? config.field.label
                     : 'EditEntity.DefaultTitle' | translate
@@ -26,7 +26,6 @@
         <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
             [group]="group"></app-translate-group-menu>
     </div>
-    <mat-divider></mat-divider>
     <mat-card-content [ngStyle]="{ 'display': collapse ? 'none' : 'block' }"
         [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">

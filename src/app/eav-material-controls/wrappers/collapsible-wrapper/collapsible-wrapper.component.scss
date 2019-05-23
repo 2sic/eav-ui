@@ -10,21 +10,29 @@ $border-radius: 8px;
     }
     &-group-child {
         padding: 0;
-        margin: 0 0 16px 0;
+        margin: 0 0 8px 0;
         border-radius: $border-radius;
     }
 }
 
 .mat-card-header {
     &-group-parent {
-        padding: 16px 24px 16px 24px;
+        padding: 14px 16px 14px 16px;
         border-radius: $border-radius;
-        height: 56px;
+        height: 48px;
+        .title {
+            font-size: 18px;
+            font-weight: 500;
+        }
     }
     &-group-child {
-        padding: 16px 24px 16px 24px;
+        padding: 14px 16px 14px 16px;
         border-radius: $border-radius;
-        height: 56px;
+        height: 48px;
+        .title {
+            font-size: 16px;
+            font-weight: 400;
+        }
     }
 }
 
@@ -37,4 +45,16 @@ $border-radius: 8px;
 
 .mat-card-title-group {
     margin:0;
+}
+
+.mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px !important;
+}
+
+.mdc-layout-grid {
+    padding: 16px;
+    padding-top: 8px;
 }

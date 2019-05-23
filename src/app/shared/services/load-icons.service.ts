@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48-filled.svg';
+import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48.svg';
+import appleFilled from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48-filled.svg';
 import draftBranch from '!raw-loader!../../../icons/font-awesome/draft-branch.svg';
 import file from '!raw-loader!../../../icons/font-awesome/file.svg';
 import fileArchive from '!raw-loader!../../../icons/font-awesome/file-archive.svg';
@@ -25,6 +26,7 @@ import sitemap from '!raw-loader!../../../icons/font-awesome/sitemap.svg';
 export class LoadIconsService {
   private icons = [
     { name: 'apple', html: apple },
+    { name: 'appleFilled', html: appleFilled },
     { name: 'draft-branch', html: draftBranch },
     { name: 'file', html: file },
     { name: 'file-archive', html: fileArchive },
