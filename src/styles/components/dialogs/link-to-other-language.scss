@@ -2,5 +2,56 @@
     .mat-dialog-container {
         padding: 0;
         border-radius: $edit-ui-dialog-border-radius;
+
+        .mat-card {
+            padding: 0;
+
+            &__header {
+                padding: 16px;
+            }
+            &__title {
+                font-weight: bold;
+                padding-bottom: 16px;
+            }
+
+            .mat-nav-list {
+                padding-bottom: 24px;
+
+                .mat-list-item {
+                    height: auto;
+
+                    &__title {
+                        font-weight: bold;
+                        font-size: 14px;
+                    }
+                    &__body {
+                        white-space: normal;
+                        font-size: 14px;
+                    }
+                    .mat-list-item-content {
+                        align-items: initial;
+
+                        .mat-list-icon {
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                        }
+                        .mat-list-text {
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                        }
+                    }
+                }
+            }
+            .show-languages {
+                padding-top: 24px;
+
+                &__header {
+                    padding: 16px;
+                }
+                &__title {
+                    font-weight: bold;
+                }
+            }
+        }
     }
 }
