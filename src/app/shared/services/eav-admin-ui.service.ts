@@ -49,15 +49,29 @@ export class EavAdminUiService {
         persistedData: AdminDialogPersistedData
     ): MatDialogRef<{}, any> => {
         let item = null;
+        let payload = null;
         switch (dialogType) {
             case DialogTypeConstants.itemEditWithEntityId:
-                item = `[{ 'EntityId': ${Number(entityId)} }]`;
+                payload = {
+                    EntityId: Number(entityId),
+                };
+                // item = `[{ 'EntityId': ${Number(entityId)} }]`;
                 break;
             case DialogTypeConstants.itemNewEntity:
-                item = `[{ 'ContentTypeName': '${contentTypeName}' }]`;
+                payload = {
+                    ContentTypeName: contentTypeName,
+                    For: persistedData.metadataFor ? persistedData.metadataFor : null,
+                };
+                // item = `[{ 'ContentTypeName': '${contentTypeName}', 'For': { } }]`;
                 break;
             default:
                 break;
+        }
+        // todo: check if persistedData has metadata, then attach to teh item
+        if (payload) {
+            item = [{
+                ...payload,
+            }];
         }
 
         return dialog.open(component, {

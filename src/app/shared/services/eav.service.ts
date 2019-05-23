@@ -43,8 +43,9 @@ export class EavService {
     }
   }
 
-  public loadAllDataForForm(appId: string, items: string): Observable<any> {
-    const body = items.replace(/"/g, '\'');
+  // spm make type for items (name: ItemIndentifier). Do not use as any
+  public loadAllDataForForm(appId: string, items: string | any): Observable<any> {
+    const body = items; // .replace(/"/g, '\'');
     // TEST
     // const body = JSON.stringify([{ 'EntityId': 3870 }]);
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
