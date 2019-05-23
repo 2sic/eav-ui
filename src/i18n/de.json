@@ -1,28 +1,46 @@
 {
-	"Button": {
-		"Save": "Speichern",
-		"Cancel": "Abbrechen",
-		"MoreOptions": "Mehr Optionen",
-		"SaveAndKeepOpen": "Speichern und fortsetzen"
-	},
-	"Status": {
-		"Published": "Veröffentlicht",
-		"Unpublished": "Nicht veröffentlicht / Entwurf"
-	},
-	"SaveMode": {
-		"show": "element anzeigen",
-		"hide": "element ausblenden",
-		"branch": "nur änderungen ausblenden"
+  "Form": {
+    "Buttons": {
+      "Save": "Speichern (CTRL + S)",
+      "Save.Tip": "speichern und schliessen - mit CTRL + S nur speichern",
+      "Exit.Tip": "verlassen - bei Änderungen wird zum Speichern aufgefordert",
+      "Return.Tip": "zurück zum vorherigen Dialog"
+    }
+  },
+
+  "SaveMode": {
+    "show": "anzeigen",
+    "show.Tip": "Änderungen sind öffentlich",
+    "hide": "verstecken",
+    "hide.Tip": "dieses Element ist nicht öffentlich",
+    "branch": "entwurf",
+    "branch.Tip": "nur Redakteure sehen Änderungen",
+    "Dialog": {
+      "Title": "Speichern",
+      "Intro": "Entscheide, wie du speichern möchtest. Standard ist anzeigen / veröffentlichen.",
+      "Show": {
+        "Title": "Alles anzeigen / veröffentlichen",
+        "Body": "Änderungen werden sofort öffentlich angezeigt (empfohlen)."
+      },
+      "Hide": {
+        "Title": "Alles verstecken",
+        "Body": "Das ganze element wird versteckt und ist nur sichtbar für Redakteure."
+      },
+      "Branch": {
+        "Title": "Entwurf, Änderungen verstecken",
+        "Body": "Nur Redakteure sehen Änderungen (bis es später veröffentlicht wird)."
+      }
+    }
 	},
 	"Message": {
-		"Saving": "Speichern...",
-		"Saved": "Gespeichert",
-		"ErrorWhileSaving": "Während dem Speichern ist ein Fehler aufgetreten.",
-		"WillPublish": "Wird veröffentlicht beim Speichern",
-		"WontPublish": "Wird nicht veröffentlicht beim Speichern",
-		"PleaseCreateDefLang": "Eintrag bitte zuerst in der Hauptsprache bearbeiten.",
-		"ExitOk": "Wirklich beenden?"
-	},
+		"Saved": "gespeichert"
+  },
+
+
+
+
+
+
 	"Errors": {
 		"UnclearError": "Da lief was falsch - vielleicht funktioniert ein Teil, vielleicht auch nicht. Entschuldigung :(",
 		"InnerControlMustOverride": "Inner control must override this function.",

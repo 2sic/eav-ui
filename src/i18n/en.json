@@ -11,9 +11,9 @@
     "show": "show",
     "show.Tip": "changes are public",
     "hide": "hide",
-    "hide.Tip": "this item is invisible to the public",
+    "hide.Tip": "this item is not publicly visible",
     "branch": "draft",
-    "branch.Tip": "the public sees the original item, changes are visible to editors",
+    "branch.Tip": "changes are only visible to editors",
     "Dialog": {
       "Title": "Save Mode",
       "Intro": "This determines how you will save. The default is show/publish.",
@@ -27,7 +27,7 @@
       },
       "Branch": {
         "Title": "Draft / Hide Changes",
-        "Body": "Keep original published. Only editors can see changed data until published at a later time."
+        "Body": "Only editors can see changes (until published at a later time)."
       }
     }
 	},
