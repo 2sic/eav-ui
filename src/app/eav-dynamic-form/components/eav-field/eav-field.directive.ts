@@ -149,9 +149,12 @@ export class EavFieldDirective implements OnInit {
       fieldConfig.field.name,
       fieldConfig.field.name,
       [],
-      ['https://cdn.tinymce.com/4.6/tinymce.min.js',
+      [
+        // 'https://cdn.tinymce.com/4.6/tinymce.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.7/tinymce.min.js',
         'elements/field-string-wysiwyg/wysiwyg-tinymce.js',
-        'elements/field-custom-gps/gps-picker.js'],
+        'elements/field-custom-gps/gps-picker.js'
+      ],
       FileTypeConstants.javaScript,
       ref.instance.renderWebComponent);
   }
