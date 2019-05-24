@@ -70,7 +70,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
-    @Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
+    @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,

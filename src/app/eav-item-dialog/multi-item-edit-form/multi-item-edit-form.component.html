@@ -1,21 +1,25 @@
 <div mat-dialog-container *ngIf="(items$ | async)?.length > 0">
   <div mat-dialog-actions>
     <app-multi-item-edit-form-header [languages]="(languages$ | async)" class="multi-item-edit-form-header"
-      [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"
-      [isParentDialog]="this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false"></app-multi-item-edit-form-header>
+      [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid"
+      [allControlsAreDisabled]="allControlsAreDisabled"
+      [isParentDialog]="formDialogData.persistedData ? formDialogData.persistedData.isParentDialog : false">
+    </app-multi-item-edit-form-header>
   </div>
   <div mat-dialog-content class="u-hide-scrollbar">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft" [@slideRight]="animationStateRight">
+        <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft"
+          [@slideRight]="animationStateRight">
           <!-- <mat-error *ngIf="!formsAreValid">
             <span *ngFor="let formError of formErrors;">
               <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ formError[key] | translate}}</p>
             </span>
           </mat-error> -->
           <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
-            <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)" [defaultLanguage]="(defaultLanguage$ | async)"
-              [features]="(features$ | async)" (itemFormValueChange)="formValueChange($event)"></app-item-edit-form>
+            <app-item-edit-form [item]="item" [currentLanguage]="(currentLanguage$ | async)"
+              [defaultLanguage]="(defaultLanguage$ | async)" [features]="(features$ | async)"
+              (itemFormValueChange)="formValueChange($event)"></app-item-edit-form>
           </div>
           <!-- ISDIRTY: {{formsAreDirty}} -->
         </div>
@@ -29,10 +33,8 @@
         'mat-fab--compact' : extendedSaveButtonIsReduced,
         'mat-fab--extended' : !extendedSaveButtonIsReduced,
         'mat-fab--disabled' : !formsAreValid && !allControlsAreDisabled
-      }"
-        (click)="saveAll(true)"
-        matTooltip="{{'Form.Buttons.Save.Tip' | translate }}">
-        <i class="material-icons">done</i>
+      }" (click)="saveAll(true)" matTooltip="{{'Form.Buttons.Save.Tip' | translate }}">
+        <mat-icon>done</mat-icon>
         {{extendedSaveButtonIsReduced ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
       </button>
     </div>
