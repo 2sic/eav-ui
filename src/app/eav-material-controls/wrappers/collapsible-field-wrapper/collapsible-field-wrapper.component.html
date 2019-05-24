@@ -11,5 +11,3 @@
 <div [ngStyle]="{ 'display': !(collapseField && enableCollapseField) ? 'block' : 'none' }">
   <ng-container #fieldComponent></ng-container>
 </div>
-<app-field-helper-text *ngIf="collapseField && enableCollapseField" [config]="config" [group]="group">
-</app-field-helper-text>
