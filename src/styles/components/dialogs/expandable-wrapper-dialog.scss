@@ -68,6 +68,7 @@
         // Hide scroll
         -ms-overflow-style: none;  // IE 10+
         overflow: -moz-scrollbars-none;  // Firefox
+        scrollbar-width: none;
         &::-webkit-scrollbar { 
             display: none;  // Safari and Chrome
         }
@@ -107,6 +108,7 @@
             // hide scroll bar
             -ms-overflow-style: none;  // IE 10+
             overflow: -moz-scrollbars-none;  // Firefox
+            scrollbar-width: none;
             &::-webkit-scrollbar { 
                 display: none;  // Safari and Chrome
             }

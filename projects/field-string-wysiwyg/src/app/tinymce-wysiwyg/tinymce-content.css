@@ -29,7 +29,9 @@
     /* Firefox */
     overflow: -moz-scrollbars-none;
 }
-
+.field-string-wysiwyg-mce-box {
+    scrollbar-width: none;
+}
 .field-string-wysiwyg-mce-box::-webkit-scrollbar {
     display: none;
 }
