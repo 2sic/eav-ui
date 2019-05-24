@@ -60,7 +60,7 @@ export class EavAdminUiService {
             case DialogTypeConstants.itemNewEntity:
                 payload = {
                     ContentTypeName: contentTypeName,
-                    For: persistedData.metadataFor ? persistedData.metadataFor : null,
+                    For: persistedData && persistedData.metadataFor ? persistedData.metadataFor : null,
                 };
                 // item = `[{ 'ContentTypeName': '${contentTypeName}', 'For': { } }]`;
                 break;
