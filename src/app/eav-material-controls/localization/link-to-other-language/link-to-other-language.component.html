@@ -11,6 +11,8 @@
 
     <mat-list-item (click)="dontTranslate()"
       [ngClass]="selectedOption.linkType === 'dontTranslate' ? 'mat-list-item-focus' : ''">
+      <mat-icon matListIcon color="accent">visibility</mat-icon>
+      <!-- spm Example for placing icons in mat list for 2dm -->
       <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.NoTranslate.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">
         {{'LangMenu.Dialog.NoTranslate.Body' | translate: { primary: data.defaultLanguage } }}
