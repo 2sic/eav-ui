@@ -17,6 +17,11 @@
             "type": "npm",
             "script": "copy-to-dnn-watch",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dev-main-watch",
+            "problemMatcher": []
         }
     ]
 }

@@ -14,7 +14,6 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
   styleUrls: ['./link-to-other-language.component.scss']
 })
 export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
-
   showLanguages = false;
   selectedOption: LinkToOtherLanguageData;
 
@@ -23,10 +22,15 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   currentLanguage$: Observable<string>;
   currentLanguage = '';
 
+  /** key to translation root of the currently selected option */
+  languageList18nRoot = '';
+
   private subscriptions: Subscription[] = [];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: LinkToOtherLanguageData,
-    private languageService: LanguageService) {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: LinkToOtherLanguageData,
+    private languageService: LanguageService
+  ) {
     this.selectedOption = this.data;
   }
 
@@ -40,8 +44,8 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * Load languages from store and subscribe to languages
-  */
+   * Load languages from store and subscribe to languages
+   */
   private loadlanguagesFromStore() {
     this.languages$ = this.languageService.selectAllLanguages();
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
@@ -58,31 +62,36 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
     );
   }
 
-  translate() {
-    this.showLanguages = false;
-    this.selectedOption.linkType = TranslationLinkTypeConstants.translate;
-    this.selectedOption.language = '';
-  }
+  select(i18nKey: string) {
+    this.showLanguages = !(
+      i18nKey === 'FromPrimary' || i18nKey === 'NoTranslate'
+    );
+    if (!this.showLanguages) {
+      this.selectedOption.language = '';
+    }
 
-  dontTranslate() {
-    this.showLanguages = false;
-    this.selectedOption.linkType = TranslationLinkTypeConstants.dontTranslate;
-    this.selectedOption.language = '';
-  }
-
-  linkReadOnly() {
-    this.showLanguages = true;
-    this.selectedOption.linkType = TranslationLinkTypeConstants.linkReadOnly;
-  }
-
-  linkReadWrite() {
-    this.showLanguages = true;
-    this.selectedOption.linkType = TranslationLinkTypeConstants.linkReadWrite;
-  }
-
-  linkCopyFrom() {
-    this.showLanguages = true;
-    this.selectedOption.linkType = TranslationLinkTypeConstants.linkCopyFrom;
+    switch (i18nKey) {
+      case 'FromPrimary':
+        this.selectedOption.linkType = TranslationLinkTypeConstants.translate;
+        break;
+      case 'NoTranslate':
+        this.selectedOption.linkType =
+          TranslationLinkTypeConstants.dontTranslate;
+        break;
+      case 'LinkReadOnly':
+        this.selectedOption.linkType =
+          TranslationLinkTypeConstants.linkReadOnly;
+        break;
+      case 'LinkShared':
+        this.selectedOption.linkType =
+          TranslationLinkTypeConstants.linkReadWrite;
+        break;
+      case 'FromOther':
+        this.selectedOption.linkType =
+          TranslationLinkTypeConstants.linkCopyFrom;
+        break;
+    }
+    this.languageList18nRoot = 'LangMenu.Dialog.' + i18nKey;
   }
 
   selectLanguage(lang: string) {
@@ -90,13 +99,12 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   }
 
   okButtonDisabled() {
-    if (this.selectedOption.language === '' &&
+    return (
+      this.selectedOption.language === '' &&
       this.selectedOption.linkType !== TranslationLinkTypeConstants.translate &&
-      this.selectedOption.linkType !== TranslationLinkTypeConstants.dontTranslate) {
-      return true;
-    } else {
-      return false;
-    }
+      this.selectedOption.linkType !==
+        TranslationLinkTypeConstants.dontTranslate
+    );
   }
 
   linkOtherLanguage() {
@@ -119,9 +127,11 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   hasTranslation(languageKey: string): boolean {
     return this.data.attributes
-      ? LocalizationHelper.isEditableTranslationExist(this.data.attributes[this.data.attributeKey],
-        languageKey, this.data.defaultLanguage)
+      ? LocalizationHelper.isEditableTranslationExist(
+          this.data.attributes[this.data.attributeKey],
+          languageKey,
+          this.data.defaultLanguage
+        )
       : false;
   }
-
 }
