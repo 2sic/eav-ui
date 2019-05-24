@@ -31,8 +31,8 @@
             <div class="mdc-layout-grid__inner">
                 <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes || editInstructions">
                     <span></span>
-                    <div [innerHtml]='notes'></div>
-                    <div [innerHtml]='editInstructions'></div>
+                    <div class="description" [innerHtml]='notes'></div>
+                    <div class="description" [innerHtml]='editInstructions'></div>
                 </div>
                 <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>
