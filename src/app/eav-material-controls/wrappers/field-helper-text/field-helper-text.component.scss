@@ -7,13 +7,13 @@
         min-height: 16px;
 
         &--last {
-            // padding-bottom: 0;
+            padding-bottom: 0;
 
-            // &--no-hint {
-            //     padding: 0;
-            //     padding-bottom: 8px;
-            //     min-height: 0;
-            // }
+            &--no-hint {
+                padding: 0;
+                padding-bottom: 8px;
+                min-height: 0;
+            }
         }
         
         &-hint {
