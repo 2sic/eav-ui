@@ -42,8 +42,31 @@
         &-header {
             z-index:4;
             .mat-card {
-                padding:16px 24px 16px 24px;
                 border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
+                padding-top: 17px;
+                padding-right: 16px;
+                padding-bottom: 15px;
+                padding-left: 16px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                height: 52px;
+                z-index: 1;
+                // box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+                .back-arrow {
+                    margin-right: 22px;
+                    margin-top: -10px;
+                    margin-left: -12px;
+                    .mat-icon {
+                        font-size: 20px;
+                        width: 20px;
+                        height: 20px;
+                        line-height: 20px;
+                    }
+                }
+                .title {
+                    font-size: 18px;
+                    font-weight: 500;
+                }
             }
         }
 
@@ -51,6 +74,12 @@
             position:relative;
             background: map_get($mat-eav-item-dialog-background, 50);
             border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+            .mdc-layout-grid {
+                padding: 16px;
+                .mat-card {
+                    height: 100%;
+                }
+            }
         }
     }
 }

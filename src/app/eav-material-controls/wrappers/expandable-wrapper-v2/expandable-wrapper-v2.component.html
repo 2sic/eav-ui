@@ -3,10 +3,10 @@
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button mat-icon-button type="button" fxLayoutAlign="start center" (click)="closeDialog()">
+        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="mat-display-1">{{config.field.label}}</span>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
       </mat-card>
     </div>
     <div>
