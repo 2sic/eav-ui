@@ -150,6 +150,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         itemEditFormComponent.form.submitOutside();
       });
       console.log('saveAll', close);
+      this.snackBarOpen('saving...');
 
       if (close) {
         this.formIsSaved = true;
@@ -209,7 +210,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       // CTRL + S
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
         e.preventDefault();
-        this.saveAll(true);
+        this.saveAll(false);
       }
     });
   }
@@ -361,10 +362,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
+        this.snackBarOpen('saved');
         if (this.formIsSaved) {
           this.dialogRef.disableClose = false;
           this.closeDialog(action.data);
-          this.snackBarOpen('saved');
         }
         // else {
         //   console.log('success END: saveFormMessagesSubscribe saved');
