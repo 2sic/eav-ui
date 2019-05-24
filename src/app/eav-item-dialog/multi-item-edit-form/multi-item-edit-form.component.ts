@@ -200,6 +200,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
     });
+    // spm Bind save events here
+    this.dialogRef.keydownEvents().subscribe(e => {
+      // escape key
+      if (e.keyCode === 27) {
+        this.closeDialog();
+      }
+      // CTRL + S
+      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+        this.saveAll(true);
+      }
+    });
   }
 
   /**

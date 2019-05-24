@@ -100,6 +100,13 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         this.attributes,
         this.config.field.name)
     });
+    // spm add dialog and subdialog events through a helper
+    dialogRef.keydownEvents().subscribe(e => {
+      // CTRL + S
+      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault(); // spm don't open browser default save
+      }
+    });
     // Close dialog
     dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
       if (actionResult) {
