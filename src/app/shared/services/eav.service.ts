@@ -1,10 +1,10 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { throwError as observableThrowError, Observable, Subject } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { throwError, Observable, Subject } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { ItemService } from './item.service';
@@ -14,8 +14,6 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
-import { AttributeDef } from '../models/eav/attribute-def';
-
 
 @Injectable()
 export class EavService {
@@ -45,14 +43,15 @@ export class EavService {
     }
   }
 
-  public loadAllDataForForm(appId: string, items: string): Observable<any> {
-    const body = items.replace(/"/g, '\'');
+  // spm make type for items (name: ItemIndentifier). Do not use as any
+  public loadAllDataForForm(appId: string, items: string | any): Observable<any> {
+    const body = items; // .replace(/"/g, '\'');
     // TEST
     // const body = JSON.stringify([{ 'EntityId': 3870 }]);
     // const body = JSON.stringify([{ 'EntityId': 1754 }, { 'EntityId': 1785 }]); // , { 'EntityId': 3824 }
 
     // maybe create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
+    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/ui/load?appId=${appId}`,
       body)
       .pipe(
         map((data: any) => {
@@ -96,7 +95,7 @@ export class EavService {
   public savemany(appId: string, partOfPage: string, body: string): Observable<any> {
     console.log('start submit');
     // TODO: create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
+    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`,
       body)
       .pipe(
         map((data: any) => {
@@ -129,6 +128,6 @@ export class EavService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return observableThrowError(errMsg);
+    return throwError(errMsg);
   }
 }

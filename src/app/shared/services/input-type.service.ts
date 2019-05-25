@@ -20,6 +20,13 @@ export class InputTypeService {
   }
 
   /**
+   * Add new input types info to the store
+   */
+  public addInputTypes(inputTypes: InputType[]) {
+    this.store.dispatch(new languageActions.AddInputTypeSuccessAction(inputTypes));
+  }
+
+  /**
   * Observe input type from store
   * @param type
   */

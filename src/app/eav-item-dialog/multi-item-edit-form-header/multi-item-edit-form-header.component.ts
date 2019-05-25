@@ -42,6 +42,13 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
       // height: '80vh',
       // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
     });
+    // spm add dialog and subdialog events through a helper
+    dialogRef.keydownEvents().subscribe(e => {
+      // CTRL + S
+      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault(); // spm don't open browser default save
+      }
+    });
 
     dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
     // Close dialog

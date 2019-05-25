@@ -14,7 +14,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
-import { FieldConfig } from '../../model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
@@ -26,7 +26,7 @@ import { FileTypeConstants } from '../../../shared/constants/type-constants';
 })
 export class EavFieldDirective implements OnInit {
   @Input()
-  config: FieldConfig[];
+  config: FieldConfigSet[];
 
   @Input()
   group: FormGroup;
@@ -58,19 +58,20 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfig) {
-    if (fieldConfig.fieldGroup) {
+  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
+    const field = fieldConfig.field as FieldConfigGroup;
+    if (field.fieldGroup) {
       // this.createGroupComponents(container, fieldConfig, <FormGroup>group.controls[fieldConfig.name]);
       this.createGroupComponents(container, fieldConfig);
     } else {
-      console.log('create createFieldOrGroup:', fieldConfig.inputType);
-      if (fieldConfig.inputType === InputTypesConstants.external) {
+      console.log('create createFieldOrGroup:', fieldConfig.field.inputType);
+      if (fieldConfig.field.inputType === InputTypesConstants.external) {
         console.log('create external');
         this.createExternalComponent(container, fieldConfig);
-      } else if (fieldConfig.inputType === InputTypesConstants.externalWebComponent) {
+      } else if (fieldConfig.field.isExternal) {
         this.createExternalWebComponent(container, fieldConfig);
       } else {
-        console.log('create non external', fieldConfig.inputType);
+        console.log('create non external', fieldConfig.field.inputType);
         // this.createFieldComponent(container, fieldConfig, group);
         this.createComponent(container, fieldConfig);
       }
@@ -82,11 +83,12 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfig) {
-    if (fieldConfig.wrappers) {
-      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
+  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
+    if (fieldConfig.field.wrappers) {
+      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    fieldConfig.fieldGroup.forEach(controlConfiguration => {
+    const field = fieldConfig.field as FieldConfigGroup;
+    field.fieldGroup.forEach(controlConfiguration => {
       this.createFieldOrGroup(container, controlConfiguration);
     });
   }
@@ -96,12 +98,17 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfig, callback?: Function): ComponentRef<any> {
-    if (fieldConfig.wrappers) {
-      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.wrappers);
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet, callback?: Function): ComponentRef<any> {
+    if (fieldConfig.field.wrappers) {
+      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    console.log('createComponent inputType:', fieldConfig.inputType);
-    const componentType = this.readComponentType(fieldConfig.inputType);
+    console.log('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
+    let componentType: Type<any>;
+    if (fieldConfig.field.isExternal) {
+      componentType = this.readComponentType(InputTypesConstants.externalWebComponent);
+    } else {
+      componentType = this.readComponentType(fieldConfig.field.inputType);
+    }
 
     const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
     // console.log('reading wrapper:', inputTypeAnnotations);
@@ -131,7 +138,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     console.log('createExternalWebComponent');
     const ref: any = this.createComponent(container, fieldConfig);
     // ref.instance.renderWebComponent();
@@ -139,11 +146,16 @@ export class EavFieldDirective implements OnInit {
     // Start loading all external dependencies (start with css). This method recursively load all dependencies.
     this.loadWebComponentScripts(
       0,
-      fieldConfig.name,
-      fieldConfig.name,
-      ['assets/elements/field-string-wysiwyg/assets/style/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/elements/field-string-wysiwyg/main.js'],
-      FileTypeConstants.css,
+      fieldConfig.field.name,
+      fieldConfig.field.name,
+      [],
+      [
+        // 'https://cdn.tinymce.com/4.6/tinymce.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.6.7/tinymce.min.js',
+        'elements/field-string-wysiwyg/wysiwyg-tinymce.js',
+        'elements/field-custom-gps/gps-picker.js'
+      ],
+      FileTypeConstants.javaScript,
       ref.instance.renderWebComponent);
   }
 
@@ -183,11 +195,11 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfig) {
+  private createExternalComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     // first create component container - then load script
     const externalComponentRef = this.createComponent(container, fieldConfig);
 
-    this.externalCommponentRefList[fieldConfig.name] = externalComponentRef;
+    this.externalCommponentRefList[fieldConfig.field.name] = externalComponentRef;
 
     if (this.window.addOn === undefined) {
       // this.window.addOn = [];
@@ -198,13 +210,12 @@ export class EavFieldDirective implements OnInit {
     // Start loading all external dependencies (start with css). This method recursively load all dependencies.
     this.loadExternalnputType(
       0,
-      fieldConfig.name,
+      fieldConfig.field.name,
       'tinymce-wysiwyg',
       ['assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.css'],
-      ['http://cdn.tinymce.com/4.6/tinymce.min.js',
+      ['https://cdn.tinymce.com/4.6/tinymce.min.js',
         'assets/script/tinymce-wysiwyg/src/libs/math.uuid.js',
         'assets/script/tinymce-wysiwyg/src/tinymce-wysiwyg.js'],
-      // ['http://cdn.tinymce.com/4.6/tinymce.min.js', 'assets/script/tinymce-wysiwyg/dist/tinymce-wysiwyg.min.js'],
       FileTypeConstants.css);
   }
 
@@ -277,7 +288,7 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    * @param wrappers
    */
-  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfig, wrappers: string[]): ViewContainerRef {
+  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrappers: string[]): ViewContainerRef {
 
     wrappers.forEach(wrapperName => {
       container = this.createWrapper(container, fieldConfig, wrapperName);
@@ -292,7 +303,7 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    * @param wrapper
    */
-  private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfig, wrapper: string): ViewContainerRef {
+  private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrapper: string): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
 
     // create component from component type

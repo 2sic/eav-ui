@@ -11,49 +11,20 @@
   <script>
     var jsVersionCacheId = window.location.search;    // use this to prevent
     document.write('<script src="../../js/2sxc.api.min.js' + jsVersionCacheId + '"></scr' + 'ipt>');
-
-    // prevent drop on page - can only drop on dropzone, add eav-dragging class
-    const dropzoneId = 'dropzone';
-    const draggingClass = 'eav-dragging';
-    window.addEventListener('dragover', function (event) {
-      if (event.target.id !== dropzoneId) {
-        event.preventDefault();
-      }
-      document.body.classList.add(draggingClass);
-    });
-    window.addEventListener('drop', function (event) {
-      if (event.target.id !== dropzoneId) {
-        event.preventDefault();
-      }
-      document.body.classList.remove(draggingClass);
-    });
-    window.addEventListener('dragleave', function () {
-      document.body.classList.remove(draggingClass);
-    });
   </script>
 
-  <!-- <link rel="icon" type="image/x-icon" href="favicon.ico"> -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i" rel="stylesheet" />
 
   <!-- <link rel="stylesheet" href="assets/style/bootstrap-glyphicons.css"> -->
-  <link rel="stylesheet" href="assets/style/app-icons.css" />
 
-  <!-- <link rel="stylesheet" href="assets/script/tinymce-wysiwyg/tinymce-wysiwyg.css"> -->
-
-  <!-- <script src='http://cdn.tinymce.com/4.6/tinymce.min.js'></script> -->
-
-  <!-- <script src='assets/script/tinymce/js/tinymce/tinymce.min.js'></script> -->
-  <!-- <script src='https://cloud.tinymce.com/stable/tinymce.min.js'></script> -->
-
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i" rel="stylesheet" />
-  <!--fontawesome  -->
-  <link rel="stylesheet" href="assets/style/font-awesome/css/solid.min.css" />
-  <link rel="stylesheet" href="assets/style/font-awesome/css/fontawesome.min.css" />
-  <script src="assets/auto-generated/elements/scripts-bundle.js"></script>
+  <!--fontawesome spm not used  -->
+  <!-- <link rel="stylesheet" href="assets/style/font-awesome/css/solid.min.css" />
+  <link rel="stylesheet" href="assets/style/font-awesome/css/fontawesome.min.css" /> -->
+  <script src="core.js"></script>
   <script>
     ng.core.enableProdMode();
   </script>
-  <!-- <script src="assets/elements/field-string-wysiwyg.js"></script> -->
 </head>
 
 <body id="eav-app">

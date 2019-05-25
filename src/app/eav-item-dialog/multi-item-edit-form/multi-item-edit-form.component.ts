@@ -28,6 +28,7 @@ import {
   SnackBarUnsavedChangesComponent
 } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
+import { LoadIconsService } from '../../shared/services/load-icons.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -67,8 +68,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private eavConfig: EavConfiguration;
 
-  constructor(public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
-    @Inject(MAT_DIALOG_DATA) private formDialogData: AdminDialogData,
+  constructor(
+    public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
@@ -79,7 +81,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private languageService: LanguageService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private validationMessagesService: ValidationMessagesService) {
+    private validationMessagesService: ValidationMessagesService,
+    private loadIconsService: LoadIconsService,
+  ) {
     this.currentLanguage$ = languageService.getCurrentLanguage();
     this.defaultLanguage$ = languageService.getDefaultLanguage();
     this.translate.setDefaultLang('en');
@@ -87,6 +91,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
     this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    this.loadIconsService.load();
   }
 
   ngOnInit() {
@@ -145,6 +150,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         itemEditFormComponent.form.submitOutside();
       });
       console.log('saveAll', close);
+      this.snackBarOpen('saving...');
 
       if (close) {
         this.formIsSaved = true;
@@ -164,8 +170,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
-    this.itemService.loadPersistedData(this.formDialogData.persistedData);
-    this.inputTypeService.loadInputTypes(data.InputTypes);
+    // spm remove this part of the code
+    // this.itemService.loadPersistedData(this.formDialogData.persistedData);
+    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      this.inputTypeService.loadInputTypes(data.InputTypes);
+    } else {
+      this.inputTypeService.addInputTypes(data.InputTypes);
+    }
     this.contentTypeService.loadContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
@@ -189,6 +200,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   private dialogBackdropClickSubscribe() {
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
+    });
+    // spm Bind save events here
+    this.dialogRef.keydownEvents().subscribe(e => {
+      // escape key
+      if (e.keyCode === 27) {
+        this.closeDialog();
+      }
+      // CTRL + S
+      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+        this.saveAll(false);
+      }
     });
   }
 
@@ -339,10 +362,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
+        this.snackBarOpen('saved');
         if (this.formIsSaved) {
           this.dialogRef.disableClose = false;
           this.closeDialog(action.data);
-          this.snackBarOpen('saved');
         }
         // else {
         //   console.log('success END: saveFormMessagesSubscribe saved');

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -19,7 +19,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 })
 export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
   @Input() autoCompleteInputControl: any;
   // by default data is in array format, but can be stringformat
@@ -36,19 +36,19 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 
-  get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
-  get allowMultiValue() { return this.config.settings.AllowMultiValue || false; }
-  get entityType() { return this.config.settings.EntityType || ''; }
-  // get enableAddExisting() { return this.config.settings.EnableAddExisting || true; }
-  get enableCreate() { return this.config.settings.EnableCreate === false ? false : true; }
-  get enableEdit() { return this.config.settings.EnableEdit === false ? false : true; }
-  get enableRemove() { return this.config.settings.EnableRemove === false ? false : true; }
-  get enableDelete() { return this.config.settings.EnableDelete || false; }
-  get disabled() { return this.group.controls[this.config.name].disabled; }
-  // get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-  get dndListConfig() { return { allowedTypes: [this.config.name] }; }
-  get separator() { return this.config.settings.Separator || ','; }
-  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
+  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
+  get allowMultiValue() { return this.config.field.settings.AllowMultiValue || false; }
+  get entityType() { return this.config.field.settings.EntityType || ''; }
+  // get enableAddExisting() { return this.config.currentFieldConfig.settings.EnableAddExisting || true; }
+  get enableCreate() { return this.config.field.settings.EnableCreate === false ? false : true; }
+  get enableEdit() { return this.config.field.settings.EnableEdit === false ? false : true; }
+  get enableRemove() { return this.config.field.settings.EnableRemove === false ? false : true; }
+  get enableDelete() { return this.config.field.settings.EnableDelete || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  // get inputInvalid() { return this.group.controls[this.config.currentFieldConfig.name].invalid; }
+  get dndListConfig() { return { allowedTypes: [this.config.field.name] }; }
+  get separator() { return this.config.field.settings.Separator || ','; }
+  get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
 
   constructor(private entityService: EntityService,
     private eavService: EavService,
@@ -202,14 +202,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   private setDirty() {
-    this.group.controls[this.config.name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsDirty();
   }
 
   /**
   * subscribe to form value changes
   */
   private chosenEntitiesSubscribeToChanges() {
-    this.subscriptions.push(this.group.controls[this.config.name].valueChanges.subscribe((item) => {
+    this.subscriptions.push(this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
@@ -221,7 +221,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     if (!entityList) {
       return [];
     }
-    return entityList.map(v => ({ 'name': v, 'type': this.config.name }));
+    return entityList.map(v => ({ 'name': v, 'type': this.config.field.name }));
   }
 
   private mapFromNameListToEntityList = (nameList: any[]): string[] => {
@@ -234,9 +234,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   private patchValue(entityValues: string[]) {
     if (this.isStringFormat) {
       const stringEntityValue = Helper.convertArrayToString(entityValues, this.separator);
-      this.group.controls[this.config.name].patchValue(stringEntityValue);
+      this.group.controls[this.config.field.name].patchValue(stringEntityValue);
     } else {
-      this.group.controls[this.config.name].patchValue(entityValues);
+      this.group.controls[this.config.field.name].patchValue(entityValues);
     }
     this.setDirty();
   }

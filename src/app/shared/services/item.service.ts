@@ -2,12 +2,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { throwError as observableThrowError, Observable } from 'rxjs';
-import { map, catchError, tap, filter, delay } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
+import { map, catchError, delay, take } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader, EavAttributesTranslated, AdminDialogPersistedData, EavFor } from '../models/eav';
+import { EavAttributes, EavValue, EavHeader, FieldSettings, AdminDialogPersistedData, EavFor } from '../models/eav';
 
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -15,13 +15,18 @@ import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { InputFieldHelper } from '../helpers/input-field-helper';
+import { LanguageService } from './language.service';
 
 @Injectable()
 export class ItemService {
 
   // public items$  Observable<Item[]>;
 
-  constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>) {
+  constructor(
+    private httpClient: HttpClient,
+    private store: Store<fromStore.EavState>,
+    private languageService: LanguageService,
+  ) {
     // this.items$ = store.select(fromStore.getItems);
   }
 
@@ -128,11 +133,11 @@ export class ItemService {
     return this.store.select(fromStore.getItems);
   }
 
-  // public selectItemById(id: number): Observable<Item> {
-  //   return this.store
-  //     .select(fromStore.getItems)
-  //     .pipe(map(data => data.find(obj => obj.entity.id === id)));
-  // }
+  public selectItemById(id: number): Observable<Item> {
+    return this.store
+      .select(fromStore.getItems)
+      .pipe(map(data => data.find(obj => obj.entity.id === id)));
+  }
 
   /**
    * Observe header for item from store
@@ -161,16 +166,31 @@ export class ItemService {
 
   /** Set default value and add that attribute in store */
   public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string,
-    settingsTranslated: EavAttributesTranslated, currentLanguage: string, defaultLanguage: string): any {
+    settingsTranslated: FieldSettings, currentLanguage: string, defaultLanguage: string): any {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
+    let langs = [];
+    const languages$ = this.languageService.selectAllLanguages();
+    languages$.pipe(take(1)).subscribe(languages => {
+      langs = languages;
+    });
     const exists = item.entity.attributes.hasOwnProperty(attribute.name);
     if (!exists) {
-      this.addAttributeValue(item.entity.id, attribute.name,
-        defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+      if (langs.length === 0) {
+        this.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', false, item.entity.guid, attribute.type);
+      } else {
+        this.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+      }
     } else {
-      this.updateItemAttributeValue(item.entity.id, attribute.name,
-        defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+      if (langs.length === 0) {
+        this.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', defaultLanguage, false, item.entity.guid);
+      } else {
+        this.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+      }
     }
     return defaultValue;
   }
@@ -229,6 +249,6 @@ export class ItemService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return observableThrowError(errMsg);
+    return throwError(errMsg);
   }
 }

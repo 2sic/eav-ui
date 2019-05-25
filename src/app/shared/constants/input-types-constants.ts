@@ -5,8 +5,8 @@ export class InputTypesConstants {
     public static readonly stringDropdown: string = 'string-dropdown';
     public static readonly stringDropdownQuery: string = 'string-dropdown-query';
     public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
+    public static readonly stringTemplatePicker: string = 'string-template-picker';
     public static readonly stringWysiwyg: string = 'string-wysiwyg';
-    public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
     // boolean
     public static readonly booleanDefault: string = 'boolean-default';
     // datetime
@@ -26,10 +26,18 @@ export class InputTypesConstants {
     // custom/files
     public static readonly external: string = 'external';
     public static readonly externalWebComponent: string = 'external-webcomponent';
+    public static readonly customGPS: string = 'custom-gps';
+    public static readonly customDefault: string = 'custom-default';
     // old types
-    public static readonly dropdown: string = 'dropdown';
-    public static readonly wysiwyg: string = 'wysiwyg';
-    public static readonly default: string = 'default';
+    public static readonly oldTypeDropdown: string = 'dropdown';
+    public static readonly oldTypeWysiwyg: string = 'wysiwyg';
+    public static readonly oldTypeDefault: string = 'default';
+    public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
+    public static readonly stringWysiwygAdv: string = 'string-wysiwyg-adv';
+    public static readonly stringWysiwygDnn: string = 'string-wysiwyg-dnn';
+    // default suffix
+    public static readonly defaultSuffix: string = '-default';
+    // spm 2019.04.10. move to different constants file as types. Maybe such file already exists
     // attribute.type for old types
     public static readonly string: string = 'String';
     public static readonly hyperlink: string = 'Hyperlink';
@@ -38,4 +46,5 @@ export class InputTypesConstants {
     public static readonly datetime: string = 'DateTime';
     public static readonly entity: string = 'Entity';
     public static readonly empty: string = 'Empty';
+    public static readonly custom: string = 'Custom';
 }

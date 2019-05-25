@@ -1,5 +1,5 @@
 
-import { EavValue, EavAttributes, EavAttributesTranslated } from '../models/eav';
+import { EavValue, EavAttributes, FieldSettings } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
 import isEmpty from 'lodash/isEmpty';
 
@@ -307,8 +307,8 @@ export class LocalizationHelper {
         return eavAttributes;
     }
 
-    public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): EavAttributesTranslated {
-        const settingsTranslated: EavAttributesTranslated = new EavAttributesTranslated;
+    public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
+        const settingsTranslated: FieldSettings = new FieldSettings;
         Object.keys(settings).forEach(attributesKey => {
             settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
                 defaultLanguage, settings[attributesKey], false);

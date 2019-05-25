@@ -1,5 +1,5 @@
 
-@import "../../../../assets/style/variables.scss";
+@import "../../../../styles/variables.scss";
 
 .c-ew {
     &__preview {
@@ -12,6 +12,17 @@
             &--short {
                 width: calc(100% - 72px);
                 max-width: calc(100% - 72px);
+                height: inherit;
+                // spm dirty. Fix asap
+                .mat-form-field-hyperlink {
+                    height: inherit;
+                    ::ng-deep > .mat-form-field-wrapper {
+                        height: inherit;
+                        > .mat-form-field-flex {
+                            height: inherit;
+                        }
+                    }
+                }
             }
             &-hint{
                 color: rgba($editUI-foreground-color, 0.44);
@@ -40,7 +51,7 @@
         
             /* new */
             min-width: 72px;
-            min-height: 72px;
+            height: inherit;
             /* position: absolute;
             top: 0; */
              /* important to add this, because of paddings which are auto-added */
@@ -70,5 +81,9 @@
     }
 }
 
-
-
+.apple-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+}

@@ -4,12 +4,13 @@ import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,10 +19,10 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
   styleUrls: ['./string-font-icon-picker.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   icons = [];
@@ -31,23 +32,23 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
 
   get files(): string {
-    return this.config.settings.Files ? this.config.settings.Files : '';
+    return this.config.field.settings.Files ? this.config.field.settings.Files : '';
   }
 
   get prefix(): string {
-    return this.config.settings.CssPrefix ? this.config.settings.CssPrefix : '';
+    return this.config.field.settings.CssPrefix ? this.config.field.settings.CssPrefix : '';
   }
 
   get previewCss(): string {
-    return this.config.settings.PreviewCss ? this.config.settings.PreviewCss : '';
+    return this.config.field.settings.PreviewCss ? this.config.field.settings.PreviewCss : '';
   }
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.field.name].value;
   }
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   constructor(private scriptLoaderService: ScriptLoaderService,
@@ -132,7 +133,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   *  with update on click trigger value change to open autocomplete
   */
   update() {
-    this.group.controls[this.config.name].patchValue(this.value);
+    this.group.controls[this.config.field.name].patchValue(this.value);
   }
 
   private filterStates(value: string): string[] {
@@ -141,7 +142,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   private getFilteredIcons = () => {
-    return this.group.controls[this.config.name].valueChanges
+    return this.group.controls[this.config.field.name].valueChanges
       .pipe(
         startWith(''),
         map(icon => icon ? this.filterStates(icon) : this.icons.slice())

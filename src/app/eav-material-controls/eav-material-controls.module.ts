@@ -44,7 +44,8 @@ import {
     StringDropdownQueryComponent,
     StringFontIconPickerComponent,
     NumberDefaultComponent,
-    HyperlinkDefaultPagepickerComponent
+    HyperlinkDefaultPagepickerComponent,
+    StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
@@ -65,6 +66,7 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
+import { ExpandableWrapperV2Component } from './wrappers/expandable-wrapper-v2/expandable-wrapper-v2.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
@@ -83,6 +85,8 @@ import {
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
+import { ConnectorComponent } from './input-types/custom/connector/connector.component';
+import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 
 @NgModule({
     declarations: [
@@ -95,6 +99,7 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         StringDropdownComponent,
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
+        StringTemplatePickerComponent,
         BooleanDefaultComponent,
         DatetimeDefaultComponent,
         EmptyDefaultComponent,
@@ -117,6 +122,7 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         WebFormBridgeDirective,
         SaveStatusDialogComponent,
         ExpandableWrapperComponent,
+        ExpandableWrapperV2Component,
         SnackBarUnsavedChangesComponent,
         FieldHelperTextComponent,
         TranslateGroupMenuComponent,
@@ -131,6 +137,8 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
         ExternalWebcomponentComponent,
+        ConnectorComponent,
+        CustomDefaultComponent,
     ],
     imports: [
         // DndDraggable,
@@ -176,6 +184,7 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         EntityQueryComponent,
         EntityExpandableWrapperComponent,
         ExpandableWrapperComponent,
+        ExpandableWrapperV2Component,
         ExternalComponent,
         HiddenWrapperComponent,
         HyperlinkDefaultComponent,
@@ -189,6 +198,7 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         StringDropdownQueryComponent,
         StringFontIconPickerComponent,
         StringUrlPathComponent,
+        StringTemplatePickerComponent,
         TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,
@@ -196,7 +206,9 @@ import { ExternalWebcomponentComponent } from './input-types/custom/external-web
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
-        ExternalWebcomponentComponent
+        ExternalWebcomponentComponent,
+        ConnectorComponent,
+        CustomDefaultComponent,
     ],
     exports: [EavLanguageSwitcherComponent],
     providers: [FileTypeService, ValidationMessagesService],

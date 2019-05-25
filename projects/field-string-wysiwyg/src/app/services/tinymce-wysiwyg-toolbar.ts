@@ -1,4 +1,5 @@
 import { MathHelper } from '../helper/math-helper';
+import { icons, replaceIcon } from '../helper/load-icons-helper';
 
 export class TinyMceToolbarButtons {
     /**
@@ -22,6 +23,16 @@ export class TinyMceToolbarButtons {
             onclick: () => {
                 vm.toggleAdam(false);
             },
+            onPostRender: () => {
+                replaceIcon('.eav-icon-file-pdf', icons.filePdf, ['toolbar-icon']);
+                const head = document.getElementsByTagName('head')[0];
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+                link.media = 'all';
+                head.appendChild(link);
+            },
             menu: [
                 {
                     text: 'Link.AdamFile',
@@ -29,14 +40,20 @@ export class TinyMceToolbarButtons {
                     icon: ' eav-icon-file-pdf',
                     onclick: () => {
                         vm.toggleAdam(false);
-                    }
+                    },
+                    onPostRender: () => {
+                        replaceIcon('.eav-icon-file-pdf', icons.filePdf, ['toolbar-icon', 'dropdown-icon']);
+                    },
                 }, {
                     text: 'Link.DnnFile',
                     tooltip: 'Link.DnnFile.Tooltip',
                     icon: ' eav-icon-file',
                     onclick: () => {
                         vm.toggleAdam(false, true);
-                    }
+                    },
+                    onPostRender: () => {
+                        replaceIcon('.eav-icon-file', icons.file, ['toolbar-icon', 'dropdown-icon']);
+                    },
                 }
             ]
         });
@@ -59,7 +76,10 @@ export class TinyMceToolbarButtons {
                     icon: ' eav-icon-sitemap',
                     onclick: () => {
                         vm.openDnnDialog('pagepicker');
-                    }
+                    },
+                    onPostRender: () => {
+                        replaceIcon('.eav-icon-sitemap', icons.sitemap, ['toolbar-icon', 'dropdown-icon']);
+                    },
                 }
             ]
         };
@@ -68,7 +88,10 @@ export class TinyMceToolbarButtons {
             icon: ' eav-icon-anchor',
             text: 'Anchor',
             tooltip: 'Link.Anchor.Tooltip',
-            onclick: () => { editor.execCommand('mceAnchor'); }
+            onclick: () => { editor.execCommand('mceAnchor'); },
+            onPostRender: () => {
+                replaceIcon('.eav-icon-anchor', icons.anchor, ['toolbar-icon', 'dropdown-icon']);
+            },
         });
         editor.addButton('linkgroup', linkgroup);
         editor.addButton('linkgrouppro', linkgroupPro);
@@ -150,13 +173,19 @@ export class TinyMceToolbarButtons {
         editor.addButton('modestandard', {
             icon: ' eav-icon-cancel',
             tooltip: 'SwitchMode.Standard',
-            onclick: () => { this.switchModes('standard', editor); }
+            onclick: () => { this.switchModes('standard', editor); },
+            onPostRender: () => {
+                replaceIcon('.eav-icon-cancel', '<i class="material-icons">clear</i>', ['toolbar-icon']);
+            }
         });
 
         editor.addButton('modeadvanced', {
             icon: ' eav-icon-pro',
             tooltip: 'SwitchMode.Pro',
-            onclick: () => { this.switchModes('advanced', editor); }
+            onclick: () => { this.switchModes('advanced', editor); },
+            onPostRender: () => {
+                replaceIcon('.eav-icon-pro', '<i class="material-icons">school</i>', ['toolbar-icon']);
+            }
         });
         //#endregion
 
@@ -208,7 +237,10 @@ export class TinyMceToolbarButtons {
             onclick: () => {
                 const guid = MathHelper.uuid().toLowerCase(); // requires the uuid-generator to be included
                 editor.insertContent('<hr sxc=\'sxc-content-block\' guid=\'' + guid + '\' />');
-            }
+            },
+            onPostRender: () => {
+                replaceIcon('.eav-icon-content-block', icons.contentBlock, ['toolbar-icon']);
+            },
         });
         // #endregion
 
@@ -216,19 +248,28 @@ export class TinyMceToolbarButtons {
         editor.addButton('alignimgleft',
             {
                 icon: ' eav-icon-align-left', tooltip: 'Align left', cmd: 'JustifyLeft',
-                onPostRender: this.initOnPostRender('alignleft', editor)
+                onPostRender: () => {
+                    replaceIcon('.eav-icon-align-left', icons.alignLeft, ['toolbar-icon']);
+                    this.initOnPostRender('alignleft', editor);
+                },
             }
         );
         editor.addButton('alignimgcenter',
             {
                 icon: ' eav-icon-align-center', tooltip: 'Align center', cmd: 'justifycenter',
-                onPostRender: this.initOnPostRender('aligncenter', editor)
+                onPostRender: () => {
+                    replaceIcon('.eav-icon-align-center', icons.alignVertical, ['toolbar-icon']);
+                    this.initOnPostRender('aligncenter', editor);
+                },
             }
         );
         editor.addButton('alignimgright',
             {
                 icon: ' eav-icon-align-right', tooltip: 'Align right', cmd: 'justifyright',
-                onPostRender: this.initOnPostRender('alignright', editor)
+                onPostRender: () => {
+                    replaceIcon('.eav-icon-align-right', icons.alignRight, ['toolbar-icon']);
+                    this.initOnPostRender('alignright', editor);
+                },
             }
         );
 
@@ -239,7 +280,10 @@ export class TinyMceToolbarButtons {
                 tooltip: imgSizes[imgs] + '%',
                 text: imgSizes[imgs] + '%',
                 onclick: this.makeImgFormatCall(imgSizes[imgs], editor),
-                onPostRender: this.initOnPostRender('imgwidth' + imgSizes[imgs], editor)
+                onPostRender: () => {
+                    replaceIcon('.eav-icon-resize-horizontal', '<i class="material-icons">photo_size_select_large</i>', ['toolbar-icon']);
+                    this.initOnPostRender('imgwidth' + imgSizes[imgs], editor);
+                }
             };
             editor.addButton('imgresize' + imgSizes[imgs], config);
             imgMenuArray.push(config);
@@ -247,7 +291,10 @@ export class TinyMceToolbarButtons {
             editor.addButton('resizeimg100', {
                 icon: ' eav-icon-resize-horizontal', tooltip: '100%',
                 onclick: () => { editor.formatter.apply('imgwidth100'); },
-                onPostRender: this.initOnPostRender('imgwidth100', editor)
+                onPostRender: () => {
+                    replaceIcon('.eav-icon-resize-horizontal', '<i class="material-icons">photo_size_select_large</i>', ['toolbar-icon']);
+                    this.initOnPostRender('imgwidth100', editor);
+                }
             });
 
             // group of buttons to resize an image 100%, 50%, etc.

@@ -1,17 +1,36 @@
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs/Observable';
+import { FormGroup } from '@angular/forms';
 
-export class ExternalWebComponentProperties {
-    id: string;
-    config: any;
-    form: any;
+import { ConnectorObservable } from '../../../../../../projects/shared/connector';
+import { InputTypeName } from '../../../../shared/models/input-field-models';
+
+export class ExternalWebComponentProperties<T> {
+    connector: ConnectorObservable<T>;
+    experimental: ExperimentalProps;
     host: any;
     translateService: TranslateService;
-
-    value: any;
-    disabled: boolean;
-    // options: any
 
     adamSetValueCallback: any;
     adamAfterUploadCallback: any;
     // dnnBridgeprocessResult: any;
+}
+
+// spm 2019.04.08. split to separate files
+/** Props and methods available to the connector to communicate with the host */
+export class ConnectorHost<T> {
+    update: (value: T) => void;
+}
+
+export class ExperimentalProps {
+    allInputTypeNames: InputTypeName[];
+    updateField: (name: string, value: any) => void;
+    formGroup: FormGroup;
+    formSetValueChange$: Observable<any>;
+}
+
+export class FieldState {
+    name: string;
+    value: any;
+    disabled: boolean;
 }

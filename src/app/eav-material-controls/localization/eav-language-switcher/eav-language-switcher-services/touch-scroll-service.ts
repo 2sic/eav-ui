@@ -1,37 +1,35 @@
-import { Injectable, Renderer2, ElementRef } from '@angular/core';
+import { Renderer2, ElementRef } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class TouchScrollService {
   private renderer: Renderer2;
   private header: HTMLElement;
   private oldOverflowX: string;
-  private headerTouchend: Function;
-  private headerTouchcancel: Function;
+  private listeners: (() => void)[] = [];
 
-  constructor() { }
-
-  initTouchScroll(renderer: Renderer2, headerRef: ElementRef): void {
+  constructor(renderer: Renderer2, headerRef: ElementRef) {
     this.renderer = renderer;
     this.header = headerRef.nativeElement;
-
-    this.renderer.listen(this.header, 'touchstart', this.registerMobileScroll.bind(this));
   }
 
-  private registerMobileScroll(): void {
+  headerTouchStart(event: MouseEvent) {
+    this.registerMobileScroll();
+  }
+
+  destroy() {
+    this.listeners.forEach(listener => listener());
+  }
+
+  private registerMobileScroll() {
     const headerStyles = getComputedStyle(this.header);
     this.oldOverflowX = headerStyles['overflow-x'];
     this.renderer.setStyle(this.header, 'overflow-x', 'scroll');
 
-    this.headerTouchend = this.renderer.listen(this.header, 'touchend', this.removeMobileScroll.bind(this));
-    this.headerTouchcancel = this.renderer.listen(this.header, 'touchcancel', this.removeMobileScroll.bind(this));
+    this.listeners.push(this.renderer.listen(this.header, 'touchend', this.removeMobileScroll.bind(this)));
+    this.listeners.push(this.renderer.listen(this.header, 'touchcancel', this.removeMobileScroll.bind(this)));
   }
 
-  private removeMobileScroll(): void {
+  private removeMobileScroll() {
     this.renderer.setStyle(this.header, 'overflow-x', this.oldOverflowX);
-
-    this.headerTouchend();
-    this.headerTouchcancel();
+    this.listeners.forEach(listener => listener());
   }
 }

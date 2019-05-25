@@ -1,5 +1,30 @@
 .mat-card {
-    padding:16px 24px 16px 24px;
+    padding-top: 17px;
+    padding-right: 16px;
+    padding-bottom: 15px;
+    padding-left: 16px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    height: 52px;
+    z-index: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+}
+.mat-icon-button {
+    margin-left: -8px;
+    margin-right: 12px;
+}
+.mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px !important;
+}
+.mat-button {
+    margin-right: -8px;
+    padding-left: 8px;
+    padding-right: 11px;
+}
+.publish-mode {
+    line-height: 20px;
+    font-weight: 400;
 }

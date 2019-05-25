@@ -11,20 +11,20 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "./dist/main",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/ui.html"
             ],
             "styles": [
               "src/styles.scss"
             ],
             "scripts": [
-              "src/assets/script/clipboard-paste/paste.js",
+              "src/scripts/clipboard-paste/paste.js",
+              "src/scripts/dropzone-dragging-helper.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
@@ -38,13 +38,12 @@
           "configurations": {
             "production": {
               "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
+              "outputHashing": "none",
+              "sourceMap": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -84,8 +83,7 @@
               "src/styles.scss"
             ],
             "assets": [
-              "src/assets",
-              "src/favicon.ico"
+              "src/assets"
             ]
           }
         },
@@ -138,15 +136,13 @@
         "build": {
           "builder": "ngx-build-plus:build",
           "options": {
-            "outputPath": "dist/field-string-wysiwyg",
-            "index": "projects/field-string-wysiwyg/src/index.html",
+            "singleBundle": true,
+            "outputPath": "./dist/elements/field-string-wysiwyg",
+            "index": "",
             "main": "projects/field-string-wysiwyg/src/main.ts",
             "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
             "tsConfig": "projects/field-string-wysiwyg/tsconfig.app.json",
-            "assets": [
-              "projects/field-string-wysiwyg/src/favicon.ico",
-              "projects/field-string-wysiwyg/src/assets"
-            ],
+            "assets": [],
             "styles": [
               "projects/field-string-wysiwyg/src/styles.css"
             ],
@@ -161,9 +157,8 @@
                 }
               ],
               "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
+              "outputHashing": "none",
+              "sourceMap": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -208,7 +203,6 @@
             ],
             "scripts": [],
             "assets": [
-              "projects/field-string-wysiwyg/src/favicon.ico",
               "projects/field-string-wysiwyg/src/assets"
             ]
           }

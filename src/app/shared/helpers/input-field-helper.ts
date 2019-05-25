@@ -1,7 +1,9 @@
-import { FieldConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { EavAttributesTranslated, EavHeader } from '../models/eav';
+import { FieldSettings, EavHeader, Item } from '../models/eav';
+import { WrappersConstants } from '../constants/wrappers-constants';
+import { InputTypeName, CalculatedInputType } from '../models/input-field-models';
 
 export class InputFieldHelper {
     /**
@@ -9,11 +11,12 @@ export class InputFieldHelper {
      * @param config
      * @param attributeKey
      */
-    static getFieldType(config: FieldConfig, attributeKey: string): string {
-        if (config.type) {
-            return config.type;
+    static getFieldType(config: FieldConfigSet, attributeKey: string): string {
+        if (config.field.type) {
+            return config.field.type;
         } else {
-            return this.getFieldTypeFromFieldGroup(config.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            return this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
         }
     }
 
@@ -23,41 +26,44 @@ export class InputFieldHelper {
      * @param fieldGroup
      * @param attributeKey
      */
-    static getFieldTypeFromFieldGroup(fieldGroup: FieldConfig[], attributeKey: string) {
+    static getFieldTypeFromFieldGroup(fieldGroup: FieldConfigSet[], attributeKey: string) {
         let type;
         fieldGroup.forEach(config => {
-            if (config.fieldGroup) {
-                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(config.fieldGroup, attributeKey);
+            const field = config.field as FieldConfigGroup;
+            if (field.fieldGroup) {
+                const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
                 if (typeFromFieldGroup) {
                     type = typeFromFieldGroup;
                 }
             } else {
-                if (config.name === attributeKey) {
-                    type = config.type;
+                if (config.field.name === attributeKey) {
+                    type = config.field.type;
                 }
             }
         });
         return type;
     }
 
-    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: EavAttributesTranslated, defaultValue: any): string => {
-        return attribute !== null
-            ? (settingsTranslated !== null && settingsTranslated.Name)
-                ? settingsTranslated.Name
-                : attribute.name
-            : defaultValue;
+    static getContentTypeId(item: Item): string {
+        return item.entity.type ? item.entity.type.id : item.header.contentTypeName;
+    }
+
+    static getFieldLabel = (attribute: AttributeDef, settingsTranslated: FieldSettings): string => {
+        return settingsTranslated && settingsTranslated.Name || attribute.name;
     }
 
     /**
      *  Get input type names from content type attributes
      * @param attributesList
      */
-    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): string[] {
-        const typesList: string[] = [];
+    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): InputTypeName[] {
+        const typesList: InputTypeName[] = [];
 
         attributesList.forEach((attribute, index) => {
             try {
-                typesList.push(this.getInputTypeNameFromAttribute(attribute));
+                const name = attribute.name;
+                const calculatedInputType = this.getInputTypeNameFromAttribute(attribute);
+                typesList.push({ name: name, inputType: calculatedInputType.inputType });
             } catch (error) {
                 console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
                 throw error;
@@ -67,48 +73,149 @@ export class InputFieldHelper {
         return typesList;
     }
 
-    static getInputTypeNameFromAttribute(attribute: AttributeDef): string {
-        if (attribute.settings.InputType || attribute.type) {
-            if (attribute.settings.InputType && attribute.settings.InputType.values[0].value) {
-                return this.getInputTypeNameNewConfig(attribute.settings.InputType.values[0].value);
-            } else {
-                return this.getInputTypeNameOldConfig(attribute.type);
-            }
-        } else {
-            return InputTypesConstants.stringDefault;
+    static getInputTypeNameFromAttribute(attribute: AttributeDef): CalculatedInputType {
+        // can't read input type at all so return string-default
+        if (!(attribute.settings.InputType || attribute.type)) {
+            return { inputType: InputTypesConstants.stringDefault, isExternal: false };
+        }
+
+        let inputTypeName = attribute.settings.InputType
+            && attribute.settings.InputType.values[0].value;
+
+        inputTypeName = inputTypeName
+            ? this.renameOldInputTypes(inputTypeName)
+            : this.createInputTypeFromTypeName(attribute.type);
+
+        return this.checkIfExternal(inputTypeName);
+    }
+
+    private static renameOldInputTypes(inputTypeName: string): string {
+        switch (inputTypeName) {
+            case InputTypesConstants.oldTypeDefault:
+                return InputTypesConstants.stringDefault;
+            case InputTypesConstants.oldTypeDropdown:
+                return InputTypesConstants.stringDropdown;
+            case InputTypesConstants.oldTypeWysiwyg:
+                return InputTypesConstants.stringWysiwyg;
+
+            case InputTypesConstants.stringWysiwygTinymce:
+                return InputTypesConstants.stringWysiwyg;
+            case InputTypesConstants.stringWysiwygAdv:
+                return InputTypesConstants.stringWysiwyg;
+            case InputTypesConstants.stringWysiwygDnn:
+                return InputTypesConstants.stringWysiwyg;
+
+            default: return inputTypeName;
         }
     }
 
-    static setWrappers(inputType: string, settingsTranslated: EavAttributesTranslated) {
+    private static createInputTypeFromTypeName(typeName: string): string {
+        switch (typeName) {
+            // cases where typename === inputTypeName
+            case InputTypesConstants.stringUrlPath:
+            case InputTypesConstants.stringFontIconPicker:
+            case InputTypesConstants.hyperlinkLibrary:
+                return typeName;
+
+            // convert to `${typeName}-default`
+            case InputTypesConstants.string:
+            case InputTypesConstants.empty:
+            case InputTypesConstants.datetime:
+            case InputTypesConstants.number:
+            case InputTypesConstants.entity:
+            case InputTypesConstants.hyperlink:
+            case InputTypesConstants.boolean:
+            case InputTypesConstants.custom:
+
+            default:
+                return typeName.toLocaleLowerCase() + InputTypesConstants.defaultSuffix;
+        }
+    }
+
+    private static checkIfExternal(inputTypeName: string): CalculatedInputType {
+        switch (inputTypeName) {
+            case InputTypesConstants.stringDefault:
+            case InputTypesConstants.stringUrlPath:
+            case InputTypesConstants.booleanDefault:
+            case InputTypesConstants.stringDropdown:
+            case InputTypesConstants.stringDropdownQuery:
+            case InputTypesConstants.emptyDefault:
+            case InputTypesConstants.datetimeDefault:
+            case InputTypesConstants.numberDefault:
+            case InputTypesConstants.stringFontIconPicker:
+            case InputTypesConstants.entityDefault:
+            case InputTypesConstants.entityQuery:
+            case InputTypesConstants.entityContentBlocks:
+            case InputTypesConstants.hyperlinkDefault:
+            case InputTypesConstants.hyperlinkLibrary:
+            case InputTypesConstants.stringTemplatePicker:
+            case InputTypesConstants.customDefault:
+                return { inputType: inputTypeName, isExternal: false };
+
+            // our external components
+            case InputTypesConstants.stringWysiwyg:
+            case InputTypesConstants.stringWysiwygTinymce:
+            case InputTypesConstants.customGPS:
+                return { inputType: inputTypeName, isExternal: true };
+
+            // other external components
+            default:
+                return { inputType: inputTypeName, isExternal: true };
+        }
+    }
+
+    static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings) {
+        // empty inputtype wrappers
+        const inputType = calculatedInputType.inputType;
+        const isExternal = calculatedInputType.isExternal;
+
+        const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
+            || (inputType === InputTypesConstants.empty);
+        if (isEmptyInputType) {
+            return [WrappersConstants.collapsibleWrapper];
+        }
         // default wrappers
-        const wrappers: string[] = ['app-hidden-wrapper'];
+        const wrappers: string[] = [WrappersConstants.hiddenWrapper];
         // entity-default wrappers
-        if (InputTypesConstants.entityDefault ||
-            inputType === InputTypesConstants.stringDropdownQuery ||
-            inputType === InputTypesConstants.entityQuery ||
-            inputType === InputTypesConstants.entityContentBlocks) {
+        const isEntityType = (inputType === InputTypesConstants.entityDefault)
+            || (inputType === InputTypesConstants.stringDropdownQuery)
+            || (inputType === InputTypesConstants.entityQuery)
+            || (inputType === InputTypesConstants.entityContentBlocks);
+
+        if (isEntityType) {
             const allowMultiValue = settingsTranslated.AllowMultiValue || false;
             if (inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-collapsible-field-wrapper');
+                wrappers.push(WrappersConstants.collapsibleFieldWrapper);
             }
-            if (allowMultiValue ||
-                inputType === InputTypesConstants.entityContentBlocks) {
-                wrappers.push('app-entity-expandable-wrapper');
+            if (allowMultiValue || inputType === InputTypesConstants.entityContentBlocks) {
+                wrappers.push(WrappersConstants.entityExpandableWrapper);
             }
         }
 
-        if (inputType === InputTypesConstants.externalWebComponent) {
-            wrappers.push(...['app-dropzone-wrapper',
-                'app-eav-localization-wrapper',
-                'app-expandable-wrapper',
-                'app-adam-attach-wrapper']);
+        if (isExternal) {
+            if (inputType === InputTypesConstants.stringWysiwyg) {
+                wrappers.push(
+                    WrappersConstants.dropzoneWrapper,
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapper,
+                    WrappersConstants.adamAttachWrapper
+                );
+            } else if (inputType === InputTypesConstants.customGPS) {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                    WrappersConstants.expandableWrapperV2,
+                );
+            } else {
+                wrappers.push(
+                    WrappersConstants.eavLocalizationWrapper,
+                );
+            }
         }
-
 
         return wrappers;
     }
 
-    static parseDefaultValue(attributeKey: string, inputType: string, settings: EavAttributesTranslated, header: EavHeader): any {
+    static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
         let defaultValue = settings.DefaultValue;
 
         if (header.prefill && header.prefill[attributeKey]) {
@@ -147,69 +254,6 @@ export class InputFieldHelper {
                     : [defaultValue.replace(/"/g, '')]; //  possibility 3) just a guid string, but might have quotes
             default:
                 return defaultValue ? defaultValue : '';
-        }
-    }
-
-    /** read new inputField settings */
-    private static getInputTypeNameNewConfig(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.stringDefault:
-            case InputTypesConstants.stringUrlPath:
-            case InputTypesConstants.booleanDefault:
-            case InputTypesConstants.stringDropdown:
-            case InputTypesConstants.stringDropdownQuery:
-            case InputTypesConstants.emptyDefault:
-            case InputTypesConstants.datetimeDefault:
-            case InputTypesConstants.numberDefault:
-            case InputTypesConstants.stringFontIconPicker:
-            case InputTypesConstants.entityDefault:
-            case InputTypesConstants.entityQuery:
-            case InputTypesConstants.entityContentBlocks:
-            case InputTypesConstants.hyperlinkDefault:
-            case InputTypesConstants.hyperlinkLibrary:
-                return inputTypeName;
-            case InputTypesConstants.stringWysiwyg:
-            case InputTypesConstants.stringWysiwygTinymce:
-            case InputTypesConstants.external:
-            case 'custom-my-field-test':
-                // return InputTypesConstants.external;
-                return InputTypesConstants.externalWebComponent;
-            default:
-                return InputTypesConstants.stringDefault;
-        }
-    }
-
-    /** read old inputField settings  */
-    private static getInputTypeNameOldConfig(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.default:
-            case InputTypesConstants.string:
-                return InputTypesConstants.stringDefault;
-            case InputTypesConstants.stringUrlPath:
-                return InputTypesConstants.stringUrlPath;
-            case InputTypesConstants.boolean:
-                return InputTypesConstants.booleanDefault;
-            case InputTypesConstants.dropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.empty:
-                return InputTypesConstants.emptyDefault;
-            case InputTypesConstants.datetime:
-                return InputTypesConstants.datetimeDefault;
-            case InputTypesConstants.number:
-                return InputTypesConstants.numberDefault;
-            case InputTypesConstants.stringFontIconPicker:
-                return InputTypesConstants.stringFontIconPicker;
-            case InputTypesConstants.entity:
-                return InputTypesConstants.entityDefault;
-            case InputTypesConstants.hyperlink:
-                return InputTypesConstants.hyperlinkDefault;
-            case InputTypesConstants.hyperlinkLibrary:
-                return InputTypesConstants.hyperlinkLibrary;
-            case InputTypesConstants.external:
-            case InputTypesConstants.wysiwyg:
-                return InputTypesConstants.external;
-            default:
-                return InputTypesConstants.stringDefault;
         }
     }
 }

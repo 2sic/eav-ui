@@ -11,7 +11,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageService } from '../../../shared/services/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 
@@ -24,7 +24,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   currentLanguage$: Observable<string>;
@@ -42,11 +42,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   }
 
   get inputDisabled() {
-    return this.group.controls[this.config.name].disabled;
+    return this.group.controls[this.config.field.name].disabled;
   }
 
   ngOnInit() {
-    //  this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entityId, this.config.entityGuid);
+    //  this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.itemConfig.entityId, this.config.itemConfig.entityGuid);
 
     // this.subscribeToAttributeValues();
     // this.subscribeMenuChange();
@@ -71,7 +71,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
         // this.translateAllConfiguration(this.currentLanguage);
-        // this.refreshControlConfig(this.config.name);
+        // this.refreshControlConfig(this.config.currentFieldConfig.name);
       })
     );
   }
@@ -82,9 +82,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
         this.defaultLanguage = defaultLanguage;
 
         // this.translateAllConfiguration(this.currentLanguage);
-        // this.setControlDisable(this.attributes[this.config.name], this.config.name, this.currentLanguage, this.defaultLanguage);
+        // this.setControlDisable(this.attributes[this.config.currentFieldConfig.name], this.config.currentFieldConfig.name,
+        // this.currentLanguage, this.defaultLanguage);
         // this.setAdamDisable();
-        // this.setInfoMessage(this.attributes[this.config.name], this.currentLanguage, this.defaultLanguage);
+        // this.setInfoMessage(this.attributes[this.config.currentFieldConfig.name], this.currentLanguage, this.defaultLanguage);
       })
     );
   }

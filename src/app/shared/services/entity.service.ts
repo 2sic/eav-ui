@@ -1,18 +1,24 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { throwError as observableThrowError, Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { throwError, Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { UrlConstants } from '../constants/url-constants';
-import { TranslateService } from '@ngx-translate/core';
+import { EavConfiguration } from '../models/eav-configuration';
+import { EavService } from './eav.service';
 
 @Injectable()
 export class EntityService {
+  private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient,
-    private translate: TranslateService) {
+  constructor(
+    private httpClient: HttpClient,
+    private translate: TranslateService,
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   /**
@@ -23,7 +29,7 @@ export class EntityService {
    */
   public getAvailableEntities(apiId: string, body: string, ctName: string): Observable<any> {
     // maybe create model for data
-    return this.httpClient.post(`${UrlConstants.apiRoot}eav/EntityPicker/getavailableentities`,
+    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/EntityPicker/getavailableentities`,
       body,
       {
         params: {
@@ -46,7 +52,7 @@ export class EntityService {
       return null;
     } else {
       console.log('GET delete method:');
-      return this.httpClient.get(`${UrlConstants.apiRoot}eav/entities/delete`,
+      return this.httpClient.get(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/entities/delete`,
         {
           // ignoreErrors: 'true',
           params: {
@@ -73,6 +79,6 @@ export class EntityService {
     // In a real world app, we might send the error to remote logging infrastructure
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
-    return observableThrowError(errMsg);
+    return throwError(errMsg);
   }
 }

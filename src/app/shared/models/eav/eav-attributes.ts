@@ -34,30 +34,34 @@ export class EavAttributes {
      * Example: Settings from metadata array
      * @param entity1Array
      */
-    public static getFromEavEntityArray(eavEntityArray: EavEntity[]): EavAttributes {
-        const newEavAtribute: EavAttributes = new EavAttributes();
-        if (eavEntityArray !== undefined) {
+    public static getFromEavEntityArray(metadataArray: EavEntity[]): EavAttributes {
+        const mergedSettings: EavAttributes = new EavAttributes();
+        if (metadataArray !== undefined) {
             // First read all metadata settings witch are not @All
-            eavEntityArray.forEach(eavEntity => {
-                if (eavEntity.type.id !== '@All') {
-                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
-                        newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+            metadataArray.forEach(mdItem => {
+                if (mdItem.type.id !== '@All') {
+                    Object.keys(mdItem.attributes).forEach(attributeKey => {
+                        mergedSettings[attributeKey] = Object.assign({}, mdItem.attributes[attributeKey]);
                     });
                 }
             });
             // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
-            eavEntityArray.forEach(eavEntity => {
-                if (eavEntity.type.id === '@All') {
-                    Object.keys(eavEntity.attributes).forEach(attributeKey => {
-                        // Not rewrite if value is string empty
-                        if (!(newEavAtribute[attributeKey] && eavEntity.attributes[attributeKey].values[0].value === '')) {
-                            newEavAtribute[attributeKey] = Object.assign({}, eavEntity.attributes[attributeKey]);
+            metadataArray.forEach(mdItem => {
+                if (mdItem.type.id === '@All') {
+                    Object.keys(mdItem.attributes).forEach(attributeKey => {
+                        // Add @All.Property value, but skip if both empty and already exists
+                        // So don't overwrite existing values with empty
+                        const newIsEmpty = mdItem.attributes[attributeKey].values[0].value === '';
+                        const previousExists = mergedSettings[attributeKey];
+                        const skip = newIsEmpty && previousExists;
+                        if (!skip) {
+                            mergedSettings[attributeKey] = Object.assign({}, mdItem.attributes[attributeKey]);
                         }
                     });
                 }
             });
         }
-        return newEavAtribute;
+        return mergedSettings;
     }
 
     /**

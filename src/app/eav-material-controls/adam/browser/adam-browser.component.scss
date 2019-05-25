@@ -6,15 +6,17 @@
 .adam-browse-background-icon {
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 10px;
+    padding-top: 20px;
     padding-bottom: 10px;
     min-width: 100%;
     min-height: 100%;
     text-align: center;
 }
 
-.adam-browse-background-icon i {
-    font-size: 4em;
+.adam-browse-background-icon > mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
 }
 
 .adam-background {
@@ -32,7 +34,13 @@
 
 .adam-tag {
     cursor: pointer;
-    font-size: large;position: absolute;right: -15px;top: 50px;font-size: 1.8em;
+    font-size: large;
+    position: absolute;
+    right: -15px;
+    top: 50px;
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
     z-index: 30;
 }
 
@@ -40,7 +48,9 @@
     position: absolute;
     left: 4px;
     top: 4px;
-    font-size: 1.2em;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
     color: rgba(0, 0, 0, .9);
 }
 
@@ -49,17 +59,21 @@
     top: 4px;
     right: 4px;
     cursor: pointer;
-    font-size: 1.4em;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    font-weight: bold;
 }
 
-.adam-delete-button:hover, .adam-rename-button:hover {
+.adam-delete-button:hover, .adam-rename-button:hover, .adam-link-button:hover {
     color: #0088f4;
 }
 
 .adam-rename-button {
     right: 26px;
-    font-size:14px;
-    top:5px;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
 }
 
 
@@ -79,14 +93,22 @@
 
 /*label under the icon*/
 .adam-short-label  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-overflow: ellipsis;
-    display: block;
     overflow: hidden;
     white-space: nowrap;
 
     left: 0;
     right: 0;
     bottom: 10px;
+}
+
+.adam-short-label > mat-icon {
+    font-size: 19px;
+    width: 19px;
+    height: 19px;
 }
 
 .adam-full-name {

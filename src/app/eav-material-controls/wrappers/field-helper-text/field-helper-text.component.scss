@@ -1,11 +1,20 @@
-@import "../../../../assets/style/variables.scss";
-@import "../../../../assets/style/theme/material-colors.scss";
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/theme/material-colors.scss";
 
 .c-fht {
     &__container {
-        // margin: 0px 0 0 12px;
-        padding: 4px 0 12px 12px;
+        padding: 4px 0 8px 12px;
         min-height: 16px;
+
+        &--last {
+            padding-bottom: 0;
+
+            &--no-hint {
+                padding: 0;
+                padding-bottom: 8px;
+                min-height: 0;
+            }
+        }
         
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);

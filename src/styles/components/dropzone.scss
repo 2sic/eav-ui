@@ -1,0 +1,10 @@
+.eav-dragging .dropzone:not(.dropzone-disabled) {
+    .c-ew__preview {
+        background-color: $dropzone-background !important;
+    }
+}
+.eav-dragging.dropzone:not(.dropzone-disabled) {
+    .c-ew__preview {
+        background-color: $dropzone-active-background !important;
+    }
+}

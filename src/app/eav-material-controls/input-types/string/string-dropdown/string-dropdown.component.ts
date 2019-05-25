@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,39 +16,45 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   styleUrls: ['./string-dropdown.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringDropdownComponent implements Field, OnInit {
-  config: FieldConfig;
+export class StringDropdownComponent implements Field, OnInit, OnDestroy {
+  config: FieldConfigSet;
   group: FormGroup;
 
   freeTextMode = false;
   selectOptions = [];
-
-  private _selectOptions: string[] = [];
-  private _oldOptions: string[] = [];
+  subscriptions: Subscription[] = [];
 
   get enableTextEntry() {
-    return this.config.settings.EnableTextEntry || false;
+    return this.config.field.settings.EnableTextEntry || false;
   }
 
   get notes() {
-    return this.config.settings.Notes || '';
+    return this.config.field.settings.Notes || '';
   }
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   get value() {
-    return this.group.controls[this.config.name].value;
+    return this.group.controls[this.config.field.name].value;
   }
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
+    private eavService: EavService,
+  ) { }
 
   ngOnInit() {
     this.selectOptions = this.setOptionsFromDropdownValues();
     this.freeTextMode = this.setFreeTextMode();
+
+    const updateOptionsSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      this.selectOptions = this.setOptionsFromDropdownValues();
+    });
+    this.subscriptions.push(updateOptionsSub);
   }
 
   freeTextModeChange(event) {
@@ -68,24 +77,35 @@ export class StringDropdownComponent implements Field, OnInit {
   * Read settings Dropdown values
   */
   private setOptionsFromDropdownValues(): any {
+    const currentValue = this.group.controls[this.config.field.name].value;
+    let currentValueFound = false;
     let options = [];
-    if (this.config.settings.DropdownValues) {
-      const dropdownValues = this.config.settings.DropdownValues;
+    if (this.config.field.settings.DropdownValues) {
+      const dropdownValues = this.config.field.settings.DropdownValues;
       options = dropdownValues.replace(/\r/g, '').split('\n');
       options = options.map(e => {
         const s = e.split(':');
         const maybeWantedEmptyVal = s[1];
         const key = s.shift(); // take first, shrink the array
         const val = s.join(':');
-        return {
+        const option = {
           label: key,
           value: (val) ? val : key
         };
+        if (option.value === currentValue) { currentValueFound = true; }
+        return option;
+      });
+    }
+    if (!currentValueFound) {
+      options.push({
+        label: currentValue,
+        value: currentValue,
       });
     }
     return options;
   }
 
-
-
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 }

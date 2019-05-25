@@ -1,7 +1,10 @@
 <div class="language-wrap" fxLayout="row" fxLayoutAlign="start start">
-  <div (dblclick)="toggleTranslate(currentLanguage !== defaultLanguage)" fxFlex="auto" [ngClass]="(currentLanguage !== defaultLanguage) ? 'language-wrap__field-short' : 'language-wrap__field'">
+  <div (dblclick)="toggleTranslate(!config.field.expanded && currentLanguage !== defaultLanguage)" fxFlex="auto"
+    [ngClass]="(currentLanguage !== defaultLanguage) && !config.field.disableI18n ? 'language-wrap__field-short' : 'language-wrap__field'">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <app-translate-group-menu [ngClass]="(currentLanguage !== defaultLanguage) ? 'language-wrap__icon' : 'language-wrap__icon-hide'"
-    fxLayoutAlign="end center" [config]="config" [group]="group" [toggleTranslateField]="toggleTranslateField"></app-translate-group-menu>
+  <app-translate-group-menu
+    [ngClass]="(currentLanguage !== defaultLanguage) && !config.field.disableI18n ? 'language-wrap__icon' : 'language-wrap__icon-hide'"
+    fxLayoutAlign="end center" [config]="config" [group]="group" [toggleTranslateField]="toggleTranslateField">
+  </app-translate-group-menu>
 </div>

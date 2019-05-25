@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input } from '@angular/
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 
@@ -15,24 +15,25 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: FieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;
 
   get value() {
-    return this.group.controls[this.config.name].value.replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
+    return this.group.controls[this.config.field.name].value
+      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
   }
-  get id() { return `${this.config.entityId}${this.config.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-  get touched() { return this.group.controls[this.config.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.name].disabled; }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get touched() { return this.group.controls[this.config.field.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() { }
 
   setTouched() {
-    this.group.controls[this.config.name].markAsTouched();
+    this.group.controls[this.config.field.name].markAsTouched();
   }
 }

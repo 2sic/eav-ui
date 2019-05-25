@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,22 +14,22 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   styleUrls: ['./number-default.component.scss']
 })
 @InputType({
-  wrapper: ['app-eav-localization-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class NumberDefaultComponent implements Field, OnInit {
-  config: FieldConfig;
+  config: FieldConfigSet;
   group: FormGroup;
 
   get inputInvalid() {
-    return this.group.controls[this.config.name].invalid;
+    return this.group.controls[this.config.field.name].invalid;
   }
 
   get max() {
-    return this.config.settings.Max;
+    return this.config.field.settings.Max;
   }
 
   get min() {
-    return this.config.settings.Min;
+    return this.config.field.settings.Min;
   }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
@@ -36,7 +37,9 @@ export class NumberDefaultComponent implements Field, OnInit {
   ngOnInit(): void {
 
 
-    // this.decimal = this.config.settings.Decimals ? `^[0-9]+(\.[0-9]{1,${this.config.settings.Decimals}})?$` : null;
+    // this.decimal = this.config.currentFieldConfig.settings.Decimals
+    // ? `^[0-9]+(\.[0-9]{1,${this.config.currentFieldConfig.settings.Decimals}})?$`
+    // : null;
 
   }
 

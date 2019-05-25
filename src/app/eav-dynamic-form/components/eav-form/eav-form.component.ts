@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
-import { FieldConfig } from '../../model/field-config';
+import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -15,7 +15,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
 
   @Input()
-  config: FieldConfig[] = [];
+  config: FieldConfigSet[] = [];
 
   @Output()
   submit: EventEmitter<any> = new EventEmitter<any>();
@@ -64,14 +64,15 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * Create form from configuration
    * @param fieldConfigArray
    */
-  private createControlsInFormGroup(fieldConfigArray: FieldConfig[]) {
+  private createControlsInFormGroup(fieldConfigArray: FieldConfigSet[]) {
     try {
       // const group = this.formBuilder.group({});
       fieldConfigArray.forEach(fieldConfig => {
-        if (fieldConfig.fieldGroup) {
-          this.createControlsInFormGroup(fieldConfig.fieldGroup);
+        const field = fieldConfig.field as FieldConfigGroup;
+        if (field.fieldGroup) {
+          this.createControlsInFormGroup(field.fieldGroup);
         } else {
-          this.form.addControl(fieldConfig.name, this.createControl(fieldConfig));
+          this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
         }
       }
       );
@@ -88,11 +89,11 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    *  Create form control
    * @param config
    */
-  private createControl(config: FieldConfig) {
+  private createControl(config: FieldConfigSet) {
     try {
       // tslint:disable-next-line:prefer-const
-      let { disabled, validation, value } = config;
-      return this.formBuilder.control({ disabled, value }, validation);
+      let { disabled, validation, initialValue } = config.field;
+      return this.formBuilder.control({ disabled, value: initialValue }, validation);
     } catch (error) {
       console.error(`Error creating form control: ${error}
       Config: ${config}`);

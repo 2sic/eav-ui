@@ -7,35 +7,31 @@
     <div class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
       matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
-        <i class="eav-icon-up-circled2"></i>
-        <div class="adam-short-label">upload to
-          <i ngClass="{{adamModeConfig.usePortalRoot ? 'eav-icon-globe' : 'eav-icon-apple'}}"
-            style="font-size: larger"></i>
+        <mat-icon>cloud_upload</mat-icon>
+        <div class="adam-short-label">upload to&nbsp;
+          <mat-icon *ngIf="adamModeConfig.usePortalRoot">public</mat-icon>
+          <mat-icon *ngIf="!adamModeConfig.usePortalRoot" svgIcon="appleFilled"></mat-icon>
         </div>
       </div>
     </div>
 
+    <!-- spm fix pasting from clipboard -->
     <!-- info for paste image from clipboard here -->
     <!-- TODO: disable -->
-    <div *ngIf="!clipboardPasteImageFunctionalityDisabled && allowEdit()" class="dz-preview dropzone-adam paste-image"
+    <!-- <div *ngIf="!clipboardPasteImageFunctionalityDisabled && allowEdit()" class="dz-preview dropzone-adam paste-image"
       matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
-        <i class="eav-icon-file-image"></i>
+        <mat-icon svgIcon="file-image"></mat-icon>
         <div class="adam-short-label">paste image</div>
       </div>
-    </div>
+    </div> -->
 
     <!-- add folder - not always shown -->
     <!-- TODOD: disable -->
     <div *ngIf="allowCreateFolder()" class="dz-preview" (click)="addFolder()">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
-        <div class="">
-          <i class="eav-icon-folder-empty"></i>
-          <div class="adam-short-label">new folder</div>
-        </div>
-      </div>
-      <div class="adam-background adam-browse-background-icon">
-        <i class="eav-icon-plus" style="font-size: 2em; top: 13px; position: relative;"></i>
+        <mat-icon svgIcon="folder-plus"></mat-icon>
+        <div class="adam-short-label">new folder</div>
       </div>
       <div class="dz-details" style="opacity: 1"></div>
     </div>
@@ -45,11 +41,11 @@
     <ng-container *ngIf="showFolders">
       <div *ngIf="folders.length > 0" class="dz-preview" (click)="goUp()">
         <div class="dz-image  adam-browse-background-icon adam-browse-background">
-          <i class="eav-icon-folder-empty"></i>
-          <div class="adam-short-label">up</div>
+          <mat-icon svgIcon="folder"></mat-icon>
+          <div class="adam-short-label">back</div>
         </div>
         <div class="adam-background adam-browse-background-icon">
-          <i class="eav-icon-level-up" style="font-size: 2em; top: 13px; position: relative;"></i>
+          <mat-icon style="font-size: 35px; top: 13px; position: relative;">arrow_back</mat-icon>
         </div>
       </div>
     </ng-container>
@@ -60,25 +56,21 @@
         *ngFor="let item of (items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false  | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')"
         (click)="goIntoFolder(item)">
         <div class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
-          <i class="eav-icon-folder-empty"></i>
+          <mat-icon svgIcon="folder"></mat-icon>
           <div class="short-label">{{ item.Name }}</div>
         </div>
         <div class="dz-details file-type-{{item.Type}}">
-          <span *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button">
-            <i class="eav-icon-cancel"></i>
-          </span>
-          <span *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
-            <i class="eav-icon-pencil"></i>
-          </span>
+          <mat-icon *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button">clear
+          </mat-icon>
+          <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">edit
+          </mat-icon>
           <div class="adam-full-name-area">
             <div class="adam-full-name">{{ item.Name }}</div>
           </div>
         </div>
-        <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)"
+        <mat-icon class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)"
           matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}" appClickStopPropagation
-          *ngIf="getMetadataType(item)">
-          <i class="eav-icon-tag" style="font-size: larger"></i>
-        </span>
+          *ngIf="getMetadataType(item)">local_offer</mat-icon>
       </div>
     </ng-container>
 
@@ -89,7 +81,8 @@
       (click)="select(item)"
       [ngClass]="{ 'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id }">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
-        <i [ngClass]="icon(item)"></i>
+        <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
+        <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
         <div class="adam-short-label">{{ item.Name }}</div>
       </div>
       <div *ngIf="item.Type === 'image'" class="dz-image">
@@ -97,12 +90,10 @@
       </div>
 
       <div class="dz-details file-type-{{item.Type}}">
-        <span *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button">
-          <i class="eav-icon-cancel"></i>
-        </span>
-        <span *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">
-          <i class="eav-icon-pencil"></i>
-        </span>
+        <mat-icon *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button">clear
+        </mat-icon>
+        <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">edit
+        </mat-icon>
         <div class="adam-full-name-area">
           <div class="adam-full-name">{{ item.Name }}</div>
         </div>
@@ -110,19 +101,17 @@
           <span>#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb</span>
         </div>
         <a class="adam-link-button" target="_blank" [href]="item.FullPath">
-          <i class="eav-icon-link-ext" style="font-size: larger"></i>
+          <mat-icon>open_in_new</mat-icon>
         </a>
       </div>
-      <span class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}"
+      <mat-icon class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}"
         (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
         *ngIf="getMetadataType(item)" appClickStopPropagation
-        matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">
-        <i class="eav-icon-tag" style="font-size: larger"></i>
-      </span>
+        matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}">local_offer</mat-icon>
 
       <div class="dz-success-mark">
-        <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+        <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="https://www.w3.org/2000/svg"
+          xmlns:xlink="https://www.w3.org/1999/xlink" xmlns:sketch="https://www.bohemiancoding.com/sketch/ns">
           <title>Check</title>
           <defs></defs>
           <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">

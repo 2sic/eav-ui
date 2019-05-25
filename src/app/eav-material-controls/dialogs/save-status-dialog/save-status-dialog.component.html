@@ -1,50 +1,28 @@
-<div>
-  <div class="c-save-status-dialog__header">
-    <h3>Your own title</h3>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-    labore et dolore magna aliqua.
+<mat-card>
+  <div class="mat-card__header">
+    <div class="mat-card__title">{{'SaveMode.Dialog.Title' | translate }}</div>
+    <div class="mat-card__description">{{'SaveMode.Dialog.Intro' | translate }}</div>
   </div>
-  <mat-nav-list fxFill class="c-save-status-dialog__actions" toggle>
-    <mat-divider></mat-divider>
+
+  <mat-nav-list toggle>
+
     <mat-list-item (click)="publishEntry()" [ngClass]="publishMode === 'show' ? 'mat-list-item-focus' : ''">
-      <div fxFlex="20" fxFill>
-        <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-eye"></i>
-        </button>
-      </div>
-      <div fxFlex="80">
-        <span matLine><b>Publish entry</b></span>
-        <span matLine>Lorem ipsum dolor sit amet,</span>
-        <span matLine>consecteturlabore et dolore</span>
-      </div>
+      <mat-icon matListIcon color="accent">visibility</mat-icon>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Show.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Show.Body' | translate }}</div>
     </mat-list-item>
-    <mat-divider></mat-divider>
+
     <mat-list-item (click)="hideEntry()" [ngClass]="publishMode === 'hide' ? 'mat-list-item-focus' : ''">
-      <div fxFlex="20" fxFill>
-        <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-eye-close"></i>
-        </button>
-      </div>
-      <div fxFlex="80">
-        <span matLine><b>Hide entry</b></span>
-        <span matLine>Lorem ipsum dolor sit amet,</span>
-        <span matLine>consecteturlabore et dolore</span>
-      </div>
+      <mat-icon matListIcon color="accent">visibility_off</mat-icon>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Hide.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Hide.Body' | translate }}</div>
     </mat-list-item>
-    <mat-divider></mat-divider>
+
     <mat-list-item (click)="saveAsDraftEntry()" [ngClass]="publishMode === 'branch' ? 'mat-list-item-focus' : ''">
-      <div fxFlex="20" fxFill>
-        <button mat-icon-button color="accent">
-          <i matListIcon class="eav-icon-git-branch"></i>
-        </button>
-      </div>
-      <div fxFlex="80">
-        <span matLine><b>Save as draft</b></span>
-        <span matLine>Lorem ipsum dolor sit amet,</span>
-        <span matLine>consecteturlabore et dolore</span>
-      </div>
+      <mat-icon matListIcon svgIcon="draft-branch" color="accent"></mat-icon>
+      <div matLine class="mat-list-item__title">{{'SaveMode.Dialog.Branch.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{'SaveMode.Dialog.Branch.Body' | translate }}</div>
     </mat-list-item>
-    <mat-divider></mat-divider>
+
   </mat-nav-list>
-  <span></span>
-</div>
+</mat-card>

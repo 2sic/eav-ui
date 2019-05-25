@@ -1,4 +1,4 @@
-@import "../../../assets/style/variables.scss";
+@import "../../../styles/variables.scss";
 
 .multi-item-edit-form-header {
   width:100%;
@@ -27,23 +27,33 @@
   } 
 
   &__save-button {
-      margin-top: -96px;
-      margin-right: 48px;
+      margin-top: -62px;
+      margin-right: 24px;
       width: $save-button-width-compact;
+      height: $save-button-height;
       .mat-fab {
           border-radius: 16px 0;
-          .mat-button-wrapper {
-              padding:8px 0;
+          ::ng-deep.mat-button-wrapper {
+            padding: 0;
+            font-size: 14px;
+            height: 20px;
+            line-height: 20px;
           }
-          
+          .mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+          }
+
           &--compact {
               height: $save-button-height;
-              width:$save-button-width-compact;
+              width: $save-button-width-compact;
               transition: width 1s;
           }
           &--extended {
               height: $save-button-height;
-              width:$save-button-width-extended;
+              width: $save-button-width-extended;
               transition: width 1s;
           }
 
@@ -56,5 +66,6 @@
   }
 }
 
-
-
+.mdc-layout-grid {
+    padding: 16px;
+}

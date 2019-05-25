@@ -8,13 +8,13 @@ import {
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfig } from '../../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldMaskService } from '../../../../shared/services/field-mask.service';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Subscription } from 'rxjs';
 
@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
-  @Input() config: FieldConfig;
+  @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
@@ -40,13 +40,13 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   private eavConfig: EavConfiguration;
   private fieldMaskService: FieldMaskService;
 
-  get entityType(): string { return this.config.settings.EntityType || ''; }
+  get entityType(): string { return this.config.field.settings.EntityType || ''; }
 
-  get enableAddExisting(): boolean { return this.config.settings.EnableAddExisting === false ? false : true; }
+  get enableAddExisting(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
 
-  get separator() { return this.config.settings.Separator || ','; }
+  get separator() { return this.config.field.settings.Separator || ','; }
 
-  get value() { return this.group.controls[this.config.name].value; }
+  get value() { return this.group.controls[this.config.field.name].value; }
 
   constructor(private entityService: EntityService,
     private eavService: EavService) {
@@ -60,13 +60,13 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
     // this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
     // // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
     // // this.setData();
-    // this.setAvailableEntities(this.config.inputType);
+    // this.setAvailableEntities(this.config.currentFieldConfig.inputType);
     // // this.chosenEntitiesSubscribeToChanges();
 
     // Initialize url parameters mask
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(sourceMask, this.maybeReload, null, this.group.controls);
+    this.fieldMaskService = new FieldMaskService(sourceMask, this.group.controls, null, null);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
@@ -74,10 +74,6 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
-  }
-
-  maybeReload() {
-    console.log('call maybeReload');
   }
 
   callAvailableEntities(value) {
@@ -95,7 +91,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
         : this.value;
     } catch (err) { }
     this.entityService.getAvailableEntities(this.eavConfig.appId, itemFilter, ctName).subscribe(items => {
-      this.config.availableEntities = [...items];
+      this.config.cache = [...items];
     });
   }
 

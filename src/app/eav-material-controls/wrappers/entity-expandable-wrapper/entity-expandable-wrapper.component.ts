@@ -2,7 +2,7 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, E
 import { FormGroup } from '@angular/forms';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfig } from '../../../eav-dynamic-form/model/field-config';
+import { EntityFieldConfigSet } from '../../../shared/models/entity/entity-field-config-set';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EavService } from '../../../shared/services/eav.service';
@@ -19,20 +19,20 @@ import { Helper } from '../../../shared/helpers/helper';
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfig;
+  @Input() config: EntityFieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;
 
-  get availableEntities(): EntityInfo[] { return this.config.availableEntities || []; }
-  get value() { return Helper.convertValueToArray(this.group.controls[this.config.name].value, this.separator); }
-  get id() { return `${this.config.entityId}${this.config.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.name].invalid; }
-  get enableAddExisting() { return this.config.settings.EnableAddExisting || false; }
-  get entityType() { return this.config.settings.EntityType || ''; }
-  get separator() { return this.config.settings.Separator || ','; }
-  get touched() { return this.group.controls[this.config.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.name].disabled; }
+  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
+  get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
+  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get enableAddExisting() { return this.config.field.settings.EnableAddExisting || false; }
+  get entityType() { return this.config.field.settings.EntityType || ''; }
+  get separator() { return this.config.field.settings.Separator || ','; }
+  get touched() { return this.group.controls[this.config.field.name].touched || false; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
 

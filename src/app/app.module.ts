@@ -7,6 +7,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
 
+// import { DnnInterceptor, RuntimeSettings } from '@2sic.com/dnn-sxc-angular';
+// import { DnnSettings } from './dnn-settings/dnn-settings';
+
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
@@ -37,7 +40,7 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/auto-generated/i18n/', '.js');
+  return new TranslateHttpLoader(http, './i18n/', '.js');
 }
 
 @NgModule({
@@ -83,6 +86,8 @@ export function createTranslateLoader(http: HttpClient) {
       useClass: HeaderInterceptor,
       multi: true
     },
+    // { provide: RuntimeSettings, useValue: DnnSettings },
+    // DnnInterceptor,
   ],
   bootstrap: [AppComponent],
 })
