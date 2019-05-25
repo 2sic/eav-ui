@@ -2,7 +2,7 @@
   "name": "eav-item-dialog-angular",
 
   "//": "The version number is very important, as it's used for publishing the source maps",
-  "version": "10.00.00",
+  "version": "10.01.00",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
