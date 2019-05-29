@@ -10,7 +10,7 @@
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
         <mat-form-field [formGroup]="group" appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-            [disabled]="disabled" (blur)="setTouched()">
+            [disabled]="disabled" (blur)="setTouched()" (input)="filterSelectionList($event.target.value)">
           <mat-icon matSuffix *ngIf="!enableTextEntry">arrow_drop_down</mat-icon>
           <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)">
             <mat-icon>text_fields</mat-icon>
@@ -23,9 +23,9 @@
         </mat-form-field>
 
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
-          <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value"
+          <mat-option *ngFor="let item of selectEntities" [value]="item.Value"
             [disabled]="isInChosenEntities(item.Value)">
-            <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
+            <span>{{item.Text ? item.Text: item.Value}}</span>
           </mat-option>
         </mat-autocomplete>
       </div>
@@ -44,7 +44,7 @@
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
-  <input matInput type="text" [required]='config.field.required' [id]="id" [formControlName]="config.field.name"
+  <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">

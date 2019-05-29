@@ -1,55 +1,50 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  EventEmitter,
-  Output
-} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable, Subscription, merge, fromEvent } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
-import { EavService } from '../../../../shared/services/eav.service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
-import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
-import { TranslateService } from '@ngx-translate/core';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';
-import { QueryService } from '../../../../shared/services/query.service';
+// spm probably not needed
+// import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+// import { EavService } from '../../../../shared/services/eav.service';
+// import { EntityService } from '../../../../shared/services/entity.service';
+// import { QueryService } from '../../../../shared/services/query.service';
 
 @Component({
   selector: 'app-entity-default-main-search',
   templateUrl: './entity-default-main-search.component.html',
   styleUrls: ['./entity-default-main-search.component.scss']
 })
-export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   @ViewChild('autoCompleteInput') autoCompleteInputControl;
   @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
+  @Input()
+  set cache(entitiesList: EntityInfo[]) {
+    this.filterSelectionList();
+  }
   @Input() error = '';
 
   // by default data is in array format, but can be stringformat
   @Input() isStringFormat = false;
 
-  @Output()
-  callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
+  @Output() callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
 
   freeTextMode = false;
-  selectEntities: Observable<EntityInfo[]> = null;
+  selectEntities: EntityInfo[] = [];
+  filterText = '';
 
-  private contentType: FieldMaskService;
-  // private availableEntities: EntityInfo[] = [];
+  // spm check if commenting this breaks anything
+  // private contentType: FieldMaskService;
   private subscriptions: Subscription[] = [];
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
@@ -71,18 +66,15 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
   getErrorMessage = () => this.validationMessagesService
     .getErrorMessage(this.group.controls[this.config.field.name], this.config, true)
 
-  constructor(private eavAdminUiService: EavAdminUiService,
+  constructor(
+    private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
     private dialog: MatDialog,
-    private translate: TranslateService) {
-  }
+    private translate: TranslateService,
+  ) { }
 
   ngOnInit() {
     this.setAvailableEntities();
-  }
-
-  ngAfterViewInit() {
-    this.setSelectEntitiesObservables();
   }
 
   ngOnDestroy() {
@@ -152,42 +144,19 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, Afte
     this.callAvailableEntities.emit();
   }
 
-  /**
-   * selectEntities observe events from input autocomplete field
-   */
-  private setSelectEntitiesObservables() {
-    if (this.autoCompleteInputControl && this.selectEntities === null) {
-      const eventNames = ['keyup', 'click'];
-      // Merge all observables into one single stream:
-      const eventStreams = eventNames.map((eventName) => {
-        // return Observable.fromEvent(this.input.nativeElement, eventName);
-        return fromEvent(this.autoCompleteInputControl.nativeElement, eventName);
-      });
-
-      const allEvents$ = merge(...eventStreams);
-
-      this.selectEntities = allEvents$
-        .pipe(map((value: any) => {
-          return this.filter(value.target.value);
-        }));
+  filterSelectionList(newFilter?: string) {
+    if (newFilter || newFilter === '') {
+      this.filterText = newFilter;
     }
-
-    // clear this.selectEntities if input don't exist
-    // this can happen when not allowMultiValue
-    if (!this.autoCompleteInputControl) {
-      this.selectEntities = null;
+    if (this.filterText === '') {
+      this.selectEntities = this.availableEntities;
+    } else {
+      this.selectEntities = this.availableEntities.filter(
+        option => option.Text
+          ? option.Text.toLowerCase().indexOf(this.filterText.toLowerCase()) === 0
+          : option.Value.toLowerCase().indexOf(this.filterText.toLowerCase()) === 0
+      );
     }
-  }
-
-  private filter = (val: string): EntityInfo[] => {
-    if (val === '') {
-      return this.availableEntities;
-    }
-
-    return this.availableEntities.filter(option =>
-      option.Text ?
-        option.Text.toLowerCase().indexOf(val.toLowerCase()) === 0
-        : option.Value.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
 
   private patchValue(entityValues: string[]) {
