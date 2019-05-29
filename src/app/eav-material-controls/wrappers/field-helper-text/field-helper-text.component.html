@@ -5,8 +5,6 @@
   <mat-hint *ngIf="config.field.settings.Notes" class="mat-caption" (click)="isFullText = !isFullText"
     [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
     fxLayout="row" fxLayoutAlign="start start">
-    <i class="material-icons" style="font-size: 14px;">info_outline</i>
-    <span>&nbsp;</span>
     <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''"
       [innerHtml]="config.field.settings.Notes"></span>
   </mat-hint>
