@@ -11,8 +11,8 @@ import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-it
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';
+import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 // spm probably not needed
-// import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 // import { EavService } from '../../../../shared/services/eav.service';
 // import { EntityService } from '../../../../shared/services/entity.service';
 // import { QueryService } from '../../../../shared/services/query.service';
@@ -42,6 +42,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   freeTextMode = false;
   selectEntities: EntityInfo[] = [];
   filterText = '';
+  contentTypeMask: FieldMaskService;
 
   // spm check if commenting this breaks anything
   // private contentType: FieldMaskService;
@@ -75,6 +76,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setAvailableEntities();
+    this.contentTypeMask = new FieldMaskService(this.entityType, this.group.controls, null, null);
   }
 
   ngOnDestroy() {
@@ -117,14 +119,10 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   }
 
   openNewEntityDialog() {
-    // open the dialog for a new item
-    // TODO: finisih this - bug form closed when new entity closed
-    // eavAdminDialogs.openItemNew(contentType.resolve(), reloadAfterAdd);
-
-    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, this.entityType, null);
+    const contentTypeName = this.contentTypeMask.resolve();
+    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, contentTypeName, null);
 
     dialogRef.afterClosed().subscribe(result => {
-      // dialogRef.componentInstance;
       if (result) {
         this.addEntity(Object.keys(result)[0]);
         this.setData();
