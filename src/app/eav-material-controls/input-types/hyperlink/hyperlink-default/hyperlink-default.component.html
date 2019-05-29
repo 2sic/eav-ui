@@ -4,12 +4,12 @@
     (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
     <mat-icon svgIcon="appleFilled"></mat-icon>
   </button>
-  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
+  <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
     (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
     <mat-icon svgIcon="sitemap"></mat-icon>
   </button>
-  <button mat-mini-fab *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button"
-    [matMenuTriggerFor]="menu">
+  <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled"
+    type="button" [matMenuTriggerFor]="menu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
