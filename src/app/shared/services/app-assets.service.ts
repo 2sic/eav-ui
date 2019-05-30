@@ -28,7 +28,7 @@ export class AppAssetsService {
     const getAll = () => {
       return this.httpClient.get(
         `${this.eavConfig.portalroot + UrlConstants.apiRoot}app-sys/appassets/list`,
-        { params: Object.assign({}, params, { withSubfoders: 'true' }) }
+        { params: Object.assign({}, params, { withSubfolders: 'true' }) }
       );
     };
 
