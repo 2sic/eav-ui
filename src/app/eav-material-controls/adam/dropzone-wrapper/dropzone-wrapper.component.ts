@@ -83,6 +83,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
+    // Reset dropzone
+    this.dropzoneRef.reset();
   }
 
   public onUploadSuccess(args: any): void {
@@ -91,15 +93,15 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       if (this.config.adam) {
         this.config.adam.svc.addFullPath(response); // calculate additional infos
         this.config.adam.afterUploadCallback(response);
-        // Reset dropzone
-        this.dropzoneRef.reset();
-        this.config.adam.refresh();
+        this.config.adam.refresh(); // Refresh Adam
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }
     } else {
       alert('Upload failed because: ' + response.Error);
     }
+    // Reset dropzone
+    this.dropzoneRef.reset();
   }
 
   /**
