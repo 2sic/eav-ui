@@ -35,7 +35,7 @@
       fxLayoutAlign="end center">
       <!-- create new entity to add to this list -->
       <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
-        type="button" (click)="openNewEntityDialog()" [disabled]="disabled">
+        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>

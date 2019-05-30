@@ -43,9 +43,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   selectEntities: EntityInfo[] = [];
   filterText = '';
   contentTypeMask: FieldMaskService;
+  disableAddNew = false;
 
-  // spm check if commenting this breaks anything
-  // private contentType: FieldMaskService;
   private subscriptions: Subscription[] = [];
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
@@ -76,10 +75,16 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setAvailableEntities();
-    this.contentTypeMask = new FieldMaskService(this.entityType, this.group.controls, null, null);
+    this.contentTypeMask = new FieldMaskService(this.entityType, this.group.controls, this.onContentTypeMaskChange.bind(this), null);
+    this.disableAddNew = !!!this.contentTypeMask.resolve();
+  }
+
+  onContentTypeMaskChange(value: any) {
+    this.disableAddNew = !!!value;
   }
 
   ngOnDestroy() {
+    this.contentTypeMask.destroy();
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
@@ -119,7 +124,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   }
 
   openNewEntityDialog() {
-    const contentTypeName = this.contentTypeMask.resolve();
+    const contentTypeName = this.contentTypeMask ? this.contentTypeMask.resolve() : this.entityType;
     const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, contentTypeName, null);
 
     dialogRef.afterClosed().subscribe(result => {
