@@ -27,6 +27,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
+  usePortalRoot = false;
 
   get disabled() {
     return this.group.controls[this.config.field.name].disabled;
@@ -47,7 +48,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
     this.dropzoneConfig = {
       // spm 2019.02.28. Check whether usePortalRoot should always be false
-      url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
+      url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
       maxFiles: 1,
       autoReset: null,
       errorReset: null,
@@ -72,6 +73,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       // so i'm just making the preview clickable, as it's not important
       clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
+    this.config.dropzoneConfig = this.dropzoneConfig;
   }
 
   ngAfterViewInit() {

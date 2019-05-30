@@ -99,6 +99,7 @@ export class AdamBrowserComponent implements OnInit {
 
   ngOnInit() {
     this.subFolder = this.config.field.settings.Paths;
+    this.config.dropzoneConfig.url = this.replaceUrlParam(this.config.dropzoneConfig.url, 'subfolder', this.subFolder);
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -119,6 +120,7 @@ export class AdamBrowserComponent implements OnInit {
 
   initConfig() {
     this.subFolder = this.subFolder || '';
+    this.config.dropzoneConfig.url = this.replaceUrlParam(this.config.dropzoneConfig.url, 'subfolder', this.subFolder);
     this.showImagesOnly = this.showImagesOnly || false; // spm 2019.02.28. test this line against old angular
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
@@ -193,6 +195,7 @@ export class AdamBrowserComponent implements OnInit {
 
   goUp = () => {
     this.subFolder = this.svc.goUp();
+    this.config.dropzoneConfig.url = this.replaceUrlParam(this.config.dropzoneConfig.url, 'subfolder', this.subFolder);
   }
 
   getMetadataType = function (item) {
@@ -229,6 +232,7 @@ export class AdamBrowserComponent implements OnInit {
     const subFolder = this.svc.goIntoFolder(folder);
     // this.refresh();
     this.subFolder = subFolder;
+    this.config.dropzoneConfig.url = this.replaceUrlParam(this.config.dropzoneConfig.url, 'subfolder', this.subFolder);
   }
 
   isKnownType(item: AdamItem) {
@@ -274,12 +278,22 @@ export class AdamBrowserComponent implements OnInit {
 
       this.showImagesOnly = newConfig.showImagesOnly;
       this.adamModeConfig.usePortalRoot = !!(newConfig.usePortalRoot);
+      this.config.dropzoneConfig.url = this.replaceUrlParam(
+        this.config.dropzoneConfig.url,
+        'usePortalRoot',
+        this.adamModeConfig.usePortalRoot,
+      );
     }
 
     this.show = configChanged || !this.show;
 
     if (!this.show) {
       this.adamModeConfig.usePortalRoot = false;
+      this.config.dropzoneConfig.url = this.replaceUrlParam(
+        this.config.dropzoneConfig.url,
+        'usePortalRoot',
+        this.adamModeConfig.usePortalRoot,
+      );
     }
 
     // Override configuration in portal mode
@@ -306,6 +320,7 @@ export class AdamBrowserComponent implements OnInit {
     this.metadataContentTypes = adamConfig.metadataContentTypes;
     this.showImagesOnly = adamConfig.showImagesOnly;
     this.subFolder = adamConfig.subFolder;
+    this.config.dropzoneConfig.url = this.replaceUrlParam(this.config.dropzoneConfig.url, 'subfolder', this.subFolder);
 
     // Reload configuration
     this.initConfig();
@@ -341,4 +356,16 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   private loadFileList = () => this.svc.liveListLoad();
+
+  private replaceUrlParam(url, paramName, paramValue) {
+    if (paramValue == null) {
+      paramValue = '';
+    }
+    const pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+    if (url.search(pattern) >= 0) {
+      return url.replace(pattern, '$1' + paramValue + '$2');
+    }
+    url = url.replace(/[?#]$/, '');
+    return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+  }
 }
