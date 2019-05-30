@@ -94,13 +94,6 @@
             padding: 16px;
         }
 
-        &-header {
-            .mat-card {
-                padding:16px 24px 16px 24px;
-                border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
-            }
-        }
-
         &-content {
             position:relative;
             // border-radius: $edit-ui-input-border-radius;
