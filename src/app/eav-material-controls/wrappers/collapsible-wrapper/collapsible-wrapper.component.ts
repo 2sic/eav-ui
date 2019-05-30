@@ -26,12 +26,12 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   private subscriptions: Subscription[] = [];
 
-  get notes() {
-    return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
-  }
-
-  get editInstructions() {
-    return this.config.field.settings ? (this.config.field.settings.EditInstructions || '') : '';
+  get description() {
+    if (this.fieldConfig.isParentGroup) {
+      return this.config.field.settings ? (this.config.field.settings.EditInstructions || '') : '';
+    } else {
+      return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
+    }
   }
 
   get slotCanBeEmpty() {
