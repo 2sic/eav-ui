@@ -99,7 +99,11 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subFolder = this.config.field.settings.Paths;
+    this.subFolder = this.config.field.settings.Paths || '';
+    // fixed leading "/"
+    if (this.subFolder.startsWith('/') || this.subFolder.startsWith('\\')) {
+      this.subFolder = this.subFolder.slice(1);
+    }
     this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
