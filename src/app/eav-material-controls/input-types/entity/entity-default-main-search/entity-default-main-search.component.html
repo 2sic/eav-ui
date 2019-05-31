@@ -48,8 +48,7 @@
     [placeholder]="config.field.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">
-    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
-    <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+    <mat-icon>arrow_drop_down</mat-icon>
   </a>
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>

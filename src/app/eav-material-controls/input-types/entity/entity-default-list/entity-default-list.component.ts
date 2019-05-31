@@ -67,14 +67,15 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  getEntityText = (entityId): string => {
-    if (entityId === null) {
-      return 'empty slot';
-    }
-    const entities = this.availableEntities.filter(f => f.Value === entityId);
-    return entities.length > 0 ? entities[0].Text :
-      this.entityTextDefault ? this.entityTextDefault : entityId;
+  getEntityText(entityGuidOrStringValue: string): string {
+    if (entityGuidOrStringValue === null) { return 'empty slot'; }
 
+    const fallback = this.isStringFormat
+      ? entityGuidOrStringValue
+      : this.entityTextDefault ? this.entityTextDefault : entityGuidOrStringValue;
+
+    const entities = this.availableEntities.filter(f => f.Value === entityGuidOrStringValue);
+    return entities.length > 0 ? entities[0].Text : fallback;
   }
 
   private getEntityId = (value): string => {
