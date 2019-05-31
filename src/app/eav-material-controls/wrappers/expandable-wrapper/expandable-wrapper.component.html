@@ -21,24 +21,24 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null; setTouched();" matRippleSpeedFactor="0.6"
+  <div matRipple (click)="!control.disabled ? dialogIsOpen = true : null; setTouched();" matRippleSpeedFactor="0.6"
     class="c-ew__preview mat-ripple" [ngClass]="{
-      'c-ew__preview--invalid' : inputInvalid && touched,
-      'c-ew__preview--disabled': disabled
+      'c-ew__preview--invalid' : control.invalid && control.touched,
+      'c-ew__preview--disabled': control.disabled
     }">
-    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div [ngClass]="control.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label [ngClass]="{
-        'mat-caption' : value && value.length > 0,
-        'mat-empty' : !(value && value.length > 0),
-        'mat-error' : inputInvalid && touched && !disabled,
-        'color__primary' : !(inputInvalid && touched) && !disabled,
-        'color__label-disabled' : disabled
+        'mat-caption' : control.value && control.value.length > 0,
+        'mat-empty' : !(control.value && control.value.length > 0),
+        'mat-error' : control.invalid && control.touched && !control.disabled,
+        'color__primary' : !(control.invalid && control.touched) && !control.disabled,
+        'color__label-disabled' : control.disabled
       }">
         {{config.field.label}}
         {{config.field.required? '*': '' }}
       </mat-label>
-      <div *ngIf="value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"
-        [innerHtml]="value">
+      <div *ngIf="control.value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': control.disabled}"
+        [innerHtml]="cleanedValue">
       </div>
     </div>
   </div>
