@@ -1,12 +1,14 @@
 import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Subscription, Observable } from 'rxjs';
+import { take } from 'rxjs/operators/take';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
-import { Subscription } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { LanguageService } from '../../../shared/services/language.service';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -23,6 +25,10 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   slotIsUsedChecked = false;
   header: EavHeader;
   collapse = false;
+  currentLanguage$: Observable<string>;
+  currentLanguage: string;
+  defaultLanguage$: Observable<string>;
+  defaultLanguage: string;
 
   private subscriptions: Subscription[] = [];
 
@@ -38,7 +44,19 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     return this.config.entity.header.group ? this.config.entity.header.group.slotCanBeEmpty || false : false;
   }
 
-  constructor(private itemService: ItemService) { }
+  constructor(
+    private itemService: ItemService,
+    private languageService: LanguageService,
+  ) {
+    this.currentLanguage$ = languageService.getCurrentLanguage();
+    this.defaultLanguage$ = languageService.getDefaultLanguage();
+    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => {
+      this.currentLanguage = currentLang;
+    });
+    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
+      this.defaultLanguage = defaultLang;
+    });
+  }
 
   ngOnInit() {
     this.collapse = this.config.field.settings ? this.config.field.settings.DefaultCollapsed || false : false;
@@ -51,7 +69,10 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
           }
 
           this.header = { ...header };
-        })
+        }),
+        this.currentLanguage$.subscribe(currentLang => {
+          this.currentLanguage = currentLang;
+        }),
       );
     }
   }

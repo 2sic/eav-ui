@@ -21,7 +21,7 @@
             </div>
         </div>
         <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
-            [checked]="slotIsUsedChecked">
+            [checked]="slotIsUsedChecked" [disabled]="currentLanguage !== defaultLanguage">
         </mat-slide-toggle>
         <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
             [group]="group"></app-translate-group-menu>
