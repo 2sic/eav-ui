@@ -28,4 +28,18 @@ export class FieldHelperTextComponent implements OnInit {
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
   }
+
+  /** spm Don't toggle if clicked on an anchor tag or it's children */
+  toggleHint(event: MouseEvent) {
+    let target = event.target as HTMLElement;
+
+    if (target.tagName === 'A') { return; }
+    while (target && !target.classList.contains('notes-container')) {
+      target = target.parentNode as HTMLElement;
+      if (!target) { return; }
+      if (target.tagName === 'A') { return; }
+    }
+
+    this.isFullText = !this.isFullText;
+  }
 }
