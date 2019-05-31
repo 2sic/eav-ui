@@ -41,6 +41,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   constructor(private itemService: ItemService) { }
 
   ngOnInit() {
+    this.collapse = this.config.field.settings ? this.config.field.settings.DefaultCollapsed || false : false;
     this.fieldConfig = this.config.field as FieldConfigGroup;
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
