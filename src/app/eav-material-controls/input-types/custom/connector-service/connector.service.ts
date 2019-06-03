@@ -164,6 +164,7 @@ export class ConnectorService {
     });
 
     const experimentalProps: ExperimentalProps = {
+      entityGuid: this.config.entity.entityGuid,
       allInputTypeNames: allInputTypeNames,
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
@@ -181,8 +182,13 @@ export class ConnectorService {
   private subscribeFormChange() {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe(formSet => {
-        const newValue = formSet[this.config.field.name];
+        // check if update is for current entity
+        if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+
+        // check if update is for this field
+        const newValue = formSet.formValues[this.config.field.name];
         if (this.previousValue === newValue) { return; }
+
         this.previousValue = newValue;
         this.value$.next(newValue);
       })

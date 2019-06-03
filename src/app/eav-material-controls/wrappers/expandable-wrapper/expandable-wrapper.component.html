@@ -38,7 +38,7 @@
         {{config.field.required? '*': '' }}
       </mat-label>
       <div *ngIf="control.value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': control.disabled}"
-        [innerHtml]="getCleanedValue">
+        [innerHtml]="cleanedValue">
       </div>
     </div>
   </div>

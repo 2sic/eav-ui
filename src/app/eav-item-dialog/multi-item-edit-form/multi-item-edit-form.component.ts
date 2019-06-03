@@ -24,11 +24,11 @@ import { InputTypeService } from '../../shared/services/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/services/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
-import {
-  SnackBarUnsavedChangesComponent
-} from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+// tslint:disable-next-line:max-line-length
+import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
+import { FormSet } from '../../shared/models/eav/form-set';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -250,7 +250,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private formSetValueChangeSubscribe() {
-    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
+    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((formSet: FormSet) => {
       this.checkFormsState();
     }));
   }

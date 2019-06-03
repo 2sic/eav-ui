@@ -52,6 +52,9 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
     this.freeTextMode = this.setFreeTextMode();
 
     const updateOptionsSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+
       this.selectOptions = this.setOptionsFromDropdownValues();
     });
     this.subscriptions.push(updateOptionsSub);

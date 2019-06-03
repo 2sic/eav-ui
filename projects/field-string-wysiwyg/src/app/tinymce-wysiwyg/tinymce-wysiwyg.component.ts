@@ -198,6 +198,9 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
       }),
       // spm 2019.04.17. disabled check doesn't work when field is translated without value change
       this.experimental.formSetValueChange$.subscribe(formSet => {
+        // check if update is for current entity
+        if (formSet.entityGuid !== this.experimental.entityGuid) { return; }
+
         this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
       })
     );
