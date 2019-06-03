@@ -1,12 +1,10 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -14,37 +12,31 @@ import { EavService } from '../../../shared/services/eav.service';
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class ExpandableWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-
   control: AbstractControl;
   previousValue: string;
   cleanedValue: string;
-  subscriptions: Subscription[] = [];
   dialogIsOpen = false;
+
+  get getCleanedValue(): string {
+    if (this.previousValue !== this.control.value) {
+      this.previousValue = this.control.value;
+      this.cleanedValue = this.cleanValue(this.control.value);
+    }
+    return this.cleanedValue;
+  }
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService,
   ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
     this.previousValue = this.control.value;
     this.cleanedValue = this.cleanValue(this.control.value);
-
-    this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe(formSet => {
-        const newValue = formSet[this.config.field.name] as string;
-        if (this.previousValue === newValue) { return; }
-        this.previousValue = newValue;
-
-        this.cleanedValue = this.cleanValue(newValue);
-      })
-    );
   }
 
   private cleanValue(value: string) {
@@ -55,9 +47,5 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestr
 
   setTouched() {
     this.control.markAsTouched();
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
