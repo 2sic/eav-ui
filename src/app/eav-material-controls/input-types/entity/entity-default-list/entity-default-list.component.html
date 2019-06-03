@@ -35,18 +35,19 @@
         <!-- dndHandle specific handle elements (drag)-->
         <!-- Action buttons -->
         <div class="dnd-buttons" fxLayoutAlign="end center">
-          <button dndNoDrag mat-icon-button *ngIf="enableEdit" type="button" class="dndButtons"
-            (click)="edit(item.name)" title="{{ 'FieldType.Entity.Edit' | translate }}" [disabled]="disabled">
+          <button dndNoDrag mat-icon-button *ngIf="enableEdit && !isFreeTextOrNotFound(item.name)" type="button"
+            class="dndButtons" (click)="edit(item.name)" title="{{ 'FieldType.Entity.Edit' | translate }}"
+            [disabled]="disabled">
             <mat-icon>edit</mat-icon>
           </button>
           <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons"
             (click)="removeSlot(item.name, i)" title="{{ 'FieldType.Entity.Remove' | translate }}"
             [disabled]="disabled">
-            <mat-icon> {{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</mat-icon>
+            <mat-icon>{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</mat-icon>
           </button>
-          <button dndNoDrag mat-icon-button *ngIf="enableDelete" type="button" class="dndButtons"
-            (click)="deleteItemInSlot(item.name, i)" title="{{ 'General.Buttons.Delete' | translate }}"
-            [disabled]="disabled">
+          <button dndNoDrag mat-icon-button *ngIf="enableDelete && !isFreeTextOrNotFound(item.name)" type="button"
+            class="dndButtons" (click)="deleteItemInSlot(item.name, i)"
+            title="{{ 'General.Buttons.Delete' | translate }}" [disabled]="disabled">
             <mat-icon>clear</mat-icon>
           </button>
         </div>

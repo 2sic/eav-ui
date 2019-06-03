@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+
+import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
+import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
-import { MatDialog } from '@angular/material';
 import { EavService } from '../../../..//shared/services/eav.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -49,12 +50,17 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   get dndListConfig() { return { allowedTypes: [this.config.field.name] }; }
   get separator() { return this.config.field.settings.Separator || ','; }
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
+  isFreeTextOrNotFound(entityValue: string) {
+    return this.availableEntities.find(f => f.Value === entityValue) ? false : true;
+  }
 
-  constructor(private entityService: EntityService,
+  constructor(
+    private entityService: EntityService,
     private eavService: EavService,
     private eavAdminUiService: EavAdminUiService,
     private dialog: MatDialog,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -74,20 +80,15 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       ? entityGuidOrStringValue
       : this.entityTextDefault ? this.entityTextDefault : entityGuidOrStringValue;
 
-    const entities = this.availableEntities.filter(f => f.Value === entityGuidOrStringValue);
-    return entities.length > 0 ? entities[0].Text : fallback;
+    const entity = this.availableEntities.find(f => f.Value === entityGuidOrStringValue);
+    return entity ? entity.Text : fallback;
   }
 
-  private getEntityId = (value): string => {
-    if (value === null) {
-      return 'empty slot';
-    }
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Id : value;
-    }
+  private getEntityId(value): string {
+    if (value === null) { return 'empty slot'; }
 
-    return value;
+    const entity = this.availableEntities.find(f => f.Value === value);
+    return entity ? entity.Id : value;
   }
 
   /**
@@ -129,9 +130,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       alert('delete not possible - no type specified in entity field configuration');
       return;
     }
-    const entities: EntityInfo[] = this.availableEntities.filter(f => f.Value === item);
-    const id = entities[0].Id;
-    const title = entities[0].Text;
+    const entity: EntityInfo = this.availableEntities.find(f => f.Value === item);
+    const id = entity.Id;
+    const title = entity.Text;
     // TODO:contentType.resolve()
     const contentTypeTemp = this.entityType; // contentType.resolve()
     // Then delete entity item:
