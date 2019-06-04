@@ -56,6 +56,17 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestr
     this.control.markAsTouched();
   }
 
+  expandDialog() {
+    console.log('ExpandableWrapperComponent expandDialog');
+    this.dialogIsOpen = true;
+    this.config.field.expanded = true;
+  }
+  closeDialog() {
+    console.log('ExpandableWrapperComponent closeDialog');
+    this.dialogIsOpen = false;
+    this.config.field.expanded = false;
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
