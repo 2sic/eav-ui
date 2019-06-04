@@ -29,16 +29,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   currentLanguage: string;
   defaultLanguage$: Observable<string>;
   defaultLanguage: string;
+  description: string;
 
   private subscriptions: Subscription[] = [];
-
-  get description() {
-    if (this.fieldConfig.isParentGroup) {
-      return this.config.field.settings ? (this.config.field.settings.EditInstructions || '') : '';
-    } else {
-      return this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
-    }
-  }
 
   get slotCanBeEmpty() {
     return this.config.entity.header.group ? this.config.entity.header.group.slotCanBeEmpty || false : false;
@@ -61,6 +54,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   ngOnInit() {
     this.collapse = this.config.field.settings ? this.config.field.settings.DefaultCollapsed || false : false;
     this.fieldConfig = this.config.field as FieldConfigGroup;
+    this.calculateDescription();
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
@@ -72,6 +66,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
         }),
         this.currentLanguage$.subscribe(currentLang => {
           this.currentLanguage = currentLang;
+          this.calculateDescription();
         }),
       );
     }
@@ -79,6 +74,14 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  calculateDescription() {
+    if (this.fieldConfig.isParentGroup) {
+      this.description = this.config.field.settings ? (this.config.field.settings.EditInstructions || '') : '';
+    } else {
+      this.description = this.config.field.settings ? (this.config.field.settings.Notes || '') : '';
+    }
   }
 
   /// toggle / change if a section (slot) is in use or not (like an unused presentation)
@@ -91,4 +94,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
         { ...this.header, group: new EavGroupAssignment() });
     }
   };
+
+  changeAnchorTarget(event: MouseEvent) {
+    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
+  }
 }
