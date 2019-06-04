@@ -31,7 +31,8 @@
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
                 <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="description">
-                    <div class="description" [innerHtml]='description' (mouseenter)="changeAnchorTarget($event)"></div>
+                    <div class="description" [innerHtml]='description | safeHtml'
+                        (mouseenter)="changeAnchorTarget($event)"></div>
                 </div>
                 <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>

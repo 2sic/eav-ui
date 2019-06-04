@@ -87,6 +87,7 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
 import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
 import { ConnectorComponent } from './input-types/custom/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 
 @NgModule({
     declarations: [
@@ -116,6 +117,7 @@ import { CustomDefaultComponent } from './input-types/custom/custom-default/cust
         FilterPipe,
         OrderByPipe,
         FileEndingFilterPipe,
+        SafeHtmlPipe,
         ClickStopPropagationDirective,
         HiddenWrapperComponent,
         HyperlinkDefaultPagepickerComponent,

@@ -6,7 +6,7 @@
     [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
     fxLayout="row" fxLayoutAlign="start start">
     <span class="notes-container" [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''"
-      (mouseenter)="changeAnchorTarget($event)" [innerHtml]="description"></span>
+      (mouseenter)="changeAnchorTarget($event)" [innerHtml]="description | safeHtml"></span>
   </mat-hint>
   <mat-error *ngIf="control.invalid && !disableError" class="mat-caption">
     {{ getErrorMessage() | translate:{ param:config.field.settings } }}
