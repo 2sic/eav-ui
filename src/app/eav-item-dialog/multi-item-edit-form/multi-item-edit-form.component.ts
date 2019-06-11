@@ -90,7 +90,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.use('en');
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
-    this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    }
     this.loadIconsService.load();
   }
 
