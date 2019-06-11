@@ -51,13 +51,11 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
 
     this.subscriptions.push(
-      this.languages$.subscribe(languages => {
-        this.languages = languages;
-      })
-    );
-    this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
+      }),
+      this.languages$.subscribe(languages => {
+        this.languages = languages.filter(lang => lang.key !== this.currentLanguage);
       })
     );
   }
@@ -103,7 +101,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
       this.selectedOption.language === '' &&
       this.selectedOption.linkType !== TranslationLinkTypeConstants.translate &&
       this.selectedOption.linkType !==
-        TranslationLinkTypeConstants.dontTranslate
+      TranslationLinkTypeConstants.dontTranslate
     );
   }
 
@@ -128,10 +126,10 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   hasTranslation(languageKey: string): boolean {
     return this.data.attributes
       ? LocalizationHelper.isEditableTranslationExist(
-          this.data.attributes[this.data.attributeKey],
-          languageKey,
-          this.data.defaultLanguage
-        )
+        this.data.attributes[this.data.attributeKey],
+        languageKey,
+        this.data.defaultLanguage
+      )
       : false;
   }
 }
