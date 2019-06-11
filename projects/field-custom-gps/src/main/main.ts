@@ -2,7 +2,7 @@ import { } from 'google-maps';
 
 import { EavExperimentalInputField, ElementEventListener } from '../shared/models';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
-import { defaultCoordinates } from '../shared/constants';
+import { defaultCoordinates, mapsParameters } from '../shared/constants';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
@@ -18,15 +18,13 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   lngFieldName: string;
   lngInput: HTMLInputElement;
   map: google.maps.Map;
-  mapApiUrl: string;
+  mapApiUrl = mapsParameters.mapApiUrl;
   mapContainer: HTMLDivElement;
   marker: google.maps.Marker;
 
   constructor() {
     super();
     console.log('FieldCustomGps constructor called');
-    const mapApiKey = 'AIzaSyDPhnNKpEg8FmY8nooE7Zwnue6SusxEnHE';
-    this.mapApiUrl = `https://maps.googleapis.com/maps/api/js?key=${mapApiKey}`;
     this.fieldInitialized = false;
     this.eventListeners = [];
   }
