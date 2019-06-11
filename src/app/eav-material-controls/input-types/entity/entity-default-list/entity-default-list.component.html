@@ -23,8 +23,17 @@
               [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
           </div>
         </div>
-        <!-- Multiple elements -->
-        <div *ngIf="allowMultiValue" class="dnd-element-content">
+        <!-- Multiple elements dragging disabled -->
+        <div *ngIf="allowMultiValue && disabled" class="dnd-element-content" dndNoDrag>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon>link</mat-icon>
+            <span>&nbsp;&nbsp;</span>
+            <span class="dnd-element-text"
+              [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+          </div>
+        </div>
+        <!-- Multiple elements dragging enabled -->
+        <div *ngIf="allowMultiValue && !disabled" class="dnd-element-content">
           <div fxLayout="row" fxLayoutAlign="start center">
             <mat-icon>link</mat-icon>
             <span>&nbsp;&nbsp;</span>
