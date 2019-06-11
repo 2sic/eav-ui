@@ -9,6 +9,7 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,7 +17,9 @@ import { FieldMaskService } from '../../../../../../projects/shared/field-mask.s
   templateUrl: './entity-query.component.html',
   styleUrls: ['./entity-query.component.scss']
 })
-@InputType({})
+@InputType({
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
+})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
   @Input() config: EntityFieldConfigSet;

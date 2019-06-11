@@ -7,12 +7,16 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-content-blocks',
   templateUrl: './entity-content-blocks.component.html',
   styleUrls: ['./entity-content-blocks.component.scss']
+})
+@InputType({
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
