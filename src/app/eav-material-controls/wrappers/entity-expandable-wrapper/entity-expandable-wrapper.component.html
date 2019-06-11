@@ -27,18 +27,18 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
+  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
     class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
-      'c-ew__preview--disabled': disabled
+      'c-ew__preview--disabled': config.field.disabled
     }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label [ngClass]="{
         'mat-caption' : value && value.length > 0,
         'mat-empty' : !(value && value.length > 0),
-        'mat-error' : inputInvalid && touched && !disabled,
-        'color__primary' : !(inputInvalid && touched) && !disabled,
-        'color__label-disabled' : disabled
+        'mat-error' : inputInvalid && touched && !config.field.disabled,
+        'color__primary' : !(inputInvalid && touched) && !config.field.disabled,
+        'color__label-disabled' : config.field.disabled
       }">
         {{config.field.label}}
         {{config.field.required? '*': '' }}
