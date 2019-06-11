@@ -1,11 +1,6 @@
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
@@ -16,7 +11,7 @@ import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
-import { Subscription } from 'rxjs';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -25,7 +20,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./entity-default.component.scss'],
 })
 @InputType({
-  // wrapper: ['app-eav-localization-wrapper', 'app-entity-expandable-wrapper'],
+  wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 

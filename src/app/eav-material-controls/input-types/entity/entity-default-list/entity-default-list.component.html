@@ -35,9 +35,10 @@
         <!-- dndHandle specific handle elements (drag)-->
         <!-- Action buttons -->
         <div class="dnd-buttons" fxLayoutAlign="end center">
+          <!-- disable edit only if it was disabled in the settings, not if disabled by language change -->
           <button dndNoDrag mat-icon-button *ngIf="enableEdit && !isFreeTextOrNotFound(item.name)" type="button"
             class="dndButtons" (click)="edit(item.name)" title="{{ 'FieldType.Entity.Edit' | translate }}"
-            [disabled]="disabled">
+            [disabled]="config.field.disabled">
             <mat-icon>edit</mat-icon>
           </button>
           <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons"
