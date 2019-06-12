@@ -509,6 +509,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
     // Determine whether control is disabled or enabled and info message
+    if (this.fieldConfig.disableI18n) {
+      this.infoMessage = '';
+      this.infoMessageLabel = 'LangMenu.InAllLanguages';
+      return;
+    }
+
     const isEditableTranslationExist: boolean = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
     const isReadonlyTranslationExist: boolean = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
 

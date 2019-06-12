@@ -15,9 +15,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   templateUrl: './entity-content-blocks.component.html',
   styleUrls: ['./entity-content-blocks.component.scss']
 })
-@InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
-})
+@InputType({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 

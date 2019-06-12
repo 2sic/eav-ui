@@ -65,7 +65,10 @@
             'adam-button-disabled': disabled
           }">clear
           </mat-icon>
-          <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">edit
+          <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button"
+            [ngClass]="{
+            'adam-button-disabled': disabled
+          }">edit
           </mat-icon>
           <div class="adam-full-name-area">
             <div class="adam-full-name">{{ item.Name }}</div>
@@ -97,7 +100,10 @@
           'adam-button-disabled': disabled
         }">clear
         </mat-icon>
-        <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button">edit
+        <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button"
+          [ngClass]="{
+          'adam-button-disabled': disabled
+        }">edit
         </mat-icon>
         <div class="adam-full-name-area">
           <div class="adam-full-name">{{ item.Name }}</div>

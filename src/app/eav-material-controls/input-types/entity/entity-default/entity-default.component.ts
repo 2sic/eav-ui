@@ -19,9 +19,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
-})
+@InputType({})
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   @Input() config: EntityFieldConfigSet;

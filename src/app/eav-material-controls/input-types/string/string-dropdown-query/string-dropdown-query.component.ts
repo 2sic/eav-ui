@@ -14,9 +14,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   templateUrl: './string-dropdown-query.component.html',
   styleUrls: ['./string-dropdown-query.component.scss']
 })
-@InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
-})
+@InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
   @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
 

@@ -21,14 +21,14 @@
   </mat-menu>
 </div>
 
-<div *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup && !fieldConfig.disableI18n"
-  fxLayoutAlign="end center">
+<div *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup" fxLayoutAlign="end center">
   <div fxLayoutAlign="end center" class="shared-languages-container">
     <div class="shared-languages mat-caption color__accent" [ngClass]="{
       'shared-languages--disabled': inputDisabled
     }">
       {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}</div>
-    <button mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2" [ngClass]="getTranslationStateClass()">
+    <button [disabled]="fieldConfig.disableI18n" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2"
+      [ngClass]="getTranslationStateClass()">
       <mat-icon class="translate-icon">translate</mat-icon>
     </button>
   </div>

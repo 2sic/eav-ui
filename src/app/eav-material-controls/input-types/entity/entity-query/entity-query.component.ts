@@ -17,9 +17,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   templateUrl: './entity-query.component.html',
   styleUrls: ['./entity-query.component.scss']
 })
-@InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
-})
+@InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
   @Input() config: EntityFieldConfigSet;

@@ -254,6 +254,8 @@ export class AdamBrowserComponent implements OnInit {
   openUploadClick = (event) => this.openUpload.emit();
 
   rename(item) {
+    if (this.disabled) { return; }
+
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) {
       this.svc.rename(item, newName).subscribe();
