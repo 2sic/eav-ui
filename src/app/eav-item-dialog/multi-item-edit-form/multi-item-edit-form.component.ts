@@ -366,8 +366,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
         this.snackBarOpen('saved');
+        this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
-          this.dialogRef.disableClose = false;
           this.closeDialog(action.data);
         }
         // else {
