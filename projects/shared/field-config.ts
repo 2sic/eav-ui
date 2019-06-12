@@ -23,7 +23,7 @@ export interface FieldConfig {
   /** Tells whether the field is required */
   required: boolean; // updated on language change
 
-  /** Tells whether the field is disabled */
+  /** Tells whether the field is disabled. This is the initial value that was set in settings for this field */
   disabled: boolean;
 
   /** spm write JSDoc */

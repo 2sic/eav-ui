@@ -24,16 +24,16 @@
 </div>
 <!-- preview -->
 <div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
+  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
     class="c-ew__preview mat-ripple"
-    [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': disabled}">
+    [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': config.field.disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{
           'mat-caption' : (config.adam.items$ | async)?.length > 0,
           'mat-empty' : !((config.adam.items$ | async)?.length > 0),
-          'mat-error' : inputInvalid && !disabled,
-          'color__primary' : !(inputInvalid) && !disabled,
-          'color__label-disabled' : disabled
+          'mat-error' : inputInvalid && !config.field.disabled,
+          'color__primary' : !(inputInvalid) && !config.field.disabled,
+          'color__label-disabled' : config.field.disabled
         }">
         {{config.field.label}}
         {{config.field.required ? '*': '' }}
