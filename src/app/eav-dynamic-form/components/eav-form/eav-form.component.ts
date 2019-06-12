@@ -157,8 +157,9 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     let valueIsChanged = false;
     console.log('[Test Disabled] VALUECHANGED values', values);
     console.log('[Test Disabled] VALUECHANGED form values', this.form.value);
-    Object.keys(this.form.value).forEach(valueKey => {
-      if (this.form.value[valueKey] !== values[valueKey]) {
+
+    Object.keys(values).forEach(valueKey => {
+      if (values[valueKey] !== this.form.value[valueKey]) {
         valueIsChanged = true;
       }
     });
