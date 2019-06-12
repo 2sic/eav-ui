@@ -12,7 +12,6 @@ import { ConnectorObservable } from '../../../../shared/connector';
 import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
 import * as contentStyle from './tinymce-content.css';
-import { FieldConfigAngular } from '../../../../../src/app/eav-dynamic-form/model/field-config';
 
 @Component({
   selector: 'app-tinymce-wysiwyg',
@@ -182,7 +181,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   private subscribeToFormChanges(): void {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
-        if ((this.connector.field as FieldConfigAngular).expanded) { return; }
+        // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
+        if ((this.connector.field as any).expanded) { return; }
         this.setValue(newValue);
       }),
     );
