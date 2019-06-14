@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FieldConfig } from './field-config';
 
 export interface ConnectorObservable<T> extends Connector<T> {

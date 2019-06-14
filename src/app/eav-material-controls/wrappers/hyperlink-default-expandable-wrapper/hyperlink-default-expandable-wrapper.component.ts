@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators/take';
+import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';

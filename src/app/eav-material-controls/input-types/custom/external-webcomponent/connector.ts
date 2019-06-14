@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../projects/shared/connector';
 import { FieldConfig } from '../../../../../../projects/shared/field-config';
 import { ConnectorHost } from '../external-webcomponent-properties/external-webcomponent-properties';

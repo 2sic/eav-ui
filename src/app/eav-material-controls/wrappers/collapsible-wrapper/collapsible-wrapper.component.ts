@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
-import { take } from 'rxjs/operators/take';
+import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';

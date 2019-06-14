@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
