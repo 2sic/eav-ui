@@ -20,7 +20,7 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="!disabled ? expandDialog() : null; setTouched();" matRippleSpeedFactor="0.6"
+  <div matRipple (click)="!disabled ? expandDialog() : null; setTouched();" [matRippleAnimation]="{enterDuration: 360}"
     class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': disabled

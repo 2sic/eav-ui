@@ -24,8 +24,8 @@
 </div>
 <!-- preview -->
 <div>
-  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
-    class="c-ew__preview mat-ripple"
+  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null"
+    [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple"
     [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': config.field.disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <mat-label *ngIf="config.adam" class="c-ew__color--primary" [ngClass]="{

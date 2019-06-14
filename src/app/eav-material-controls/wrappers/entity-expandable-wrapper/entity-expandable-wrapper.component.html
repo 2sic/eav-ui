@@ -27,8 +27,8 @@
   </div>
 </div>
 <div>
-  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
-    class="c-ew__preview mat-ripple" [ngClass]="{
+  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" class="c-ew__preview mat-ripple"
+    [matRippleAnimation]="{enterDuration: 360}" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': config.field.disabled
     }">
