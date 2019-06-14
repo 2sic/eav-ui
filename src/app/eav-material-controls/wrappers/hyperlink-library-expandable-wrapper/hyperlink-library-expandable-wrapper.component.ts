@@ -17,7 +17,7 @@ import { AdamItem } from '../../../shared/models/adam/adam-item';
   animations: [ContentExpandAnimation]
 })
 export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./collapsible-field-wrapper.component.scss']
 })
 export class CollapsibleFieldWrapperComponent implements FieldWrapper, OnInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

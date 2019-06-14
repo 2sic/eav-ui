@@ -23,8 +23,8 @@ import { FieldMaskService } from '../../../../../../projects/shared/field-mask.s
   styleUrls: ['./entity-default-main-search.component.scss']
 })
 export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
-  @ViewChild('autoCompleteInput') autoCompleteInputControl;
-  @ViewChild(EntityDefaultListComponent) entityDefaultListComponent;
+  @ViewChild('autoCompleteInput', { static: false }) autoCompleteInputControl;
+  @ViewChild(EntityDefaultListComponent, { static: true }) entityDefaultListComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;

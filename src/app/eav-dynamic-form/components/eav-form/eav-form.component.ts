@@ -12,7 +12,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./eav-form.component.scss']
 })
 export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
-  @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
+  @ViewChild('dynamicForm', { static: false }) dynamicForm: FormGroupDirective;
 
   @Input()
   config: FieldConfigSet[] = [];

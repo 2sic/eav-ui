@@ -17,7 +17,7 @@ import { Helper } from '../../../shared/helpers/helper';
   animations: [ContentExpandAnimation],
 })
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: EntityFieldConfigSet;
   group: FormGroup;

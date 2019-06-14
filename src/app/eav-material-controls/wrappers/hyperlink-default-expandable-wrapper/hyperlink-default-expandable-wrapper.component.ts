@@ -18,7 +18,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
   animations: [ContentExpandAnimation],
 })
 export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

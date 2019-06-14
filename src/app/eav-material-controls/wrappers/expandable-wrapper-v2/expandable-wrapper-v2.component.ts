@@ -18,8 +18,8 @@ import { ContentTypeService } from '../../../shared/services/content-type.servic
   animations: [ContentExpandAnimation]
 })
 export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer') previewContainer: ElementRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;

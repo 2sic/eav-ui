@@ -13,9 +13,9 @@ import { ShowShadowsService } from './eav-language-switcher-services/show-shadow
   styleUrls: ['./eav-language-switcher.component.scss']
 })
 export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('scrollable') headerRef: ElementRef;
-  @ViewChild('leftShadow') leftShadowRef: ElementRef;
-  @ViewChild('rightShadow') rightShadowRef: ElementRef;
+  @ViewChild('scrollable', { static: false }) headerRef: ElementRef;
+  @ViewChild('leftShadow', { static: false }) leftShadowRef: ElementRef;
+  @ViewChild('rightShadow', { static: false }) rightShadowRef: ElementRef;
   @Input() languages: Language[];
   @Input() currentLanguage: string;
   @Input() formsAreValid: boolean;

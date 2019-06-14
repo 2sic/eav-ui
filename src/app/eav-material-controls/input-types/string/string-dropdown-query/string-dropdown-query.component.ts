@@ -16,7 +16,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;

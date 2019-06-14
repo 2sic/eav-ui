@@ -16,7 +16,7 @@ import { LanguageService } from '../../../shared/services/language.service';
   styleUrls: ['./collapsible-wrapper.component.scss']
 })
 export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   fieldConfig: FieldConfigGroup;

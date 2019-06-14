@@ -15,9 +15,9 @@ import { UrlConstants } from '../../../shared/constants/url-constants';
   styleUrls: ['./dropzone-wrapper.component.scss']
 })
 export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
-  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild(DropzoneDirective, { static: false }) dropzoneRef?: DropzoneDirective;
+  @ViewChild('invisibleClickable', { static: false }) invisibleClickableReference: ElementRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

@@ -21,8 +21,8 @@ import { ItemService } from '../../../shared/services/item.service';
   styleUrls: ['./eav-localization-wrapper.component.scss']
 })
 export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

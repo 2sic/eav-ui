@@ -15,7 +15,7 @@ import { EavService } from '../../../shared/services/eav.service';
   animations: [ContentExpandAnimation]
 })
 export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   control: AbstractControl;

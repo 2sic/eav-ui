@@ -32,7 +32,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   WrappersConstants.adamAttachWrapper],
 })
 export class ExternalComponent implements FieldExternal, OnInit {
-  @ViewChild('container') elReference: ElementRef;
+  @ViewChild('container', { static: false }) elReference: ElementRef;
   @Input() config: FieldConfigSet;
   group: FormGroup;
   @Input()

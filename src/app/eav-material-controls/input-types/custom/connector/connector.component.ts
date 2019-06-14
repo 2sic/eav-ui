@@ -15,7 +15,7 @@ import { ConnectorService } from '../connector-service/connector.service';
   styleUrls: ['./connector.component.scss']
 })
 export class ConnectorComponent implements OnInit, OnDestroy {
-  @ViewChild('customElContainer') customElContainer: ElementRef;
+  @ViewChild('customElContainer', { static: true }) customElContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   customElConnector: ConnectorService;

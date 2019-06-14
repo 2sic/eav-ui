@@ -24,7 +24,7 @@ import { FormSet } from '../../shared/models/eav/form-set';
   styleUrls: ['./item-edit-form.component.scss']
 })
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
-  @ViewChild(EavFormComponent) form: EavFormComponent;
+  @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
 
   @Output()
   itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
