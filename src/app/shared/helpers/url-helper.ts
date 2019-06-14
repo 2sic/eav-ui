@@ -34,6 +34,7 @@ export class UrlHelper {
             queryParams['appId'],
             queryParams['approot'],
             queryParams['cbid'],
+            queryParams['debug'],
             queryParams['dialog'],
             queryParams['items'],
             queryParams['lang'],

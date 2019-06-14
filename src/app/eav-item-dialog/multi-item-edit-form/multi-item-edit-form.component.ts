@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
-import { switchMap, map, tap, catchError } from 'rxjs/operators';
+import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
@@ -12,6 +12,7 @@ import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/services/content-type.service';
+import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
@@ -63,6 +64,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   versioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
   extendedSaveButtonIsReduced = false;
+  debugEnabled$: Observable<boolean>;
+  debugEnabled = false;
+  debugInfoIsOpen = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -74,6 +78,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
+    private globalConfigurationService: GlobalConfigurationService,
     private eavService: EavService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
@@ -107,6 +112,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.formSetValueChangeSubscribe();
 
     this.checkFormsState();
+    this.loadDebugEnabled();
   }
 
   ngAfterContentChecked() {
@@ -122,6 +128,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  toggleDebugEnabled(event) {
+    const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
+    if (enableDebugEvent) {
+      this.globalConfigurationService.loadDebugEnabled(!this.debugEnabled);
+    }
+  }
+
+  debugInfoOpened(opened: boolean) {
+    this.debugInfoIsOpen = opened;
   }
 
   /**
@@ -471,9 +488,32 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }, 5000);
   }
 
-  // Temp
-  // isIEOrEdge() {
-  //   return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
-  // }
-}
+  private loadDebugEnabled() {
+    // set initial debug enabled value
+    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    this.debugEnabled$.pipe(take(1)).subscribe(debugEnabled => {
+      this.debugEnabled = debugEnabled;
+    });
+    // subscribe to debug enabled changes
+    this.subscriptions.push(
+      this.debugEnabled$.subscribe(debugEnabled => {
+        if (this.debugEnabled === debugEnabled) { return; }
 
+        this.debugEnabled = debugEnabled;
+        if (this.debugEnabled) {
+          this.snackBarOpen('debug mode enabled');
+        } else {
+          this.snackBarOpen('debug mode disabled');
+          this.debugInfoIsOpen = false;
+        }
+      })
+    );
+    // set debug enabled if came in the url, but only for parent form to not overwrite value with child forms
+    if (this.eavConfig.debug === 'true' && this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      setTimeout(() => {
+        this.globalConfigurationService.loadDebugEnabled(true);
+      }, 0);
+    }
+  }
+
+}

@@ -5,6 +5,12 @@ $edit-ui-dialog-top-padding: 24px;
 $edit-ui-dialog-header-max-height: 52px;
 $edit-ui-dialog-max-height: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding} );
 
+// Debug
+$edit-ui-dialog-debug-max-height: 52px;
+$debug-info-container-height: 300px;
+$debug-info-container-margin: 16px;
+$debug-info-container-total-height: calc(#{$debug-info-container-height} + #{$debug-info-container-margin});
+$edit-ui-dialog-max-height-with-debug: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height} - #{$edit-ui-dialog-top-padding} );
 
 $edit-ui-dialog-border-radius:8px;
 $edit-ui-input-border-radius:4px;

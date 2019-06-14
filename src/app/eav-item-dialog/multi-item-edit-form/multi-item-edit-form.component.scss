@@ -5,9 +5,17 @@
 }
 
 .mat-dialog-content {
-     margin:0;
-     padding: 0;
-     max-height: $edit-ui-dialog-max-height // calc(100vh - 120px);
+  margin:0;
+  padding: 0;
+  max-height: $edit-ui-dialog-max-height;
+}
+
+.mat-dialog-content.debug-enabled {
+  max-height: $edit-ui-dialog-max-height-with-debug;
+}
+
+.mat-dialog-content.debug-enabled.debug-info-is-open {
+  max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height});
 }
 
 .mat-dialog-actions {

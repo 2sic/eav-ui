@@ -1,0 +1,12 @@
+<mat-card fxLayout="column" fxLayoutAlign="center start" [ngClass]="{
+  'debug-enabled': showDebugInfo
+}">
+  <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="start center">
+    <button type="button" mat-icon-button (click)="toggleDebugInfo()">
+      <mat-icon>flash_on</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="showDebugInfo" class="debug-info-container">
+    <textarea readonly class="debug-dump">{{ items | json }}</textarea>
+  </div>
+</mat-card>

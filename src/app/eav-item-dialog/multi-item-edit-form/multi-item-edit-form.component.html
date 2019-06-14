@@ -1,4 +1,4 @@
-<div mat-dialog-container *ngIf="(items$ | async)?.length > 0">
+<div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)">
   <div mat-dialog-actions>
     <app-multi-item-edit-form-header [languages]="(languages$ | async)" class="multi-item-edit-form-header"
       [currentLanguage]="(currentLanguage$ | async)" [formsAreValid]="formsAreValid"
@@ -6,7 +6,10 @@
       [isParentDialog]="formDialogData.persistedData ? formDialogData.persistedData.isParentDialog : false">
     </app-multi-item-edit-form-header>
   </div>
-  <div mat-dialog-content class="u-hide-scrollbar">
+  <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+    'debug-enabled': debugEnabled,
+    'debug-info-is-open': debugInfoIsOpen
+  }">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft"
@@ -39,4 +42,6 @@
       </button>
     </div>
   </div>
+  <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="debugEnabled" (debugInfoOpened)="debugInfoOpened($event)">
+  </app-multi-item-edit-form-debug>
 </div>

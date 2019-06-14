@@ -3,6 +3,7 @@ export class EavConfiguration {
         public appId: string,
         public approot: string,
         public cbid: string,
+        public debug: string,
         public dialog: string,
         public items: string,
         public lang: string,
