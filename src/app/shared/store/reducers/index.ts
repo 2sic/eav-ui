@@ -1,5 +1,4 @@
 import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
-import { storeFreeze } from 'ngrx-store-freeze';
 
 import { environment } from '../../../../environments/environment';
 import * as fromItems from './item.reducer';
@@ -35,7 +34,7 @@ export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState
  * that will be composed to form the root meta-reducer.
  */
 export const metaReducers: MetaReducer<any>[] = !environment.production
-    ? [logger, storeFreeze]
+    ? [logger]
     : [];
 
 export const reducers: ActionReducerMap<EavState> = {

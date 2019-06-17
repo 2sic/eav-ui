@@ -50,7 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
   imports: [
     BrowserModule,
     // DropzoneModule,
-    StoreModule.forRoot({}, { metaReducers }),
+    StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     HttpClientModule,
