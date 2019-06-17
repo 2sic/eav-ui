@@ -16,7 +16,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { EavService } from '../../../../shared/services/eav.service';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 

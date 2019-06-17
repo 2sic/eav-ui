@@ -1,7 +1,7 @@
 import { NgZone, ElementRef } from '@angular/core';
 import { NgElement, WithProperties } from '@angular/elements';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';

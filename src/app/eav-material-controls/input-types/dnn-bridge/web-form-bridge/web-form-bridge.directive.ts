@@ -1,5 +1,5 @@
 import { Directive, Inject, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DnnBridgeDialogData } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavService } from '../../../../shared/services/eav.service';
 import { fromEvent } from 'rxjs';

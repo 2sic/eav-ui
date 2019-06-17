@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 
 import { Language } from '../../shared/models/eav';
 import { MultiItemEditFormComponent } from '../multi-item-edit-form/multi-item-edit-form.component';
