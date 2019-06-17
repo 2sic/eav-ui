@@ -70,7 +70,7 @@
     "ng-pick-datetime": "^7.0.0",
     "ngx-build-plus": "^8.0.3",
     "ngx-drag-and-drop-lists": "^1.2.5",
-    "ngx-dropzone-wrapper": "^7.1.0",
+    "ngx-dropzone-wrapper": "^8.0.0",
     "rxjs": "^6.5.2",
     "rxjs-compat": "^6.5.2",
     "rxjs-tslint": "^0.1.6",
