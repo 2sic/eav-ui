@@ -50,7 +50,6 @@
     "@angular/elements": "^8.0.1",
     "@angular/flex-layout": "^8.0.0-beta.26",
     "@angular/forms": "^8.0.1",
-    "@angular/http": "^7.2.1",
     "@angular/material": "^8.0.1",
     "@angular/platform-browser": "^8.0.1",
     "@angular/platform-browser-dynamic": "^8.0.1",
