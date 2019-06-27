@@ -1,6 +1,6 @@
 <div class="stp-field" fxLayout="row">
   <div class="stp-field__field-short" fxLayoutAlign="start center">
-    <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+    <mat-form-field [formGroup]="group" appearance="outline" color="accent">
       <mat-select [formControlName]="config.field.name">
         <mat-option value="">(no file selected)</mat-option>
         <mat-option *ngFor="let item of isValidFile(templates, file.ext)" [value]="item">

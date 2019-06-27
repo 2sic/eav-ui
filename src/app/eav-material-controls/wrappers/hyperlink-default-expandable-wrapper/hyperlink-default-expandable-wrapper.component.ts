@@ -34,6 +34,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   tooltipUrl = '';
   isImage: boolean;
   iconClass: string;
+  isKnownType: boolean;
 
   constructor(
     private fileTypeService: FileTypeService,
@@ -90,6 +91,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private setValues() {
     this.thumbnailUrl = this.buildThumbnailUrl(this.link, 1, true);
     this.isImage = this.fileTypeService.isImage(this.link);
+    this.isKnownType = this.fileTypeService.isKnownType(this.link);
     this.iconClass = this.fileTypeService.getIconClass(this.link);
     this.tooltipUrl = this.buildTooltipUrl(this.link);
   }

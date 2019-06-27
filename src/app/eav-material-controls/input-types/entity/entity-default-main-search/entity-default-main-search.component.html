@@ -8,13 +8,19 @@
     <div
       [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
-        <mat-form-field [formGroup]="group" appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'">
+        <mat-form-field [formGroup]="group" appearance="outline" [color]="inputInvalid && touched ? 'warn' : 'accent'">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled" (blur)="setTouched()" (input)="filterSelectionList($event.target.value)">
-          <mat-icon matSuffix *ngIf="!enableTextEntry">arrow_drop_down</mat-icon>
-          <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)">
-            <mat-icon>text_fields</mat-icon>
-            <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+          <button type="button" matSuffix *ngIf="!enableTextEntry" mat-icon-button>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)" fxLayoutAlign="center center">
+            <button type="button" mat-icon-button>
+              <mat-icon>text_fields</mat-icon>
+            </button>
+            <button *ngIf="freeTextMode" type="button" mat-icon-button>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
           </a>
           <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
             allowMultiValue ?
@@ -43,12 +49,14 @@
 </div>
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
-<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="outline" color="accent">
   <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
   <a matSuffix (click)="freeTextModeChange($event)">
-    <mat-icon>arrow_drop_down</mat-icon>
+    <button type="button" mat-icon-button>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
   </a>
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>

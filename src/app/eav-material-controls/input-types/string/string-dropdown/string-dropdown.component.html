@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="group" appearance="fill" color="accent">
+<mat-form-field [formGroup]="group" appearance="outline" color="accent">
   <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.field.name"
     [required]='config.field.required' [placeholder]="config.field.placeholder">
     <mat-option *ngFor="let item of selectOptions" [value]="item.value">
@@ -10,8 +10,10 @@
   <a matSuffix *ngIf="enableTextEntry"
     [class]="'input-group-addon icon-field-button icon-field-button-small' + (freeTextMode ? ' active' : '')"
     (click)="freeTextModeChange($event)">
-    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
-    <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+    <button type="button" mat-icon-button>
+      <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
+      <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+    </button>
   </a>
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>

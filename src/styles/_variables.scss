@@ -33,3 +33,9 @@ $edit-ui-selected-option: rgba(#000000, 0.04);
 // Dropzone
 $dropzone-background:             rgba(#0087f4, 0.44);
 $dropzone-active-background:      rgba(#0087f4, 0.88);
+
+// helper text
+$helper-text-padding: 0 0 22px 12px;
+$helper-text-padding--no-hint: 0 0 24px 0;
+$helper-text-padding--last: 0 0 8px 12px;
+$helper-text-padding--last--no-hint: 0 0 8px 0;

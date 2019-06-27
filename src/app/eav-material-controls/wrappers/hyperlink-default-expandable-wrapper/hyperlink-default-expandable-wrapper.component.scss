@@ -1,89 +1,81 @@
 
 @import "../../../../styles/variables.scss";
+@import "../../../../styles/theme/material-colors.scss";
 
-.c-ew {
-    &__preview {
-        min-height: 72px;
-        max-height: 72px;
-        height: 72px;
-        width: 100%;
+$hyperlink-default-height: 80px;
 
-        &-field {
-            &--short {
-                width: calc(100% - 72px);
-                max-width: calc(100% - 72px);
-                height: inherit;
-                // spm dirty. Fix asap
-                .mat-form-field-hyperlink {
-                    height: inherit;
-                    ::ng-deep > .mat-form-field-wrapper {
-                        height: inherit;
-                        > .mat-form-field-flex {
-                            height: inherit;
-                        }
-                    }
-                }
-            }
-            &-hint{
+.c-ew__preview {
+    &-field {
+        &--short {
+            // spm width 1% is required. Otherwise field breaks
+            width: 1%;
+            padding: 10px;
+            padding-bottom: 0;
+        }
+        &-hint {
+            color: rgba($editUI-foreground-color, 0.44);
+            font-size: 12px;
+        }
+    }
+
+    &--disabled {
+        .c-ew__preview-field-hint {
+            color: $editUI-label-disabled-color;
+        }
+    }
+
+    .thumbnail-before-input {
+        background-color:  rgba($editUI-foreground-color, 0.08);
+        width: $hyperlink-default-height;
+        height: $hyperlink-default-height;
+        border-radius: $edit-ui-input-border-radius 0 0 $edit-ui-input-border-radius;
+
+        &.icon-before-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .mat-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 56px;
+                line-height: 56px;
                 color: rgba($editUI-foreground-color, 0.44);
-                white-space: nowrap; 
-                overflow: hidden;
-                text-overflow: ellipsis;
             }
         }
 
         &--disabled {
+            // opacity: 0.5;
+            border-bottom: 0;
             .c-ew__preview-field-hint {
                 color: $editUI-label-disabled-color;
             }
         }
+    }
 
-        .thumbnail-before-input {
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top-width: 0;
-            padding-left: 0;
-            padding-right: 0;
-            border-left-width: 0;
-            border-bottom-width: 0;
-            background-color:  rgba($editUI-foreground-color, 0.08);
-            /* transparent;  */
-        
-            /* new */
-            min-width: 72px;
-            height: inherit;
-            /* position: absolute;
-            top: 0; */
-             /* important to add this, because of paddings which are auto-added */
-            border-radius: $edit-ui-input-border-radius 0 0 0;
-            border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
-        
-            &.icon-before-input {
-                width: 72px;
-                font-size: 56px;
-                a,i {
-                    color: rgba($editUI-foreground-color, 0.44);
-                }
-            }
-        
-            &--disabled {
-                // opacity: 0.5;
-                border-bottom: 0;
-                .c-ew__preview-field-hint {
-                    color: $editUI-label-disabled-color;
-                }
-            }
-        }
+    &-suffix-text {
+        font-size: 12px;
+        color: map_get($mat-eav-item-dialog-secondary, 300);
+        user-select: none;
 
-        .mat-form-field-appearance-fill .mat-form-field-infix {
-            padding: 0px 0 20px 0;
+        &--disabled {
+            color: $editUI-label-disabled-color;
         }
     }
 }
 
-.apple-icon {
-    font-size: 20px !important;
-    width: 20px !important;
-    height: 20px !important;
-    line-height: 20px !important;
+.c__helper-wrapper {
+    display: flex;
+    width: 100%;
+
+    &--left {
+        flex: auto;
+        // spm width 1% is required. Otherwise field breaks
+        width: 1%;
+    }
+    &--right {
+        flex: 0 0 auto;
+        padding-left: 12px;
+        line-height: 16px;
+    }
 }

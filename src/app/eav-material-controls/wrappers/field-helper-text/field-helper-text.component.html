@@ -1,4 +1,5 @@
 <div class="c-fht__container" [ngClass]="{
+  'c-fht__container--no-hint': !description && !(control.invalid && !disableError),
   'c-fht__container--last': config.field.isLastInGroup,
   'c-fht__container--last--no-hint': config.field.isLastInGroup && !description && !(control.invalid && !disableError)
 }">

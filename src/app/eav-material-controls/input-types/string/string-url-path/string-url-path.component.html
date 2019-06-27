@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="group" appearance="fill" color="accent">
+<mat-form-field [formGroup]="group" appearance="outline" color="accent">
     <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
         (blur)="clean(config.field.name, true)" [placeholder]="config.field.label" [required]='config.field.required'>
     <mat-label>{{config.field.label}}</mat-label>
