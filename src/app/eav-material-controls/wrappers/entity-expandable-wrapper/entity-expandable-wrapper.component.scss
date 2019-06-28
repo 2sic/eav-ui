@@ -84,29 +84,31 @@
 }
 
 .more-entities {
-    padding: 0px 12px 0 12px;
-    margin: 9px 0 0 12px;
+    padding: 0px 12px;
+    margin-left: 10px;
     background: transparent;
     color:$editUI-foreground-color;
-    border-radius: 32px;
+    border-radius: 10px;
     border: 1px solid rgba($editUI-foreground-color, 0.44);
-    max-height: 20px;
-    min-height: 20px;
+    height: 18px;
     font-size: 12px;
     line-height: 16px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .mat-list {
-   //  max-width: calc(100%-20px);
-    width:calc(100% - 16px);
     overflow: hidden;
     padding: 0;
     margin-top: 9px;
+    flex: 1 1 auto;
 }
 
 .mat-list-item {
     width: auto !important;
     max-width: 200px;
+    flex: 0 1 auto;
     height: 20px !important;
     background: rgba($editUI-foreground-color, 0.08);
     border-radius: 10px;
@@ -115,6 +117,5 @@
     font-size: 12px;
     line-height: 16px;
     white-space: nowrap; 
-    overflow: hidden;
     text-overflow: ellipsis;
 }

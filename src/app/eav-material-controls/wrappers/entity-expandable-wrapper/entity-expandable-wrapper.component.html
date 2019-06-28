@@ -43,14 +43,13 @@
       'c-ew__preview--disabled': config.field.disabled
     }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"
-          fxLayoutAlign="start start">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-list *ngIf="value && availableEntities" fxLayout="row">
           <mat-list-item role="listitem" *ngFor="let item of value">
             <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="end end" class="more-entities mat-body-1">
+        <span *ngIf="value?.length > 5" class="more-entities mat-body-1">
           {{value?.length}}</span>
       </div>
     </div>
