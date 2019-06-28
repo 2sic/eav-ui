@@ -1,25 +1,47 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/theme/material-colors.scss";
 
+%field-border {
+    padding: 1px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(224, 224, 224);
+}
+%field-border--hover {
+    padding: 0 11px;
+    border: 2px solid rgba(0, 0, 0, 0.87);
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+
 .c-ew {
     &__preview {
-        position:relative;
-        padding: 6px 12px 12px 12px;
+        position: relative;
         min-height: 37px; // 56px minus paddings
         max-height: 121px;
         cursor: pointer;
-       
-        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px rgba($editUI-foreground-color, 0.44);
-        border-bottom-style: solid;
-        background: rgba($editUI-foreground-color, 0.08);
+        overflow: hidden;
+
+        @extend %field-border;
+        &:hover:not(.c-ew__preview--disabled) {
+            @extend %field-border--hover;
+        }
+
+        &-label {
+            background-color: white;
+            top: -6px;
+            position: absolute;
+            z-index: 1;
+            left: 12px;
+            padding: 0 6px 0 4px;
+            pointer-events: none;
+            color: rgba(69, 79, 99, 0.44);
+            font-size: 12px;
+        }
 
         &-container {
-            overflow: hidden;
             height: 100%;
             -webkit-align-content: center;
             align-content: center;
-            
+
             &--empty {
                 padding: 6px 0 0 0;
             }
@@ -33,10 +55,7 @@
         }
 
         &--disabled {
-            border-color: $editUI-disabled-background;
-            background-color: $editUI-disabled-background;
             cursor: default;
-            // $editUI-label-disabled-color
         }
 
         .color__accent {
@@ -51,20 +70,12 @@
             color: $editUI-label-disabled-color;
         }
 
-        &:hover {
-            padding: 6px 12px 11px 12px;
-            border: 2px rgba($editUI-foreground-color, 0.44);
-            border-bottom-style: solid;
-            // border-color: map_get($mat-eav-item-dialog-secondary, 500);
-        }
-
         mat-empty {
             height: 48px;
             padding: 24px 0 0 0;
         }
     }
 
-   
     &__container {
         border-radius: $edit-ui-dialog-border-radius;
         position: fixed;
@@ -101,5 +112,3 @@
         }
     }
 }
-
-

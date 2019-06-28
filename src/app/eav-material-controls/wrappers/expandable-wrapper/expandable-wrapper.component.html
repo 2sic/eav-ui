@@ -20,27 +20,26 @@
   </div>
 </div>
 <div>
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+    'mat-caption' : control.value && control.value.length > 0,
+    'mat-empty' : !(control.value && control.value.length > 0),
+    'mat-error' : control.invalid && control.touched && !control.disabled,
+    'color__primary' : !(control.invalid && control.touched) && !control.disabled,
+    'color__label-disabled' : control.disabled
+  }">
+    {{config.field.label}}
+    {{config.field.required? '*': '' }}
+  </mat-label>
   <div matRipple (click)="!control.disabled ? expandDialog() : null; setTouched();"
     [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : control.invalid && control.touched,
       'c-ew__preview--disabled': control.disabled
     }">
     <div [ngClass]="control.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label [ngClass]="{
-        'mat-caption' : control.value && control.value.length > 0,
-        'mat-empty' : !(control.value && control.value.length > 0),
-        'mat-error' : control.invalid && control.touched && !control.disabled,
-        'color__primary' : !(control.invalid && control.touched) && !control.disabled,
-        'color__label-disabled' : control.disabled
-      }">
-        {{config.field.label}}
-        {{config.field.required? '*': '' }}
-      </mat-label>
       <div *ngIf="control.value" class="c-ew__preview-content" [ngClass]="{'color__label-disabled': control.disabled}"
         [innerHtml]="cleanedValue | safeHtml">
       </div>
     </div>
   </div>
-  <!-- hasDirtyTouched="fasle"  -->
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </div>
