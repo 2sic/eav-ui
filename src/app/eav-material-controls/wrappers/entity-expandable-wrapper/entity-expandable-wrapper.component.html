@@ -26,28 +26,27 @@
     </div>
   </div>
 </div>
-<div>
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : value && value.length > 0,
+      'mat-empty' : !(value && value.length > 0),
+      'mat-error' : inputInvalid && touched && !config.field.disabled,
+      'color__primary' : !(inputInvalid && touched) && !config.field.disabled,
+      'color__label-disabled' : config.field.disabled
+    }">
+    {{config.field.label}}
+    {{config.field.required? '*': '' }}
+  </mat-label>
   <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null" class="c-ew__preview mat-ripple"
     [matRippleAnimation]="{enterDuration: 360}" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': config.field.disabled
     }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label [ngClass]="{
-        'mat-caption' : value && value.length > 0,
-        'mat-empty' : !(value && value.length > 0),
-        'mat-error' : inputInvalid && touched && !config.field.disabled,
-        'color__primary' : !(inputInvalid && touched) && !config.field.disabled,
-        'color__label-disabled' : config.field.disabled
-      }">
-        {{config.field.label}}
-        {{config.field.required? '*': '' }}
-      </mat-label>
       <div fxLayout="row" fxLayoutAlign="start start">
         <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"
           fxLayoutAlign="start start">
           <mat-list-item role="listitem" *ngFor="let item of value">
-            <mat-icon mat-list-icon>link</mat-icon>
             <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>

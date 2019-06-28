@@ -19,23 +19,23 @@
     </div>
   </div>
 </div>
-<div>
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : value && value.length > 0,
+      'mat-empty' : !(value && value.length > 0),
+      'mat-error' : inputInvalid && touched && !disabled,
+      'color__primary' : !(inputInvalid && touched) && !disabled,
+      'color__label-disabled' : disabled
+    }">
+    {{config.field.label}}
+    {{config.field.required? '*': '' }}
+  </mat-label>
   <div matRipple (click)="!disabled ? expandDialog() : null; setTouched();" [matRippleAnimation]="{enterDuration: 360}"
     class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': disabled
     }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label [ngClass]="{
-        'mat-caption' : value && value.length > 0,
-        'mat-empty' : !(value && value.length > 0),
-        'mat-error' : inputInvalid && touched && !disabled,
-        'color__primary' : !(inputInvalid && touched) && !disabled,
-        'color__label-disabled' : disabled
-      }">
-        {{config.field.label}}
-        {{config.field.required? '*': '' }}
-      </mat-label>
       <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
     </div>
   </div>

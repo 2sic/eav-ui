@@ -16,9 +16,7 @@
             <mat-label class="mat-caption">{{config.field.label}}
               {{config.field.required ? '*': '' }}</mat-label>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <mat-icon>link</mat-icon>
-            <span>&nbsp;&nbsp;</span>
+          <div>
             <span class="dnd-element-text"
               [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
           </div>

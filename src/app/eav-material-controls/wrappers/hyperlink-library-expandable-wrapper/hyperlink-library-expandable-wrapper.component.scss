@@ -1,17 +1,44 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/theme/material-colors.scss";
 
+%field-border {
+    padding: 11px 12px 1px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(224, 224, 224);
+}
+%field-border--hover {
+    padding: 10px 11px 0 11px;
+    border: 2px solid rgba(0, 0, 0, 0.87);
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+
 .c-ew {
     &__preview {
         position:relative;
-        padding: 6px 12px;
         min-height: 37px;
         max-height: 119px;
         cursor: pointer;
-        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px rgba($editUI-foreground-color, 0.44);
-        border-bottom-style: solid;
-        background: rgba($editUI-foreground-color, 0.08);
+
+        @extend %field-border;
+        &:hover:not(.c-ew__preview--disabled) {
+            @extend %field-border--hover;
+        }
+
+        &-holder {
+            position: relative;
+        }
+
+        &-label {
+            background-color: white;
+            top: -6px;
+            position: absolute;
+            z-index: 1;
+            left: 8px;
+            padding: 0 6px 0 4px;
+            pointer-events: none;
+            color: rgba(69, 79, 99, 0.44);
+            font-size: 12px;
+        }
 
         &-container {
             overflow: hidden;
@@ -68,12 +95,6 @@
 
         .color__label-disabled {
             color: $editUI-label-disabled-color;
-        }
-
-        &:hover {
-            padding: 6px 12px 5px 12px;
-            border: 2px rgba($editUI-foreground-color, 0.44);
-            border-bottom-style: solid;
         }
 
         mat-empty {

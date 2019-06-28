@@ -1,17 +1,43 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/theme/material-colors.scss";
 
+%field-border {
+    padding: 1px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(224, 224, 224);
+}
+%field-border--hover {
+    padding: 0 11px;
+    border: 2px solid rgba(0, 0, 0, 0.87);
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+
 .c-ew {
     &__preview {
         position:relative;
-        padding: 6px 12px 8px 12px;
-        min-height: 38px; // 56px minus paddings
+        min-height: 36px;
         cursor: pointer;
 
-        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px rgba($editUI-foreground-color, 0.44);
-        border-bottom-style: solid;
-        background: rgba($editUI-foreground-color, 0.08);
+        @extend %field-border;
+        &:hover:not(.c-ew__preview--disabled) {
+            @extend %field-border--hover;
+        }
+
+        &-holder {
+            position: relative;
+        }
+
+        &-label {
+            background-color: white;
+            top: -6px;
+            position: absolute;
+            z-index: 1;
+            left: 8px;
+            padding: 0 6px 0 4px;
+            pointer-events: none;
+            color: rgba(69, 79, 99, 0.44);
+            font-size: 12px;
+        }
 
         &-container {
             overflow: hidden;
@@ -50,13 +76,6 @@
             color: $editUI-label-disabled-color;
         }
 
-        &:hover {
-            padding: 6px 12px 7px 12px;
-            // border: 2px map_get($mat-eav-item-dialog-secondary, 500);
-            border: 2px rgba($editUI-foreground-color, 0.44);
-            border-bottom-style: solid;
-        }
-
         mat-empty {
             height: 48px;
             padding: 24px 0 0 0;
@@ -66,7 +85,7 @@
 
 .more-entities {
     padding: 0px 12px 0 12px;
-    margin: 0 0 0 12px;
+    margin: 9px 0 0 12px;
     background: transparent;
     color:$editUI-foreground-color;
     border-radius: 32px;
@@ -75,27 +94,27 @@
     min-height: 20px;
     font-size: 12px;
     line-height: 16px;
-
 }
 
 .mat-list {
    //  max-width: calc(100%-20px);
-    width:calc(100%-16px);
+    width:calc(100% - 16px);
     overflow: hidden;
+    padding: 0;
+    margin-top: 9px;
 }
 
 .mat-list-item {
-    // background: mat-color($editUI-theme-foreground, base,  0.08);
-    background: white;
-    border-radius: 32px;
-    border: 1px solid rgba($editUI-foreground-color, 0.44);
-    max-height: 24px;
-    margin: 2px 0 2px 0;
-    min-width: 152px;
+    width: auto !important;
+    max-width: 200px;
+    height: 20px !important;
+    background: rgba($editUI-foreground-color, 0.08);
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-bottom: 7px;
+    font-size: 12px;
+    line-height: 16px;
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-
-
