@@ -138,7 +138,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region new adam: callbacks only
 
   setValue(fileItem) {
-    this.setFormValue(this.config.field.name, `File:${fileItem.Id}`);
+    this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {

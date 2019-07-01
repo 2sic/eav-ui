@@ -15,8 +15,7 @@
 .c-ew {
     &__preview {
         position: relative;
-        min-height: 37px; // 56px minus paddings
-        max-height: 121px;
+        height: 116px;
         cursor: pointer;
         overflow: hidden;
 
