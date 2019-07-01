@@ -8,8 +8,13 @@ const chalkSuccess = chalk.green;
   const languagesTempDir = './dist/i18n';
 
   const files = await fs.readdir(languagesDir);
-  await fs.ensureDir(languagesTempDir);
+  // remove languages folder before building
+  await fs.emptyDir(languagesTempDir);
+  await fs.rmdir(languagesTempDir);
+  if (files.length === 0) return;
 
+  // copy and rename language files
+  await fs.ensureDir(languagesTempDir);
   files.forEach(async file => {
     await fs.copy(`${languagesDir}/${file}`, `${languagesTempDir}/${file.replace('.json', '.js')}`);
   });
