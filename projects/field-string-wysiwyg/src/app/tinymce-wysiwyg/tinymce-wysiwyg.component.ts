@@ -90,6 +90,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     const isValid = this.validateValue(value);
     if (isValid) {
       this.connector.data.update(value);
+      // spm Initial value has to be updated, otherwise switching mode to advanced reinitializes tinymce with old value
+      this.initialValue = value;
     }
   }
 
@@ -125,6 +127,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     console.log('TinymceWysiwygComponent setValue', 'id:', this.id, 'old:', oldValue, 'new:', newValue);
     if (newValue !== oldValue) {
       this.editor.editorManager.get(this.id).setContent(newValue);
+      // spm Initial value has to be updated, otherwise switching mode to advanced reinitializes tinymce with old value
+      this.initialValue = newValue;
     }
   }
 
