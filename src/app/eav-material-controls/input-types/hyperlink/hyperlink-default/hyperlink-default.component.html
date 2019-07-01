@@ -50,18 +50,19 @@
           </a>
         </mat-hint>
       </mat-form-field>
-      <div *ngIf="value && isImage()">
-        <div class="c-hld-image-container">
-          <img [src]="thumbnailUrl(2)" class="c-hld-image" />
-        </div>
+      <div *ngIf="value && isImage()" class="c-hld-image-container">
+        <a [href]="thumbnailUrl()" target="_blank">
+          <div class="c-hld-image-box">
+            <img [src]="thumbnailUrl(2)" class="c-hld-image" />
+          </div>
+        </a>
       </div>
-      <div [ngClass]="{'c-hld-icon': value && !isImage()}"
-        [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
-
-        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}"
-          matTooltipPosition="right">
-          <mat-icon *ngIf="isKnownType()">{{icon()}}</mat-icon>
-          <mat-icon *ngIf="!isKnownType()" svgIcon="{{icon()}}"></mat-icon>
+      <div *ngIf="value && !isImage()" class="c-hld-icon-container">
+        <a [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
+          <div class="c-hld-icon-box">
+            <mat-icon *ngIf="isKnownType()">{{icon()}}</mat-icon>
+            <mat-icon *ngIf="!isKnownType()" svgIcon="{{icon()}}"></mat-icon>
+          </div>
         </a>
       </div>
     </mat-card>
