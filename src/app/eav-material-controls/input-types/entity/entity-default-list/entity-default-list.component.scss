@@ -33,7 +33,7 @@
     &:hover:not(.dnd-element--disabled) {
         @extend %field-border--hover;
         .mat-caption {
-            top: -8px;
+            top: -7px;
             left: 6px;
         }
     }
@@ -41,7 +41,7 @@
     .mat-caption {
         background-color: white;
         position: absolute;
-        top: -7px;
+        top: -6px;
         left: 7px;
         padding: 0 6px 0 4px;
         z-index: 1;
