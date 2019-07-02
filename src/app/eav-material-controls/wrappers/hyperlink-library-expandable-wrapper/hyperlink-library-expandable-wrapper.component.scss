@@ -77,9 +77,7 @@
 
         &--disabled {
             border-color: $editUI-disabled-background;
-            background-color: $editUI-disabled-background;
             cursor: default;
-            // $editUI-label-disabled-color
 
             .adam-browse-background-icon, .c-ew__preview-hint-text {
                 color: $editUI-label-disabled-color;

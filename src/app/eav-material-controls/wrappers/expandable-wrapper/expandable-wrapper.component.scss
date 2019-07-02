@@ -59,6 +59,7 @@
         }
 
         &--disabled {
+            border-color: $editUI-disabled-background;
             cursor: default;
         }
 
