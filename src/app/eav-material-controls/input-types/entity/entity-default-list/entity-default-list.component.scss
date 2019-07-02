@@ -3,11 +3,11 @@
 %field-border {
     padding: 1px 12px;
     border-radius: 5px;
-    border: 1px solid rgba(224, 224, 224);
+    border: 1px solid $field-border-color--initial;
 }
 %field-border--hover {
     padding: 0 11px;
-    border: 2px solid rgba(0, 0, 0, 0.87);
+    border: 2px solid $field-border-color--hover;
     transition: border-color .3s cubic-bezier(.25,.8,.25,1);
 }
 

@@ -4,16 +4,16 @@
 %field-border {
     padding: 1px 12px;
     border-radius: 5px;
-    border: 1px solid rgba(224, 224, 224);
+    border: 1px solid $field-border-color--initial;
 }
 %field-border--hover {
     padding: 0 11px;
-    border: 2px solid rgba(0, 0, 0, 0.87);
+    border: 2px solid $field-border-color--hover;
     transition: border-color .3s cubic-bezier(.25,.8,.25,1);
 }
 %field-border--invalid {
     padding: 0 11px;
-    border: 2px solid map_get($mat-eav-item-dialog-error, 500);
+    border: 2px solid $field-border-color--invalid;
     transition: border-color .3s cubic-bezier(.25,.8,.25,1);
 }
 
@@ -37,9 +37,11 @@
             left: 8px;
             padding: 0 6px 0 4px;
             pointer-events: none;
-            color: rgba(69, 79, 99, 0.44);
             font-size: 11px;
             line-height: 14px;
+        }
+        &-label:not(.mat-error) {
+            color: rgba($editUI-foreground-color, 0.44);
         }
 
         &-container {

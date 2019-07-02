@@ -2,7 +2,7 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/theme/material-colors.scss";
 
-$hyperlink-default-height: 80px;
+$hyperlink-default-height: 78px;
 
 .c-ew__preview {
     &-field {
@@ -29,6 +29,8 @@ $hyperlink-default-height: 80px;
         width: $hyperlink-default-height;
         height: $hyperlink-default-height;
         border-radius: $edit-ui-input-border-radius 0 0 $edit-ui-input-border-radius;
+        border: 1px solid $field-border-color--disabled;
+        cursor: pointer;
 
         &.icon-before-input {
             display: flex;
