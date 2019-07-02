@@ -47,8 +47,7 @@ $hyperlink-default-height: 78px;
         }
 
         &--disabled {
-            // opacity: 0.5;
-            border-bottom: 0;
+            cursor: default;
             .c-ew__preview-field-hint {
                 color: $editUI-label-disabled-color;
             }
