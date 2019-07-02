@@ -8,6 +8,9 @@ const fs = require('fs-extra');
 const sourcePath = 'dist';
 const sourcePathMain = 'dist/main';
 const outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+const excludeDirs = [
+  'out-tsc',
+];
 const args = process.argv.slice(2);
 let watchEnabled = false;
 
@@ -36,6 +39,19 @@ const calculatePaths = (path) => {
   }
 }
 
+const checkIfExcluded = (paths) => {
+  const fullSourcePath = paths.src + '/' + paths.file;
+  // Checks if folder is excluded from copying
+  for (let i = 0; i < excludeDirs.length; i++) {
+    const excludeDir = excludeDirs[i];
+    const excludeDirClean = excludeDir.trim().replace(/^\/|\/$/g, '');
+    const isExcluded = fullSourcePath.includes('/' + excludeDirClean + '/');
+    // console.log(`Checking if excluded:\nFull: ${fullSourcePath}\nExclude: ${excludeDir}\nExcluded: ${isExcluded}`);
+    if (isExcluded) return true;
+  }
+  return false;
+}
+
 console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
 
 // Clear destination folder
@@ -52,20 +68,26 @@ const watcher = chokidar.watch(sourcePath, {
 watcher
   .on('add', path => {
     const paths = calculatePaths(path);
+    const isExcluded = checkIfExcluded(paths);
+    // console.log(`Add ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
+    if (isExcluded) return;
     fs.ensureDirSync(paths.dest);
     fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
-    // console.log(`Add ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}`);
   })
   .on('change', path => {
     const paths = calculatePaths(path);
+    const isExcluded = checkIfExcluded(paths);
+    // console.log(`Copy ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
+    if (isExcluded) return;
     fs.ensureDirSync(paths.dest);
     fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
-    // console.log(`Copy ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}`);
   })
   .on('unlink', path => {
     const paths = calculatePaths(path);
+    const isExcluded = checkIfExcluded(paths);
+    // console.log(`Delete ${paths.src}/${paths.file}\nfrom ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
+    if (isExcluded) return;
     fs.removeSync(`${paths.dest}/${paths.file}`);
-    // console.log(`Delete ${paths.src}/${paths.file}\nfrom ${paths.dest}/${paths.file}`);
   })
   .on('error', error => {
     console.log(chalkError(`Watcher error: ${error}`));
