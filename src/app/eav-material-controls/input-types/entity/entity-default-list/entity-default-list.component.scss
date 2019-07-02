@@ -30,7 +30,7 @@
     height: 40px;
 
     @extend %field-border;
-    &:hover:not(.c-ew__preview--disabled) {
+    &:hover:not(.dnd-element--disabled) {
         @extend %field-border--hover;
         .mat-caption {
             top: -8px;
@@ -96,7 +96,7 @@
 
 .dnd-element--disabled {
     border-color: $editUI-disabled-background;
-    background-color: $editUI-disabled-background;
+    cursor: default;
 
     .dnd-element-text {
         color: $editUI-label-disabled-color;

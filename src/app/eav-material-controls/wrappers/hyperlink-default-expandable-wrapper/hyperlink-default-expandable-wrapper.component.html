@@ -38,8 +38,9 @@
       </mat-icon>
     </div>
     <div class="c-ew__preview-field--short" fxFlex="auto">
-      <mat-form-field appearance="outline" [color]="control.invalid && control.touched ? 'warn' : 'accent'"
-        class="mat-form-field-hyperlink">
+      <mat-form-field appearance="outline" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
+          'mat-form-field-invalid': control.invalid && control.touched
+        }">
         <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
           [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
         {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
