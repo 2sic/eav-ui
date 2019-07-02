@@ -64,6 +64,17 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
+  expandDialog() {
+    console.log('HyperlinkDefaultExpandableWrapperComponent expandDialog');
+    this.dialogIsOpen = true;
+    this.config.field.expanded = true;
+  }
+  closeDialog() {
+    console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
+    this.dialogIsOpen = false;
+    this.config.field.expanded = false;
+  }
+
   /** Update test-link if necessary - both when typing or if link was set by dialogs */
   private setLink(value: string) {
     if (!value) { return; }

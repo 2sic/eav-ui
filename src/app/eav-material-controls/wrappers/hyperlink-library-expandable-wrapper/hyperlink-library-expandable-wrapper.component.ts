@@ -41,4 +41,15 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   icon(item: AdamItem) {
     return this.fileTypeService.getIconClass(item.Name);
   }
+
+  expandDialog() {
+    console.log('HyperlinkLibraryExpandableWrapperComponent expandDialog');
+    this.dialogIsOpen = true;
+    this.config.field.expanded = true;
+  }
+  closeDialog() {
+    console.log('HyperlinkLibraryExpandableWrapperComponent closeDialog');
+    this.dialogIsOpen = false;
+    this.config.field.expanded = false;
+  }
 }

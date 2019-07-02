@@ -60,4 +60,15 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
     }
     return value;
   }
+
+  expandDialog() {
+    console.log('EntityExpandableWrapperComponent expandDialog');
+    this.dialogIsOpen = true;
+    this.config.field.expanded = true;
+  }
+  closeDialog() {
+    console.log('EntityExpandableWrapperComponent closeDialog');
+    this.dialogIsOpen = false;
+    this.config.field.expanded = false;
+  }
 }

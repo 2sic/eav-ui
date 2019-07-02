@@ -1,11 +1,10 @@
 <!-- dialog -->
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
-  <div class="c-ew__backdrop" (click)="dialogIsOpen = false"></div>
+  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center"
-          (click)="dialogIsOpen = false">
+        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
@@ -34,8 +33,8 @@
     {{config.field.label}}
     {{config.field.required ? '*': '' }}
   </mat-label>
-  <div matRipple (click)="!config.field.disabled ? dialogIsOpen = true : null"
-    [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple"
+  <div matRipple (click)="!config.field.disabled ? expandDialog() : null" [matRippleAnimation]="{enterDuration: 360}"
+    class="c-ew__preview mat-ripple"
     [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': config.field.disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px"
