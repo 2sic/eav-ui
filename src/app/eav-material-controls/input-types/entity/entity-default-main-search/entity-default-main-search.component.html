@@ -13,14 +13,15 @@
         }">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled" (blur)="setTouched()" (input)="filterSelectionList($event.target.value)">
-          <button type="button" matSuffix *ngIf="!enableTextEntry" mat-icon-button>
+          <button *ngIf="!enableTextEntry" [disabled]="disabled" type="button" matSuffix mat-icon-button>
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
-          <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)" fxLayoutAlign="center center">
-            <button type="button" mat-icon-button>
+          <a matSuffix *ngIf="enableTextEntry" (click)="!disabled && freeTextModeChange($event)"
+            fxLayoutAlign="center center">
+            <button [disabled]="disabled" type="button" mat-icon-button>
               <mat-icon>text_fields</mat-icon>
             </button>
-            <button *ngIf="freeTextMode" type="button" mat-icon-button>
+            <button *ngIf="freeTextMode" [disabled]="disabled" type="button" mat-icon-button>
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </a>
@@ -55,8 +56,8 @@
   <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
-  <a matSuffix (click)="freeTextModeChange($event)">
-    <button type="button" mat-icon-button>
+  <a matSuffix (click)="!disabled && freeTextModeChange($event)">
+    <button [disabled]="disabled" type="button" mat-icon-button>
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
   </a>

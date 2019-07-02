@@ -38,6 +38,10 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
     return this.group.controls[this.config.field.name].invalid;
   }
 
+  get disabled() {
+    return this.group.controls[this.config.field.name].disabled;
+  }
+
   get value() {
     return this.group.controls[this.config.field.name].value;
   }

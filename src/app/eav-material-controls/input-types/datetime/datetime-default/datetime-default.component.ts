@@ -25,4 +25,8 @@ export class DatetimeDefaultComponent implements Field {
   get inputInvalid() {
     return this.group.controls[this.config.field.name].invalid;
   }
+
+  get disabled() {
+    return this.group.controls[this.config.field.name].disabled;
+  }
 }
