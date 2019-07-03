@@ -32,6 +32,7 @@ if (isWysiwyg) {
 
 /* change source map generation based on production mode */
 const sourceMapsPath = isWysiwyg ? 'elements/field-string-wysiwyg/' : '';
-setExternalSourceMaps(configuration, sourceMapsPath);
+const setFilename = false;
+setExternalSourceMaps(configuration, sourceMapsPath, setFilename);
 
 module.exports = configuration;
