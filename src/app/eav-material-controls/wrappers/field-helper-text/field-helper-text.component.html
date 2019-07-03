@@ -1,14 +1,13 @@
 <div class="c-fht__container" [ngClass]="{
+  'c-fht__container--no-hint': !description && !(control.invalid && !disableError),
   'c-fht__container--last': config.field.isLastInGroup,
-  'c-fht__container--last--no-hint': config.field.isLastInGroup && !config.field.settings.Notes && !(control.invalid && !disableError)
+  'c-fht__container--last--no-hint': config.field.isLastInGroup && !description && !(control.invalid && !disableError)
 }">
-  <mat-hint *ngIf="config.field.settings.Notes" class="mat-caption" (click)="isFullText = !isFullText"
+  <mat-hint *ngIf="description" class="mat-caption" (click)="toggleHint($event)"
     [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
     fxLayout="row" fxLayoutAlign="start start">
-    <i class="material-icons" style="font-size: 14px;">info_outline</i>
-    <span>&nbsp;</span>
-    <span [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''"
-      [innerHtml]="config.field.settings.Notes"></span>
+    <span class="notes-container" [ngClass]="!isFullText ? 'c-fht__container-hint--ellipsis' : ''"
+      (mouseenter)="changeAnchorTarget($event)" [innerHtml]="description | safeHtml"></span>
   </mat-hint>
   <mat-error *ngIf="control.invalid && !disableError" class="mat-caption">
     {{ getErrorMessage() | translate:{ param:config.field.settings } }}

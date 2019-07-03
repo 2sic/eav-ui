@@ -15,9 +15,9 @@ import { UrlConstants } from '../../../shared/constants/url-constants';
   styleUrls: ['./adam-attach-wrapper.component.scss']
 })
 export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
-  @ViewChild(AdamBrowserComponent) adamRef: AdamBrowserComponent;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('invisibleClickable', { static: false }) invisibleClickableReference: ElementRef;
+  @ViewChild(AdamBrowserComponent, { static: true }) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

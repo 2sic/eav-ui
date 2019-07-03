@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48.svg';

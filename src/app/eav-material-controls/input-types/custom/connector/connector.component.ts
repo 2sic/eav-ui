@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, NgZone } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -15,7 +15,7 @@ import { ConnectorService } from '../connector-service/connector.service';
   styleUrls: ['./connector.component.scss']
 })
 export class ConnectorComponent implements OnInit, OnDestroy {
-  @ViewChild('customElContainer') customElContainer: ElementRef;
+  @ViewChild('customElContainer', { static: true }) customElContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   customElConnector: ConnectorService;

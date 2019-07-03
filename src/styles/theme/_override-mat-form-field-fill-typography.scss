@@ -1,73 +1,48 @@
 // overwrite mat-form-field-fill-typography
 @mixin mat-form-field-fill-typography($config) {
-  // The unit-less line-height from the font config.
-  $line-height: mat-line-height($config, input);
-  // The amount to scale the font for the floating label and subscript.
-  $subscript-font-scale: 0.75;
-  // The padding on top of the infix.
-  $infix-padding-top: 0px;
-  // The padding below the infix.
-  $infix-padding-bottom: 12px;
-  // Special padding for hyperlink input fields
-  $infix-padding-bottom-hyperlink: 23px;
-  // The margin applied to the form-field-infix to reserve space for the floating label.
-  $infix-margin-top: 20px;
-  // The amount we offset the label from the input text in the fill appearance.
-  $fill-appearance-label-offset: -12px;
-  // The border applied to the form-field-infix
-  $infix-border-top: 12px;
-  // from mat-form-field-typography
-  $wrapper-padding-bottom: 0;
 
-  .mat-form-field-appearance-fill {
-    width:100%;
-   
-    .mat-form-field-infix {
-      padding: $infix-padding-top 0 $infix-padding-bottom 0;
-      border-top: $infix-border-top solid transparent;
-    }
-    // Special padding for hyperlink input fields
-    &.mat-form-field-hyperlink {
-      .mat-form-field-infix {
-        padding: $infix-padding-top 0 $infix-padding-bottom-hyperlink 0;
-      }
-      .mat-form-field-subscript-wrapper {
-        margin-top: 0;
-      }
-    }
-   
-    .mat-form-field-label {
-      top: $infix-margin-top + $infix-padding-top;
-      margin-top: $fill-appearance-label-offset;
-    }
-
-    &.mat-form-field-can-float {
-      &.mat-form-field-should-float .mat-form-field-label,
-      .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
-        @include _mat-form-field-fill-label-floating(
-                $subscript-font-scale, $infix-padding-top + $fill-appearance-label-offset,
-                $infix-margin-top);
-      }
-
-      // Server-side rendered matInput with a label attribute but label not shown
-      // (used as a pure CSS stand-in for mat-form-field-should-float).
-      .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper
-      .mat-form-field-label {
-        @include _mat-form-field-fill-label-floating(
-                $subscript-font-scale, $infix-padding-top + $fill-appearance-label-offset,
-                $infix-margin-top);
-      }
-    }  
-
-    // from mat-form-field-typography
+  // looks
+  .mat-form-field-appearance-outline {
+    width: 100%;
+    
     .mat-form-field-wrapper {
-      padding-bottom: $wrapper-padding-bottom;
+      padding-bottom: 0;
+      margin: 0 !important;
+
+      .mat-form-field-flex {
+        align-items: center;
+      }
+
+      // positions
+      .mat-form-field-flex > .mat-form-field-infix {
+        padding: 4px 0 10px 0px !important;
+        font-size: 14px;
+      }
+      .mat-form-field-label-wrapper {
+        top: -20px;
+        margin: 0;
+      }
+      .mat-form-field-suffix {
+        margin-right: -10px !important;
+        margin-top: -2px !important;
+      }
+      // icons
+      .mat-icon {
+        font-size: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        line-height: 20px !important;
+      }
+      // dropdown field override
+      .mat-select-arrow-wrapper {
+        transform: none !important;
+      }
     }
-    // from mat-form-field-typography
-    .mat-form-field-underline {
-      // We want the underline to start at the end of the content box, not the padding box,
-      // so we move it up by the padding amount.
-      bottom: $wrapper-padding-bottom;
-    }
+  }
+
+  // animation
+  .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+    transform: translateY(-18px) scale(.75) !important;
+    width: 133.33333% !important;
   }
 }

@@ -15,9 +15,9 @@ import { UrlConstants } from '../../../shared/constants/url-constants';
   styleUrls: ['./dropzone-wrapper.component.scss']
 })
 export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
-  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild(DropzoneDirective, { static: false }) dropzoneRef?: DropzoneDirective;
+  @ViewChild('invisibleClickable', { static: false }) invisibleClickableReference: ElementRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
@@ -27,6 +27,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   // acceptedFiles: 'image/*',
   // createImageThumbnails: true
   url: string;
+  usePortalRoot = false;
 
   get disabled() {
     return this.group.controls[this.config.field.name].disabled;
@@ -47,7 +48,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
     this.dropzoneConfig = {
       // spm 2019.02.28. Check whether usePortalRoot should always be false
-      url: this.url + `?usePortalRoot=${this.eavConfig.portalroot}false&appId=${this.eavConfig.appId}`,
+      url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
       maxFiles: 1,
       autoReset: null,
       errorReset: null,
@@ -72,6 +73,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       // so i'm just making the preview clickable, as it's not important
       clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
+    this.config.dropzoneConfig = this.dropzoneConfig;
   }
 
   ngAfterViewInit() {
@@ -81,6 +83,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   public onUploadError(args: any): void {
     console.log('onUploadError:', args);
+    // Reset dropzone
+    this.dropzoneRef.reset();
   }
 
   public onUploadSuccess(args: any): void {
@@ -89,15 +93,15 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       if (this.config.adam) {
         this.config.adam.svc.addFullPath(response); // calculate additional infos
         this.config.adam.afterUploadCallback(response);
-        // Reset dropzone
-        this.dropzoneRef.reset();
-        this.config.adam.refresh();
+        this.config.adam.refresh(); // Refresh Adam
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }
     } else {
       alert('Upload failed because: ' + response.Error);
     }
+    // Reset dropzone
+    this.dropzoneRef.reset();
   }
 
   /**

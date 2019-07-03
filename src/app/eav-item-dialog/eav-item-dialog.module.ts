@@ -4,21 +4,19 @@ import { StoreModule, Store } from '@ngrx/store';
 import { Routes, RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatCheckboxModule,
-  MatInputModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatCardModule,
-  MatIconModule,
-  MatMenuModule,
-  MatSnackBarModule,
-  MatDialogModule,
-  MatDividerModule,
-  MatTooltipModule,
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
@@ -33,13 +31,15 @@ import { reducers } from '../shared/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
+import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 
 @NgModule({
   declarations: [
     MultiItemEditFormComponent,
     ItemEditFormComponent,
     OpenMultiItemDialogComponent,
-    MultiItemEditFormHeaderComponent
+    MultiItemEditFormHeaderComponent,
+    MultiItemEditFormDebugComponent
   ],
   imports: [
     CommonModule,

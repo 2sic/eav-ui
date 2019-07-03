@@ -21,8 +21,8 @@ import { ItemService } from '../../../shared/services/item.service';
   styleUrls: ['./eav-localization-wrapper.component.scss']
 })
 export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
@@ -33,6 +33,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   defaultLanguage = '';
   toggleTranslateField = false;
 
+  dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService,
@@ -53,7 +54,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
-
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; })
+    );
   }
 
   ngOnDestroy() {

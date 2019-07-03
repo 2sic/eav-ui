@@ -1,3 +1,5 @@
+@import "../../../styles/variables.scss";
+
 .mat-card {
     padding-top: 17px;
     padding-right: 16px;
@@ -5,13 +7,13 @@
     padding-left: 16px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    height: 52px;
+    height: $edit-ui-dialog-header-max-height;
     z-index: 1;
     box-shadow: 0 2px 5px rgba(0,0,0,0.26);
 }
 .mat-icon-button {
-    margin-left: -8px;
-    margin-right: 12px;
+    margin-left: -14px;
+    margin-right: 18px;
 }
 .mat-icon {
     font-size: 20px;

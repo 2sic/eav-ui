@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -18,11 +19,12 @@ import { ContentTypeService } from '../../../shared/services/content-type.servic
   animations: [ContentExpandAnimation]
 })
 export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer') previewContainer: ElementRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;
+  private subscriptions: Subscription[] = [];
   previewElConnector: ConnectorService;
 
   get value() {
@@ -49,6 +51,10 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group);
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);
+
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+    );
   }
 
   setTouched() {
@@ -57,17 +63,16 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
 
   expandDialog() {
     console.log('ExpandableWrapperV2Component expandDialog');
-    this.dialogIsOpen = true;
-    this.config.field.expanded = true;
+    this.config.field.expanded.next(true);
   }
   closeDialog() {
     console.log('ExpandableWrapperV2Component closeDialog');
-    this.dialogIsOpen = false;
-    this.config.field.expanded = false;
+    this.config.field.expanded.next(false);
   }
 
   ngOnDestroy() {
     console.log('ExpandableWrapperV2 destroyed');
     this.previewElConnector.destroy();
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 }

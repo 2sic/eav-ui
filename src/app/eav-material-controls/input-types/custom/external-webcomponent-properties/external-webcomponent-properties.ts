@@ -1,9 +1,10 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
+import { FormSet } from '../../../../shared/models/eav/form-set';
 
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
@@ -23,10 +24,11 @@ export class ConnectorHost<T> {
 }
 
 export class ExperimentalProps {
+    entityGuid: string;
     allInputTypeNames: InputTypeName[];
     updateField: (name: string, value: any) => void;
     formGroup: FormGroup;
-    formSetValueChange$: Observable<any>;
+    formSetValueChange$: Observable<FormSet>;
 }
 
 export class FieldState {

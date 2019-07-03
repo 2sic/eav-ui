@@ -6,6 +6,7 @@ import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-fi
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
+import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -15,7 +16,7 @@ import { EntityQueryComponent } from '../../entity/entity-query/entity-query.com
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;

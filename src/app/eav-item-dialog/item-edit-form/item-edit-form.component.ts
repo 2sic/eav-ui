@@ -16,6 +16,7 @@ import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
+import { FormSet } from '../../shared/models/eav/form-set';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -23,7 +24,7 @@ import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
   styleUrls: ['./item-edit-form.component.scss']
 })
 export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
-  @ViewChild(EavFormComponent) form: EavFormComponent;
+  @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
 
   @Output()
   itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
@@ -136,12 +137,17 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
           this.defaultLanguage, item.entity.attributes[attributeKey], null);
       });
 
+      // spm true only on language change?
       if (this.form.valueIsChanged(formValues)) {
         // set new values to form
         this.form.patchValue(formValues, emit);
       }
       // important to be after patchValue
-      this.eavService.triggerFormSetValueChange(formValues);
+      const formSet: FormSet = {
+        entityGuid: item.entity.guid,
+        formValues: formValues
+      };
+      this.eavService.triggerFormSetValueChange(formSet);
     }
   }
 

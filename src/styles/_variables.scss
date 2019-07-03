@@ -5,6 +5,12 @@ $edit-ui-dialog-top-padding: 24px;
 $edit-ui-dialog-header-max-height: 52px;
 $edit-ui-dialog-max-height: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding} );
 
+// Debug
+$edit-ui-dialog-debug-max-height: 52px;
+$debug-info-container-height: 300px;
+$debug-info-container-margin: 16px;
+$debug-info-container-total-height: calc(#{$debug-info-container-height} + #{$debug-info-container-margin});
+$edit-ui-dialog-max-height-with-debug: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height} - #{$edit-ui-dialog-top-padding} );
 
 $edit-ui-dialog-border-radius:8px;
 $edit-ui-input-border-radius:4px;
@@ -18,12 +24,25 @@ $expandable-wrapper-max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-
 
 $edit-ui-dialog-background-color: #EFF0F2;
 
-$editUI-foreground-color: #454f63;
+$editUI-foreground-color: #1D273D;
 $editUI-disabled-background: rgba($editUI-foreground-color, 0.04);
 $editUI-label-disabled-color: rgba($editUI-foreground-color, 0.24);
 
 $edit-ui-selected-option: rgba(#000000, 0.04);
 
+// Field borders
+$field-border-color--initial: #5B6373;
+$field-border-color--hover: #1D273D;
+$field-border-color--focus: #0085F4;
+$field-border-color--disabled: #DBDCE0;
+$field-border-color--invalid: #B00030;
+
 // Dropzone
 $dropzone-background:             rgba(#0087f4, 0.44);
 $dropzone-active-background:      rgba(#0087f4, 0.88);
+
+// helper text
+$helper-text-padding: 3px 0 19px 12px;
+$helper-text-padding--no-hint: 0 0 24px 0;
+$helper-text-padding--last: 3px 0 5px 12px;
+$helper-text-padding--last--no-hint: 0 0 8px 0;

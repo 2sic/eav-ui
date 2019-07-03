@@ -38,6 +38,10 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
     return this.group.controls[this.config.field.name].invalid;
   }
 
+  get disabled() {
+    return this.group.controls[this.config.field.name].disabled;
+  }
+
   get value() {
     return this.group.controls[this.config.field.name].value;
   }
@@ -52,6 +56,9 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
     this.freeTextMode = this.setFreeTextMode();
 
     const updateOptionsSub = this.eavService.formSetValueChange$.subscribe(formSet => {
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+
       this.selectOptions = this.setOptionsFromDropdownValues();
     });
     this.subscriptions.push(updateOptionsSub);

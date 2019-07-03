@@ -5,10 +5,9 @@ const webpack = require('webpack');
   our goal is to not include source maps in the distribution
   but have them when developing
 */
-function setExternalSourceMaps(configuration, path) {
+function setExternalSourceMaps(configuration, path, setFilename) {
   const nodeEnv = (process.env.NODE_ENV || 'development').trim(); // trim is important because of an issue with package.json
   const isProd = nodeEnv === 'production';
-  const ifProd = x => isProd && x;
   const pjson = require('../package.json');
 
   console.log('isprod ' + isProd + '; process.env... ' + process.env.NODE_ENV);
@@ -20,14 +19,26 @@ function setExternalSourceMaps(configuration, path) {
 
     if (!configuration.plugins) { configuration.plugins = []; }
 
+    const options = {
+      // this is the url of our local sourcemap server
+      publicPath: 'https://sources.2sxc.org/' + pjson.version + '/ng-edit/' + path,
+    };
+    if (setFilename) {
+      // at some point source maps for Angular app broke when filename was set so we are excluding filename from
+      // options for Angular builds (main and WYSIWYG), but leaving it for regular webpack project (Custom GPS)
+      options.filename = '[file].map';
+    }
+    const sourceMapDevToolPlugin = new webpack.SourceMapDevToolPlugin(options);
+
+    console.log(`
+      Configuration: ${JSON.stringify(configuration)}
+      SourceMapDevToolPlugin: ${JSON.stringify(sourceMapDevToolPlugin)}
+    `);
+
     configuration.plugins = [
       // ... other plugins
       ...configuration.plugins,
-      ifProd(new webpack.SourceMapDevToolPlugin({
-        // this is the url of our local sourcemap server
-        publicPath: 'https://sources.2sxc.org/' + pjson.version + '/ng-edit/' + path,
-        filename: '[file].map',
-      })),
+      sourceMapDevToolPlugin,
     ];
   }
 

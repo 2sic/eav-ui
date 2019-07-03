@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators/take';
+import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -18,7 +18,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
   animations: [ContentExpandAnimation],
 })
 export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -34,6 +34,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   tooltipUrl = '';
   isImage: boolean;
   iconClass: string;
+  isKnownType: boolean;
 
   constructor(
     private fileTypeService: FileTypeService,
@@ -47,6 +48,9 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.control = this.group.controls[this.config.field.name];
     this.setLink(this.control.value);
     this.suscribeValueChanges();
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+    );
   }
 
   setValue(event) {
@@ -61,6 +65,15 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  expandDialog() {
+    console.log('HyperlinkDefaultExpandableWrapperComponent expandDialog');
+    this.config.field.expanded.next(true);
+  }
+  closeDialog() {
+    console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
+    this.config.field.expanded.next(false);
   }
 
   /** Update test-link if necessary - both when typing or if link was set by dialogs */
@@ -90,6 +103,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private setValues() {
     this.thumbnailUrl = this.buildThumbnailUrl(this.link, 1, true);
     this.isImage = this.fileTypeService.isImage(this.link);
+    this.isKnownType = this.fileTypeService.isKnownType(this.link);
     this.iconClass = this.fileTypeService.getIconClass(this.link);
     this.tooltipUrl = this.buildTooltipUrl(this.link);
   }
@@ -98,10 +112,14 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private suscribeValueChanges() {
     this.oldValue = this.control.value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      if (formSet[this.config.field.name] === this.oldValue) { return; }
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+
+      // check if update is for this field
+      if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }
       this.oldValue = formSet[this.config.field.name];
 
-      this.setLink(formSet[this.config.field.name]);
+      this.setLink(formSet.formValues[this.config.field.name]);
     });
     this.subscriptions.push(formSetSub);
   }

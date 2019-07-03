@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { of, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash/isEmpty';
 
@@ -184,7 +184,7 @@ export class BuildFieldsService {
         settings: settingsTranslated,
         fullSettings: fullSettings,
         wrappers: wrappers,
-        expanded: false,
+        expanded: new BehaviorSubject(false),
         isExternal: calculatedInputType.isExternal,
         disableI18n: disableI18n,
         isLastInGroup: isLastInGroup,

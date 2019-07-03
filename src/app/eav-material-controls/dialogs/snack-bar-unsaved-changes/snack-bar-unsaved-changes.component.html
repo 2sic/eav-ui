@@ -1,9 +1,9 @@
 <span class="error-message"> {{'Errors.UnsavedChanges' | translate}} </span>
 <div fxLayoutAlign="end end">
-    <button mat-button (click)="saveChanges(true)" color="accent">
-        {{ ('General.Buttons.Save' | translate).toUpperCase()}}
-    </button>
     <button mat-button (click)="saveChanges(false)" color="accent">
         {{ ('General.Buttons.NotSave' | translate).toUpperCase() }}
+    </button>
+    <button mat-button (click)="saveChanges(true)" color="accent">
+        {{ ('General.Buttons.Save' | translate).toUpperCase()}}
     </button>
 </div>

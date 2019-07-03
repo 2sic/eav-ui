@@ -17,7 +17,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringDefaultComponent implements Field {
-  @ViewChild('errorComponent', { read: ViewContainerRef }) errorComponent: ViewContainerRef;
+  @ViewChild('errorComponent', { static: true, read: ViewContainerRef }) errorComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;

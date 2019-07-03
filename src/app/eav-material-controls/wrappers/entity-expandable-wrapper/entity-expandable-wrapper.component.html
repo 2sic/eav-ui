@@ -1,10 +1,9 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
-  <div class="c-ew__backdrop" (click)="dialogIsOpen = false"></div>
+  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center"
-          (click)="dialogIsOpen = false">
+        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
@@ -26,32 +25,30 @@
     </div>
   </div>
 </div>
-<div>
-  <div matRipple (click)="!disabled ? dialogIsOpen = true : null" matRippleSpeedFactor="0.6"
-    class="c-ew__preview mat-ripple" [ngClass]="{
+<div class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+      'mat-caption' : value && value.length > 0,
+      'mat-empty' : !(value && value.length > 0),
+      'mat-error' : inputInvalid && touched && !config.field.disabled,
+      'color__primary' : !(inputInvalid && touched) && !config.field.disabled,
+      'color__label-disabled' : config.field.disabled
+    }">
+    {{config.field.label}}
+    {{config.field.required? '*': '' }}
+  </mat-label>
+  <div matRipple (click)="!config.field.disabled ? expandDialog() : null" class="c-ew__preview mat-ripple"
+    [matRippleAnimation]="{enterDuration: 360}" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && touched,
-      'c-ew__preview--disabled': disabled
+      'c-ew__preview--disabled': config.field.disabled
     }">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <mat-label [ngClass]="{
-        'mat-caption' : value && value.length > 0,
-        'mat-empty' : !(value && value.length > 0),
-        'mat-error' : inputInvalid && touched && !disabled,
-        'color__primary' : !(inputInvalid && touched) && !disabled,
-        'color__label-disabled' : disabled
-      }">
-        {{config.field.label}}
-        {{config.field.required? '*': '' }}
-      </mat-label>
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <mat-list [fxFlex]="value?.length > 5 ? 95 : 100" *ngIf="value && availableEntities" fxLayout="row"
-          fxLayoutAlign="start start">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-list *ngIf="value && availableEntities" fxLayout="row">
           <mat-list-item role="listitem" *ngFor="let item of value">
-            <mat-icon mat-list-icon>link</mat-icon>
             <span mat-line [title]="getEntityText(item) + ' (' + item + ')'">{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="value?.length > 5" fxFlex="noshrink" fxLayoutAlign="end end" class="more-entities mat-body-1">
+        <span *ngIf="value?.length > 5" class="more-entities mat-body-1">
           {{value?.length}}</span>
       </div>
     </div>

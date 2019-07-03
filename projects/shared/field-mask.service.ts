@@ -75,7 +75,7 @@ export class FieldMaskService {
 
   /** Change-event - will only fire if it really changes */
   private onChange() {
-    console.log('StringTemplatePickerComponent onChange called');
+    console.log('FieldMaskService onChange called');
     const maybeNew = this.resolve();
     if (this.value !== maybeNew) {
       this.changeEvent(maybeNew);
@@ -85,11 +85,12 @@ export class FieldMaskService {
 
   /** Add watcher and execute onChange */
   private watchAllFields() {
-    console.log('StringTemplatePickerComponent watchAllFields called');
+    console.log('FieldMaskService watchAllFields called');
     // add a watch for each field in the field-mask
     this.fields.forEach(field => {
-      const valSub = this.model[field].valueChanges.subscribe(value => this.onChange());
-      this.subscriptions.push(valSub);
+      if (!this.model[field]) { return; }
+      const valueSub = this.model[field].valueChanges.subscribe(value => this.onChange());
+      this.subscriptions.push(valueSub);
     });
   }
 

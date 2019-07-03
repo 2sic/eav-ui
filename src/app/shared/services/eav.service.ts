@@ -14,12 +14,13 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
+import { FormSet } from '../models/eav/form-set';
 
 @Injectable()
 export class EavService {
 
   // this formSetValueChangeSource observable is using in external components
-  private formSetValueChangeSource = new Subject<{ [name: string]: any }>();
+  private formSetValueChangeSource = new Subject<FormSet>();
   formSetValueChange$ = this.formSetValueChangeSource.asObservable();
 
   private eavConfig: EavConfiguration;
@@ -110,8 +111,8 @@ export class EavService {
   /**
   * Trigger on form change - this is using in external components
   */
-  public triggerFormSetValueChange(formValues: { [name: string]: any }) {
-    this.formSetValueChangeSource.next(formValues);
+  public triggerFormSetValueChange(formSet: FormSet) {
+    this.formSetValueChangeSource.next(formSet);
   }
 
   /**

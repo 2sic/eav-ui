@@ -1,5 +1,4 @@
 import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
-import { storeFreeze } from 'ngrx-store-freeze';
 
 import { environment } from '../../../../environments/environment';
 import * as fromItems from './item.reducer';
@@ -7,6 +6,7 @@ import * as fromInputTypes from './input-type.reducer';
 import * as fromContentType from './content-type.reducer';
 import * as fromLanguages from './language.reducer';
 import * as fromFeatures from './feature.reducer';
+import * as fromGlobalConfiguration from './global-configuration.reducer';
 
 export interface EavState {
     itemState: fromItems.ItemState;
@@ -14,6 +14,7 @@ export interface EavState {
     contentTypeState: fromContentType.ContentTypeState;
     languages: fromLanguages.LanguagesState;
     features: fromFeatures.FeaturesState;
+    globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
 }
 
 // console.log all actions
@@ -33,7 +34,7 @@ export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState
  * that will be composed to form the root meta-reducer.
  */
 export const metaReducers: MetaReducer<any>[] = !environment.production
-    ? [logger, storeFreeze]
+    ? [logger]
     : [];
 
 export const reducers: ActionReducerMap<EavState> = {
@@ -42,6 +43,7 @@ export const reducers: ActionReducerMap<EavState> = {
     contentTypeState: fromContentType.contentTypeReducer,
     languages: fromLanguages.languageReducer,
     features: fromFeatures.featureReducer,
+    globalConfiguration: fromGlobalConfiguration.globalConfigurationReducer,
 };
 
 export const getEavState = createFeatureSelector<EavState>('eavItemDialog');

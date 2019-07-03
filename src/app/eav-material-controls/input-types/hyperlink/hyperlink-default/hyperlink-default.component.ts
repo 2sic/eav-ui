@@ -8,7 +8,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
@@ -138,7 +138,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region new adam: callbacks only
 
   setValue(fileItem) {
-    this.setFormValue(this.config.field.name, `File:${fileItem.Id}`);
+    this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
   }
 
   toggleAdam(usePortalRoot, showImagesOnly) {
@@ -152,10 +152,14 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private suscribeValueChanges() {
     this.oldValue = this.group.controls[this.config.field.name].value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      if (formSet[this.config.field.name] === this.oldValue) { return; }
-      this.oldValue = formSet[this.config.field.name];
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
 
-      this.setLink(formSet[this.config.field.name]);
+      // check if update is for this field
+      if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }
+      this.oldValue = formSet.formValues[this.config.field.name];
+
+      this.setLink(formSet.formValues[this.config.field.name]);
     });
     this.subscriptions.push(formSetSub);
   }

@@ -3,24 +3,28 @@
 </div>
 
 <ng-template #notUseTimePickerTemplate>
-  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+  <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="c-datetime-default-field">
     <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.field.name"
       [placeholder]="config.field.label" [required]='config.field.required'>
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="picker">
+      <mat-icon class="datetime-icon" matDatepickerToggleIcon [ngClass]="{
+        'datetime-icon--disabled': disabled
+      }">today</mat-icon>
+    </mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     <mat-label>{{config.field.label}}</mat-label>
   </mat-form-field>
 </ng-template>
 
 <ng-template #useTimePickerTemplate>
-  <mat-form-field [formGroup]="group" appearance="fill" color="accent">
+  <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="c-datetime-default-field">
     <input matInput [formControlName]="config.field.name" [owlDateTime]="picker" [placeholder]="config.field.label"
       [required]='config.field.required'>
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>
-    <button matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
-      <mat-icon class="mat-24">today</mat-icon>
+    <button [disabled]="disabled" matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
+      <mat-icon class="datetime-icon">today</mat-icon>
     </button>
     <mat-label>{{config.field.label}}</mat-label>
   </mat-form-field>

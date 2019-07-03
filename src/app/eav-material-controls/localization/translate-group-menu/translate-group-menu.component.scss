@@ -24,8 +24,10 @@
 
 .shared-languages {
     position: relative;
-    left: -20px;
-    top: -10px;
+    left: -16px;
+    top: -19px;
+    background-color: white;
+    padding: 0px 4px 0 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -48,4 +50,5 @@
     font-size: 20px;
     height: 20px;
     width: 20px;
+    line-height: 20px;
 }

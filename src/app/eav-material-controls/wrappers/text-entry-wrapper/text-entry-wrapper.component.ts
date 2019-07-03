@@ -6,5 +6,5 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
   styleUrls: ['./text-entry-wrapper.component.scss']
 })
 export class TextEntryWrapperComponent {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 }

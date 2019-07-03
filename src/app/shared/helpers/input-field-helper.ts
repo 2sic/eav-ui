@@ -183,6 +183,7 @@ export class InputFieldHelper {
             || (inputType === InputTypesConstants.entityContentBlocks);
 
         if (isEntityType) {
+            wrappers.push(WrappersConstants.eavLocalizationWrapper);
             const allowMultiValue = settingsTranslated.AllowMultiValue || false;
             if (inputType === InputTypesConstants.entityContentBlocks) {
                 wrappers.push(WrappersConstants.collapsibleFieldWrapper);

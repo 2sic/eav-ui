@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MultiItemEditFormComponent } from '../../multi-item-edit-form/multi-item-edit-form.component';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
 import { AdminDialogPersistedData } from '../../../shared/models/eav';

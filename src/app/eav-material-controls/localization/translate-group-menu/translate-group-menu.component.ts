@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators/take';
+import { take } from 'rxjs/operators';
 import isEqual from 'lodash/isEqual';
 
 import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
@@ -509,6 +509,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
     // Determine whether control is disabled or enabled and info message
+    if (this.fieldConfig.disableI18n) {
+      this.infoMessage = '';
+      this.infoMessageLabel = 'LangMenu.InAllLanguages';
+      return;
+    }
+
     const isEditableTranslationExist: boolean = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
     const isReadonlyTranslationExist: boolean = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
 

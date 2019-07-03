@@ -8,7 +8,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
   styleUrls: ['./hidden-wrapper.component.scss']
 })
 export class HiddenWrapperComponent implements FieldWrapper {
-  @ViewChild('fieldComponent', { read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: FieldConfigSet;
 

@@ -3,15 +3,17 @@ import {
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
-import { switchMap, map, tap, catchError } from 'rxjs/operators';
+import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { MatSnackBar, MAT_DIALOG_DATA, MatDialogRef, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/services/content-type.service';
+import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
@@ -24,11 +26,11 @@ import { InputTypeService } from '../../shared/services/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/services/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
-import {
-  SnackBarUnsavedChangesComponent
-} from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+// tslint:disable-next-line:max-line-length
+import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
+import { FormSet } from '../../shared/models/eav/form-set';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -63,6 +65,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   versioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
   extendedSaveButtonIsReduced = false;
+  debugEnabled$: Observable<boolean>;
+  debugEnabled = false;
+  debugInfoIsOpen = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -74,6 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
+    private globalConfigurationService: GlobalConfigurationService,
     private eavService: EavService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
@@ -90,7 +96,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.use('en');
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
-    this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    }
     this.loadIconsService.load();
   }
 
@@ -104,6 +113,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.formSetValueChangeSubscribe();
 
     this.checkFormsState();
+    this.loadDebugEnabled();
   }
 
   ngAfterContentChecked() {
@@ -119,6 +129,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+  }
+
+  toggleDebugEnabled(event) {
+    const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
+    if (enableDebugEvent) {
+      this.globalConfigurationService.loadDebugEnabled(!this.debugEnabled);
+    }
+  }
+
+  debugInfoOpened(opened: boolean) {
+    this.debugInfoIsOpen = opened;
   }
 
   /**
@@ -250,7 +271,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private formSetValueChangeSubscribe() {
-    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((item) => {
+    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((formSet: FormSet) => {
       this.checkFormsState();
     }));
   }
@@ -363,8 +384,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         console.log('success END: ', action.data);
         this.snackBarOpen('saved');
+        this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
-          this.dialogRef.disableClose = false;
           this.closeDialog(action.data);
         }
         // else {
@@ -468,9 +489,32 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }, 5000);
   }
 
-  // Temp
-  // isIEOrEdge() {
-  //   return /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
-  // }
-}
+  private loadDebugEnabled() {
+    // set initial debug enabled value
+    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    this.debugEnabled$.pipe(take(1)).subscribe(debugEnabled => {
+      this.debugEnabled = debugEnabled;
+    });
+    // subscribe to debug enabled changes
+    this.subscriptions.push(
+      this.debugEnabled$.subscribe(debugEnabled => {
+        if (this.debugEnabled === debugEnabled) { return; }
 
+        this.debugEnabled = debugEnabled;
+        if (this.debugEnabled) {
+          this.snackBarOpen('debug mode enabled');
+        } else {
+          this.snackBarOpen('debug mode disabled');
+          this.debugInfoIsOpen = false;
+        }
+      })
+    );
+    // set debug enabled if came in the url, but only for parent form to not overwrite value with child forms
+    if (this.eavConfig.debug === 'true' && this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+      setTimeout(() => {
+        this.globalConfigurationService.loadDebugEnabled(true);
+      }, 0);
+    }
+  }
+
+}

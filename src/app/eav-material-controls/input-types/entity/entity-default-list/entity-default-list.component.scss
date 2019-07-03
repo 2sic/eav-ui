@@ -1,5 +1,16 @@
 @import "../../../../../styles/variables.scss";
 
+%field-border {
+    padding: 1px 12px;
+    border-radius: 5px;
+    border: 1px solid $field-border-color--initial;
+}
+%field-border--hover {
+    padding: 0 11px;
+    border: 2px solid $field-border-color--hover;
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+
 .dnd-placeholder {
    // background-color:  mat-color($editUI-theme-foreground, base,  0.08);
     background-color: rgba($editUI-foreground-color, 0.08);
@@ -16,13 +27,28 @@
 .dnd-element {
     position: relative;
     cursor: move;
-    // padding-top: 24px;
-    // padding-bottom: 10px;
+    height: 40px;
 
-    height: 56px;
-    // background:  mat-color($editUI-theme-foreground, base,  0.08);
-    background: rgba($editUI-foreground-color, 0.08);
-    padding: 0 0 0 12px;
+    @extend %field-border;
+    &:hover:not(.dnd-element--disabled) {
+        @extend %field-border--hover;
+        .mat-caption {
+            top: -7px;
+            left: 6px;
+        }
+    }
+
+    .mat-caption {
+        background-color: white;
+        position: absolute;
+        top: -6px;
+        left: 7px;
+        padding: 0 6px 0 4px;
+        z-index: 1;
+        pointer-events: none;
+        font-size: 11px;
+        line-height: 14px;
+    }
 }
 
 .dnd-element-multi {
@@ -49,6 +75,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: calc(100% - 170px);
+    font-size: 14px;
 
     // &--disabled {
     //     color: $editUI-label-disabled-color;
@@ -56,16 +83,20 @@
 }
 
 .dnd-buttons {
-    position: absolute;
-    right: 4px;
-    top:10px;
-    display: inline;
-    /* // visibility: hidden; */
+    display: flex;
+    margin-right: -12px;
+
+    .mat-icon-button .mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
 }
 
 .dnd-element--disabled {
     border-color: $editUI-disabled-background;
-    background-color: $editUI-disabled-background;
+    cursor: default;
 
     .dnd-element-text {
         color: $editUI-label-disabled-color;

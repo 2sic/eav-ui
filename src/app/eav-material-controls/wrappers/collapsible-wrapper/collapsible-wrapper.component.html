@@ -21,7 +21,7 @@
             </div>
         </div>
         <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
-            [checked]="slotIsUsedChecked">
+            [checked]="slotIsUsedChecked" [disabled]="currentLanguage !== defaultLanguage">
         </mat-slide-toggle>
         <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
             [group]="group"></app-translate-group-menu>
@@ -30,10 +30,9 @@
         [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes || editInstructions">
-                    <span></span>
-                    <div class="description" [innerHtml]='notes'></div>
-                    <div class="description" [innerHtml]='editInstructions'></div>
+                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="description">
+                    <div class="description" [innerHtml]='description | safeHtml'
+                        (mouseenter)="changeAnchorTarget($event)"></div>
                 </div>
                 <div class="mdc-layout-grid__cell--span-12">
                     <ng-container #fieldComponent></ng-container>

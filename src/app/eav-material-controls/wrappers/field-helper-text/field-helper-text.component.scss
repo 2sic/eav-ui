@@ -3,19 +3,19 @@
 
 .c-fht {
     &__container {
-        padding: 4px 0 8px 12px;
-        min-height: 16px;
+        padding: $helper-text-padding;
 
+        &--no-hint {
+            padding: $helper-text-padding--no-hint;
+        }
         &--last {
-            padding-bottom: 0;
+            padding: $helper-text-padding--last;
 
             &--no-hint {
-                padding: 0;
-                padding-bottom: 8px;
-                min-height: 0;
+                padding: $helper-text-padding--last--no-hint;
             }
         }
-        
+
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);
 

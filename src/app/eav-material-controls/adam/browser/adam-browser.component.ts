@@ -11,10 +11,11 @@ import { FeatureService } from '../../../shared/services/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { MetadataConstants } from '../../../shared/constants';
 import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
+import { UrlHelper } from '../../../shared/helpers/url-helper';
 
 
 @Component({
@@ -98,7 +99,12 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subFolder = this.config.field.settings.Paths;
+    this.subFolder = this.config.field.settings.Paths || '';
+    // fixed leading "/"
+    if (this.subFolder.startsWith('/') || this.subFolder.startsWith('\\')) {
+      this.subFolder = this.subFolder.slice(1);
+    }
+    this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
     this.initConfig();
     // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
@@ -119,6 +125,7 @@ export class AdamBrowserComponent implements OnInit {
 
   initConfig() {
     this.subFolder = this.subFolder || '';
+    this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
     this.showImagesOnly = this.showImagesOnly || false; // spm 2019.02.28. test this line against old angular
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
@@ -193,6 +200,7 @@ export class AdamBrowserComponent implements OnInit {
 
   goUp = () => {
     this.subFolder = this.svc.goUp();
+    this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
   }
 
   getMetadataType = function (item) {
@@ -229,6 +237,7 @@ export class AdamBrowserComponent implements OnInit {
     const subFolder = this.svc.goIntoFolder(folder);
     // this.refresh();
     this.subFolder = subFolder;
+    this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
   }
 
   isKnownType(item: AdamItem) {
@@ -245,6 +254,8 @@ export class AdamBrowserComponent implements OnInit {
   openUploadClick = (event) => this.openUpload.emit();
 
   rename(item) {
+    if (this.disabled) { return; }
+
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) {
       this.svc.rename(item, newName).subscribe();
@@ -274,12 +285,22 @@ export class AdamBrowserComponent implements OnInit {
 
       this.showImagesOnly = newConfig.showImagesOnly;
       this.adamModeConfig.usePortalRoot = !!(newConfig.usePortalRoot);
+      this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(
+        this.config.dropzoneConfig.url.toString(),
+        'usePortalRoot',
+        this.adamModeConfig.usePortalRoot.toString(),
+      );
     }
 
     this.show = configChanged || !this.show;
 
     if (!this.show) {
       this.adamModeConfig.usePortalRoot = false;
+      this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(
+        this.config.dropzoneConfig.url.toString(),
+        'usePortalRoot',
+        this.adamModeConfig.usePortalRoot.toString(),
+      );
     }
 
     // Override configuration in portal mode
@@ -306,6 +327,7 @@ export class AdamBrowserComponent implements OnInit {
     this.metadataContentTypes = adamConfig.metadataContentTypes;
     this.showImagesOnly = adamConfig.showImagesOnly;
     this.subFolder = adamConfig.subFolder;
+    this.config.dropzoneConfig.url = UrlHelper.replaceUrlParam(this.config.dropzoneConfig.url.toString(), 'subfolder', this.subFolder);
 
     // Reload configuration
     this.initConfig();

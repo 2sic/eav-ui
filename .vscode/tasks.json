@@ -22,6 +22,11 @@
             "type": "npm",
             "script": "dev-main-watch",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dev-all",
+            "problemMatcher": []
         }
     ]
 }

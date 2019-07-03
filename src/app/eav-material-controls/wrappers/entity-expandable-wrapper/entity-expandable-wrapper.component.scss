@@ -1,17 +1,51 @@
 @import "../../../../styles/variables.scss";
 @import "../../../../styles/theme/material-colors.scss";
 
+%field-border {
+    padding: 1px 12px;
+    border-radius: 5px;
+    border: 1px solid $field-border-color--initial;
+}
+%field-border--hover {
+    padding: 0 11px;
+    border: 2px solid $field-border-color--hover;
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+%field-border--invalid {
+    padding: 0 11px;
+    border: 2px solid $field-border-color--invalid;
+    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+}
+
 .c-ew {
     &__preview {
         position:relative;
-        padding: 6px 12px 8px 12px;
-        min-height: 38px; // 56px minus paddings
+        min-height: 36px;
         cursor: pointer;
 
-        border-radius: $edit-ui-input-border-radius $edit-ui-input-border-radius 0 0;
-        border: 1px rgba($editUI-foreground-color, 0.44);
-        border-bottom-style: solid;
-        background: rgba($editUI-foreground-color, 0.08);
+        @extend %field-border;
+        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+            @extend %field-border--hover;
+        }
+
+        &-holder {
+            position: relative;
+        }
+
+        &-label {
+            background-color: white;
+            top: -5px;
+            position: absolute;
+            z-index: 1;
+            left: 8px;
+            padding: 0 6px 0 4px;
+            pointer-events: none;
+            font-size: 11px;
+            line-height: 14px;
+        }
+        &-label:not(.mat-error) {
+            color: rgba($editUI-foreground-color, 0.44);
+        }
 
         &-container {
             overflow: hidden;
@@ -25,17 +59,12 @@
             }
         }
         &--invalid {
-            padding: 6px 12px 7px 12px;
-            border: 2px;
-            border-bottom-style: solid;
-            border-color: map_get($mat-eav-item-dialog-error, 500);
+            @extend %field-border--invalid;
         }
 
         &--disabled {
             border-color: $editUI-disabled-background;
-            background-color: $editUI-disabled-background;
             cursor: default;
-            // $editUI-label-disabled-color
         }
 
         .color__accent{
@@ -50,13 +79,6 @@
             color: $editUI-label-disabled-color;
         }
 
-        &:hover {
-            padding: 6px 12px 7px 12px;
-            // border: 2px map_get($mat-eav-item-dialog-secondary, 500);
-            border: 2px rgba($editUI-foreground-color, 0.44);
-            border-bottom-style: solid;
-        }
-
         mat-empty {
             height: 48px;
             padding: 24px 0 0 0;
@@ -65,37 +87,38 @@
 }
 
 .more-entities {
-    padding: 0px 12px 0 12px;
-    margin: 0 0 0 12px;
+    padding: 0px 12px;
+    margin-left: 10px;
     background: transparent;
     color:$editUI-foreground-color;
-    border-radius: 32px;
+    border-radius: 10px;
     border: 1px solid rgba($editUI-foreground-color, 0.44);
-    max-height: 20px;
-    min-height: 20px;
+    height: 18px;
     font-size: 12px;
     line-height: 16px;
-
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .mat-list {
-   //  max-width: calc(100%-20px);
-    width:calc(100%-16px);
     overflow: hidden;
+    padding: 0;
+    margin-top: 9px;
+    flex: 1 1 auto;
 }
 
 .mat-list-item {
-    // background: mat-color($editUI-theme-foreground, base,  0.08);
-    background: white;
-    border-radius: 32px;
-    border: 1px solid rgba($editUI-foreground-color, 0.44);
-    max-height: 24px;
-    margin: 2px 0 2px 0;
-    min-width: 152px;
+    width: auto !important;
+    max-width: 200px;
+    flex: 0 1 auto;
+    height: 20px !important;
+    background: rgba($editUI-foreground-color, 0.08);
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-bottom: 7px;
+    font-size: 12px;
+    line-height: 16px;
     white-space: nowrap; 
-    overflow: hidden;
     text-overflow: ellipsis;
 }
-
-
-

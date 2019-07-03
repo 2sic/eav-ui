@@ -8,13 +8,22 @@
     <div
       [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
-        <mat-form-field [formGroup]="group" appearance="fill" [color]="inputInvalid && touched ? 'warn' : 'accent'">
+        <mat-form-field [formGroup]="group" appearance="outline" color="accent" [ngClass]="{
+          'mat-form-field-invalid': inputInvalid && touched
+        }">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-            [disabled]="disabled" (blur)="setTouched()">
-          <mat-icon matSuffix *ngIf="!enableTextEntry">arrow_drop_down</mat-icon>
-          <a matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)">
-            <mat-icon>text_fields</mat-icon>
-            <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+            [disabled]="disabled" (blur)="setTouched()" (input)="filterSelectionList($event.target.value)">
+          <button *ngIf="!enableTextEntry" [disabled]="disabled" type="button" matSuffix mat-icon-button>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <a matSuffix *ngIf="enableTextEntry" (click)="!disabled && freeTextModeChange($event)"
+            fxLayoutAlign="center center">
+            <button [disabled]="disabled" type="button" mat-icon-button>
+              <mat-icon>text_fields</mat-icon>
+            </button>
+            <button *ngIf="freeTextMode" [disabled]="disabled" type="button" mat-icon-button>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
           </a>
           <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
             allowMultiValue ?
@@ -23,9 +32,9 @@
         </mat-form-field>
 
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
-          <mat-option *ngFor="let item of (selectEntities | async)" [value]="item.Value"
+          <mat-option *ngFor="let item of selectEntities" [value]="item.Value"
             [disabled]="isInChosenEntities(item.Value)">
-            <span>{{item.Text ? item.Text: item.Value}} {{value}}</span>
+            <span>{{item.Text ? item.Text: item.Value}}</span>
           </mat-option>
         </mat-autocomplete>
       </div>
@@ -35,7 +44,7 @@
       fxLayoutAlign="end center">
       <!-- create new entity to add to this list -->
       <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
-        type="button" (click)="openNewEntityDialog()" [disabled]="disabled">
+        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>
@@ -43,13 +52,14 @@
 </div>
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
-<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="fill" color="accent">
-  <input matInput type="text" [required]='config.field.required' [id]="id" [formControlName]="config.field.name"
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="outline" color="accent">
+  <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
-  <a matSuffix (click)="freeTextModeChange($event)">
-    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
-    <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+  <a matSuffix (click)="!disabled && freeTextModeChange($event)">
+    <button [disabled]="disabled" type="button" mat-icon-button>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
   </a>
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>

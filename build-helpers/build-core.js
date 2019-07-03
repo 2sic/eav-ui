@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
 (async function buildAngularScripts() {
-    const files = [
+    const sourceFiles = [
         './node_modules/@webcomponents/custom-elements/src/native-shim.js',
         './node_modules/@webcomponents/custom-elements/custom-elements.min.js',
         './node_modules/core-js/client/core.min.js',
@@ -16,7 +16,12 @@ const chalkSuccess = chalk.green;
         './node_modules/@angular/platform-browser/bundles/platform-browser.umd.min.js',
         './node_modules/@angular/elements/bundles/elements.umd.min.js'
     ];
-    await fs.ensureDir('./dist');
-    await concat(files, './dist/core.js');
+    const coreDir = './dist';
+    const coreFile = '/core.js';
+    await fs.ensureDir(coreDir);
+    // remove old file
+    await fs.remove(coreDir + coreFile);
+    // build new file
+    await concat(sourceFiles, coreDir + coreFile);
     console.log(chalkSuccess('Build Angular scripts (core) success!'));
 })();

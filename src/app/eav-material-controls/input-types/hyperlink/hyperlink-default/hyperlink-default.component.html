@@ -4,12 +4,12 @@
     (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
     <mat-icon svgIcon="appleFilled"></mat-icon>
   </button>
-  <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
+  <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
     (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
     <mat-icon svgIcon="sitemap"></mat-icon>
   </button>
-  <button mat-mini-fab *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled" type="button"
-    [matMenuTriggerFor]="menu">
+  <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled"
+    type="button" [matMenuTriggerFor]="menu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
@@ -38,7 +38,7 @@
 <div class="mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius shadow-bottom-z-1">
-      <mat-form-field [formGroup]="group" appearance="fill" color="accent" class="mat-form-field-hyperlink">
+      <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="mat-form-field-hyperlink">
         <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
           [required]="config.field.required" [required]="config.field.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
@@ -50,18 +50,19 @@
           </a>
         </mat-hint>
       </mat-form-field>
-      <div *ngIf="value && isImage()">
-        <div class="c-hld-image-container">
-          <img [src]="thumbnailUrl(2)" class="c-hld-image" />
-        </div>
+      <div *ngIf="value && isImage()" class="c-hld-image-container">
+        <a [href]="thumbnailUrl()" target="_blank">
+          <div class="c-hld-image-box">
+            <img [src]="thumbnailUrl(2)" class="c-hld-image" />
+          </div>
+        </a>
       </div>
-      <div [ngClass]="{'c-hld-icon': value && !isImage()}"
-        [ngStyle]="{'background-image': value && isImage() ? 'url(' + thumbnailUrl(1, true) + ')' : ''}">
-
-        <a *ngIf="value && !isImage()" [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}"
-          matTooltipPosition="right">
-          <mat-icon *ngIf="isKnownType()">{{icon()}}</mat-icon>
-          <mat-icon *ngIf="!isKnownType()" svgIcon="{{icon()}}"></mat-icon>
+      <div *ngIf="value && !isImage()" class="c-hld-icon-container">
+        <a [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
+          <div class="c-hld-icon-box">
+            <mat-icon *ngIf="isKnownType()">{{icon()}}</mat-icon>
+            <mat-icon *ngIf="!isKnownType()" svgIcon="{{icon()}}"></mat-icon>
+          </div>
         </a>
       </div>
     </mat-card>

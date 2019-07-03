@@ -1,28 +1,25 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-    MatFormFieldModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCardModule,
-    MatIconModule,
-    MatGridListModule,
-    MatAutocompleteModule,
-    MatListModule,
-    MatMenuModule,
-    MatTooltipModule,
-    MatTabsModule,
-    MatProgressSpinnerModule,
-    MatSlideToggleModule,
-    MatChipsModule,
-    MatDialogModule,
-    MatRippleModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -87,6 +84,7 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
 import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
 import { ConnectorComponent } from './input-types/custom/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
+import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 
 @NgModule({
     declarations: [
@@ -116,6 +114,7 @@ import { CustomDefaultComponent } from './input-types/custom/custom-default/cust
         FilterPipe,
         OrderByPipe,
         FileEndingFilterPipe,
+        SafeHtmlPipe,
         ClickStopPropagationDirective,
         HiddenWrapperComponent,
         HyperlinkDefaultPagepickerComponent,

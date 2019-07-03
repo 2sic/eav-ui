@@ -36,6 +36,7 @@ const configuration = {
 };
 
 /* change source map generation based on production mode */
-setExternalSourceMaps(configuration, 'elements/field-custom-gps/');
+const setFilename = true;
+setExternalSourceMaps(configuration, 'elements/field-custom-gps/', setFilename);
 
 module.exports = configuration;

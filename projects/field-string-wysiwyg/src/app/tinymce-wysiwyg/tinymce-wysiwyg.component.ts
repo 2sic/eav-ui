@@ -37,7 +37,6 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
 
   id: string;
   initialValue: any;
-  disabled: boolean;
   options: any;
   adam: any;
   editor: any;
@@ -45,15 +44,16 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   adamSetValue: any;
   adamAfterUpload: any;
   processResultOfDnnBridge: any;
+  private dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
-  constructor(public tinymceWysiwygConfig: TinymceWysiwygConfig,
+  constructor(
+    public tinymceWysiwygConfig: TinymceWysiwygConfig,
     public tinyMceDnnBridgeService: TinyMceDnnBridgeService,
-    public tinyMceAdamService: TinyMceAdamService) {
-  }
+    public tinyMceAdamService: TinyMceAdamService,
+  ) { }
 
   ngOnInit() {
-    // this.loadMaterialIcons();
     this.calculateInitialValues();
     this.subscribeToFormChanges();
 
@@ -91,6 +91,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     const isValid = this.validateValue(value);
     if (isValid) {
       this.connector.data.update(value);
+      // spm Initial value has to be updated, otherwise switching mode to advanced reinitializes tinymce with old value
+      this.initialValue = value;
     }
   }
 
@@ -126,6 +128,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     console.log('TinymceWysiwygComponent setValue', 'id:', this.id, 'old:', oldValue, 'new:', newValue);
     if (newValue !== oldValue) {
       this.editor.editorManager.get(this.id).setContent(newValue);
+      // spm Initial value has to be updated, otherwise switching mode to advanced reinitializes tinymce with old value
+      this.initialValue = newValue;
     }
   }
 
@@ -162,44 +166,41 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     editor.on('init', e => {
       // editor.selection.select(editor.getBody(), true);
       // editor.selection.collapse(false);
-      console.log('Petar wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
+      console.log('wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
     });
 
     editor.on('change', e => {
       this.changeCheck(e, editor.getContent());
-      console.log('Petar wysiwyg order: editor.on change => this.changeCheck(e, editor.getContent()); => this.host.update(value);',
+      console.log('wysiwyg order: editor.on change => this.changeCheck(e, editor.getContent()); => this.host.update(value);',
         editor.getContent());
     });
   }
 
-  // private loadMaterialIcons() {
-  //   const head = document.getElementsByTagName('head')[0];
-  //   const link = document.createElement('link');
-  //   link.rel = 'stylesheet';
-  //   link.type = 'text/css';
-  //   link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-  //   link.media = 'all';
-  //   head.appendChild(link);
-  // }
-
   private calculateInitialValues(): void {
-    // spm 2019.04.05. id will clash if we open the same entity as a sub form, e.g. in entity-default field
     this.id = `string-wysiwyg-tinymce-${Math.random() * Math.pow(10, 17)}-${this.connector.field.name}`;
     this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
-    this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
   }
 
   private subscribeToFormChanges(): void {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
+        // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
+        if (this.dialogIsOpen) { return; }
         this.setValue(newValue);
       }),
-      // spm 2019.04.17. disabled check doesn't work when field is translated without value change
-      this.experimental.formSetValueChange$.subscribe(formSet => {
-        this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
-      })
+      (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
+        this.dialogIsOpen = expanded;
+        if (expanded && this.editor) {
+          const editor = this.editor;
+          console.log('set focus on tinymce');
+          document.getElementById('dummyfocus').focus();
+          setTimeout(() => {
+            editor.focus();
+          }, 100);
+        }
+      }),
     );
   }
 

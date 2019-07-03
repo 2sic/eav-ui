@@ -1,0 +1,17 @@
+@import '../variables.scss';
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: $field-border-color--initial;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: $field-border-color--hover;
+}
+
+.mat-form-field-appearance-outline.mat-focused.mat-accent .mat-form-field-outline-thick {
+    color: $field-border-color--focus;
+}
+
+.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+    color: $field-border-color--invalid;
+}
