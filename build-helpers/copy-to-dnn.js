@@ -62,6 +62,7 @@ fs.ensureDirSync(outputPath);
 const watcher = chokidar.watch(sourcePath, {
   persistent: true,
   usePolling: true,
+  interval: 200,
 });
 
 // Add event listeners
