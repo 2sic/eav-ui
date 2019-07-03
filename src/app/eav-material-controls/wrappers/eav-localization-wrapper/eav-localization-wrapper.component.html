@@ -1,5 +1,5 @@
 <div class="language-wrap" fxLayout="row" fxLayoutAlign="start start">
-  <div (dblclick)="toggleTranslate(!config.field.expanded && currentLanguage !== defaultLanguage)" fxFlex="auto"
+  <div (dblclick)="toggleTranslate(!dialogIsOpen && currentLanguage !== defaultLanguage)" fxFlex="auto"
     [ngClass]="(currentLanguage !== defaultLanguage) ? 'language-wrap__field-short' : 'language-wrap__field'">
     <ng-container #fieldComponent></ng-container>
   </div>

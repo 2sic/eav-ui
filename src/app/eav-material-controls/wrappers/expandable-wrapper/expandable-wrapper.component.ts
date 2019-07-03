@@ -42,7 +42,8 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestr
         this.previousValue = newValue;
 
         this.cleanedValue = this.cleanValue(newValue);
-      })
+      }),
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
   }
 
@@ -58,13 +59,11 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestr
 
   expandDialog() {
     console.log('ExpandableWrapperComponent expandDialog');
-    this.dialogIsOpen = true;
-    this.config.field.expanded = true;
+    this.config.field.expanded.next(true);
   }
   closeDialog() {
     console.log('ExpandableWrapperComponent closeDialog');
-    this.dialogIsOpen = false;
-    this.config.field.expanded = false;
+    this.config.field.expanded.next(false);
   }
 
   ngOnDestroy() {

@@ -48,6 +48,9 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.control = this.group.controls[this.config.field.name];
     this.setLink(this.control.value);
     this.suscribeValueChanges();
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+    );
   }
 
   setValue(event) {
@@ -66,13 +69,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   expandDialog() {
     console.log('HyperlinkDefaultExpandableWrapperComponent expandDialog');
-    this.dialogIsOpen = true;
-    this.config.field.expanded = true;
+    this.config.field.expanded.next(true);
   }
   closeDialog() {
     console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
-    this.dialogIsOpen = false;
-    this.config.field.expanded = false;
+    this.config.field.expanded.next(false);
   }
 
   /** Update test-link if necessary - both when typing or if link was set by dialogs */

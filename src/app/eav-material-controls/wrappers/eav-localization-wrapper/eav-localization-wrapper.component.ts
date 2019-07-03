@@ -33,6 +33,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   defaultLanguage = '';
   toggleTranslateField = false;
 
+  dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
   constructor(private languageService: LanguageService,
@@ -53,7 +54,9 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
-
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; })
+    );
   }
 
   ngOnDestroy() {

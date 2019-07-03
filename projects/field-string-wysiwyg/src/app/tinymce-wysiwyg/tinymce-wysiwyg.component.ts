@@ -44,6 +44,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   adamSetValue: any;
   adamAfterUpload: any;
   processResultOfDnnBridge: any;
+  private dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -186,8 +187,19 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
         // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
-        if ((this.connector.field as any).expanded) { return; }
+        if (this.dialogIsOpen) { return; }
         this.setValue(newValue);
+      }),
+      (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
+        this.dialogIsOpen = expanded;
+        if (expanded && this.editor) {
+          const editor = this.editor;
+          console.log('set focus on tinymce');
+          document.getElementById('dummyfocus').focus();
+          setTimeout(() => {
+            editor.focus();
+          }, 100);
+        }
       }),
     );
   }

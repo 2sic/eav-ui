@@ -1,5 +1,7 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EntityFieldConfigSet } from '../../../shared/models/entity/entity-field-config-set';
@@ -7,7 +9,6 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { TranslateService } from '@ngx-translate/core';
 import { Helper } from '../../../shared/helpers/helper';
 
 @Component({
@@ -16,13 +17,14 @@ import { Helper } from '../../../shared/helpers/helper';
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
+export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: EntityFieldConfigSet;
   group: FormGroup;
 
   dialogIsOpen = false;
+  private subscriptions: Subscription[] = [];
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
@@ -43,6 +45,9 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   ngOnInit() {
     // this.setAvailableEntities();
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+    );
   }
 
   ngAfterViewInit() {
@@ -63,12 +68,14 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   expandDialog() {
     console.log('EntityExpandableWrapperComponent expandDialog');
-    this.dialogIsOpen = true;
-    this.config.field.expanded = true;
+    this.config.field.expanded.next(true);
   }
   closeDialog() {
     console.log('EntityExpandableWrapperComponent closeDialog');
-    this.dialogIsOpen = false;
-    this.config.field.expanded = false;
+    this.config.field.expanded.next(false);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 }
