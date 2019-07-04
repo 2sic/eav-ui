@@ -52,7 +52,7 @@
         {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
         ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
           <div matSuffix fxLayoutAlign="center center">
-            <div class="c-ew__preview-suffix-text" [ngClass]="{
+            <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
           }">drop files here</div>
             <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button" (click)="expandDialog()">
@@ -65,7 +65,7 @@
           </mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->
-        <div *ngIf="control.value" class="c-hyperlink-default-link__container">
+        <div *ngIf="control.value" class="c-hyperlink-default-link__container" fxHide fxShow.gt-xs>
           <div class="c-hyperlink-default-link__value">{{control.value}}</div>
           <div class="c-hyperlink-default-link__link">
             <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text">
@@ -78,7 +78,8 @@
       <div class="c__helper-wrapper">
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
-        <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right">ADAM - sponsored with ♡ by 2sic.com
+        <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
+          <span>ADAM - sponsored with ♡ by 2sic.com</span>
         </div>
       </div>
     </div>
