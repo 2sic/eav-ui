@@ -39,16 +39,6 @@
         border-radius: $edit-ui-dialog-border-radius;
     }
 
-    &-field {
-        // &--short {
-        //     width: calc(100% - 72px);
-        //     max-width: calc(100% - 72px);
-        // }
-        &-hint{
-            color: rgba($editUI-foreground-color, 0.44);
-        }
-    }
-
     &-thumbnail {
         padding-top: 0; 
         padding-bottom: 0; 

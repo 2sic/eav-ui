@@ -1,3 +1,4 @@
+<!-- buttons -->
 <div class="c-hld-buttons" fxLayout="row" fxLayoutAlign="end end" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled"
@@ -35,21 +36,30 @@
   </mat-menu>
 </div>
 
+<!-- content -->
 <div class="mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
     <mat-card class="mdc-layout-grid__cell--span-12 c-hld--border-radius shadow-bottom-z-1">
-      <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="mat-form-field-hyperlink">
-        <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
-          [required]="config.field.required" [required]="config.field.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
+      <!-- input -->
+      <div class="c-hyperlink-default-input-link-wrapper">
+        <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="mat-form-field-hyperlink">
+          <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
+            [required]="config.field.required" [required]="config.field.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
       {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
       ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
-        <mat-label>{{config.field.label}}</mat-label>
-        <mat-hint *ngIf="value" align="start" class="c-hld-field-hint">
-          <a href="{{link}}" target="_blank" tabindex="-1">
-            <span>&nbsp;... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
-          </a>
-        </mat-hint>
-      </mat-form-field>
+          <mat-label>{{config.field.label}}</mat-label>
+        </mat-form-field>
+        <!-- link absolutely positioned above input -->
+        <div *ngIf="control.value" class="c-hyperlink-default-link__container">
+          <div class="c-hyperlink-default-link__value">{{control.value}}</div>
+          <div class="c-hyperlink-default-link__link">
+            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text">
+              <span>... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- image -->
       <div *ngIf="value && isImage()" class="c-hld-image-container">
         <a [href]="thumbnailUrl()" target="_blank">
           <div class="c-hld-image-box">
@@ -57,6 +67,7 @@
           </div>
         </a>
       </div>
+      <!-- icon -->
       <div *ngIf="value && !isImage()" class="c-hld-icon-container">
         <a [href]="link" target="_blank" tabindex="-1" matTooltip="{{tooltipUrl(link)}}" matTooltipPosition="right">
           <div class="c-hld-icon-box">

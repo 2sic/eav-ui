@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -29,6 +29,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   showPreview = true;
   toggleAdamValue = false;
   link = '';
+  control: AbstractControl;
 
   private oldValue: any;
 
@@ -74,6 +75,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.control = this.group.controls[this.config.field.name];
     this.attachAdam();
     this.setLink(this.value);
     this.suscribeValueChanges();

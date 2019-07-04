@@ -1,3 +1,4 @@
+<!-- header -->
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
   <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
@@ -19,11 +20,14 @@
     </div>
   </div>
 </div>
+
+<!-- preview -->
 <div class="c-hyperlink-default-field-preview">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
     'c-ew__preview--disabled': control.disabled,
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">
+    <!-- image / icon -->
     <div class="thumbnail-before-input" [ngClass]="{
       'icon-before-input': control.value && !isImage,
       'thumbnail-before-input--disabled': control.disabled
@@ -36,27 +40,41 @@
         svgIcon="{{iconClass}}">
       </mat-icon>
     </div>
+    <!-- field -->
     <div class="c-ew__preview-field--short" fxFlex="auto">
-      <mat-form-field appearance="outline" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
+      <!-- input -->
+      <div class="c-hyperlink-default-input-link-wrapper">
+        <mat-form-field appearance="outline" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
           'mat-form-field-invalid': control.invalid && control.touched
         }">
-        <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
-          [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
+          <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
+            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
         {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
         ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
-        <div matSuffix fxLayoutAlign="center center">
-          <div class="c-ew__preview-suffix-text" [ngClass]="{
+          <div matSuffix fxLayoutAlign="center center">
+            <div class="c-ew__preview-suffix-text" [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
           }">drop files here</div>
-          <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button" (click)="expandDialog()">
-            <mat-icon svgIcon="apple"></mat-icon>
-          </button>
+            <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button" (click)="expandDialog()">
+              <mat-icon svgIcon="apple"></mat-icon>
+            </button>
+          </div>
+          <mat-label [ngClass]="{'mat-error' : control.invalid && control.touched}">
+            {{config.field.label}}
+            {{config.field.required ? '*': '' }}
+          </mat-label>
+        </mat-form-field>
+        <!-- link absolutely positioned above input -->
+        <div *ngIf="control.value" class="c-hyperlink-default-link__container">
+          <div class="c-hyperlink-default-link__value">{{control.value}}</div>
+          <div class="c-hyperlink-default-link__link">
+            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text">
+              <span>... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
+            </a>
+          </div>
         </div>
-        <mat-label [ngClass]="{'mat-error' : control.invalid && control.touched}">
-          {{config.field.label}}
-          {{config.field.required ? '*': '' }}
-        </mat-label>
-      </mat-form-field>
+      </div>
+      <!-- helper text and adam text -->
       <div class="c__helper-wrapper">
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
