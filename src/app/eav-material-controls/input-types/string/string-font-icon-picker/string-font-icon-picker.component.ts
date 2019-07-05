@@ -138,7 +138,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
 
   private filterStates(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) === 0);
+    return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) >= 0);
   }
 
   private getFilteredIcons = () => {
