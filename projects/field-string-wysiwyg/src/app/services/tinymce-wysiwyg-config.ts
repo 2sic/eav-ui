@@ -18,7 +18,7 @@ export class TinymceWysiwygConfig {
             // tinyMCE plugins we're using
             plugins: [
                 'code', // allow view / edit source
-                'contextmenu', // right-click menu for things like insert, etc.
+                // 'contextmenu', // right-click menu for things like insert, etc. spm built into tinymce core in v5
                 'autolink', // automatically convert www.xxx links to real links
                 'tabfocus', // get in an out of the editor with tab
                 'image', // image button and image-settings
@@ -98,8 +98,8 @@ export class TinymceWysiwygConfig {
             object_resizing: false, // don't allow manual scaling of images
 
             // General looks
-            skin: 'lightgray',
-            theme: 'modern',
+            skin: 'oxide',
+            theme: 'silver',
             statusbar: false,    // doesn't work in inline :(
 
             language: svc.defaultLanguage,
