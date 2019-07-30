@@ -1,8 +1,4 @@
-.mce-toolbar-grp {
-    z-index:30;
-    /* mat-elevation 4 */
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12), 0 2px 4px -1px rgba(0, 0, 0, .2);
-}
+@import "./overrides.scss";
 
 .mce-i-apple:before {
     position: relative;
@@ -17,10 +13,6 @@
     -moz-osx-font-smoothing: grayscale;
 
     content:"\f179"
-}
-
-.c-ew__dialog-content .mce-tinymce {
-    height: 100%;
 }
 
 /*Flex for iframe mode*/
@@ -104,9 +96,4 @@
 .dropdown-icon svg {
     margin-top: 0;
     padding-right: 8px;
-}
-
-.tox .tox-tbtn .tox-tbtn__icon-wrap svg {
-    width: 24px !important;
-    height: 24px !important;
 }

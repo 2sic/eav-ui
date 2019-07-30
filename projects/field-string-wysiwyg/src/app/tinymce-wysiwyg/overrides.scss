@@ -1,11 +1,31 @@
+/**
+    Overrides TinyMCE 5 oxide skin colors.
+    Values are copied from skin css and overriden with !important.
+    Default values are left in the comments
+    and custom selectors and properties are pointed out.
+*/
+
 @import "../../../../../src/styles/theme/material-colors.scss";
+
+$tmce-border: none !important; // removes 1px border from tinymce to better fit into expandable window
+$tmce-toolbar-border-top: none !important; // removes border between toolbar and menubar
+$tmce-toolbar-group-border: none !important; // removes border between toolbar buttons groups
+$tmce-menubar-toolbar-color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+$tmce-button-text-color: #fff !important;
+$tmce-button-text-color--disabled: rgba(34,47,62,.5) !important;
+$tmce-menu-border: 1px solid rgba(34,47,62,.5) !important;
+$tmce-button-background-hover-color: map_get($mat-eav-item-dialog-secondary, 800) !important;
+$tmce-button-background-active-color: map_get($mat-eav-item-dialog-secondary, 700) !important;
+$tmce-button-background-hover-color--disabled: initial !important;
+$tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-secondary, 800) inset !important;
 
 .tox {
     color: #222f3e;
 }
 
 .tox-tinymce {
-    border: 1px solid #ccc;
+    // border: 1px solid #ccc;
+    border: $tmce-border;
 }
 
 .tox .accessibility-issue__description {
@@ -238,15 +258,17 @@
 }
 
 .tox .tox-collection__item {
-    color: #222f3e; // spm do not set important because it will overwrite greyed out behavior on disabled item
+    // color: #222f3e;
+    color: $tmce-button-text-color;
 }
 
 .tox .tox-collection--list .tox-collection__item--enabled {
     color: contrast(inherit,#222f3e,#fff);
 }
 
-.tox .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
-    background-color: #dee0e2;
+.tox .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled):not(.tox-swatch) {
+    // background-color: #dee0e2;
+    background-color: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
@@ -271,11 +293,22 @@
 }
 
 .tox .tox-collection__item--state-disabled {
-    color: rgba(34,47,62,.5);
+    // color: rgba(34,47,62,.5);
+    color: $tmce-button-text-color--disabled;
+}
+
+// custom selector
+.tox .tox-collection__item-label > :first-child {
+    color: $tmce-button-text-color;
 }
 
 .tox .tox-collection__item-accessory {
     color: rgba(34,47,62,.7);
+}
+
+.tox .tox-collection__item-caret {
+    // custom property
+    fill: $tmce-button-text-color;
 }
 
 .tox .tox-sv-palette-thumb {
@@ -523,27 +556,33 @@
 }
 
 .tox .tox-insert-table-picker .tox-insert-table-picker__selected {
-    background-color: rgba(32,122,183,.5);
+    // background-color: rgba(32,122,183,.5);
+    background-color: $tmce-button-text-color;
     border-color: rgba(32,122,183,.5);
 }
 
 .tox .tox-insert-table-picker__label {
-    color: rgba(34,47,62,.7);
+    // color: rgba(34,47,62,.7);
+    color: $tmce-button-text-color;
 }
 
 .tox .tox-menu {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    // background-color: #fff;
+    background-color: $tmce-menubar-toolbar-color;
+    // border: 1px solid #ccc;
+    border: $tmce-menu-border;
     box-shadow: 0 4px 8px 0 rgba(34,47,62,.1);
 }
 
 .tox .tox-menubar {
     background: url("data:image/svg+xml;charset=utf8,%3Csvg height='43px' viewBox='0 0 40 43px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='42px' width='100' height='1' fill='%23cccccc'/%3E%3C/svg%3E") left 0 top 0 #fff;
-    background-color: #fff;
+    // background-color: #fff;
+    background-color: $tmce-menubar-toolbar-color;
 }
 
 .tox .tox-mbtn {
-    color: #222f3e;
+    // color: #222f3e;
+    color: $tmce-button-text-color;
 }
 
 .tox .tox-mbtn[disabled] {
@@ -551,17 +590,20 @@
 }
 
 .tox .tox-mbtn:hover:not(:disabled) {
-    background: #dee0e2;
+    // background: #dee0e2;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
 .tox .tox-mbtn:focus:not(:disabled) {
-    background: #dee0e2;
+    // background: #dee0e2;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
 .tox .tox-mbtn--active {
-    background: #c8cbcf;
+    // background: #c8cbcf;
+    background: $tmce-button-background-active-color;
     color: #222f3e;
 }
 
@@ -682,15 +724,18 @@
 }
 
 .tox .tox-tbtn {
-    color: #222f3e;
+    // color: #222f3e;
+    color: $tmce-button-text-color;
 }
 
 .tox .tox-tbtn svg {
-    fill: #222f3e;
+    // fill: #222f3e;
+    fill: $tmce-button-text-color;
 }
 
 .tox .tox-tbtn--enabled {
-    background: #c8cbcf;
+    // background: #c8cbcf;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
@@ -699,7 +744,8 @@
 }
 
 .tox .tox-tbtn:hover {
-    background: #dee0e2;
+    // background: #dee0e2;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
@@ -708,7 +754,8 @@
 }
 
 .tox .tox-tbtn:focus {
-    background: #dee0e2;
+    // background: #dee0e2;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
@@ -717,7 +764,8 @@
 }
 
 .tox .tox-tbtn:active {
-    background: #c8cbcf;
+    // background: #c8cbcf;
+    background: $tmce-button-background-active-color;
     color: #222f3e;
 }
 
@@ -726,28 +774,42 @@
 }
 
 .tox .tox-tbtn--disabled,.tox .tox-tbtn--disabled:hover,.tox .tox-tbtn:disabled,.tox .tox-tbtn:disabled:hover {
-    color: rgba(34,47,62,.5);
+    // color: rgba(34,47,62,.5);
+    color: $tmce-button-text-color--disabled;
+    // background-color: initial;
+    background-color: $tmce-button-background-hover-color--disabled;
 }
 
 .tox .tox-tbtn--disabled svg,.tox .tox-tbtn--disabled:hover svg,.tox .tox-tbtn:disabled svg,.tox .tox-tbtn:disabled:hover svg {
-    fill: rgba(34,47,62,.5)
+    // fill: rgba(34,47,62,.5);
+    fill: $tmce-button-text-color--disabled;
 }
 
 .tox .tox-tbtn__select-chevron svg {
-    fill: rgba(34,47,62,.7);
+    // fill: rgba(34,47,62,.7);
+    fill: $tmce-button-text-color;
+}
+
+// custom selector
+.tox .tox-tbtn__icon-wrap svg {
+    width: 24px !important;
+    height: 24px !important;
 }
 
 .tox .tox-split-button:hover {
-    box-shadow: 0 0 0 1px #dee0e2 inset;
+    // box-shadow: 0 0 0 1px #dee0e2 inset;
+    box-shadow: $tmce-split-button-hover-box-shadow;
 }
 
 .tox .tox-split-button:focus {
-    background: #dee0e2;
+    // background: #dee0e2;
+    background: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
 .tox .tox-split-button__chevron svg {
-    fill: rgba(34,47,62,.7);
+    // fill: rgba(34,47,62,.7);
+    fill: $tmce-button-text-color;
 }
 
 .tox .tox-split-button.tox-tbtn--disabled .tox-tbtn:focus,.tox .tox-split-button.tox-tbtn--disabled .tox-tbtn:hover,.tox .tox-split-button.tox-tbtn--disabled:focus,.tox .tox-split-button.tox-tbtn--disabled:hover {
@@ -756,8 +818,10 @@
 
 .tox .tox-toolbar,.tox .tox-toolbar__overflow,.tox .tox-toolbar__primary {
     background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23cccccc'/%3E%3C/svg%3E") left 0 top 0 #fff;
-    background-color: #fff;
-    border-top: 1px solid #ccc;
+    // background-color: #fff;
+    background-color: $tmce-menubar-toolbar-color;
+    // border-top: 1px solid #ccc;
+    border-top: $tmce-toolbar-border-top;
 }
 
 .tox.tox-tinymce-aux .tox-toolbar__overflow {
@@ -767,11 +831,13 @@
 }
 
 .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
-    border-right: 1px solid #ccc;
+    // border-right: 1px solid #ccc;
+    border-right: $tmce-toolbar-group-border;
 }
 
 .tox[dir=rtl] .tox-toolbar__group:not(:last-of-type) {
-    border-left: 1px solid #ccc;
+    // border-left: 1px solid #ccc;
+    border-left: $tmce-toolbar-group-border;
 }
 
 .tox .tox-tooltip__body {
