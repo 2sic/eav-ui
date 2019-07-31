@@ -1,7 +1,14 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, ɵConsole } from '@angular/core';
+import { tap, catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable()
 export class TinymceWysiwygConfig {
+
+  constructor(
+    private http: HttpClient,
+  ) { }
   svc = () => {
     return {
       // cdn root
@@ -75,7 +82,8 @@ export class TinymceWysiwygConfig {
     const svc = this.svc();
     return {
       // baseURL: svc.cdnRoot, // main script is loaded as a dependency to this webcomponent in eav-field.directive.ts
-      // inline: true, // use the div, not an iframe
+      inline: true, // use the div, not an iframe
+      fixed_toolbar_container: '.field-string-wysiwyg-mce-toolbar',
       automatic_uploads: false, // we're using our own upload mechanism
       modes: modes, // for later switch to another mode
       menubar: modes.standard.menubar, // basic menu (none)
@@ -100,7 +108,7 @@ export class TinymceWysiwygConfig {
       // General looks
       skin: 'oxide',
       theme: 'silver',
-      statusbar: false,    // doesn't work in inline :(
+      statusbar: true,    // doesn't work in inline :(
 
       language: svc.defaultLanguage,
 
@@ -116,6 +124,10 @@ export class TinymceWysiwygConfig {
       //    console.log(args.node);
       //    args.node.setAttribute('id', '42');
       // }
+      blur: function() {
+        console.log('stv blur');
+        return false;
+      },
     };
   }
 
@@ -134,10 +146,14 @@ export class TinymceWysiwygConfig {
       paste_remove_spans: true,
       paste_remove_styles: true,
 
+      paste_preprocess: function (e, args) {
+        console.error('stv paste preprocess', e, args);
+      },
+
       paste_postprocess: function (plugin, args) {
         try {
-          var anchors = args.node.getElementsByTagName('a');
-          for (var i = 0; i < anchors.length; i++) {
+          const anchors = args.node.getElementsByTagName('a');
+          for (let i = 0; i < anchors.length; i++) {
             if (anchors[i].hasAttribute('target') === false) {
               anchors[i].setAttribute('target', '_blank');
             }
@@ -147,6 +163,37 @@ export class TinymceWysiwygConfig {
         }
       }
     };
+  }
+
+  // add paste wysiwyg ability feature if enabled
+  getPasteImageOption = (uploadUrl: string, headers: HttpHeaders) => {
+    return {
+      automatic_uploads: true,
+      images_reuse_filename: true,
+      paste_data_images: true,
+      paste_filter_drop: false,
+      paste_block_drop: false,
+      images_upload_url: uploadUrl,
+      images_upload_base_path: '/images_upload_base_path/',
+      images_upload_handler: this.imagesUploadHandler,
+      upload_headers: headers,
+    };
+  }
+
+  private imagesUploadHandler = (blobInfo, success, failure) => {
+    const settings = (window as any).tinymce.activeEditor.settings;
+
+    const formData = new FormData();
+    formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+    console.log('stv upload', settings);
+
+    this.http.post<any>(settings.images_upload_url, formData, { headers: settings.upload_headers }).pipe(
+      tap(rez => console.log('stv upload rez', rez)),
+      map( ({ Path }) => Path ),
+      tap(imagePath => success(imagePath)),
+      catchError(e => of(failure(e))),
+    ).subscribe();
   }
 
   setLanguageOptions = (currentLang, options) => {

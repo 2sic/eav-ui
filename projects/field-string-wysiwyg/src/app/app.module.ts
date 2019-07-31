@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
@@ -16,7 +17,8 @@ import { TinyMceAdamService } from './services/tinymce-adam-service';
   ],
   imports: [
     BrowserModule,
-    EditorModule
+    EditorModule,
+    HttpClientModule,
   ],
   providers: [
     TinymceWysiwygConfig,

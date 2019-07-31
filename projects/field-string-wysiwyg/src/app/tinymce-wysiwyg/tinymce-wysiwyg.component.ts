@@ -12,6 +12,7 @@ import { ConnectorObservable } from '../../../../shared/connector';
 import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
 import * as contentStyle from './tinymce-content.css';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-tinymce-wysiwyg',
@@ -73,10 +74,15 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     this.enableContentBlocksIfPossible(settings);
     let tempOptions = Object.assign(selectorOptions, this.tinymceWysiwygConfig.getDefaultOptions(settings));
 
-    // todo: add paste wysiwyg ability feature if enabled
-    // '1b13e0e6-a346-4454-a1e6-2fb18c047d20'
-    tempOptions = Object.assign(tempOptions, this.tinymceWysiwygConfig.getPasteWysiwygAbilityOption());
+    // add paste wysiwyg ability feature if enabled
+    if (this.experimental.isFeatureEnabled('1b13e0e6-a346-4454-a1e6-2fb18c047d20')) {
+      tempOptions = Object.assign(tempOptions, this.tinymceWysiwygConfig.getPasteWysiwygAbilityOption());
+    }
 
+    tempOptions = Object.assign(
+      tempOptions,
+      this.tinymceWysiwygConfig.getPasteImageOption(this.experimental.uploadUrl, this.experimental.uploadHeaders)
+    );
 
     const currentLang = this.translateService.currentLang;
     this.options = this.tinymceWysiwygConfig.setLanguageOptions(currentLang, tempOptions);

@@ -5,6 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
 import { FormSet } from '../../../../shared/models/eav/form-set';
+import { HttpHeaders } from '@angular/common/http';
 
 export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
@@ -29,6 +30,9 @@ export class ExperimentalProps {
     updateField: (name: string, value: any) => void;
     formGroup: FormGroup;
     formSetValueChange$: Observable<FormSet>;
+    isFeatureEnabled: (guid: string) => boolean;
+    uploadUrl: string;
+    uploadHeaders: HttpHeaders;
 }
 
 export class FieldState {

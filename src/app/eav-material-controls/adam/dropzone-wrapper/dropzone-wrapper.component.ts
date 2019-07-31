@@ -49,6 +49,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     this.dropzoneConfig = {
       // spm 2019.02.28. Check whether usePortalRoot should always be false
       url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
+      // acceptedFiles: '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv',
       maxFiles: 1,
       autoReset: null,
       errorReset: null,
@@ -73,6 +74,15 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       // so i'm just making the preview clickable, as it's not important
       clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
+
+    // tslint:disable-next-line: max-line-length
+    const acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+
+    const cfg = {
+      ...this.dropzoneConfig,
+      acceptedFiles,
+    };
+
     this.config.dropzoneConfig = this.dropzoneConfig;
   }
 

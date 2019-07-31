@@ -1,3 +1,4 @@
+import { HttpHeaders } from '@angular/common/http';
 import { NgZone, ElementRef } from '@angular/core';
 import { NgElement, WithProperties } from '@angular/elements';
 import { FormGroup } from '@angular/forms';
@@ -171,6 +172,9 @@ export class ConnectorService {
       },
       formGroup: this.group,
       formSetValueChange$: this.eavService.formSetValueChange$,
+      isFeatureEnabled: (guid) => true, // todo: implement this method of featureService
+      uploadUrl: this.config.dropzoneConfig.url as string,
+      uploadHeaders: this.config.dropzoneConfig.headers as HttpHeaders,
     };
 
     return experimentalProps;

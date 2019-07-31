@@ -1,1 +1,18 @@
 @import "./oxide-skin-overrides.scss";
+
+.wrap-float-label {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+// .field-string-wysiwyg-mce-toolbar {
+//   min-height: 39px;
+// }
+.field-string-wysiwyg-mce-box {
+  flex-grow: 1;
+}
+
+.tox.tox-tinymce.tox-tinymce-inline {
+  display: flex !important;
+ }

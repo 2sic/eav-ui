@@ -1,4 +1,5 @@
-<div class="wrap-float-label" style="height:100% !important">
+<div class="wrap-float-label">
+  <div class="field-string-wysiwyg-mce-toolbar"></div>
   <editor *ngIf="options" [id]="id" [init]="options" class="field-string-wysiwyg-mce-box"
     [disabled]="experimental.formGroup.controls[connector.field.name].disabled" [initialValue]="initialValue"
     style="height:100%"></editor>

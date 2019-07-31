@@ -4,9 +4,10 @@ import { loadCustomIcons } from '../helper/load-icons-helper';
 export class TinyMceToolbarButtons {
     static addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
         //#region call register once the editor-object is ready
-        editor.on('init', () => {
+        editor.on('init', (e) => {
             this.registerTinyMceFormats(editor, vm.host, imgSizes);
             loadCustomIcons(editor);
+            e.target.focus();
         });
         //#endregion
 
@@ -459,19 +460,22 @@ export class TinyMceToolbarButtons {
         // editor.theme.panel.remove();    // kill current toolbar
         // editor.theme.renderUI(editor);
 
+        // focus away...
+        // document.getElementById('dummyfocus').focus();
+
         // refresh editor toolbar when it's NOT in inline mode (inline false)
         editor.editorManager.remove(editor);
         editor.editorManager.init(editor.settings);
 
-        editor.execCommand('mceFocus');
+        // editor.execCommand('mceFocus');
 
-        // focus away...
-        document.getElementById('dummyfocus').focus();
 
-        // ...and focus back a bit later
-        setTimeout(() => {
-            editor.focus();
-        }, 100);
+
+        // // ...and focus back a bit later
+        // setTimeout(() => {
+        //     editor.focus();
+        // }, 100);
+
     }
     //#endregion
 
