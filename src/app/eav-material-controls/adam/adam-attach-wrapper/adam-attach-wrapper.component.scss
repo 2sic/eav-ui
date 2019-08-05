@@ -1,0 +1,11 @@
+.adam-browser-container--short {
+    // max-height: 60%;
+    overflow-y: scroll;
+    // hide scroll bar
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+    scrollbar-width: none;
+    &::-webkit-scrollbar { 
+        display: none;  // Safari and Chrome
+    }
+}

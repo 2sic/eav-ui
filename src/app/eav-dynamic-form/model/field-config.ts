@@ -13,7 +13,7 @@ export interface FieldConfigSet {
   entity: ItemConfig;
   form: FormConfig;
   adam?: AdamBrowserComponent;
-  dropzoneConfig?: DropzoneConfigInterface;
+  dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   cache?: any;
 }
 

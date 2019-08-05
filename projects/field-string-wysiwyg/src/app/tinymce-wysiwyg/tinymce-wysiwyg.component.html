@@ -1,7 +1,6 @@
 <div class="wrap-float-label">
-  <div class="field-string-wysiwyg-mce-toolbar"></div>
+  <div class="field-string-wysiwyg-mce-toolbar" [ngClass]="toolbarContainerClass"></div>
   <editor *ngIf="options" [id]="id" [init]="options" class="field-string-wysiwyg-mce-box"
     [disabled]="experimental.formGroup.controls[connector.field.name].disabled" [initialValue]="initialValue"
     style="height:100%"></editor>
-  <span id="dummyfocus" tabindex="-1"></span>
 </div>

@@ -4,10 +4,9 @@ import { loadCustomIcons } from '../helper/load-icons-helper';
 export class TinyMceToolbarButtons {
     static addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
         //#region call register once the editor-object is ready
-        editor.on('init', (e) => {
+        editor.on('init', (e: any) => {
             this.registerTinyMceFormats(editor, vm.host, imgSizes);
             loadCustomIcons(editor);
-            e.target.focus();
         });
         //#endregion
 
@@ -454,28 +453,10 @@ export class TinyMceToolbarButtons {
     static switchModes(mode, editor) {
         editor.settings.toolbar = editor.settings.modes[mode].toolbar;
         editor.settings.menubar = editor.settings.modes[mode].menubar;
-        // editor.settings.contextmenu = editor.settings.modes[mode].contextmenu; - doesn't work at the moment
 
-        // refresh editor toolbar when it's in inline mode  (inline true)
-        // editor.theme.panel.remove();    // kill current toolbar
-        // editor.theme.renderUI(editor);
-
-        // focus away...
-        // document.getElementById('dummyfocus').focus();
-
-        // refresh editor toolbar when it's NOT in inline mode (inline false)
+        // refresh editor toolbar
         editor.editorManager.remove(editor);
         editor.editorManager.init(editor.settings);
-
-        // editor.execCommand('mceFocus');
-
-
-
-        // // ...and focus back a bit later
-        // setTimeout(() => {
-        //     editor.focus();
-        // }, 100);
-
     }
     //#endregion
 

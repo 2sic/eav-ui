@@ -83,7 +83,7 @@ export class TinymceWysiwygConfig {
     return {
       // baseURL: svc.cdnRoot, // main script is loaded as a dependency to this webcomponent in eav-field.directive.ts
       inline: true, // use the div, not an iframe
-      fixed_toolbar_container: '.field-string-wysiwyg-mce-toolbar',
+      fixed_toolbar_container: '.' + settings.toolbarContainerClass,
       automatic_uploads: false, // we're using our own upload mechanism
       modes: modes, // for later switch to another mode
       menubar: modes.standard.menubar, // basic menu (none)
@@ -113,26 +113,11 @@ export class TinymceWysiwygConfig {
       language: svc.defaultLanguage,
 
       debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
-      // link_context_toolbar: true,
-
-      // paste_preprocess: function (plugin, args) {
-      //    console.log(args.content);
-      //    args.content += ' preprocess';
-      // },
-
-      // paste_postprocess: function (plugin, args) {
-      //    console.log(args.node);
-      //    args.node.setAttribute('id', '42');
-      // }
-      blur: function() {
-        console.log('stv blur');
-        return false;
-      },
     };
   }
 
   // add paste wysiwyg ability feature if enabled
-  getPasteWysiwygAbilityOption = () => {
+  getPasteWysiwygAbilityOptions = () => {
     return {
       paste_as_text: false,
       paste_enable_default_filters: true,
@@ -147,7 +132,7 @@ export class TinymceWysiwygConfig {
       paste_remove_styles: true,
 
       paste_preprocess: function (e, args) {
-        console.error('stv paste preprocess', e, args);
+        console.log('stv paste preprocess', e, args);
       },
 
       paste_postprocess: function (plugin, args) {
@@ -166,7 +151,7 @@ export class TinymceWysiwygConfig {
   }
 
   // add paste wysiwyg ability feature if enabled
-  getPasteImageOption = (uploadUrl: string, headers: HttpHeaders) => {
+  getPasteImageOptions = (uploadUrl: string, headers: HttpHeaders) => {
     return {
       automatic_uploads: true,
       images_reuse_filename: true,
@@ -189,8 +174,7 @@ export class TinymceWysiwygConfig {
     console.log('stv upload', settings);
 
     this.http.post<any>(settings.images_upload_url, formData, { headers: settings.upload_headers }).pipe(
-      tap(rez => console.log('stv upload rez', rez)),
-      map( ({ Path }) => Path ),
+      map(({ Path }) => Path),
       tap(imagePath => success(imagePath)),
       catchError(e => of(failure(e))),
     ).subscribe();

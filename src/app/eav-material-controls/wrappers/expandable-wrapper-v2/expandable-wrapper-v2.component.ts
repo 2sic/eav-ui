@@ -11,6 +11,7 @@ import { ConnectorService } from '../../input-types/custom/connector-service/con
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/services/content-type.service';
+import { FeatureService } from '../../../shared/services/feature.service';
 
 @Component({
   selector: 'app-expandable-wrapper-v2',
@@ -43,13 +44,14 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     private dialog: MatDialog,
     private _ngZone: NgZone,
     private contentTypeService: ContentTypeService,
+    private featureService: FeatureService,
   ) { }
 
   ngOnInit() {
     console.log('ExpandableWrapperV2 created');
     const previewElName = `field-${this.config.field.inputType}-preview`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
-      this.eavService, this.translateService, this.previewContainer, this.config, this.group);
+      this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService);
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);
 
     this.subscriptions.push(

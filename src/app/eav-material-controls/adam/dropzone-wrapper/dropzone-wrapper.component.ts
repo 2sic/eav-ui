@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { BehaviorSubject } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -17,15 +18,11 @@ import { UrlConstants } from '../../../shared/constants/url-constants';
 export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective, { static: false }) dropzoneRef?: DropzoneDirective;
-  @ViewChild('invisibleClickable', { static: false }) invisibleClickableReference: ElementRef;
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
 
-  public dropzoneConfig: DropzoneConfigInterface;
   private eavConfig: EavConfiguration;
-  // acceptedFiles: 'image/*',
-  // createImageThumbnails: true
   url: string;
   usePortalRoot = false;
 
@@ -38,7 +35,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngOnInit() {
-    //  this.config.currentFieldConfig.adam = this.adamRef;
     const serviceRoot = this.eavConfig.portalroot + UrlConstants.apiRoot;
     const contentType = this.config.entity.header.contentTypeName;
     const entityGuid = this.config.entity.header.guid;
@@ -46,10 +42,9 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
     this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
 
-    this.dropzoneConfig = {
-      // spm 2019.02.28. Check whether usePortalRoot should always be false
+    const dropzoneConfig: DropzoneConfigInterface = {
+      // usePortalRoot is updated in AdamBrowser. Switches between Adam and DNN image
       url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
-      // acceptedFiles: '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv',
       maxFiles: 1,
       autoReset: null,
       errorReset: null,
@@ -75,20 +70,16 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
     };
 
-    // tslint:disable-next-line: max-line-length
-    const acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
-
-    const cfg = {
-      ...this.dropzoneConfig,
-      acceptedFiles,
-    };
-
-    this.config.dropzoneConfig = this.dropzoneConfig;
+    this.config.dropzoneConfig$ = new BehaviorSubject(dropzoneConfig);
   }
 
   ngAfterViewInit() {
-    this.dropzoneConfig.previewsContainer = '.field-' + this.config.field.index + ' .dropzone-previews';
-    this.dropzoneConfig.clickable = '.field-' + this.config.field.index + ' .invisible-clickable';
+    const currDzConfig = this.config.dropzoneConfig$.value;
+    this.config.dropzoneConfig$.next({
+      ...currDzConfig,
+      previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
+      clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+    });
   }
 
   public onUploadError(args: any): void {
@@ -113,17 +104,4 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     // Reset dropzone
     this.dropzoneRef.reset();
   }
-
-  /**
-   * triger click on clickable element for load open
-   */
-  // openUpload() {
-  //   console.log('openUpload click');
-  //   this.invisibleClickableReference.nativeElement.click();
-  // }
-
-  // updateCallback() {
-  //   console.log('update callback');
-  //   console.log('adamModeImage', this.adamModeImage);
-  // }
 }

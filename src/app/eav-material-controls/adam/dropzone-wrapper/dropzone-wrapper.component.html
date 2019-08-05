@@ -1,4 +1,4 @@
-<div class="dropzone dropzone-container" [dropzone]="dropzoneConfig" [disabled]="disabled"
+<div class="dropzone dropzone-container" [dropzone]="config.dropzoneConfig$ | async" [disabled]="disabled"
   (error)="onUploadError($event)" (success)="onUploadSuccess($event)" [ngClass]="{
     'dropzone-disabled': disabled
   }">

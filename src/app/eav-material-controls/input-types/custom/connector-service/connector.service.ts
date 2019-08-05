@@ -1,11 +1,10 @@
-import { HttpHeaders } from '@angular/common/http';
 import { NgZone, ElementRef } from '@angular/core';
 import { NgElement, WithProperties } from '@angular/elements';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 // tslint:disable-next-line:max-line-length
@@ -16,10 +15,9 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { ConnectorInstance } from '../external-webcomponent/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
-import { ContentType } from '../../../../shared/models/eav';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
-
+import { FeatureService } from '../../../../shared/services/feature.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -39,6 +37,7 @@ export class ConnectorService {
     private customElContainer: ElementRef,
     private config: FieldConfigSet,
     private group: FormGroup,
+    private featureService: FeatureService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
   }
@@ -159,8 +158,8 @@ export class ConnectorService {
 
   private calculateExperimentalProps(): ExperimentalProps {
     let allInputTypeNames: InputTypeName[];
-    const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
-    contentType$.pipe(first()).subscribe(data => {
+    const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
+    contentType$.pipe(take(1)).subscribe(data => {
       allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
     });
 
@@ -172,10 +171,12 @@ export class ConnectorService {
       },
       formGroup: this.group,
       formSetValueChange$: this.eavService.formSetValueChange$,
-      isFeatureEnabled: (guid) => true, // todo: implement this method of featureService
-      uploadUrl: this.config.dropzoneConfig.url as string,
-      uploadHeaders: this.config.dropzoneConfig.headers as HttpHeaders,
+      isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
     };
+    // optional props
+    if (this.config.dropzoneConfig$) {
+      experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
+    }
 
     return experimentalProps;
   }

@@ -2,10 +2,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { throwError, Observable, of } from 'rxjs';
-import { map, catchError, tap, switchMap } from 'rxjs/operators';
+import { throwError, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
-import { UrlConstants } from '../constants/url-constants';
 import * as fromStore from '../store';
 import * as featureActions from '../store/actions/feature.actions';
 import { Feature } from '../models/feature/feature';
@@ -28,7 +27,10 @@ export class FeatureService {
         return this.store.select(fromStore.getFeatures);
     }
 
-    public isEnabledNow = (features: Feature[], guid): boolean => {
+    public isFeatureEnabled = (guid: string): boolean => {
+        let features: Feature[];
+        this.selectFeatures().pipe(take(1)).subscribe(allFeatures => { features = allFeatures; });
+
         for (let i = 0; i < features.length; i++) {
             if (features[i].id === guid) {
                 return features[i].enabled;
