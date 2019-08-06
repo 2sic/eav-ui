@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -17,9 +18,10 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
+  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
+  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
@@ -40,6 +42,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
+    private dropzoneDraggingService: DropzoneDraggingService,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -51,6 +54,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.subscriptions.push(
       this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
+  }
+
+  ngAfterViewInit() {
+    this.dropzoneDraggingService.attach(this.backdropRef);
+    this.dropzoneDraggingService.attach(this.dialogRef);
   }
 
   setValue(event) {
@@ -65,6 +73,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.dropzoneDraggingService.detach();
   }
 
   expandDialog() {

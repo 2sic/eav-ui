@@ -9,6 +9,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
+import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
@@ -16,9 +17,10 @@ import { AdamItem } from '../../../shared/models/adam/adam-item';
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
+  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
+  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   group: FormGroup;
 
@@ -30,12 +32,20 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
-  constructor(private fileTypeService: FileTypeService) { }
+  constructor(
+    private fileTypeService: FileTypeService,
+    private dropzoneDraggingService: DropzoneDraggingService,
+  ) { }
 
   ngOnInit() {
     this.subscriptions.push(
       this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
+  }
+
+  ngAfterViewInit() {
+    this.dropzoneDraggingService.attach(this.backdropRef);
+    this.dropzoneDraggingService.attach(this.dialogRef);
   }
 
   isKnownType(item: AdamItem) {
@@ -57,5 +67,6 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.dropzoneDraggingService.detach();
   }
 }

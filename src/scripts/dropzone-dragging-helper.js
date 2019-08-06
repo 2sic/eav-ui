@@ -22,7 +22,7 @@ window.addEventListener('drop', function (event) {
  * add draggingClass to dropzone over which something is dragged
  */
 (function addDraggingClass() {
-  let windowBodyTimeouts = [];
+  windowBodyTimeouts = []; // spm rename it to be understandable in other components as well
   let dropzones;
   let dropzoneTimeouts = [];
   let windowDropzonesTimeouts = [];
@@ -41,6 +41,7 @@ window.addEventListener('drop', function (event) {
     clearAllDropzonesAndListeners();
   });
   window.addEventListener('dragleave', function () {
+    console.log('window dragleave');
     let timeout = setTimeout(function () { document.body.classList.remove(draggingClass); }, 50);
     windowBodyTimeouts.push(timeout);
     timeout = setTimeout(clearAllDropzonesAndListeners, 50);
