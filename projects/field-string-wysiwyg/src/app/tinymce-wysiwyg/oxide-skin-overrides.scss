@@ -8,8 +8,8 @@
 @import "../../../../../src/styles/theme/material-colors.scss";
 
 $tmce-border: none !important; // removes 1px border from tinymce to better fit into expandable window
-$tmce-toolbar-border-top: none !important; // removes border between toolbar and menubar
-$tmce-toolbar-group-border: none !important; // removes border between toolbar buttons groups
+// $tmce-toolbar-border-top: none !important; // removes border between toolbar and menubar
+// $tmce-toolbar-group-border: none !important; // removes border between toolbar buttons groups
 $tmce-menubar-toolbar-color: map_get($mat-eav-item-dialog-secondary, 500) !important;
 $tmce-button-text-color: #fff !important;
 $tmce-button-text-color--disabled: rgba(34,47,62,.5) !important;
@@ -820,8 +820,8 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
     background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23cccccc'/%3E%3C/svg%3E") left 0 top 0 #fff;
     // background-color: #fff;
     background-color: $tmce-menubar-toolbar-color;
-    // border-top: 1px solid #ccc;
-    border-top: $tmce-toolbar-border-top;
+    border-top: 1px solid #ccc;
+    // border-top: $tmce-toolbar-border-top;
 }
 
 .tox.tox-tinymce-aux .tox-toolbar__overflow {
@@ -831,13 +831,13 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 }
 
 .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
-    // border-right: 1px solid #ccc;
-    border-right: $tmce-toolbar-group-border;
+    border-right: 1px solid #ccc;
+    // border-right: $tmce-toolbar-group-border;
 }
 
 .tox[dir=rtl] .tox-toolbar__group:not(:last-of-type) {
-    // border-left: 1px solid #ccc;
-    border-left: $tmce-toolbar-group-border;
+    border-left: 1px solid #ccc;
+    // border-left: $tmce-toolbar-group-border;
 }
 
 .tox .tox-tooltip__body {
