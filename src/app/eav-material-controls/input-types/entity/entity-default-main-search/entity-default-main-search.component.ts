@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } 
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -12,6 +12,7 @@ import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.serv
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 // spm probably not needed
 // import { EavService } from '../../../../shared/services/eav.service';
 // import { EntityService } from '../../../../shared/services/entity.service';
@@ -44,6 +45,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   filterText = '';
   contentTypeMask: FieldMaskService;
   disableAddNew = false;
+  debugEnabled$: Observable<boolean>;
+  debugEnabled = false;
 
   private subscriptions: Subscription[] = [];
 
@@ -71,12 +74,20 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     private validationMessagesService: ValidationMessagesService,
     private dialog: MatDialog,
     private translate: TranslateService,
+    private globalConfigurationService: GlobalConfigurationService,
   ) { }
 
   ngOnInit() {
     this.setAvailableEntities();
     this.contentTypeMask = new FieldMaskService(this.entityType, this.group.controls, this.onContentTypeMaskChange.bind(this), null);
     this.disableAddNew = !!!this.contentTypeMask.resolve();
+    // subscribe to debug enabled changes
+    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    this.subscriptions.push(
+      this.debugEnabled$.subscribe(debugEnabled => {
+        this.debugEnabled = debugEnabled;
+      })
+    );
   }
 
   onContentTypeMaskChange(value: any) {
@@ -121,6 +132,12 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
       entityValues.push(value);
       this.patchValue(entityValues);
     }
+  }
+
+  insertNull() {
+    const entityValues = [...this.controlValue];
+    entityValues.push(null);
+    this.patchValue(entityValues);
   }
 
   openNewEntityDialog() {

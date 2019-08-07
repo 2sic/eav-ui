@@ -64,6 +64,8 @@
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>
 
+<div *ngIf="debugEnabled">debug: <span (click)="insertNull()">add null-item</span></div>
+
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
 <!-- add new entity -->
