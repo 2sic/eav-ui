@@ -8,7 +8,7 @@ import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
-import { FeatureService } from '../../../shared/services/feature.service';
+import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';

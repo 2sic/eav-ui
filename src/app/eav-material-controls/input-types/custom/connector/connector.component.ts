@@ -8,7 +8,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
 import { ConnectorService } from '../connector-service/connector.service';
-import { FeatureService } from '../../../../shared/services/feature.service';
+import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
 
 @Component({
   selector: 'app-connector',

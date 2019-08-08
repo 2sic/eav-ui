@@ -17,7 +17,7 @@ import { ConnectorInstance } from '../external-webcomponent/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../shared/services/content-type.service';
-import { FeatureService } from '../../../../shared/services/feature.service';
+import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];

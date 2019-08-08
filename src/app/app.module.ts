@@ -22,7 +22,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdamService } from './eav-material-controls/adam/adam.service';
 import { SvcCreatorService } from './shared/services/svc-creator.service';
 
-import { FeatureService } from './shared/services/feature.service';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
 import { HeaderInterceptor } from './shared/interceptors/interceptors';
@@ -31,6 +30,8 @@ import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
+import { EntityDataModule } from '@ngrx/data';
+import { entityConfig } from './shared/store/ngrx-data/entity-metadata';
 
 const routes: Routes = [
   {
@@ -53,6 +54,7 @@ export function createTranslateLoader(http: HttpClient) {
     StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
+    EntityDataModule.forRoot(entityConfig),
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
@@ -76,7 +78,6 @@ export function createTranslateLoader(http: HttpClient) {
     EavService,
     AdamService,
     SvcCreatorService,
-    FeatureService,
     DnnBridgeService,
     EntityService,
     EavAdminUiService,

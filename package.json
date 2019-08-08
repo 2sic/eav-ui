@@ -55,6 +55,7 @@
     "@angular/platform-browser-dynamic": "^8.0.1",
     "@angular/router": "^8.0.1",
     "@material/layout-grid": "^0.41.0",
+    "@ngrx/data": "^8.0.1",
     "@ngrx/effects": "^8.0.1",
     "@ngrx/entity": "^8.0.1",
     "@ngrx/store": "^8.0.1",

@@ -11,7 +11,7 @@ import { ConnectorService } from '../../input-types/custom/connector-service/con
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/services/content-type.service';
-import { FeatureService } from '../../../shared/services/feature.service';
+import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 
 @Component({
   selector: 'app-expandable-wrapper-v2',

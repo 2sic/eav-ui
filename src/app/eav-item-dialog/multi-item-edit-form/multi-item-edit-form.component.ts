@@ -24,7 +24,7 @@ import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/services/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
-import { FeatureService } from '../../shared/services/feature.service';
+import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
 // tslint:disable-next-line:max-line-length
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -202,7 +202,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
-    this.features$ = this.featureService.selectFeatures();
+    this.features$ = this.featureService.entities$;
   }
 
   /**
