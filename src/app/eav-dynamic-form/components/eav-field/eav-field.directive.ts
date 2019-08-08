@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { take } from 'rxjs/operators';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
@@ -20,6 +21,8 @@ import { CustomInputType } from '../../../shared/models';
 import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
 import { InputTypesConstants } from '../../../shared/constants';
 import { FileTypeConstants } from '../../../shared/constants/type-constants';
+import { InputTypeService } from '../../../shared/services/input-type.service';
+import { InputType } from '../../../shared/models/eav';
 
 @Directive({
   selector: '[appEavField]'
@@ -38,7 +41,8 @@ export class EavFieldDirective implements OnInit {
   constructor(
     private resolver: ComponentFactoryResolver,
     private container: ViewContainerRef,
-    private scriptLoaderService: ScriptLoaderService
+    private scriptLoaderService: ScriptLoaderService,
+    private inputTypeService: InputTypeService,
   ) { }
 
   ngOnInit() {
@@ -139,22 +143,39 @@ export class EavFieldDirective implements OnInit {
    * @param fieldConfig
    */
   private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    console.log('createExternalWebComponent');
+    console.log('createExternalWebComponent fieldConfig:', fieldConfig);
     const ref: any = this.createComponent(container, fieldConfig);
     // ref.instance.renderWebComponent();
     // // TODO: read data from config
     // Start loading all external dependencies (start with css). This method recursively load all dependencies.
+    const inputType$ = this.inputTypeService.getContentTypeById(fieldConfig.field.inputType);
+    let inputType: InputType = null;
+    inputType$.pipe(take(1)).subscribe(type => { inputType = type; });
+    console.log('createExternalWebComponent inputType:', inputType);
+    const allFiles = inputType.AngularAssets.split('\n');
+    const cssFiles = [];
+    const jsFiles = [];
+    allFiles.forEach(file => {
+      file = file.toLocaleLowerCase().replace('[system:path]/dist/ng-edit/', '');
+      file = file.toLocaleLowerCase().replace('[system:path]/dist/', '');
+      // spm TODO: [App:Path] can be also a part of the script url and it has to be resolved before accessing it
+      if (file === 'https://cdn.tinymce.com/4.6/tinymce.min.js') {
+        jsFiles.push('https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.12/tinymce.min.js');
+      } else if (file.endsWith('.css')) {
+        cssFiles.push(file);
+      } else if (file.endsWith('js')) {
+        jsFiles.push(file);
+      }
+    });
+    const firstFileType = (cssFiles.length > 0) ? FileTypeConstants.css : FileTypeConstants.javaScript;
+    console.log('createExternalWebComponent css:', cssFiles, 'js:', jsFiles, 'firstFileType', firstFileType);
     this.loadWebComponentScripts(
       0,
       fieldConfig.field.name,
       fieldConfig.field.name,
-      [],
-      [
-        'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.12/tinymce.min.js',
-        'elements/field-string-wysiwyg/wysiwyg-tinymce.js',
-        'elements/field-custom-gps/gps-picker.js'
-      ],
-      FileTypeConstants.javaScript,
+      cssFiles,
+      jsFiles,
+      firstFileType,
       ref.instance.renderWebComponent);
   }
 

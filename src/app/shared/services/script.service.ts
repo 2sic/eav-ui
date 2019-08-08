@@ -21,6 +21,10 @@ export class ScriptLoaderService {
             observer.next(existingScript);
             observer.complete();
           });
+          existingScript.htmlScriptElement.addEventListener('error', () => {
+            observer.next(existingScript);
+            observer.complete();
+          });
         }
       } else {
         // Load the script
@@ -49,7 +53,10 @@ export class ScriptLoaderService {
         });
 
         scriptElement.onerror = (error: any) => {
-          observer.error('Couldnt load script ' + script.filePath);
+          // observer.error('Couldnt load script ' + script.filePath);
+          script.loaded = true;
+          observer.next(script);
+          observer.complete();
         };
 
         script.htmlScriptElement = scriptElement;
