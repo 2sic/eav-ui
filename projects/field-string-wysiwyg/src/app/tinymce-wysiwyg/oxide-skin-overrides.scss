@@ -278,7 +278,8 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 }
 
 .tox .tox-collection--toolbar .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
-    background-color: #dee0e2;
+    // background-color: #dee0e2;
+    background-color: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
@@ -288,13 +289,20 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 }
 
 .tox .tox-collection--grid .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
-    background-color: #dee0e2;
+    // background-color: #dee0e2;
+    background-color: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
 .tox .tox-collection__item--state-disabled {
     // color: rgba(34,47,62,.5);
     color: $tmce-button-text-color--disabled;
+}
+
+// custom selector
+.tox .tox-collection__item-icon svg:not([width]):not([height]) {
+    width: 24px !important;
+    height: 24px !important;
 }
 
 // custom selector
@@ -791,7 +799,7 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 }
 
 // custom selector
-.tox .tox-tbtn__icon-wrap svg {
+.tox .tox-tbtn__icon-wrap svg:not([width]):not([height]) {
     width: 24px !important;
     height: 24px !important;
 }

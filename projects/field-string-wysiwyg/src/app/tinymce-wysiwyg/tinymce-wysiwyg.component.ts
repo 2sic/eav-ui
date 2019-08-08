@@ -68,6 +68,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
 
     const selectorOptions = {
       // selector: 'editor#' + this.id,
+      toolbar_drawer: 'floating',
       body_class: 'field-string-wysiwyg-mce-box',
       content_style: contentStyle,
       height: '100%',
@@ -187,7 +188,11 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     editor.on('init', (e: any) => {
       console.log('wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
       if (!this.dialogIsOpen) { return; }
-      editor.focus();
+      try {
+        editor.focus();
+      } catch (error) {
+        // console.error('error when focusing editor', error);
+      }
     });
 
     editor.on('focus', (e: any) => {
@@ -233,7 +238,13 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
         this.dialogIsOpen = expanded;
         if (expanded && this.editor) {
           const editor = this.editor;
-          setTimeout(() => { editor.focus(); }, 100);
+          setTimeout(() => {
+            try {
+              editor.focus();
+            } catch (error) {
+              // console.error('error when focusing editor', error);
+            }
+          }, 100);
         }
       }),
     );

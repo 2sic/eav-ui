@@ -14,6 +14,8 @@ export class TinyMceToolbarButtons {
         editor.ui.registry.addSplitButton('linkfiles', {
             icon: 'custom-file-pdf',
             tooltip: 'Link.AdamFile.Tooltip',
+            presets: 'listpreview',
+            columns: 3,
             onAction: (_) => {
                 vm.toggleAdam(false);
             },
@@ -70,6 +72,8 @@ export class TinyMceToolbarButtons {
         const linkgroup = {
             icon: 'link',
             tooltip: 'Link',
+            presets: 'listpreview',
+            columns: 3,
             onSetup: this.initOnPostRender('link', editor),
             onAction: (_) => {
                 editor.execCommand('mceLink');
@@ -93,6 +97,8 @@ export class TinyMceToolbarButtons {
         editor.ui.registry.addSplitButton('images', {
             icon: 'image',
             tooltip: 'Image',
+            presets: 'listpreview',
+            columns: 3,
             onAction: (_) => {
                 vm.toggleAdam(true);
             },
@@ -154,6 +160,8 @@ export class TinyMceToolbarButtons {
         editor.ui.registry.addSplitButton('formatgroup', {
             tooltip: 'Italic',  // will be autotranslated
             icon: 'italic',
+            presets: 'listpreview',
+            columns: 3,
             onSetup: this.initOnPostRender('italic', editor),
             onAction: (_) => {
                 editor.execCommand('Italic');
@@ -194,6 +202,8 @@ export class TinyMceToolbarButtons {
         editor.ui.registry.addSplitButton('listgroup', {
             tooltip: 'Numbered list',  // official tinymce key
             icon: 'ordered-list',
+            presets: 'listpreview',
+            columns: 3,
             // for unknown reasons, this just doesn't activate correctly :( - neither does the bullist
             // spm numlist and bullist are not considered formats and don't trigger formatChanged
             onSetup: this.initOnPostRender('numlist', editor),
@@ -286,6 +296,8 @@ export class TinyMceToolbarButtons {
         //#region group of buttons with an h3 to start and showing h4-6 + p
         editor.ui.registry.addSplitButton('hgroup', {
             ...editor.ui.registry.getAll().buttons.h3,
+            presets: 'listpreview',
+            columns: 3,
             onItemAction: (api, value) => {
                 value(api);
             },
@@ -423,7 +435,12 @@ export class TinyMceToolbarButtons {
         return function (buttonApi) {
             function watchChange() {
                 editor.formatter.formatChanged(name, function (state) {
-                    buttonApi.setActive(state);
+                    try {
+                        buttonApi.setActive(state);
+                    } catch (error) {
+                        // cannot be set active when not visible on toolbar and is behing More... button
+                        // console.error('button set active error:', error);
+                    }
                 });
             }
 
