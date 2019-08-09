@@ -273,7 +273,8 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 }
 
 .tox .tox-collection--toolbar .tox-collection__item--enabled {
-    background-color: #c8cbcf;
+    // background-color: #c8cbcf;
+    background-color: $tmce-button-background-hover-color;
     color: #222f3e;
 }
 
