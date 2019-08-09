@@ -1,0 +1,40 @@
+import { Language } from '../../../../shared/models/eav';
+
+export interface LanguageButton extends Language {
+  buttonText: string;
+}
+
+/** Calculates properties of language buttons, e.g. name to be desplayed */
+export function calculateLanguageButtons(languages: Language[]): LanguageButton[] {
+  const languageButtons: LanguageButton[] = [];
+  const regionlessNamesCount: Map<string, number> = new Map();
+
+  // count the number of repetitions of the same language without region key
+  // e.g. English (United States) and English (Australia) are both English
+  languages.forEach(language => {
+    const regionlessName = removeRegionName(language.name);
+    if (regionlessNamesCount[regionlessName]) {
+      regionlessNamesCount[regionlessName]++;
+    } else {
+      regionlessNamesCount[regionlessName] = 1;
+    }
+  });
+
+  // if language repeats, append language key to name which will be displayed
+  languages.forEach(language => {
+    const regionlessName = removeRegionName(language.name);
+
+    languageButtons.push({
+      name: language.name,
+      key: language.key,
+      buttonText: (regionlessNamesCount[regionlessName] > 1) ? `${regionlessName} (${language.key})` : regionlessName,
+    });
+  });
+
+  return languageButtons;
+}
+
+/** Returns name without region, e.g. ENGLISH from English (United Stated) */
+function removeRegionName(languageName: string): string {
+  return languageName.substring(0, languageName.indexOf('(') > 0 ? languageName.indexOf('(') - 1 : 100).toLocaleUpperCase();
+}

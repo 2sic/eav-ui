@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy, OnInit } from '@angular/core';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/services/language.service';
@@ -6,13 +6,14 @@ import { MouseScrollService } from './eav-language-switcher-services/mouse-scrol
 import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
 import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
 import { ShowShadowsService } from './eav-language-switcher-services/show-shadows-service';
+import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
 
 @Component({
   selector: 'app-eav-language-switcher',
   templateUrl: './eav-language-switcher.component.html',
   styleUrls: ['./eav-language-switcher.component.scss']
 })
-export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
+export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollable', { static: false }) headerRef: ElementRef;
   @ViewChild('leftShadow', { static: false }) leftShadowRef: ElementRef;
   @ViewChild('rightShadow', { static: false }) rightShadowRef: ElementRef;
@@ -20,6 +21,7 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
   @Input() currentLanguage: string;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
+  languageButtons: LanguageButton[] = [];
   private centerSelectedService: CenterSelectedService;
   private mouseScrollService: MouseScrollService;
   private showShadowsService: ShowShadowsService;
@@ -29,6 +31,10 @@ export class EavLanguageSwitcherComponent implements AfterViewInit, OnDestroy {
     private languageService: LanguageService,
     private renderer: Renderer2,
   ) { }
+
+  ngOnInit() {
+    this.languageButtons = calculateLanguageButtons(this.languages);
+  }
 
   ngAfterViewInit() {
     this.showShadowsService = new ShowShadowsService(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
