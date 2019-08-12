@@ -8,8 +8,6 @@ import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config'
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
@@ -29,7 +27,6 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   // filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
   filteredIcons: Observable<any>;
   private subscriptions: Subscription[] = [];
-  private eavConfig: EavConfiguration;
 
   get files(): string {
     return this.config.field.settings.Files ? this.config.field.settings.Files : '';
@@ -51,11 +48,10 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     return this.group.controls[this.config.field.name].invalid;
   }
 
-  constructor(private scriptLoaderService: ScriptLoaderService,
+  constructor(
+    private scriptLoaderService: ScriptLoaderService,
     private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  ) { }
 
   ngOnInit() {
     this.loadAdditionalResources(this.files);
@@ -99,7 +95,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   loadAdditionalResources(files: string) {
-    const mapped = files.replace('[App:Path]', this.eavConfig.approot)
+    const mapped = this.scriptLoaderService.resolveSpecialPaths(files)
       .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
         '$1/$2');
 
