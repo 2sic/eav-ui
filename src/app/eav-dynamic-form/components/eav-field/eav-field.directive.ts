@@ -156,12 +156,9 @@ export class EavFieldDirective implements OnInit {
     const cssFiles = [];
     const jsFiles = [];
     allFiles.forEach(file => {
-      file = file.toLocaleLowerCase().replace('[system:path]/dist/ng-edit/', '');
-      file = file.toLocaleLowerCase().replace('[system:path]/dist/', '');
-      // spm TODO: [App:Path] can be also a part of the script url and it has to be resolved before accessing it
-      if (file === 'https://cdn.tinymce.com/4.6/tinymce.min.js') {
-        jsFiles.push('https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.12/tinymce.min.js');
-      } else if (file.endsWith('.css')) {
+      file = this.scriptLoaderService.resolveSpecialPaths(file);
+      console.log('Fetching script from:', file);
+      if (file.endsWith('.css')) {
         cssFiles.push(file);
       } else if (file.endsWith('js')) {
         jsFiles.push(file);

@@ -1,5 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { EavConfiguration } from '../models/eav-configuration';
+import { UrlConstants } from '../constants/url-constants';
 
 export class UrlHelper {
 
@@ -95,5 +96,23 @@ export class UrlHelper {
         }
         url = url.replace(/[?#]$/, '');
         return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+    }
+
+    public static getUrlPrefix(area: string, eavConfig: EavConfiguration) {
+        let result = '';
+        if (area === 'api') {
+            const serviceRoot = eavConfig.portalroot + UrlConstants.apiRoot;
+            const url = UrlHelper.resolveServiceUrl('eav/', serviceRoot);
+            result = url.substr(0, url.length - 5);
+        }
+
+        if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar
+        if (area === 'zone') { result = eavConfig.portalroot; }                      // used to link to the site-root (like an image)
+        if (area === 'app') { result = eavConfig.approot; }                          // used to find the app-root of something inside an app
+        if (area === 'dialog') { result = eavConfig.systemroot + 'dnn'; }            // note: not tested yet
+        if (area === 'dialog-page') { result = eavConfig.systemroot + 'dnn/ui.html'; } // note: not tested yet
+        if (result.endsWith('/')) { result = result.substring(0, result.length - 1); }
+
+        return result;
     }
 }

@@ -2,10 +2,20 @@ import { Injectable } from '@angular/core';
 import { Observable, Observer, zip } from 'rxjs';
 
 import { FileTypeConstants } from '../constants/type-constants';
+import { EavConfiguration } from '../models/eav-configuration';
+import { EavService } from './eav.service';
+import { UrlHelper } from '../helpers/url-helper';
 
 @Injectable()
 export class ScriptLoaderService {
+  private eavConfig: EavConfiguration;
   private scripts: ScriptModel[] = [];
+
+  constructor(
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
 
   public load(script: ScriptModel, fileType: string): Observable<ScriptModel> {
     return new Observable<ScriptModel>((observer: Observer<ScriptModel>) => {
@@ -77,6 +87,13 @@ export class ScriptLoaderService {
     return allScripts$.length > 0
       ? zip(...allScripts$)
       : null;
+  }
+
+  public resolveSpecialPaths(url: string) {
+    url = url.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', this.eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', this.eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', this.eavConfig));
+    return url;
   }
 }
 

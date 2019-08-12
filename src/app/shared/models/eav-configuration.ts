@@ -1,5 +1,8 @@
 export class EavConfiguration {
-    constructor(public zoneId: string,
+    public systemroot: string;
+
+    constructor(
+        public zoneId: string,
         public appId: string,
         public approot: string,
         public cbid: string,
@@ -19,7 +22,8 @@ export class EavConfiguration {
         // public user[canDevelop]: string,
         public websiteroot: string,
         // TODO: write type instead any
-        public versioningOptions: any) {
+        public versioningOptions: any,
+    ) {
         this.appId = appId;
         this.approot = approot;
         this.cbid = cbid;
@@ -37,13 +41,7 @@ export class EavConfiguration {
         // this.user[canDesign] = user[canDesign];
         // this.user[canDevelop] = user[canDevelop];
         this.websiteroot = websiteroot;
+        this.systemroot = websiteroot + 'desktopmodules/tosic_sexycontent/';
         this.versioningOptions = versioningOptions;
     }
 }
-
-
-
-
-
-
-
