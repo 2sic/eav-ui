@@ -6,8 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -21,7 +22,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule } from 'ng-pick-datetime';
+import { OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from 'ng-pick-datetime-moment';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import {
@@ -158,14 +160,14 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         MatInputModule,
         MatListModule,
         MatMenuModule,
-        MatNativeDateModule,
+        MatMomentDateModule,
         MatProgressSpinnerModule,
         MatSelectModule,
         MatSlideToggleModule,
         MatTabsModule,
         MatTooltipModule,
         OwlDateTimeModule,
-        OwlNativeDateTimeModule,
+        OwlMomentDateTimeModule,
         ReactiveFormsModule,
         MatRippleModule,
         MatChipsModule,
@@ -210,7 +212,12 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         CustomDefaultComponent,
     ],
     exports: [EavLanguageSwitcherComponent],
-    providers: [FileTypeService, ValidationMessagesService],
+    providers: [
+        FileTypeService,
+        ValidationMessagesService,
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class EavMaterialControlsModule { }
