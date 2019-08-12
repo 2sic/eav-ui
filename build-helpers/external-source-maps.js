@@ -30,11 +30,6 @@ function setExternalSourceMaps(configuration, path, setFilename) {
     }
     const sourceMapDevToolPlugin = new webpack.SourceMapDevToolPlugin(options);
 
-    console.log(`
-      Configuration: ${JSON.stringify(configuration)}
-      SourceMapDevToolPlugin: ${JSON.stringify(sourceMapDevToolPlugin)}
-    `);
-
     configuration.plugins = [
       // ... other plugins
       ...configuration.plugins,
