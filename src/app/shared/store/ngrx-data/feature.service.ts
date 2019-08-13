@@ -21,7 +21,6 @@ export class FeatureService extends EntityCollectionServiceBase<Feature> {
       features.forEach(feature => {
         if (feature.id === guid) {
           isEnabled = feature.enabled;
-          return;
         }
       });
     });
