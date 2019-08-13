@@ -91,7 +91,6 @@ export class ConnectorService {
     // TODO:
     // If adam registered then attach Adam
     if (this.config.adam) {
-      // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
       // set update callback = external method setAdamValue
 
       // callbacks - functions called from adam
