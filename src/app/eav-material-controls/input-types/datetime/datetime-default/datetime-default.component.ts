@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
+import { DateTimeAdapter } from 'ng-pick-datetime';
+import { TranslateService } from '@ngx-translate/core';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
@@ -20,7 +23,19 @@ export class DatetimeDefaultComponent implements Field {
   config: FieldConfigSet;
   group: FormGroup;
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
+    private dateAdapter: DateAdapter<any>, // material date picker
+    private dateTimeAdapter: DateTimeAdapter<any>, // owl date picker
+    private translate: TranslateService,
+  ) {
+    // set locale for date pickers (only once because DNN language doesn't get updated during use)
+    // if locale is not recognized, falls back to 'en'
+    const currentLang = this.translate.currentLang;
+    console.log('Datepickers locale:', currentLang);
+    this.dateAdapter.setLocale(currentLang);
+    this.dateTimeAdapter.setLocale(currentLang);
+  }
 
   get inputInvalid() {
     return this.group.controls[this.config.field.name].invalid;
