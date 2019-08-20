@@ -31,6 +31,7 @@ import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dia
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
+import { sortLanguages } from './multi-item-edit-form.helpers';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -98,7 +99,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.eavConfig = this.eavService.getEavConfiguration();
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
-      this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+      const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
+      this.languageService.loadLanguages(sortedLanguages, this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
     }
     this.loadIconsService.load();
   }
