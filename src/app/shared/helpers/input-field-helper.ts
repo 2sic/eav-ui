@@ -98,6 +98,7 @@ export class InputFieldHelper {
             case InputTypesConstants.oldTypeWysiwyg:
                 return InputTypesConstants.stringWysiwyg;
 
+            // spm remove renaming of wysiwyg when backend is ready
             case InputTypesConstants.stringWysiwygTinymce:
                 return InputTypesConstants.stringWysiwyg;
             case InputTypesConstants.stringWysiwygAdv:
@@ -155,6 +156,8 @@ export class InputFieldHelper {
             // our external components
             case InputTypesConstants.stringWysiwyg:
             case InputTypesConstants.stringWysiwygTinymce:
+            case InputTypesConstants.stringWysiwygAdv:
+            case InputTypesConstants.stringWysiwygDnn:
             case InputTypesConstants.customGPS:
                 return { inputType: inputTypeName, isExternal: true };
 
@@ -194,7 +197,12 @@ export class InputFieldHelper {
         }
 
         if (isExternal) {
-            if (inputType === InputTypesConstants.stringWysiwyg) {
+            if (
+                inputType === InputTypesConstants.stringWysiwyg
+                || inputType === InputTypesConstants.stringWysiwygAdv
+                || inputType === InputTypesConstants.stringWysiwygDnn
+                || inputType === InputTypesConstants.stringWysiwygTinymce
+            ) {
                 wrappers.push(
                     WrappersConstants.dropzoneWrapper,
                     WrappersConstants.eavLocalizationWrapper,
