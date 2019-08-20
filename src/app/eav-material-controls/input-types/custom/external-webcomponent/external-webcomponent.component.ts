@@ -1,10 +1,14 @@
-import { Component, Input, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { InputType as InputTypeModel } from '../../../../../../../../Projects/eav-item-dialog-angular/src/app/shared/models/eav';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { InputTypeService } from '../../../../shared/services/input-type.service';
+import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,9 +16,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   templateUrl: './external-webcomponent.component.html',
   styleUrls: ['./external-webcomponent.component.scss']
 })
-@InputType({
-  // wrapper: ['app-dropzone-wrapper', 'app-eav-localization-wrapper', 'app-expandable-wrapper', 'app-adam-attach-wrapper']
-})
+@InputType({})
 export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -24,13 +26,11 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private _ngZone: NgZone,
-  ) {
-  }
+    private inputTypeService: InputTypeService,
+    private scriptsLoaderService: ScriptsLoaderService,
+  ) { }
 
   ngOnInit() {
-    // spm load external scripts here. When they are loaded update loadingSpinner = false;
-
     if (!this.config.field.wrappers.includes(WrappersConstants.expandableWrapperV2)) {
       this.shouldShowConnector = true;
     } else {
@@ -38,17 +38,19 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
         this.config.field.expanded.subscribe(expanded => { this.shouldShowConnector = expanded; }),
       );
     }
+    this.loadAssets();
   }
 
-  /**
-   * This methos is called when all scripts and styles are loaded
-   * (scripts are registering element, then we create that web component element)
-   */
-  public renderWebComponent = () => {
-    this._ngZone.run(() => this.createElementWebComponent());
+  private loadAssets() {
+    let inputType: InputTypeModel;
+    this.inputTypeService.getContentTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
+
+    const assets = inputType.AngularAssets.split('\n');
+    if (assets.length === 0) { return; }
+    this.scriptsLoaderService.load(assets, this.assetsLoaded.bind(this));
   }
 
-  private createElementWebComponent() {
+  private assetsLoaded() {
     console.log('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
     this.loadingSpinner = false;
   }

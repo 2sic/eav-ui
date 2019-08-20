@@ -1,14 +1,9 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { take } from 'rxjs/operators';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
-import { ScriptModel, ScriptLoaderService } from '../../../shared/services/script.service';
 import { InputTypesConstants } from '../../../shared/constants';
-import { FileTypeConstants } from '../../../shared/constants/type-constants';
-import { InputTypeService } from '../../../shared/services/input-type.service';
-import { InputType } from '../../../shared/models/eav';
 
 @Directive({
   selector: '[appEavField]'
@@ -20,8 +15,6 @@ export class EavFieldDirective implements OnInit {
   constructor(
     private resolver: ComponentFactoryResolver,
     private container: ViewContainerRef,
-    private scriptLoaderService: ScriptLoaderService,
-    private inputTypeService: InputTypeService,
   ) { }
 
   ngOnInit() {
@@ -45,13 +38,7 @@ export class EavFieldDirective implements OnInit {
       this.createGroupComponents(container, fieldConfig);
     } else {
       console.log('create createFieldOrGroup:', fieldConfig.field.inputType);
-      if (fieldConfig.field.isExternal) {
-        console.log('create external');
-        this.createExternalWebComponent(container, fieldConfig);
-      } else {
-        console.log('create non external', fieldConfig.field.inputType);
-        this.createComponent(container, fieldConfig);
-      }
+      this.createComponent(container, fieldConfig);
     }
   }
 
@@ -108,74 +95,6 @@ export class EavFieldDirective implements OnInit {
     }
 
     return null;
-  }
-
-  /**
-   * Create and register external commponent
-   * @param container
-   * @param fieldConfig
-   */
-  private createExternalWebComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    console.log('createExternalWebComponent fieldConfig:', fieldConfig);
-    const ref: any = this.createComponent(container, fieldConfig);
-
-    // Start loading all external dependencies (start with css). This method recursively load all dependencies.
-    const inputType$ = this.inputTypeService.getContentTypeById(fieldConfig.field.inputType);
-    let inputType: InputType = null;
-    inputType$.pipe(take(1)).subscribe(type => { inputType = type; });
-    console.log('createExternalWebComponent inputType:', inputType);
-    const allFiles = inputType.AngularAssets.split('\n');
-    const cssFiles = [];
-    const jsFiles = [];
-    allFiles.forEach(file => {
-      file = this.scriptLoaderService.resolveSpecialPaths(file);
-      console.log('Fetching script from:', file);
-      if (file.endsWith('.css')) {
-        cssFiles.push(file);
-      } else if (file.endsWith('js')) {
-        jsFiles.push(file);
-      }
-    });
-    const firstFileType = (cssFiles.length > 0) ? FileTypeConstants.css : FileTypeConstants.javaScript;
-    console.log('createExternalWebComponent css:', cssFiles, 'js:', jsFiles, 'firstFileType', firstFileType);
-    this.loadWebComponentScripts(
-      0,
-      fieldConfig.field.name,
-      fieldConfig.field.name,
-      cssFiles,
-      jsFiles,
-      firstFileType,
-      ref.instance.renderWebComponent,
-    );
-  }
-
-  private loadWebComponentScripts(
-    increment: number,
-    name: string,
-    type: string,
-    styles: string[],
-    scripts: string[],
-    fileType: string,
-    renderWebComponentCallback: any,
-  ) {
-    const scriptModel: ScriptModel = {
-      name: `${fileType}${name}${increment}`,
-      filePath: (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment],
-      loaded: false
-    };
-    this.scriptLoaderService.load(scriptModel, fileType).subscribe(s => {
-      if (s.loaded) {
-        increment++;
-        const nextScript = (fileType === FileTypeConstants.css) ? styles[increment] : scripts[increment];
-        if (nextScript) {
-          this.loadWebComponentScripts(increment, name, type, styles, scripts, fileType, renderWebComponentCallback);
-        } else if (fileType === FileTypeConstants.css) {
-          this.loadWebComponentScripts(0, name, type, styles, scripts, FileTypeConstants.javaScript, renderWebComponentCallback);
-        } else { // when scripts load is finish then call registered factory
-          renderWebComponentCallback();
-        }
-      }
-    });
   }
 
   /**

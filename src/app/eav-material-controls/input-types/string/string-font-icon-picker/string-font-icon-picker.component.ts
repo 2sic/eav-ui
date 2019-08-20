@@ -6,9 +6,9 @@ import { map, startWith } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { ScriptLoaderService, ScriptModel } from '../../../../shared/services/script.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -49,7 +49,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   constructor(
-    private scriptLoaderService: ScriptLoaderService,
+    private scriptsLoaderService: ScriptsLoaderService,
     private validationMessagesService: ValidationMessagesService,
   ) { }
 
@@ -94,31 +94,12 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     return foundList;
   }
 
-  loadAdditionalResources(files: string) {
-    const mapped = this.scriptLoaderService.resolveSpecialPaths(files)
-      .replace(/([\w])\/\/([\w])/g,   // match any double // but not if part of https or just "//" at the beginning
-        '$1/$2');
+  private loadAdditionalResources(files: string) {
+    this.scriptsLoaderService.load(files.split('\n'), this.iconsLoaded.bind(this));
+  }
 
-    const fileList = mapped ? mapped.split('\n') : [];
-
-    const scriptModelList: ScriptModel[] = [];
-    fileList.forEach((element, index) => {
-      const scriptModel: ScriptModel = {
-        name: element,
-        filePath: element,
-        loaded: false
-      };
-      scriptModelList.push(scriptModel);
-    });
-
-    const scriptList: Observable<ScriptModel[]> = this.scriptLoaderService.loadList(scriptModelList, 'css');
-    if (scriptList) {
-      scriptList.subscribe(s => {
-        if (s !== null) {
-          this.icons = this.getIconClasses(this.prefix);
-        }
-      });
-    }
+  private iconsLoaded() {
+    this.icons = this.getIconClasses(this.prefix);
   }
 
   setIcon(iconClass: any, formControlName: string) {

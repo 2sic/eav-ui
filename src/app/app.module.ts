@@ -15,7 +15,6 @@ import { ItemService } from './shared/services/item.service';
 import { ContentTypeService } from './shared/services/content-type.service';
 import { metaReducers } from './shared/store';
 import { LanguageService } from './shared/services/language.service';
-import { ScriptLoaderService } from './shared/services/script.service';
 import { EavService } from './shared/services/eav.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -74,7 +73,6 @@ export function createTranslateLoader(http: HttpClient) {
     ContentTypeService,
     InputTypeService,
     LanguageService,
-    ScriptLoaderService,
     EavService,
     AdamService,
     SvcCreatorService,

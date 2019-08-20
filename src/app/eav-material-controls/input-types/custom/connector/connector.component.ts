@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, NgZone } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ElementRef, Input, NgZone, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,8 +15,8 @@ import { FeatureService } from '../../../../shared/store/ngrx-data/feature.servi
   templateUrl: './connector.component.html',
   styleUrls: ['./connector.component.scss']
 })
-export class ConnectorComponent implements OnInit, OnDestroy {
-  @ViewChild('customElContainer', { static: true }) customElContainer: ElementRef;
+export class ConnectorComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('customElContainer', { static: false }) customElContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   customElConnector: ConnectorService;
@@ -31,7 +31,7 @@ export class ConnectorComponent implements OnInit, OnDestroy {
     private featureService: FeatureService,
   ) { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     console.log('Connector created');
     const customElName = `field-${this.config.field.inputType}`;
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
