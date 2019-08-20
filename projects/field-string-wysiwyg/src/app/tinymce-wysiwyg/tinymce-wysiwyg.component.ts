@@ -48,6 +48,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   toolbarContainerClass: string;
   pasteFormattedTextFeatureEnabled: boolean;
   pasteImageFromClipboardFeatureEnabled: boolean;
+  disabled: boolean;
   private dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
@@ -60,6 +61,7 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.calculateInitialValues();
     this.subscribeToFormChanges();
+    this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
 
     const settings = {
       enableContentBlocks: false,
@@ -208,6 +210,10 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
       const dzConfig = { ...this.experimental.dropzoneConfig$.value };
       delete dzConfig.acceptedFiles;
       this.experimental.dropzoneConfig$.next(dzConfig);
+    });
+
+    editor.on('focus', (e: any) => {
+      this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
     });
 
     editor.on('change', (e: any) => {
