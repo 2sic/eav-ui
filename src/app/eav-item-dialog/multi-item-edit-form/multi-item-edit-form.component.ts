@@ -32,6 +32,7 @@ import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-righ
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
+import { LanguageServiceData } from '../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -86,13 +87,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
+    private languageServiceData: LanguageServiceData,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
   ) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
-    this.defaultLanguage$ = languageService.getDefaultLanguage();
+    this.currentLanguage$ = this.languageService.getCurrentLanguage();
+    this.defaultLanguage$ = this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Read configuration from queryString
@@ -100,7 +102,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
-      this.languageService.loadLanguages(sortedLanguages, this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+      this.languageService.loadLanguages(this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+      this.languageServiceData.loadLanguages(sortedLanguages);
     }
     this.loadIconsService.load();
   }
@@ -292,7 +295,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // UILanguage harcoded (for future usage)
     // this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
 
-    this.languages$ = this.languageService.selectAllLanguages();
+    this.languages$ = this.languageServiceData.entities$;
     this.subscriptions.push(this.languages$.subscribe(languages => {
       this.languages = languages;
     }));

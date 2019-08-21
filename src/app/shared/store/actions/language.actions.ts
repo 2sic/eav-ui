@@ -1,5 +1,4 @@
 import { Action } from '@ngrx/store';
-import { Language } from '../../models/eav';
 
 export const LOAD_LANGUAGES = '[Language] LOAD_LANGUAGES';
 export const UPDATE_CURRENT_LANGUAGE = '[Language] UPDATE_CURRENT_LANGUAGE';
@@ -9,10 +8,11 @@ export const UPDATE_UI_LANGUAGE = '[Language] UPDATE_UI_LANGUAGE';
 export class LoadLanguagesAction implements Action {
     readonly type = LOAD_LANGUAGES;
 
-    constructor(public newLanguage: Language[],
+    constructor(
         public currentLanguage: string,
         public defaultLanguage: string,
-        public uiLanguage: string) { }
+        public uiLanguage: string,
+    ) { }
 }
 
 export class UpdateCurrentLanguageAction implements Action {

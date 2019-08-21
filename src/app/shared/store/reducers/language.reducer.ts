@@ -1,16 +1,12 @@
 import * as fromLanguages from '../actions/language.actions';
-import { Language } from '../../models/eav/language';
-
 
 export interface LanguagesState {
-    languages: Language[];
     currentLanguage: string;
     defaultLanguage: string;
     uiLanguage: string;
 }
 
 export const initialState: LanguagesState = {
-    languages: [],
     currentLanguage: 'en-us',
     defaultLanguage: 'en-us',
     uiLanguage: 'en-us',
@@ -24,7 +20,6 @@ export function languageReducer(state = initialState, action: fromLanguages.Acti
             return {
                 ...state,
                 ...{
-                    languages: [...action.newLanguage],
                     currentLanguage: action.currentLanguage,
                     defaultLanguage: action.defaultLanguage,
                     uiLanguage: action.uiLanguage,
@@ -71,7 +66,6 @@ export function languageReducer(state = initialState, action: fromLanguages.Acti
     }
 }
 
-export const getLanguages = (state: LanguagesState) => state.languages;
 export const getCurrentLanguage = (state: LanguagesState) => state.currentLanguage;
 export const getDefaultLanguage = (state: LanguagesState) => state.defaultLanguage;
 export const getUILanguage = (state: LanguagesState) => state.uiLanguage;
