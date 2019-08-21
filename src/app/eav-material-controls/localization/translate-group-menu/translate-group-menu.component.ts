@@ -16,7 +16,7 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
-import { InputTypeService } from '../../../shared/services/input-type.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ContentTypeService } from '../../../shared/services/content-type.service';
 
 
@@ -448,7 +448,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     const calculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
 
     let inputType: InputType;
-    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => inputType = type);
+    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
     if (!inputType) {
       // if you dont find it assume its translateable
       return true;

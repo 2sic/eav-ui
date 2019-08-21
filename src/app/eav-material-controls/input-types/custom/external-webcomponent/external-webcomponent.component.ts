@@ -7,7 +7,7 @@ import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config'
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../../../../../Projects/eav-item-dialog-angular/src/app/shared/models/eav';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
-import { InputTypeService } from '../../../../shared/services/input-type.service';
+import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
 
   private loadAssets() {
     let inputType: InputTypeModel;
-    this.inputTypeService.getContentTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
+    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
 
     const assets = inputType.AngularAssets.split('\n');
     if (assets.length === 0) { return; }

@@ -15,7 +15,7 @@ import { ValidationHelper } from '../../../eav-material-controls/validators/vali
 import { ItemService } from '../../../shared/services/item.service';
 import { Feature } from '../../../shared/models/feature/feature';
 import { CalculatedInputType } from '../../../shared/models/input-field-models';
-import { InputTypeService } from '../../../shared/services/input-type.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 
 @Injectable({
   providedIn: 'root'
@@ -141,10 +141,8 @@ export class BuildFieldsService {
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
     let disableI18n = false;
-    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      if (type) {
-        disableI18n = type.DisableI18n;
-      }
+    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
+      if (type) { disableI18n = type.DisableI18n; }
     });
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 

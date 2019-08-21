@@ -22,7 +22,7 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
-import { InputTypeService } from '../../shared/services/input-type.service';
+import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { Feature } from '../../shared/models/feature/feature';
