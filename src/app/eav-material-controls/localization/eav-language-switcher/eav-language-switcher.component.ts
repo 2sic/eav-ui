@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy, OnInit } from '@angular/core';
 
 import { Language } from '../../../shared/models/eav';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
 import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
 import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';

@@ -14,7 +14,7 @@ import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { InputFieldHelper } from '../helpers/input-field-helper';
-import { LanguageServiceData } from '../store/ngrx-data/language.service';
+import { LanguageService } from '../store/ngrx-data/language.service';
 
 @Injectable()
 export class ItemService {
@@ -24,7 +24,7 @@ export class ItemService {
   constructor(
     private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
-    private languageServiceData: LanguageServiceData,
+    private languageService: LanguageService,
   ) {
     // this.items$ = store.select(fromStore.getItems);
   }
@@ -169,7 +169,7 @@ export class ItemService {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
     let langs = [];
-    const languages$ = this.languageServiceData.entities$;
+    const languages$ = this.languageService.entities$;
     languages$.pipe(take(1)).subscribe(languages => {
       langs = languages;
     });

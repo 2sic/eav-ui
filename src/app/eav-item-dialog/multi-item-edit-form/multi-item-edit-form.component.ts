@@ -17,7 +17,7 @@ import { GlobalConfigurationService } from '../../shared/services/global-configu
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
-import { LanguageService } from '../../shared/services/language.service';
+import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
@@ -32,7 +32,6 @@ import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-righ
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
-import { LanguageServiceData } from '../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -87,7 +86,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
-    private languageServiceData: LanguageServiceData,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private validationMessagesService: ValidationMessagesService,
@@ -102,8 +100,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
-      this.languageService.loadLanguages(this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
-      this.languageServiceData.loadLanguages(sortedLanguages);
+      this.languageService.loadLanguages(sortedLanguages);
+      this.languageService.loadCurrentLanguages(this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
     }
     this.loadIconsService.load();
   }
@@ -295,7 +293,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // UILanguage harcoded (for future usage)
     // this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
 
-    this.languages$ = this.languageServiceData.entities$;
+    this.languages$ = this.languageService.entities$;
     this.subscriptions.push(this.languages$.subscribe(languages => {
       this.languages = languages;
     }));

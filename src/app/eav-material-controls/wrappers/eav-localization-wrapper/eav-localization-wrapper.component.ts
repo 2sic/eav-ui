@@ -12,7 +12,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { ItemService } from '../../../shared/services/item.service';
 
 @Component({
@@ -36,8 +36,10 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
-  constructor(private languageService: LanguageService,
-    private itemService: ItemService) {
+  constructor(
+    private languageService: LanguageService,
+    private itemService: ItemService,
+  ) {
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
   }

@@ -4,7 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -32,7 +32,7 @@ export class FieldHelperTextComponent implements OnInit, OnDestroy {
     private validationMessagesService: ValidationMessagesService,
     private languageService: LanguageService,
   ) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
+    this.currentLanguage$ = this.languageService.getCurrentLanguage();
   }
 
   ngOnInit() {

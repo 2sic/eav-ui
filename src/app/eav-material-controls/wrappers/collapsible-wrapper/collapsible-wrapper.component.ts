@@ -8,7 +8,7 @@ import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -41,8 +41,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     private itemService: ItemService,
     private languageService: LanguageService,
   ) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
-    this.defaultLanguage$ = languageService.getDefaultLanguage();
+    this.currentLanguage$ = this.languageService.getCurrentLanguage();
+    this.defaultLanguage$ = this.languageService.getDefaultLanguage();
     this.currentLanguage$.pipe(take(1)).subscribe(currentLang => {
       this.currentLanguage = currentLang;
     });

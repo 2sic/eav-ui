@@ -3,11 +3,10 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { Language } from '../../../shared/models/eav';
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { LanguageServiceData } from '../../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-link-to-other-language',
@@ -31,7 +30,6 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: LinkToOtherLanguageData,
     private languageService: LanguageService,
-    private languageServiceData: LanguageServiceData,
   ) {
     this.selectedOption = this.data;
   }
@@ -49,7 +47,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
    * Load languages from store and subscribe to languages
    */
   private loadlanguagesFromStore() {
-    this.languages$ = this.languageServiceData.entities$;
+    this.languages$ = this.languageService.entities$;
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
 
     this.subscriptions.push(
