@@ -355,7 +355,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
         const allItems = [];
         actions.forEach(action => {
-          allItems.push(JsonItem1.create(action.item));
+          const item = JsonItem1.create(action.item);
+          // do not try to save item which doesn't have any fields, nothing could have changed about it
+          if (Object.keys(item.Entity.Attributes).length > 0) { allItems.push(item); }
         });
         const body = {
           Items: allItems,
