@@ -10,7 +10,7 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { ConnectorService } from '../../input-types/custom/connector-service/connector.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { ContentTypeService } from '../../../shared/services/content-type.service';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 
 @Component({

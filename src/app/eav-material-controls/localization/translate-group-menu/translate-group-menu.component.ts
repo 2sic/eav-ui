@@ -17,7 +17,7 @@ import { TranslationLinkTypeConstants } from '../../../shared/constants/type-con
 import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
-import { ContentTypeService } from '../../../shared/services/content-type.service';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 
 
 @Component({

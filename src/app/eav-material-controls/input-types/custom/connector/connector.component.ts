@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { ContentTypeService } from '../../../../shared/services/content-type.service';
+import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
 import { ConnectorService } from '../connector-service/connector.service';
 import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
 

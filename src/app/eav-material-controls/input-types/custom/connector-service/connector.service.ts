@@ -16,7 +16,7 @@ import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { ConnectorInstance } from '../external-webcomponent/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
-import { ContentTypeService } from '../../../../shared/services/content-type.service';
+import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
 
 export class ConnectorService {

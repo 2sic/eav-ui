@@ -12,7 +12,7 @@ import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/materi
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { Item, Language } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/services/content-type.service';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { ItemService } from '../../shared/services/item.service';
@@ -194,12 +194,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
-    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
-      this.inputTypeService.loadInputTypes(data.InputTypes);
-    } else {
-      this.inputTypeService.addInputTypes(data.InputTypes);
-    }
-    this.contentTypeService.loadContentTypes(data.ContentTypes);
+    // we assume that input type and content type data won't change between loading parent and child forms
+    this.inputTypeService.addInputTypes(data.InputTypes);
+    this.contentTypeService.addContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));

@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 
 import { ContentType, Item } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/services/content-type.service';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { Feature } from '../../shared/models/feature/feature';

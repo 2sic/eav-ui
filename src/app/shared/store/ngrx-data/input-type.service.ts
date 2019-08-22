@@ -11,10 +11,6 @@ export class InputTypeService extends EntityCollectionServiceBase<InputType> {
     super('InputType', serviceElementsFactory);
   }
 
-  public loadInputTypes(inputTypes: InputType[]) {
-    this.addAllToCache(inputTypes);
-  }
-
   /** Add new input types to the store */
   public addInputTypes(inputTypes: InputType[]) {
     this.addManyToCache(inputTypes);

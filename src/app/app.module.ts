@@ -12,7 +12,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { ItemService } from './shared/services/item.service';
-import { ContentTypeService } from './shared/services/content-type.service';
 import { metaReducers } from './shared/store';
 import { EavService } from './shared/services/eav.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -68,7 +67,6 @@ export function createTranslateLoader(http: HttpClient) {
   exports: [RouterModule],
   providers: [
     ItemService,
-    ContentTypeService,
     EavService,
     AdamService,
     SvcCreatorService,

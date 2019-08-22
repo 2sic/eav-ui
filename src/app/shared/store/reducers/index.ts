@@ -2,13 +2,11 @@ import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } 
 
 import { environment } from '../../../../environments/environment';
 import * as fromItems from './item.reducer';
-import * as fromContentType from './content-type.reducer';
 import * as fromLanguages from './language.reducer';
 import * as fromGlobalConfiguration from './global-configuration.reducer';
 
 export interface EavState {
     itemState: fromItems.ItemState;
-    contentTypeState: fromContentType.ContentTypeState;
     languages: fromLanguages.LanguagesState;
     globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
 }
@@ -35,7 +33,6 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
 
 export const reducers: ActionReducerMap<EavState> = {
     itemState: fromItems.itemReducer,
-    contentTypeState: fromContentType.contentTypeReducer,
     languages: fromLanguages.languageReducer,
     globalConfiguration: fromGlobalConfiguration.globalConfigurationReducer,
 };
