@@ -1,14 +1,13 @@
-import { EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
+import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { filter, take, skip } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 
 import { ContentType, Item } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
-import { Feature } from '../../shared/models/feature/feature';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -17,30 +16,16 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { FormSet } from '../../shared/models/eav/form-set';
+import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss']
 })
-export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
+export class ItemEditFormComponent implements OnInit, OnDestroy {
   @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
-
-  @Output()
-  itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
-
-  @Input() defaultLanguage: string;
-  @Input() features: Feature[];
-
-  @Input()
-  set currentLanguage(value: string) {
-    this.currentLanguageValue = value;
-    this.setFormValues(this.item, false); // need set emit to true because of  external commponents
-  }
-  get currentLanguage(): string {
-    return this.currentLanguageValue;
-  }
-
+  @Input() formId: string;
   @Input()
   set item(value: Item) {
     this.itemBehaviorSubject$.next(value);
@@ -48,13 +33,16 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   get item(): Item {
     return this.itemBehaviorSubject$.getValue();
   }
+  @Output() itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
 
   get allControlsAreDisabled() {
     return this.checkAreAllControlsDisabled();
   }
 
   private eavConfig: EavConfiguration;
-  private currentLanguageValue: string;
+  private defaultLanguage: string;
+  currentLanguage: string;
+  private subscriptions: Subscription[] = [];
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
 
   contentType$: Observable<ContentType>;
@@ -62,6 +50,7 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   formIsValid = false;
 
   constructor(
+    private languageService: LanguageService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
@@ -72,18 +61,13 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    this.itemBehaviorSubject$.subscribe((item: Item) => {
-      this.setFormValues(item, false);
-    });
-
-    this.loadContentTypeFromStore();
+    this.setInitialValues();
+    this.subscribeToChanges();
   }
 
   ngOnDestroy(): void {
-    this.itemBehaviorSubject$.unsubscribe();
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
-
-  ngOnChanges(): void { }
 
   /** Observe is item form is saved */
   formSaveObservable(): Observable<Action> {
@@ -151,13 +135,29 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private loadContentTypeFromStore() {
+  private setInitialValues() {
+    this.languageService.getDefaultLanguage().pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
+    this.languageService.getCurrentLanguage().pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
-    // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
-    // create form fields from content type
-    this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.features, this.currentLanguage,
+    // create input fields from content type
+    this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.formId, this.currentLanguage,
       this.defaultLanguage);
+  }
+
+  private subscribeToChanges() {
+    this.subscriptions.push(
+      this.itemBehaviorSubject$.subscribe((item: Item) => {
+        this.setFormValues(item, false);
+      }),
+      this.languageService.getDefaultLanguage().pipe(skip(1)).subscribe(defaultLang => {
+        this.defaultLanguage = defaultLang;
+      }),
+      this.languageService.getCurrentLanguage().pipe(skip(1)).subscribe(currentLang => {
+        this.currentLanguage = currentLang;
+        this.setFormValues(this.item, false);
+      }),
+    );
   }
 
 }

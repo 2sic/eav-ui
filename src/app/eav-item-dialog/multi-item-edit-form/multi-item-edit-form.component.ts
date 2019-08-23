@@ -25,7 +25,6 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
-import { Feature } from '../../shared/models/feature/feature';
 // tslint:disable-next-line:max-line-length
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
@@ -46,6 +45,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   animationStateRight: string;
 
   formIsSaved = false;
+  isParentDialog: boolean;
+  formId = 'PLACEHOLDER'; // spm generate unique form id
   currentLanguage$: Observable<string>;
   currentLanguage: string;
   defaultLanguage$: Observable<string>;
@@ -60,7 +61,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
   languages: Language[];
-  features$: Observable<Feature[]>;
   Object = Object;
   publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions;
@@ -91,6 +91,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
   ) {
+    this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
     this.currentLanguage$ = this.languageService.getCurrentLanguage();
     this.defaultLanguage$ = this.languageService.getDefaultLanguage();
     this.translate.setDefaultLang('en');
@@ -98,7 +99,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    if (this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+    if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
       this.languageService.loadCurrentLanguages(this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
@@ -200,7 +201,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
     this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
-    this.features$ = this.featureService.entities$;
   }
 
   /**
@@ -510,7 +510,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       })
     );
     // set debug enabled if came in the url, but only for parent form to not overwrite value with child forms
-    if (this.eavConfig.debug === 'true' && this.formDialogData.persistedData && this.formDialogData.persistedData.isParentDialog) {
+    if (this.eavConfig.debug === 'true' && this.isParentDialog) {
       setTimeout(() => {
         this.globalConfigurationService.loadDebugEnabled(true);
       }, 0);

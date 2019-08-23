@@ -13,17 +13,14 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
 import { ItemService } from '../../../shared/services/item.service';
-import { Feature } from '../../../shared/models/feature/feature';
 import { CalculatedInputType } from '../../../shared/models/input-field-models';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class BuildFieldsService {
   private contentType$: Observable<ContentType>;
   private item: Item;
-  private features: Feature[];
+  private formId: string;
   private currentLanguage: string;
   private defaultLanguage: string;
 
@@ -35,13 +32,13 @@ export class BuildFieldsService {
   public buildFields(
     contentType$: Observable<ContentType>,
     item: Item,
-    features: Feature[],
+    formId: string,
     currentLanguage: string,
     defaultLanguage: string,
   ): Observable<FieldConfigSet[]> {
     this.contentType$ = contentType$;
     this.item = item;
-    this.features = features;
+    this.formId = formId;
     this.currentLanguage = currentLanguage;
     this.defaultLanguage = defaultLanguage;
 
@@ -113,7 +110,7 @@ export class BuildFieldsService {
       header: this.item.header,
     };
     const form: FormConfig = {
-      features: this.features,
+      formId: this.formId,
     };
     const field = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, isParentGroup);
 

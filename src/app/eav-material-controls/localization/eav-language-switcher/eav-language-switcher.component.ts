@@ -1,4 +1,5 @@
 import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -17,10 +18,11 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   @ViewChild('scrollable', { static: false }) headerRef: ElementRef;
   @ViewChild('leftShadow', { static: false }) leftShadowRef: ElementRef;
   @ViewChild('rightShadow', { static: false }) rightShadowRef: ElementRef;
-  @Input() languages: Language[];
-  @Input() currentLanguage: string;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
+  private subscriptions: Subscription[] = [];
+  languages: Language[];
+  currentLanguage: string;
   languageButtons: LanguageButton[] = [];
   private centerSelectedService: CenterSelectedService;
   private mouseScrollService: MouseScrollService;
@@ -33,6 +35,10 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   ) { }
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.languageService.entities$.subscribe(languages => { this.languages = languages; }),
+      this.languageService.getCurrentLanguage().subscribe(currentLang => { this.currentLanguage = currentLang; }),
+    );
     this.languageButtons = calculateLanguageButtons(this.languages);
   }
 
@@ -52,6 +58,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.touchScrollService.destroy();
     this.mouseScrollService.destroy();
     this.showShadowsService.destroy();
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
   lngButtonMouseDown(event: MouseEvent) {

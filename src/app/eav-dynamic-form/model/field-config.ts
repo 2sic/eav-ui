@@ -4,7 +4,6 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
-import { Feature } from '../../shared/models/feature/feature';
 import { FieldConfig } from '../../../../projects/shared/field-config';
 
 // spm split these interfaces into separate files
@@ -41,5 +40,5 @@ export interface ItemConfig {
 }
 
 export interface FormConfig {
-  features: Feature[];
+  formId: string;
 }
