@@ -13,11 +13,6 @@
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft"
           [@slideRight]="animationStateRight">
-          <!-- <mat-error *ngIf="!formsAreValid">
-            <span *ngFor="let formError of formErrors;">
-              <p *ngFor="let key of Object.keys(formError)">{{key}}: {{ formError[key] | translate}}</p>
-            </span>
-          </mat-error> -->
           <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
             <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange($event)">
             </app-item-edit-form>

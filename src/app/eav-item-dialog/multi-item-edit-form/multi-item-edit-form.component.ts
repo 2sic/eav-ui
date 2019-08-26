@@ -28,6 +28,8 @@ import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 // tslint:disable-next-line:max-line-length
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
+import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
@@ -167,9 +169,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  /**
-   * * save all forms
-   */
+  /** Save all forms */
   saveAll(close: boolean) {
     if (this.formsAreValid || this.allControlsAreDisabled) {
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
@@ -182,7 +182,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.formIsSaved = true;
       }
     } else {
-      this.displayAllValidationMessages();
+      this.calculateAllValidationMessages();
+      const fieldErrors: FieldErrorMessage[] = [];
+      this.formErrors.forEach(formError => {
+        Object.keys(formError).forEach(key => {
+          fieldErrors.push({ field: key, message: formError[key] });
+        });
+      });
+      this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
+        data: { fieldErrors: fieldErrors },
+        duration: 5000
+      });
     }
   }
 
@@ -235,17 +245,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     });
   }
 
-  /**
-   * close (remove) iframe window
-   */
-  // private closeIFrame() {
-  //   (window.parent as any).$2sxc.totalPopup.close();
-  // }
-
-  /**
-   * Fill in all error validation messages from all forms
-   */
-  private displayAllValidationMessages() {
+  /** Fill in all error validation messages from all forms */
+  private calculateAllValidationMessages() {
     this.formErrors = [];
     if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
       this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {

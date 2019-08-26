@@ -66,6 +66,7 @@ import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-sta
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { ExpandableWrapperV2Component } from './wrappers/expandable-wrapper-v2/expandable-wrapper-v2.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { SnackBarSaveErrorsComponent } from './dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
@@ -123,6 +124,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         ExpandableWrapperComponent,
         ExpandableWrapperV2Component,
         SnackBarUnsavedChangesComponent,
+        SnackBarSaveErrorsComponent,
         FieldHelperTextComponent,
         TranslateGroupMenuComponent,
         LinkToOtherLanguageComponent,
@@ -191,6 +193,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         NumberDefaultComponent,
         SaveStatusDialogComponent,
         SnackBarUnsavedChangesComponent,
+        SnackBarSaveErrorsComponent,
         StringDefaultComponent,
         StringDropdownComponent,
         StringDropdownQueryComponent,
