@@ -18,6 +18,7 @@ import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.componen
 import { ItemService } from '../../shared/services/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
@@ -41,15 +42,16 @@ import { sortLanguages } from './multi-item-edit-form.helpers';
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
 
+  private subscriptions: Subscription[] = [];
+  private eavConfig: EavConfiguration;
   animationStateLeft: string;
   animationStateRight: string;
 
   formIsSaved = false;
   isParentDialog: boolean;
-  formId = 'PLACEHOLDER'; // spm generate unique form id
+  formId = Math.random() * Math.pow(10, 17); // generate unique form id. Probably won't need more randomness than this
   currentLanguage$: Observable<string>;
   currentLanguage: string;
-  defaultLanguage$: Observable<string>;
   enableDraft = false;
 
   formErrors: { [key: string]: any }[] = [];
@@ -70,10 +72,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   debugEnabled = false;
   debugInfoIsOpen = false;
 
-  private subscriptions: Subscription[] = [];
-
-  private eavConfig: EavConfiguration;
-
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
@@ -86,28 +84,30 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
   ) {
-    this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
-    this.currentLanguage$ = this.languageService.getCurrentLanguage();
-    this.defaultLanguage$ = this.languageService.getDefaultLanguage();
-    this.translate.setDefaultLang('en');
-    this.translate.use('en');
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+    this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
-      this.languageService.loadCurrentLanguages(this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
     }
+    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    this.currentLanguage = this.eavConfig.lang;
     this.loadIconsService.load();
   }
 
   ngOnInit() {
+    this.languages$ = this.languageService.entities$;
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
     this.loadItemsData();
     this.setLanguageConfig();
     this.reduceExtendedSaveButton();
@@ -132,7 +132,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.languageInstanceService.removeLanguageInstance(this.formId);
   }
 
   toggleDebugEnabled(event) {
@@ -269,9 +270,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private formSetValueChangeSubscribe() {
-    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe((formSet: FormSet) => {
-      this.checkFormsState();
-    }));
+    this.subscriptions.push(
+      this.eavService.formSetValueChange$.subscribe((formSet: FormSet) => {
+        // check if update is for current entity
+        if (formSet.formId !== this.formId) { return; }
+        this.checkFormsState();
+      })
+    );
   }
 
   /**
@@ -287,26 +292,26 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private setLanguageConfig() {
     this.setTranslateLanguage(this.eavConfig.lang);
-    // UILanguage harcoded (for future usage)
-    // this.languageService.loadLanguages(JSON.parse(this.eavConfig.langs), this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
 
-    this.languages$ = this.languageService.entities$;
-    this.subscriptions.push(this.languages$.subscribe(languages => {
-      this.languages = languages;
-    }));
-
-    this.subscriptions.push(this.currentLanguage$.subscribe(lan => {
-      this.changeAnimationState(lan);
-      this.currentLanguage = lan;
-      // on current language change reset form errors
-      this.formErrors = [];
-    }));
+    this.subscriptions.push(
+      this.languages$.subscribe(languages => {
+        this.languages = languages;
+      }),
+      this.currentLanguage$.subscribe(lan => {
+        this.changeAnimationState(lan);
+        this.currentLanguage = lan;
+        // on current language change reset form errors
+        this.formErrors = [];
+      }),
+    );
   }
 
   private changeAnimationState(language: string) {
-    if (this.languages.findIndex(l => l.key === this.currentLanguage) > this.languages.findIndex(l => l.key === language)) {
+    const currentLangIndex = this.languages.findIndex(l => l.key === this.currentLanguage);
+    const newLangIndex = this.languages.findIndex(l => l.key === language);
+    if (currentLangIndex > newLangIndex) {
       this.animationStateLeft = this.animationStateLeft === 'false' ? 'true' : 'false';
-    } else {
+    } else if (currentLangIndex < newLangIndex) {
       this.animationStateRight = this.animationStateRight === 'false' ? 'true' : 'false';
     }
   }

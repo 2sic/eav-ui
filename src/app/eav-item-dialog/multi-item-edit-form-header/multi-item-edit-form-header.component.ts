@@ -13,6 +13,7 @@ import { LanguageService } from '../../shared/store/ngrx-data/language.service';
   styleUrls: ['./multi-item-edit-form-header.component.scss']
 })
 export class MultiItemEditFormHeaderComponent implements OnInit, OnDestroy {
+  @Input() formId: number;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;

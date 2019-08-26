@@ -40,7 +40,8 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe(formSet => {
-        if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+        // check if update is for current form
+        if (formSet.formId !== this.config.form.formId) { return; }
         const newValue = formSet.formValues[this.config.field.name] as string;
         if (this.previousValue === newValue) { return; }
         this.previousValue = newValue;

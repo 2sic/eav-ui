@@ -154,8 +154,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private suscribeValueChanges() {
     this.oldValue = this.group.controls[this.config.field.name].value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      // check if update is for current entity
-      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+      // check if update is for current form
+      if (formSet.formId !== this.config.form.formId) { return; }
 
       // check if update is for this field
       if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }

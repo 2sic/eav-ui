@@ -20,7 +20,7 @@ import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.ser
 export class BuildFieldsService {
   private contentType$: Observable<ContentType>;
   private item: Item;
-  private formId: string;
+  private formId: number;
   private currentLanguage: string;
   private defaultLanguage: string;
 
@@ -32,7 +32,7 @@ export class BuildFieldsService {
   public buildFields(
     contentType$: Observable<ContentType>,
     item: Item,
-    formId: string,
+    formId: number,
     currentLanguage: string,
     defaultLanguage: string,
   ): Observable<FieldConfigSet[]> {

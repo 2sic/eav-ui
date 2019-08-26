@@ -16,7 +16,7 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { FormSet } from '../../shared/models/eav/form-set';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -25,7 +25,7 @@ import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy {
   @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
-  @Input() formId: string;
+  @Input() formId: number;
   @Input()
   set item(value: Item) {
     this.itemBehaviorSubject$.next(value);
@@ -40,7 +40,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   private eavConfig: EavConfiguration;
+  private defaultLanguage$: Observable<string>;
   private defaultLanguage: string;
+  private currentLanguage$: Observable<string>;
   currentLanguage: string;
   private subscriptions: Subscription[] = [];
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
@@ -50,17 +52,19 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   formIsValid = false;
 
   constructor(
-    private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
   ) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
+    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.formId);
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
     this.setInitialValues();
     this.subscribeToChanges();
   }
@@ -128,7 +132,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
       }
       // important to be after patchValue
       const formSet: FormSet = {
-        entityGuid: item.entity.guid,
+        formId: this.formId,
         formValues: formValues
       };
       this.eavService.triggerFormSetValueChange(formSet);
@@ -136,8 +140,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   private setInitialValues() {
-    this.languageService.getDefaultLanguage().pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
-    this.languageService.getCurrentLanguage().pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
+    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
+    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
     // create input fields from content type
@@ -147,17 +151,12 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
 
   private subscribeToChanges() {
     this.subscriptions.push(
-      this.itemBehaviorSubject$.subscribe((item: Item) => {
-        this.setFormValues(item, false);
-      }),
-      this.languageService.getDefaultLanguage().pipe(skip(1)).subscribe(defaultLang => {
-        this.defaultLanguage = defaultLang;
-      }),
-      this.languageService.getCurrentLanguage().pipe(skip(1)).subscribe(currentLang => {
+      this.itemBehaviorSubject$.subscribe((item: Item) => { this.setFormValues(item, false); }),
+      this.defaultLanguage$.pipe(skip(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; }),
+      this.currentLanguage$.pipe(skip(1)).subscribe(currentLang => {
         this.currentLanguage = currentLang;
         this.setFormValues(this.item, false);
       }),
     );
   }
-
 }

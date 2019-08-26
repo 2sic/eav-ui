@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
 import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
 import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
@@ -18,6 +19,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   @ViewChild('scrollable', { static: false }) headerRef: ElementRef;
   @ViewChild('leftShadow', { static: false }) leftShadowRef: ElementRef;
   @ViewChild('rightShadow', { static: false }) rightShadowRef: ElementRef;
+  @Input() formId: number;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
   private subscriptions: Subscription[] = [];
@@ -31,13 +33,14 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
 
   constructor(
     private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
     private renderer: Renderer2,
   ) { }
 
   ngOnInit() {
     this.subscriptions.push(
       this.languageService.entities$.subscribe(languages => { this.languages = languages; }),
-      this.languageService.getCurrentLanguage().subscribe(currentLang => { this.currentLanguage = currentLang; }),
+      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(currentLang => { this.currentLanguage = currentLang; }),
     );
     this.languageButtons = calculateLanguageButtons(this.languages);
   }
@@ -69,7 +72,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.centerSelectedService.lngButtonClick(event);
 
     if (!this.centerSelectedService.stopClickIfMouseMoved()) {
-      this.languageService.updateCurrentLanguage(language.key);
+      this.languageInstanceService.updateCurrentLanguage(this.formId, language.key);
     }
   }
 

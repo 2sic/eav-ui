@@ -40,5 +40,6 @@ export interface ItemConfig {
 }
 
 export interface FormConfig {
-  formId: string;
+  /** Unique id to be able to separate settings for each form instance, e.g. current language */
+  formId: number;
 }

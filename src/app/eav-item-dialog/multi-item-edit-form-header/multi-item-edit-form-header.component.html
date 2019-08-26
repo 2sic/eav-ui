@@ -8,7 +8,7 @@
     </mat-icon>
   </button>
   <div fxFlex="auto" style="width:100px;">
-    <app-eav-language-switcher *ngIf="languages.length > 0" [formsAreValid]="formsAreValid"
+    <app-eav-language-switcher *ngIf="languages.length > 0" [formId]="formId" [formsAreValid]="formsAreValid"
       [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
   </div>
   <button mat-button (click)="openSaveSatusDialog()" matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">

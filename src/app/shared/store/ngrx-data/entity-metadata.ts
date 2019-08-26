@@ -5,6 +5,9 @@ export const entityMetadata: EntityMetadataMap = {
   Language: {
     selectId: languageSelectId,
   },
+  LanguageInstance: {
+    selectId: languageInstanceSelectId,
+  },
   ContentType: {
     selectId: contentTypeSelectId,
   },
@@ -27,6 +30,10 @@ export const entityConfig = {
 
 export function languageSelectId<T extends { key: any }>(entity: T) {
   return entity === null ? undefined : entity.key;
+}
+
+export function languageInstanceSelectId<T extends { formId: any }>(entity: T) {
+  return entity === null ? undefined : entity.formId;
 }
 
 export function contentTypeSelectId<T extends { contentType: any }>(entity: T) {
