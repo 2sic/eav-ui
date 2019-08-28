@@ -4,6 +4,7 @@ import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { getTinyOptions } from './tinymce-options';
+import { addTinyMceToolbarButtons } from './tinymce-toolbar';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends EavExperimentalInputField<string> {
@@ -61,6 +62,8 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
 
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized');
+      const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
+      addTinyMceToolbarButtons(this, editor, imgSizes);
       editor.setContent(this.connector.data.value);
       if (this.dialogIsOpen) {
         try {

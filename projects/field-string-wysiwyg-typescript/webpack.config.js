@@ -24,6 +24,10 @@ const configuration = {
         test: /\.css$/,
         use: 'raw-loader',
       },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader',
+      },
     ]
   },
   resolve: {
