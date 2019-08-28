@@ -39,6 +39,7 @@
     "prod-all-watch": "npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
     "// RELEASE": "Make a release build. Modifies configuration in webpack-extra.js to load source maps from external server",
     "release": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
+    "release-wysiwyg-typescript": "set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg-typescript && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
     "// OTHER": "other stuff",
     "test": "ng test",
     "lint": "ng lint",

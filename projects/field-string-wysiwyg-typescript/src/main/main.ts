@@ -1,31 +1,24 @@
+import { Subscription } from 'rxjs';
 import { EavExperimentalInputField } from '../shared/models';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.css';
-import { Subscription } from 'rxjs';
+import { getTinyOptions } from './tinymce-options';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends EavExperimentalInputField<string> {
-  private instanceId = `${randomIntFromInterval(1, 1000000)}`;
-  private tinymceContainerId = `tinymce-container-${this.instanceId}`;
-  private tinymceToolbarContainerId = `tinymce-toolbar-container-${this.instanceId}`;
-  private tinymceContainer: HTMLDivElement;
-  private tinymceToolbarContainer: HTMLDivElement;
+  private containerClass: string;
+  private toolbarContainerClass: string;
   private editor: any;
   private dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
-  private settings = {
-    selector: `.${this.tinymceContainerId}`,
-    fixed_toolbar_container: `.${this.tinymceToolbarContainerId}`,
-    toolbar_drawer: 'floating',
-    inline: true, // use the div, not an iframe
-    setup: this.tinySetup.bind(this),
-  };
-
   constructor() {
     super();
     console.log('FieldStringWysiwyg constructor called');
+    const instanceId = `${randomIntFromInterval(1, 1000000)}`;
+    this.containerClass = `tinymce-container-${instanceId}`;
+    this.toolbarContainerClass = `tinymce-toolbar-container-${instanceId}`;
   }
 
   connectedCallback() {
@@ -46,35 +39,47 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
       }),
     );
     this.innerHTML = buildTemplate(template, styles);
-    this.tinymceContainer = this.querySelector('.tinymce-container');
-    this.tinymceToolbarContainer = this.querySelector('.tinymce-toolbar-container');
-    this.tinymceContainer.classList.add(this.tinymceContainerId);
-    this.tinymceToolbarContainer.classList.add(this.tinymceToolbarContainerId);
-    tinymce.init({ ...this.settings });
+    this.querySelector('.tinymce-container').classList.add(this.containerClass);
+    this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+
+    const tinyOptions = getTinyOptions({
+      containerClass: this.containerClass,
+      fixedToolbarClass: this.toolbarContainerClass,
+      setup: this.tinyMceSetup.bind(this),
+      currentLang: 'en', // spm current language can change. Make a subject/subscriber logic. Add translations
+      contentBlocksEnabled: false,
+      pasteFormattedTextEnabled: false,
+      pasteImageFromClipboardEnabled: false,
+      imagesUploadUrl: '',
+      uploadHeaders: {},
+    });
+    tinymce.init(tinyOptions);
   }
 
-  private tinySetup(editor: any) {
+  private tinyMceSetup(editor: any) {
     this.editor = editor;
 
-    this.editor.on('init', (event: any) => {
+    editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized');
-      if (!this.dialogIsOpen) { return; }
-      try {
-        editor.focus();
-      } catch (error) {
-        // console.error('error when focusing editor', error);
+      editor.setContent(this.connector.data.value);
+      if (this.dialogIsOpen) {
+        try {
+          editor.focus();
+        } catch (error) {
+          // console.error('error when focusing editor', error);
+        }
       }
     });
 
-    this.editor.on('focus', (event: any) => {
+    editor.on('focus', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE focused');
     });
 
-    this.editor.on('blur', (event: any) => {
+    editor.on('blur', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE blurred');
     });
 
-    this.editor.on('change', (event: any) => {
+    editor.on('change', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE value changed');
     });
   }
@@ -82,7 +87,7 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
   disconnectedCallback() {
     console.log('FieldStringWysiwyg disconnectedCallback called');
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    tinymce.remove(`.${this.tinymceContainerId}`);
+    tinymce.remove(`.${this.containerClass}`);
   }
 }
 
