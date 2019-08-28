@@ -263,7 +263,7 @@ export function addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
   // note that the complex array is needed because auto-translate only happens if the string is identical
   [['pre', 'Preformatted', 'Preformatted'],
   ['p', 'Paragraph', 'Paragraph'],
-  ['code', 'Code', 'Code'],
+  // ['code', 'Code', 'Code'],
   ['h1', 'Heading 1', 'H1'],
   ['h2', 'Heading 2', 'H2'],
   ['h3', 'Heading 3', 'H3'],

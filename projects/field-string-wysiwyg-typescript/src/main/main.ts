@@ -5,6 +5,8 @@ import * as template from './main.html';
 import * as styles from './main.css';
 import { getTinyOptions } from './tinymce-options';
 import { addTinyMceToolbarButtons } from './tinymce-toolbar';
+import * as style from './oxide-skin-overrides.scss';
+import * as contentStyle from './tinymce-content.css';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends EavExperimentalInputField<string> {
@@ -39,13 +41,14 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
         }
       }),
     );
-    this.innerHTML = buildTemplate(template, styles);
+    this.innerHTML = buildTemplate(template, styles + style);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
 
     const tinyOptions = getTinyOptions({
       containerClass: this.containerClass,
       fixedToolbarClass: this.toolbarContainerClass,
+      contentStyle: contentStyle,
       setup: this.tinyMceSetup.bind(this),
       currentLang: 'en', // spm current language can change. Make a subject/subscriber logic. Add translations
       contentBlocksEnabled: false,

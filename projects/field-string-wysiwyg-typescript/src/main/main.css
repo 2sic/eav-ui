@@ -1,3 +1,26 @@
+field-string-wysiwyg {
+  position: relative;
+  height: 100%;
+}
+
+.wrap-float-label {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.field-string-wysiwyg-mce-box {
+  position: relative;
+  height: 100%;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+.field-string-wysiwyg-mce-box::-webkit-scrollbar {
+  display: none;
+}
+
 .tox.tox-tinymce.tox-tinymce-inline {
   display: flex !important;
 }

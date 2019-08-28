@@ -1,6 +1,7 @@
 interface Config {
   containerClass: string;
   fixedToolbarClass: string;
+  contentStyle: string;
   setup: (editor: any) => any;
   currentLang: string;
   contentBlocksEnabled: boolean;
@@ -17,6 +18,10 @@ export function getTinyOptions(config: Config) {
     setup: config.setup, // callback function during setup
     skin: 'oxide',
     theme: 'silver',
+    body_class: 'field-string-wysiwyg-mce-box',
+    content_style: config.contentStyle,
+    height: '100%',
+    branding: false,
     // statusbar: true, // doesn't work in inline
     inline: true, // use the div, not an iframe
     toolbar_drawer: 'floating',
