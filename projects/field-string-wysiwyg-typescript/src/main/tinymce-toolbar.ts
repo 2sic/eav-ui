@@ -1,6 +1,7 @@
 import { loadCustomIcons } from './load-icons-helper';
 
-export function addTinyMceToolbarButtons(vm: any, editor: any, imgSizes: any) {
+export function addTinyMceToolbarButtons(vm: any, editor: any) {
+  const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
   registerTinyMceFormats(editor, imgSizes);
   loadCustomIcons(editor);
 
@@ -435,7 +436,7 @@ function initOnPostRender(name: any, editor: any) {
 }
 
 /** Register all formats - like img-sizes */
-function registerTinyMceFormats(editor: any, imgSizes: any) {
+function registerTinyMceFormats(editor: any, imgSizes: number[]) {
   const imgformats: any = {};
   for (let imgs = 0; imgs < imgSizes.length; imgs++) {
     imgformats[`imgwidth${imgSizes[imgs]}`] = [{ selector: 'img', collapsed: false, styles: { 'width': `${imgSizes[imgs]}%` } }];

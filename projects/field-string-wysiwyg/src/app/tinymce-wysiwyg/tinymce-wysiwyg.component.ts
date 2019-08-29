@@ -236,10 +236,10 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   private subscribeToFormChanges(): void {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
-        // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
         if (this.dialogIsOpen) { return; }
         this.setValue(newValue);
       }),
+      // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
       (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
         this.dialogIsOpen = expanded;
         if (expanded && this.editor) {
