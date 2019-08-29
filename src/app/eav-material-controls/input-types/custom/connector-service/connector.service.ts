@@ -47,7 +47,7 @@ export class ConnectorService {
    */
   // spm 2019.04.08. move to experimentalProps
   private externalInputTypeHost = {
-    attachAdam: () => this.attachAdam(),
+    attachAdam: (adamSetValue, adamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
@@ -87,13 +87,12 @@ export class ConnectorService {
     }
   }
 
-  private attachAdam() {
-    // TODO:
-    // If adam registered then attach Adam
-    if (this.config.adam) {
-      // set update callback = external method setAdamValue
+  private attachAdam(adamSetValue, adamAfterUpload) {
+    // spm check if adam is enabled
+    if (!this.config.adam) { return; }
 
-      // callbacks - functions called from adam
+    if (!adamSetValue || !adamAfterUpload) {
+      // callbacks - functions called from adam, old wysiwyg
       this.config.adam.updateCallback = (value) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
@@ -103,24 +102,27 @@ export class ConnectorService {
         this.customEl.adamAfterUploadCallback
           ? this.customEl.adamAfterUploadCallback = value
           : alert('adam attached but adamAfterUpload method not exist');
-
-      // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
-
-      return {
-        toggleAdam: (value1: any, value2: any) => {
-          this._ngZone.run(() => this.config.adam.toggle(value1));
-        },
-        setAdamConfig: (adamConfig: AdamConfig) => {
-          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
-        },
-        adamModeImage: () => {
-          this._ngZone.run(() => (this.config && this.config.adam)
-            ? this.config.adam.showImagesOnly
-            : null);
-        },
-      };
+    } else {
+      // new wysiwyg
+      this.config.adam.updateCallback = (value) => { adamSetValue(value); };
+      this.config.adam.afterUploadCallback = (value) => { adamAfterUpload(value); };
     }
+    // return value from form
+    this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
+
+    return {
+      toggleAdam: (value1: any, value2: any) => {
+        this._ngZone.run(() => this.config.adam.toggle(value1));
+      },
+      setAdamConfig: (adamConfig: AdamConfig) => {
+        this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
+      },
+      adamModeImage: () => {
+        this._ngZone.run(() => (this.config && this.config.adam)
+          ? this.config.adam.showImagesOnly
+          : null);
+      },
+    };
   }
 
   public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {

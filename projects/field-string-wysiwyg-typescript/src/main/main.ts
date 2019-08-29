@@ -5,6 +5,7 @@ import * as template from './main.html';
 import * as styles from './main.css';
 import { getTinyOptions } from './tinymce-options';
 import { addTinyMceToolbarButtons } from './tinymce-toolbar';
+import { attachAdam } from './tinymce-adam-service';
 import * as style from './oxide-skin-overrides.scss';
 import * as contentStyle from './tinymce-content.css';
 declare const tinymce: any;
@@ -48,6 +49,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
       addTinyMceToolbarButtons(this, editor);
+      attachAdam(this, editor);
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
           if (this.editorContent === newValue) { return; }
