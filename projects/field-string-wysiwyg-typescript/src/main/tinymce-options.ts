@@ -179,30 +179,24 @@ function getPasteImagesOptions(uploadUrl: string, headers: any) {
   };
 }
 
-function imagesUploadHandler(blobInfo: any, success: () => any, failure: () => any) {
-  const settings = (window as any).tinymce.activeEditor.settings;
-
+function imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any) {
   const formData = new FormData();
   formData.append('file', blobInfo.blob(), blobInfo.filename());
 
+  const settings = (window as any).tinymce.activeEditor.settings;
   console.log('TinyMCE upload settings', settings);
-  // spm test this!
+
   fetch(settings.images_upload_url, {
     method: 'POST',
-    mode: 'cors',
-    headers: settings.uploadHeaders,
-    body: JSON.stringify(formData),
+    // mode: 'cors',
+    headers: settings.upload_headers,
+    body: formData,
   }).then(response =>
     response.json()
   ).then(data => {
     console.log('TinyMCE upload data', data);
+    success(data.Path);
   }).catch(error => {
     console.log('TinyMCE upload error:', error);
   });
-
-  // this.http.post<any>(settings.images_upload_url, formData, { headers: settings.upload_headers }).pipe(
-  //   map(({ Path }) => Path),
-  //   tap(imagePath => success(imagePath)),
-  //   catchError(e => of(failure(e))),
-  // ).subscribe();
 }

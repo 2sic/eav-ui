@@ -1,4 +1,5 @@
 import { loadCustomIcons } from './load-icons-helper';
+import { MathHelper } from './math-helper';
 
 export function addTinyMceToolbarButtons(vm: any, editor: any) {
   const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
@@ -321,8 +322,8 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
     icon: 'custom-content-block',
     tooltip: 'ContentBlock.Add',
     onAction: (_: any) => {
-      // const guid = MathHelper.uuid().toLowerCase(); // requires the uuid-generator to be included
-      // editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`); // spm guid generation might be broken
+      const guid = MathHelper.uuid().toLowerCase(); // requires the uuid-generator to be included
+      editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`); // spm guid generation might be broken
     },
   });
 

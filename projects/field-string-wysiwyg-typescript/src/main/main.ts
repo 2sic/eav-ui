@@ -1,12 +1,13 @@
 import { Subscription } from 'rxjs';
 import { EavExperimentalInputFieldObservable } from '../shared/models';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
+import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { getTinyOptions } from './tinymce-options';
 import { addTinyMceToolbarButtons } from './tinymce-toolbar';
 import { attachAdam } from './tinymce-adam-service';
-import * as style from './oxide-skin-overrides.scss';
+import * as skinOverrides from './oxide-skin-overrides.scss';
 import * as contentStyle from './tinymce-content.css';
 declare const tinymce: any;
 
@@ -15,6 +16,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
+  private pasteImageFromClipboardEnabled: boolean;
 
   constructor() {
     super();
@@ -26,9 +28,18 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
   connectedCallback() {
     console.log('FieldStringWysiwyg connectedCallback called');
-    this.innerHTML = buildTemplate(template, styles + style);
+    this.innerHTML = buildTemplate(template, styles + skinOverrides);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+
+    // enable content blocks if there is another field after this one and it's type is entity-content-blocks
+    const contentBlocksEnabled = (this.experimental.allInputTypeNames.length > this.connector.field.index + 1)
+      ? this.experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
+      : false;
+
+    const pasteFormattedTextEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
+    this.pasteImageFromClipboardEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    const dropzoneConfig = this.experimental.dropzoneConfig$.value;
 
     const tinyOptions = getTinyOptions({
       containerClass: this.containerClass,
@@ -36,11 +47,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       contentStyle: contentStyle,
       setup: this.tinyMceSetup.bind(this),
       currentLang: 'en', // spm current language can change. Make a subject/subscriber logic. Add translations
-      contentBlocksEnabled: false,
-      pasteFormattedTextEnabled: false,
-      pasteImageFromClipboardEnabled: false,
-      imagesUploadUrl: '',
-      uploadHeaders: {},
+      contentBlocksEnabled: contentBlocksEnabled,
+      pasteFormattedTextEnabled: pasteFormattedTextEnabled,
+      pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
+      imagesUploadUrl: dropzoneConfig.url as string,
+      uploadHeaders: dropzoneConfig.headers,
     });
     tinymce.init(tinyOptions);
   }
@@ -73,10 +84,24 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
     editor.on('focus', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE focused', event);
+      if (this.pasteImageFromClipboardEnabled) {
+        // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
+        // Files will be handled by dropzone
+        const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+        // tslint:disable-next-line:max-line-length
+        dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+        this.experimental.dropzoneConfig$.next(dzConfig);
+      }
     });
 
     editor.on('blur', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE blurred', event);
+      if (!this.pasteImageFromClipboardEnabled) {
+        // Dropzone will handle image uploads again
+        const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+        delete dzConfig.acceptedFiles;
+        this.experimental.dropzoneConfig$.next(dzConfig);
+      }
     });
 
     editor.on('change', (event: any) => {
