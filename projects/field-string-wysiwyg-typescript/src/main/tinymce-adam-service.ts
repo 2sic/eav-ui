@@ -1,7 +1,7 @@
-export function attachAdam(that: any, editor: any) {
+export function attachAdam(fieldStringWysiwyg: any, editor: any) {
   const adamSetValue = (fileItem: any, modeImage: any) => {
     if (modeImage === undefined) {  // if not supplied, use the setting in the adam
-      modeImage = that.adam.adamModeImage;
+      modeImage = fieldStringWysiwyg.adam.adamModeImage;
     }
 
     const fileName = fileItem.Name.substr(0, fileItem.Name.lastIndexOf('.'));
@@ -17,17 +17,17 @@ export function attachAdam(that: any, editor: any) {
     adamSetValue(fileItem, fileItem.Type === 'image');
   };
 
-  that.adam = that.host.attachAdam(adamSetValue, adamAfterUpload);
+  fieldStringWysiwyg.adam = fieldStringWysiwyg.host.attachAdam(adamSetValue, adamAfterUpload);
 
-  that.toggleAdam = (imagesOnly: any, usePortalRoot: any) => {
-    that.adam.adamModeImage = imagesOnly;
-    that.adam.toggleAdam({
+  fieldStringWysiwyg.toggleAdam = (imagesOnly: any, usePortalRoot: any) => {
+    fieldStringWysiwyg.adam.adamModeImage = imagesOnly;
+    fieldStringWysiwyg.adam.toggleAdam({
       showImagesOnly: imagesOnly,
       usePortalRoot: usePortalRoot
     });
   };
 
-  that.setAdamConfig = (adamConfig: any) => {
-    that.adam.setAdamConfig(adamConfig);
+  fieldStringWysiwyg.setAdamConfig = (adamConfig: any) => {
+    fieldStringWysiwyg.adam.setAdamConfig(adamConfig);
   };
 }

@@ -1,7 +1,7 @@
 import { loadCustomIcons } from './load-icons-helper';
 import { MathHelper } from './math-helper';
 
-export function addTinyMceToolbarButtons(vm: any, editor: any) {
+export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
   const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
   registerTinyMceFormats(editor, imgSizes);
   loadCustomIcons(editor);
@@ -13,7 +13,7 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
     presets: 'listpreview',
     columns: 3,
     onAction: (_: any) => {
-      vm.toggleAdam(false);
+      fieldStringWysiwyg.toggleAdam(false);
     },
     onItemAction: (api: any, value: any) => {
       value(api);
@@ -25,14 +25,14 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
           text: 'Link.AdamFile',
           tooltip: 'Link.AdamFile.Tooltip',
           icon: 'custom-file-pdf',
-          value: (api: any) => { vm.toggleAdam(false); },
+          value: (api: any) => { fieldStringWysiwyg.toggleAdam(false); },
         },
         {
           type: 'choiceitem',
           text: 'Link.DnnFile',
           tooltip: 'Link.DnnFile.Tooltip',
           icon: 'custom-file',
-          value: (api: any) => { vm.toggleAdam(false, true); },
+          value: (api: any) => { fieldStringWysiwyg.toggleAdam(false, true); },
         },
       ];
       callback(items);
@@ -53,7 +53,7 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
       text: 'Link.Page',
       tooltip: 'Link.Page.Tooltip',
       icon: 'custom-sitemap',
-      value: (api: any) => { vm.openDnnDialog('pagepicker'); },
+      value: (api: any) => { fieldStringWysiwyg.openDnnDialog('pagepicker'); },
     },
   ];
   const linkgroupProItems = [...linkgroupItems];
@@ -94,7 +94,7 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
     presets: 'listpreview',
     columns: 3,
     onAction: (_: any) => {
-      vm.toggleAdam(true);
+      fieldStringWysiwyg.toggleAdam(true);
     },
     onItemAction: (api: any, value: any) => {
       value(api);
@@ -106,14 +106,14 @@ export function addTinyMceToolbarButtons(vm: any, editor: any) {
           text: 'Image.AdamImage',
           tooltip: 'Image.AdamImage.Tooltip',
           icon: 'image',
-          value: (api: any) => { vm.toggleAdam(true); },
+          value: (api: any) => { fieldStringWysiwyg.toggleAdam(true); },
         },
         {
           type: 'choiceitem',
           text: 'Image.DnnImage',
           tooltip: 'Image.DnnImage.Tooltip',
           icon: 'image',
-          value: (api: any) => { vm.toggleAdam(true, true); },
+          value: (api: any) => { fieldStringWysiwyg.toggleAdam(true, true); },
         },
         // note: all these use i18n from tinyMce standard
         {
