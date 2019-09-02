@@ -173,6 +173,7 @@ export class ConnectorService {
       formGroup: this.group,
       formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
+      translateService: this.translateService,
     };
     // optional props
     if (this.config.dropzoneConfig$) {

@@ -11,7 +11,7 @@ export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
     experimental: ExperimentalProps;
     host: any;
-    translateService: TranslateService;
+    translateService: TranslateService; // for Angular WYSIWYG. Should remove sometime in the future
 
     adamSetValueCallback: any;
     adamAfterUploadCallback: any;
@@ -32,6 +32,7 @@ export class ExperimentalProps {
     formSetValueChange$: Observable<FormSet>;
     isFeatureEnabled: (guid: string) => boolean;
     dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
+    translateService: TranslateService; // for Typescript WYSIWYG
 }
 
 export class FieldState {

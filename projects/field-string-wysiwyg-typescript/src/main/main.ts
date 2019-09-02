@@ -4,7 +4,7 @@ import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
 import * as styles from './main.css';
-import { getTinyOptions } from './tinymce-options';
+import { getTinyOptions, addTranslations } from './tinymce-options';
 import { addTinyMceToolbarButtons } from './tinymce-toolbar';
 import { attachDnnBridgeService } from './tinymce-dnnbridge-service';
 import { attachAdam } from './tinymce-adam-service';
@@ -47,7 +47,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       fixedToolbarClass: this.toolbarContainerClass,
       contentStyle: contentStyle,
       setup: this.tinyMceSetup.bind(this),
-      currentLang: 'en', // spm current language can change. Make a subject/subscriber logic. Add translations
+      currentLang: this.experimental.translateService.currentLang,
       contentBlocksEnabled: contentBlocksEnabled,
       pasteFormattedTextEnabled: pasteFormattedTextEnabled,
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
@@ -63,6 +63,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       addTinyMceToolbarButtons(this, editor);
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
+      addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
           if (this.editorContent === newValue) { return; }

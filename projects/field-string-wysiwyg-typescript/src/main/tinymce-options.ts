@@ -199,4 +199,28 @@ function imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, f
   }).catch(error => {
     console.log('TinyMCE upload error:', error);
   });
+
+}
+
+/** Add translations to TinyMCE. Call after TinyMCE is initialized */
+export function addTranslations(language: string, translateService: any, editorManager: any) {
+  const primaryLan = 'en';
+  const keys = [], mceTranslations: any = {}, prefix = 'Extension.TinyMce', prefixDot = 'Extension.TinyMce.'; //  pLen = prefix.length;
+
+  // find all relevant keys by querying the primary language
+  // var all = translateService.getTranslationTable(primaryLan);
+  const all = translateService.translations[primaryLan];
+  for (const key in all) {
+    if (key.indexOf(prefix) === 0) {
+      keys.push(key);
+    }
+  }
+
+  const translations = translateService.instant(keys);
+
+  for (let k = 0; k < keys.length; k++) {
+    mceTranslations[keys[k].replace(prefixDot, '')] = translations[keys[k]];
+  }
+
+  editorManager.addI18n(language, translations[keys[0]]);
 }
