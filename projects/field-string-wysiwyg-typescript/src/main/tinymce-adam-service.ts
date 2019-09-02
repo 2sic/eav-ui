@@ -30,4 +30,16 @@ export function attachAdam(fieldStringWysiwyg: any, editor: any) {
   fieldStringWysiwyg.setAdamConfig = (adamConfig: any) => {
     fieldStringWysiwyg.adam.setAdamConfig(adamConfig);
   };
+
+  fieldStringWysiwyg.setAdamConfig({ // default adam config
+    adamModeConfig: { usePortalRoot: false },
+    allowAssetsInRoot: true,
+    autoLoad: false,
+    enableSelect: true,
+    folderDepth: 0,
+    fileFilter: '',
+    metadataContentTypes: '',
+    subFolder: '',
+    showImagesOnly: false, // adamModeImage?
+  });
 }
