@@ -100,13 +100,13 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     if (!urlFromId$) {
       this.link = value;
       this.setValues();
+    } else {
+      urlFromId$.pipe(take(1)).subscribe(data => {
+        if (!data) { return; }
+        this.link = data;
+        this.setValues();
+      });
     }
-
-    urlFromId$.pipe(take(1)).subscribe(data => {
-      if (!data) { return; }
-      this.link = data;
-      this.setValues();
-    });
   }
 
   private setValues() {

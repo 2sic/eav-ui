@@ -1,9 +1,11 @@
+import { take } from 'rxjs/operators';
 import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { FieldSettings, EavHeader, Item } from '../models/eav';
+import { FieldSettings, EavHeader, Item, InputType } from '../models/eav';
 import { WrappersConstants } from '../constants/wrappers-constants';
 import { InputTypeName, CalculatedInputType } from '../models/input-field-models';
+import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {
     /**
@@ -52,120 +54,141 @@ export class InputFieldHelper {
         return settingsTranslated && settingsTranslated.Name || attribute.name;
     }
 
-    /**
-     *  Get input type names from content type attributes
-     * @param attributesList
-     */
-    static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): InputTypeName[] {
+    // /**
+    //  *  Get input type names from content type attributes
+    //  * @param attributesList
+    //  */
+    // static getInputTypeNamesFromAttributes(attributesList: AttributeDef[]): InputTypeName[] {
+    //     const typesList: InputTypeName[] = [];
+
+    //     attributesList.forEach((attribute, index) => {
+    //         try {
+    //             const name = attribute.name;
+    //             const calculatedInputType = this.getInputTypeNameFromAttribute(attribute);
+    //             typesList.push({ name: name, inputType: calculatedInputType.inputType });
+    //         } catch (error) {
+    //             console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
+    //             throw error;
+    //         }
+    //     });
+
+    //     return typesList;
+    // }
+
+    // static getInputTypeNameFromAttribute(attribute: AttributeDef): CalculatedInputType {
+    //     // can't read input type at all so return string-default
+    //     if (!(attribute.settings.InputType || attribute.type)) {
+    //         return { inputType: InputTypesConstants.stringDefault, isExternal: false };
+    //     }
+
+    //     let inputTypeName = attribute.settings.InputType
+    //         && attribute.settings.InputType.values[0].value;
+
+    //     inputTypeName = inputTypeName
+    //         ? this.renameOldInputTypes(inputTypeName)
+    //         : this.createInputTypeFromTypeName(attribute.type);
+
+    //     return this.checkIfExternal(inputTypeName);
+    // }
+
+    static calculateInputTypes(attributesList: AttributeDef[], inputTypeService: InputTypeService): InputTypeName[] {
         const typesList: InputTypeName[] = [];
 
         attributesList.forEach((attribute, index) => {
-            try {
-                const name = attribute.name;
-                const calculatedInputType = this.getInputTypeNameFromAttribute(attribute);
-                typesList.push({ name: name, inputType: calculatedInputType.inputType });
-            } catch (error) {
-                console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
-                throw error;
-            }
+            const calculatedInputType = this.calculateInputType(attribute, inputTypeService);
+            typesList.push({ name: attribute.name, inputType: calculatedInputType.inputType });
         });
 
         return typesList;
     }
 
-    static getInputTypeNameFromAttribute(attribute: AttributeDef): CalculatedInputType {
-        // can't read input type at all so return string-default
-        if (!(attribute.settings.InputType || attribute.type)) {
-            return { inputType: InputTypesConstants.stringDefault, isExternal: false };
-        }
-
-        let inputTypeName = attribute.settings.InputType
-            && attribute.settings.InputType.values[0].value;
-
-        inputTypeName = inputTypeName
-            ? this.renameOldInputTypes(inputTypeName)
-            : this.createInputTypeFromTypeName(attribute.type);
-
-        return this.checkIfExternal(inputTypeName);
+    static calculateInputType(attribute: AttributeDef, inputTypeService: InputTypeService): CalculatedInputType {
+        const inputTypeName = attribute.inputType;
+        let inputType: InputType;
+        inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => { inputType = type; });
+        return {
+            inputType: inputTypeName,
+            isExternal: inputType ? !!inputType.AngularAssets : false,
+        };
     }
 
-    private static renameOldInputTypes(inputTypeName: string): string {
-        switch (inputTypeName) {
-            case InputTypesConstants.oldTypeDefault:
-                return InputTypesConstants.stringDefault;
-            case InputTypesConstants.oldTypeDropdown:
-                return InputTypesConstants.stringDropdown;
-            case InputTypesConstants.oldTypeWysiwyg:
-                return InputTypesConstants.stringWysiwyg;
+    // private static renameOldInputTypes(inputTypeName: string): string {
+    //     switch (inputTypeName) {
+    //         case InputTypesConstants.oldTypeDefault:
+    //             return InputTypesConstants.stringDefault;
+    //         case InputTypesConstants.oldTypeDropdown:
+    //             return InputTypesConstants.stringDropdown;
+    //         case InputTypesConstants.oldTypeWysiwyg:
+    //             return InputTypesConstants.stringWysiwyg;
 
-            // spm remove renaming of wysiwyg when backend is ready
-            case InputTypesConstants.stringWysiwygTinymce:
-                return InputTypesConstants.stringWysiwyg;
-            case InputTypesConstants.stringWysiwygAdv:
-                return InputTypesConstants.stringWysiwyg;
-            case InputTypesConstants.stringWysiwygDnn:
-                return InputTypesConstants.stringWysiwyg;
+    //         // spm remove renaming of wysiwyg when backend is ready
+    //         case InputTypesConstants.stringWysiwygTinymce:
+    //             return InputTypesConstants.stringWysiwyg;
+    //         case InputTypesConstants.stringWysiwygAdv:
+    //             return InputTypesConstants.stringWysiwyg;
+    //         case InputTypesConstants.stringWysiwygDnn:
+    //             return InputTypesConstants.stringWysiwyg;
 
-            default: return inputTypeName;
-        }
-    }
+    //         default: return inputTypeName;
+    //     }
+    // }
 
-    private static createInputTypeFromTypeName(typeName: string): string {
-        switch (typeName) {
-            // cases where typename === inputTypeName
-            case InputTypesConstants.stringUrlPath:
-            case InputTypesConstants.stringFontIconPicker:
-            case InputTypesConstants.hyperlinkLibrary:
-                return typeName;
+    // private static createInputTypeFromTypeName(typeName: string): string {
+    //     switch (typeName) {
+    //         // cases where typename === inputTypeName
+    //         case InputTypesConstants.stringUrlPath:
+    //         case InputTypesConstants.stringFontIconPicker:
+    //         case InputTypesConstants.hyperlinkLibrary:
+    //             return typeName;
 
-            // convert to `${typeName}-default`
-            case InputTypesConstants.string:
-            case InputTypesConstants.empty:
-            case InputTypesConstants.datetime:
-            case InputTypesConstants.number:
-            case InputTypesConstants.entity:
-            case InputTypesConstants.hyperlink:
-            case InputTypesConstants.boolean:
-            case InputTypesConstants.custom:
+    //         // convert to `${typeName}-default`
+    //         case InputTypesConstants.string:
+    //         case InputTypesConstants.empty:
+    //         case InputTypesConstants.datetime:
+    //         case InputTypesConstants.number:
+    //         case InputTypesConstants.entity:
+    //         case InputTypesConstants.hyperlink:
+    //         case InputTypesConstants.boolean:
+    //         case InputTypesConstants.custom:
 
-            default:
-                return typeName.toLocaleLowerCase() + InputTypesConstants.defaultSuffix;
-        }
-    }
+    //         default:
+    //             return typeName.toLocaleLowerCase() + InputTypesConstants.defaultSuffix;
+    //     }
+    // }
 
-    private static checkIfExternal(inputTypeName: string): CalculatedInputType {
-        switch (inputTypeName) {
-            case InputTypesConstants.stringDefault:
-            case InputTypesConstants.stringUrlPath:
-            case InputTypesConstants.booleanDefault:
-            case InputTypesConstants.stringDropdown:
-            case InputTypesConstants.stringDropdownQuery:
-            case InputTypesConstants.emptyDefault:
-            case InputTypesConstants.datetimeDefault:
-            case InputTypesConstants.numberDefault:
-            case InputTypesConstants.stringFontIconPicker:
-            case InputTypesConstants.entityDefault:
-            case InputTypesConstants.entityQuery:
-            case InputTypesConstants.entityContentBlocks:
-            case InputTypesConstants.hyperlinkDefault:
-            case InputTypesConstants.hyperlinkLibrary:
-            case InputTypesConstants.stringTemplatePicker:
-            case InputTypesConstants.customDefault:
-                return { inputType: inputTypeName, isExternal: false };
+    // private static checkIfExternal(inputTypeName: string): CalculatedInputType {
+    //     switch (inputTypeName) {
+    //         case InputTypesConstants.stringDefault:
+    //         case InputTypesConstants.stringUrlPath:
+    //         case InputTypesConstants.booleanDefault:
+    //         case InputTypesConstants.stringDropdown:
+    //         case InputTypesConstants.stringDropdownQuery:
+    //         case InputTypesConstants.emptyDefault:
+    //         case InputTypesConstants.datetimeDefault:
+    //         case InputTypesConstants.numberDefault:
+    //         case InputTypesConstants.stringFontIconPicker:
+    //         case InputTypesConstants.entityDefault:
+    //         case InputTypesConstants.entityQuery:
+    //         case InputTypesConstants.entityContentBlocks:
+    //         case InputTypesConstants.hyperlinkDefault:
+    //         case InputTypesConstants.hyperlinkLibrary:
+    //         case InputTypesConstants.stringTemplatePicker:
+    //         case InputTypesConstants.customDefault:
+    //             return { inputType: inputTypeName, isExternal: false };
 
-            // our external components
-            case InputTypesConstants.stringWysiwyg:
-            case InputTypesConstants.stringWysiwygTinymce:
-            case InputTypesConstants.stringWysiwygAdv:
-            case InputTypesConstants.stringWysiwygDnn:
-            case InputTypesConstants.customGPS:
-                return { inputType: inputTypeName, isExternal: true };
+    //         // our external components
+    //         case InputTypesConstants.stringWysiwyg:
+    //         case InputTypesConstants.stringWysiwygTinymce:
+    //         case InputTypesConstants.stringWysiwygAdv:
+    //         case InputTypesConstants.stringWysiwygDnn:
+    //         case InputTypesConstants.customGPS:
+    //             return { inputType: inputTypeName, isExternal: true };
 
-            // other external components
-            default:
-                return { inputType: inputTypeName, isExternal: true };
-        }
-    }
+    //         // other external components
+    //         default:
+    //             return { inputType: inputTypeName, isExternal: true };
+    //     }
+    // }
 
     static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings) {
         // empty inputtype wrappers

@@ -55,7 +55,7 @@ export class BuildFieldsService {
           data.contentType.attributes.forEach((attribute, index) => {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
-              const calculatedInputType: CalculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+              const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
               const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
               if (isEmptyInputType) {
                 // group-fields (empty)

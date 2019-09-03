@@ -9,6 +9,7 @@ import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service
 import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
 import { ConnectorService } from '../connector-service/connector.service';
 import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 
 @Component({
   selector: 'app-connector',
@@ -29,13 +30,15 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private _ngZone: NgZone,
     private contentTypeService: ContentTypeService,
     private featureService: FeatureService,
+    private inputTypeService: InputTypeService,
   ) { }
 
   ngAfterViewInit() {
     console.log('Connector created');
     const customElName = `field-${this.config.field.inputType}`;
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
-      this.eavService, this.translateService, this.customElContainer, this.config, this.group, this.featureService);
+      this.eavService, this.translateService, this.customElContainer, this.config, this.group, this.featureService,
+      this.inputTypeService);
     this.customElConnector.createElementWebComponent(this.config, this.group, this.customElContainer, customElName);
   }
 

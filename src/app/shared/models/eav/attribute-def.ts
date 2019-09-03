@@ -5,13 +5,15 @@ import { EavAttributes } from './eav-attributes';
 export class AttributeDef {
     name: string;
     type: string;
+    inputType: string;
     isTitle: boolean;
     settings: EavAttributes;
     metadata: EavEntity[];
 
-    constructor(name: string, type: string, isTitle: boolean, metadata: EavEntity[], settings: EavAttributes) {
+    constructor(name: string, type: string, inputType: string, isTitle: boolean, metadata: EavEntity[], settings: EavAttributes) {
         this.name = name;
         this.type = type;
+        this.inputType = inputType;
         this.isTitle = isTitle;
         this.settings = settings;
         this.metadata = metadata;
@@ -25,7 +27,7 @@ export class AttributeDef {
         // console.log('AttributeDef1:', item);
         const metaDataArray = EavEntity.createArray(item.Metadata);
         const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
-        return new AttributeDef(item.Name, item.Type, item.IsTitle, metaDataArray, settings);
+        return new AttributeDef(item.Name, item.Type, item.InputType, item.IsTitle, metaDataArray, settings);
     }
 
     /**

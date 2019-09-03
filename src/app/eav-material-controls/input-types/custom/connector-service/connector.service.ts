@@ -18,6 +18,7 @@ import { InputTypeName } from '../../../../shared/models/input-field-models';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -38,6 +39,7 @@ export class ConnectorService {
     private config: FieldConfigSet,
     private group: FormGroup,
     private featureService: FeatureService,
+    private inputTypeService: InputTypeService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
   }
@@ -161,7 +163,7 @@ export class ConnectorService {
     let allInputTypeNames: InputTypeName[];
     const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(take(1)).subscribe(data => {
-      allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+      allInputTypeNames = InputFieldHelper.calculateInputTypes(data.contentType.attributes, this.inputTypeService);
     });
 
     const experimentalProps: ExperimentalProps = {

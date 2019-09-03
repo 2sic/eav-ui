@@ -447,7 +447,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   public isTranslateEnabled(attributeKey: string) {
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-    const calculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+    const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
 
     let inputType: InputType;
     this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
