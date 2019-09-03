@@ -285,8 +285,6 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
   // Group of buttons with an h3 to start and showing h4-6 + p
   editor.ui.registry.addSplitButton('hgroup', {
     ...editor.ui.registry.getAll().buttons.h3,
-    presets: 'listpreview',
-    columns: 3,
     onItemAction: (api: any, value: any) => {
       value(api);
     },

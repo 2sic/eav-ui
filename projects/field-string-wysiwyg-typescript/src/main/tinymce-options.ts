@@ -87,7 +87,7 @@ function getModesOptions(contentBlocksEnabled: boolean) {
         + '| h1 h2 hgroup '
         + '| listgroup '
         + '| linkfiles linkgroup '
-        + '| ' + (contentBlocksEnabled ? ' addcontentblock ' : '') + 'modeadvanced ',
+        + '| ' + (contentBlocksEnabled ? ' addcontentblock ' : '') + 'code modeadvanced ',
       contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
     },
     advanced: {
