@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
+import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
 
 @Component({
   selector: 'app-expandable-wrapper-v2',
@@ -20,9 +21,11 @@ import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.ser
   styleUrls: ['./expandable-wrapper-v2.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDestroy {
+export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
+  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
+  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;
@@ -47,6 +50,7 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     private contentTypeService: ContentTypeService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
+    private dropzoneDraggingService: DropzoneDraggingService,
   ) { }
 
   ngOnInit() {
@@ -60,6 +64,11 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     this.subscriptions.push(
       this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
+  }
+
+  ngAfterViewInit() {
+    this.dropzoneDraggingService.attach(this.backdropRef);
+    this.dropzoneDraggingService.attach(this.dialogRef);
   }
 
   setTouched() {
@@ -79,5 +88,6 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     console.log('ExpandableWrapperV2 destroyed');
     this.previewElConnector.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.dropzoneDraggingService.detach();
   }
 }
