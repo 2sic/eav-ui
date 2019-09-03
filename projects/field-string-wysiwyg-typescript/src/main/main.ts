@@ -18,6 +18,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private subscriptions: Subscription[] = [];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteImageFromClipboardEnabled: boolean;
+  private editor: any;
 
   constructor() {
     super();
@@ -58,6 +59,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   }
 
   private tinyMceSetup(editor: any) {
+    this.editor = editor;
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
       addTinyMceToolbarButtons(this, editor);
@@ -78,6 +80,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       );
     });
 
+    // called after tinymce editor is removed
     editor.on('remove', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE removed', event);
       this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
@@ -116,7 +119,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
   disconnectedCallback() {
     console.log('FieldStringWysiwyg disconnectedCallback called');
-    tinymce.remove(`.${this.containerClass}`);
+    this.editor.remove();
   }
 }
 

@@ -206,7 +206,7 @@ export class InputFieldHelper {
                 wrappers.push(
                     WrappersConstants.dropzoneWrapper,
                     WrappersConstants.eavLocalizationWrapper,
-                    WrappersConstants.expandableWrapper,
+                    WrappersConstants.expandableWrapperV2,
                     WrappersConstants.adamAttachWrapper
                 );
             } else if (inputType === InputTypesConstants.customGPS) {
