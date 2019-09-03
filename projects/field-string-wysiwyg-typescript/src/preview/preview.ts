@@ -5,7 +5,7 @@ import * as template from './preview.html';
 import * as styles from './preview.css';
 
 class FieldStringWysiwygPreview extends EavCustomInputFieldObservable<string> {
-  subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
 
   constructor() {
     super();
@@ -15,7 +15,7 @@ class FieldStringWysiwygPreview extends EavCustomInputFieldObservable<string> {
   connectedCallback() {
     console.log('FieldStringWysiwygPreview connectedCallback called');
     this.innerHTML = buildTemplate(template, styles);
-    const previewContainer = this.querySelector('.preview-container');
+    const previewContainer = this.querySelector('.wysiwyg-preview');
     this.connector.data.value$.subscribe(value => {
       previewContainer.innerHTML = !value ? '' : value
         .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') // content block

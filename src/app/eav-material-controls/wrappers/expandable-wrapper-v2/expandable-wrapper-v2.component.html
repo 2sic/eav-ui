@@ -35,7 +35,7 @@
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': disabled
     }">
-    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
     </div>
   </div>
