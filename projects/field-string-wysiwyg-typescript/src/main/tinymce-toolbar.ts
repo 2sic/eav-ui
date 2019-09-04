@@ -31,7 +31,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
           type: 'choiceitem',
           text: 'Link.DnnFile',
           tooltip: 'Link.DnnFile.Tooltip',
-          icon: 'custom-file',
+          icon: 'custom-file-dnn',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(false, true); },
         },
       ];
@@ -112,7 +112,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
           type: 'choiceitem',
           text: 'Image.DnnImage',
           tooltip: 'Image.DnnImage.Tooltip',
-          icon: 'image',
+          icon: 'custom-image-dnn',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(true, true); },
         },
         // note: all these use i18n from tinyMce standard
@@ -120,7 +120,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
           type: 'choiceitem',
           text: 'Insert\/edit image',
           tooltip: 'Insert\/edit image',
-          icon: 'image',
+          icon: 'link',
           value: (api: any) => { editor.execCommand('mceImage'); },
         },
         {
