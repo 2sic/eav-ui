@@ -1,5 +1,5 @@
 export class ElementEventListener {
-  element: HTMLElement;
+  element: HTMLElement | Document | Window;
   type: string;
   listener: EventListenerOrEventListenerObject;
 }
