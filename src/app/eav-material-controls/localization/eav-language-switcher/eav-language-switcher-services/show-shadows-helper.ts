@@ -11,9 +11,7 @@ export class ShowShadowsHelper {
     private header: HTMLElement,
     private leftShadow: HTMLElement,
     private rightShadow: HTMLElement,
-  ) { }
-
-  init() {
+  ) {
     this.ngZone.runOutsideAngular(() => {
       this.calculateShadows();
 
@@ -35,6 +33,10 @@ export class ShowShadowsHelper {
       });
       this.eventListeners = null;
     });
+    this.ngZone = null;
+    this.header = null;
+    this.leftShadow = null;
+    this.rightShadow = null;
   }
 
   private calculateShadows() {

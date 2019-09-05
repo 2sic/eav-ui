@@ -11,9 +11,7 @@ export class CenterSelectedService {
   constructor(
     private ngZone: NgZone,
     private header: HTMLElement,
-  ) { }
-
-  init() {
+  ) {
     this.ngZone.runOutsideAngular(() => {
       const checkIfMouseMoved = this.checkIfMouseMoved.bind(this);
       document.addEventListener('mouseup', checkIfMouseMoved, { passive: true });

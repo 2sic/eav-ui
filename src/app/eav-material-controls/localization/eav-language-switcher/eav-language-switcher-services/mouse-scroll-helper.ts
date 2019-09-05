@@ -11,9 +11,7 @@ export class MouseScrollHelper {
     private ngZone: NgZone,
     private header: HTMLElement,
     private areButtonsDisabled: () => boolean
-  ) { }
-
-  init() {
+  ) {
     this.ngZone.runOutsideAngular(() => {
       const registerScroll = this.registerScroll.bind(this);
       this.header.addEventListener('mousedown', registerScroll, { passive: true });
@@ -31,6 +29,9 @@ export class MouseScrollHelper {
       });
       this.eventListeners = null;
     });
+    this.ngZone = null;
+    this.header = null;
+    this.areButtonsDisabled = null;
   }
 
   private registerScroll(event: MouseEvent) {

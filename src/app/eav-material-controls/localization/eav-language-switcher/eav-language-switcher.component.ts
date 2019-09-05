@@ -48,13 +48,9 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   ngAfterViewInit() {
     this.showShadowsService = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
       this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
-    this.showShadowsService.init();
     this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
-    this.mouseScrollHelper.init();
     this.touchScrollHelper = new TouchScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
-    this.touchScrollHelper.init();
     this.centerSelectedService = new CenterSelectedService(this.ngZone, this.headerRef.nativeElement);
-    this.centerSelectedService.init();
   }
 
   areButtonsDisabled(): boolean {

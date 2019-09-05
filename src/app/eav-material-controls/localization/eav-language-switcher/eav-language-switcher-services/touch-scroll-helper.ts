@@ -10,9 +10,7 @@ export class TouchScrollHelper {
     private ngZone: NgZone,
     private header: HTMLElement,
     private areButtonsDisabled: () => boolean
-  ) { }
-
-  init() {
+  ) {
     this.ngZone.runOutsideAngular(() => {
       const setOverflowScroll = this.setOverflowScroll.bind(this);
       this.header.addEventListener('touchstart', setOverflowScroll, { passive: true });
@@ -30,6 +28,9 @@ export class TouchScrollHelper {
       });
       this.eventListeners = null;
     });
+    this.ngZone = null;
+    this.header = null;
+    this.areButtonsDisabled = null;
   }
 
   private setOverflowScroll() {
