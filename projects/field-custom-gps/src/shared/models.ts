@@ -5,9 +5,3 @@ import { ExperimentalProps } from '../../../../src/app/eav-material-controls/inp
 export class EavExperimentalInputField<T> extends EavCustomInputField<T> {
   experimental: ExperimentalProps;
 }
-
-export class ElementEventListener {
-  element: HTMLElement;
-  type: string;
-  listener: EventListenerOrEventListenerObject;
-}
