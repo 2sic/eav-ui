@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Language } from '../../../shared/models/eav';
@@ -7,7 +7,7 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
 import { TouchScrollHelper } from './eav-language-switcher-services/touch-scroll-helper';
 import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
-import { ShowShadowsService } from './eav-language-switcher-services/show-shadows-service';
+import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
 import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
 
 @Component({
@@ -28,14 +28,13 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   languageButtons: LanguageButton[] = [];
   private centerSelectedService: CenterSelectedService;
   private mouseScrollHelper: MouseScrollHelper;
-  private showShadowsService: ShowShadowsService;
+  private showShadowsService: ShowShadowsHelper;
   private touchScrollHelper: TouchScrollHelper;
 
   constructor(
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private ngZone: NgZone,
-    private renderer: Renderer2,
   ) { }
 
   ngOnInit() {
@@ -47,12 +46,15 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngAfterViewInit() {
-    this.showShadowsService = new ShowShadowsService(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
+    this.showShadowsService = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
+      this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
+    this.showShadowsService.init();
     this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
     this.mouseScrollHelper.init();
     this.touchScrollHelper = new TouchScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
     this.touchScrollHelper.init();
-    this.centerSelectedService = new CenterSelectedService(this.renderer, this.headerRef);
+    this.centerSelectedService = new CenterSelectedService(this.ngZone, this.headerRef.nativeElement);
+    this.centerSelectedService.init();
   }
 
   areButtonsDisabled(): boolean {
@@ -77,9 +79,5 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     if (!this.centerSelectedService.stopClickIfMouseMoved()) {
       this.languageInstanceService.updateCurrentLanguage(this.formId, language.key);
     }
-  }
-
-  headerScroll(event: MouseEvent) {
-    this.showShadowsService.headerScroll(event);
   }
 }

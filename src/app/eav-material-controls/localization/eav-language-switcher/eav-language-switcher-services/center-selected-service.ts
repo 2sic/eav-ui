@@ -1,27 +1,36 @@
-import { Renderer2, ElementRef } from '@angular/core';
+import { NgZone } from '@angular/core';
+import { ElementEventListener } from '../../../../../../projects/shared/element-event-listener-model';
 
 export class CenterSelectedService {
-  private header: HTMLElement;
-  private renderer: Renderer2;
   private positionX: number;
   private positionY: number;
   private moveThreshold = 2; // Pixels for which header can be scrolled while clicking to still register as click
   private stopClick = false;
-  private listeners: (() => void)[] = [];
+  private eventListeners: ElementEventListener[] = [];
 
-  constructor(renderer: Renderer2, headerRef: ElementRef) {
-    this.renderer = renderer;
-    this.header = headerRef.nativeElement;
+  constructor(
+    private ngZone: NgZone,
+    private header: HTMLElement,
+  ) { }
 
-    this.listeners.push(this.renderer.listen('document', 'mouseup', this.checkIfMouseMoved.bind(this)));
+  init() {
+    this.ngZone.runOutsideAngular(() => {
+      const checkIfMouseMoved = this.checkIfMouseMoved.bind(this);
+      document.addEventListener('mouseup', checkIfMouseMoved, { passive: true });
+      this.eventListeners.push({ element: document, type: 'mouseup', listener: checkIfMouseMoved });
+    });
   }
 
   lngButtonDown(event: MouseEvent) {
-    this.saveInitialPosition(event);
+    this.ngZone.runOutsideAngular(() => {
+      this.saveInitialPosition(event);
+    });
   }
 
   lngButtonClick(event: MouseEvent) {
-    this.doMove(event);
+    this.ngZone.runOutsideAngular(() => {
+      this.doMove(event);
+    });
   }
 
   stopClickIfMouseMoved() {
@@ -29,7 +38,13 @@ export class CenterSelectedService {
   }
 
   destroy() {
-    this.listeners.forEach(listener => listener());
+    this.ngZone.runOutsideAngular(() => {
+      this.eventListeners.forEach(evList => {
+        evList.element.removeEventListener(evList.type, evList.listener);
+        evList = null;
+      });
+      this.eventListeners = null;
+    });
   }
 
   private saveInitialPosition(event: MouseEvent) {
