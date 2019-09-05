@@ -1,7 +1,7 @@
 import { NgZone } from '@angular/core';
 import { ElementEventListener } from '../../../../../../projects/shared/element-event-listener-model';
 
-export class CenterSelectedService {
+export class CenterSelectedHelper {
   private positionX: number;
   private positionY: number;
   private moveThreshold = 2; // Pixels for which header can be scrolled while clicking to still register as click

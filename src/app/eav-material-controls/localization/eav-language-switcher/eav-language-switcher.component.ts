@@ -6,7 +6,7 @@ import { LanguageService } from '../../../shared/store/ngrx-data/language.servic
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
 import { TouchScrollHelper } from './eav-language-switcher-services/touch-scroll-helper';
-import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
+import { CenterSelectedHelper } from './eav-language-switcher-services/center-selected-helper';
 import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
 import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
 
@@ -26,7 +26,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   languages: Language[];
   currentLanguage: string;
   languageButtons: LanguageButton[] = [];
-  private centerSelectedService: CenterSelectedService;
+  private centerSelectedService: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsService: ShowShadowsHelper;
   private touchScrollHelper: TouchScrollHelper;
@@ -50,7 +50,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
       this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
     this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
     this.touchScrollHelper = new TouchScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
-    this.centerSelectedService = new CenterSelectedService(this.ngZone, this.headerRef.nativeElement);
+    this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
   areButtonsDisabled(): boolean {
