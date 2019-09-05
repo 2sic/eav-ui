@@ -1,13 +1,13 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, Renderer2, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { MouseScrollService } from './eav-language-switcher-services/mouse-scroll-service';
-import { TouchScrollService } from './eav-language-switcher-services/touch-scroll-service';
-import { CenterSelectedService } from './eav-language-switcher-services/center-selected-service';
-import { ShowShadowsService } from './eav-language-switcher-services/show-shadows-service';
+import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
+import { TouchScrollHelper } from './eav-language-switcher-services/touch-scroll-helper';
+import { CenterSelectedHelper } from './eav-language-switcher-services/center-selected-helper';
+import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
 import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
 
 @Component({
@@ -26,15 +26,15 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   languages: Language[];
   currentLanguage: string;
   languageButtons: LanguageButton[] = [];
-  private centerSelectedService: CenterSelectedService;
-  private mouseScrollService: MouseScrollService;
-  private showShadowsService: ShowShadowsService;
-  private touchScrollService: TouchScrollService;
+  private centerSelectedService: CenterSelectedHelper;
+  private mouseScrollHelper: MouseScrollHelper;
+  private showShadowsService: ShowShadowsHelper;
+  private touchScrollHelper: TouchScrollHelper;
 
   constructor(
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
-    private renderer: Renderer2,
+    private ngZone: NgZone,
   ) { }
 
   ngOnInit() {
@@ -46,10 +46,11 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngAfterViewInit() {
-    this.showShadowsService = new ShowShadowsService(this.renderer, this.headerRef, this.leftShadowRef, this.rightShadowRef);
-    this.mouseScrollService = new MouseScrollService(this.renderer, this.headerRef, this.areButtonsDisabled.bind(this));
-    this.touchScrollService = new TouchScrollService(this.renderer, this.headerRef);
-    this.centerSelectedService = new CenterSelectedService(this.renderer, this.headerRef);
+    this.showShadowsService = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
+      this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
+    this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
+    this.touchScrollHelper = new TouchScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
+    this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
   areButtonsDisabled(): boolean {
@@ -58,8 +59,8 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
 
   ngOnDestroy() {
     this.centerSelectedService.destroy();
-    this.touchScrollService.destroy();
-    this.mouseScrollService.destroy();
+    this.touchScrollHelper.destroy();
+    this.mouseScrollHelper.destroy();
     this.showShadowsService.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
@@ -74,17 +75,5 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     if (!this.centerSelectedService.stopClickIfMouseMoved()) {
       this.languageInstanceService.updateCurrentLanguage(this.formId, language.key);
     }
-  }
-
-  headerMouseDown(event: MouseEvent) {
-    this.mouseScrollService.headerMouseDown(event);
-  }
-
-  headerScroll(event: MouseEvent) {
-    this.showShadowsService.headerScroll(event);
-  }
-
-  headerTouchStart(event: MouseEvent) {
-    this.touchScrollService.headerTouchStart(event);
   }
 }

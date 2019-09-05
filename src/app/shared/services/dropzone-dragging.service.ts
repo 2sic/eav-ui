@@ -1,5 +1,5 @@
 import { Injectable, NgZone, ElementRef } from '@angular/core';
-import { ElementEventListener } from '../../../../projects/field-custom-gps/src/shared/models';
+import { ElementEventListener } from '../../../../projects/shared/element-event-listener-model';
 declare const draggingClass: any;
 declare const windowBodyTimeouts: any;
 
