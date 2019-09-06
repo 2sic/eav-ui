@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, AfterViewInit, ElementRef, NgZone } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
-import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -28,6 +28,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private eavConfig: EavConfiguration;
   private subscriptions: Subscription[] = [];
   private oldValue: any;
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   dialogIsOpen = false;
   control: AbstractControl;
@@ -42,7 +43,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
-    private dropzoneDraggingService: DropzoneDraggingService,
+    private zone: NgZone,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -57,8 +58,9 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   ngAfterViewInit() {
-    this.dropzoneDraggingService.attach(this.backdropRef);
-    this.dropzoneDraggingService.attach(this.dialogRef);
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   setValue(event) {
@@ -73,7 +75,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
-    this.dropzoneDraggingService.detach();
+    this.dropzoneDraggingHelper.detach();
   }
 
   expandDialog() {

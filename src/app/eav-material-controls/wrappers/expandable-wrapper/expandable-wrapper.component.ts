@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, ElementRef, AfterViewInit, NgZone } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { EavService } from '../../../shared/services/eav.service';
-import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -26,11 +26,12 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   cleanedValue: string;
   dialogIsOpen = false;
   subscriptions: Subscription[] = [];
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
-    private dropzoneDraggingService: DropzoneDraggingService,
+    private zone: NgZone,
   ) { }
 
   ngOnInit() {
@@ -53,8 +54,9 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   }
 
   ngAfterViewInit() {
-    this.dropzoneDraggingService.attach(this.backdropRef);
-    this.dropzoneDraggingService.attach(this.dialogRef);
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   private cleanValue(value: string) {
@@ -78,6 +80,6 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    this.dropzoneDraggingService.detach();
+    this.dropzoneDraggingHelper.detach();
   }
 }

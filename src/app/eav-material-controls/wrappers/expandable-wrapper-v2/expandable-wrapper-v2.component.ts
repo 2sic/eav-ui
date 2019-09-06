@@ -13,7 +13,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
-import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-expandable-wrapper-v2',
@@ -31,6 +31,7 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
   previewElConnector: ConnectorService;
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   get value() {
     return this.group.controls[this.config.field.name].value
@@ -50,7 +51,7 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
     private contentTypeService: ContentTypeService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
-    private dropzoneDraggingService: DropzoneDraggingService,
+    private zone: NgZone,
   ) { }
 
   ngOnInit() {
@@ -67,8 +68,9 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
   }
 
   ngAfterViewInit() {
-    this.dropzoneDraggingService.attach(this.backdropRef);
-    this.dropzoneDraggingService.attach(this.dialogRef);
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   setTouched() {
@@ -88,6 +90,6 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
     console.log('ExpandableWrapperV2 destroyed');
     this.previewElConnector.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.dropzoneDraggingService.detach();
+    this.dropzoneDraggingHelper.detach();
   }
 }

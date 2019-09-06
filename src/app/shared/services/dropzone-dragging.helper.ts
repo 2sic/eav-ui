@@ -1,28 +1,22 @@
-import { Injectable, NgZone, ElementRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { ElementEventListener } from '../../../../projects/shared/element-event-listener-model';
 declare const draggingClass: any;
 declare const windowBodyTimeouts: any;
 
-@Injectable({
-  providedIn: 'root'
-})
-export class DropzoneDraggingService {
+export class DropzoneDraggingHelper {
   private eventListeners: ElementEventListener[] = [];
 
   constructor(private zone: NgZone) { }
 
-  /**
-   * starts listening for dragover and drop events on a given element
-   */
-  attach(elementRef: ElementRef) {
-    const nativeElement = elementRef.nativeElement as HTMLElement;
+  /** Starts listening for dragover and drop events on a given element */
+  attach(htmlEl: HTMLElement) {
     this.zone.runOutsideAngular(() => {
-      nativeElement.addEventListener('dragover', dragoverListener);
-      nativeElement.addEventListener('drop', dropListener);
+      htmlEl.addEventListener('dragover', dragoverListener);
+      htmlEl.addEventListener('drop', dropListener);
 
       this.eventListeners.push(
-        { element: nativeElement, type: 'dragover', listener: dragoverListener },
-        { element: nativeElement, type: 'drop', listener: dropListener },
+        { element: htmlEl, type: 'dragover', listener: dragoverListener },
+        { element: htmlEl, type: 'drop', listener: dropListener },
       );
 
       function dragoverListener() {
@@ -41,15 +35,15 @@ export class DropzoneDraggingService {
     });
   }
 
-  /**
-   * removes event listeners from registered elements
-   */
+  /** Removes event listeners from registered elements */
   detach() {
-    this.eventListeners.forEach(eventListener => {
-      const element = eventListener.element;
-      const type = eventListener.type;
-      const listener = eventListener.listener;
-      element.removeEventListener(type, listener);
+    this.zone.runOutsideAngular(() => {
+      this.eventListeners.forEach(eventListener => {
+        const element = eventListener.element;
+        const type = eventListener.type;
+        const listener = eventListener.listener;
+        element.removeEventListener(type, listener);
+      });
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
-import { DropzoneDraggingService } from '../../../shared/services/dropzone-dragging.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
@@ -26,6 +26,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   get value() { return this.group.controls[this.config.field.name].value; }
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
@@ -34,7 +35,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   constructor(
     private fileTypeService: FileTypeService,
-    private dropzoneDraggingService: DropzoneDraggingService,
+    private zone: NgZone,
   ) { }
 
   ngOnInit() {
@@ -44,8 +45,9 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   }
 
   ngAfterViewInit() {
-    this.dropzoneDraggingService.attach(this.backdropRef);
-    this.dropzoneDraggingService.attach(this.dialogRef);
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   isKnownType(item: AdamItem) {
@@ -67,6 +69,6 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.dropzoneDraggingService.detach();
+    this.dropzoneDraggingHelper.detach();
   }
 }
