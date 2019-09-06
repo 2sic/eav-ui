@@ -1,6 +1,6 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const setExternalSourceMaps = require('../../build-helpers/external-source-maps');
+const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
 
 const configuration = {
   mode: 'development',
@@ -55,7 +55,6 @@ const configuration = {
 };
 
 /* change source map generation based on production mode */
-const setFilename = true;
-setExternalSourceMaps(configuration, 'elements/field-string-wysiwyg/', setFilename);
+setExternalSourceMaps(configuration, 'elements/field-string-wysiwyg/');
 
 module.exports = configuration;

@@ -12,7 +12,7 @@
     "dev-main": "ng build",
     "dev-main-watch": "ng build --watch",
     "// MAIN PROD": "Main system: production builds",
-    "prod-main": "ng build --extraWebpackConfig ./webpack.extra.js --prod",
+    "prod-main": "ng build --extraWebpackConfig ./webpack.extra.js --plugin ~./build-helpers/external-source-maps-main.js --prod",
     "prod-main-watch": "ng build --extraWebpackConfig ./webpack.extra.js --prod --watch",
     "// WYSIWYG-Angular": "WYSIWYG Angular builds, dev and prod",
     "dev-wysiwyg-angular": "ng build field-string-wysiwyg --extraWebpackConfig ./webpack.extra.js",
@@ -87,7 +87,7 @@
     "zone.js": "^0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.800.6",
+    "@angular-devkit/build-angular": "^0.803.3",
     "@angular/cli": "^8.3.2",
     "@angular/compiler-cli": "^8.2.4",
     "@angular/language-service": "^8.2.4",
