@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { skip, first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { skip, take } from 'rxjs/operators';
 
 import { TinymceWysiwygConfig } from '../services/tinymce-wysiwyg-config';
 import { TinyMceDnnBridgeService } from '../services/tinymce-dnnbridge-service';
@@ -11,6 +11,7 @@ import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
 import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
 import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
+import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import * as contentStyle from './tinymce-content.css';
 
 @Component({
@@ -44,6 +45,10 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   adamSetValue: any;
   adamAfterUpload: any;
   processResultOfDnnBridge: any;
+  toolbarContainerClass: string;
+  pasteFormattedTextFeatureEnabled: boolean;
+  pasteImageFromClipboardFeatureEnabled: boolean;
+  disabled: boolean;
   private dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
 
@@ -56,14 +61,17 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.calculateInitialValues();
     this.subscribeToFormChanges();
+    this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
 
     const settings = {
       enableContentBlocks: false,
+      toolbarContainerClass: this.toolbarContainerClass,
     };
 
     const selectorOptions = {
       // selector: 'editor#' + this.id,
-      body_class: 'field-string-wysiwyg-mce-box', // when inline=false
+      toolbar_drawer: 'floating',
+      body_class: 'field-string-wysiwyg-mce-box',
       content_style: contentStyle,
       height: '100%',
       branding: false,
@@ -71,7 +79,23 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
     };
 
     this.enableContentBlocksIfPossible(settings);
-    const tempOptions = Object.assign(selectorOptions, this.tinymceWysiwygConfig.getDefaultOptions(settings));
+    let tempOptions = Object.assign(selectorOptions, this.tinymceWysiwygConfig.getDefaultOptions(settings));
+
+    // add paste wysiwyg ability feature if enabled
+    this.pasteFormattedTextFeatureEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
+    if (this.pasteFormattedTextFeatureEnabled) {
+      tempOptions = Object.assign(tempOptions, this.tinymceWysiwygConfig.getPasteWysiwygAbilityOptions());
+    }
+
+    // add paste image from clipboard if feature is enabled
+    this.pasteImageFromClipboardFeatureEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    if (this.pasteImageFromClipboardFeatureEnabled) {
+      const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+      tempOptions = Object.assign(
+        tempOptions,
+        this.tinymceWysiwygConfig.getPasteImageOptions(dzConfig.url as string, dzConfig.headers),
+      );
+    }
 
     const currentLang = this.translateService.currentLang;
     this.options = this.tinymceWysiwygConfig.setLanguageOptions(currentLang, tempOptions);
@@ -163,13 +187,36 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
 
     const imgSizes = this.tinymceWysiwygConfig.svc().imgSizes;
     TinyMceToolbarButtons.addTinyMceToolbarButtons(this, editor, imgSizes);
-    editor.on('init', e => {
-      // editor.selection.select(editor.getBody(), true);
-      // editor.selection.collapse(false);
+    editor.on('init', (e: any) => {
       console.log('wysiwyg order: editor.on init => this.host.setInitValues();', editor.getContent());
+      if (!this.dialogIsOpen) { return; }
+      try {
+        editor.focus();
+      } catch (error) {
+        // console.error('error when focusing editor', error);
+      }
     });
 
-    editor.on('change', e => {
+    editor.on('focus', (e: any) => {
+      if (!this.pasteImageFromClipboardFeatureEnabled) { return; }
+      const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+      // tslint:disable-next-line:max-line-length
+      dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+      this.experimental.dropzoneConfig$.next(dzConfig);
+    });
+
+    editor.on('blur', (e: any) => {
+      if (!this.pasteImageFromClipboardFeatureEnabled) { return; }
+      const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+      delete dzConfig.acceptedFiles;
+      this.experimental.dropzoneConfig$.next(dzConfig);
+    });
+
+    editor.on('focus', (e: any) => {
+      this.disabled = this.experimental.formGroup.controls[this.connector.field.name].disabled;
+    });
+
+    editor.on('change', (e: any) => {
       this.changeCheck(e, editor.getContent());
       console.log('wysiwyg order: editor.on change => this.changeCheck(e, editor.getContent()); => this.host.update(value);',
         editor.getContent());
@@ -177,8 +224,11 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   }
 
   private calculateInitialValues(): void {
-    this.id = `string-wysiwyg-tinymce-${Math.random() * Math.pow(10, 17)}-${this.connector.field.name}`;
-    this.connector.data.value$.pipe(first()).subscribe((firstValue: any) => {
+    this.id = `string-wysiwyg-tinymce-${Math.random() * Math.pow(10, 17)}-${this.connector.field.name}`
+      .replace(/\s|\.|\,/gi, '')
+      .toLocaleLowerCase();
+    this.toolbarContainerClass = `${this.id}-toolbar`;
+    this.connector.data.value$.pipe(take(1)).subscribe((firstValue: any) => {
       this.initialValue = firstValue;
     });
   }
@@ -186,18 +236,20 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
   private subscribeToFormChanges(): void {
     this.subscriptions.push(
       this.connector.data.value$.pipe(skip(1)).subscribe((newValue: any) => {
-        // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
         if (this.dialogIsOpen) { return; }
         this.setValue(newValue);
       }),
+      // spm field type is FieldConfigAngular, but that pulls too many dependencies from the main project and fails to build
       (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
         this.dialogIsOpen = expanded;
         if (expanded && this.editor) {
           const editor = this.editor;
-          console.log('set focus on tinymce');
-          document.getElementById('dummyfocus').focus();
           setTimeout(() => {
-            editor.focus();
+            try {
+              editor.focus();
+            } catch (error) {
+              // console.error('error when focusing editor', error);
+            }
           }, 100);
         }
       }),
@@ -206,9 +258,8 @@ export class TinymceWysiwygComponent implements OnInit, OnDestroy {
 
   private enableContentBlocksIfPossible(settings) {
     // quit if there are no following fields
-    if (this.experimental.allInputTypeNames.length === this.connector.field.index + 1) {
-      return;
-    }
+    if (this.experimental.allInputTypeNames.length === this.connector.field.index + 1) { return; }
+
     const nextField: InputTypeName = this.experimental.allInputTypeNames[this.connector.field.index + 1];
     if (nextField.inputType === 'entity-content-blocks') {
       settings.enableContentBlocks = true;

@@ -24,7 +24,6 @@ export class InputTypesConstants {
     // hyperlink library
     public static readonly hyperlinkLibrary: string = 'hyperlink-library';
     // custom/files
-    public static readonly external: string = 'external';
     public static readonly externalWebComponent: string = 'external-webcomponent';
     public static readonly customGPS: string = 'custom-gps';
     public static readonly customDefault: string = 'custom-default';

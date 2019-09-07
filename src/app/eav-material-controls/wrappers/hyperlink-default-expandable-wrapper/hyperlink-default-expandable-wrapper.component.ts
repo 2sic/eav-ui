@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, AfterViewInit, ElementRef, NgZone } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -17,15 +18,17 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
+  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
+  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   private eavConfig: EavConfiguration;
   private subscriptions: Subscription[] = [];
   private oldValue: any;
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   dialogIsOpen = false;
   control: AbstractControl;
@@ -40,6 +43,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
+    private zone: NgZone,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -51,6 +55,12 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.subscriptions.push(
       this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
+  }
+
+  ngAfterViewInit() {
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   setValue(event) {
@@ -65,6 +75,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.dropzoneDraggingHelper.detach();
   }
 
   expandDialog() {
@@ -91,13 +102,13 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     if (!urlFromId$) {
       this.link = value;
       this.setValues();
+    } else {
+      urlFromId$.pipe(take(1)).subscribe(data => {
+        if (!data) { return; }
+        this.link = data;
+        this.setValues();
+      });
     }
-
-    urlFromId$.pipe(take(1)).subscribe(data => {
-      if (!data) { return; }
-      this.link = data;
-      this.setValues();
-    });
   }
 
   private setValues() {
@@ -112,8 +123,8 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   private suscribeValueChanges() {
     this.oldValue = this.control.value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      // check if update is for current entity
-      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+      // check if update is for current form
+      if (formSet.formId !== this.config.form.formId) { return; }
 
       // check if update is for this field
       if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -29,6 +29,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   showPreview = true;
   toggleAdamValue = false;
   link = '';
+  control: AbstractControl;
 
   private oldValue: any;
 
@@ -74,6 +75,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.control = this.group.controls[this.config.field.name];
     this.attachAdam();
     this.setLink(this.value);
     this.suscribeValueChanges();
@@ -152,8 +154,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private suscribeValueChanges() {
     this.oldValue = this.group.controls[this.config.field.name].value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      // check if update is for current entity
-      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+      // check if update is for current form
+      if (formSet.formId !== this.config.form.formId) { return; }
 
       // check if update is for this field
       if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }

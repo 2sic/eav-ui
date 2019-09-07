@@ -1,6 +1,7 @@
-import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { ConnectorObservable } from '../../../../../../projects/shared/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
@@ -10,7 +11,7 @@ export class ExternalWebComponentProperties<T> {
     connector: ConnectorObservable<T>;
     experimental: ExperimentalProps;
     host: any;
-    translateService: TranslateService;
+    translateService: TranslateService; // for Angular WYSIWYG. Should remove sometime in the future
 
     adamSetValueCallback: any;
     adamAfterUploadCallback: any;
@@ -29,6 +30,9 @@ export class ExperimentalProps {
     updateField: (name: string, value: any) => void;
     formGroup: FormGroup;
     formSetValueChange$: Observable<FormSet>;
+    isFeatureEnabled: (guid: string) => boolean;
+    dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
+    translateService: TranslateService; // for Typescript WYSIWYG
 }
 
 export class FieldState {

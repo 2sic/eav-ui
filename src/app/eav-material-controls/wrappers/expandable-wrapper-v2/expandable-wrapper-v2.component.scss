@@ -24,9 +24,6 @@
         max-height: 116px;
         cursor: pointer;
         font-size: 14px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
 
         @extend %field-border;
         &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
@@ -54,13 +51,14 @@
 
         &-container {
             overflow: hidden;
-            height: 100%;
-            -webkit-align-content: center;
-            align-content: center;
-            
-            &--empty {
-                padding: 6px 0 0 0;
-            }
+            min-height: inherit;
+            max-height: inherit;
+        }
+
+        &-content {
+            overflow: hidden;
+            min-height: inherit;
+            max-height: inherit;
         }
 
         &--invalid {
@@ -126,5 +124,3 @@
         }
     }
 }
-
-

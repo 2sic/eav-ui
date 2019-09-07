@@ -2,9 +2,9 @@ import { NgZone, ElementRef } from '@angular/core';
 import { NgElement, WithProperties } from '@angular/elements';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 // tslint:disable-next-line:max-line-length
@@ -15,10 +15,10 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { ConnectorInstance } from '../external-webcomponent/connector';
 import { InputTypeName } from '../../../../shared/models/input-field-models';
-import { ContentType } from '../../../../shared/models/eav';
 import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
-import { ContentTypeService } from '../../../../shared/services/content-type.service';
-
+import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
+import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -38,6 +38,8 @@ export class ConnectorService {
     private customElContainer: ElementRef,
     private config: FieldConfigSet,
     private group: FormGroup,
+    private featureService: FeatureService,
+    private inputTypeService: InputTypeService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
   }
@@ -47,7 +49,7 @@ export class ConnectorService {
    */
   // spm 2019.04.08. move to experimentalProps
   private externalInputTypeHost = {
-    attachAdam: () => this.attachAdam(),
+    attachAdam: (adamSetValue, adamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
@@ -87,14 +89,12 @@ export class ConnectorService {
     }
   }
 
-  private attachAdam() {
-    // TODO:
-    // If adam registered then attach Adam
-    if (this.config.adam) {
-      // console.log('adam is registered - adam attached updateCallback', this.externalFactory);
-      // set update callback = external method setAdamValue
+  private attachAdam(adamSetValue, adamAfterUpload) {
+    // spm check if adam is enabled
+    if (!this.config.adam) { return; }
 
-      // callbacks - functions called from adam
+    if (!adamSetValue || !adamAfterUpload) {
+      // callbacks - functions called from adam, old wysiwyg
       this.config.adam.updateCallback = (value) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
@@ -104,24 +104,27 @@ export class ConnectorService {
         this.customEl.adamAfterUploadCallback
           ? this.customEl.adamAfterUploadCallback = value
           : alert('adam attached but adamAfterUpload method not exist');
-
-      // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
-
-      return {
-        toggleAdam: (value1: any, value2: any) => {
-          this._ngZone.run(() => this.config.adam.toggle(value1));
-        },
-        setAdamConfig: (adamConfig: AdamConfig) => {
-          this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
-        },
-        adamModeImage: () => {
-          this._ngZone.run(() => (this.config && this.config.adam)
-            ? this.config.adam.showImagesOnly
-            : null);
-        },
-      };
+    } else {
+      // new wysiwyg
+      this.config.adam.updateCallback = (value) => { adamSetValue(value); };
+      this.config.adam.afterUploadCallback = (value) => { adamAfterUpload(value); };
     }
+    // return value from form
+    this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
+
+    return {
+      toggleAdam: (value1: any, value2: any) => {
+        this._ngZone.run(() => this.config.adam.toggle(value1));
+      },
+      setAdamConfig: (adamConfig: AdamConfig) => {
+        this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
+      },
+      adamModeImage: () => {
+        this._ngZone.run(() => (this.config && this.config.adam)
+          ? this.config.adam.showImagesOnly
+          : null);
+      },
+    };
   }
 
   public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {
@@ -158,9 +161,9 @@ export class ConnectorService {
 
   private calculateExperimentalProps(): ExperimentalProps {
     let allInputTypeNames: InputTypeName[];
-    const contentType$: Observable<ContentType> = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
-    contentType$.pipe(first()).subscribe(data => {
-      allInputTypeNames = InputFieldHelper.getInputTypeNamesFromAttributes(data.contentType.attributes);
+    const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
+    contentType$.pipe(take(1)).subscribe(data => {
+      allInputTypeNames = InputFieldHelper.calculateInputTypes(data.contentType.attributes, this.inputTypeService);
     });
 
     const experimentalProps: ExperimentalProps = {
@@ -171,7 +174,13 @@ export class ConnectorService {
       },
       formGroup: this.group,
       formSetValueChange$: this.eavService.formSetValueChange$,
+      isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
+      translateService: this.translateService,
     };
+    // optional props
+    if (this.config.dropzoneConfig$) {
+      experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
+    }
 
     return experimentalProps;
   }
@@ -182,8 +191,8 @@ export class ConnectorService {
   private subscribeFormChange() {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe(formSet => {
-        // check if update is for current entity
-        if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
+        // check if update is for current form
+        if (formSet.formId !== this.config.form.formId) { return; }
 
         // check if update is for this field
         const newValue = formSet.formValues[this.config.field.name];

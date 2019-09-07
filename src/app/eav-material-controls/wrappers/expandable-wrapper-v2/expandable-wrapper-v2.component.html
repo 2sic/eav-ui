@@ -1,6 +1,6 @@
 <div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
-  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
-  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+  <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
       <mat-card class="mat-elevation-z0" fxLayout="row">
         <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()">
@@ -35,7 +35,7 @@
       'c-ew__preview--invalid' : inputInvalid && touched,
       'c-ew__preview--disabled': disabled
     }">
-    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
     </div>
   </div>

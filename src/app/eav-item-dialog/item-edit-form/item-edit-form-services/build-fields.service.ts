@@ -13,17 +13,14 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
 import { ItemService } from '../../../shared/services/item.service';
-import { Feature } from '../../../shared/models/feature/feature';
 import { CalculatedInputType } from '../../../shared/models/input-field-models';
-import { InputTypeService } from '../../../shared/services/input-type.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class BuildFieldsService {
   private contentType$: Observable<ContentType>;
   private item: Item;
-  private features: Feature[];
+  private formId: number;
   private currentLanguage: string;
   private defaultLanguage: string;
 
@@ -35,13 +32,13 @@ export class BuildFieldsService {
   public buildFields(
     contentType$: Observable<ContentType>,
     item: Item,
-    features: Feature[],
+    formId: number,
     currentLanguage: string,
     defaultLanguage: string,
   ): Observable<FieldConfigSet[]> {
     this.contentType$ = contentType$;
     this.item = item;
-    this.features = features;
+    this.formId = formId;
     this.currentLanguage = currentLanguage;
     this.defaultLanguage = defaultLanguage;
 
@@ -58,7 +55,7 @@ export class BuildFieldsService {
           data.contentType.attributes.forEach((attribute, index) => {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
-              const calculatedInputType: CalculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attribute);
+              const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
               const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
               if (isEmptyInputType) {
                 // group-fields (empty)
@@ -113,7 +110,7 @@ export class BuildFieldsService {
       header: this.item.header,
     };
     const form: FormConfig = {
-      features: this.features,
+      formId: this.formId,
     };
     const field = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, isParentGroup);
 
@@ -141,10 +138,8 @@ export class BuildFieldsService {
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
     let disableI18n = false;
-    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      if (type) {
-        disableI18n = type.DisableI18n;
-      }
+    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
+      if (type) { disableI18n = type.DisableI18n; }
     });
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,7 +10,10 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { ConnectorService } from '../../input-types/custom/connector-service/connector.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { ContentTypeService } from '../../../shared/services/content-type.service';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
   selector: 'app-expandable-wrapper-v2',
@@ -18,14 +21,17 @@ import { ContentTypeService } from '../../../shared/services/content-type.servic
   styleUrls: ['./expandable-wrapper-v2.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDestroy {
+export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
+  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
+  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
   previewElConnector: ConnectorService;
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   get value() {
     return this.group.controls[this.config.field.name].value
@@ -43,18 +49,28 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     private dialog: MatDialog,
     private _ngZone: NgZone,
     private contentTypeService: ContentTypeService,
+    private featureService: FeatureService,
+    private inputTypeService: InputTypeService,
+    private zone: NgZone,
   ) { }
 
   ngOnInit() {
     console.log('ExpandableWrapperV2 created');
     const previewElName = `field-${this.config.field.inputType}-preview`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
-      this.eavService, this.translateService, this.previewContainer, this.config, this.group);
+      this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
+      this.inputTypeService);
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);
 
     this.subscriptions.push(
       this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
     );
+  }
+
+  ngAfterViewInit() {
+    this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
+    this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
+    this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
   setTouched() {
@@ -74,5 +90,6 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, OnDes
     console.log('ExpandableWrapperV2 destroyed');
     this.previewElConnector.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.dropzoneDraggingHelper.detach();
   }
 }

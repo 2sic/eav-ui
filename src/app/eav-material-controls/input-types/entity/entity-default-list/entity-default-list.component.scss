@@ -63,7 +63,8 @@
 }
 
 .dnd-element-content {
-    width: 100%
+    width: 100%;
+    overflow: hidden;
 }
 
 .dnd-element-content mat-label {
@@ -74,12 +75,7 @@
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: calc(100% - 170px);
     font-size: 14px;
-
-    // &--disabled {
-    //     color: $editUI-label-disabled-color;
-    // }
 }
 
 .dnd-buttons {

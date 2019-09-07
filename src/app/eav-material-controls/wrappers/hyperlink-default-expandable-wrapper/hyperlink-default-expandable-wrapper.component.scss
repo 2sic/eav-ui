@@ -56,8 +56,10 @@ $hyperlink-default-height: 78px;
 
     &-suffix-text {
         font-size: 12px;
+        line-height: 14px;
         color: map_get($mat-eav-item-dialog-secondary, 300);
         user-select: none;
+        cursor: text;
 
         &--disabled {
             color: $editUI-label-disabled-color;
@@ -77,6 +79,7 @@ $hyperlink-default-height: 78px;
     &--right {
         flex: 0 0 auto;
         padding-left: 12px;
+        padding-top: 3px;
         line-height: 16px;
     }
 }

@@ -1,5 +1,3 @@
-const setExternalSourceMaps = require('./build-helpers/external-source-maps');
-
 var configuration = {
   // This ensures that much of the code is externalized into a separate package
   "externals": {
@@ -29,10 +27,5 @@ if (isWysiwyg) {
     },
   }
 }
-
-/* change source map generation based on production mode */
-const sourceMapsPath = isWysiwyg ? 'elements/field-string-wysiwyg/' : '';
-const setFilename = false;
-setExternalSourceMaps(configuration, sourceMapsPath, setFilename);
 
 module.exports = configuration;

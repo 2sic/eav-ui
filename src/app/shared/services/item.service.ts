@@ -7,15 +7,14 @@ import { map, catchError, delay, take } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { JsonItem1 } from '../models/json-format-v1/json-item1';
-import { EavAttributes, EavValue, EavHeader, FieldSettings, AdminDialogPersistedData, EavFor } from '../models/eav';
-
+import { EavAttributes, EavValue, EavHeader, FieldSettings } from '../models/eav';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavValues } from '../models/eav/eav-values';
 import { EavDimensions } from '../models/eav/eav-dimensions';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { InputFieldHelper } from '../helpers/input-field-helper';
-import { LanguageService } from './language.service';
+import { LanguageService } from '../store/ngrx-data/language.service';
 
 @Injectable()
 export class ItemService {
@@ -170,7 +169,7 @@ export class ItemService {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
 
     let langs = [];
-    const languages$ = this.languageService.selectAllLanguages();
+    const languages$ = this.languageService.entities$;
     languages$.pipe(take(1)).subscribe(languages => {
       langs = languages;
     });
@@ -227,22 +226,6 @@ export class ItemService {
         // tap(data => console.log('getItemFromJsonItem1: ', data)),
         catchError(error => this.handleError(error))
       );
-  }
-
-  public loadPersistedData(persistedData: AdminDialogPersistedData): void {
-    if (!persistedData) {
-      return;
-    }
-    const metadataFor: EavFor = persistedData.metadataFor;
-    if (metadataFor) {
-      this.addMetadataFor(metadataFor);
-    }
-  }
-
-  private addMetadataFor(metadataFor: EavFor): void {
-    const entityId = 0; // We are adding metadata For to a new entity
-    const propertyKey = 'For';
-    this.store.dispatch(new itemActions.AddItemEntityProperty(entityId, propertyKey, metadataFor));
   }
 
   private handleError(error: any) {

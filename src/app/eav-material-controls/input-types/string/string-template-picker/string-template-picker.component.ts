@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -78,7 +78,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
       ? this.svcGlobal
       : this.svcApp;
 
-    this.svcCurrent.getAll().pipe(first()).subscribe(
+    this.svcCurrent.getAll().pipe(take(1)).subscribe(
       (templates: any) => {
         this.templates = templates;
       }
@@ -126,7 +126,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
     console.log(fullPath);
 
     // 4. tell service to create it
-    this.svcCurrent.create(fullPath, this.file.body).pipe(first()).subscribe(
+    this.svcCurrent.create(fullPath, this.file.body).pipe(take(1)).subscribe(
       (res: boolean) => {
         if (res === false) {
           alert('server reported that create failed - the file probably already exists'); // todo: i18n

@@ -8,6 +8,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { UrlConstants } from '../../../shared/constants/url-constants';
+import { InputTypesConstants } from '../../../shared/constants';
 
 @Component({
   selector: 'app-adam-attach-wrapper',
@@ -21,7 +22,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
 
   @Input() config: FieldConfigSet;
   group: FormGroup;
-
+  fullScreenAdamBrowser = false;
   url: string;
 
   private eavConfig: EavConfiguration;
@@ -35,6 +36,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   }
 
   ngOnInit() {
+    this.fullScreenAdamBrowser = this.config.field.inputType === InputTypesConstants.hyperlinkLibrary;
     this.config.adam = this.adamRef;
     // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     const serviceRoot = this.eavConfig.portalroot + UrlConstants.apiRoot;

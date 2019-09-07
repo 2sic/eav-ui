@@ -1,14 +1,13 @@
-import { EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
+import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { filter, take, skip } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 
 import { ContentType, Item } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/services/content-type.service';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
-import { Feature } from '../../shared/models/feature/feature';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ItemService } from '../../shared/services/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -17,30 +16,16 @@ import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { FormSet } from '../../shared/models/eav/form-set';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss']
 })
-export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
+export class ItemEditFormComponent implements OnInit, OnDestroy {
   @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
-
-  @Output()
-  itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
-
-  @Input() defaultLanguage: string;
-  @Input() features: Feature[];
-
-  @Input()
-  set currentLanguage(value: string) {
-    this.currentLanguageValue = value;
-    this.setFormValues(this.item, false); // need set emit to true because of  external commponents
-  }
-  get currentLanguage(): string {
-    return this.currentLanguageValue;
-  }
-
+  @Input() formId: number;
   @Input()
   set item(value: Item) {
     this.itemBehaviorSubject$.next(value);
@@ -48,13 +33,18 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   get item(): Item {
     return this.itemBehaviorSubject$.getValue();
   }
+  @Output() itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
 
   get allControlsAreDisabled() {
     return this.checkAreAllControlsDisabled();
   }
 
   private eavConfig: EavConfiguration;
-  private currentLanguageValue: string;
+  private defaultLanguage$: Observable<string>;
+  private defaultLanguage: string;
+  private currentLanguage$: Observable<string>;
+  currentLanguage: string;
+  private subscriptions: Subscription[] = [];
   private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
 
   contentType$: Observable<ContentType>;
@@ -62,28 +52,26 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
   formIsValid = false;
 
   constructor(
+    private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
   ) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-    this.itemBehaviorSubject$.subscribe((item: Item) => {
-      this.setFormValues(item, false);
-    });
-
-    this.loadContentTypeFromStore();
+    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.formId);
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
+    this.setInitialValues();
+    this.subscribeToChanges();
   }
 
   ngOnDestroy(): void {
-    this.itemBehaviorSubject$.unsubscribe();
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
-
-  ngOnChanges(): void { }
 
   /** Observe is item form is saved */
   formSaveObservable(): Observable<Action> {
@@ -144,20 +132,31 @@ export class ItemEditFormComponent implements OnInit, OnChanges, OnDestroy {
       }
       // important to be after patchValue
       const formSet: FormSet = {
-        entityGuid: item.entity.guid,
+        formId: this.formId,
         formValues: formValues
       };
       this.eavService.triggerFormSetValueChange(formSet);
     }
   }
 
-  private loadContentTypeFromStore() {
+  private setInitialValues() {
+    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
+    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
-    // Load content type for item from store
     this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
-    // create form fields from content type
-    this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.features, this.currentLanguage,
+    // create input fields from content type
+    this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.formId, this.currentLanguage,
       this.defaultLanguage);
   }
 
+  private subscribeToChanges() {
+    this.subscriptions.push(
+      this.itemBehaviorSubject$.subscribe((item: Item) => { this.setFormValues(item, false); }),
+      this.defaultLanguage$.pipe(skip(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; }),
+      this.currentLanguage$.pipe(skip(1)).subscribe(currentLang => {
+        this.currentLanguage = currentLang;
+        this.setFormValues(this.item, false);
+      }),
+    );
+  }
 }

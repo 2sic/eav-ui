@@ -8,7 +8,7 @@ import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -17,11 +17,10 @@ import { LanguageService } from '../../../shared/services/language.service';
 })
 export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-
   @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
+  private subscriptions: Subscription[] = [];
   fieldConfig: FieldConfigGroup;
-  group: FormGroup;
-  // slotIsUsed = false;
   slotIsUsedChecked = false;
   header: EavHeader;
   collapse = false;
@@ -31,27 +30,21 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   defaultLanguage: string;
   description: string;
 
-  private subscriptions: Subscription[] = [];
-
   get slotCanBeEmpty() {
     return this.config.entity.header.group ? this.config.entity.header.group.slotCanBeEmpty || false : false;
   }
 
   constructor(
     private itemService: ItemService,
-    private languageService: LanguageService,
-  ) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
-    this.defaultLanguage$ = languageService.getDefaultLanguage();
-    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => {
-      this.currentLanguage = currentLang;
-    });
-    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
-      this.defaultLanguage = defaultLang;
-    });
-  }
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnInit() {
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
+    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
+    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
+    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
+
     this.collapse = this.config.field.settings ? this.config.field.settings.DefaultCollapsed || false : false;
     this.fieldConfig = this.config.field as FieldConfigGroup;
     this.calculateDescription();

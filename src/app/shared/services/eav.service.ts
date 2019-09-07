@@ -8,7 +8,6 @@ import { map, catchError, tap } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
 import { ItemService } from './item.service';
-import { ContentTypeService } from './content-type.service';
 import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -25,12 +24,12 @@ export class EavService {
 
   private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient,
+  constructor(
+    private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
     private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute,
+  ) { }
 
   public getEavConfiguration = (): EavConfiguration => {
     if (!this.eavConfig) {

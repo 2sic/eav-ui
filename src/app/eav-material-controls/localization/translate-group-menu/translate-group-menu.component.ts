@@ -9,15 +9,15 @@ import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, Con
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ItemService } from '../../../shared/services/item.service';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
-import { InputTypeService } from '../../../shared/services/input-type.service';
-import { ContentTypeService } from '../../../shared/services/content-type.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 
 
 @Component({
@@ -52,7 +52,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   defaultLanguage$: Observable<string>;
   defaultLanguage = '';
   headerGroupSlotIsEmpty = false;
-  translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData('', '');
+  translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData(null, '', '');
   infoMessage: string;
   infoMessageLabel: string;
   item: Item;
@@ -62,16 +62,15 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService
-  ) {
-    this.currentLanguage$ = this.languageService.getCurrentLanguage();
-    this.defaultLanguage$ = this.languageService.getDefaultLanguage();
-  }
+  ) { }
 
   ngOnInit() {
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
+    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     this.fieldConfig = this.config.field as FieldConfigGroup;
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
@@ -94,11 +93,14 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       panelClass: 'c-link-to-other-language',
       autoFocus: false,
       width: '350px',
-      data: new LinkToOtherLanguageData(this.translationState.linkType,
+      data: new LinkToOtherLanguageData(
+        this.config.form.formId,
+        this.translationState.linkType,
         this.translationState.language,
         this.defaultLanguage,
         this.attributes,
-        this.config.field.name)
+        this.config.field.name,
+      )
     });
     // spm add dialog and subdialog events through a helper
     dialogRef.keydownEvents().subscribe(e => {
@@ -153,7 +155,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.translateUnlink(attributeKey);
     });
 
-    this.languageService.triggerLocalizationWrapperMenuChange();
+    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   dontTranslateAll() {
@@ -163,7 +165,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.linkToDefault(attributeKey);
     });
 
-    this.languageService.triggerLocalizationWrapperMenuChange();
+    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   copyFromAll(languageKey) {
@@ -172,7 +174,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.copyFrom(languageKey, attributeKey);
     });
 
-    this.languageService.triggerLocalizationWrapperMenuChange();
+    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   /**
@@ -222,7 +224,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.linkReadOnly(languageKey, attributeKey);
     });
 
-    this.languageService.triggerLocalizationWrapperMenuChange();
+    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   linkReadOnly(languageKey: string, attributeKey: string) {
@@ -247,7 +249,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.linkReadWrite(languageKey, attributeKey);
     });
 
-    this.languageService.triggerLocalizationWrapperMenuChange();
+    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   linkReadWrite(languageKey: string, attributeKey: string) {
@@ -445,10 +447,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   public isTranslateEnabled(attributeKey: string) {
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
-    const calculatedInputType = InputFieldHelper.getInputTypeNameFromAttribute(attributeDef);
+    const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
 
     let inputType: InputType;
-    this.inputTypeService.getContentTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => inputType = type);
+    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
     if (!inputType) {
       // if you dont find it assume its translateable
       return true;
@@ -482,7 +484,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     */
   private subscribeMenuChange() {
     this.subscriptions.push(
-      this.languageService.localizationWrapperMenuChange$.subscribe(s => {
+      this.languageInstanceService.localizationWrapperMenuChange$.subscribe(s => {
         if (!this.fieldConfig.isParentGroup) {
           this.refreshControlConfig(this.config.field.name);
         }

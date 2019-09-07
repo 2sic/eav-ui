@@ -4,7 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { LanguageService } from '../../../shared/services/language.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -12,17 +12,16 @@ import { LanguageService } from '../../../shared/services/language.service';
   styleUrls: ['./field-helper-text.component.scss']
 })
 export class FieldHelperTextComponent implements OnInit, OnDestroy {
-
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   // @Input() hasDirtyTouched = true;
   @Input() disableError = false;
+  private subscriptions: Subscription[] = [];
 
   currentLanguage$: Observable<string>;
   isFullText = false;
   control: AbstractControl;
   description: string;
-  private subscriptions: Subscription[] = [];
 
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.field.name], this.config);
@@ -30,12 +29,11 @@ export class FieldHelperTextComponent implements OnInit, OnDestroy {
 
   constructor(
     private validationMessagesService: ValidationMessagesService,
-    private languageService: LanguageService,
-  ) {
-    this.currentLanguage$ = languageService.getCurrentLanguage();
-  }
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnInit() {
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.control = this.group.controls[this.config.field.name];
     this.description = this.config.field.settings.Notes;
 

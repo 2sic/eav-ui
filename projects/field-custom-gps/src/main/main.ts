@@ -1,6 +1,7 @@
 import { } from 'google-maps';
 
-import { EavExperimentalInputField, ElementEventListener } from '../shared/models';
+import { EavExperimentalInputField } from '../shared/models';
+import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import { defaultCoordinates, mapsParameters } from '../shared/constants';
 import * as template from './main.html';

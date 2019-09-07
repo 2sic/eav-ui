@@ -7,11 +7,16 @@
 .map-info {
   flex: 0 0 32px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   padding: 4px;
   padding-left: 14px;
   border-bottom: 1px solid #e1e1e1;
   background: white;
+}
+
+.address-mask-container {
+  flex-wrap: nowrap;
 }
 
 .map-info label,

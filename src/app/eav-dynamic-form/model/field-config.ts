@@ -4,7 +4,6 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
-import { Feature } from '../../shared/models/feature/feature';
 import { FieldConfig } from '../../../../projects/shared/field-config';
 
 // spm split these interfaces into separate files
@@ -13,7 +12,7 @@ export interface FieldConfigSet {
   entity: ItemConfig;
   form: FormConfig;
   adam?: AdamBrowserComponent;
-  dropzoneConfig?: DropzoneConfigInterface;
+  dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   cache?: any;
 }
 
@@ -41,5 +40,6 @@ export interface ItemConfig {
 }
 
 export interface FormConfig {
-  features: Feature[];
+  /** Unique id to be able to separate settings for each form instance, e.g. current language */
+  formId: number;
 }

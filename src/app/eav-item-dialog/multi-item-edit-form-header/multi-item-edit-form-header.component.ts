@@ -1,30 +1,43 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 import { Language } from '../../shared/models/eav';
 import { MultiItemEditFormComponent } from '../multi-item-edit-form/multi-item-edit-form.component';
 import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
+import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 
 @Component({
   selector: 'app-multi-item-edit-form-header',
   templateUrl: './multi-item-edit-form-header.component.html',
   styleUrls: ['./multi-item-edit-form-header.component.scss']
 })
-export class MultiItemEditFormHeaderComponent implements OnInit {
-  @Input() languages: Language[];
-
-  @Input() currentLanguage: string;
-
+export class MultiItemEditFormHeaderComponent implements OnInit, OnDestroy {
+  @Input() formId: number;
   @Input() formsAreValid: boolean;
-
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;
 
-  constructor(public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>, private dialog: MatDialog) { }
+  private subscriptions: Subscription[] = [];
+  languages: Language[];
 
-  ngOnInit() { }
+  constructor(
+    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    private dialog: MatDialog,
+    private languageService: LanguageService,
+  ) { }
 
-  // publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
+  ngOnInit() {
+    this.subscriptions.push(
+      this.languageService.entities$.subscribe(languages => { this.languages = languages; }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+  }
+
+  // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   get publishMode() {
     return this.multiFormDialogRef.componentInstance.publishMode;
   }
@@ -56,5 +69,4 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
       this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
     });
   }
-
 }
