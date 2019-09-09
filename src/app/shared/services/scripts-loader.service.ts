@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { EavConfiguration } from '../models/eav-configuration';
 import { EavService } from './eav.service';
 import { UrlHelper } from '../helpers/url-helper';
+import pjson from '../../../../package.json';
 
 export const FileTypeConstants = {
   CSS: '.css',
@@ -61,6 +62,7 @@ export class ScriptsLoaderService {
       callback();
       return;
     }
+    file.path = file.path + '?sxcver=' + pjson.version; // break cache
 
     const existing = this.loadedFiles.find(loadedFile => loadedFile.path === file.path);
     if (existing) {
