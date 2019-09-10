@@ -20,6 +20,7 @@ export class InputTypeService extends EntityCollectionServiceBase<InputType> {
   public getInputTypeById(type: string): Observable<InputType> {
     return this.entities$.pipe(
       map(inputTypes => inputTypes.find(inputType => inputType.Type === type))
+      // maybe add distinctUntilChanged()
     );
   }
 }

@@ -51,10 +51,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          if (header.group) {
-            this.slotIsUsedChecked = !header.group.slotIsEmpty;
-          }
-
+          if (header.group) { this.slotIsUsedChecked = !header.group.slotIsEmpty; }
           this.header = { ...header };
         }),
         this.currentLanguage$.subscribe(currentLang => {
@@ -89,6 +86,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   changeAnchorTarget(event: MouseEvent) {
-    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
+    const links = (event.target as HTMLElement).querySelectorAll('a');
+    if (links.length > 0) { return; }
+    links.forEach(anchor => anchor.target = '_blank');
   }
 }

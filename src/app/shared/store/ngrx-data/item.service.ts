@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 
 import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
-import { take, map, delay } from 'rxjs/operators';
+import { take, map, delay, distinctUntilChanged } from 'rxjs/operators';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
@@ -14,14 +14,13 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     super('Item', serviceElementsFactory);
   }
 
-  // loadItems
   public loadItems(items: JsonItem1[]) {
     items.forEach(jsonItem1 => {
       const item = Item.create(jsonItem1);
       this.addOneToCache(item);
     });
   }
-  // addItemAttributeValue / addAttributeValue
+
   public addAttributeValue(entityId: number, attributeKey: string, newValue: any, languageKey: string,
     isReadOnly: boolean, guid: string, type: string) {
     const newLanguageValue = isReadOnly ? `~${languageKey}` : languageKey;
@@ -45,7 +44,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // updateItemAttributeValue
+
   public updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
     existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
     let oldItem: Item;
@@ -64,7 +63,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // updateItemAttributesValues
+
   public updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any },
     languageKey: string, defaultLanguage: string, guid: string) {
     let oldItem: Item;
@@ -83,7 +82,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // addItemAttributeDimension
+
   /**
    * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
    * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
@@ -107,7 +106,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // removeItemAttributeDimension
+
   public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string, guid: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
@@ -125,7 +124,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // updateItemHeader
+
   public updateItemHeader(entityId: number, guid: string, header: EavHeader) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
@@ -141,46 +140,60 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
-  // selectAttributesByEntityId
+
   public selectAttributesByEntityId(entityId: number, guid: string) {
     return this.entities$.pipe(
       map(items => {
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.entity.attributes : null;
-      })
+      }),
+      distinctUntilChanged()
     );
   }
-  // selectAllItems
+
   public selectAllItems() {
     return this.entities$;
   }
-  // selectItemById
+
   public selectItemById(id: number) {
     return this.entities$.pipe(
-      map(items => items.find(item => item.entity.id === id))
+      map(items => items.find(item => item.entity.id === id)),
+      distinctUntilChanged()
     );
   }
-  // selectHeaderByEntityId
+
   /** Observe header for item from store */
   public selectHeaderByEntityId(entityId: number, guid: string) {
     return this.entities$.pipe(
       map(items => {
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.header : null;
-      })
+      }),
+      distinctUntilChanged()
     );
   }
-  // selectItemsByIdList
+
   /** Select items from store by id array list */
   public selectItemsByIdList(idsList: any[]) {
     return this.entities$.pipe(
       delay(0),
       map(items =>
         items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
-      )
+      ),
+      distinctUntilChanged((oldList, newList) => {
+        let oldIds = '';
+        let newIds = '';
+        oldList.forEach(item => {
+          oldIds += item.entity.id;
+        });
+        newList.forEach(item => {
+          newIds += item.entity.id;
+        });
+        return oldIds === newIds;
+      })
     );
   }
-  // setDefaultValue
+
   /** Set default value and add that attribute in store */
   public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string, settingsTranslated: FieldSettings,
     languages: Language[], currentLanguage: string, defaultLanguage: string): any {
