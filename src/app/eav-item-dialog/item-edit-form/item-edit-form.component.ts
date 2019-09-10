@@ -10,6 +10,7 @@ import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav
 import { EavService } from '../../shared/services/eav.service';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ItemService } from '../../shared/services/item.service';
+import { ItemService2 } from '../../shared/store/ngrx-data/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
@@ -54,6 +55,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   constructor(
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
+    private itemService2: ItemService2,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private actions$: Actions,
@@ -90,6 +92,10 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
       this.itemService.updateItemAttributesValues(
+        this.item.entity.id, values, this.currentLanguage,
+        this.defaultLanguage, this.item.entity.guid
+      );
+      this.itemService2.updateItemAttributesValues(
         this.item.entity.id, values, this.currentLanguage,
         this.defaultLanguage, this.item.entity.guid
       );

@@ -15,6 +15,7 @@ import { EavDimensions } from '../models/eav/eav-dimensions';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LanguageService } from '../store/ngrx-data/language.service';
+import { ItemService2 } from '../store/ngrx-data/item.service';
 
 @Injectable()
 export class ItemService {
@@ -25,6 +26,7 @@ export class ItemService {
     private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
     private languageService: LanguageService,
+    private itemService2: ItemService2,
   ) {
     // this.items$ = store.select(fromStore.getItems);
   }
@@ -178,16 +180,24 @@ export class ItemService {
       if (langs.length === 0) {
         this.addAttributeValue(item.entity.id, attribute.name,
           defaultValue, '*', false, item.entity.guid, attribute.type);
+        this.itemService2.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', false, item.entity.guid, attribute.type);
       } else {
         this.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+        this.itemService2.addAttributeValue(item.entity.id, attribute.name,
           defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
       }
     } else {
       if (langs.length === 0) {
         this.updateItemAttributeValue(item.entity.id, attribute.name,
           defaultValue, '*', defaultLanguage, false, item.entity.guid);
+        this.itemService2.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', defaultLanguage, false, item.entity.guid);
       } else {
         this.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+        this.itemService2.updateItemAttributeValue(item.entity.id, attribute.name,
           defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
       }
     }

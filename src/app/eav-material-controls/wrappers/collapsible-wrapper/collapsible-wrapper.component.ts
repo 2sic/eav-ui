@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
 import { ItemService } from '../../../shared/services/item.service';
+import { ItemService2 } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
@@ -36,6 +37,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   constructor(
     private itemService: ItemService,
+    private itemService2: ItemService2,
     private languageInstanceService: LanguageInstanceService,
   ) { }
 
@@ -51,6 +53,14 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
+          return;
+          if (header.group) {
+            this.slotIsUsedChecked = !header.group.slotIsEmpty;
+          }
+
+          this.header = { ...header };
+        }),
+        this.itemService2.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
           if (header.group) {
             this.slotIsUsedChecked = !header.group.slotIsEmpty;
           }

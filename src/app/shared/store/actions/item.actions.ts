@@ -32,11 +32,11 @@ export const UPDATE_ITEM_HEADER = '[Item] UPDATE_ITEM_HEADER';
 /**
  * Load
  */
-export class LoadItemAction implements Action {
+export class LoadItemAction implements Action { // NE KORISTI SE
     readonly type = LOAD_ITEM;
     constructor(public path: string) { }
 }
-export class LoadItemSuccessAction implements Action {
+export class LoadItemSuccessAction implements Action { // OK!
     readonly type = LOAD_ITEM_SUCCESS;
     constructor(public newItem: Item) { }
 }
@@ -44,18 +44,18 @@ export class LoadItemSuccessAction implements Action {
 /**
  * Add
  */
-export class AddItemAttributeAction implements Action {
+export class AddItemAttributeAction implements Action { // NE KORISTI SE
     readonly type = ADD_ITEM_ATTRIBUTE;
     constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string, public guid: string) { }
 }
 
-export class AddItemAttributeValueAction implements Action {
+export class AddItemAttributeValueAction implements Action { // OK!
     readonly type = ADD_ITEM_ATTRIBUTE_VALUE;
     constructor(public id: number, public attributeValue: EavValue<any>, public attributeKey: string,
         public guid: string, public attributeType: string) { }
 }
 
-export class AddItemAttributeDimensionAction implements Action {
+export class AddItemAttributeDimensionAction implements Action { // OK!
     readonly type = ADD_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string,
         public existingDimensionValue: string, public defaultLanguage: string, public isReadOnly: boolean, public guid: string) { }
@@ -64,33 +64,33 @@ export class AddItemAttributeDimensionAction implements Action {
 /**
  * Update
  */
-export class UpdateItemAction implements Action {
+export class UpdateItemAction implements Action { // NE KORISTI SE
     readonly type = UPDATE_ITEM;
     constructor(public attributes: EavAttributes, public id: number, public guid: string) { }
 }
-export class UpdateItemSuccessAction implements Action {
+export class UpdateItemSuccessAction implements Action { // NE KORISTI SE
     readonly type = UPDATE_ITEM_SUCCESS;
     constructor(public item: Item) { }
 }
 
-export class UpdateItemAttributeAction implements Action {
+export class UpdateItemAttributeAction implements Action { // NE KORISTI SE
     readonly type = UPDATE_ITEM_ATTRIBUTE;
     constructor(public id: number, public attribute: EavValues<any>, public attributeKey: string, public guid: string) { }
 }
 
-export class UpdateItemAttributeValueAction implements Action {
+export class UpdateItemAttributeValueAction implements Action { // OK!
     readonly type = UPDATE_ITEM_ATTRIBUTE_VALUE;
     constructor(public id: number, public attributeKey: string, public attributeValue: string,
         public existingLanguageKey: string, public defaultLanguage: string, public isReadOnly: boolean, public guid: string) { }
 }
 
-export class UpdateItemAttributesValuesAction implements Action {
+export class UpdateItemAttributesValuesAction implements Action { // OK!
     readonly type = UPDATE_ITEM_ATTRIBUTES_VALUES;
     constructor(public id: number, public updateValues: { [key: string]: any },
         public existingLanguageKey: string, public defaultLanguage: string, public guid: string) { }
 }
 
-export class UpdateItemHeaderAction implements Action {
+export class UpdateItemHeaderAction implements Action { // NE KORISTI SE
     readonly type = UPDATE_ITEM_HEADER;
     constructor(public id: number, public guid: string, public header: EavHeader) { }
 }
@@ -98,19 +98,19 @@ export class UpdateItemHeaderAction implements Action {
 /**
  * Save (submit)
  */
-export class SaveItemAttributesValuesAction implements Action {
+export class SaveItemAttributesValuesAction implements Action { // TODO
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES;
     constructor(public appId: number, public item: Item, public updateValues: { [key: string]: any },
         public existingLanguageKey: string, public defaultLanguage: string) { }
 }
 
-export class SaveItemAttributesValuesSuccessAction implements Action {
+export class SaveItemAttributesValuesSuccessAction implements Action { // TODO
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS;
     // TODO: finish this with true values
     constructor(public data: any) { }
 }
 
-export class SaveItemAttributesValuesErrorAction implements Action {
+export class SaveItemAttributesValuesErrorAction implements Action { // TODO
     readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_ERROR;
     // TODO: finish this with true values
     constructor(public error: any) { }
@@ -122,14 +122,14 @@ export class SaveItemAttributesValuesErrorAction implements Action {
 //         public existingDimensionValue: string, public isReadOnly: boolean) { }
 // }
 
-export class RemoveItemAttributeDimensionAction implements Action {
+export class RemoveItemAttributeDimensionAction implements Action { // OK!
     readonly type = REMOVE_ITEM_ATTRIBUTE_DIMENSION;
     constructor(public id: number, public attributeKey: string, public dimensionValue: string, public guid: string) { }
 }
 /**
  * Delete
  */
-export class DeleteItemAction implements Action {
+export class DeleteItemAction implements Action { // NE KORISTI SE
     readonly type = DELETE_ITEM;
     constructor(public item: Item) { }
 }
