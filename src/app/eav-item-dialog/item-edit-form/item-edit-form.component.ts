@@ -9,7 +9,6 @@ import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.se
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { ItemService } from '../../shared/services/item.service';
 import { ItemService2 } from '../../shared/store/ngrx-data/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -54,7 +53,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
-    private itemService: ItemService,
     private itemService2: ItemService2,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
@@ -91,10 +89,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     if (this.form.form.valid) {
-      this.itemService.updateItemAttributesValues(
-        this.item.entity.id, values, this.currentLanguage,
-        this.defaultLanguage, this.item.entity.guid
-      );
       this.itemService2.updateItemAttributesValues(
         this.item.entity.id, values, this.currentLanguage,
         this.defaultLanguage, this.item.entity.guid
@@ -106,9 +100,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   submit(values: { [key: string]: any }) {
-    if (this.form.form.valid ||
-      this.allControlsAreDisabled ||
-      (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
+    if (this.form.form.valid || this.allControlsAreDisabled || (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
       this.eavService.saveItem(Number(this.eavConfig.appId), this.item, values, this.currentLanguage, this.defaultLanguage);
     }
   }

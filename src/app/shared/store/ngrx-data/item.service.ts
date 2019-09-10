@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 
-import { Item, EavValue, EavDimensions } from '../../models/eav';
+import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { take, map, delay } from 'rxjs/operators';
 import { LocalizationHelper } from '../../helpers/localization-helper';
+import { AttributeDef } from '../../models/eav/attribute-def';
+import { InputFieldHelper } from '../../helpers/input-field-helper';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService2 extends EntityCollectionServiceBase<Item> {
@@ -123,7 +125,22 @@ export class ItemService2 extends EntityCollectionServiceBase<Item> {
     };
     this.updateOneInCache(newItem);
   }
+  // updateItemHeader
+  public updateItemHeader(entityId: number, guid: string, header: EavHeader) {
+    let oldItem: Item;
+    this.entities$.pipe(take(1)).subscribe(items => {
+      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+    });
+    if (!oldItem) { return; }
 
+    const newItem = {
+      ...oldItem,
+      header: {
+        ...header
+      }
+    };
+    this.updateOneInCache(newItem);
+  }
   // selectAttributesByEntityId
   public selectAttributesByEntityId(entityId: number, guid: string) {
     return this.entities$.pipe(
@@ -164,4 +181,29 @@ export class ItemService2 extends EntityCollectionServiceBase<Item> {
     );
   }
   // setDefaultValue
+  /** Set default value and add that attribute in store */
+  public setDefaultValue(item: Item, attribute: AttributeDef, inputType: string, settingsTranslated: FieldSettings,
+    languages: Language[], currentLanguage: string, defaultLanguage: string): any {
+    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
+
+    const exists = item.entity.attributes.hasOwnProperty(attribute.name);
+    if (!exists) {
+      if (languages.length === 0) {
+        this.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', false, item.entity.guid, attribute.type);
+      } else {
+        this.addAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+      }
+    } else {
+      if (languages.length === 0) {
+        this.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, '*', defaultLanguage, false, item.entity.guid);
+      } else {
+        this.updateItemAttributeValue(item.entity.id, attribute.name,
+          defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+      }
+    }
+    return defaultValue;
+  }
 }

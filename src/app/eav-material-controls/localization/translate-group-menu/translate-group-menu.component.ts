@@ -8,7 +8,6 @@ import isEqual from 'lodash/isEqual';
 import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
-import { ItemService } from '../../../shared/services/item.service';
 import { ItemService2 } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
@@ -64,7 +63,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private languageInstanceService: LanguageInstanceService,
-    private itemService: ItemService,
     private itemService2: ItemService2,
     private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService
@@ -74,7 +72,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     this.fieldConfig = this.config.field as FieldConfigGroup;
-    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.attributes$ = this.itemService2.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
@@ -124,8 +121,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
     this.itemService2.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
     const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(
@@ -135,8 +130,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     );
     if (defaultValue) {
       const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
-      this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.entity.entityGuid, fieldType);
       this.itemService2.addAttributeValue(this.config.entity.entityId, attributeKey, defaultValue.value,
         this.currentLanguage, false, this.config.entity.entityGuid, fieldType);
     } else {
@@ -150,8 +143,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (!this.isTranslateEnabled(attributeKey)) {
       return;
     }
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
     this.itemService2.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
 
@@ -212,15 +203,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
       if (valueAlreadyExist) {
         // Copy attribute value where language is languageKey to value where language is current language
-        this.itemService.updateItemAttributeValue(this.config.entity.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.entity.entityGuid);
         this.itemService2.updateItemAttributeValue(this.config.entity.entityId, attributeKey,
           attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false, this.config.entity.entityGuid);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey,
-          attributeValueTranslation.value, this.currentLanguage, false, this.config.entity.entityGuid,
-          this.config.field.type);
         this.itemService2.addAttributeValue(this.config.entity.entityId, attributeKey,
           attributeValueTranslation.value, this.currentLanguage, false, this.config.entity.entityGuid,
           this.config.field.type);
@@ -246,12 +232,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
     this.itemService2.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
     this.itemService2.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
 
@@ -275,12 +257,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       return;
     }
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
     this.itemService2.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
     this.itemService2.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
 
@@ -427,14 +405,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private subscribeToEntityHeaderFromStore() {
     if (this.config.entity.header.group && this.config.entity.header.group.slotCanBeEmpty) {
       this.subscriptions.push(
-        this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          return;
-          if (header.group && !this.fieldConfig.isParentGroup) {
-            this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
-            this.setControlDisable(this.attributes[this.config.field.name], this.config.field.name,
-              this.currentLanguage, this.defaultLanguage);
-          }
-        }),
         this.itemService2.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
           if (header.group && !this.fieldConfig.isParentGroup) {
             this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
@@ -451,10 +421,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    */
   private subscribeToItemFromStore() {
     this.subscriptions.push(
-      this.itemService.selectItemById(this.config.entity.entityId).subscribe(item => {
-        return;
-        this.item = item;
-      }),
       this.itemService2.selectItemById(this.config.entity.entityId).subscribe(item => {
         this.item = item;
       })

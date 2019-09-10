@@ -7,7 +7,6 @@ import { throwError, Observable, Subject } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 import { Item } from '../models/eav/item';
-import { ItemService } from './item.service';
 import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -27,7 +26,6 @@ export class EavService {
   constructor(
     private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
-    private itemService: ItemService,
     private route: ActivatedRoute,
   ) { }
 
