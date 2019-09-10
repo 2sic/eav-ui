@@ -101,7 +101,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
 
   submit(values: { [key: string]: any }) {
     if (this.form.form.valid || this.allControlsAreDisabled || (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
-      this.eavService.saveItem(Number(this.eavConfig.appId), this.item, values, this.currentLanguage, this.defaultLanguage);
+      // spm Double check if we should update values one last time before submitting
+      this.eavService.saveItem(this.item);
     }
   }
 

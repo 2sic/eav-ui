@@ -74,10 +74,8 @@ export class EavService {
   //     );
   // }
 
-  public saveItem(appId: number, item: Item, updateValues: { [key: string]: any }, existingLanguageKey: string,
-    defaultLanguage: string) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(appId, item, updateValues, existingLanguageKey,
-      defaultLanguage));
+  public saveItem(item: Item) {
+    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(item));
   }
 
   public saveItemSuccess(data: any) {
