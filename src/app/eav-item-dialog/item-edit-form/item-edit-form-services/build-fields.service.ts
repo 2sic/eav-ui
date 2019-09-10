@@ -15,7 +15,7 @@ import { ValidationHelper } from '../../../eav-material-controls/validators/vali
 import { CalculatedInputType } from '../../../shared/models/input-field-models';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { ItemService2 } from '../../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 
 @Injectable({ providedIn: 'root' })
 export class BuildFieldsService {
@@ -26,7 +26,7 @@ export class BuildFieldsService {
   private defaultLanguage: string;
 
   constructor(
-    private itemService2: ItemService2,
+    private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private languageService: LanguageService,
   ) { }
@@ -172,7 +172,7 @@ export class BuildFieldsService {
       if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1 && initialValue !== '') {
         let languages: Language[] = [];
         this.languageService.entities$.pipe(take(1)).subscribe(langs => { languages = langs; });
-        initialValue = this.itemService2.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
+        initialValue = this.itemService.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
           languages, this.currentLanguage, this.defaultLanguage);
       }
       const disabled: boolean = settingsTranslated.Disabled;

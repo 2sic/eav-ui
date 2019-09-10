@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
-import { ItemService2 } from '../../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
@@ -35,7 +35,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   constructor(
-    private itemService2: ItemService2,
+    private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
   ) { }
 
@@ -50,7 +50,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     this.calculateDescription();
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
-        this.itemService2.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
+        this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
           if (header.group) {
             this.slotIsUsedChecked = !header.group.slotIsEmpty;
           }
@@ -81,9 +81,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   toggleSlotIsEmpty() {
     if (this.header.group) {
       const updateHeader = { ...this.header, group: { ...this.header.group, slotIsEmpty: this.slotIsUsedChecked } };
-      this.itemService2.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, updateHeader);
+      this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, updateHeader);
     } else { // if header group undefined create empty group object
-      this.itemService2.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid,
+      this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid,
         { ...this.header, group: new EavGroupAssignment() });
     }
   }

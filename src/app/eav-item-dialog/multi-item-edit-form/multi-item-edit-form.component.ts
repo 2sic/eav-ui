@@ -15,7 +15,7 @@ import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { ItemService2 } from '../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -84,7 +84,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private eavService: EavService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
-    private itemService2: ItemService2,
+    private itemService: ItemService,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
@@ -205,13 +205,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * @param data
    */
   private afterLoadItemsData(data: any) {
-    this.itemService2.loadItems(data.Items);
+    this.itemService.loadItems(data.Items);
     // we assume that input type and content type data won't change between loading parent and child forms
     this.inputTypeService.addInputTypes(data.InputTypes);
     this.contentTypeService.addContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
-    this.items$ = this.itemService2.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
+    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
   }
 
   /**

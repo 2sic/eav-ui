@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { ItemService2 } from '../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { Observable, Subscription } from 'rxjs';
 import { Item } from '../../shared/models/eav';
 
@@ -17,10 +17,10 @@ export class MultiItemEditFormDebugComponent implements OnInit {
   items: Item[] = [];
   subscriptions: Subscription[] = [];
 
-  constructor(private itemService2: ItemService2) { }
+  constructor(private itemService: ItemService) { }
 
   ngOnInit() {
-    this.items$ = this.itemService2.selectAllItems();
+    this.items$ = this.itemService.selectAllItems();
     this.subscriptions.push(
       this.items$.subscribe(items => {
         this.items = items;

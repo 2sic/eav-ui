@@ -9,7 +9,7 @@ import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 
 @Injectable({ providedIn: 'root' })
-export class ItemService2 extends EntityCollectionServiceBase<Item> {
+export class ItemService extends EntityCollectionServiceBase<Item> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
