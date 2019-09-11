@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 
 import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
-import { take, map, delay } from 'rxjs/operators';
+import { take, map, delay, distinctUntilChanged } from 'rxjs/operators';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
@@ -147,6 +147,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.entity.attributes : null;
       }),
+      distinctUntilChanged()
     );
   }
 
@@ -157,6 +158,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public selectItemById(id: number) {
     return this.entities$.pipe(
       map(items => items.find(item => item.entity.id === id)),
+      distinctUntilChanged()
     );
   }
 
@@ -167,6 +169,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.header : null;
       }),
+      distinctUntilChanged()
     );
   }
 
@@ -177,6 +180,20 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       map(items =>
         items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
       ),
+      distinctUntilChanged((oldList, newList) => {
+        let isEqual = true;
+        if (oldList.length !== newList.length) {
+          isEqual = false;
+        } else {
+          for (let i = 0; i < oldList.length; i++) {
+            if (oldList[i] !== newList[i]) {
+              isEqual = false;
+              break;
+            }
+          }
+        }
+        return isEqual;
+      })
     );
   }
 
