@@ -63,7 +63,7 @@ import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge
 import { DndListModule } from 'ngx-drag-and-drop-lists';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
-import { ExpandableWrapperV2Component } from './wrappers/expandable-wrapper-v2/expandable-wrapper-v2.component';
+import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SnackBarSaveErrorsComponent } from './dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
@@ -120,7 +120,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         HyperlinkDefaultPagepickerComponent,
         WebFormBridgeDirective,
         SaveStatusDialogComponent,
-        ExpandableWrapperV2Component,
+        ExpandableWrapperComponent,
         SnackBarUnsavedChangesComponent,
         SnackBarSaveErrorsComponent,
         FieldHelperTextComponent,
@@ -182,7 +182,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         EntityDefaultComponent,
         EntityQueryComponent,
         EntityExpandableWrapperComponent,
-        ExpandableWrapperV2Component,
+        ExpandableWrapperComponent,
         HiddenWrapperComponent,
         HyperlinkDefaultComponent,
         HyperlinkDefaultPagepickerComponent,

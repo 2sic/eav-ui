@@ -229,13 +229,13 @@ export class InputFieldHelper {
                 wrappers.push(
                     WrappersConstants.dropzoneWrapper,
                     WrappersConstants.eavLocalizationWrapper,
-                    WrappersConstants.expandableWrapperV2,
+                    WrappersConstants.expandableWrapper,
                     WrappersConstants.adamAttachWrapper
                 );
             } else if (inputType === InputTypesConstants.customGPS) {
                 wrappers.push(
                     WrappersConstants.eavLocalizationWrapper,
-                    WrappersConstants.expandableWrapperV2,
+                    WrappersConstants.expandableWrapper,
                 );
             } else {
                 wrappers.push(

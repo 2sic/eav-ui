@@ -16,12 +16,12 @@ import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.ser
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 
 @Component({
-  selector: 'app-expandable-wrapper-v2',
-  templateUrl: './expandable-wrapper-v2.component.html',
-  styleUrls: ['./expandable-wrapper-v2.component.scss'],
+  selector: 'app-expandable-wrapper',
+  templateUrl: './expandable-wrapper.component.html',
+  styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation]
 })
-export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
   @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
@@ -55,7 +55,7 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
   ) { }
 
   ngOnInit() {
-    console.log('ExpandableWrapperV2 created');
+    console.log('ExpandableWrapper created');
     const previewElName = `field-${this.config.field.inputType}-preview`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
@@ -78,16 +78,16 @@ export class ExpandableWrapperV2Component implements FieldWrapper, OnInit, After
   }
 
   expandDialog() {
-    console.log('ExpandableWrapperV2Component expandDialog');
+    console.log('ExpandableWrapperComponent expandDialog');
     this.config.field.expanded.next(true);
   }
   closeDialog() {
-    console.log('ExpandableWrapperV2Component closeDialog');
+    console.log('ExpandableWrapperComponent closeDialog');
     this.config.field.expanded.next(false);
   }
 
   ngOnDestroy() {
-    console.log('ExpandableWrapperV2 destroyed');
+    console.log('ExpandableWrapper destroyed');
     this.previewElConnector.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.dropzoneDraggingHelper.detach();

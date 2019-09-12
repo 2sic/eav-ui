@@ -6,7 +6,6 @@ import { take } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../../../../../Projects/eav-item-dialog-angular/src/app/shared/models/eav';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 
@@ -31,13 +30,9 @@ export class ExternalWebcomponentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (!this.config.field.wrappers.includes(WrappersConstants.expandableWrapperV2)) {
-      this.shouldShowConnector = true;
-    } else {
-      this.subscriptions.push(
-        this.config.field.expanded.subscribe(expanded => { this.shouldShowConnector = expanded; }),
-      );
-    }
+    this.subscriptions.push(
+      this.config.field.expanded.subscribe(expanded => { this.shouldShowConnector = expanded; }),
+    );
     this.loadAssets();
   }
 
