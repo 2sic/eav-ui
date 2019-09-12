@@ -1,10 +1,9 @@
-import { Component, ViewChild, Input, ViewContainerRef, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
@@ -16,19 +15,15 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringDefaultComponent implements Field {
-  @ViewChild('errorComponent', { static: true, read: ViewContainerRef }) errorComponent: ViewContainerRef;
-
+export class StringDefaultComponent implements Field, OnInit {
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
-  get rowCount() {
-    return this.config.field.settings.RowCount ? this.config.field.settings.RowCount : 1;
-  }
+  rowCount: number;
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor() { }
 
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
+  ngOnInit() {
+    this.rowCount = this.config.field.settings.RowCount ? this.config.field.settings.RowCount : 1;
   }
 }
