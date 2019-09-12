@@ -3,13 +3,13 @@ import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
-import { EavService } from '../../../../shared/services/eav.service';
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
-import { ConnectorService } from '../connector-service/connector.service';
-import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
+import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { EavService } from '../../../../../shared/services/eav.service';
+import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
+import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
+import { ConnectorService } from './connector.service';
+import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 
 @Component({
   selector: 'app-connector',

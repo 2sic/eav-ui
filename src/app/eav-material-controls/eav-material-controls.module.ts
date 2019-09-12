@@ -82,8 +82,8 @@ import {
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
-import { ConnectorComponent } from './input-types/custom/connector/connector.component';
+import { ExternalWebComponentComponent } from './input-types/custom/external-web-component/external-web-component.component';
+import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 
@@ -135,7 +135,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
-        ExternalWebcomponentComponent,
+        ExternalWebComponentComponent,
         ConnectorComponent,
         CustomDefaultComponent,
     ],
@@ -204,7 +204,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
-        ExternalWebcomponentComponent,
+        ExternalWebComponentComponent,
         ConnectorComponent,
         CustomDefaultComponent,
     ],

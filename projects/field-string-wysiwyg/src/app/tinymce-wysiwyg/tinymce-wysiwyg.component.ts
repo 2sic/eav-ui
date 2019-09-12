@@ -9,7 +9,7 @@ import { TinyMceToolbarButtons } from '../services/tinymce-wysiwyg-toolbar';
 import { TinyMceAdamService } from '../services/tinymce-adam-service';
 import { ConnectorObservable } from '../../../../shared/connector';
 // tslint:disable-next-line:max-line-length
-import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-webcomponent-properties/external-webcomponent-properties';
+import { ExperimentalProps } from '../../../../../src/app/eav-material-controls/input-types/custom/external-web-component/connector/models/custom-element-properties.model';
 import { InputTypeName } from '../../../../../src/app/shared/models/input-field-models';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import * as contentStyle from './tinymce-content.css';
