@@ -18,7 +18,7 @@ export function getTinyOptions(config: Config) {
     setup: config.setup, // callback function during setup
     skin: 'oxide',
     theme: 'silver',
-    body_class: 'field-string-wysiwyg-mce-box',
+    // body_class: 'field-string-wysiwyg-mce-box',
     content_style: config.contentStyle,
     height: '100%',
     branding: false,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { InputTypesConstants } from '../../../shared/constants';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -23,7 +24,7 @@ import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-draggi
 })
 export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer', { static: true }) previewContainer: ElementRef;
+  @ViewChild('previewContainer', { static: false }) previewContainer: ElementRef;
   @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
   @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
@@ -32,6 +33,8 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   private subscriptions: Subscription[] = [];
   previewElConnector: ConnectorService;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
+  inlineMode = false;
+  isWysiwyg = false;
 
   get value() {
     return this.group.controls[this.config.field.name].value
@@ -52,11 +55,20 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
     private zone: NgZone,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
-    console.log('ExpandableWrapper created');
-    const previewElName = `field-${this.config.field.inputType}-preview`;
+    console.log('ExpandableWrapper created', this.config.field);
+    if (this.config.field.settings.Dialog === 'inline') { this.inlineMode = true; }
+    if (
+      this.config.field.inputType === InputTypesConstants.stringWysiwyg
+      || this.config.field.inputType === InputTypesConstants.stringWysiwygAdv
+      || this.config.field.inputType === InputTypesConstants.stringWysiwygDnn
+      || this.config.field.inputType === InputTypesConstants.stringWysiwygTinymce
+    ) { this.isWysiwyg = true; }
+    this.changeDetector.detectChanges();
+    const previewElName = !this.inlineMode ? `field-${this.config.field.inputType}-preview` : `field-${this.config.field.inputType}`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
       this.inputTypeService);
