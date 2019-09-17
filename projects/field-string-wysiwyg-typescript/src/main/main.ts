@@ -54,6 +54,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
+      inlineMode: this.experimental.inlineMode,
     });
     tinymce.init(tinyOptions);
   }
@@ -62,7 +63,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.editor = editor;
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
-      addTinyMceToolbarButtons(this, editor);
+      addTinyMceToolbarButtons(this, editor, this.experimental.expand);
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
       addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);

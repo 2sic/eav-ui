@@ -84,6 +84,7 @@
 		"Link.Anchor.Tooltip": "Ancla a enlace para utilizar como .../page#anchorname",
 		"SwitchMode.Pro": "Cambiar a modo avanzado",
 		"SwitchMode.Standard": "Cambiar a modo estándar",
+		"SwitchMode.Expand": "Expand to full mode",
 		"H1": "H1",
 		"H2": "H2",
 		"H3": "H3",

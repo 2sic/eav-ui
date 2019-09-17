@@ -1,7 +1,7 @@
 import { loadCustomIcons } from './load-icons-helper';
 import { MathHelper } from './math-helper';
 
-export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
+export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, expand: (expand: boolean) => void) {
   const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
   registerTinyMceFormats(editor, imgSizes);
   loadCustomIcons(editor);
@@ -258,6 +258,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any) {
     tooltip: 'SwitchMode.Pro',
     onAction: (_: any) => {
       switchModes('advanced', editor);
+    },
+  });
+
+  editor.ui.registry.addButton('expandfulleditor', {
+    icon: 'browse',
+    tooltip: 'SwitchMode.Expand',
+    onAction: (_: any) => {
+      expand(true);
     },
   });
 

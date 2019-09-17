@@ -175,6 +175,10 @@ export class ConnectorService {
       formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
+      inlineMode: this.config.field.settings.Dialog === 'inline' && !this.config.field.expanded.value,
+      expand: (expand) => {
+        this._ngZone.run(() => { this.config.field.expanded.next(expand); });
+      }
     };
     // optional props
     if (this.config.dropzoneConfig$) {

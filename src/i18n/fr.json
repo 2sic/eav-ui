@@ -90,6 +90,7 @@
 		"Link.Anchor.Tooltip": "Ancre pour lier a l'utilisation .../page#nomdelancre",
 		"SwitchMode.Pro": "Passer en mode avancé",
 		"SwitchMode.Standard": "Passer en mode standard",
+		"SwitchMode.Expand": "Expand to full mode",
 		"H1": "H1",
 		"H2": "H2",
 		"H3": "H3",

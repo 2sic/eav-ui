@@ -9,6 +9,7 @@ interface Config {
   pasteImageFromClipboardEnabled: boolean;
   imagesUploadUrl: string;
   uploadHeaders: any;
+  inlineMode: boolean; // form inline mode (without expandable). Not to be confused with tinymce inline
 }
 
 export function getTinyOptions(config: Config) {
@@ -60,7 +61,7 @@ export function getTinyOptions(config: Config) {
     debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   };
 
-  const modesOptions = getModesOptions(config.contentBlocksEnabled);
+  const modesOptions = getModesOptions(config.contentBlocksEnabled, config.inlineMode);
   options = { ...options, ...modesOptions };
 
   const languageOptions = getLanguageOptions(config.currentLang);
@@ -78,8 +79,18 @@ export function getTinyOptions(config: Config) {
   return options;
 }
 
-function getModesOptions(contentBlocksEnabled: boolean) {
+function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean) {
   const modes = {
+    inline: {
+      menubar: false,
+      toolbar: ' undo redo removeformat '
+        + '| bold formatgroup '
+        + '| h1 h2 hgroup '
+        + '| listgroup '
+        + '| linkgroup '
+        + '| ' + (contentBlocksEnabled ? ' addcontentblock ' : '') + 'code expandfulleditor ',
+      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
+    },
     standard: {
       menubar: false,
       toolbar: ' undo redo removeformat '
@@ -100,13 +111,13 @@ function getModesOptions(contentBlocksEnabled: boolean) {
         + '| images linkfiles linkgrouppro '
         + '| code modestandard ',
       contextmenu: 'link image | charmap hr adamimage'
-    }
+    },
   };
   return {
     modes: modes, // for later switch to another mode
-    menubar: modes.standard.menubar, // basic menu (none)
-    toolbar: modes.standard.toolbar, // basic toolbar
-    contextmenu: modes.standard.contextmenu, // 'link image | charmap hr adamimage',
+    menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar, // basic menu (none)
+    toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar, // basic toolbar
+    contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu, // 'link image | charmap hr adamimage',
   };
 }
 
