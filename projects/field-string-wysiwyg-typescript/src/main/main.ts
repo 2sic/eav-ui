@@ -121,6 +121,18 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       this.editorContent = editor.getContent();
       this.connector.data.update(this.editorContent);
     });
+
+    editor.on('undo', (event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE value changed', event);
+      this.editorContent = editor.getContent();
+      this.connector.data.update(this.editorContent);
+    });
+
+    editor.on('redo', (event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE value changed', event);
+      this.editorContent = editor.getContent();
+      this.connector.data.update(this.editorContent);
+    });
   }
 
   disconnectedCallback() {
