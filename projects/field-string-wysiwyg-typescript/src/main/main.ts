@@ -33,6 +33,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.innerHTML = buildTemplate(template, styles + skinOverrides);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    if (this.experimental.inlineMode) {
+      this.classList.add('inline-wysiwyg');
+    } else {
+      this.classList.add('full-wysiwyg');
+    }
 
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (this.experimental.allInputTypeNames.length > this.connector.field.index + 1)
