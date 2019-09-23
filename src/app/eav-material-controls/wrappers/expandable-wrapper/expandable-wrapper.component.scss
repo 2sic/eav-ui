@@ -64,6 +64,11 @@
             min-height: $min-height - $content-padding-top;
             max-height: $max-height - $content-padding-top;
             padding-top: $content-padding-top;
+
+            &--disabled {
+                pointer-events: none;
+                color: $editUI-field-disabled-color;
+            }
         }
 
         &--invalid {

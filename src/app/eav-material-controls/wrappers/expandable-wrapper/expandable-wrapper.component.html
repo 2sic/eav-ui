@@ -36,7 +36,9 @@
       'c-ew__preview--disabled': disabled
     }">
     <div class="c-ew__preview-container">
-      <div #previewContainer class="c-ew__preview-content" [ngClass]="{'color__label-disabled': disabled}"></div>
+      <div #previewContainer class="c-ew__preview-content" [ngClass]="{
+        'c-ew__preview-content--disabled': disabled
+      }"></div>
     </div>
   </div>
   <div *ngIf="inlineMode" class="c-ew__preview c-ew__inline" [ngClass]="{
@@ -45,8 +47,9 @@
     'c-ew__preview--disabled': disabled
   }">
     <div class="c-ew__preview-container">
-      <div #previewContainer class="c-ew__preview-content c-ew__inline-content"
-        [ngClass]="{'color__label-disabled': disabled}"></div>
+      <div #previewContainer class="c-ew__preview-content c-ew__inline-content" [ngClass]="{
+          'c-ew__preview-content--disabled': disabled
+        }"></div>
     </div>
   </div>
   <!-- hasDirtyTouched="fasle"  -->

@@ -20,7 +20,8 @@ field-string-wysiwyg {
   background-color: #fff;
   padding: 0 8px 1px 8px;
   /* Probably not needed */
-  /* position: relative;
+  /*
+  position: relative;
   border-style: solid;
   border-width: 1px;
   border-color: rgb(170,178,189);
@@ -29,14 +30,13 @@ field-string-wysiwyg {
   overflow: auto;
   margin: 0;
   border: none;
-  border-radius: 0; */
-
-  font-size: medium;
+  border-radius: 0;
   color:rgb(69, 79, 99);
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 400; 
-
+  */
+  font-size: medium;
   -ms-overflow-style: none; /* IE 10+ */
   overflow: -moz-scrollbars-none; /* Firefox */
   scrollbar-width: none; /* Firefox */
