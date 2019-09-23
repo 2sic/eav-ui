@@ -30,6 +30,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string, guid: string, type: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -49,6 +50,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -68,6 +70,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     languageKey: string, defaultLanguage: string, guid: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -91,6 +94,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -110,6 +114,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string, guid: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -128,6 +133,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public updateItemHeader(entityId: number, guid: string, header: EavHeader) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
@@ -144,6 +150,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public selectAttributesByEntityId(entityId: number, guid: string) {
     return this.entities$.pipe(
       map(items => {
+        // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.entity.attributes : null;
       }),
@@ -166,6 +173,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   public selectHeaderByEntityId(entityId: number, guid: string) {
     return this.entities$.pipe(
       map(items => {
+        // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
         const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
         return item ? item.header : null;
       }),
@@ -178,6 +186,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     return this.entities$.pipe(
       delay(0),
       map(items =>
+        // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
         items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
       ),
       distinctUntilChanged((oldList, newList) => {
