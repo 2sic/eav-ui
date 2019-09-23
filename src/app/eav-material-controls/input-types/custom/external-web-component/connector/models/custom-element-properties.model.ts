@@ -27,6 +27,12 @@ export class ExperimentalProps {
   isFeatureEnabled: (guid: string) => boolean;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   translateService: TranslateService; // for Typescript WYSIWYG
-  inlineMode: boolean; // without expandable -> inline mode in form. Not to be confused with tinymce inline mode which is without iframe
   expand: (expand: boolean) => void;
+  wysiwygSettings?: WysiwygSettings; // only if field is of WYSIWYG input type
+}
+
+export class WysiwygSettings {
+  inlineMode: boolean; // without expandable -> inline mode in form. Not to be confused with tinymce inline mode which is without iframe
+  buttonSource: string;
+  buttonAdvanced: string;
 }

@@ -253,6 +253,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     },
   });
 
+  editor.ui.registry.addButton('modeinline', {
+    icon: 'close',
+    tooltip: 'SwitchMode.Standard',
+    onAction: (_: any) => {
+      switchModes('inline', editor);
+    },
+  });
+
   editor.ui.registry.addButton('modeadvanced', {
     icon: 'custom-school',
     tooltip: 'SwitchMode.Pro',

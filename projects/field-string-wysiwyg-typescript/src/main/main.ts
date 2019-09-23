@@ -19,6 +19,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
+  private firstInit: boolean;
 
   constructor() {
     super();
@@ -33,7 +34,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.innerHTML = buildTemplate(template, styles + skinOverrides);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    if (this.experimental.inlineMode) {
+    if (this.experimental.wysiwygSettings.inlineMode) {
       this.classList.add('inline-wysiwyg');
     } else {
       this.classList.add('full-wysiwyg');
@@ -59,8 +60,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
-      inlineMode: this.experimental.inlineMode,
+      inlineMode: this.experimental.wysiwygSettings.inlineMode,
+      buttonSource: this.experimental.wysiwygSettings.buttonSource,
+      buttonAdvanced: this.experimental.wysiwygSettings.buttonAdvanced,
     });
+    this.firstInit = true;
     tinymce.init(tinyOptions);
   }
 
@@ -72,18 +76,27 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
       addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);
+      // Shared subscriptions
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
           if (this.editorContent === newValue) { return; }
           this.editorContent = newValue;
           editor.setContent(this.editorContent);
         }),
-        // field type is FieldConfigAngular
-        (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
-          if (!expanded) { return; }
-          setTimeout(() => { editor.focus(false); }, 100);
-        }),
       );
+      if (!this.experimental.wysiwygSettings.inlineMode) {
+        setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
+      } else {
+        if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
+        // Inline only subscriptions
+        this.subscriptions.push(
+          // field type is FieldConfigAngular
+          (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
+            if (!this.firstInit && !expanded) { setTimeout(() => { editor.focus(false); }, 100); }
+          }),
+        );
+      }
+      this.firstInit = false;
     });
 
     // called after tinymce editor is removed
