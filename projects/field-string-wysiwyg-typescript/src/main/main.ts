@@ -109,6 +109,8 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
     editor.on('focus', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE focused', event);
+      attachDnnBridgeService(this, editor); // spm 2019-09-23 just a workaround. Fix asap
+      attachAdam(this, editor); // spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
