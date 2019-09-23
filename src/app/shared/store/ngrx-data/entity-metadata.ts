@@ -29,7 +29,7 @@ export const entityConfig = {
 };
 
 export function itemSelectId<T extends { entity: any }>(entity: T) {
-  return entity === null ? undefined : entity.entity.id;
+  return entity === null ? undefined : entity.entity.guid;
 }
 
 export function languageSelectId<T extends { key: any }>(entity: T) {

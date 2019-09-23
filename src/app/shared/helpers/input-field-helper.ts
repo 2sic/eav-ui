@@ -220,17 +220,12 @@ export class InputFieldHelper {
         }
 
         if (isExternal) {
-            if (
-                inputType === InputTypesConstants.stringWysiwyg
-                || inputType === InputTypesConstants.stringWysiwygAdv
-                || inputType === InputTypesConstants.stringWysiwygDnn
-                || inputType === InputTypesConstants.stringWysiwygTinymce
-            ) {
+            if (this.isWysiwygInputType(inputType)) {
                 wrappers.push(
                     WrappersConstants.dropzoneWrapper,
                     WrappersConstants.eavLocalizationWrapper,
                     WrappersConstants.expandableWrapper,
-                    WrappersConstants.adamAttachWrapper
+                    WrappersConstants.adamAttachWrapper,
                 );
             } else if (inputType === InputTypesConstants.customGPS) {
                 wrappers.push(
@@ -245,6 +240,13 @@ export class InputFieldHelper {
         }
 
         return wrappers;
+    }
+
+    static isWysiwygInputType(inputType: string): boolean {
+        return inputType === InputTypesConstants.stringWysiwyg
+            || inputType === InputTypesConstants.stringWysiwygAdv
+            || inputType === InputTypesConstants.stringWysiwygDnn
+            || inputType === InputTypesConstants.stringWysiwygTinymce;
     }
 
     static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {

@@ -302,7 +302,7 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 
 // custom selector
 .tox .tox-collection__item-icon svg:not([width]):not([height]) {
-    width: 24px !important;
+    width: auto !important;
     height: 24px !important;
 }
 
