@@ -45,7 +45,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     const dropzoneConfig: DropzoneConfigInterface = {
       // usePortalRoot is updated in AdamBrowser. Switches between Adam and DNN image
       url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
-      maxFiles: 1,
+      maxFiles: 1000, // keep maxFiles and parallelUploads in sync
+      parallelUploads: 1000,
       autoReset: null,
       errorReset: null,
       cancelReset: null,

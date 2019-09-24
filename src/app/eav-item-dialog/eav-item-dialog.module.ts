@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StoreModule, Store } from '@ngrx/store';
-import { Routes, RouterModule } from '@angular/router';
-import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,9 +24,6 @@ import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 import { reducers } from '../shared/store';
 
-// import { ItemEffects } from '../shared/effects/item.effects';
-// import { ContentTypeEffects } from '../shared/effects/content-type.effects';
-// import { EavEffects } from '../shared/effects/eav.effects';
 import { TranslateModule } from '@ngx-translate/core';
 import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
@@ -61,7 +57,6 @@ import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/mu
     MatDividerModule,
     FlexLayoutModule,
     StoreModule.forFeature('eavItemDialog', reducers),
-    // EffectsModule.forFeature([ItemEffects, ContentTypeEffects, EavEffects]),
     TranslateModule.forChild()
   ],
   entryComponents: [

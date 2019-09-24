@@ -9,7 +9,7 @@ import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.se
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { ItemService } from '../../shared/services/item.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
@@ -100,10 +100,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   submit(values: { [key: string]: any }) {
-    if (this.form.form.valid ||
-      this.allControlsAreDisabled ||
-      (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
-      this.eavService.saveItem(Number(this.eavConfig.appId), this.item, values, this.currentLanguage, this.defaultLanguage);
+    if (this.form.form.valid || this.allControlsAreDisabled || (this.item.header.group && this.item.header.group.slotCanBeEmpty)) {
+      // spm Double check if we should update values one last time before submitting
+      this.eavService.saveItem(this.item);
     }
   }
 

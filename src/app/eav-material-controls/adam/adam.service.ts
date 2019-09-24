@@ -134,6 +134,9 @@ export class AdamService {
         })
         .pipe(
           map((data: any) => {
+            // items can be null if folder isn't created when user doesn't have required access rights,
+            // e.g. public (not loggen in) user
+            if (data === null || data === undefined) { return data; }
             data.forEach(addFullPath);
             checkAllowEdit(data);
             return data;

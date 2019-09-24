@@ -19,6 +19,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
+  private firstInit: boolean;
 
   constructor() {
     super();
@@ -33,6 +34,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.innerHTML = buildTemplate(template, styles + skinOverrides);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    if (this.experimental.wysiwygSettings.inlineMode) {
+      this.classList.add('inline-wysiwyg');
+    } else {
+      this.classList.add('full-wysiwyg');
+    }
 
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (this.experimental.allInputTypeNames.length > this.connector.field.index + 1)
@@ -54,7 +60,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
+      inlineMode: this.experimental.wysiwygSettings.inlineMode,
+      buttonSource: this.experimental.wysiwygSettings.buttonSource,
+      buttonAdvanced: this.experimental.wysiwygSettings.buttonAdvanced,
     });
+    this.firstInit = true;
     tinymce.init(tinyOptions);
   }
 
@@ -62,22 +72,31 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.editor = editor;
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
-      addTinyMceToolbarButtons(this, editor);
+      addTinyMceToolbarButtons(this, editor, this.experimental.expand);
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
       addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);
+      // Shared subscriptions
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
           if (this.editorContent === newValue) { return; }
           this.editorContent = newValue;
           editor.setContent(this.editorContent);
         }),
-        // field type is FieldConfigAngular
-        (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
-          if (!expanded) { return; }
-          setTimeout(() => { editor.focus(false); }, 100);
-        }),
       );
+      if (!this.experimental.wysiwygSettings.inlineMode) {
+        setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
+      } else {
+        if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
+        // Inline only subscriptions
+        this.subscriptions.push(
+          // field type is FieldConfigAngular
+          (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
+            if (!this.firstInit && !expanded) { setTimeout(() => { editor.focus(false); }, 100); }
+          }),
+        );
+      }
+      this.firstInit = false;
     });
 
     // called after tinymce editor is removed
@@ -90,6 +109,8 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
     editor.on('focus', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE focused', event);
+      attachDnnBridgeService(this, editor); // spm 2019-09-23 just a workaround. Fix asap
+      attachAdam(this, editor); // spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
@@ -112,7 +133,19 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
     editor.on('change', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE value changed', event);
-      this.editorContent = event.level.content; // editor.getContent()
+      this.editorContent = editor.getContent();
+      this.connector.data.update(this.editorContent);
+    });
+
+    editor.on('undo', (event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE value changed', event);
+      this.editorContent = editor.getContent();
+      this.connector.data.update(this.editorContent);
+    });
+
+    editor.on('redo', (event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE value changed', event);
+      this.editorContent = editor.getContent();
       this.connector.data.update(this.editorContent);
     });
   }

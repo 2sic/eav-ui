@@ -1,11 +1,9 @@
 import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
 
 import { environment } from '../../../../environments/environment';
-import * as fromItems from './item.reducer';
 import * as fromGlobalConfiguration from './global-configuration.reducer';
 
 export interface EavState {
-    itemState: fromItems.ItemState;
     globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
 }
 
@@ -30,7 +28,6 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
     : [];
 
 export const reducers: ActionReducerMap<EavState> = {
-    itemState: fromItems.itemReducer,
     globalConfiguration: fromGlobalConfiguration.globalConfigurationReducer,
 };
 

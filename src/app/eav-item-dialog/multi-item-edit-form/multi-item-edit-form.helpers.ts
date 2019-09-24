@@ -1,6 +1,8 @@
 import { Language } from '../../shared/models/eav';
 
 export function sortLanguages(currentLangKey: string, languages: Language[]): Language[] {
+  if (languages.length === 0) { return languages; }
+
   let currentLang: Language;
   const sameLangs: Language[] = [];
   const otherLangs: Language[] = [];
@@ -16,7 +18,12 @@ export function sortLanguages(currentLangKey: string, languages: Language[]): La
   }
   sameLangs.sort(alphabetCompare);
   otherLangs.sort(alphabetCompare);
-  return [currentLang, ...sameLangs, ...otherLangs];
+
+  if (!currentLang) {
+    return [...sameLangs, ...otherLangs];
+  } else {
+    return [currentLang, ...sameLangs, ...otherLangs];
+  }
 }
 
 function alphabetCompare(a: Language, b: Language): number {

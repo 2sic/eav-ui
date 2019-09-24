@@ -9,6 +9,9 @@ interface Config {
   pasteImageFromClipboardEnabled: boolean;
   imagesUploadUrl: string;
   uploadHeaders: any;
+  inlineMode: boolean; // form inline mode (without expandable). Not to be confused with tinymce inline
+  buttonSource: string;
+  buttonAdvanced: string;
 }
 
 export function getTinyOptions(config: Config) {
@@ -18,7 +21,7 @@ export function getTinyOptions(config: Config) {
     setup: config.setup, // callback function during setup
     skin: 'oxide',
     theme: 'silver',
-    body_class: 'field-string-wysiwyg-mce-box',
+    // body_class: 'field-string-wysiwyg-mce-box',
     content_style: config.contentStyle,
     height: '100%',
     branding: false,
@@ -60,7 +63,7 @@ export function getTinyOptions(config: Config) {
     debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   };
 
-  const modesOptions = getModesOptions(config.contentBlocksEnabled);
+  const modesOptions = getModesOptions(config.contentBlocksEnabled, config.inlineMode, config.buttonSource, config.buttonAdvanced);
   options = { ...options, ...modesOptions };
 
   const languageOptions = getLanguageOptions(config.currentLang);
@@ -78,8 +81,22 @@ export function getTinyOptions(config: Config) {
   return options;
 }
 
-function getModesOptions(contentBlocksEnabled: boolean) {
+function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string) {
   const modes = {
+    inline: {
+      menubar: false,
+      toolbar: ' undo redo removeformat '
+        + '| bold formatgroup '
+        + '| h1 h2 hgroup '
+        + '| listgroup '
+        + '| linkgroup '
+        + '| '
+        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + (buttonSource === 'true' ? ' code ' : '')
+        + (buttonAdvanced === 'true' ? ' modeadvanced ' : '')
+        + ' expandfulleditor ',
+      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
+    },
     standard: {
       menubar: false,
       toolbar: ' undo redo removeformat '
@@ -87,7 +104,10 @@ function getModesOptions(contentBlocksEnabled: boolean) {
         + '| h1 h2 hgroup '
         + '| listgroup '
         + '| linkfiles linkgroup '
-        + '| ' + (contentBlocksEnabled ? ' addcontentblock ' : '') + 'code modeadvanced ',
+        + '| '
+        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + (buttonSource === 'false' ? '' : ' code ')
+        + (buttonAdvanced === 'false' ? '' : ' modeadvanced '),
       contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
     },
     advanced: {
@@ -97,16 +117,19 @@ function getModesOptions(contentBlocksEnabled: boolean) {
         + '| bold italic '
         + '| h1 h2 hgroup '
         + '| bullist numlist outdent indent '
-        + '| images linkfiles linkgrouppro '
-        + '| code modestandard ',
-      contextmenu: 'link image | charmap hr adamimage'
-    }
+        + '| ' + (!inlineMode ? ' images linkfiles' : '') + ' linkgrouppro '
+        + '| '
+        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + ' code '
+        + (inlineMode ? ' modeinline expandfulleditor ' : ' modestandard '),
+      contextmenu: 'link image | charmap hr adamimage' + (contentBlocksEnabled ? ' addcontentblock' : '')
+    },
   };
   return {
     modes: modes, // for later switch to another mode
-    menubar: modes.standard.menubar, // basic menu (none)
-    toolbar: modes.standard.toolbar, // basic toolbar
-    contextmenu: modes.standard.contextmenu, // 'link image | charmap hr adamimage',
+    menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar, // basic menu (none)
+    toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar, // basic toolbar
+    contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu, // 'link image | charmap hr adamimage',
   };
 }
 

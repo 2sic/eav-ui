@@ -18,15 +18,24 @@
 }
 
 .c-ew {
+    $min-height: 36px;
+    $max-height: 116px;
+    $max-height-inline: 50vh;
+    $content-padding-top: 8px;
     &__preview {
-        position: relative;
-        height: 116px;
+        position:relative;
+        min-height: $min-height;
+        max-height: $max-height;
         cursor: pointer;
-        overflow: hidden;
+        font-size: 14px;
 
         @extend %field-border;
         &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
             @extend %field-border--hover;
+        }
+
+        &-holder {
+            position: relative;
         }
 
         &-label {
@@ -45,12 +54,20 @@
         }
 
         &-container {
-            height: 100%;
-            -webkit-align-content: center;
-            align-content: center;
+            overflow: hidden;
+            min-height: inherit;
+            max-height: inherit;
+        }
 
-            &--empty {
-                padding: 6px 0 0 0;
+        &-content {
+            overflow: hidden;
+            min-height: $min-height - $content-padding-top;
+            max-height: $max-height - $content-padding-top;
+            padding-top: $content-padding-top;
+
+            &--disabled {
+                pointer-events: none;
+                color: $editUI-field-disabled-color;
             }
         }
 
@@ -114,6 +131,32 @@
             position:relative;
             // border-radius: $edit-ui-input-border-radius;
             background: map_get($mat-eav-item-dialog-background, 50);
+        }
+    }
+
+    &__inline {
+        cursor: auto;
+        max-height: $max-height-inline;
+
+        &--wysiwyg {
+            padding: 1px;
+            &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+                padding: 0;
+            }
+            .c-ew__preview--invalid {
+                padding: 0;
+            }
+        }
+
+        &-content {
+            max-height: calc(#{$max-height-inline} - #{$content-padding-top});
+            overflow-y: scroll;
+            -ms-overflow-style: none;  // IE 10+
+            overflow: -moz-scrollbars-none;  // Firefox
+            scrollbar-width: none;
+            &::-webkit-scrollbar { 
+                display: none;  // Safari and Chrome
+            }
         }
     }
 }

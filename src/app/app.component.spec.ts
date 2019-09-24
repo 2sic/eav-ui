@@ -1,10 +1,9 @@
 import { TestBed, async } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
-import { ItemService } from './shared/services/item.service';
 import { Routes, RouterModule } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { EffectsModule } from '@ngrx/effects';
@@ -37,7 +36,7 @@ describe('AppComponent', () => {
         EffectsModule.forRoot([]),
         TranslateModule.forRoot()
       ],
-      providers: [ItemService, EavService, { provide: APP_BASE_HREF, useValue: '/' }]
+      providers: [EavService, { provide: APP_BASE_HREF, useValue: '/' }]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

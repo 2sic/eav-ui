@@ -15,7 +15,7 @@ import { Item, Language } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { ItemService } from '../../shared/services/item.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -388,6 +388,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(this.actions$
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+        this.itemService.updateItemId(action.data);
         console.log('success END: ', action.data);
         this.snackBarOpen('saved');
         this.dialogRef.disableClose = false;

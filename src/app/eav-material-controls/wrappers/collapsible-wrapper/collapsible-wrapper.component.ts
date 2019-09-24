@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavHeader } from '../../../shared/models/eav';
-import { ItemService } from '../../../shared/services/item.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
@@ -51,10 +51,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          if (header.group) {
-            this.slotIsUsedChecked = !header.group.slotIsEmpty;
-          }
-
+          if (header.group) { this.slotIsUsedChecked = !header.group.slotIsEmpty; }
           this.header = { ...header };
         }),
         this.currentLanguage$.subscribe(currentLang => {
@@ -78,7 +75,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   /// toggle / change if a section (slot) is in use or not (like an unused presentation)
-  toggleSlotIsEmpty = function () {
+  toggleSlotIsEmpty() {
     if (this.header.group) {
       const updateHeader = { ...this.header, group: { ...this.header.group, slotIsEmpty: this.slotIsUsedChecked } };
       this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, updateHeader);
@@ -86,9 +83,11 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid,
         { ...this.header, group: new EavGroupAssignment() });
     }
-  };
+  }
 
   changeAnchorTarget(event: MouseEvent) {
-    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
+    const links = (event.target as HTMLElement).querySelectorAll('a');
+    if (links.length > 0) { return; }
+    links.forEach(anchor => anchor.target = '_blank');
   }
 }

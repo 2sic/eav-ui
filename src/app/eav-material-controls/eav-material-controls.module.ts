@@ -64,7 +64,6 @@ import { DndListModule } from 'ngx-drag-and-drop-lists';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
-import { ExpandableWrapperV2Component } from './wrappers/expandable-wrapper-v2/expandable-wrapper-v2.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SnackBarSaveErrorsComponent } from './dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
@@ -83,8 +82,8 @@ import {
 } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { ExternalWebcomponentComponent } from './input-types/custom/external-webcomponent/external-webcomponent.component';
-import { ConnectorComponent } from './input-types/custom/connector/connector.component';
+import { ExternalWebComponentComponent } from './input-types/custom/external-web-component/external-web-component.component';
+import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 
@@ -122,7 +121,6 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         WebFormBridgeDirective,
         SaveStatusDialogComponent,
         ExpandableWrapperComponent,
-        ExpandableWrapperV2Component,
         SnackBarUnsavedChangesComponent,
         SnackBarSaveErrorsComponent,
         FieldHelperTextComponent,
@@ -137,7 +135,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
-        ExternalWebcomponentComponent,
+        ExternalWebComponentComponent,
         ConnectorComponent,
         CustomDefaultComponent,
     ],
@@ -185,7 +183,6 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         EntityQueryComponent,
         EntityExpandableWrapperComponent,
         ExpandableWrapperComponent,
-        ExpandableWrapperV2Component,
         HiddenWrapperComponent,
         HyperlinkDefaultComponent,
         HyperlinkDefaultPagepickerComponent,
@@ -207,7 +204,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         HyperlinkLibraryExpandableWrapperComponent,
         EntityContentBlockComponent,
         CollapsibleFieldWrapperComponent,
-        ExternalWebcomponentComponent,
+        ExternalWebComponentComponent,
         ConnectorComponent,
         CustomDefaultComponent,
     ],

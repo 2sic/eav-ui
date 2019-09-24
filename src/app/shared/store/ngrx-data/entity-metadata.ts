@@ -1,6 +1,9 @@
 import { EntityMetadataMap } from '@ngrx/data';
 
 export const entityMetadata: EntityMetadataMap = {
+  Item: {
+    selectId: itemSelectId,
+  },
   Feature: {},
   Language: {
     selectId: languageSelectId,
@@ -17,16 +20,17 @@ export const entityMetadata: EntityMetadataMap = {
 };
 
 export const pluralNames = {
-  Feature: 'Features',
-  Language: 'Languages',
-  ContentType: 'ContentTypes',
-  InputType: 'InputTypes',
+  Feature: 'Features', // example
 };
 
 export const entityConfig = {
   entityMetadata,
   pluralNames,
 };
+
+export function itemSelectId<T extends { entity: any }>(entity: T) {
+  return entity === null ? undefined : entity.entity.guid;
+}
 
 export function languageSelectId<T extends { key: any }>(entity: T) {
   return entity === null ? undefined : entity.key;

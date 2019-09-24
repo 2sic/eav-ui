@@ -6,24 +6,23 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
-// tslint:disable-next-line:max-line-length
-import { ExternalWebComponentProperties, ConnectorHost, ExperimentalProps } from '../external-webcomponent-properties/external-webcomponent-properties';
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
-import { AdamConfig } from '../../../../shared/models/adam/adam-config';
-import { ConnectorInstance } from '../external-webcomponent/connector';
-import { InputTypeName } from '../../../../shared/models/input-field-models';
-import { InputFieldHelper } from '../../../../shared/helpers/input-field-helper';
-import { ContentTypeService } from '../../../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
+import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { CustomElementProperties, ExperimentalProps } from './models/custom-element-properties.model';
+import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../../shared/services/eav.service';
+import { EavConfiguration } from '../../../../../shared/models/eav-configuration';
+import { AdamConfig } from '../../../../../shared/models/adam/adam-config';
+import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
+import { InputTypeName } from '../../../../../shared/models/input-field-models';
+import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
+import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
+import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
   private subjects: BehaviorSubject<any>[] = [];
-  private customEl: NgElement & WithProperties<ExternalWebComponentProperties<any>>;
+  private customEl: NgElement & WithProperties<CustomElementProperties<any>>;
   private eavConfig: EavConfiguration;
   private value$: BehaviorSubject<any>;
   private previousValue: any;
@@ -176,10 +175,20 @@ export class ConnectorService {
       formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
+      expand: (expand) => {
+        this._ngZone.run(() => { this.config.field.expanded.next(expand); });
+      },
     };
     // optional props
     if (this.config.dropzoneConfig$) {
       experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
+    }
+    if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
+      experimentalProps.wysiwygSettings = {
+        inlineMode: this.config.field.settings.Dialog === 'inline' && !this.config.field.expanded.value,
+        buttonSource: this.config.field.settings.ButtonSource,
+        buttonAdvanced: this.config.field.settings.ButtonAdvanced,
+      };
     }
 
     return experimentalProps;

@@ -97,7 +97,7 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
         const val = s.join(':');
         const option = {
           label: key,
-          value: (val) ? val : key
+          value: (val || maybeWantedEmptyVal === '') ? val : key
         };
         if (option.value === currentValue) { currentValueFound = true; }
         return option;
