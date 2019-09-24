@@ -21,6 +21,31 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     });
   }
 
+  public updateItemId(itemData: {}) {
+    // itemData: { e92f626e-aca6-43d1-a509-c79aa744b4fa: 10483 }
+    const guid = Object.keys(itemData)[0];
+    const entityId = itemData[guid];
+    let oldItem: Item;
+    this.entities$.pipe(take(1)).subscribe(items => {
+      // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
+      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+    });
+    if (!oldItem || (oldItem.header.entityId !== 0 && oldItem.entity.id !== 0)) { return; }
+
+    const newItem = {
+      ...oldItem,
+      header: {
+        ...oldItem.header,
+        entityId: entityId
+      },
+      entity: {
+        ...oldItem.entity,
+        id: entityId
+      }
+    };
+    this.updateOneInCache(newItem);
+  }
+
   public addAttributeValue(entityId: number, attributeKey: string, newValue: any, languageKey: string,
     isReadOnly: boolean, guid: string, type: string) {
     const newLanguageValue = isReadOnly ? `~${languageKey}` : languageKey;
@@ -183,6 +208,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
 
   /** Select items from store by id array list */
   public selectItemsByIdList(idsList: any[]) {
+    console.error('LOADED idsList', idsList);
     return this.entities$.pipe(
       delay(0),
       map(items =>

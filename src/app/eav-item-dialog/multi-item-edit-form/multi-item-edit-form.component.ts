@@ -388,6 +388,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(this.actions$
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
+        this.itemService.updateItemId(action.data);
         console.log('success END: ', action.data);
         this.snackBarOpen('saved');
         this.dialogRef.disableClose = false;
