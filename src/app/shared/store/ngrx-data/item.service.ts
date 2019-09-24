@@ -208,7 +208,6 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
 
   /** Select items from store by id array list */
   public selectItemsByIdList(idsList: any[]) {
-    console.error('LOADED idsList', idsList);
     return this.entities$.pipe(
       delay(0),
       map(items =>
