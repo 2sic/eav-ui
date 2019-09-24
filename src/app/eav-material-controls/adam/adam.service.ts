@@ -134,6 +134,7 @@ export class AdamService {
         })
         .pipe(
           map((data: any) => {
+            if (data === null || data === undefined) { return data; }
             data.forEach(addFullPath);
             checkAllowEdit(data);
             return data;
