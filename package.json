@@ -5,9 +5,10 @@
   "license": "MIT",
   "scripts": {
     "// SHARED": "build shared parts - always in the same mode for both prod/dev",
+    "build-html": "node ./build-helpers/build-html",
     "build-core": "node ./build-helpers/build-core",
     "build-languages": "node ./build-helpers/build-languages",
-    "pre-build": "npm run build-core && npm run build-languages",
+    "pre-build": "npm run build-html && npm run build-core && npm run build-languages",
     "// MAIN DEV": "Main system: develop builds",
     "dev-main": "ng build",
     "dev-main-watch": "ng build --watch",
