@@ -26,7 +26,7 @@ export class ExperimentalProps {
   formSetValueChange$: Observable<FormSet>;
   isFeatureEnabled: (guid: string) => boolean;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
-  translateService: TranslateService; // for Typescript WYSIWYG
+  translateService: TranslateService; // for WYSIWYG
   expand: (expand: boolean) => void;
   wysiwygSettings?: WysiwygSettings; // only if field is of WYSIWYG input type
 }
