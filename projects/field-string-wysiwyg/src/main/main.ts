@@ -20,6 +20,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
   private firstInit: boolean;
+  private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16';
 
   constructor() {
     super();
@@ -40,6 +41,19 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       this.classList.add('full-wysiwyg');
     }
 
+    const tinyMceScriptLoaded = !!(window as any).tinymce;
+    if (tinyMceScriptLoaded) {
+      this.tinyMceScriptLoaded();
+    } else {
+      const script = document.createElement('script');
+      script.src = `${this.tinyMceBaseUrl}/tinymce.min.js`;
+      script.onload = this.tinyMceScriptLoaded.bind(this);
+      this.appendChild(script);
+    }
+  }
+
+  private tinyMceScriptLoaded() {
+    console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (this.experimental.allInputTypeNames.length > this.connector.field.index + 1)
       ? this.experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
@@ -65,6 +79,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       buttonAdvanced: this.experimental.wysiwygSettings.buttonAdvanced,
     });
     this.firstInit = true;
+    if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
   }
 
