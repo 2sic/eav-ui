@@ -9,10 +9,10 @@
                 <mat-icon *ngIf="collapse">keyboard_arrow_down</mat-icon>
                 <mat-icon *ngIf="!collapse">keyboard_arrow_up</mat-icon>
                 <span class="title" *ngIf="fieldConfig.isParentGroup">{{
-                        config.entity.header.title
-                        ? config.entity.header.title
-                        : 'EditEntity.DefaultTitle' | translate
-                    }}</span>
+                    itemTitle
+                    ? itemTitle
+                    : 'EditEntity.DefaultTitle' | translate
+                }}</span>
                 <span class="title" *ngIf="!fieldConfig.isParentGroup">{{
                     config.field.label
                     ? config.field.label
