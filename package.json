@@ -33,9 +33,9 @@
     "prod-all-watch": "npm run clear-dist && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && concurrently npm:prod-main-watch npm:copy-to-dnn-watch",
     "// RELEASE": "Make a release build. Modifies configuration in webpack-extra.js to load source maps from external server",
     "release": "npm run clear-dist && set NODE_ENV=production && npm run pre-build && npm run prod-wysiwyg && npm run prod-gps && npm run prod-main && npm run copy-to-dnn",
-    "// run ng-serve with everything": "I'm using a port different than 4200, but 2792=2sxc on the phone",
-    "dialog-local": "ng serve --public-host=localhost --port=2792 --disable-host-check",
-    "dialog-local-https": "ng serve --ssl --public-host=localhost --port=2792 --disable-host-check",
+    "// run ng-serve with everything": "",
+    "dialog-local": "ng serve --public-host=localhost:4200 --disable-host-check=true",
+    "dialog-local-https": "ng serve --ssl --public-host=localhost:4200 --disable-host-check=true",
 
     "// OTHER": "other stuff",
     "test": "ng test",
