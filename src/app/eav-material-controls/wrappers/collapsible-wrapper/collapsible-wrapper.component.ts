@@ -76,6 +76,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       let label: string;
       try {
         const type = contentType.contentType.metadata
+          // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
           .find(metadata => metadata.type.name === 'ContentType' || metadata.type.name === 'xx ContentType');
         if (!!type) {
           label = type.attributes.Label.values.find(value => !!value.dimensions.find(dimension =>
