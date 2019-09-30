@@ -35,6 +35,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   get separator() { return this.config.field.settings.Separator || ','; }
   get touched() { return this.group.controls[this.config.field.name].touched || false; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
 

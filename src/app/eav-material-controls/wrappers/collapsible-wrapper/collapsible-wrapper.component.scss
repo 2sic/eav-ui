@@ -5,8 +5,9 @@ $border-radius: 8px;
         padding: 0;
         margin: 0 0 0 0;
         border-radius: $border-radius;
-        // background: #EFF0F2;
-        // max-width: 960px;
+        @media (max-width: 600px) {
+            border-radius: 4px;
+        }
     }
     &-group-child {
         padding: 0;

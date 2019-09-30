@@ -32,6 +32,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   constructor(
     private fileTypeService: FileTypeService,

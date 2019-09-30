@@ -20,6 +20,9 @@
 
 .u-border-radius {
     border-radius: $edit-ui-dialog-border-radius;
+    @media (max-width: 600px) {
+        border-radius: $edit-ui-dialog-border-radius-mobile;
+    }
 }
 
 .u-border-radius-top { 
@@ -28,6 +31,9 @@
 
 .u-border-radius-bottom { 
     border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+    @media (max-width: 600px) {
+        border-radius: 0;
+    }
 } 
 
 // small shadow top

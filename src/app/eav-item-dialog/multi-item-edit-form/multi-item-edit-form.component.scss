@@ -8,14 +8,23 @@
   margin:0;
   padding: 0;
   max-height: $edit-ui-dialog-max-height;
+  @media (max-width: 600px) {
+    max-height: $edit-ui-dialog-max-height-mobile;
+  }
 }
 
 .mat-dialog-content.debug-enabled {
   max-height: $edit-ui-dialog-max-height-with-debug;
+  @media (max-width: 600px) {
+    max-height: $edit-ui-dialog-max-height-with-debug-mobile;
+  }
 }
 
 .mat-dialog-content.debug-enabled.debug-info-is-open {
   max-height: calc(#{$edit-ui-dialog-max-height-with-debug} - #{$debug-info-container-total-height});
+  @media (max-width: 600px) {
+    max-height: calc(#{$edit-ui-dialog-max-height-with-debug-mobile} - #{$debug-info-container-total-height});
+  }
 }
 
 .mat-dialog-actions {
@@ -26,19 +35,15 @@
 
 .c-multi-item-dialog {
   &__save-container {
-      z-index: 1;
-      position: fixed;
-      width: $edit-ui-dialog-width;
-      max-width: $edit-ui-dialog-max-width;
-      padding: 0;
-      line-height: 0;
+    z-index: 1;
+    position: absolute;
+    bottom: 14px;
+    right: 24px;
   } 
 
   &__save-button {
-      margin-top: -62px;
-      margin-right: 24px;
-      width: $save-button-width-compact;
-      height: $save-button-height;
+      width: 48px;
+      height: 48px;
       .mat-fab {
           border-radius: 16px 0;
           overflow: hidden;
@@ -77,5 +82,10 @@
 }
 
 .mdc-layout-grid {
-    padding: 16px;
+  padding: 16px;
+
+  @media (max-width: 600px) {
+    padding: 0;
+    padding-top: 8px;
+  }
 }

@@ -1,4 +1,5 @@
-<div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)">
+<div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)"
+  style="position: relative">
   <div mat-dialog-actions>
     <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
       [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"

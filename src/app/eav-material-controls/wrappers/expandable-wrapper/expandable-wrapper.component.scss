@@ -116,12 +116,16 @@
     &__dialog {
         flex-direction: column;
         display: flex;
-        // border-radius: $edit-ui-input-border-radius;
-        max-width: 960px;
+        max-width: $edit-ui-dialog-max-width;
         width: 100vw; 
         margin-top: 24px;
         min-height: $expandable-wrapper-max-height;
         max-height: $expandable-wrapper-max-height;
+        @media (max-width: 600px) {
+            margin-top: 0;
+            min-height: $expandable-wrapper-max-height-mobile;
+            max-height: $expandable-wrapper-max-height-mobile;
+        }
         padding: 0;
         .mat-dialog-actions {
             padding: 16px;

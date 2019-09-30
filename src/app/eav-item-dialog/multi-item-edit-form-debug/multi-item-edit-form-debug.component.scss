@@ -5,6 +5,9 @@
     margin: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    @media (max-width: 600px) {
+        border-radius: 0;
+    }
     height: $edit-ui-dialog-debug-max-height;
     z-index: 1;
     width: 100%;

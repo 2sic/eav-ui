@@ -16,9 +16,9 @@
     }
 
     &-image {
-        max-width: 100%;
+        width: 100%;
         max-height: calc(100vh - 219px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding} );
-        min-height: 72px;
+        height: auto;
 
         &-container {
             display: flex;
@@ -30,8 +30,8 @@
         }
         &-box {
             z-index: 100;
-            display: flex;
-            justify-content: center;
+            width: 100%;
+            height: auto;
         }
     }
 
