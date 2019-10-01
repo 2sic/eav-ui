@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="link-other-lang-container">
   <div class="mat-card__header">
     <div class="mat-card__title">
       {{'LangMenu.Dialog.Title' | translate: { name: data.attributeKey } }}
@@ -7,11 +7,16 @@
   </div>
 
   <mat-nav-list toggle>
-    <ng-container *ngTemplateOutlet="item;context:{ key: 'dontTranslate', icon: 'lock', i18nKey: 'NoTranslate'}"></ng-container>
-    <ng-container *ngTemplateOutlet="item;context:{ key: 'translate', icon: 'lock_open', i18nKey: 'FromPrimary'}"></ng-container>
-    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkCopyFrom', icon: 'translate', i18nKey: 'FromOther'}"></ng-container>
-    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkReadOnly', icon: 'link', i18nKey: 'LinkReadOnly'}"></ng-container>
-    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkReadWrite', icon: 'share', i18nKey: 'LinkShared'}"></ng-container>
+    <ng-container *ngTemplateOutlet="item;context:{ key: 'dontTranslate', icon: 'lock', i18nKey: 'NoTranslate'}">
+    </ng-container>
+    <ng-container *ngTemplateOutlet="item;context:{ key: 'translate', icon: 'lock_open', i18nKey: 'FromPrimary'}">
+    </ng-container>
+    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkCopyFrom', icon: 'translate', i18nKey: 'FromOther'}">
+    </ng-container>
+    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkReadOnly', icon: 'link', i18nKey: 'LinkReadOnly'}">
+    </ng-container>
+    <ng-container *ngTemplateOutlet="item;context:{ key: 'linkReadWrite', icon: 'share', i18nKey: 'LinkShared'}">
+    </ng-container>
   </mat-nav-list>
 
   <div *ngIf="showLanguages || selectedOption.language !== ''">
@@ -43,11 +48,12 @@
 </mat-card>
 
 <ng-template #item let-icon="icon" let-i18nKey="i18nKey" let-key='key'>
-    <mat-list-item (click)="select(i18nKey)"
-      [ngClass]="selectedOption.linkType === key ? 'mat-list-item-focus' : ''">
+  <mat-list-item (click)="select(i18nKey)" [ngClass]="selectedOption.linkType === key ? 'mat-list-item-focus' : ''">
 
-      <mat-icon matListIcon color="accent">{{icon}}</mat-icon>
-      <div matLine class="mat-list-item__title">{{'LangMenu.Dialog.' + i18nKey + '.Title' | translate : { primary: data.defaultLanguage } }}</div>
-      <div matLine class="mat-list-item__body">{{'LangMenu.Dialog.' + i18nKey + '.Body' | translate : { primary: data.defaultLanguage } }}</div>
+    <mat-icon matListIcon color="accent">{{icon}}</mat-icon>
+    <div matLine class="mat-list-item__title">
+      {{'LangMenu.Dialog.' + i18nKey + '.Title' | translate : { primary: data.defaultLanguage } }}</div>
+    <div matLine class="mat-list-item__body">
+      {{'LangMenu.Dialog.' + i18nKey + '.Body' | translate : { primary: data.defaultLanguage } }}</div>
   </mat-list-item>
 </ng-template>
