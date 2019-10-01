@@ -31,6 +31,8 @@ $hyperlink-default-height: 78px;
         border-radius: $edit-ui-input-border-radius 0 0 $edit-ui-input-border-radius;
         border: 1px solid $field-border-color--disabled;
         cursor: pointer;
+        background-repeat: no-repeat;
+        background-position: center;
 
         &.icon-before-input {
             display: flex;
