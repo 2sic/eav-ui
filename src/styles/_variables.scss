@@ -19,8 +19,11 @@ $edit-ui-dialog-border-radius-mobile:0px;
 $edit-ui-input-border-radius:4px;
 
 $save-button-height:48px;
+$save-button-height-mobile:42px;
 $save-button-width-compact:48px;
+$save-button-width-compact-mobile:42px;
 $save-button-width-extended:200px;
+$save-button-width-extended-mobile:170px;
 
 // The max-height should also be set in the expandable wrapper animations
 $expandable-wrapper-max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height});

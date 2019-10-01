@@ -39,11 +39,12 @@
     position: absolute;
     bottom: 14px;
     right: 24px;
+    @media (max-width: 600px) {
+      bottom: 4px;
+    }
   } 
 
   &__save-button {
-      width: 48px;
-      height: 48px;
       .mat-fab {
           border-radius: 16px 0;
           overflow: hidden;
@@ -64,11 +65,19 @@
           &--compact {
               height: $save-button-height;
               width: $save-button-width-compact;
+              @media (max-width: 600px) {
+                height: $save-button-height-mobile;
+                width: $save-button-width-compact-mobile;
+              }
               transition: width 1s;
           }
           &--extended {
               height: $save-button-height;
               width: $save-button-width-extended;
+              @media (max-width: 600px) {
+                height: $save-button-height-mobile;
+                width: $save-button-width-extended-mobile;
+              }
               transition: width 1s;
           }
 
