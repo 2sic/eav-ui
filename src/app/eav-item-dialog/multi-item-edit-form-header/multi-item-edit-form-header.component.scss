@@ -18,9 +18,7 @@
     width: 30px;
     height: 30px;
     flex-shrink: 0;
-    &:first-child {
-      line-height: 30px;
-    }
+    line-height: 30px;
   }
   &__exit-icon {
     font-size: 16px;
