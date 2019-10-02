@@ -41,8 +41,10 @@
     background-color: $editUI-disabled-background;
 }
 .mat-icon-button {
-    margin-left: -14px;
-    margin-right: 18px;
+    margin-right: 12px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
 }
 .mat-icon {
     font-size: 20px;
