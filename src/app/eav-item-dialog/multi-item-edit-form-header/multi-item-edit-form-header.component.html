@@ -1,17 +1,20 @@
-<mat-card fxLayout="row" fxLayoutAlign="start center">
-  <button mat-icon-button fxLayoutAlign="center center" (click)="closeDialog()">
-    <mat-icon *ngIf="isParentDialog" matTooltip="{{ 'Form.Buttons.Exit.Tip' | translate }}">
+<mat-card class="header">
+  <button mat-icon-button class="header__exit-button" (click)="closeDialog()">
+    <mat-icon class="header__exit-icon" *ngIf="isParentDialog" matTooltip="{{ 'Form.Buttons.Exit.Tip' | translate }}">
       clear
     </mat-icon>
-    <mat-icon *ngIf="!isParentDialog" matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
+    <mat-icon class="header__exit-button" *ngIf="!isParentDialog"
+      matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
       arrow_back
     </mat-icon>
   </button>
-  <div fxFlex="auto" style="width:100px;">
+  <div class="header__langs">
     <app-eav-language-switcher *ngIf="languages.length > 0" [formId]="formId" [formsAreValid]="formsAreValid"
       [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
   </div>
-  <button mat-button (click)="openSaveSatusDialog()" matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">
-    <span class="publish-mode">Status: <b>{{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}</b></span>
+  <button mat-button class="header__publish-button" (click)="openSaveSatusDialog()"
+    matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">
+    <span class="header__publish-mode">Status:
+      <b>{{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}</b></span>
   </button>
 </mat-card>

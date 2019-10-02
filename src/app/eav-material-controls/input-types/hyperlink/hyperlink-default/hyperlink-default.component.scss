@@ -13,6 +13,10 @@
         position: fixed;
         width:  100%;
         max-width: $edit-ui-dialog-max-width;
+        pointer-events: none;
+        button {
+            pointer-events: auto;
+        }
     }
 
     &-image {

@@ -48,29 +48,32 @@
             z-index:4;
             .mat-card {
                 border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
-                padding-top: 17px;
-                padding-right: 16px;
-                padding-bottom: 15px;
-                padding-left: 16px;
+                padding: 16px;
+                align-items: center;
                 border-bottom-left-radius: 0;
                 border-bottom-right-radius: 0;
                 height: 52px;
                 z-index: 1;
                 // box-shadow: 0 2px 5px rgba(0,0,0,0.26);
                 .back-arrow {
-                    margin-left: -14px;
-                    margin-right: 18px;
-                    margin-top: -10px;
+                    margin-right: 12px;
+                    width: 30px;
+                    height: 30px;
+                    &:first-child {
+                        line-height: 30px;
+                    }
                     .mat-icon {
-                        font-size: 20px;
-                        width: 20px;
-                        height: 20px;
-                        line-height: 20px;
+                        font-size: 16px;
+                        width: 16px;
+                        height: 16px;
+                        line-height: 16px;
                     }
                 }
                 .title {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 500;
+                    margin-top: 1px;
+                    line-height: 20px;
                 }
             }
         }
