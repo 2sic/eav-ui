@@ -3,24 +3,31 @@ $edit-ui-dialog-max-width: 960px;
 
 $edit-ui-dialog-top-padding: 24px;
 $edit-ui-dialog-header-max-height: 52px;
-$edit-ui-dialog-max-height: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding} );
+$edit-ui-dialog-max-height: calc(100vh - #{$edit-ui-dialog-top-padding} - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-top-padding});
+$edit-ui-dialog-max-height-mobile: calc(100vh - #{$edit-ui-dialog-header-max-height});
 
 // Debug
 $edit-ui-dialog-debug-max-height: 52px;
 $debug-info-container-height: 300px;
 $debug-info-container-margin: 16px;
 $debug-info-container-total-height: calc(#{$debug-info-container-height} + #{$debug-info-container-margin});
-$edit-ui-dialog-max-height-with-debug: calc(100vh - 24px - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height} - #{$edit-ui-dialog-top-padding} );
+$edit-ui-dialog-max-height-with-debug: calc(100vh - #{$edit-ui-dialog-top-padding} - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height} - #{$edit-ui-dialog-top-padding});
+$edit-ui-dialog-max-height-with-debug-mobile: calc(100vh - #{$edit-ui-dialog-header-max-height} - #{$edit-ui-dialog-debug-max-height});
 
 $edit-ui-dialog-border-radius:8px;
+$edit-ui-dialog-border-radius-mobile:0px;
 $edit-ui-input-border-radius:4px;
 
 $save-button-height:48px;
+$save-button-height-mobile:42px;
 $save-button-width-compact:48px;
+$save-button-width-compact-mobile:42px;
 $save-button-width-extended:200px;
+$save-button-width-extended-mobile:170px;
 
 // The max-height should also be set in the expandable wrapper animations
 $expandable-wrapper-max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height});
+$expandable-wrapper-max-height-mobile: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height});
 
 $edit-ui-dialog-background-color: #EFF0F2;
 

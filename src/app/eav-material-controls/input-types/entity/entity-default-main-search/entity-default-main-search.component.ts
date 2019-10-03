@@ -174,7 +174,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
       this.selectEntities = this.availableEntities.filter(
         option => option.Text
           ? option.Text.toLowerCase().includes(this.filterText.toLowerCase())
-          : option.Value.toLowerCase().includes(this.filterText.toLowerCase())
+          // input (filterText) works with string but value can be a number so we have to convert it to string for comparison to work
+          : option.Value.toString().toLowerCase().includes(this.filterText.toLowerCase())
       );
     }
   }

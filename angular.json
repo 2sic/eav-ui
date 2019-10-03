@@ -17,14 +17,11 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "showCircularDependencies": false,
-            "assets": [
-              "src/ui.html"
-            ],
+            "assets": [],
             "styles": [
               "src/styles.scss"
             ],
             "scripts": [
-              "src/scripts/clipboard-paste/paste.js",
               "src/scripts/dropzone-dragging-helper.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
@@ -58,7 +55,8 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "browserTarget": "eav-item-dialog-angular:build"
+            "browserTarget": "eav-item-dialog-angular:build",
+            "publicHost": "http://localhost:4200"
           },
           "configurations": {
             "production": {
@@ -120,129 +118,6 @@
             "tsConfig": [
               "e2e/tsconfig.e2e.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "field-string-wysiwyg": {
-      "root": "projects/field-string-wysiwyg/",
-      "sourceRoot": "projects/field-string-wysiwyg/src",
-      "projectType": "application",
-      "prefix": "app",
-      "schematics": {},
-      "architect": {
-        "build": {
-          "builder": "ngx-build-plus:build",
-          "options": {
-            "singleBundle": true,
-            "outputPath": "./dist/elements/field-string-wysiwyg",
-            "index": "",
-            "main": "projects/field-string-wysiwyg/src/main.ts",
-            "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
-            "tsConfig": "projects/field-string-wysiwyg/tsconfig.app.json",
-            "assets": [],
-            "styles": [
-              "projects/field-string-wysiwyg/src/styles.css"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/field-string-wysiwyg/src/environments/environment.ts",
-                  "with": "projects/field-string-wysiwyg/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "ngx-build-plus:dev-server",
-          "options": {
-            "browserTarget": "field-string-wysiwyg:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "field-string-wysiwyg:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "field-string-wysiwyg:build"
-          }
-        },
-        "test": {
-          "builder": "ngx-build-plus:karma",
-          "options": {
-            "main": "projects/field-string-wysiwyg/src/test.ts",
-            "polyfills": "projects/field-string-wysiwyg/src/polyfills.ts",
-            "tsConfig": "projects/field-string-wysiwyg/tsconfig.spec.json",
-            "karmaConfig": "projects/field-string-wysiwyg/karma.conf.js",
-            "styles": [
-              "projects/field-string-wysiwyg/src/styles.css"
-            ],
-            "scripts": [],
-            "assets": [
-              "projects/field-string-wysiwyg/src/assets"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/field-string-wysiwyg/tsconfig.app.json",
-              "projects/field-string-wysiwyg/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "field-string-wysiwyg-e2e": {
-      "root": "projects/field-string-wysiwyg-e2e/",
-      "projectType": "application",
-      "prefix": "",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/field-string-wysiwyg-e2e/protractor.conf.js",
-            "devServerTarget": "field-string-wysiwyg:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "field-string-wysiwyg:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "projects/field-string-wysiwyg-e2e/tsconfig.e2e.json",
             "exclude": [
               "**/node_modules/**"
             ]

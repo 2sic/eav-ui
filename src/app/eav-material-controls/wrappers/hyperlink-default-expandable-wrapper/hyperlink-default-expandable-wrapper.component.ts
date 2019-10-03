@@ -48,6 +48,8 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
+  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
+
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
     this.setLink(this.control.value);

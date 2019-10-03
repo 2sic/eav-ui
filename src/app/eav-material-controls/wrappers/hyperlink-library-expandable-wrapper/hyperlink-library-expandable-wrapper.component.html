@@ -15,7 +15,10 @@
       </div>
       <div
         class="c-ew__dialog-content c-ew__dialog-content--empty u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
-        [@contentExpandAnimation]="!dialogIsOpen ? 'closed' : 'expanded'">
+        [@contentExpandAnimation]="{
+          value: !dialogIsOpen ? 'closed' : 'expanded',
+          params: {bottomPixels: bottomPixels}
+        }">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>

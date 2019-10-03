@@ -27,6 +27,7 @@ import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { EntityDataModule } from '@ngrx/data';
 import { entityConfig } from './shared/store/ngrx-data/entity-metadata';
+declare const sxcVersion: string;
 
 const routes: Routes = [
   {
@@ -36,7 +37,7 @@ const routes: Routes = [
 ];
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './i18n/', '.js');
+  return new TranslateHttpLoader(http, './i18n/', `.js?${sxcVersion}`);
 }
 
 @NgModule({

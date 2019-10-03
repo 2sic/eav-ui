@@ -5,6 +5,9 @@
     margin: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    @media (max-width: 600px) {
+        border-radius: 0;
+    }
     height: $edit-ui-dialog-debug-max-height;
     z-index: 1;
     width: 100%;
@@ -38,8 +41,10 @@
     background-color: $editUI-disabled-background;
 }
 .mat-icon-button {
-    margin-left: -14px;
-    margin-right: 18px;
+    margin-right: 12px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
 }
 .mat-icon {
     font-size: 20px;

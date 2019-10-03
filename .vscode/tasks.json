@@ -27,6 +27,11 @@
             "type": "npm",
             "script": "dev-all",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dialog-local",
+            "problemMatcher": []
         }
     ]
 }

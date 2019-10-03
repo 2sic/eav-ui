@@ -5,8 +5,9 @@ $border-radius: 8px;
         padding: 0;
         margin: 0 0 0 0;
         border-radius: $border-radius;
-        // background: #EFF0F2;
-        // max-width: 960px;
+        @media (max-width: 600px) {
+            border-radius: 4px;
+        }
     }
     &-group-child {
         padding: 0;
@@ -21,8 +22,8 @@ $border-radius: 8px;
         border-radius: $border-radius;
         height: 48px;
         .title {
-            font-size: 18px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 400;
         }
     }
     &-group-child {
@@ -49,6 +50,8 @@ $border-radius: 8px;
 .mat-card-title-group {
     margin:0;
     cursor: pointer;
+    line-height: 20px;
+    color: #0088F4;
 }
 
 .mat-icon {
@@ -56,7 +59,7 @@ $border-radius: 8px;
     width: 20px;
     height: 20px;
     line-height: 20px !important;
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 .mdc-layout-grid {

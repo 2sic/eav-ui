@@ -80,7 +80,8 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       ? entityGuidOrStringValue
       : this.entityTextDefault ? this.entityTextDefault : entityGuidOrStringValue;
 
-    const entity = this.availableEntities.find(f => f.Value === entityGuidOrStringValue);
+    // entity value is converted to string in Helper.convertArrayToString in patchValue and that is why we have to convert it here too
+    const entity = this.availableEntities.find(f => f.Value.toString() === entityGuidOrStringValue);
     return entity ? entity.Text : fallback;
   }
 

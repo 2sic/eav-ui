@@ -29,7 +29,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   get changes() { return this.form.valueChanges; }
-  get valid() { return this.form.valid; }
+  get valid() { return !this.form.invalid; }
   get value() { return this.form.value; }
   get dirty() { return this.form.dirty; }
   get debugEnviroment() {

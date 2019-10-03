@@ -45,6 +45,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get touched() { return this.group.controls[this.config.field.name].touched || false; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   constructor(
     private eavService: EavService,

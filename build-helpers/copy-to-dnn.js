@@ -28,8 +28,8 @@ const calculatePaths = (path) => {
   const src = path.slice(0, separatorIndex);
   const file = path.slice(separatorIndex + 1);
 
-  const dest = src.startsWith(`${sourcePathMain}`)
-    ? `${outputPath}${src.replace(`${sourcePathMain}`, '')}`
+  const dest = src.startsWith(sourcePathMain)
+    ? `${outputPath}${src.replace(sourcePathMain, '')}`
     : `${outputPath}${src.replace(sourcePath, '')}`;
 
   return {

@@ -4,7 +4,7 @@ const setExternalSourceMaps = require('../../build-helpers/external-source-maps-
 
 const configuration = {
   mode: 'development',
-  entry: ['./projects/field-string-wysiwyg-typescript/src/main/main.ts', './projects/field-string-wysiwyg-typescript/src/preview/preview.ts'],
+  entry: ['./projects/field-string-wysiwyg/src/main/main.ts', './projects/field-string-wysiwyg/src/preview/preview.ts'],
   plugins: [
     new CleanWebpackPlugin(),
   ],
