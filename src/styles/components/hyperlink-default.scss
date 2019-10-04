@@ -1,15 +1,8 @@
 // hyperlink-default overrides
-$hyperlink-default-margin-bottom: 24px;
-$hyperlink-default-margin-bottom-last-in-group: 8px;
-
 .c-hyperlink-default-field-preview {
     .c-ew__preview {
-        margin-bottom: $hyperlink-default-margin-bottom;
-
         &--last-in-group {
-            margin-bottom: $hyperlink-default-margin-bottom-last-in-group;
         }
-
         .c-fht__container {
             padding-bottom: 0;
         }

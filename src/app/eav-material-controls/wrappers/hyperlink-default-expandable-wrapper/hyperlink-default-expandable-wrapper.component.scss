@@ -9,8 +9,8 @@ $hyperlink-default-height: 78px;
         &--short {
             // spm width 1% is required. Otherwise field breaks
             width: 1%;
-            padding: 10px;
-            padding-bottom: 0;
+            padding: 0;
+            padding-left: 10px
         }
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);
@@ -83,8 +83,8 @@ $hyperlink-default-height: 78px;
     }
     &--right {
         flex: 0 0 auto;
+        padding-top: 0.54166667em;
         padding-left: 12px;
-        padding-top: 3px;
         line-height: 16px;
     }
 }
