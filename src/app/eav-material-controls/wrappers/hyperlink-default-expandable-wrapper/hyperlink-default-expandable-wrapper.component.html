@@ -47,7 +47,7 @@
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <!-- input -->
       <div class="c-hyperlink-default-input-link-wrapper">
-        <mat-form-field appearance="outline" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
+        <mat-form-field appearance="standard" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
           'mat-form-field-invalid': control.invalid && control.touched
         }">
           <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
@@ -58,7 +58,8 @@
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
           }">drop files here</div>
-            <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button" (click)="expandDialog()">
+            <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" [disabled]="control.disabled"
+              type="button" (click)="expandDialog()">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
           </div>

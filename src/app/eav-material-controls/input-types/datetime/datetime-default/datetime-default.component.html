@@ -3,7 +3,7 @@
 </div>
 
 <ng-template #notUseTimePickerTemplate>
-  <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="c-datetime-default-field">
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="c-datetime-default-field">
     <input matInput [matDatepicker]="picker" class="form-control material" [formControlName]="config.field.name"
       [placeholder]="config.field.label" [required]='config.field.required'>
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
@@ -18,7 +18,7 @@
 </ng-template>
 
 <ng-template #useTimePickerTemplate>
-  <mat-form-field [formGroup]="group" appearance="outline" color="accent" class="c-datetime-default-field">
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="c-datetime-default-field">
     <input matInput [formControlName]="config.field.name" [owlDateTime]="picker" [placeholder]="config.field.label"
       [required]='config.field.required'>
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->

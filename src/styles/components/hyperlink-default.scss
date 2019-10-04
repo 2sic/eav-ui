@@ -28,9 +28,7 @@ $hyperlink-default-margin-bottom-last-in-group: 8px;
 .c-hyperlink-default-link {
     &__container {
         position: absolute;
-        top: 13px;
-        left: 12px;
-        font-size: 14px;
+        top: 35px;
         pointer-events: none;
         display: flex;
     }
@@ -39,7 +37,7 @@ $hyperlink-default-margin-bottom-last-in-group: 8px;
         margin-right: 16px;
     }
     &__link {
-        font-size: 12px;
+        font-size: 14px;
         display: flex;
         align-items: center;
     }

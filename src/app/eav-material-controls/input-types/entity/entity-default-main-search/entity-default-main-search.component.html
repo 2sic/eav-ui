@@ -8,7 +8,7 @@
     <div
       [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
-        <mat-form-field [formGroup]="group" appearance="outline" color="accent" [ngClass]="{
+        <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
           'mat-form-field-invalid': inputInvalid && touched
         }">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
@@ -52,7 +52,7 @@
 </div>
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
-<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="outline" color="accent">
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
   <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
