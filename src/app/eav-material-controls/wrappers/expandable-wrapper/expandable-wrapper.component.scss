@@ -2,18 +2,17 @@
 @import "../../../../styles/theme/material-colors.scss";
 
 %field-border {
-    padding: 1px 12px;
-    border-radius: 5px;
-    border: 1px solid $field-border-color--initial;
+    padding: 0 0 1px 0;
+    border-bottom: 1px solid $field-border-color--initial;
 }
 %field-border--hover {
-    padding: 0 11px;
-    border: 2px solid $field-border-color--hover;
+    padding: 0;
+    border-bottom: 2px solid $field-border-color--hover;
     transition: border-color .3s cubic-bezier(.25,.8,.25,1);
 }
 %field-border--invalid {
-    padding: 0 11px;
-    border: 2px solid $field-border-color--invalid;
+    padding: 0;
+    border-bottom: 2px solid $field-border-color--invalid;
     transition: border-color .3s cubic-bezier(.25,.8,.25,1);
 }
 
@@ -22,6 +21,8 @@
     $max-height: 116px;
     $max-height-inline: 50vh;
     $content-padding-top: 8px;
+    $label-top: 14px;
+    $label-top-wysiwyg: 26px;
     &__preview {
         position:relative;
         min-height: $min-height;
@@ -36,18 +37,22 @@
 
         &-holder {
             position: relative;
+            margin-top: $label-top;
+            &.wysiwyg {
+                margin-top: $label-top-wysiwyg;
+            }
         }
 
         &-label {
-            background-color: white;
-            top: -5px;
+            top: -$label-top;
             position: absolute;
             z-index: 1;
-            left: 8px;
-            padding: 0 6px 0 4px;
             pointer-events: none;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 14px;
+            &.wysiwyg {
+                top: -$label-top-wysiwyg;
+            }
         }
         &-label:not(.mat-error) {
             color: rgba($editUI-foreground-color, 0.44);
@@ -138,19 +143,40 @@
         }
     }
 
+    &__preview--wysiwyg, &__inline--wysiwyg {
+        $wysiwyg-border: 1px solid lightgrey;
+        $wysiwyg-border-hover: 2px solid lightgrey;
+        $wysiwyg-border-invalid: 2px solid $field-border-color--invalid;
+        $wysiwyg-border-disabled: 1px solid $editUI-disabled-background;
+        $wysiwyg-padding: 1px;
+        $wysiwyg-padding-hover: 0;
+
+        padding: $wysiwyg-padding;
+        border-top: $wysiwyg-border;
+        border-right: $wysiwyg-border;
+        border-left: $wysiwyg-border;
+        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+            padding: $wysiwyg-padding-hover;
+            border-top: $wysiwyg-border-hover;
+            border-right: $wysiwyg-border-hover;
+            border-left: $wysiwyg-border-hover;
+        }
+        &.c-ew__preview--invalid {
+            padding: $wysiwyg-padding-hover;
+            border-top: $wysiwyg-border-invalid;
+            border-right: $wysiwyg-border-invalid;
+            border-left: $wysiwyg-border-invalid;
+        }
+        &.c-ew__preview--disabled {
+            border-top: $wysiwyg-border-disabled;
+            border-right: $wysiwyg-border-disabled;
+            border-left: $wysiwyg-border-disabled;
+        }
+    }
+
     &__inline {
         cursor: auto;
         max-height: $max-height-inline;
-
-        &--wysiwyg {
-            padding: 1px;
-            &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
-                padding: 0;
-            }
-            .c-ew__preview--invalid {
-                padding: 0;
-            }
-        }
 
         &-content {
             max-height: calc(#{$max-height-inline} - #{$content-padding-top});

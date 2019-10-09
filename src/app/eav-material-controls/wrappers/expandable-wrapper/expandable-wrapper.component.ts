@@ -44,6 +44,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get touched() { return this.group.controls[this.config.field.name].touched || false; }
+  get dirty() { return this.group.controls[this.config.field.name].dirty || false; }
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 

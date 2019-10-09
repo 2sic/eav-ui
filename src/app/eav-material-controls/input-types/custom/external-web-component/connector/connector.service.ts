@@ -217,6 +217,7 @@ export class ConnectorService {
     // TODO: validate value
     this.group.controls[this.config.field.name].patchValue(value);
     this.group.controls[this.config.field.name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsTouched(); // spm should be marked on first focus. Read JSDoc
     console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
   }
 
@@ -224,6 +225,7 @@ export class ConnectorService {
     if (!this.group.controls[name] || this.group.controls[name].disabled) { return; }
     this.group.controls[name].patchValue(value);
     this.group.controls[name].markAsDirty();
+    this.group.controls[this.config.field.name].markAsTouched();
   }
 
   public destroy() {

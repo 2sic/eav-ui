@@ -22,20 +22,24 @@
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder">
+<div class="c-ew__preview-holder" [ngClass]="{
+  'wysiwyg': isWysiwyg
+}">
   <mat-label class="c-ew__preview-label" [ngClass]="{
       'mat-caption' : value && value.length > 0,
       'mat-empty' : !(value && value.length > 0),
       'mat-error' : inputInvalid && touched && !disabled,
       'color__primary' : !(inputInvalid && touched) && !disabled,
-      'color__label-disabled' : disabled
+      'color__label-disabled' : disabled,
+      'wysiwyg': isWysiwyg
     }">
     {{config.field.label}}
     {{config.field.required? '*': '' }}
   </mat-label>
   <div *ngIf="!inlineMode" matRipple (click)="!disabled ? expandDialog() : null; setTouched();"
     [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple" [ngClass]="{
-      'c-ew__preview--invalid' : inputInvalid && touched,
+      'c-ew__preview--invalid' : inputInvalid && (touched || dirty),
+      'c-ew__preview--wysiwyg': isWysiwyg,
       'c-ew__preview--disabled': disabled
     }">
     <div class="c-ew__preview-container">
@@ -45,7 +49,7 @@
     </div>
   </div>
   <div *ngIf="inlineMode" class="c-ew__preview c-ew__inline" [ngClass]="{
-    'c-ew__preview--invalid c-ew__inline--invalid' : inputInvalid && touched,
+    'c-ew__preview--invalid c-ew__inline--invalid' : inputInvalid && (touched || dirty),
     'c-ew__inline--wysiwyg': isWysiwyg,
     'c-ew__preview--disabled': disabled
   }">
