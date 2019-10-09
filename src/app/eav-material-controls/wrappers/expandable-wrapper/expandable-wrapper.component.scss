@@ -37,9 +37,9 @@
 
         &-holder {
             position: relative;
-            margin-top: $label-top;
+            margin-top: calc(#{$label-top} + 12px);
             &.wysiwyg {
-                margin-top: $label-top-wysiwyg;
+                margin-top: calc(#{$label-top-wysiwyg} + 12px);
             }
         }
 

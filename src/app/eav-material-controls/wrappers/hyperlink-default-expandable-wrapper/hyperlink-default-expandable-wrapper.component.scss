@@ -5,6 +5,8 @@
 $hyperlink-default-height: 78px;
 
 .c-ew__preview {
+    padding-top: 12px;
+
     &-field {
         &--short {
             // spm width 1% is required. Otherwise field breaks
