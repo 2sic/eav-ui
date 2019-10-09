@@ -4,7 +4,7 @@
 
 <!-- pick existing entity close-->
 <div [hidden]="freeTextMode">
-  <div class="ed-field" fxLayout="row" fxLayoutAlign="start start">
+  <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
     <div
       [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">

@@ -4,8 +4,13 @@
 }
 
 .ed-field__create-icon {
-    width: 48px;
-    padding-right: 2px;
+    width: 38px;
+    padding-bottom: 4px;
+    .mat-icon-button {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+    }
 }
 
 .ed-field__create-icon-hide {
@@ -13,8 +18,8 @@
 }
 
 .ed-field__field-short {
-    width: calc(100% - 48px);
-    max-width: calc(100% - 48px);
+    width: calc(100% - 38px);
+    max-width: calc(100% - 38px);
 }
 
 .ed-field__field {

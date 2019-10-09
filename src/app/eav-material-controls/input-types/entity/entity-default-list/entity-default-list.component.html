@@ -8,11 +8,12 @@
         'dnd-element-multi' : allowMultiValue,
         'mat-elevation-z2' : allowMultiValue,
         'dnd-element': !allowMultiValue,
-        'dnd-element--disabled': disabled
+        'dnd-element--disabled': disabled,
+        'first': i === 0
         }" fxLayout="row" fxLayoutAlign="start center">
         <!-- Single element -->
         <div *ngIf="!allowMultiValue" class="dnd-element-content" dndNoDrag>
-          <div>
+          <div *ngIf="i === 0">
             <mat-label class="mat-caption">{{config.field.label}}
               {{config.field.required ? '*': '' }}</mat-label>
           </div>
