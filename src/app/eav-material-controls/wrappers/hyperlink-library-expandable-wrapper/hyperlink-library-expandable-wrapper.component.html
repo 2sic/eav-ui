@@ -36,7 +36,7 @@
     {{config.field.label}}
     {{config.field.required ? '*': '' }}
   </mat-label>
-  <div matRipple (click)="!config.field.disabled ? expandDialog() : null" [matRippleAnimation]="{enterDuration: 360}"
+  <div matRipple [matRippleAnimation]="{enterDuration: 360}" (click)="!config.field.disabled ? expandDialog() : null"
     class="c-ew__preview mat-ripple"
     [ngClass]="{'c-ew__preview--invalid' : inputInvalid,'c-ew__preview--disabled': config.field.disabled}">
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
@@ -61,24 +61,19 @@
             <div class="adam-short-label mat-caption">{{ item.Name }}</div>
           </div>
           <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
-            <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=56&h=56&mode=crop'">
+            <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=78&h=78&mode=crop'">
           </div>
-        </div>
-      </div>
-      <!-- hints -->
-      <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
-        <div>
-          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="start start">drop files here</mat-hint>
-        </div>
-        <div fxFlex="auto"></div>
-        <div>
-          <mat-hint class="c-ew__preview-hint-text" fxLayoutAlign="end end" fxHide fxShow.gt-xs>
-            <span>ADAM - sponsored with ♡ by 2sic.com</span>
-          </mat-hint>
         </div>
       </div>
     </div>
   </div>
-  <!-- hasDirtyTouched="fasle" -->
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+  <!-- hints -->
+  <div class="mat-caption c-ew__preview-hint" fxLayout="row" fxLayoutAlign="start start">
+    <div class="c__helper-wrapper--left">
+      <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+    </div>
+    <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
+      <span>ADAM - sponsored with ♡ by 2sic.com</span>
+    </div>
+  </div>
 </div>
