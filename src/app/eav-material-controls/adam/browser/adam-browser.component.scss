@@ -20,6 +20,12 @@
     height: 64px;
 }
 
+.adam-browse-background-image {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
 .adam-background {
     z-index: 20;
     position: absolute;

@@ -2,7 +2,8 @@
   <div class="adam-dialog-content">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config" [ngClass]="{
+  <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config" class="u-shadow-top"
+    [ngClass]="{
       'adam-browser-container--short': !fullScreenAdamBrowser
     }">
   </adam-browser>

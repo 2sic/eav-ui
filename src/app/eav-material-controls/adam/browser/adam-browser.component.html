@@ -1,5 +1,5 @@
 <!-- TODO: this dropzone class only because css - need to change-->
-<div class="dropzone u-shadow-top" *ngIf="!config.field.disabled" [@adamShowAnimate]="show ? 'open' : 'closed'">
+<div class="dropzone" *ngIf="!config.field.disabled" [@adamShowAnimate]="show ? 'open' : 'closed'">
   <div *ngIf="show" ngClass="{{'adam-scope-' + (adamModeConfig.usePortalRoot ? 'site' : field)}}">
 
     <!-- info for dropping stuff here -->
@@ -91,7 +91,7 @@
         <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
         <div class="adam-short-label">{{ item.Name }}</div>
       </div>
-      <div *ngIf="item.Type === 'image'" class="dz-image">
+      <div *ngIf="item.Type === 'image'" class="dz-image adam-browse-background-image">
         <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=120&h=120&mode=crop'">
       </div>
 
