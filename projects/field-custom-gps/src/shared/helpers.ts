@@ -1,3 +1,10 @@
+// google material icons
+import * as map from '../../../../src/icons/google-material/map-24px.svg';
+
+export const customGpsIcons = {
+  map: map,
+};
+
 export function buildTemplate(template: string, styles: string): string {
   return `${template}<style>\n${styles}\n</style>`;
 }

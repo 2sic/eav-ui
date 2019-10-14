@@ -1,8 +1,24 @@
 .custom-gps-preview {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  width: 100%;
   display: flex;
   align-items: center;
+}
+
+.custom-gps-preview__text {
+  flex-shrink: 0;
+  max-width: 80%;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.custom-gps-preview__spacer {
+  flex-grow: 1;
+}
+
+.custom-gps-preview__map-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

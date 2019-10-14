@@ -1,5 +1,5 @@
 import { EavCustomInputField } from '../../../shared/eav-custom-input-field';
-import { buildTemplate, parseLatLng } from '../shared/helpers';
+import { customGpsIcons, buildTemplate, parseLatLng } from '../shared/helpers';
 import { defaultCoordinates } from '../shared/constants';
 import * as template from './preview.html';
 import * as styles from './preview.css';
@@ -16,6 +16,8 @@ class FieldCustomGpsPreview extends EavCustomInputField<string> {
   connectedCallback() {
     console.log('FieldCustomGpsPreview connectedCallback called');
     this.innerHTML = buildTemplate(template, styles);
+    const mapIconContainer = this.querySelector('#map-icon-container');
+    mapIconContainer.innerHTML = customGpsIcons.map;
     this.latContainer = this.querySelector('#lat-container');
     this.lngContainer = this.querySelector('#lng-container');
 
