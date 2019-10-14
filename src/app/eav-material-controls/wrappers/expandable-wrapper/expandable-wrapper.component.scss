@@ -22,7 +22,6 @@
     $max-height-inline: 50vh;
     $content-padding-top: 8px;
     $label-top: 14px;
-    $label-top-wysiwyg: 26px;
     &__preview {
         position:relative;
         min-height: $min-height;
@@ -38,9 +37,6 @@
         &-holder {
             position: relative;
             margin-top: calc(#{$label-top} + 12px);
-            &.wysiwyg {
-                margin-top: calc(#{$label-top-wysiwyg} + 12px);
-            }
         }
 
         &-label {
@@ -50,9 +46,6 @@
             pointer-events: none;
             font-size: 12px;
             line-height: 14px;
-            &.wysiwyg {
-                top: -$label-top-wysiwyg;
-            }
         }
         &-label:not(.mat-error) {
             color: rgba($editUI-foreground-color, 0.44);

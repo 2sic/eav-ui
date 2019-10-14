@@ -30,8 +30,7 @@
       'mat-empty' : !(value && value.length > 0),
       'mat-error' : inputInvalid && touched && !disabled,
       'color__primary' : !(inputInvalid && touched) && !disabled,
-      'color__label-disabled' : disabled,
-      'wysiwyg': isWysiwyg
+      'color__label-disabled' : disabled
     }">
     {{config.field.label}}
     {{config.field.required? '*': '' }}
