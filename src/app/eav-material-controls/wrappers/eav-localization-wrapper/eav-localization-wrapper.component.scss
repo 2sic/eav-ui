@@ -1,21 +1,24 @@
+$translate-width: 48px;
+
+.language-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
 .language-wrap__field {
     width: 100%;
 }
 
 .language-wrap__field-short {
-    width: calc(100% - 48px);
+    width: calc(100% - #{$translate-width});
 }
 
-.language-wrap__icon {
-    width: 48px;
-    height: 40px;
+.language-wrap__translate {
+    width: $translate-width;
+    position: relative;
 }
 
-.language-wrap__icon-hide {
+.language-wrap__translate--hidden {
     width: 0;
-}
-
-.language-wrap {
-    width: 100%;
-    height: 100%;
 }
