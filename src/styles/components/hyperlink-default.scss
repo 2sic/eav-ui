@@ -1,11 +1,7 @@
 // hyperlink-default overrides
 .c-hyperlink-default-field-preview {
     .c-ew__preview {
-        &--last-in-group {
-        }
-        .c-fht__container {
-            padding-bottom: 0;
-        }
+        &--last-in-group { }
     }
     .mat-form-field-outline {
         .mat-form-field-outline-start, .mat-form-field-outline-gap, .mat-form-field-outline-end {

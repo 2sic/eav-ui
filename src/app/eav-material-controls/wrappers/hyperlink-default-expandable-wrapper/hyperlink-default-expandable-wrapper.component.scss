@@ -12,7 +12,8 @@ $hyperlink-default-height: 78px;
             // spm width 1% is required. Otherwise field breaks
             width: 1%;
             padding: 0;
-            padding-left: 10px
+            padding-left: 8px;
+            margin-top: -4px;
         }
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);

@@ -26,7 +26,7 @@
 
 <!-- preview -->
 <div class="c-hyperlink-default-field-preview">
-  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start end" [ngClass]="{
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
     'c-ew__preview--disabled': control.disabled,
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">
@@ -78,14 +78,14 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- helper text and adam text -->
-  <div class="c__helper-wrapper">
-    <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
-    </app-field-helper-text>
-    <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
-      <span>ADAM - sponsored with ♡ by 2sic.com</span>
+      <!-- helper text and adam text -->
+      <div class="c__helper-wrapper">
+        <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
+        </app-field-helper-text>
+        <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
+          <span>ADAM - sponsored with ♡ by 2sic.com</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
