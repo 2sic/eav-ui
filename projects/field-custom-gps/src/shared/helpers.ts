@@ -1,8 +1,8 @@
 // google material icons
-import * as map from '../../../../src/icons/google-material/map-24px.svg';
+import * as mapMarker from '../../../../src/icons/font-awesome/map-marker-alt-solid.svg';
 
 export const customGpsIcons = {
-  map: map,
+  mapMarker: mapMarker,
 };
 
 export function buildTemplate(template: string, styles: string): string {

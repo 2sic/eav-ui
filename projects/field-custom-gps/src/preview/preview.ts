@@ -17,7 +17,7 @@ class FieldCustomGpsPreview extends EavCustomInputField<string> {
     console.log('FieldCustomGpsPreview connectedCallback called');
     this.innerHTML = buildTemplate(template, styles);
     const mapIconContainer = this.querySelector('#map-icon-container');
-    mapIconContainer.innerHTML = customGpsIcons.map;
+    mapIconContainer.innerHTML = customGpsIcons.mapMarker;
     this.latContainer = this.querySelector('#lat-container');
     this.lngContainer = this.querySelector('#lng-container');
 
