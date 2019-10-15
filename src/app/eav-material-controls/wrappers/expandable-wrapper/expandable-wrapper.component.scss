@@ -58,6 +58,7 @@
         }
 
         &-content {
+            position: relative;
             overflow: hidden;
             min-height: $min-height - $content-padding-top;
             max-height: $max-height - $content-padding-top;
