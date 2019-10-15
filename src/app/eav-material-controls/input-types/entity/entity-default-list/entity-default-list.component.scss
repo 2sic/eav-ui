@@ -64,6 +64,7 @@ $label-top: 12px;
 .dnd-element-content {
     width: 100%;
     overflow: hidden;
+    margin-bottom: -4px;
 }
 
 .dnd-element-content mat-label {
@@ -74,18 +75,18 @@ $label-top: 12px;
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 20px;
 }
 
 .dnd-buttons {
     display: flex;
-    margin-right: -12px;
+    margin-bottom: -4px;
 
-    .mat-icon-button .mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
+    .mat-icon-button {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
     }
 }
 
