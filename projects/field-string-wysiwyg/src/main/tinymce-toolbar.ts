@@ -22,14 +22,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
       const items = [
         {
           type: 'choiceitem',
-          text: 'Link.AdamFile',
+          text: 'Link.AdamFile.Tooltip',
           tooltip: 'Link.AdamFile.Tooltip',
           icon: 'custom-file-pdf',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(false); },
         },
         {
           type: 'choiceitem',
-          text: 'Link.DnnFile',
+          text: 'Link.DnnFile.Tooltip',
           tooltip: 'Link.DnnFile.Tooltip',
           icon: 'custom-file-dnn',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(false, true); },
@@ -43,14 +43,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   const linkgroupItems = [
     {
       type: 'choiceitem',
-      text: 'Link',
-      tooltip: 'Link',
+      text: 'Insert/edit link',
+      tooltip: 'Insert/edit link',
       icon: 'link',
       value: (api: any) => { editor.execCommand('mceLink'); },
     },
     {
       type: 'choiceitem',
-      text: 'Link.Page',
+      text: 'Link.Page.Tooltip',
       tooltip: 'Link.Page.Tooltip',
       icon: 'custom-sitemap',
       value: (api: any) => { fieldStringWysiwyg.openDnnDialog('pagepicker'); },
@@ -59,14 +59,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   const linkgroupProItems = [...linkgroupItems];
   linkgroupProItems.push({
     type: 'choiceitem',
-    text: 'Anchor',
+    text: 'Link.Anchor.Tooltip',
     tooltip: 'Link.Anchor.Tooltip',
     icon: 'custom-anchor',
     value: (api) => { editor.execCommand('mceAnchor'); },
   });
   const linkgroup = {
     icon: 'link',
-    tooltip: 'Link',
+    tooltip: 'Insert/edit link',
     presets: 'listpreview',
     columns: 3,
     onSetup: initOnPostRender('link', editor),
@@ -90,7 +90,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   // Group with images (adam) - only in PRO mode
   editor.ui.registry.addSplitButton('images', {
     icon: 'image',
-    tooltip: 'Image',
+    tooltip: 'Image.AdamImage.Tooltip',
     presets: 'listpreview',
     columns: 3,
     onAction: (_: any) => {
@@ -103,14 +103,14 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
       const items = [
         {
           type: 'choiceitem',
-          text: 'Image.AdamImage',
+          text: 'Image.AdamImage.Tooltip',
           tooltip: 'Image.AdamImage.Tooltip',
           icon: 'image',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(true); },
         },
         {
           type: 'choiceitem',
-          text: 'Image.DnnImage',
+          text: 'Image.DnnImage.Tooltip',
           tooltip: 'Image.DnnImage.Tooltip',
           icon: 'custom-image-dnn',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(true, true); },
@@ -216,15 +216,15 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
         },
         {
           type: 'choiceitem',
-          text: 'Outdent',
-          tooltip: 'Outdent',
+          text: 'Decrease indent',
+          tooltip: 'Decrease indent',
           icon: 'outdent',
           value: (api: any) => { editor.execCommand('Outdent'); },
         },
         {
           type: 'choiceitem',
-          text: 'Indent',
-          tooltip: 'Indent',
+          text: 'Increase indent',
+          tooltip: 'Increase indent',
           icon: 'indent',
           value: (api: any) => { editor.execCommand('Indent'); },
         },
