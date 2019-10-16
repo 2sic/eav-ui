@@ -51,9 +51,9 @@
           'mat-form-field-invalid': control.invalid && control.touched
         }">
           <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
-            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
-        {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
-        ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
+            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value"
+            matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above"
+            (blur)="setTouched()">
           <div matSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled

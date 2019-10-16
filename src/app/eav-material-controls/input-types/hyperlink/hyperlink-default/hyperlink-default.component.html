@@ -44,9 +44,8 @@
       <div class="c-hyperlink-default-input-link-wrapper">
         <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="mat-form-field-hyperlink">
           <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
-            [required]="config.field.required" [required]="config.field.required" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }}
-      {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
-      ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above">
+            [required]="config.field.required" [required]="config.field.required"
+            matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above">
           <mat-label>{{config.field.label}}</mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->
