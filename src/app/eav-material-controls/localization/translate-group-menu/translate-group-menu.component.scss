@@ -6,7 +6,6 @@
 }
 
 .eav-localization-lock-open { 
-    // color: #228b22; 
     color: green; 
 }
 
@@ -37,12 +36,6 @@
 
     &--disabled {
         color: rgba($editUI-foreground-color, 0.24);
-    }
-}
-
-.shared-languages-container:hover {
-    .color__accent {
-        color: map_get($mat-eav-item-dialog-secondary, 500);
     }
 }
 
