@@ -20,7 +20,6 @@
     $min-height: 36px;
     $max-height: 116px;
     $max-height-inline: 50vh;
-    $content-padding-top: 8px;
     $label-top: 14px;
     &__preview {
         position:relative;
@@ -60,9 +59,8 @@
         &-content {
             position: relative;
             overflow: hidden;
-            min-height: $min-height - $content-padding-top;
-            max-height: $max-height - $content-padding-top;
-            padding-top: $content-padding-top;
+            min-height: $min-height;
+            max-height: $max-height;
 
             &--disabled {
                 pointer-events: none;
@@ -173,7 +171,7 @@
         max-height: $max-height-inline;
 
         &-content {
-            max-height: calc(#{$max-height-inline} - #{$content-padding-top});
+            max-height: $max-height-inline;
             overflow-y: scroll;
             -ms-overflow-style: none;  // IE 10+
             overflow: -moz-scrollbars-none;  // Firefox
