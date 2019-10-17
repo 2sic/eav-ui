@@ -47,7 +47,7 @@ export class EntityService {
   }
 
   public delete(appId: string, type: string, id: string, itemTitle: string, tryForce: boolean): Observable<any> {
-    const msg = this.translate.instant('General.Questions.DeleteEntity', { title: itemTitle, id: id });
+    const msg = this.translate.instant('Data.Delete.Question', { title: itemTitle, id: id });
     if (!confirm(msg)) {
       return null;
     } else {

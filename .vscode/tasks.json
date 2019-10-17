@@ -32,6 +32,12 @@
             "type": "npm",
             "script": "dialog-local",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dev-all-watch",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }

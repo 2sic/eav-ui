@@ -25,7 +25,7 @@
         <!-- Multiple elements dragging disabled -->
         <div *ngIf="allowMultiValue && disabled" class="dnd-element-content" dndNoDrag>
           <div fxLayout="row" fxLayoutAlign="start center">
-            <mat-icon>link</mat-icon>
+            <mat-icon>more_vert</mat-icon>
             <span>&nbsp;&nbsp;</span>
             <span class="dnd-element-text"
               [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
@@ -34,7 +34,7 @@
         <!-- Multiple elements dragging enabled -->
         <div *ngIf="allowMultiValue && !disabled" class="dnd-element-content">
           <div fxLayout="row" fxLayoutAlign="start center">
-            <mat-icon>link</mat-icon>
+            <mat-icon>more_vert</mat-icon>
             <span>&nbsp;&nbsp;</span>
             <span class="dnd-element-text"
               [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
@@ -45,19 +45,19 @@
         <div class="dnd-buttons" fxLayoutAlign="end center">
           <!-- disable edit only if it was disabled in the settings, not if disabled by language change -->
           <button dndNoDrag mat-icon-button *ngIf="enableEdit && !isFreeTextOrNotFound(item.name)" type="button"
-            class="dndButtons" (click)="edit(item.name)" title="{{ 'FieldType.Entity.Edit' | translate }}"
+            class="dndButtons" (click)="edit(item.name)" title="{{ 'Fields.Entity.Edit' | translate }}"
             [disabled]="config.field.disabled">
             <mat-icon>edit</mat-icon>
           </button>
-          <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons"
-            (click)="removeSlot(item.name, i)" title="{{ 'FieldType.Entity.Remove' | translate }}"
-            [disabled]="disabled">
-            <mat-icon>{{allowMultiValue ? 'remove' : 'arrow_drop_down'}}</mat-icon>
-          </button>
           <button dndNoDrag mat-icon-button *ngIf="enableDelete && !isFreeTextOrNotFound(item.name)" type="button"
             class="dndButtons" (click)="deleteItemInSlot(item.name, i)"
-            title="{{ 'General.Buttons.Delete' | translate }}" [disabled]="disabled">
-            <mat-icon>clear</mat-icon>
+            title="{{ 'Fields.Entity.Delete' | translate }}" [disabled]="disabled">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+          <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons"
+            (click)="removeSlot(item.name, i)" title="{{ 'Fields.Entity.Remove' | translate }}"
+            [disabled]="disabled">
+            <mat-icon>{{allowMultiValue ? 'clear' : 'arrow_drop_down'}}</mat-icon>
           </button>
         </div>
       </div>
