@@ -30,7 +30,8 @@
       'mat-empty' : !(value && value.length > 0),
       'mat-error' : inputInvalid && touched && !disabled,
       'color__primary' : !(inputInvalid && touched) && !disabled,
-      'color__label-disabled' : disabled
+      'color__label-disabled' : disabled,
+      'c-ew__preview-label--focused': config.field.focused
     }">
     {{config.field.label}}
     {{config.field.required? '*': '' }}
@@ -39,7 +40,8 @@
     [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple" [ngClass]="{
       'c-ew__preview--invalid' : inputInvalid && (touched || dirty),
       'c-ew__preview--wysiwyg': isWysiwyg,
-      'c-ew__preview--disabled': disabled
+      'c-ew__preview--disabled': disabled,
+      'c-ew__preview--focused': config.field.focused
     }">
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content" [ngClass]="{
@@ -50,7 +52,8 @@
   <div *ngIf="inlineMode" class="c-ew__preview c-ew__inline" [ngClass]="{
     'c-ew__preview--invalid c-ew__inline--invalid' : inputInvalid && (touched || dirty),
     'c-ew__inline--wysiwyg': isWysiwyg,
-    'c-ew__preview--disabled': disabled
+    'c-ew__preview--disabled': disabled,
+    'c-ew__preview--focused': config.field.focused
   }">
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content c-ew__inline-content" [ngClass]="{

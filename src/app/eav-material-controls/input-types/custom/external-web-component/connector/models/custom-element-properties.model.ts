@@ -28,6 +28,7 @@ export class ExperimentalProps {
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   translateService: TranslateService; // for WYSIWYG
   expand: (expand: boolean) => void;
+  setFocused: (focused: boolean) => void;
   wysiwygSettings?: WysiwygSettings; // only if field is of WYSIWYG input type
 }
 

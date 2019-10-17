@@ -134,6 +134,9 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
         dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
         this.experimental.dropzoneConfig$.next(dzConfig);
       }
+      if (this.experimental.wysiwygSettings.inlineMode) {
+        this.experimental.setFocused(true);
+      }
     });
 
     editor.on('blur', (event: any) => {
@@ -143,6 +146,9 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
         const dzConfig = { ...this.experimental.dropzoneConfig$.value };
         delete dzConfig.acceptedFiles;
         this.experimental.dropzoneConfig$.next(dzConfig);
+      }
+      if (this.experimental.wysiwygSettings.inlineMode) {
+        this.experimental.setFocused(false);
       }
     });
 

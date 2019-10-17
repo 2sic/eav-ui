@@ -45,9 +45,13 @@
             pointer-events: none;
             font-size: 12px;
             line-height: 14px;
-        }
-        &-label:not(.mat-error) {
-            color: rgba($editUI-foreground-color, 0.44);
+
+            &:not(.mat-error) {
+                color: rgba($editUI-foreground-color, 0.44);
+            }
+            &--focused {
+                color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+            }
         }
 
         &-container {
@@ -66,6 +70,10 @@
                 pointer-events: none;
                 color: $editUI-field-disabled-color;
             }
+        }
+
+        &--focused {
+            border-bottom-color: $field-border-color--focus !important;
         }
 
         &--invalid {
@@ -138,6 +146,7 @@
     &__preview--wysiwyg, &__inline--wysiwyg {
         $wysiwyg-border: 1px solid lightgrey;
         $wysiwyg-border-hover: 2px solid lightgrey;
+        $wysiwyg-border-focused: 2px solid $field-border-color--focus;
         $wysiwyg-border-invalid: 2px solid $field-border-color--invalid;
         $wysiwyg-border-disabled: 1px solid $editUI-disabled-background;
         $wysiwyg-padding: 1px;
@@ -147,7 +156,7 @@
         border-top: $wysiwyg-border;
         border-right: $wysiwyg-border;
         border-left: $wysiwyg-border;
-        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid):not(.c-ew__preview--focused) {
             padding: $wysiwyg-padding-hover;
             border-top: $wysiwyg-border-hover;
             border-right: $wysiwyg-border-hover;
@@ -163,6 +172,13 @@
             border-top: $wysiwyg-border-disabled;
             border-right: $wysiwyg-border-disabled;
             border-left: $wysiwyg-border-disabled;
+        }
+        &.c-ew__preview--focused {
+            padding: $wysiwyg-padding-hover;
+            border-top: $wysiwyg-border-hover;
+            border-right: $wysiwyg-border-hover;
+            border-left: $wysiwyg-border-hover;
+            border-bottom: $wysiwyg-border-focused;
         }
     }
 

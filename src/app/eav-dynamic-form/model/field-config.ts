@@ -22,6 +22,7 @@ export interface FieldConfigAngular extends FieldConfig {
   fullSettings: EavAttributes;
   wrappers: string[];
   expanded: BehaviorSubject<boolean>;
+  focused: boolean;
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;

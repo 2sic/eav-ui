@@ -178,6 +178,9 @@ export class ConnectorService {
       expand: (expand) => {
         this._ngZone.run(() => { this.config.field.expanded.next(expand); });
       },
+      setFocused: (focused) => {
+        this._ngZone.run(() => { this.config.field.focused = focused; });
+      }
     };
     // optional props
     if (this.config.dropzoneConfig$) {
