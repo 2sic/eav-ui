@@ -20,6 +20,9 @@
 }
 
 app-collapsible-wrapper {
+    .description p:last-child {
+        margin-bottom: 0;
+    }
     app-collapsible-wrapper:last-child {
         mat-card:last-child {
             margin: 0;
