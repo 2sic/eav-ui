@@ -228,6 +228,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private dialogBackdropClickSubscribe() {
+    window.addEventListener('beforeunload', e => {
+      if (!this.dialogRef.disableClose) { return; }
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+      this.snackBarYouHaveUnsavedChanges();
+    });
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
     });
