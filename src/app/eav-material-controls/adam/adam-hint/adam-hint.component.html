@@ -2,19 +2,17 @@
 <mat-divider></mat-divider>
 <div class="c-ah-field-hint u-border-radius-bottom mat-caption u-shadow-top" fxLayout="row" fxLayoutAlign="start start">
   <div fxFlex="auto">
-    <span>drop files here</span>
+    <span>{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</span>
   </div>
   <div fxLayoutAlign="end start">
-    <a href="https://2sxc.org/help?tag=adam" target="_blank" class="adam-link"
-      matTooltip="ADAM is the Automatic Digital Assets Manager - click to discover more">
+    <a href="https://2sxc.org/help?tag=adam" target="_blank" tabindex="-1" class="adam-link"
+      matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.SponsorTooltip' | translate }}">
       <mat-icon class="apple-icon" svgIcon="appleFilled"></mat-icon>
       <span>Adam</span>
     </a>
-    <span>&nbsp;is sponsored with
-      ♥ by
-      <a tabindex="-1" href="https://www.2sic.com" target="_blank">
-        2sic.com
-      </a>
-    </span>
+    &nbsp;
+    <span>{{ 'Fields.Hyperlink.AdamFileManager.SponsorLine' | translate }}</span>
+    &nbsp;
+    <a href="https://www.2sic.com" target="_blank" tabindex="-1" matTooltip="2sic.com">2sic.com</a>
   </div>
 </div>

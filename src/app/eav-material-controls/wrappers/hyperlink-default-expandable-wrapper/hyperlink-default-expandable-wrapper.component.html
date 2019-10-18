@@ -58,7 +58,7 @@
           <div matSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
-          }">drop files here</div>
+          }">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
             <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" [disabled]="control.disabled"
               type="button" (click)="expandDialog()">
               <mat-icon svgIcon="apple"></mat-icon>
@@ -84,7 +84,7 @@
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
         <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
-          <span>ADAM - sponsored with ♡ by 2sic.com</span>
+          <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
         </div>
       </div>
     </div>

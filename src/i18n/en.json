@@ -123,11 +123,10 @@
     "Hyperlink": {
       "Default": {
         "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♥ by 2sic.com",
-        "Suffix": "Drop files here",
         "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
         "AdamTip": "quick-upload using ADAM",
         "PageTip": "pick a page",
-        "MoreOptions": "more",
+        "MoreOptions": "more...",
         "MenuAdam": "Upload file with Adam",
         "MenuPage": "Page Picker",
         "MenuImage": "Image Manager",
@@ -139,13 +138,17 @@
         "UploadPasteLabel": "paste image",
         "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",
         "NewFolder": "New folder",
+        "NewFolderTip": "create a new folder",
         "BackFolder": "Back",
+        "BackFolderTip": "return to previous folder",
         "Show": "Open in new tab",
         "Edit": "Rename",
         "RenameQuestion": "Rename file / folder to:",
         "Delete": "Delete",
         "DeleteQuestion": "Are you sure you want to delete this file?",
-        "SponsorWithLink": "<a href='https://2sxc.org/help?tag=adam' target='_blank' tooltip='ADAM is the Automatic Digital Assets Manager - click to discover more'>Adam</a> is sponsored with ♥ by <a tabindex='-1' href='https://www.2sic.com' target='_blank'>2sic.com</a>"
+        "Hint": "drop files here",
+        "SponsorTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
+        "SponsorLine": "is sponsored with ♥ by"
       },
       "PagePicker": {
         "Title": "Select a web page"

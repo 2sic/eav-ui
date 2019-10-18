@@ -24,9 +24,12 @@ $label-top: 12px;
     padding-left: 15px;
 }
 
+.cursor-move {
+    cursor: move;
+}
+
 .dnd-element {
     position: relative;
-    cursor: move;
     height: 30px;
 
     @extend %field-border;
@@ -52,7 +55,6 @@ $label-top: 12px;
 
 .dnd-element-multi {
     position: relative;
-    cursor: move;
     height: 56px;
     background: white;
     border-radius: 32px;
@@ -62,8 +64,12 @@ $label-top: 12px;
 }
 
 .dnd-element-content {
-    width: 100%;
     overflow: hidden;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     margin-bottom: -4px;
 }
 

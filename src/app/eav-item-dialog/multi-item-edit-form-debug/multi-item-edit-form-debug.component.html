@@ -2,7 +2,8 @@
   'debug-enabled': showDebugInfo
 }">
   <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="start center">
-    <button type="button" mat-icon-button (click)="toggleDebugInfo()">
+    <button type="button" mat-icon-button (click)="toggleDebugInfo()"
+      matTooltip="{{ 'General.Buttons.Debug' | translate }}">
       <mat-icon>flash_on</mat-icon>
     </button>
   </div>
