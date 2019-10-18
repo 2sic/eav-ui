@@ -5,10 +5,10 @@
     <!-- info for dropping stuff here -->
     <!--  [disabled]="disabled"-->
     <div *ngIf="!disabled" class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
-      matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
+      matTooltip="{{'Fields.Hyperlink.AdamFileManager.UploadTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <mat-icon>cloud_upload</mat-icon>
-        <div class="adam-short-label">upload to&nbsp;
+        <div class="adam-short-label">{{'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}&nbsp;
           <mat-icon *ngIf="adamModeConfig.usePortalRoot">public</mat-icon>
           <mat-icon *ngIf="!adamModeConfig.usePortalRoot" svgIcon="appleFilled"></mat-icon>
         </div>
@@ -19,10 +19,10 @@
     <!-- info for paste image from clipboard here -->
     <!-- TODO: disable -->
     <!-- <div *ngIf="!clipboardPasteImageFunctionalityDisabled && allowEdit()" class="dz-preview dropzone-adam paste-image"
-      matTooltip="{{'Edit.Fields.Hyperlink.Default.AdamUploadPasteLabel' | translate }}">
+      matTooltip="{{'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <mat-icon svgIcon="file-image"></mat-icon>
-        <div class="adam-short-label">paste image</div>
+        <div class="adam-short-label">{{'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}</div>
       </div>
     </div> -->
 

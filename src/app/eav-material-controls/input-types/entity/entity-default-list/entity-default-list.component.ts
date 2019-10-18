@@ -33,7 +33,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   chosenEntities: any[];
 
   // private contentType: FieldMaskService;
-  private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
+  private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
 

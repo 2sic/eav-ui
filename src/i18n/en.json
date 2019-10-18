@@ -34,7 +34,9 @@
   },
   "Message": {
     "Saved": "saved",
-    "Saving": "saving..."
+    "Saving": "saving...",
+    "DebugEnabled": "debug mode enabled",
+    "DebugDisabled": "debug mode disabled"
   },
   "LangMenu": {
     "Translate": "Translate",
@@ -76,12 +78,14 @@
     }
   },
   "Errors": {
-    "UnsavedChanges": "You have unsaved changes."
+    "UnsavedChanges": "You have unsaved changes.",
+    "SaveErrors": "To save the form, please fix the following errors:"
   },
   "General": {
     "Buttons": {
       "NotSave": "discard changes",
-      "Save": "save"
+      "Save": "save",
+      "Debug": "debug"
     }
   },
   "Data": {
@@ -95,6 +99,7 @@
   "ValidationMessage": {
     "NotValid": "Not valid",
     "Required": "This is required",
+    "RequiredShort": "required",
     "Min": "This value should be more than {{param.Min}}",
     "Max": "This value should be less or equal {{param.Max}}",
     "Pattern": "Please match the requested format",
@@ -108,8 +113,7 @@
       "DragMove": "drag to re-order the list",
       "Edit": "edit this item",
       "Remove": "remove from list",
-      "Delete": "delete",
-      "// DeleteQuestion": "delete '{{title}}' ({{id}})?"
+      "Delete": "delete"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
@@ -123,13 +127,14 @@
         "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
         "AdamTip": "quick-upload using ADAM",
         "PageTip": "pick a page",
+        "MoreOptions": "more",
         "MenuAdam": "Upload file with Adam",
         "MenuPage": "Page Picker",
         "MenuImage": "Image Manager",
         "MenuDocs": "Document Manager"
       },
       "AdamFileManager": {
-        "UploadLabel": "Upload to",
+        "UploadLabel": "upload to",
         "UploadTip": "quick-upload using ADAM",
         "UploadPasteLabel": "paste image",
         "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",

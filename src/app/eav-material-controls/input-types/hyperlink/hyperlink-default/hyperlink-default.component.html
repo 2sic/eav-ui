@@ -2,36 +2,36 @@
 <div class="c-hld-buttons" fxLayout="row" fxLayoutAlign="end end" fxLayoutGap.lt-sm="8px" fxLayoutGap.sm="16px"
   fxLayoutGap.md="16px" fxLayoutGap.gt-md="24px">
   <button mat-mini-fab color="accent" *ngIf="buttons.indexOf('adam') > -1" type="button" [disabled]="disabled"
-    (click)="toggleAdam()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.AdamUploadLabel' | translate }}">
+    (click)="toggleAdam()" matTooltip="{{ 'Fields.Hyperlink.Default.AdamTip' | translate }}">
     <mat-icon svgIcon="appleFilled"></mat-icon>
   </button>
   <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('page') > -1" type="button" [disabled]="disabled"
-    (click)="openPageDialog()" matTooltip="{{ 'Edit.Fields.Hyperlink.Default.PageLabel' | translate }}">
+    (click)="openPageDialog()" matTooltip="{{ 'Fields.Hyperlink.Default.PageTip' | translate }}">
     <mat-icon svgIcon="sitemap"></mat-icon>
   </button>
   <button mat-mini-fab color="primary" *ngIf="buttons.indexOf('more') > -1" tabindex="-1" [disabled]="disabled"
-    type="button" [matMenuTriggerFor]="menu">
+    type="button" [matMenuTriggerFor]="menu" matTooltip="{{ 'Fields.Hyperlink.Default.MoreOptions' | translate }}">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="showAdam" (click)="toggleAdam(false)">
       <mat-icon svgIcon="appleFilled"></mat-icon>
-      <span>{{'Edit.Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+      <span>{{'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
     </button>
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowPagePicker"
       (click)="openPageDialog()">
       <mat-icon svgIcon="sitemap"></mat-icon>
-      <span>{{'Edit.Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+      <span>{{'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
     </button>
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowImageManager"
       (click)="toggleAdam(true, true)">
       <mat-icon svgIcon="file-image"></mat-icon>
-      <span>{{'Edit.Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+      <span>{{'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
     </button>
     <button mat-menu-item fxLayout="row" fxLayoutAlign="start center" *ngIf="config.field.settings.ShowFileManager"
       (click)="toggleAdam(true, false)">
       <mat-icon svgIcon="file"></mat-icon>
-      <span>{{'Edit.Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+      <span>{{'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
     </button>
   </mat-menu>
 </div>

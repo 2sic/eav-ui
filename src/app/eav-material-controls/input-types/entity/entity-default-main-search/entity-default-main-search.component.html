@@ -70,7 +70,8 @@
 
 <!-- add new entity -->
 <div *ngIf="!freeTextMode && enableCreate && entityType !== '' && allowMultiValue">
-  <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled">
+  <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled"
+    title="{{ 'Fields.Entity.New' | translate }}">
     <mat-icon>add</mat-icon>
   </button>
 </div>

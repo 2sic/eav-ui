@@ -68,9 +68,9 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     try {
       this.queryService.getAvailableEntities(queryUrl, true, params, true).subscribe(data => {
         if (!data) {
-          this.error = this.translate.instant('FieldType.EntityQuery.QueryError');
+          this.error = this.translate.instant('Fields.EntityQuery.QueryError');
         } else if (!data[this.streamName]) {
-          this.error = this.translate.instant('FieldType.EntityQuery.QueryStreamNotFound') + this.streamName;
+          this.error = this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + this.streamName;
         } else { // everything ok - set data to select
           this.config.cache = data[this.streamName].map(this.queryEntityMapping);
         }
@@ -79,7 +79,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     } catch (error) {
       console.error(error);
       // this.selectEntities = [];
-      console.error(`${this.translate.instant('FieldType.EntityQuery.QueryError')} - ${error.data}`);
+      console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
       throw error;
     }
   }

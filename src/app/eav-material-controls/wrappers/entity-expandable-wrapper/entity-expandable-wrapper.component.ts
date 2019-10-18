@@ -37,7 +37,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
-  private entityTextDefault = this.translate.instant('FieldType.Entity.EntityNotFound');
+  private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
 
   constructor(private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
