@@ -19,7 +19,7 @@
           <a matSuffix *ngIf="enableTextEntry" (click)="!disabled && freeTextModeChange($event)"
             fxLayoutAlign="center center">
             <button [disabled]="disabled" type="button" mat-icon-button>
-              <mat-icon>text_fields</mat-icon>
+              <mat-icon matTooltip="{{ 'Fields.String.Freetext' | translate }}">text_fields</mat-icon>
             </button>
             <button *ngIf="freeTextMode" [disabled]="disabled" type="button" mat-icon-button>
               <mat-icon>arrow_drop_down</mat-icon>
@@ -44,7 +44,8 @@
       fxLayoutAlign="end center">
       <!-- create new entity to add to this list -->
       <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
-        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew">
+        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew"
+        title="{{ 'Fields.Entity.New' | translate }}">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>

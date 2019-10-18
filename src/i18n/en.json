@@ -124,6 +124,7 @@
       "Default": {
         "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♥ by 2sic.com",
         "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
+        "Fullscreen": "open in fullscreen",
         "AdamTip": "quick-upload using ADAM",
         "PageTip": "pick a page",
         "MoreOptions": "more...",
@@ -155,8 +156,13 @@
       }
     },
     "DateTime": {
+      "Open": "open calendar",
       "Cancel": "Cancel",
       "Set": "Set"
+    },
+    "String": {
+      "Dropdown": "switch to dropdown select",
+      "Freetext": "switch to freetext"
     }
   },
   "Extension.TinyMce": {

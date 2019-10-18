@@ -9,8 +9,8 @@
     [required]='config.field.required' [formControlName]="config.field.name" [placeholder]="config.field.placeholder">
   <button mat-icon-button matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)" [disabled]="disabled"
     type="button">
-    <mat-icon *ngIf="!freeTextMode">text_fields</mat-icon>
-    <mat-icon *ngIf="freeTextMode">arrow_drop_down</mat-icon>
+    <mat-icon *ngIf="!freeTextMode" matTooltip="{{ 'Fields.String.Freetext' | translate }}">text_fields</mat-icon>
+    <mat-icon *ngIf="freeTextMode" matTooltip="{{ 'Fields.String.Dropdown' | translate }}">arrow_drop_down</mat-icon>
   </button>
   <mat-label>{{config.field.label}}</mat-label>
 </mat-form-field>

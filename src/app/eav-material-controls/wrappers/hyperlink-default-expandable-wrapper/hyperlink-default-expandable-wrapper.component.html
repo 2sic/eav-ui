@@ -32,7 +32,7 @@
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">
     <!-- image / icon -->
-    <div class="thumbnail-before-input" [ngClass]="{
+    <div class="thumbnail-before-input" matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate}}" [ngClass]="{
       'icon-before-input': control.value && !isImage,
       'thumbnail-before-input--disabled': control.disabled
     }" [ngStyle]="{'background-image': control.value && isImage ? thumbnailUrl : ''}"
@@ -60,7 +60,8 @@
             'c-ew__preview-suffix-text--disabled': control.disabled
           }">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
             <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" [disabled]="control.disabled"
-              type="button" (click)="expandDialog()">
+              type="button" (click)="expandDialog()"
+              matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate}}">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
           </div>

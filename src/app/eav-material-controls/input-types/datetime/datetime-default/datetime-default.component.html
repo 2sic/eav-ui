@@ -8,7 +8,8 @@
       [placeholder]="config.field.label" [required]='config.field.required'>
     <!-- [matDatepickerFilter]="to.datepickerOptions.filter" -->
     <mat-datepicker-toggle matSuffix [for]="picker">
-      <mat-icon class="datetime-icon" matDatepickerToggleIcon [ngClass]="{
+      <mat-icon class="datetime-icon" matDatepickerToggleIcon matTooltip="{{ 'Fields.DateTime.Open' | translate}}"
+        [ngClass]="{
         'datetime-icon--disabled': disabled
       }">today</mat-icon>
     </mat-datepicker-toggle>
@@ -24,7 +25,7 @@
     <!-- control from https://github.com/DanielYKPan/date-time-picker -->
     <owl-date-time #picker></owl-date-time>
     <button [disabled]="disabled" matSuffix type="button" mat-icon-button [owlDateTimeTrigger]="picker">
-      <mat-icon class="datetime-icon">today</mat-icon>
+      <mat-icon class="datetime-icon" matTooltip="{{ 'Fields.DateTime.Open' | translate}}">today</mat-icon>
     </button>
     <mat-label>{{config.field.label}}</mat-label>
   </mat-form-field>
