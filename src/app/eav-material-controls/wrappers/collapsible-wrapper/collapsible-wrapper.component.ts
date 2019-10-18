@@ -110,8 +110,6 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   changeAnchorTarget(event: MouseEvent) {
-    const links = (event.target as HTMLElement).querySelectorAll('a');
-    if (links.length > 0) { return; }
-    links.forEach(anchor => anchor.target = '_blank');
+    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
   }
 }
