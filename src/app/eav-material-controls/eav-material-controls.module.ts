@@ -22,7 +22,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { OwlDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlDateTimeIntl } from 'ng-pick-datetime';
 import { OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from 'ng-pick-datetime-moment';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
@@ -86,6 +86,7 @@ import { ExternalWebComponentComponent } from './input-types/custom/external-web
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
+import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 
 @NgModule({
     declarations: [
@@ -213,7 +214,8 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
         FileTypeService,
         ValidationMessagesService,
         { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-        { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+        { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride },
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
