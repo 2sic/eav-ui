@@ -35,22 +35,22 @@
   "Message": {
     "Saved": "gespeichert",
     "Saving": "saving...",
-    "DebugEnabled": "debug mode enabled",
-    "DebugDisabled": "debug mode disabled"
+    "DebugEnabled": "debug aktiviert",
+    "DebugDisabled": "debug deaktiviert"
   },
   "LangMenu": {
-    "Translate": "Translate",
-    "TranslateAll": "Translate all",
-    "NoTranslate": "Don't translate",
-    "NoTranslateAll": "Don't translate any",
-    "Link": "Link to other language",
+    "Translate": "Übersetzen",
+    "TranslateAll": "Alles übersetzen",
+    "NoTranslate": "Nicht übersetzen",
+    "NoTranslateAll": "Keine übersetzen",
+    "Link": "An andere Sprache verknüpfen",
     "UseDefault": "auto (Standardsprache)",
     "InAllLanguages": "in allen Sprachen",
     "In": "in {{languages}}",
     "From": "von {{languages}}",
     "Dialog": {
       "Title": "{{name}} übersetzen",
-      "Intro": "Du kannst auf verschiedene Arten übersetzen, sogar Sprachen aneinander koppeln.",
+      "Intro": "Du kannst auf verschiedene Arten übersetzen, auch Sprachen aneinander koppeln.",
       "NoTranslate": {
         "Title": "Nicht übersetzen",
         "Body": "verwendet den Wert aus der Primärsprache {{primary}}"
@@ -78,18 +78,18 @@
     }
   },
   "Errors": {
-    "UnsavedChanges": "Du hast nicht gespeicherte Änderungen.",
-    "SaveErrors": "To save the form, please fix the following errors:"
+    "UnsavedChanges": "Du hast Änderungen.",
+    "SaveErrors": "Um zu speichern, bitte folgende Probleme beheben:"
   },
   "General": {
     "Buttons": {
-      "NotSave": "discard changes",
-      "Save": "save",
+      "NotSave": "Änderungen verwerfen",
+      "Save": "speichern",
       "Debug": "debug"
     }
   },
   "Data": {
-    "Delete.Question": "delete '{{title}}' ({{id}})?"
+    "Delete.Question": "'{{title}}' ({{id}}) löschen?"
   },
   "ItemCard": {
     "DefaultTitle": "Element bearbeiten",
@@ -97,76 +97,76 @@
     "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
   },
   "ValidationMessage": {
-    "NotValid": "Not valid",
-    "Required": "This is required",
-    "RequiredShort": "required",
-    "Min": "This value should be more than {{param.Min}}",
-    "Max": "This value should be less or equal {{param.Max}}",
-    "Pattern": "Please match the requested format",
-    "Decimals": "This number can have up to {{param.Decimals}} decimal places"
+    "NotValid": "Ungültig",
+    "Required": "Pflichtfeld",
+    "RequiredShort": "Pflichtfeld",
+    "Min": "Wert muss grösser als {{param.Min}} sein",
+    "Max": "Wert muss kleiner als {{param.Max}} sein",
+    "Pattern": "Bitte richtig eingeben",
+    "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben"
   },
   "Fields": {
     "Entity": {
-      "Choose": "-- Element auswählen --",
-      "New": "-- Neues Element erstellen --",
+      "Choose": "bestehendes Element auswählen",
+      "New": "neues Element erstellen",
       "EntityNotFound": "(Element nicht gefunden)",
-      "DragMove": "Ziehen um die Liste neu anzuordnen",
-      "Edit": "Dieses Element bearbeiten",
+      "DragMove": "Ziehen um die Liste neu zu ordnen",
+      "Edit": "Element bearbeiten",
       "Remove": "Aus Liste entfernen",
-      "Delete": "delete"
+      "Delete": "Löschen"
     },
     "EntityQuery": {
-      "QueryNoItems": "No items found",
-      "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named "
+      "QueryNoItems": "Keine Elemente gefunden",
+      "QueryError": "Fehler: Die Abfrage konnte nicht ausgeführt werden. In der Konsole findest du genauere Details.",
+      "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen "
     },
     "Hyperlink": {
       "Default": {
-        "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♥ by 2sic.com",
-        "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
-        "Fullscreen": "open in fullscreen",
-        "AdamTip": "quick-upload using ADAM",
-        "PageTip": "pick a page",
-        "MoreOptions": "more...",
-        "MenuAdam": "Upload file with Adam",
-        "MenuPage": "Page Picker",
-        "MenuImage": "Image Manager",
-        "MenuDocs": "Document Manager"
+        "Tooltip": "Dateien einfach hierher ziehen. Weitere Infos: 2sxc.org/help?tag=adam. ADAM - gesponsored ♡ von 2sic.com",
+        "Sponsor": "ADAM - gesponsored ♡ von 2sic.com",
+        "Fullscreen": "Grossdialog öffnen",
+        "AdamTip": "schnell-upload mit ADAM",
+        "PageTip": "Seite wählen",
+        "MoreOptions": "mehr...",
+        "MenuAdam": "Datei mit ADAM uploaden",
+        "MenuPage": "Seitenauswahl",
+        "MenuImage": "Bildverwaltung",
+        "MenuDocs": "Dateiverwaltung"
       },
       "AdamFileManager": {
-        "UploadLabel": "upload to",
-        "UploadTip": "quick-upload using ADAM",
-        "UploadPasteLabel": "paste image",
-        "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",
-        "NewFolder": "New folder",
-        "NewFolderTip": "create a new folder",
-        "BackFolder": "Back",
-        "BackFolderTip": "return to previous folder",
-        "Show": "Open in new tab",
-        "Edit": "Rename",
-        "RenameQuestion": "Rename file / folder to:",
-        "Delete": "Delete",
-        "DeleteQuestion": "Are you sure you want to delete this file?",
-        "Hint": "drop files here",
-        "SponsorTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
-        "SponsorLine": "is sponsored with ♥ by"
+        "UploadLabel": "upload nach",
+        "UploadTip": "schnell-upload mit ADAM",
+        "UploadPasteLabel": "Bild aus Zwischenablage",
+        "UploadPasteTip": "Klick hier und drück [Ctrl]+[V] um aus der Zwischenablage einzufügen",
+        "NewFolder": "Neuer Ordner",
+        "NewFolderTip": "Neuen Ordner erstellen",
+        "BackFolder": "Zurück",
+        "BackFolderTip": "zum vorherigen Ordner",
+        "Show": "In neuem Fenster öffnen",
+        "Edit": "Umbenennen",
+        "RenameQuestion": "Umbenennen:",
+        "Delete": "Löschen",
+        "DeleteQuestion": "Bist du sicher, dass die die Datei löschen möchtest?",
+        "Hint": "Dateien hierher ziehen ",
+        "SponsorTooltip": "ADAM ist der Automatic Digital Assets Manager - mehr erfahren",
+        "SponsorLine": "mit ♡ gesponsort von"
       },
       "PagePicker": {
-        "Title": "Select a web page"
+        "Title": "Seite auswählen"
       }
     },
     "DateTime": {
-      "Open": "open calendar",
-      "Cancel": "Cancel",
-      "Set": "Set"
+      "Open": "Kalendar öffnen",
+      "Cancel": "Abbrechen",
+      "Set": "Speichern"
     },
     "String": {
-      "Dropdown": "switch to dropdown select",
-      "Freetext": "switch to freetext"
+      "Dropdown": "Auswahl",
+      "Freetext": "Freie Texteingabe"
     }
   },
   "Extension.TinyMce": {
-    "Link.AdamFile": "ADAM-Datei (empfohlen)",
+    "Link.AdamFile": "ADAM-Datei verlinken (empfohlen)",
     "Link.AdamFile.Tooltip": "ADAM-Dateien verlinken - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
     "Image.AdamImage": "ADAM-Bild (empfohlen)",
     "Image.AdamImage.Tooltip": "ADAM-Bild einfügen - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
