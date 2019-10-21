@@ -80,7 +80,7 @@ export class EavAdminUiService {
             // position: <DialogPosition>{ top: '10px', bottom: '10px', left: '24px', right: '24px' },
             position: <DialogPosition>{ top: '24px' },
             width: '100vw',
-            maxWidth: 960,
+            maxWidth: 800,
             //  maxHeight: '80vh',
             // scrollStrategy: overlay.scrollStrategies.reposition(),
             // height: 'inherit',

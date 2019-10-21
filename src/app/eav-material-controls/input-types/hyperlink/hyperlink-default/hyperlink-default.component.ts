@@ -101,7 +101,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       result = result + '?w=72&h=72&mode=crop';
     }
     if (size === 2) {
-      result = result + '?w=960&h=960&mode=max';
+      result = result + '?w=800&h=800&mode=max';
     }
     const qt = quote ? '"' : '';
     return qt + result + qt;

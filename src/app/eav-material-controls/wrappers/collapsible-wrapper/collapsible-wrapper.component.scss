@@ -18,18 +18,16 @@ $border-radius: 8px;
 
 .mat-card-header {
     &-group-parent {
-        padding: 14px 16px 14px 16px;
+        padding: 24px 32px;
         border-radius: $border-radius;
-        height: 48px;
         .title {
             font-size: 16px;
             font-weight: 400;
         }
     }
     &-group-child {
-        padding: 14px 16px 14px 16px;
+        padding: 20px 32px;
         border-radius: $border-radius;
-        height: 48px;
         .title {
             font-size: 16px;
             font-weight: 400;
@@ -44,6 +42,8 @@ $border-radius: 8px;
     }
     .description {
         font-size: 14px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }
 
