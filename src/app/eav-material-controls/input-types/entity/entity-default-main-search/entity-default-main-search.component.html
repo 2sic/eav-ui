@@ -45,7 +45,7 @@
       <!-- create new entity to add to this list -->
       <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
         type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew"
-        title="{{ 'Fields.Entity.New' | translate }}">
+        matTooltip="{{ 'Fields.Entity.New' | translate }}">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>
@@ -72,7 +72,7 @@
 <!-- add new entity -->
 <div *ngIf="!freeTextMode && enableCreate && entityType !== '' && allowMultiValue">
   <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled"
-    title="{{ 'Fields.Entity.New' | translate }}">
+    matTooltip="{{ 'Fields.Entity.New' | translate }}">
     <mat-icon>add</mat-icon>
   </button>
 </div>

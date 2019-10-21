@@ -19,7 +19,7 @@
           </div>
           <div>
             <span class="dnd-element-text"
-              [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+              matTooltip="{{ getEntityText(item.name) + ' (' + item.name + ')' }}">{{getEntityText(item.name)}}</span>
           </div>
         </div>
         <!-- Multiple elements dragging disabled -->
@@ -28,7 +28,7 @@
             <mat-icon>more_vert</mat-icon>
             <span>&nbsp;&nbsp;</span>
             <span class="dnd-element-text"
-              [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+              matTooltip="{{ getEntityText(item.name) + ' (' + item.name + ')' }}">{{getEntityText(item.name)}}</span>
           </div>
         </div>
         <!-- Multiple elements dragging enabled -->
@@ -37,7 +37,7 @@
             <mat-icon matTooltip="{{ 'Fields.Entity.DragMove' | translate }}">more_vert</mat-icon>
             <span>&nbsp;&nbsp;</span>
             <span class="dnd-element-text"
-              [title]="getEntityText(item.name) + ' (' + item.name + ')'">{{getEntityText(item.name)}}</span>
+              matTooltip="{{ getEntityText(item.name) + ' (' + item.name + ')' }}">{{getEntityText(item.name)}}</span>
           </div>
         </div>
         <!-- dndHandle specific handle elements (drag)-->
@@ -45,17 +45,18 @@
         <div class="dnd-buttons" fxLayoutAlign="end center">
           <!-- disable edit only if it was disabled in the settings, not if disabled by language change -->
           <button dndNoDrag mat-icon-button *ngIf="enableEdit && !isFreeTextOrNotFound(item.name)" type="button"
-            class="dndButtons" (click)="edit(item.name)" title="{{ 'Fields.Entity.Edit' | translate }}"
+            class="dndButtons" (click)="edit(item.name)" matTooltip="{{ 'Fields.Entity.Edit' | translate }}"
             [disabled]="config.field.disabled">
             <mat-icon>edit</mat-icon>
           </button>
           <button dndNoDrag mat-icon-button *ngIf="enableDelete && !isFreeTextOrNotFound(item.name)" type="button"
-            class="dndButtons" (click)="deleteItemInSlot(item.name, i)" title="{{ 'Fields.Entity.Delete' | translate }}"
-            [disabled]="disabled">
+            class="dndButtons" (click)="deleteItemInSlot(item.name, i)"
+            matTooltip="{{ 'Fields.Entity.Delete' | translate }}" [disabled]="disabled">
             <mat-icon>delete_outline</mat-icon>
           </button>
           <button dndNoDrag mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons"
-            (click)="removeSlot(item.name, i)" title="{{ 'Fields.Entity.Remove' | translate }}" [disabled]="disabled">
+            (click)="removeSlot(item.name, i)" matTooltip="{{ 'Fields.Entity.Remove' | translate }}"
+            [disabled]="disabled">
             <mat-icon>{{allowMultiValue ? 'clear' : 'arrow_drop_down'}}</mat-icon>
           </button>
         </div>
