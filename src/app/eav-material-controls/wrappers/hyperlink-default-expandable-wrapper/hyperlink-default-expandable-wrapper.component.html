@@ -74,8 +74,9 @@
         <div *ngIf="control.value" class="c-hyperlink-default-link__container" fxHide fxShow.gt-xs>
           <div class="c-hyperlink-default-link__value">{{control.value}}</div>
           <div class="c-hyperlink-default-link__link">
-            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text">
-              <span>... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
+            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text"
+              matTooltip="{{link}}">
+              <span>.../{{ link.substr(link.lastIndexOf("/") + 1, link.length) }}</span>
             </a>
           </div>
         </div>

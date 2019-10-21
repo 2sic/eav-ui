@@ -70,8 +70,15 @@ $hyperlink-default-height: 78px;
             color: $editUI-label-disabled-color;
         }
     }
-    &-suffix-icon {
-        top: 0 !important;
+    @media (min-width: 601px) {
+        &-suffix-icon {
+            top: 0 !important;
+        }
+    }
+    @media (max-width: 600px) {
+        &-suffix-icon {
+            top: 10px !important;
+        }
     }
 }
 
