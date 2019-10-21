@@ -7,8 +7,8 @@
       "Return.Tip": "zurück zum vorherigen Dialog"
     }
   },
-
   "SaveMode": {
+    "Label": "Status:",
     "show": "anzeigen",
     "show.Tip": "Änderungen sind öffentlich",
     "hide": "verstecken",
@@ -31,16 +31,23 @@
         "Body": "Nur Redakteure sehen Änderungen (bis es später veröffentlicht wird)."
       }
     }
-	},
-	"Message": {
-		"Saved": "gespeichert"
   },
-
-	"LangMenu": {
-		"UseDefault": "auto (Standardsprache)",
-		"InAllLanguages": "in allen Sprachen",
-		"In": "in {{languages}}",
-		"From": "von {{languages}}",
+  "Message": {
+    "Saved": "gespeichert",
+    "Saving": "saving...",
+    "DebugEnabled": "debug mode enabled",
+    "DebugDisabled": "debug mode disabled"
+  },
+  "LangMenu": {
+    "Translate": "Translate",
+    "TranslateAll": "Translate all",
+    "NoTranslate": "Don't translate",
+    "NoTranslateAll": "Don't translate any",
+    "Link": "Link to other language",
+    "UseDefault": "auto (Standardsprache)",
+    "InAllLanguages": "in allen Sprachen",
+    "In": "in {{languages}}",
+    "From": "von {{languages}}",
     "Dialog": {
       "Title": "{{name}} übersetzen",
       "Intro": "Du kannst auf verschiedene Arten übersetzen, sogar Sprachen aneinander koppeln.",
@@ -68,79 +75,114 @@
         "Subtitle": "Sprache, die verbunden wird"
       },
       "PickLanguageIntro": "Nur Sprachen mit bestehendem Inhalt können ausgewählt werden."
+    }
+  },
+  "Errors": {
+    "UnsavedChanges": "Du hast nicht gespeicherte Änderungen.",
+    "SaveErrors": "To save the form, please fix the following errors:"
+  },
+  "General": {
+    "Buttons": {
+      "NotSave": "discard changes",
+      "Save": "save",
+      "Debug": "debug"
+    }
+  },
+  "Data": {
+    "Delete.Question": "delete '{{title}}' ({{id}})?"
+  },
+  "ItemCard": {
+    "DefaultTitle": "Element bearbeiten",
+    "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
+    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
+  },
+  "ValidationMessage": {
+    "NotValid": "Not valid",
+    "Required": "This is required",
+    "RequiredShort": "required",
+    "Min": "This value should be more than {{param.Min}}",
+    "Max": "This value should be less or equal {{param.Max}}",
+    "Pattern": "Please match the requested format",
+    "Decimals": "This number can have up to {{param.Decimals}} decimal places"
+  },
+  "Fields": {
+    "Entity": {
+      "Choose": "-- Element auswählen --",
+      "New": "-- Neues Element erstellen --",
+      "EntityNotFound": "(Element nicht gefunden)",
+      "DragMove": "Ziehen um die Liste neu anzuordnen",
+      "Edit": "Dieses Element bearbeiten",
+      "Remove": "Aus Liste entfernen",
+      "Delete": "delete"
     },
-
-
-    "//": "unsure if used, probably not",
-		"EditableIn": "editable in {{languages}}",
-		"AlsoUsedIn": ", also used in {{more}}",
-		"NotImplemented": "This action is not implemented yet.",
-		"CopyNotPossible": "Copy not possible: the field is disabled.",
-		"Unlink": "translate (unlink)",
-		"LinkDefault": "link to default",
-		"GoogleTranslate": "machine-translate (Google)",
-		"Copy": "copy from",
-		"Use": "use from",
-		"Share": "share from",
-    "AllFields": "all fields"
-	},
-
-
-  "//": "Everything below this hasn't been verified yet - much may be unused",
-
-
-	"Errors": {
-		"UnclearError": "Da lief was falsch - vielleicht funktioniert ein Teil, vielleicht auch nicht. Entschuldigung :(",
-		"InnerControlMustOverride": "Inner control must override this function.",
-		"UnsavedChanges": "Du hast nicht gespeicherte Änderungen.",
-		"DefLangNotFound": "Default language value not found, but found multiple values - can't handle editing for",
-		"AdamUploadError": "Der Upload der Datei ist fehlgeschlagen. Möglicherweise ist die Datei zu gross."
-	},
-	"General": {},
-	"EditEntity": {
-		"DefaultTitle": "Element bearbeiten",
-		"SlotUsedtrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
-		"SlotUsedfalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
-	},
-	"FieldType": {
-		"Entity": {
-			"Choose": "-- Element auswählen --",
-			"New": "-- Neues Element erstellen --",
-			"EntityNotFound": "(Element nicht gefunden)",
-			"DragMove": "Ziehen um die Liste neu anzuordnen",
-			"Edit": "Dieses Element bearbeiten",
-			"Remove": "Aus Liste entfernen"
-		}
-	},
-	"LangWrapper": {
-		"CreateValueInDefFirst": "Bitte das Feld '{{fieldname}}' zuerst in der Standardsprache befüllen vor dem Übersetzen."
-	},
-	"Dialog1": {},
-	"dialog2": {},
-	"CalendarPopup": {
-		"ClearButton": "Löschen",
-		"CloseButton": "Fertig",
-		"CurrentButton": "Heute"
-	},
-	"Extension.TinyMce": {
-		"Link.AdamFile": "ADAM-Datei (empfohlen)",
-		"Link.AdamFile.Tooltip": "ADAM-Dateien verlinken - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
-		"Image.AdamImage": "ADAM-Bild (empfohlen)",
-		"Image.AdamImage.Tooltip": "ADAM-Bild einfügen - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
-		"Link.DnnFile": "DNN-Datei verlinken",
-		"Link.DnnFile.Tooltip": "DNN-Datei verlinken (alle Dateien, langsam)",
-		"Image.DnnImage": "DNN-Bild",
-		"Image.DnnImage.Tooltip": "DNN-Bild einfügen (alle Dateien, langsam)",
-		"Link.Page": "Seite verlinken",
-		"Link.Page.Tooltip": "Eine Seite aus dieser Website verlinken",
-		"Link.Anchor.Tooltip": "Texmarke (Anchor) für Verlinkung mit .../page#anchorname",
-		"SwitchMode.Pro": "Zum Profi-Modus wechseln",
-		"SwitchMode.Standard": "Zum Standard-Modus wechseln",
-		"SwitchMode.Expand": "Vollbildmodus",
-		"H1": "Ü1",
-		"H2": "Ü2",
-		"H3": "Ü3",
-		"Remove": "Entfernen",
-		"ContentBlock.Add": "App oder Inhaltsbaustein einfügen"
-	}
+    "EntityQuery": {
+      "QueryNoItems": "No items found",
+      "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
+      "QueryStreamNotFound": "Error: The query did not return a stream named "
+    },
+    "Hyperlink": {
+      "Default": {
+        "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♥ by 2sic.com",
+        "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
+        "Fullscreen": "open in fullscreen",
+        "AdamTip": "quick-upload using ADAM",
+        "PageTip": "pick a page",
+        "MoreOptions": "more...",
+        "MenuAdam": "Upload file with Adam",
+        "MenuPage": "Page Picker",
+        "MenuImage": "Image Manager",
+        "MenuDocs": "Document Manager"
+      },
+      "AdamFileManager": {
+        "UploadLabel": "upload to",
+        "UploadTip": "quick-upload using ADAM",
+        "UploadPasteLabel": "paste image",
+        "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",
+        "NewFolder": "New folder",
+        "NewFolderTip": "create a new folder",
+        "BackFolder": "Back",
+        "BackFolderTip": "return to previous folder",
+        "Show": "Open in new tab",
+        "Edit": "Rename",
+        "RenameQuestion": "Rename file / folder to:",
+        "Delete": "Delete",
+        "DeleteQuestion": "Are you sure you want to delete this file?",
+        "Hint": "drop files here",
+        "SponsorTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
+        "SponsorLine": "is sponsored with ♥ by"
+      },
+      "PagePicker": {
+        "Title": "Select a web page"
+      }
+    },
+    "DateTime": {
+      "Open": "open calendar",
+      "Cancel": "Cancel",
+      "Set": "Set"
+    },
+    "String": {
+      "Dropdown": "switch to dropdown select",
+      "Freetext": "switch to freetext"
+    }
+  },
+  "Extension.TinyMce": {
+    "Link.AdamFile": "ADAM-Datei (empfohlen)",
+    "Link.AdamFile.Tooltip": "ADAM-Dateien verlinken - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
+    "Image.AdamImage": "ADAM-Bild (empfohlen)",
+    "Image.AdamImage.Tooltip": "ADAM-Bild einfügen - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
+    "Link.DnnFile": "DNN-Datei verlinken",
+    "Link.DnnFile.Tooltip": "DNN-Datei verlinken (alle Dateien, langsam)",
+    "Image.DnnImage": "DNN-Bild",
+    "Image.DnnImage.Tooltip": "DNN-Bild einfügen (alle Dateien, langsam)",
+    "Link.Page": "Seite verlinken",
+    "Link.Page.Tooltip": "Eine Seite aus dieser Website verlinken",
+    "Link.Anchor.Tooltip": "Texmarke (Anchor) für Verlinkung mit .../page#anchorname",
+    "SwitchMode.Pro": "Zum Profi-Modus wechseln",
+    "SwitchMode.Standard": "Zum Standard-Modus wechseln",
+    "SwitchMode.Expand": "Vollbildmodus",
+    "H1": "Ü1",
+    "H2": "Ü2",
+    "H3": "Ü3",
+    "ContentBlock.Add": "App oder Inhaltsbaustein einfügen"
+  }
 }
