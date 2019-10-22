@@ -1,17 +1,53 @@
 @import '../variables.scss';
 
-.mat-form-field-appearance-outline .mat-form-field-outline {
-    color: $field-border-color--initial;
+// initial
+.mat-form-field-appearance-standard:not(.mat-form-field-disabled):not(.mat-focused):not(.mat-form-field-invalid) .mat-form-field-underline {
+  background-color: $field-border-color--initial;
+
+  .mat-form-field-ripple {
+    background-color: transparent;
+    transition: none;
+  }
 }
 
-.mat-form-field-appearance-outline .mat-form-field-outline-thick {
-    color: $field-border-color--hover;
+// disabled
+.mat-form-field-appearance-standard.mat-form-field-disabled .mat-form-field-underline {
+  background-color: transparent;
+  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+
+  .mat-form-field-ripple {
+    background-color: $field-border-color--disabled !important;
+  }
 }
 
-.mat-form-field-appearance-outline.mat-focused.mat-accent .mat-form-field-outline-thick {
-    color: $field-border-color--focus;
+// hover
+.mat-form-field-appearance-standard:not(.mat-form-field-disabled):not(.mat-focused):not(.mat-form-field-invalid) .mat-form-field-flex:hover~.mat-form-field-underline {
+  background-color: transparent;
+
+  .mat-form-field-ripple {
+    background-color: $field-border-color--hover;
+    transition: none;
+  }
 }
 
-.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
-    color: $field-border-color--invalid;
+// focus
+.mat-form-field-appearance-standard.mat-form-field.mat-focused:not(.mat-form-field-invalid) .mat-form-field-underline {
+  background-color: transparent;
+
+  .mat-form-field-ripple {
+    background-color: $field-border-color--focus;
+    transition: none;
+  }
+}
+
+// invalid
+.mat-form-field.mat-form-field-invalid .mat-form-field-underline {
+  background-color: transparent;
+
+  .mat-form-field-ripple {
+    background-color: $field-border-color--invalid;
+    transition: none;
+  }
 }

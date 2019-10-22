@@ -47,7 +47,7 @@
         <ng-container *ngIf="config.adam && config.adam.showFolders">
           <div fxLayout="row" fxLayoutAlign="start start"
             *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
-            <div class="adam-browse-background-icon">
+            <div class="adam-browse-background-icon" matTooltip="{{ item.Name }}">
               <mat-icon svgIcon="folder"></mat-icon>
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
             </div>
@@ -56,12 +56,12 @@
         <!-- file list -->
         <div
           *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
-          <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
+          <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon" matTooltip="{{ item.Name }}">
             <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
             <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
             <div class="adam-short-label mat-caption">{{ item.Name }}</div>
           </div>
-          <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
+          <div *ngIf="item.Type === 'image'" class="adam-browse-background-image" matTooltip="{{ item.Name }}">
             <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=78&h=78&mode=crop'">
           </div>
         </div>

@@ -8,7 +8,7 @@
       matTooltip="{{'Fields.Hyperlink.AdamFileManager.UploadTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background" xstyle="background-color: whitesmoke">
         <mat-icon>cloud_upload</mat-icon>
-        <div class="adam-short-label">{{'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}&nbsp;
+        <div class="adam-upload-label">{{'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}&nbsp;
           <mat-icon *ngIf="adamModeConfig.usePortalRoot">public</mat-icon>
           <mat-icon *ngIf="!adamModeConfig.usePortalRoot" svgIcon="appleFilled"></mat-icon>
         </div>
@@ -42,7 +42,7 @@
     <ng-container *ngIf="showFolders">
       <div *ngIf="folders.length > 0" class="dz-preview" (click)="goUp()"
         matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.BackFolderTip' | translate }}">
-        <div class="dz-image  adam-browse-background-icon adam-browse-background">
+        <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon svgIcon="folder"></mat-icon>
           <div class="adam-short-label">{{ 'Fields.Hyperlink.AdamFileManager.BackFolder' | translate }}</div>
         </div>
@@ -73,10 +73,11 @@
           }">edit
           </mat-icon>
           <div class="adam-full-name-area">
-            <div class="adam-full-name">{{ item.Name }}</div>
+            <div class="adam-full-name" appClickStopPropagation title="{{ item.Name }}">{{ item.Name }}</div>
           </div>
         </div>
-        <mat-icon class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}" (click)="editMetadata(item)"
+        <mat-icon class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}"
+          (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
           matTooltip="{{getMetadataType(item)}}:{{item.MetadataId}}" appClickStopPropagation
           *ngIf="getMetadataType(item)">local_offer</mat-icon>
       </div>
@@ -86,8 +87,10 @@
     <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
     <div class="dz-preview"
       *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
-      (click)="select(item)"
-      [ngClass]="{ 'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id }">
+      (click)="select(item)" [ngClass]="{
+        'dz-success': getValueCallback && getValueCallback().toLowerCase() === 'file:' + item.Id,
+        'disable-select': !enableSelect
+      }">
       <div *ngIf="item.Type !== 'image'" class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
         <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
         <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
@@ -109,12 +112,13 @@
         }">edit
         </mat-icon>
         <div class="adam-full-name-area">
-          <div class="adam-full-name">{{ item.Name }}</div>
+          <div class="adam-full-name" appClickStopPropagation title="{{ item.Name }}">{{ item.Name }}</div>
         </div>
-        <div class="dz-filename adam-short-label">
+        <div class="dz-filename adam-short-label" appClickStopPropagation
+          title="#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb">
           <span>#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb</span>
         </div>
-        <a class="adam-link-button" target="_blank" [href]="item.FullPath">
+        <a class="adam-link-button" target="_blank" [href]="item.FullPath" appClickStopPropagation>
           <mat-icon matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Show' | translate}}">open_in_new</mat-icon>
         </a>
       </div>

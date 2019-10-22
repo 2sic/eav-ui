@@ -2,150 +2,175 @@
 @import "../../../../styles/theme/material-colors.scss";
 
 %field-border {
-    padding: 0 0 12px 0;
-    border-bottom: 1px solid $field-border-color--initial;
+  padding: 0 0 12px 0;
+  border-bottom: 1px solid $field-border-color--initial;
 }
+
 %field-border--hover {
-    padding: 0 0 11px 0;
-    border-bottom: 2px solid $field-border-color--hover;
-    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+  padding: 0 0 11px 0;
+  border-bottom: 2px solid $field-border-color--hover;
+  transition: none;
 }
+
 %field-border--invalid {
-    padding: 0 0 11px 0;
-    border-bottom: 2px solid $field-border-color--invalid;
-    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+  padding: 0 0 11px 0;
+  border-bottom: 2px solid $field-border-color--invalid;
+  transition: none;
+}
+
+%field-border--disabled {
+  border: none;
+  cursor: default;
+  padding: 0 0 13px 0;
+  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-position: bottom;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
 }
 
 .c-ew {
-    &__preview {
-        position:relative;
-        min-height: 37px;
-        max-height: 119px;
-        $label-top: 26px;
-        cursor: pointer;
+  &__preview {
+    position: relative;
+    min-height: 37px;
+    max-height: 119px;
+    $label-top: 26px;
+    cursor: pointer;
 
-        @extend %field-border;
-        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
-            @extend %field-border--hover;
-        }
+    @extend %field-border;
 
-        &-holder {
-            position: relative;
-            margin-top: calc(#{$label-top} + 12px);
-        }
-
-        &-label {
-            background-color: white;
-            top: -$label-top;
-            position: absolute;
-            z-index: 1;
-            pointer-events: none;
-            font-size: 12px;
-            line-height: 14px;
-        }
-        &-label:not(.mat-error) {
-            color: rgba($editUI-foreground-color, 0.44);
-        }
-
-        &-container {
-            overflow: hidden;
-            height: 100%;
-            -webkit-align-content: center;
-            align-content: center;
-        }
-
-        &-content{
-            overflow: hidden;
-        }
-
-        &-hint {
-           width: 100%;
-
-            &-text {
-                color: rgba($editUI-foreground-color, 0.44);
-            }
-        }
-
-        &--invalid {
-            @extend %field-border--invalid;
-        }
-
-        &--disabled {
-            border-color: $editUI-disabled-background;
-            cursor: default;
-
-            .adam-browse-background-icon, .c-ew__preview-hint-text {
-                color: $editUI-label-disabled-color;
-            }
-
-            .adam-browse-background-image {
-                opacity: 0.5;
-            }
-        }
-
-        .c-ew__color--accent{
-            color: map_get($mat-eav-item-dialog-secondary, 500);
-        }
-
-        .c-ew__color--primary {
-            color: rgba($editUI-foreground-color, 0.44);
-        }
-
-        .color__label-disabled {
-            color: $editUI-label-disabled-color;
-        }
-
-        mat-empty {
-            height: 48px;
-            padding: 24px 0 0 0;
-        }
-
-        .adam-browse-background {
-            $adam-img-size: 78px;
-            $adam-folder-size: 48px;
-            &-icon {
-                height: $adam-img-size;
-                width: $adam-img-size;
-                text-align: center;
-                border-radius: $edit-ui-input-border-radius;
-                border: 1px solid $field-border-color--disabled;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-            &-icon mat-icon {
-                font-size: $adam-folder-size;
-                width: $adam-folder-size;
-                height: $adam-folder-size;
-            }
-
-            &-image {
-                height: $adam-img-size;
-                width: $adam-img-size;
-                border-radius: $edit-ui-input-border-radius;
-                border: 1px solid $field-border-color--disabled;
-                img {
-                    border-radius: $edit-ui-input-border-radius;
-                }
-            }
-        }
+    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+      @extend %field-border--hover;
     }
+
+    &-holder {
+      position: relative;
+      margin-top: calc(#{$label-top} + 12px);
+    }
+
+    &-label {
+      background-color: white;
+      top: -$label-top;
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    &-label:not(.mat-error) {
+      color: rgba($editUI-foreground-color, 0.44);
+    }
+
+    &-container {
+      overflow: hidden;
+      height: 100%;
+      -webkit-align-content: center;
+      align-content: center;
+    }
+
+    &-content {
+      overflow: hidden;
+    }
+
+    &-hint {
+      width: 100%;
+
+      &-text {
+        color: rgba($editUI-foreground-color, 0.44);
+      }
+    }
+
+    &--invalid {
+      @extend %field-border--invalid;
+    }
+
+    &--disabled {
+      @extend %field-border--disabled;
+
+      .adam-browse-background-icon,
+      .c-ew__preview-hint-text {
+        color: $editUI-label-disabled-color;
+      }
+
+      .adam-browse-background-image {
+        opacity: 0.5;
+      }
+    }
+
+    .c-ew__color--accent {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
+    }
+
+    .c-ew__color--primary {
+      color: rgba($editUI-foreground-color, 0.44);
+    }
+
+    .color__label-disabled {
+      color: $editUI-label-disabled-color;
+    }
+
+    mat-empty {
+      height: 48px;
+      padding: 24px 0 0 0;
+    }
+
+    .adam-browse-background {
+      $adam-img-size: 78px;
+      $adam-folder-size: 48px;
+
+      &-icon {
+        height: $adam-img-size;
+        width: $adam-img-size;
+        text-align: center;
+        border-radius: $edit-ui-input-border-radius;
+        border: 1px solid $field-border-color--disabled;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &-icon mat-icon {
+        font-size: $adam-folder-size;
+        width: $adam-folder-size;
+        height: $adam-folder-size;
+      }
+
+      &-image {
+        height: $adam-img-size;
+        width: $adam-img-size;
+        border-radius: $edit-ui-input-border-radius;
+        border: 1px solid $field-border-color--disabled;
+
+        img {
+          border-radius: $edit-ui-input-border-radius;
+        }
+      }
+    }
+  }
 }
 
 .c__helper-wrapper {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 
-    &--left {
-        flex: auto;
-        // spm width 1% is required. Otherwise field breaks
-        width: 1%;
-    }
-    &--right {
-        flex: 0 0 auto;
-        padding-top: 0.54166667em;
-        padding-left: 12px;
-        line-height: 16px;
-    }
+  &--left {
+    flex: auto;
+    // spm width 1% is required. Otherwise field breaks
+    width: 1%;
+  }
+
+  &--right {
+    flex: 0 0 auto;
+    padding-top: 0.54166667em;
+    padding-left: 12px;
+    line-height: 16px;
+  }
+}
+
+.adam-short-label {
+  max-width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

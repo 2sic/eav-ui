@@ -2,199 +2,228 @@
 @import "../../../../styles/theme/material-colors.scss";
 
 %field-border {
-    padding: 0 0 1px 0;
-    border-bottom: 1px solid $field-border-color--initial;
+  padding: 0 0 1px 0;
+  border-bottom: 1px solid $field-border-color--initial;
 }
+
 %field-border--hover {
-    padding: 0;
-    border-bottom: 2px solid $field-border-color--hover;
-    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+  padding: 0;
+  border-bottom: 2px solid $field-border-color--hover;
+  transition: none;
 }
+
 %field-border--invalid {
-    padding: 0;
-    border-bottom: 2px solid $field-border-color--invalid;
-    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+  padding: 0;
+  border-bottom: 2px solid $field-border-color--invalid;
+  transition: none;
+}
+
+%field-border--disabled {
+  border: none;
+  cursor: default;
+  padding: 0 0 2px 0;
+  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-position: bottom;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
 }
 
 .c-ew {
-    $min-height: 36px;
-    $max-height: 116px;
-    $max-height-inline: 50vh;
-    $label-top: 14px;
-    &__preview {
-        position:relative;
-        min-height: $min-height;
-        max-height: $max-height;
-        cursor: pointer;
-        font-size: 14px;
+  $min-height: 36px;
+  $max-height: 116px;
+  $max-height-inline: 50vh;
+  $label-top: 14px;
 
-        @extend %field-border;
-        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
-            @extend %field-border--hover;
-        }
+  &__preview {
+    position: relative;
+    min-height: $min-height;
+    max-height: $max-height;
+    cursor: pointer;
+    font-size: 14px;
 
-        &-holder {
-            position: relative;
-            margin-top: calc(#{$label-top} + 12px);
-        }
+    @extend %field-border;
 
-        &-label {
-            top: -$label-top;
-            position: absolute;
-            z-index: 1;
-            pointer-events: none;
-            font-size: 12px;
-            line-height: 14px;
-
-            &:not(.mat-error) {
-                color: rgba($editUI-foreground-color, 0.44);
-            }
-            &--focused {
-                color: map_get($mat-eav-item-dialog-secondary, 500) !important;
-            }
-        }
-
-        &-container {
-            overflow: hidden;
-            min-height: inherit;
-            max-height: inherit;
-        }
-
-        &-content {
-            position: relative;
-            overflow: hidden;
-            min-height: $min-height;
-            max-height: $max-height;
-
-            &--disabled {
-                pointer-events: none;
-                color: $editUI-field-disabled-color;
-            }
-        }
-
-        &--focused {
-            border-bottom-color: $field-border-color--focus !important;
-        }
-
-        &--invalid {
-            @extend %field-border--invalid;
-        }
-
-        &--disabled {
-            border-color: $editUI-disabled-background;
-            cursor: default;
-        }
-
-        .color__accent {
-            color: map_get($mat-eav-item-dialog-secondary, 500);
-        }
-
-        .color__primary {
-            color: rgba($editUI-foreground-color, 0.44);
-        }
-
-        .color__label-disabled {
-            color: $editUI-label-disabled-color;
-        }
-
-        mat-empty {
-            height: 48px;
-            padding: 24px 0 0 0;
-        }
+    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid) {
+      @extend %field-border--hover;
     }
 
-    &__container {
-        border-radius: $edit-ui-dialog-border-radius;
-        position: fixed;
-        z-index: 2;
-        top: 0;
-        left: 0;
-        right: 0;  
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        align-items: self-start;
-        justify-content: center;
-        display: flex;
+    &-holder {
+      position: relative;
+      margin-top: calc(#{$label-top} + 12px);
     }
 
-    &__dialog {
-        flex-direction: column;
-        display: flex;
-        max-width: $edit-ui-dialog-max-width;
-        width: 100vw; 
-        margin-top: 24px;
-        min-height: $expandable-wrapper-max-height;
-        max-height: $expandable-wrapper-max-height;
-        @media (max-width: 600px) {
-            margin-top: 0;
-            min-height: $expandable-wrapper-max-height-mobile;
-            max-height: $expandable-wrapper-max-height-mobile;
-        }
-        padding: 0;
-        .mat-dialog-actions {
-            padding: 16px;
-        }
+    &-label {
+      top: -$label-top;
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+      font-size: 12px;
+      line-height: 14px;
 
-        &-content {
-            position:relative;
-            // border-radius: $edit-ui-input-border-radius;
-            background: map_get($mat-eav-item-dialog-background, 50);
-        }
+      &:not(.mat-error) {
+        color: rgba($editUI-foreground-color, 0.44);
+      }
+
+      &--focused:not(.mat-error) {
+        color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+      }
     }
 
-    &__preview--wysiwyg, &__inline--wysiwyg {
-        $wysiwyg-border: 1px solid lightgrey;
-        $wysiwyg-border-hover: 2px solid lightgrey;
-        $wysiwyg-border-focused: 2px solid $field-border-color--focus;
-        $wysiwyg-border-invalid: 2px solid $field-border-color--invalid;
-        $wysiwyg-border-disabled: 1px solid $editUI-disabled-background;
-        $wysiwyg-padding: 1px;
-        $wysiwyg-padding-hover: 0;
-
-        padding: $wysiwyg-padding;
-        border-top: $wysiwyg-border;
-        border-right: $wysiwyg-border;
-        border-left: $wysiwyg-border;
-        &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid):not(.c-ew__preview--focused) {
-            padding: $wysiwyg-padding-hover;
-            border-top: $wysiwyg-border-hover;
-            border-right: $wysiwyg-border-hover;
-            border-left: $wysiwyg-border-hover;
-        }
-        &.c-ew__preview--invalid {
-            padding: $wysiwyg-padding-hover;
-            border-top: $wysiwyg-border-invalid;
-            border-right: $wysiwyg-border-invalid;
-            border-left: $wysiwyg-border-invalid;
-        }
-        &.c-ew__preview--disabled {
-            border-top: $wysiwyg-border-disabled;
-            border-right: $wysiwyg-border-disabled;
-            border-left: $wysiwyg-border-disabled;
-        }
-        &.c-ew__preview--focused {
-            padding: $wysiwyg-padding-hover;
-            border-top: $wysiwyg-border-hover;
-            border-right: $wysiwyg-border-hover;
-            border-left: $wysiwyg-border-hover;
-            border-bottom: $wysiwyg-border-focused;
-        }
+    &-container {
+      overflow: hidden;
+      min-height: inherit;
+      max-height: inherit;
     }
 
-    &__inline {
-        cursor: auto;
-        max-height: $max-height-inline;
+    &-content {
+      position: relative;
+      overflow: hidden;
+      min-height: $min-height;
+      max-height: $max-height;
 
-        &-content {
-            max-height: $max-height-inline;
-            overflow-y: scroll;
-            -ms-overflow-style: none;  // IE 10+
-            overflow: -moz-scrollbars-none;  // Firefox
-            scrollbar-width: none;
-            &::-webkit-scrollbar { 
-                display: none;  // Safari and Chrome
-            }
-        }
+      &--disabled {
+        pointer-events: none;
+        color: $editUI-field-disabled-color;
+      }
     }
+
+    &--focused:not(.c-ew__preview--invalid) {
+      border-bottom-color: $field-border-color--focus !important;
+    }
+
+    &--invalid {
+      @extend %field-border--invalid;
+    }
+
+    &--disabled {
+      @extend %field-border--disabled;
+    }
+
+    .color__accent {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
+    }
+
+    .color__primary {
+      color: rgba($editUI-foreground-color, 0.44);
+    }
+
+    .color__label-disabled {
+      color: $editUI-label-disabled-color;
+    }
+
+    mat-empty {
+      height: 48px;
+      padding: 24px 0 0 0;
+    }
+  }
+
+  &__container {
+    border-radius: $edit-ui-dialog-border-radius;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: self-start;
+    justify-content: center;
+    display: flex;
+  }
+
+  &__dialog {
+    flex-direction: column;
+    display: flex;
+    max-width: $edit-ui-dialog-max-width;
+    width: 100vw;
+    margin-top: 24px;
+    min-height: $expandable-wrapper-max-height;
+    max-height: $expandable-wrapper-max-height;
+
+    @media (max-width: 600px) {
+      margin-top: 0;
+      min-height: $expandable-wrapper-max-height-mobile;
+      max-height: $expandable-wrapper-max-height-mobile;
+    }
+
+    padding: 0;
+
+    .mat-dialog-actions {
+      padding: 16px;
+    }
+
+    &-content {
+      position: relative;
+      // border-radius: $edit-ui-input-border-radius;
+      background: map_get($mat-eav-item-dialog-background, 50);
+    }
+  }
+
+  &__preview--wysiwyg,
+  &__inline--wysiwyg {
+    $wysiwyg-border: 1px solid $field-border-color--initial;
+    $wysiwyg-border-hover: 2px solid $field-border-color--initial;
+    $wysiwyg-border-focused: 2px solid $field-border-color--focus;
+    $wysiwyg-border-invalid: 2px solid $field-border-color--invalid;
+    $wysiwyg-padding: 1px;
+    $wysiwyg-padding-hover: 0;
+    $wysiwyg-padding-disabled: 2px;
+
+    padding: $wysiwyg-padding;
+    border-top: $wysiwyg-border;
+    border-right: $wysiwyg-border;
+    border-left: $wysiwyg-border;
+
+    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid):not(.c-ew__preview--focused) {
+      padding: $wysiwyg-padding-hover;
+      border-top: $wysiwyg-border-hover;
+      border-right: $wysiwyg-border-hover;
+      border-left: $wysiwyg-border-hover;
+    }
+
+    &.c-ew__preview--invalid {
+      padding: $wysiwyg-padding-hover;
+      border-top: $wysiwyg-border-invalid;
+      border-right: $wysiwyg-border-invalid;
+      border-left: $wysiwyg-border-invalid;
+    }
+
+    &.c-ew__preview--disabled {
+      border: none !important;
+      padding: $wysiwyg-padding-disabled;
+      background: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
+        linear-gradient($field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
+        linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
+        linear-gradient($field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+      background-position: top, right, bottom, left;
+      background-repeat: repeat-x, repeat-y;
+      background-size: 4px 1px, 1px 4px;
+    }
+
+    &.c-ew__preview--focused:not(.c-ew__preview--invalid) {
+      padding: $wysiwyg-padding-hover;
+      border-top: $wysiwyg-border-hover;
+      border-right: $wysiwyg-border-hover;
+      border-left: $wysiwyg-border-hover;
+      border-bottom: $wysiwyg-border-focused;
+    }
+  }
+
+  &__inline {
+    cursor: auto;
+    max-height: $max-height-inline;
+
+    &-content {
+      max-height: $max-height-inline;
+      overflow-y: scroll;
+      -ms-overflow-style: none; // IE 10+
+      overflow: -moz-scrollbars-none; // Firefox
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
+    }
+  }
 }
