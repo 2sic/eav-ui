@@ -1,5 +1,5 @@
 <div class="save-errors-container">
-  <div>To save the form, please fix the following errors:</div>
+  <div>{{ 'Errors.SaveErrors' | translate }}</div>
   <br />
   <div *ngFor="let fieldError of fieldErrors;">
     <span>{{ fieldError.field }}<span>: {{ fieldError.message | translate }}</span></span>

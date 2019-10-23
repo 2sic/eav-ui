@@ -3,7 +3,7 @@
     <mat-icon class="header__exit-icon" *ngIf="isParentDialog" matTooltip="{{ 'Form.Buttons.Exit.Tip' | translate }}">
       clear
     </mat-icon>
-    <mat-icon class="header__exit-button" *ngIf="!isParentDialog"
+    <mat-icon class="header__exit-icon" *ngIf="!isParentDialog"
       matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
       arrow_back
     </mat-icon>
@@ -14,7 +14,7 @@
   </div>
   <button mat-button class="header__publish-button" (click)="openSaveSatusDialog()"
     matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">
-    <span class="header__publish-mode">Status:
+    <span class="header__publish-mode">{{ 'SaveMode.Label' | translate }}
       <b>{{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}</b></span>
   </button>
 </mat-card>

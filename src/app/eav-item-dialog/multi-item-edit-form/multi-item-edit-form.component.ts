@@ -176,7 +176,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         itemEditFormComponent.form.submitOutside();
       });
       console.log('saveAll', close);
-      this.snackBarOpen('saving...');
+      this.snackBarOpen(this.translate.instant('Message.Saving'));
 
       if (close) {
         this.formIsSaved = true;
@@ -228,6 +228,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private dialogBackdropClickSubscribe() {
+    window.addEventListener('beforeunload', e => {
+      if (!this.dialogRef.disableClose) { return; }
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+      this.snackBarYouHaveUnsavedChanges();
+    });
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
     });
@@ -390,16 +398,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         this.itemService.updateItemId(action.data);
         console.log('success END: ', action.data);
-        this.snackBarOpen('saved');
+        this.snackBarOpen(this.translate.instant('Message.Saved'));
         this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
           this.closeDialog(action.data);
         }
-        // else {
-        //   console.log('success END: saveFormMessagesSubscribe saved');
-        //   // child dialogs
-        //   this.snackBarOpen('saved');
-        // }
       }));
     this.subscriptions.push(this.actions$
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR))
@@ -509,9 +512,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
         this.debugEnabled = debugEnabled;
         if (this.debugEnabled) {
-          this.snackBarOpen('debug mode enabled');
+          this.snackBarOpen(this.translate.instant('Message.DebugEnabled'));
         } else {
-          this.snackBarOpen('debug mode disabled');
+          this.snackBarOpen(this.translate.instant('Message.DebugDisabled'));
           this.debugInfoIsOpen = false;
         }
       })

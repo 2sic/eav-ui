@@ -1,49 +1,48 @@
 <div *ngIf="(currentLanguage !== defaultLanguage) && fieldConfig.isParentGroup" fxLayoutAlign="end center">
   <button mat-button fxLayoutAlign="end center" type="button" [matMenuTriggerFor]="rootMenu">
     <span fxLayoutAlign="end center">
-      TRANSLATE &nbsp;&nbsp;
+      {{ ('LangMenu.Translate' | translate).toUpperCase() }} &nbsp;&nbsp;
       <mat-icon class="translate-icon">translate</mat-icon>
     </span>
   </button>
   <mat-menu #rootMenu="matMenu" [overlapTrigger]="true">
     <button mat-menu-item type="button" (click)="translateAll()"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'translate'}">
-      Translate all
+      {{ 'LangMenu.TranslateAll' | translate }}
     </button>
     <button mat-menu-item type="button" (click)="dontTranslateAll()"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'dontTranslate'}">
-      Don't translate any
+      {{ 'LangMenu.NoTranslateAll' | translate }}
     </button>
     <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()"
       [ngClass]="{'menu-item-selected' : translationState.language !== ''}">
-      Link to other language
+      {{ 'LangMenu.Link' | translate }}
     </button>
   </mat-menu>
 </div>
 
 <div *ngIf="(currentLanguage !== defaultLanguage) && !fieldConfig.isParentGroup" fxLayoutAlign="end center">
-  <div fxLayoutAlign="end center" class="shared-languages-container">
-    <div class="shared-languages mat-caption color__accent" [ngClass]="{
+  <div fxLayoutAlign="end center" class="shared-languages-container" [ngClass]="getTranslationStateClass()">
+    <div class="shared-languages mat-caption" [ngClass]="{
       'shared-languages--disabled': inputDisabled
     }">
       {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}</div>
-    <button [disabled]="fieldConfig.disableI18n" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2"
-      [ngClass]="getTranslationStateClass()">
+    <button [disabled]="fieldConfig.disableI18n" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2">
       <mat-icon class="translate-icon">translate</mat-icon>
     </button>
   </div>
   <mat-menu #rootMenu2="matMenu" [overlapTrigger]="true">
     <button mat-menu-item type="button" (click)="translateUnlink(config.field.name, config.field.inputType)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'translate' }">
-      Translate
+      {{ 'LangMenu.Translate' | translate }}
     </button>
     <button mat-menu-item type="button" (click)="linkToDefault(config.field.name, config.field.inputType)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'dontTranslate'}">
-      Don't translate
+      {{ 'LangMenu.NoTranslate' | translate }}
     </button>
     <button mat-menu-item type="button" (click)="openLinkToOtherLanguage()"
       [ngClass]="{'menu-item-selected' : translationState.language !== ''}">
-      Link to other language
+      {{ 'LangMenu.Link' | translate }}
     </button>
   </mat-menu>
 </div>

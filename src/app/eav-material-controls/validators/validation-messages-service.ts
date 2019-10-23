@@ -5,51 +5,15 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ValidationMessagesService {
 
-  constructor() {
-  }
-
-  // static onlySimpleUrlCharsValidatorMessage(err, field: FormlyFieldConfig) {
-  //   return `"${field.formControl.value}" is not a valid URL`;
-  // }
-
-  // static requiredMessage(config) {
-  //   return `You must enter a value`;
-  // }
-
-  // static minlengthValidationMessage(err, field) {
-  //   return `Should have atleast ${field.templateOptions.minLength} characters`;
-  // }
-
-  // static maxlengthValidationMessage(err, field) {
-  //   return `This value should be less than ${field.settings.templateOptions.maxLength} characters`;
-  // }
-
-  // static minValidationMessage(err, field) {
-  //   return `This value should be more than ${field.templateOptions.min}`;
-  // }
-
-  // static maxValidationMessage(err, field) {
-  //   return `This value should be less than ${field.templateOptions.max}`;
-  // }
-
-  // static patternValidationMessage(err, field) {
-  //   return `"${field.formControl.value}" is not a valid`;
-  // }
+  constructor() { }
 
   // return list of error messages
   public validationMessages(): any {
     const messages = {
       required: (config: FieldConfigSet) => {
-        return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`;
+        return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
       },
-      // minLength: (config: FieldConfig) => {
-      //   return `Should have atleast ${config.currentFieldConfig.settings.MinLength} characters`;
-      // },
-      // maxLength: (config: FieldConfig) => {
-      //   return `This value should be less than ${config.currentFieldConfig.settings.MaxLength} characters`;
-      // },
       min: (config: FieldConfigSet) => {
-        // return config ? `This value should be more than ${config.currentFieldConfig.settings.Min}` : `ValidationMessage.NotValid`;
         return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
       },
       max: (config: FieldConfigSet) => {

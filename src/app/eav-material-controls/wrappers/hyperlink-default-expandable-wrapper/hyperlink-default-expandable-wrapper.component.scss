@@ -5,12 +5,15 @@
 $hyperlink-default-height: 78px;
 
 .c-ew__preview {
+    padding-top: 12px;
+
     &-field {
         &--short {
             // spm width 1% is required. Otherwise field breaks
             width: 1%;
-            padding: 10px;
-            padding-bottom: 0;
+            padding: 0;
+            padding-left: 8px;
+            margin-top: -4px;
         }
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);
@@ -28,7 +31,7 @@ $hyperlink-default-height: 78px;
         background-color:  rgba($editUI-foreground-color, 0.08);
         width: $hyperlink-default-height;
         height: $hyperlink-default-height;
-        border-radius: $edit-ui-input-border-radius 0 0 $edit-ui-input-border-radius;
+        border-radius: $edit-ui-input-border-radius;
         border: 1px solid $field-border-color--disabled;
         cursor: pointer;
         background-repeat: no-repeat;
@@ -67,6 +70,16 @@ $hyperlink-default-height: 78px;
             color: $editUI-label-disabled-color;
         }
     }
+    @media (min-width: 601px) {
+        &-suffix-icon {
+            top: 0 !important;
+        }
+    }
+    @media (max-width: 600px) {
+        &-suffix-icon {
+            top: 10px !important;
+        }
+    }
 }
 
 .c__helper-wrapper {
@@ -80,8 +93,8 @@ $hyperlink-default-height: 78px;
     }
     &--right {
         flex: 0 0 auto;
+        padding-top: 0.54166667em;
         padding-left: 12px;
-        padding-top: 3px;
         line-height: 16px;
     }
 }

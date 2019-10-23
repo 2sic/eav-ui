@@ -1,5 +1,4 @@
 // EditUI dialog
-
 .c-multi-item-dialog .mat-dialog-container {
     padding: 0;
     background-color: $edit-ui-dialog-background-color;
@@ -7,8 +6,6 @@
     @media (max-width: 600px) {
         border-radius: 0;
     }
-    // width: $edit-ui-dialog-width;
-    // max-width: 960px;
     bottom: 10px;
 }
 
@@ -20,6 +17,9 @@
 }
 
 app-collapsible-wrapper {
+    .description p:last-child {
+        margin-bottom: 0;
+    }
     app-collapsible-wrapper:last-child {
         mat-card:last-child {
             margin: 0;

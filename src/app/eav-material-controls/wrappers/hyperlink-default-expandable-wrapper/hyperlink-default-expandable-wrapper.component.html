@@ -4,7 +4,8 @@
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()">
+        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()"
+          matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
@@ -31,7 +32,7 @@
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">
     <!-- image / icon -->
-    <div class="thumbnail-before-input" [ngClass]="{
+    <div class="thumbnail-before-input" matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate}}" [ngClass]="{
       'icon-before-input': control.value && !isImage,
       'thumbnail-before-input--disabled': control.disabled
     }" [ngStyle]="{'background-image': control.value && isImage ? thumbnailUrl : ''}"
@@ -47,18 +48,20 @@
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <!-- input -->
       <div class="c-hyperlink-default-input-link-wrapper">
-        <mat-form-field appearance="outline" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
+        <mat-form-field appearance="standard" color="accent" class="mat-form-field-hyperlink" [ngClass]="{
           'mat-form-field-invalid': control.invalid && control.touched
         }">
           <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
-            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value" matTooltip="{{'Edit.Fields.Hyperlink.Default.Tooltip1' | translate }} 
-        {{'Edit.Fields.Hyperlink.Default.Tooltip2' | translate }}
-        ADAM - sponsored with ♥ by 2sic.com" matTooltipPosition="above" (blur)="setTouched()">
+            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value"
+            matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above"
+            (blur)="setTouched()">
           <div matSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
-          }">drop files here</div>
-            <button mat-icon-button tabindex="-1" [disabled]="control.disabled" type="button" (click)="expandDialog()">
+          }">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
+            <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" [disabled]="control.disabled"
+              type="button" (click)="expandDialog()"
+              matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate}}">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
           </div>
@@ -71,8 +74,9 @@
         <div *ngIf="control.value" class="c-hyperlink-default-link__container" fxHide fxShow.gt-xs>
           <div class="c-hyperlink-default-link__value">{{control.value}}</div>
           <div class="c-hyperlink-default-link__link">
-            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text">
-              <span>... {{link.substr(link.lastIndexOf("/"), 100)}}</span>
+            <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text"
+              matTooltip="{{link}}">
+              <span>.../{{ link.substr(link.lastIndexOf("/") + 1, link.length) }}</span>
             </a>
           </div>
         </div>
@@ -82,7 +86,7 @@
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
         <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
-          <span>ADAM - sponsored with ♡ by 2sic.com</span>
+          <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
         </div>
       </div>
     </div>

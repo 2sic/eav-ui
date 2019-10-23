@@ -1,49 +1,47 @@
 // hyperlink-default overrides
-$hyperlink-default-margin-bottom: 24px;
-$hyperlink-default-margin-bottom-last-in-group: 8px;
-
 .c-hyperlink-default-field-preview {
-    .c-ew__preview {
-        margin-bottom: $hyperlink-default-margin-bottom;
+  .c-ew__preview {
+    &--last-in-group {}
+  }
 
-        &--last-in-group {
-            margin-bottom: $hyperlink-default-margin-bottom-last-in-group;
-        }
+  .mat-form-field-outline {
 
-        .c-fht__container {
-            padding-bottom: 0;
-        }
+    .mat-form-field-outline-start,
+    .mat-form-field-outline-gap,
+    .mat-form-field-outline-end {
+      background-color: white;
     }
-    .mat-form-field-outline {
-        .mat-form-field-outline-start, .mat-form-field-outline-gap, .mat-form-field-outline-end {
-            background-color: white;
-        }
-    }
+  }
 }
 
 .c-hyperlink-default-input-link-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .c-hyperlink-default-link {
-    &__container {
-        position: absolute;
-        top: 13px;
-        left: 12px;
-        font-size: 14px;
-        pointer-events: none;
-        display: flex;
-    }
-    &__value {
-        opacity: 0;
-        margin-right: 16px;
-    }
-    &__link {
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-    }
-    &__link-text {
-        pointer-events: all;
-    }
+  &__container {
+    position: absolute;
+    top: 35px;
+    pointer-events: none;
+    display: flex;
+  }
+
+  &__value {
+    opacity: 0;
+    margin-right: 16px;
+  }
+
+  &__link {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__link-text {
+    pointer-events: all;
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

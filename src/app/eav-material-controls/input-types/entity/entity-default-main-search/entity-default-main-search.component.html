@@ -4,11 +4,11 @@
 
 <!-- pick existing entity close-->
 <div [hidden]="freeTextMode">
-  <div class="ed-field" fxLayout="row" fxLayoutAlign="start start">
+  <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
     <div
       [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
-        <mat-form-field [formGroup]="group" appearance="outline" color="accent" [ngClass]="{
+        <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
           'mat-form-field-invalid': inputInvalid && touched
         }">
           <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
@@ -19,7 +19,7 @@
           <a matSuffix *ngIf="enableTextEntry" (click)="!disabled && freeTextModeChange($event)"
             fxLayoutAlign="center center">
             <button [disabled]="disabled" type="button" mat-icon-button>
-              <mat-icon>text_fields</mat-icon>
+              <mat-icon matTooltip="{{ 'Fields.String.Freetext' | translate }}">text_fields</mat-icon>
             </button>
             <button *ngIf="freeTextMode" [disabled]="disabled" type="button" mat-icon-button>
               <mat-icon>arrow_drop_down</mat-icon>
@@ -27,7 +27,7 @@
           </a>
           <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
             allowMultiValue ?
-            ('FieldType.Entity.Choose' | translate) : config.field.label}}
+            ('Fields.Entity.Choose' | translate) : config.field.label}}
             {{config.field.required ? '*': '' }}</mat-label>
         </mat-form-field>
 
@@ -44,7 +44,8 @@
       fxLayoutAlign="end center">
       <!-- create new entity to add to this list -->
       <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
-        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew">
+        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew"
+        matTooltip="{{ 'Fields.Entity.New' | translate }}">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>
@@ -52,7 +53,7 @@
 </div>
 
 <!-- formly-skip-ng-model-attrs-manipulator -->
-<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="outline" color="accent">
+<mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
   <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
     [placeholder]="config.field.placeholder">
 
@@ -70,7 +71,8 @@
 
 <!-- add new entity -->
 <div *ngIf="!freeTextMode && enableCreate && entityType !== '' && allowMultiValue">
-  <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled">
+  <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled"
+    matTooltip="{{ 'Fields.Entity.New' | translate }}">
     <mat-icon>add</mat-icon>
   </button>
 </div>

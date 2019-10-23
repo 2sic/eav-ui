@@ -206,7 +206,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     if (this.error) {
       return this.error;
     } else {
-      this.translate.instant('FieldType.EntityQuery.QueryNoItems');
+      this.translate.instant('Fields.EntityQuery.QueryNoItems');
     }
   }
 }

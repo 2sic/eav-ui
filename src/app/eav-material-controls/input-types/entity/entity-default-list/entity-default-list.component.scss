@@ -1,105 +1,125 @@
 @import "../../../../../styles/variables.scss";
 
 %field-border {
-    padding: 1px 12px;
-    border-radius: 5px;
-    border: 1px solid $field-border-color--initial;
-}
-%field-border--hover {
-    padding: 0 11px;
-    border: 2px solid $field-border-color--hover;
-    transition: border-color .3s cubic-bezier(.25,.8,.25,1);
+  padding: 0 0 1px 0;
+  border-bottom: 1px solid $field-border-color--initial;
 }
 
+%field-border--hover {
+  padding: 0;
+  border-bottom: 2px solid $field-border-color--hover;
+  transition: none;
+}
+
+%field-border--disabled {
+  border: none;
+  cursor: default;
+  padding: 0 0 2px 0;
+  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-position: bottom;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+}
+
+$label-top: 12px;
+
 .dnd-placeholder {
-   // background-color:  mat-color($editUI-theme-foreground, base,  0.08);
-    background-color: rgba($editUI-foreground-color, 0.08);
-    display: block;
-    min-height: 20px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    border: 1px solid rgba(86,61,124,.2);
-    position: relative;
-    padding-right: 15px;
-    padding-left: 15px;
+  // background-color:  mat-color($editUI-theme-foreground, base,  0.08);
+  background-color: rgba($editUI-foreground-color, 0.08);
+  display: block;
+  min-height: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 1px solid rgba(86, 61, 124, .2);
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.cursor-move {
+  cursor: move;
 }
 
 .dnd-element {
-    position: relative;
-    cursor: move;
+  position: relative;
+  height: 30px;
+
+  @extend %field-border;
+
+  &:hover:not(.dnd-element--disabled) {
+    @extend %field-border--hover;
+  }
+
+  &.first {
     height: 40px;
+    margin-top: calc(#{$label-top} + 12px);
+  }
 
-    @extend %field-border;
-    &:hover:not(.dnd-element--disabled) {
-        @extend %field-border--hover;
-        .mat-caption {
-            top: -7px;
-            left: 6px;
-        }
-    }
-
-    .mat-caption {
-        background-color: white;
-        position: absolute;
-        top: -6px;
-        left: 7px;
-        padding: 0 6px 0 4px;
-        z-index: 1;
-        pointer-events: none;
-        font-size: 11px;
-        line-height: 14px;
-    }
+  .mat-caption {
+    background-color: white;
+    position: absolute;
+    top: -$label-top;
+    z-index: 1;
+    pointer-events: none;
+    font-size: 12px;
+    line-height: 14px;
+  }
 }
 
 .dnd-element-multi {
-    position: relative;
-    cursor: move;
-    height: 56px;
-    background: white;
-    border-radius: 32px;
-    border: 1px solid rgba($editUI-foreground-color, 0.44);
-    margin: 4px 0 4px 0;
-    padding: 0 16px 0 16px;
+  position: relative;
+  height: 56px;
+  background: white;
+  border-radius: 32px;
+  border: 1px solid $field-border-color--initial;
+  margin: 4px 0 4px 0;
+  padding: 0 16px 0 16px;
 }
 
 .dnd-element-content {
-    width: 100%;
-    overflow: hidden;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: -4px;
 }
 
 .dnd-element-content mat-label {
-    color:  rgba($editUI-foreground-color, 0.44);
+  color: rgba($editUI-foreground-color, 0.44);
 }
 
 .dnd-element-text {
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .dnd-buttons {
-    display: flex;
-    margin-right: -12px;
+  display: flex;
+  margin-bottom: -4px;
 
-    .mat-icon-button .mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-    }
+  .mat-icon-button {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
 }
 
 .dnd-element--disabled {
-    border-color: $editUI-disabled-background;
-    cursor: default;
+  @extend %field-border--disabled;
 
-    .dnd-element-text {
-        color: $editUI-label-disabled-color;
-    }
-    .dnd-element-content mat-label, .dnd-element-content mat-icon {
-        color: $editUI-label-disabled-color;
-    }
+  .dnd-element-text {
+    color: $editUI-label-disabled-color;
+  }
+
+  .dnd-element-content mat-label,
+  .dnd-element-content mat-icon {
+    color: $editUI-label-disabled-color;
+  }
 }
 
 /* .dnd-element:hover .dnd-buttons {
@@ -108,5 +128,5 @@
 
 
 .dnd-space {
-    height: 32px;
+  height: 32px;
 }
