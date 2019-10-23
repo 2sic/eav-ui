@@ -14,6 +14,7 @@ export interface FieldConfigSet {
   adam?: AdamBrowserComponent;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   cache?: any;
+  saveImage?: (image: File) => void;
 }
 
 export interface FieldConfigAngular extends FieldConfig {

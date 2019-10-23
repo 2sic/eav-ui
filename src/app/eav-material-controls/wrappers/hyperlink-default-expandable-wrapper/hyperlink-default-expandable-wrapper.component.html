@@ -54,7 +54,7 @@
           <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
             [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value"
             matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above"
-            (blur)="setTouched()">
+            (blur)="setTouched()" appPasteClipboardImage [config]="config" [elementType]="'input'">
           <div matSuffix fxLayoutAlign="center center">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
