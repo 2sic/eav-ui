@@ -139,7 +139,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   private buildThumbnailUrl(url: string, size: number, quote: boolean): string {
     if (size === 1) {
-      url = url + '?w=78&h=78&mode=crop';
+      url = url + '?w=80&h=80&mode=crop';
     }
     if (size === 2) {
       url = url + '?w=500&h=400&mode=max';
