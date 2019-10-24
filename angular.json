@@ -125,6 +125,118 @@
           }
         }
       }
+    },
+    "ng-dialogs": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/ng-dialogs",
+      "sourceRoot": "projects/ng-dialogs/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/ng-dialogs",
+            "index": "projects/ng-dialogs/src/index.html",
+            "main": "projects/ng-dialogs/src/main.ts",
+            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
+            "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
+            "assets": [
+              "projects/ng-dialogs/src/favicon.ico",
+              "projects/ng-dialogs/src/assets"
+            ],
+            "styles": [
+              "projects/ng-dialogs/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ng-dialogs/src/environments/environment.ts",
+                  "with": "projects/ng-dialogs/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "ng-dialogs:build",
+            "publicHost": "http://localhost:4200"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ng-dialogs:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ng-dialogs:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-dialogs/src/test.ts",
+            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
+            "tsConfig": "projects/ng-dialogs/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-dialogs/karma.conf.js",
+            "assets": [
+              "projects/ng-dialogs/src/favicon.ico",
+              "projects/ng-dialogs/src/assets"
+            ],
+            "styles": [
+              "projects/ng-dialogs/src/styles.css"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ng-dialogs/tsconfig.app.json",
+              "projects/ng-dialogs/tsconfig.spec.json",
+              "projects/ng-dialogs/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ng-dialogs/e2e/protractor.conf.js",
+            "devServerTarget": "ng-dialogs:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ng-dialogs:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "eav-item-dialog-angular",
