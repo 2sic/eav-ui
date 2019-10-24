@@ -142,7 +142,6 @@
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
             "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
             "assets": [
-              "projects/ng-dialogs/src/favicon.ico",
               "projects/ng-dialogs/src/assets"
             ],
             "styles": [
@@ -202,7 +201,6 @@
             "tsConfig": "projects/ng-dialogs/tsconfig.spec.json",
             "karmaConfig": "projects/ng-dialogs/karma.conf.js",
             "assets": [
-              "projects/ng-dialogs/src/favicon.ico",
               "projects/ng-dialogs/src/assets"
             ],
             "styles": [
