@@ -45,7 +45,8 @@
         <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="mat-form-field-hyperlink">
           <input matInput type="text" [formControlName]="config.field.name" [placeholder]="config.field.label"
             [required]="config.field.required" [required]="config.field.required"
-            matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above">
+            matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above"
+            appPasteClipboardImage [config]="config" [elementType]="'input'">
           <mat-label>{{config.field.label}}</mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->

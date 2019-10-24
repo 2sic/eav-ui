@@ -81,6 +81,11 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
       clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
     });
+    this.config.saveImage = (image) => {
+      const dropzone = this.dropzoneRef.dropzone();
+      (image as any).upload = { 'chunked': dropzone.defaultOptions.chunking };
+      dropzone.processFile(image);
+    };
   }
 
   public onUploadError(args: any): void {
