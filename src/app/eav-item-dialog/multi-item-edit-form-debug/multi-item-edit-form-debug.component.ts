@@ -3,6 +3,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { Observable, Subscription } from 'rxjs';
 import { Item } from '../../shared/models/eav';
+declare const sxcVersion: string;
 
 @Component({
   selector: 'app-multi-item-edit-form-debug',
@@ -12,6 +13,7 @@ import { Item } from '../../shared/models/eav';
 export class MultiItemEditFormDebugComponent implements OnInit {
   @Output() debugInfoOpened: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  sxcVer = sxcVersion.substring(0, sxcVersion.lastIndexOf('\.'));
   showDebugInfo = false;
   items$: Observable<Item[]>;
   items: Item[] = [];

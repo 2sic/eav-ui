@@ -87,6 +87,7 @@ import { ConnectorComponent } from './input-types/custom/external-web-component/
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
+import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 
 @NgModule({
     declarations: [
@@ -117,6 +118,7 @@ import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default
         FileEndingFilterPipe,
         SafeHtmlPipe,
         ClickStopPropagationDirective,
+        PasteClipboardImageDirective,
         HiddenWrapperComponent,
         HyperlinkDefaultPagepickerComponent,
         WebFormBridgeDirective,

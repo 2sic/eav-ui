@@ -23,6 +23,7 @@
             ],
             "scripts": [
               "src/scripts/dropzone-dragging-helper.js",
+              "src/scripts/clipboard-paste/paste.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
