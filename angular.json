@@ -136,7 +136,7 @@
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "outputPath": "dist/ng-dialogs",
+            "outputPath": "dist/ng-dialogs/main",
             "index": "projects/ng-dialogs/src/index.html",
             "main": "projects/ng-dialogs/src/main.ts",
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",

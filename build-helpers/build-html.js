@@ -3,17 +3,33 @@ const pjson = require('../package.json');
 const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
-async function buildHtml(name) {
-  const htmlSourcePath = './src/' + name + '.html';
-  const htmlOutputPath = './dist/' + name + '.html';
+function buildHtml(name) {
+  let htmlSourcePath = './src/' + name + '.html';
+  let htmlOutputPath = './dist/' + name + '.html';
 
-  await fs.remove(htmlOutputPath);
+  let ngDialogs = false;
+  const args = process.argv.slice(2);
+  args.forEach((val, index) => {
+    // console.log(`${index}: ${val}`);
+    if (val === '--ng-dialogs') {
+      ngDialogs = true;
+      htmlSourcePath = './projects/ng-dialogs/src/' + name + '.html';
+      htmlOutputPath = './dist/ng-dialogs/' + name + '.html';
+      fs.ensureDirSync('./dist/ng-dialogs/');
+    }
+  });
 
-  const sourceHtml = await fs.readFile(htmlSourcePath, 'utf8');
+  fs.removeSync(htmlOutputPath);
+
+  const sourceHtml = fs.readFileSync(htmlSourcePath, 'utf8');
   const outputHtml = sourceHtml.replace(/SXC_VER/g, `${pjson.version}.${randomIntFromInterval(10000, 99999)}`);
 
-  await fs.writeFile(htmlOutputPath, outputHtml, 'utf8');
-  console.log(chalkSuccess('Build ' + name + '.html success!'));
+  fs.writeFileSync(htmlOutputPath, outputHtml, 'utf8');
+  if (ngDialogs) {
+    console.log(chalkSuccess('Build ng-dialogs ' + name + '.html success!'));
+  } else {
+    console.log(chalkSuccess('Build ' + name + '.html success!'));
+  }
 }
 buildHtml('ui');
 buildHtml('local');
