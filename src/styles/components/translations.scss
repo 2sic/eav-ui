@@ -5,14 +5,3 @@
     color: inherit;
   }
 }
-
-.next,
-.previous {
-  * {
-    color: $editUI-label-disabled-color !important;
-  }
-
-  svg {
-    fill: $editUI-label-disabled-color !important;
-  }
-}
