@@ -32,6 +32,7 @@ import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
+import { ElementEventListener } from '../../../../projects/shared/element-event-listener-model';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -71,6 +72,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   debugEnabled$: Observable<boolean>;
   debugEnabled = false;
   debugInfoIsOpen = false;
+  eventListeners: ElementEventListener[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
@@ -135,6 +137,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    this.eventListeners.forEach(eventListener => {
+      const element = eventListener.element;
+      const type = eventListener.type;
+      const listener = eventListener.listener;
+      element.removeEventListener(type, listener);
+    });
   }
 
   toggleDebugEnabled(event) {
@@ -227,14 +235,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private dialogBackdropClickSubscribe() {
-    window.addEventListener('beforeunload', e => {
-      if (!this.dialogRef.disableClose) { return; }
-      // Cancel the event
-      e.preventDefault();
-      // Chrome requires returnValue to be set
-      e.returnValue = '';
-      this.snackBarYouHaveUnsavedChanges();
-    });
+    const windowBeforeUnloadBound = this.windowBeforeUnload.bind(this);
+    window.addEventListener('beforeunload', windowBeforeUnloadBound);
+    this.eventListeners.push({ element: window, type: 'beforeunload', listener: windowBeforeUnloadBound });
     this.dialogRef.backdropClick().subscribe(result => {
       this.closeDialog();
     });
@@ -250,6 +253,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.saveAll(false);
       }
     });
+  }
+
+  private windowBeforeUnload(e: BeforeUnloadEvent) {
+    if (!this.dialogRef.disableClose) { return; }
+    // Cancel the event
+    e.preventDefault();
+    // Chrome requires returnValue to be set
+    e.returnValue = '';
+    this.snackBarYouHaveUnsavedChanges();
   }
 
   /** Fill in all error validation messages from all forms */
@@ -338,23 +350,23 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
         if (!this.slideListenersAdded) {
           this.slideListenersAdded = true;
-          this.slideableRef.nativeElement.addEventListener('webkitAnimationEnd', () => {
-            console.log('webkitAnimationEnd');
-            setTimeout(() => {
-              this.slideableRef.nativeElement.classList.remove('previous');
-              this.slideableRef.nativeElement.classList.remove('next');
-            }, 100);
-          });
-          this.slideableRef.nativeElement.addEventListener('animationend', () => {
-            console.log('animationend');
-            setTimeout(() => {
-              this.slideableRef.nativeElement.classList.remove('previous');
-              this.slideableRef.nativeElement.classList.remove('next');
-            }, 100);
-          });
+          const slideAnimationEndBound = this.slideAnimationEnd.bind(this);
+          this.slideableRef.nativeElement.addEventListener('webkitAnimationEnd', slideAnimationEndBound);
+          this.slideableRef.nativeElement.addEventListener('animationend', slideAnimationEndBound);
+          this.eventListeners.push(
+            { element: window, type: 'beforeunload', listener: slideAnimationEndBound },
+            { element: window, type: 'beforeunload', listener: slideAnimationEndBound },
+          );
         }
       });
     }
+  }
+
+  private slideAnimationEnd() {
+    setTimeout(() => {
+      this.slideableRef.nativeElement.classList.remove('previous');
+      this.slideableRef.nativeElement.classList.remove('next');
+    }, 100);
   }
 
   /**
