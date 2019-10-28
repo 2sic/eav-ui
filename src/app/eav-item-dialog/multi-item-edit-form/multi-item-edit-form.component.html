@@ -13,8 +13,7 @@
   }">
       <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft"
-            [@slideRight]="animationStateRight">
+          <div #slideable class="mdc-layout-grid__cell--span-12">
             <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
               <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange($event)">
               </app-item-edit-form>

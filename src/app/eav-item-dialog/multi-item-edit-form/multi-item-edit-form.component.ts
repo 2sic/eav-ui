@@ -1,6 +1,5 @@
-import {
-  Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked
-} from '@angular/core';
+// tslint:disable-next-line:max-line-length
+import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
@@ -30,7 +29,6 @@ import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
-import { SlideLeftRightAnimation } from '../../shared/animations/slide-left-right-animation';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
@@ -39,15 +37,15 @@ import { sortLanguages } from './multi-item-edit-form.helpers';
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
-  animations: [SlideLeftRightAnimation]
 })
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
+  @ViewChild('slideable', { static: false }) slideableRef: ElementRef;
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
-  animationStateLeft: string;
-  animationStateRight: string;
+  slide = 'initial';
+  slideListenersAdded = false;
 
   formIsSaved = false;
   isParentDialog: boolean;
@@ -91,6 +89,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private translate: TranslateService,
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
+    private ngZone: NgZone,
   ) {
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
@@ -319,9 +318,42 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const currentLangIndex = this.languages.findIndex(l => l.key === this.currentLanguage);
     const newLangIndex = this.languages.findIndex(l => l.key === language);
     if (currentLangIndex > newLangIndex) {
-      this.animationStateLeft = this.animationStateLeft === 'false' ? 'true' : 'false';
+      this.slide = 'previous';
     } else if (currentLangIndex < newLangIndex) {
-      this.animationStateRight = this.animationStateRight === 'false' ? 'true' : 'false';
+      this.slide = 'next';
+    }
+
+    if (this.slideableRef && this.slideableRef.nativeElement) {
+      this.ngZone.runOutsideAngular(() => {
+        if (this.slideableRef.nativeElement.classList.contains(this.slide)) {
+          // if animation is in the same direction add timeout for browser to reset animation
+          this.slideableRef.nativeElement.classList.remove('next');
+          this.slideableRef.nativeElement.classList.remove('previous');
+          setTimeout(() => { this.slideableRef.nativeElement.classList.add(this.slide); }, 100);
+        } else {
+          this.slideableRef.nativeElement.classList.remove('next');
+          this.slideableRef.nativeElement.classList.remove('previous');
+          this.slideableRef.nativeElement.classList.add(this.slide);
+        }
+
+        if (!this.slideListenersAdded) {
+          this.slideListenersAdded = true;
+          this.slideableRef.nativeElement.addEventListener('webkitAnimationEnd', () => {
+            console.log('webkitAnimationEnd');
+            setTimeout(() => {
+              this.slideableRef.nativeElement.classList.remove('previous');
+              this.slideableRef.nativeElement.classList.remove('next');
+            }, 100);
+          });
+          this.slideableRef.nativeElement.addEventListener('animationend', () => {
+            console.log('animationend');
+            setTimeout(() => {
+              this.slideableRef.nativeElement.classList.remove('previous');
+              this.slideableRef.nativeElement.classList.remove('next');
+            }, 100);
+          });
+        }
+      });
     }
   }
 

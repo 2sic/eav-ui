@@ -1,7 +1,18 @@
-@import "../theme/material-colors.scss";
+@import "../variables.scss";
 
 .language-wrap:hover {
   .shared-languages {
     color: inherit;
+  }
+}
+
+.next,
+.previous {
+  * {
+    color: $editUI-label-disabled-color !important;
+  }
+
+  svg {
+    fill: $editUI-label-disabled-color !important;
   }
 }
