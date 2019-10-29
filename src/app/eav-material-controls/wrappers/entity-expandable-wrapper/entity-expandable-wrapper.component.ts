@@ -47,12 +47,18 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   ngOnInit() {
     // this.setAvailableEntities();
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.config.field.expanded.subscribe(expanded => {
+        this.dialogIsOpen = expanded;
+        if (expanded) {
+          document.body.classList.add('field-expanded');
+        } else {
+          document.body.classList.remove('field-expanded');
+        }
+      }),
     );
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() { }
 
   // TODO: same method in entity - !!!
   getEntityText = (value): string => {

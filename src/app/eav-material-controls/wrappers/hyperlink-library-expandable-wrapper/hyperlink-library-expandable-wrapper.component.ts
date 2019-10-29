@@ -41,7 +41,14 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   ngOnInit() {
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.config.field.expanded.subscribe(expanded => {
+        this.dialogIsOpen = expanded;
+        if (expanded) {
+          document.body.classList.add('field-expanded');
+        } else {
+          document.body.classList.remove('field-expanded');
+        }
+      }),
     );
   }
 

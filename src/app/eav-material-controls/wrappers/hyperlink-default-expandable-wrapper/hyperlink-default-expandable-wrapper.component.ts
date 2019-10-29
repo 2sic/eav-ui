@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, AfterViewInit, ElementRef, NgZone } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -38,12 +39,15 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   isImage: boolean;
   iconClass: string;
   isKnownType: boolean;
+  adamButton: boolean;
+  pageButton: boolean;
 
   constructor(
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
     private zone: NgZone,
+    private dialog: MatDialog,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -51,11 +55,20 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   ngOnInit() {
+    this.adamButton = this.config.field.settings.Buttons ? this.config.field.settings.Buttons.indexOf('adam') > -1 : false;
+    this.pageButton = this.config.field.settings.Buttons ? this.config.field.settings.Buttons.indexOf('page') > -1 : false;
     this.control = this.group.controls[this.config.field.name];
     this.setLink(this.control.value);
     this.suscribeValueChanges();
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.config.field.expanded.subscribe(expanded => {
+        this.dialogIsOpen = expanded;
+        if (expanded) {
+          document.body.classList.add('field-expanded');
+        } else {
+          document.body.classList.remove('field-expanded');
+        }
+      }),
     );
   }
 
@@ -87,6 +100,26 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   closeDialog() {
     console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
     this.config.field.expanded.next(false);
+  }
+
+  openPageDialog() {
+    this.dnnBridgeService.open(
+      this.control.value,
+      {
+        Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
+        FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : ''
+      },
+      this.processResultOfPagePicker.bind(this),
+      this.dialog);
+  }
+
+  private processResultOfPagePicker(value) {
+    // Convert to page:xyz format (if it wasn't cancelled)
+    if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
+  }
+
+  private setFormValue(formControlName: string, value: any) {
+    this.group.patchValue({ [formControlName]: value });
   }
 
   /** Update test-link if necessary - both when typing or if link was set by dialogs */

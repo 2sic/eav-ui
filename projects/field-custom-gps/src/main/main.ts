@@ -74,7 +74,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
 
   private mapScriptLoaded() {
     console.log('FieldCustomGps mapScriptLoaded called');
-    this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates });
+    this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
 
