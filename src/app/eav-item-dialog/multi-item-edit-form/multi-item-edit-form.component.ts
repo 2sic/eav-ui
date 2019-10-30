@@ -100,10 +100,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
     if (this.isParentDialog) {
-      const sortedLanguages = sortLanguages(this.eavConfig.lang, JSON.parse(this.eavConfig.langs));
+      const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, 'en-us');
+    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, this.eavConfig.lang);
     this.currentLanguage = this.eavConfig.lang;
     this.loadIconsService.load();
   }
