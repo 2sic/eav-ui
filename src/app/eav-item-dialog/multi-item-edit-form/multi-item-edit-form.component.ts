@@ -103,8 +103,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, this.eavConfig.lang);
-    this.currentLanguage = this.eavConfig.lang;
+    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.langpri, this.eavConfig.langpri, this.eavConfig.lang);
+    this.currentLanguage = this.eavConfig.langpri;
     this.loadIconsService.load();
   }
 
