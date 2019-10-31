@@ -49,7 +49,7 @@ export class FieldHelperTextComponent implements OnInit, OnDestroy {
     let target = event.target as HTMLElement;
 
     if (target.tagName === 'A') { return; }
-    while (target && !target.classList.contains('notes-container')) {
+    while (target && target.classList && !target.classList.contains('notes-container')) {
       target = target.parentNode as HTMLElement;
       if (!target) { return; }
       if (target.tagName === 'A') { return; }

@@ -160,12 +160,13 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
       // check if update is for current form
       if (formSet.formId !== this.config.form.formId) { return; }
-
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
       // check if update is for this field
-      if (formSet.formValues[this.config.field.name] === this.oldValue) { return; }
+      if (formSet.entityValues[this.config.field.name] === this.oldValue) { return; }
       this.oldValue = formSet[this.config.field.name];
 
-      this.setLink(formSet.formValues[this.config.field.name]);
+      this.setLink(formSet.entityValues[this.config.field.name]);
     });
     this.subscriptions.push(formSetSub);
   }
