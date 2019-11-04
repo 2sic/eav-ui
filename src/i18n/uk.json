@@ -46,6 +46,7 @@
     "Link": "Link to other language",
     "UseDefault": "авто (по замовчуванню)",
     "InAllLanguages": "in all languages",
+    "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
     "In": "у {{languages}}",
     "From": "від {{languages}}",
     "Dialog": {

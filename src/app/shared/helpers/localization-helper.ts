@@ -1,5 +1,5 @@
 
-import { EavValue, EavAttributes, FieldSettings } from '../models/eav';
+import { EavValue, EavAttributes, FieldSettings, EavDimensions } from '../models/eav';
 import { EavValues } from '../models/eav/eav-values';
 import isEmpty from 'lodash/isEmpty';
 
@@ -78,6 +78,11 @@ export class LocalizationHelper {
             eavValue.dimensions.find(d => d.value === `~${languageKey}`)).length > 0 : false;
     }
 
+    public static translationExistsInDefault = (allAttributesValues: EavValues<any>, defaultLanguage: string): boolean => {
+        return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
+            eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
+    }
+
     public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
 
         // copy attributes from item
@@ -134,17 +139,14 @@ export class LocalizationHelper {
                                 : eavValue;
                         })
                     };
-                } else {
-                    eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
+                } else { // else add new value with dimension languageKey
+                    console.log('saveAttributeValues add values ', newItemValue);
+                    const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
+                    eavAttributes[attributeKey] = {
+                        ...allAttributes[attributeKey],
+                        values: [...allAttributes[attributeKey].values, newEavValue]
+                    };
                 }
-                // else { // else add new value with dimension languageKey
-                //     console.log('saveAttributeValues add values ', newItemValue);
-                //     const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
-                //     eavAttributes[attributeKey] = {
-                //         ...allAttributes[attributeKey],
-                //         values: [...allAttributes[attributeKey].values, newEavValue]
-                //     };
-                // }
             } else { // else copy item attributes
                 eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
             }

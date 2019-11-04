@@ -38,8 +38,8 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   isWysiwyg = false;
 
   get value() {
-    return this.group.controls[this.config.field.name].value
-      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
+    return this.group.controls[this.config.field.name].value ? this.group.controls[this.config.field.name].value
+      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') : '';
   }
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }

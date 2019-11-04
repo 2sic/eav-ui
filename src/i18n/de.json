@@ -46,6 +46,7 @@
     "Link": "An andere Sprache verknüpfen",
     "UseDefault": "auto (Standardsprache)",
     "InAllLanguages": "in allen Sprachen",
+    "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
     "In": "in {{languages}}",
     "From": "von {{languages}}",
     "Dialog": {

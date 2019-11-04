@@ -10,6 +10,10 @@
 }
 
 .eav-localization {
+  &-missing-default-lang-value {
+    color: red;
+  }
+
   &-translate {
     color: green;
   }

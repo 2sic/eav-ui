@@ -51,6 +51,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   currentLanguage = '';
   defaultLanguage$: Observable<string>;
   defaultLanguage = '';
+  defaultLanguageMissingValue = false;
   headerGroupSlotIsEmpty = false;
   translationState: LinkToOtherLanguageData = new LinkToOtherLanguageData(null, '', '');
   infoMessage: string;
@@ -271,6 +272,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     }
 
     switch (this.translationState.linkType) {
+      case TranslationLinkTypeConstants.missingDefaultLangValue:
+        return 'eav-localization-missing-default-lang-value';
       case TranslationLinkTypeConstants.translate:
       case TranslationLinkTypeConstants.linkCopyFrom:
         return 'eav-localization-translate';
@@ -288,6 +291,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   private refreshControlConfig(attributeKey: string) {
     if (!this.fieldConfig.isParentGroup) {
+      // debugger;
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
       this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.field.name], this.currentLanguage, this.defaultLanguage);
@@ -340,18 +344,28 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
  */
   private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string,
     defaultLanguage: string) {
+    // bitno
     // if control already disabled through settings then skip
     if (!this.config.field.disabled) {
       // if header group slot is empty disable control
       if (this.headerGroupSlotIsEmpty) {
         this.group.controls[attributeKey].disable({ emitEvent: false });
+      } else if (currentLanguage === defaultLanguage) {
+        this.group.controls[attributeKey].enable({ emitEvent: false });
       } else { // else set enable/disable depending on editable translation exist
-        if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-          this.group.controls[attributeKey].enable({ emitEvent: false });
-        } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+        // debugger;
+        if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
           this.group.controls[attributeKey].disable({ emitEvent: false });
+          this.defaultLanguageMissingValue = true;
         } else {
-          this.group.controls[attributeKey].disable({ emitEvent: false });
+          this.defaultLanguageMissingValue = false;
+          if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+            this.group.controls[attributeKey].enable({ emitEvent: false });
+          } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+            this.group.controls[attributeKey].disable({ emitEvent: false });
+          } else {
+            this.group.controls[attributeKey].disable({ emitEvent: false });
+          }
         }
       }
     }
@@ -446,6 +460,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * @param attributeType new attribute type defined in contentTypes
    */
   public isTranslateEnabled(attributeKey: string) {
+    if (!LocalizationHelper.translationExistsInDefault(this.attributes[attributeKey], this.defaultLanguage)) { return false; }
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
     const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
 
@@ -460,7 +475,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   private readTranslationState(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
     // Determine is control disabled or enabled and info message
-    if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+    if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
+      this.setTranslationState(TranslationLinkTypeConstants.missingDefaultLangValue, '');
+    } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       const editableElements: EavDimensions<string>[] = LocalizationHelper.getAttributeValueTranslation(attributes,
         currentLanguage, defaultLanguage)
         .dimensions.filter(f => f.value !== currentLanguage);
@@ -514,6 +531,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (this.fieldConfig.disableI18n) {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.InAllLanguages';
+      return;
+    } else if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
+      this.infoMessage = defaultLanguage;
+      this.infoMessageLabel = 'LangMenu.MissingDefaultLangValue';
       return;
     }
 
