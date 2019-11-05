@@ -83,6 +83,17 @@ export class LocalizationHelper {
             eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
     }
 
+    public static translationExistsInDefaultStrict = (allAttributesValues: EavValues<any>, defaultLanguage: string,
+        disableI18n: boolean): boolean => {
+        if (disableI18n) {
+            return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
+                eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
+        } else {
+            return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
+                eavValue.dimensions.find(d => d.value === defaultLanguage)).length > 0 : false;
+        }
+    }
+
     public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
 
         // copy attributes from item

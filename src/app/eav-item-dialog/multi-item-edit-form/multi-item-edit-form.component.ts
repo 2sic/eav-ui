@@ -111,7 +111,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   ngOnInit() {
     this.languages$ = this.languageService.entities$;
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
-    this.loadItemsData();
+    this.loadItemsData(); // can change current language to default if there is no value in default language
     this.setLanguageConfig();
     this.reduceExtendedSaveButton();
 
@@ -218,7 +218,22 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.contentTypeService.addContentTypes(data.ContentTypes);
     this.featureService.loadFeatures(data.Features);
     this.setPublishMode(data.Items, data.IsPublished, data.DraftShouldBranch);
-    this.items$ = this.itemService.selectItemsByIdList(data.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)));
+    // if current language !== default language check whether default language has value in all items
+    if (this.eavConfig.lang !== this.eavConfig.langpri) {
+      const valuesExistInDefaultLanguage = this.itemService.valuesExistInDefaultLanguage(
+        data.Items.map((item: JsonItem1) => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)),
+        this.eavConfig.langpri,
+        this.inputTypeService,
+        this.contentTypeService,
+      );
+      if (!valuesExistInDefaultLanguage) {
+        this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavConfig.langpri);
+        this.snackBarOpen(this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavConfig.langpri }), 5000);
+      }
+    }
+    this.items$ = this.itemService.selectItemsByIdList(
+      data.Items.map((item: JsonItem1) => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id))
+    );
   }
 
   /**
@@ -512,9 +527,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * @param message
    * @param callClose
    */
-  private snackBarOpen(message: string) {
+  private snackBarOpen(message: string, duration: number = 3000) {
     const snackBarRef = this.snackBar.open(message, '', {
-      duration: 3000
+      duration: duration
     });
   }
 

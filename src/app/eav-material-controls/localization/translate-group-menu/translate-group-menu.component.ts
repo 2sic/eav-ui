@@ -291,7 +291,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
   private refreshControlConfig(attributeKey: string) {
     if (!this.fieldConfig.isParentGroup) {
-      // debugger;
       this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
       this.setAdamDisable();
       this.readTranslationState(this.attributes[this.config.field.name], this.currentLanguage, this.defaultLanguage);
@@ -353,7 +352,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       } else if (currentLanguage === defaultLanguage) {
         this.group.controls[attributeKey].enable({ emitEvent: false });
       } else { // else set enable/disable depending on editable translation exist
-        // debugger;
         if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
           this.group.controls[attributeKey].disable({ emitEvent: false });
           this.defaultLanguageMissingValue = true;
