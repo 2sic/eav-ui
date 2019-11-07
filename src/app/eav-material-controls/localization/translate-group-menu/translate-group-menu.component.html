@@ -27,7 +27,8 @@
       'shared-languages--disabled': inputDisabled
     }">
       {{ infoMessageLabel ? (infoMessageLabel | translate:{ languages: infoMessage }) : '' }}</div>
-    <button [disabled]="fieldConfig.disableI18n" mat-icon-button type="button" [matMenuTriggerFor]="rootMenu2">
+    <button [disabled]="fieldConfig.disableI18n || defaultLanguageMissingValue" mat-icon-button type="button"
+      [matMenuTriggerFor]="rootMenu2">
       <mat-icon class="translate-icon">translate</mat-icon>
     </button>
   </div>

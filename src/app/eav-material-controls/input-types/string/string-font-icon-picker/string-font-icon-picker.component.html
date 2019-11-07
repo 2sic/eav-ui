@@ -2,7 +2,7 @@
 <mat-form-field [formGroup]="group" appearance="standard" color="accent">
   <div class="c-input-text-wrapper">
     <div class="thumbnail-before-input">
-      <i *ngIf="value" class="glyphicon {{value}} icon-preview"></i>
+      <i *ngIf="value" class="{{config.field.settings.PreviewCss}} {{value}} icon-preview"></i>
     </div>
     <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
       [placeholder]="config.field.label" [required]="config.field.required" [matAutocomplete]="auto" (click)="update()">

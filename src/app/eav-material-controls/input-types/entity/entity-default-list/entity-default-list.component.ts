@@ -218,7 +218,8 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.eavService.formSetValueChange$.subscribe(formSet => {
       // check if update is for current form
       if (formSet.formId !== this.config.form.formId) { return; }
-
+      // check if update is for current entity
+      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
       this.setChosenEntities(this.controlValue);
     }));
   }

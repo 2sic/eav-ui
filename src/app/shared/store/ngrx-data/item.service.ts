@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 
-import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader } from '../../models/eav';
+import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader, EavValues, ContentType } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { take, map, delay, distinctUntilChanged } from 'rxjs/operators';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
+import { InputTypeService } from './input-type.service';
+import { ContentTypeService } from './content-type.service';
+import { InputTypesConstants } from '../../constants';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -207,7 +210,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   /** Select items from store by id array list */
-  public selectItemsByIdList(idsList: any[]) {
+  public selectItemsByIdList(idsList: (number | string)[]) {
     return this.entities$.pipe(
       delay(0),
       map(items =>
@@ -229,6 +232,53 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         return isEqual;
       })
     );
+  }
+
+  public valuesExistInDefaultLanguage(idsList: (number | string)[], defaultLanguage: string, inputTypeService: InputTypeService,
+    contentTypeService: ContentTypeService): boolean {
+    let valuesExistInDefaultLanguage = true;
+    this.entities$.pipe(
+      take(1),
+      map(items =>
+        // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
+        items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
+      ),
+    ).subscribe(items => {
+      // check if each attribute for each item has value in default dimension
+      items.forEach(item => {
+        let attributesValues: { values: EavValues<any>; disableI18n: boolean; }[] = [];
+        const contentTypeId = InputFieldHelper.getContentTypeId(item);
+        let contentType: ContentType;
+        contentTypeService.getContentTypeById(contentTypeId).subscribe(type => { contentType = type; });
+
+        Object.keys(item.entity.attributes).forEach(key => {
+          if (item.entity.attributes.hasOwnProperty(key)) {
+            const attributeDef = contentType.contentType.attributes.find(attr => attr.name === key);
+            const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
+            let disableI18n = false;
+            inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
+              if (type) { disableI18n = type.DisableI18n; }
+            });
+            attributesValues.push({
+              values: item.entity.attributes[key],
+              disableI18n: disableI18n
+            });
+          }
+        });
+
+        if (attributesValues.length < contentType.contentType.attributes.filter(cType => cType.type !== InputTypesConstants.empty).length) {
+          valuesExistInDefaultLanguage = false;
+        }
+
+        attributesValues.forEach(attributeValues => {
+          const translationExistsInDefault = LocalizationHelper.translationExistsInDefaultStrict(
+            attributeValues.values, defaultLanguage, attributeValues.disableI18n);
+          if (!translationExistsInDefault) { valuesExistInDefaultLanguage = false; }
+        });
+        attributesValues = null;
+      });
+    });
+    return valuesExistInDefaultLanguage;
   }
 
   /** Set default value and add that attribute in store */

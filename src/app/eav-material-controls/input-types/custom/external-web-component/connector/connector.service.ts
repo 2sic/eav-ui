@@ -205,9 +205,10 @@ export class ConnectorService {
       this.eavService.formSetValueChange$.subscribe(formSet => {
         // check if update is for current form
         if (formSet.formId !== this.config.form.formId) { return; }
-
+        // check if update is for current entity
+        if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
         // check if update is for this field
-        const newValue = formSet.formValues[this.config.field.name];
+        const newValue = formSet.entityValues[this.config.field.name];
         if (this.previousValue === newValue) { return; }
 
         this.previousValue = newValue;
