@@ -22,6 +22,10 @@ export class AppsManagementNavigationComponent implements OnInit {
   ngOnInit() {
   }
 
+  closeDialog() {
+    alert('close dialog');
+  }
+
   changeTab(url: string) {
     this.router.navigate([`${url}`], { relativeTo: this.route });
   }

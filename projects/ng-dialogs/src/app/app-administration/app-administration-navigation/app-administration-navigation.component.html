@@ -1,6 +1,8 @@
+<button (click)="goBack()">Back</button>
+
 <button (click)="closeDialog()">X</button>
 
-<h1>Manage Apps in this Zone (Portal)</h1>
+<h1>Administration</h1>
 
 <div>
   <button *ngFor="let tab of tabs; index as i" (click)="changeTab(tab.url)">
