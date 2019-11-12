@@ -41,7 +41,7 @@ export class AppsListComponent implements OnInit {
   }
 
   openApp(appId: number) {
-    this.router.navigate([`${this.route.parent.snapshot.paramMap.get('zoneId')}/apps/${appId}`]);
+    this.router.navigate([`${appId}`], { relativeTo: this.route });
   }
 
 }

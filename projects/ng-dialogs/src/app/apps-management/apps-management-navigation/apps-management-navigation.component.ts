@@ -11,7 +11,7 @@ export class AppsManagementNavigationComponent implements OnInit {
     { name: 'Apps', icon: '', url: 'apps' },
     { name: 'Settings', icon: '', url: 'settings' },
     { name: 'Features', icon: '', url: 'features' },
-    { name: '2sxc Insights', icon: '', url: '2sxcinsights' },
+    { name: '2sxc Insights', icon: '', url: 'sxc-insights' },
   ];
 
   constructor(
