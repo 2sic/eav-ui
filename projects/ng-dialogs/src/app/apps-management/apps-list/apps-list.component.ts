@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { App } from '../../models/app.model';
+import { App } from '../../shared/models/app.model';
 
 @Component({
   selector: 'app-apps-list',

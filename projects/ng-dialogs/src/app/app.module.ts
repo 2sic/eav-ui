@@ -8,10 +8,10 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { UrlHelper } from '../../../../src/app/shared/helpers/url-helper';
-import { QueryParameters } from './models/query-parameters.model';
+import { QueryParameters } from './shared/models/query-parameters.model';
 import { AppsManagementModule } from './apps-management/apps-management.module';
 import { AppAdministrationModule } from './app-administration/app-administration.module';
-import { AdminHeaderInterceptor } from './interceptors/admin-header.interceptor';
+import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 import { AdminDialogComponent } from './admin-dialog/admin-dialog.component';
 
 const appRoutes: Routes = [
@@ -64,7 +64,7 @@ export function adminEavServiceFactory(injector: Injector): Function {
   providers: [
     { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: AdminHeaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
