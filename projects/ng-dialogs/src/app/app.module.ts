@@ -4,18 +4,17 @@ import { Routes, RouterModule, Router } from '@angular/router';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { UrlHelper } from '../../../../src/app/shared/helpers/url-helper';
 import { QueryParameters } from './models/query-parameters.model';
-import { AppsManagementComponent } from './apps-management/apps-management.component';
+import { AppsManagementModule } from './apps-management/apps-management.module';
 import { AppAdministrationModule } from './app-administration/app-administration.module';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AdminHeaderInterceptor } from './interceptors/admin-header.interceptor';
 import { AdminDialogComponent } from './admin-dialog/admin-dialog.component';
 
 const appRoutes: Routes = [
-  { path: ':zoneId/apps', component: AppsManagementComponent },
 ];
 
 export function adminEavServiceFactory(injector: Injector): Function {
@@ -48,7 +47,6 @@ export function adminEavServiceFactory(injector: Injector): Function {
 @NgModule({
   declarations: [
     AppComponent,
-    AppsManagementComponent,
     AdminDialogComponent,
   ],
   entryComponents: [
@@ -60,6 +58,7 @@ export function adminEavServiceFactory(injector: Injector): Function {
     HttpClientModule,
     MatDialogModule,
     BrowserAnimationsModule,
+    AppsManagementModule,
     AppAdministrationModule
   ],
   providers: [

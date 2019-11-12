@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { App } from '../models/app.model';
+import { App } from '../../models/app.model';
 
 @Component({
-  selector: 'app-apps-management',
-  templateUrl: './apps-management.component.html',
-  styleUrls: ['./apps-management.component.scss']
+  selector: 'app-apps-list',
+  templateUrl: './apps-list.component.html',
+  styleUrls: ['./apps-list.component.scss']
 })
-export class AppsManagementComponent implements OnInit {
+export class AppsListComponent implements OnInit {
   apps: App[] = [];
 
   constructor(
