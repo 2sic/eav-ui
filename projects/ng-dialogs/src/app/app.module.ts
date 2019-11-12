@@ -6,48 +6,63 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
-import { AdminDialogRootComponent } from './admin-dialog-root/admin-dialog-root.component';
-import { AdminEavService } from './services/admin-eav.service';
-import { HomeComponent } from './home/home.component';
-import { DataComponent } from './data/data.component';
+import { UrlHelper } from '../../../../src/app/shared/helpers/url-helper';
+import { QueryParameters } from './models/query-parameters.model';
+import { AppsManagementComponent } from './apps-management/apps-management.component';
+import { AppAdministrationModule } from './app-administration/app-administration.module';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AdminHeaderInterceptor } from './interceptors/admin-header.interceptor';
 
 const appRoutes: Routes = [
-  { path: 'app', redirectTo: 'app/home', pathMatch: 'full' },
-  { path: 'app/home', component: HomeComponent },
-  { path: 'app/data', component: DataComponent }
+  { path: ':zoneId/apps', component: AppsManagementComponent },
 ];
 
-export function adminEavServiceFactory(injector: Injector, adminEavService: AdminEavService): Function {
+export function adminEavServiceFactory(injector: Injector): Function {
   return function () {
-    console.log('Setting admin eav config and clearing route');
-    if (!window.location.hash.startsWith('#/app')) {
-      adminEavService.setEavConfiguration(window.location.hash);
+    debugger;
+    console.log('Setting admin parameters config and clearing route');
+    const isRootRoute = !window.location.hash.match(/^#\/[0-9]+\/apps/);
+    if (!isRootRoute) {
+      if (sessionStorage.length === 0) {
+        alert('Missing required url parameters. Please reopen dialog.');
+        throw new Error('Missing required url parameters. Please reopen dialog.');
+      } else {
+        return;
+      }
     }
+    const urlHash = window.location.hash.substring(1); // substring removes first # char
+    const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
+    const queryParameters = new QueryParameters();
+    Object.keys(queryParameters).forEach(key => {
+      if (queryParameters.hasOwnProperty(key)) {
+        sessionStorage.setItem(key, queryParametersFromUrl[key]);
+      }
+    });
     const router = injector.get(Router);
-    router.navigate(['/app']);
+    const zoneId = queryParametersFromUrl['zoneId'];
+    router.navigate([`${zoneId}/apps`]);
   };
 }
 
 @NgModule({
   declarations: [
     AppComponent,
-    AdminDialogRootComponent,
-    HomeComponent,
-    DataComponent
+    AppsManagementComponent,
   ],
   entryComponents: [
-    AdminDialogRootComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
     BrowserModule,
+    HttpClientModule,
     MatDialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AppAdministrationModule
   ],
   providers: [
-    AdminEavService,
-    { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector, AdminEavService], multi: true },
+    { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: AdminHeaderInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
