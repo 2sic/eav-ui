@@ -16,7 +16,7 @@ export class AdminNavigationComponent implements OnInit {
     const historyState = window.history.state;
     // console.log('INJECTED:', value, 'REAL VALUE:', historyState);
     console.log('INJECTED:', appId, 'REAL VALUE:', historyState.appId);
-    debugger;
+    // debugger;
   }
 
   ngOnInit() {

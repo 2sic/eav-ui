@@ -1,3 +1,8 @@
+<button>more apps</button>
+<button>import app</button>
+<button>create app</button>
+<button>reload apps list</button>
+
 <div *ngFor="let app of apps; index as i">
   <span class="option" (click)="openApp(app.Id)">{{ app.Name }}</span>
 </div>

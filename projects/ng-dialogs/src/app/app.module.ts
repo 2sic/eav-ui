@@ -21,8 +21,8 @@ export function adminEavServiceFactory(injector: Injector): Function {
   return function () {
     debugger;
     console.log('Setting admin parameters config and clearing route');
-    const isRootRoute = !window.location.hash.match(/^#\/[0-9]+\/apps/);
-    if (!isRootRoute) {
+    const isParamsRoute = !window.location.hash.match(/^#\/[0-9]+\//);
+    if (!isParamsRoute) {
       if (sessionStorage.length === 0) {
         alert('Missing required url parameters. Please reopen dialog.');
         throw new Error('Missing required url parameters. Please reopen dialog.');

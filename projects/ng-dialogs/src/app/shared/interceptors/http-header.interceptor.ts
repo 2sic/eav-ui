@@ -15,7 +15,7 @@ export class HttpHeaderInterceptor implements HttpInterceptor {
         queryParameters[key] = sessionStorage.getItem(key);
       }
     });
-    debugger;
+    // debugger;
     const modified = req.clone({
       setHeaders: {
         'TabId': queryParameters.tid,
