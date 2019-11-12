@@ -1,0 +1,9 @@
+<h1>Manage Apps in this Zone (Portal)</h1>
+
+<div>
+  <button *ngFor="let tab of tabs; index as i" (click)="changeTab(tab.url)">
+    {{ tab.name }}
+  </button>
+</div>
+
+<router-outlet></router-outlet>

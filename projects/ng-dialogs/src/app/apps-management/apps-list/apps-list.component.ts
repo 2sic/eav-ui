@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+
 import { App } from '../../shared/models/app.model';
 
 @Component({
@@ -33,15 +34,14 @@ export class AppsListComponent implements OnInit {
 
   ngOnInit() {
     // http://petar-pc2.sistemi.corp/en-us/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=2
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.route.snapshot.paramMap.get('zoneId')}`)
+    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.route.parent.snapshot.paramMap.get('zoneId')}`)
       .subscribe((apps: App[]) => {
         this.apps = apps;
-        debugger;
       });
   }
 
   openApp(appId: number) {
-    this.router.navigate([`${this.route.snapshot.paramMap.get('zoneId')}/apps/${appId}`]);
+    this.router.navigate([`${this.route.parent.snapshot.paramMap.get('zoneId')}/apps/${appId}`]);
   }
 
 }
