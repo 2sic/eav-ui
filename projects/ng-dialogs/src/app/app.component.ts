@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AdminDialogComponent } from './admin-dialog/admin-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -7,18 +8,17 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  // private adminDialogRef: MatDialogRef<AdminDialogRootComponent, any>;
+  private adminDialogRef: MatDialogRef<AdminDialogComponent, any>;
 
-  constructor(public dialog: MatDialog) {
-  }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
-    // this.adminDialogRef = this.dialog.open(AdminDialogRootComponent, {
-    //   backdropClass: 'admin-dialog-backdrop',
-    //   panelClass: 'admin-dialog-panel',
-    // });
-    // this.adminDialogRef.afterClosed().subscribe(result => {
-    //   console.log('Admin dialog was closed. Result:', result);
-    // });
+    this.adminDialogRef = this.dialog.open(AdminDialogComponent, {
+      backdropClass: 'admin-dialog-backdrop',
+      panelClass: 'admin-dialog-panel',
+    });
+    this.adminDialogRef.afterClosed().subscribe(result => {
+      console.log('Admin dialog was closed. Result:', result);
+    });
   }
 }

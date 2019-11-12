@@ -11,7 +11,7 @@ console.log(6, 'submodule');
 
 const routes: Routes = [
   {
-    path: 'app/app-administration', component: AdminNavigationComponent, children: [
+    path: ':zoneId/apps/:appId', component: AdminNavigationComponent, children: [
       { path: 'home', component: HomeComponent },
     ]
   },

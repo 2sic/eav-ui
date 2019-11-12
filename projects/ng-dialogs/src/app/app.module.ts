@@ -12,6 +12,7 @@ import { AppsManagementComponent } from './apps-management/apps-management.compo
 import { AppAdministrationModule } from './app-administration/app-administration.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AdminHeaderInterceptor } from './interceptors/admin-header.interceptor';
+import { AdminDialogComponent } from './admin-dialog/admin-dialog.component';
 
 const appRoutes: Routes = [
   { path: ':zoneId/apps', component: AppsManagementComponent },
@@ -48,8 +49,10 @@ export function adminEavServiceFactory(injector: Injector): Function {
   declarations: [
     AppComponent,
     AppsManagementComponent,
+    AdminDialogComponent,
   ],
   entryComponents: [
+    AdminDialogComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
