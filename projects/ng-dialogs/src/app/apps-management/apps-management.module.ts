@@ -28,7 +28,8 @@ const routes: Routes = [
     SxcInsightsComponent,
   ],
   imports: [
-    RouterModule.forChild(routes),
+    // RouterModule.forChild(routes),
+    RouterModule,
     CommonModule
   ]
 })

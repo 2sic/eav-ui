@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.adminDialogRef = this.dialog.open(AdminDialogComponent, {
-      backdropClass: 'admin-dialog-backdrop',
-      panelClass: 'admin-dialog-panel',
-    });
-    this.adminDialogRef.afterClosed().subscribe(result => {
-      console.log('Admin dialog was closed. Result:', result);
-    });
+    //   this.adminDialogRef = this.dialog.open(AdminDialogComponent, {
+    //     backdropClass: 'admin-dialog-backdrop',
+    //     panelClass: 'admin-dialog-panel',
+    //   });
+    //   this.adminDialogRef.afterClosed().subscribe(result => {
+    //     console.log('Admin dialog was closed. Result:', result);
+    //   });
   }
 }

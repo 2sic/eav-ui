@@ -37,7 +37,8 @@ const routes: Routes = [
     GlobalSettingsComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    // RouterModule.forChild(routes),
+    RouterModule,
     CommonModule
   ],
   providers: [
