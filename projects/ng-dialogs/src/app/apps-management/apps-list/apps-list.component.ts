@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 import { App } from '../../shared/models/app.model';
+import { AppsManagementDialogParamsService } from '../shared/apps-management-dialog-params.service';
 
 @Component({
   selector: 'app-apps-list',
@@ -13,28 +13,20 @@ export class AppsListComponent implements OnInit {
   apps: App[] = [];
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private http: HttpClient,
+    private appsManagementDialogParamsService: AppsManagementDialogParamsService,
   ) { }
 
   ngOnInit() {
     // http://petar-pc2.sistemi.corp/en-us/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=2
-    let zoneId: string;
-    try {
-      zoneId = this.route.parent.snapshot.paramMap.get('zoneId');
-    }
-    catch (error) {
-      zoneId = '2';
-    }
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${zoneId}`)
+    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.zoneId}`)
       .subscribe((apps: App[]) => {
         this.apps = apps;
       });
   }
 
   openApp(appId: number) {
-    this.router.navigate([`${appId}`], { relativeTo: this.route });
+    this.appsManagementDialogParamsService.openedAppId.next(appId);
   }
 
 }
