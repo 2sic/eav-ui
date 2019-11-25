@@ -13,7 +13,8 @@ import { GlobalSettingsComponent } from './global-settings/global-settings.compo
 
 const routes: Routes = [
   {
-    path: ':zoneId/apps/:appId', component: AppAdministrationNavigationComponent, children: [
+    path: '', component: AppAdministrationNavigationComponent, children: [
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: GettingStartedComponent },
       { path: 'data', component: DataComponent },
       { path: 'queries', component: QueriesComponent },
@@ -37,8 +38,7 @@ const routes: Routes = [
     GlobalSettingsComponent
   ],
   imports: [
-    // RouterModule.forChild(routes),
-    RouterModule,
+    RouterModule.forChild(routes),
     CommonModule
   ],
   providers: [

@@ -10,8 +10,16 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 
 const routes: Routes = [
   {
-    path: ':zoneId', component: AppsManagementNavigationComponent, children: [
-      { path: 'apps', component: AppsListComponent },
+    path: '', component: AppsManagementNavigationComponent, children: [
+      { path: '', redirectTo: 'apps', pathMatch: 'full' },
+      {
+        path: 'apps', component: AppsListComponent, children: [
+          {
+            path: ':appId',
+            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+          }
+        ]
+      },
       { path: 'settings', component: ZoneSettingsComponent },
       { path: 'features', component: ManageFeaturesComponent },
       { path: 'sxc-insights', component: SxcInsightsComponent },
@@ -28,8 +36,7 @@ const routes: Routes = [
     SxcInsightsComponent,
   ],
   imports: [
-    // RouterModule.forChild(routes),
-    RouterModule,
+    RouterModule.forChild(routes),
     CommonModule
   ]
 })
