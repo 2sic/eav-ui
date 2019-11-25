@@ -12,7 +12,6 @@ import { QueryParameters } from './shared/models/query-parameters.model';
 import { AppsManagementModule } from './apps-management/apps-management.module';
 import { AppAdministrationModule } from './app-administration/app-administration.module';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
-import { AdminDialogComponent } from './admin-dialog/admin-dialog.component';
 
 const appRoutes: Routes = [
   {
@@ -85,10 +84,8 @@ export function adminEavServiceFactory(injector: Injector): Function {
 @NgModule({
   declarations: [
     AppComponent,
-    AdminDialogComponent,
   ],
   entryComponents: [
-    AdminDialogComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

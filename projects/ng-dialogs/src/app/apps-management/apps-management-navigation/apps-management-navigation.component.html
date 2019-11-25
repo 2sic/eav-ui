@@ -8,4 +8,7 @@
   </button>
 </div>
 
-<router-outlet></router-outlet>
+<app-apps-list *ngIf="tab === 'apps'"></app-apps-list>
+<app-zone-settings *ngIf="tab === 'settings'"></app-zone-settings>
+<app-manage-features *ngIf="tab === 'features'"></app-manage-features>
+<app-sxc-insights *ngIf="tab === 'sxc-insights'"></app-sxc-insights>

@@ -7,10 +7,11 @@ import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
+import { AppsManagementRouterComponent } from './apps-management-router/apps-management-router.component';
 
 const routes: Routes = [
   {
-    path: '', component: AppsManagementNavigationComponent, children: [
+    path: '', component: AppsManagementRouterComponent, children: [
       { path: '', redirectTo: 'apps', pathMatch: 'full' },
       {
         path: 'apps', component: AppsListComponent, children: [
@@ -34,6 +35,10 @@ const routes: Routes = [
     ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
+    AppsManagementRouterComponent,
+  ],
+  entryComponents: [
+    AppsManagementNavigationComponent
   ],
   imports: [
     RouterModule.forChild(routes),

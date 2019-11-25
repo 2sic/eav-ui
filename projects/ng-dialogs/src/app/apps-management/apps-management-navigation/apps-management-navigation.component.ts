@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, EventEmitter, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+import { AppsManagementDialogDataModel } from '../shared/apps-management-dialog-data.model';
 
 @Component({
   selector: 'app-apps-management-navigation',
@@ -13,20 +15,31 @@ export class AppsManagementNavigationComponent implements OnInit {
     { name: 'Features', icon: '', url: 'features' },
     { name: '2sxc Insights', icon: '', url: 'sxc-insights' },
   ];
+  onChangeTab = new EventEmitter();
+  onOpenApp = new EventEmitter();
+  tab: string;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    private dialogRef: MatDialogRef<AppsManagementNavigationComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: AppsManagementDialogDataModel,
   ) { }
 
   ngOnInit() {
+    this.data.tab$.subscribe(tab => {
+      console.log('Apps management tab changed:', tab);
+      this.tab = tab;
+    });
   }
 
   closeDialog() {
-    alert('close dialog');
+    this.dialogRef.close();
   }
 
   changeTab(url: string) {
-    this.router.navigate([`${url}`], { relativeTo: this.route });
+    this.onChangeTab.emit(url);
+  }
+
+  openApp(appId: number) {
+    this.onOpenApp.emit(appId);
   }
 }
