@@ -36,7 +36,7 @@ export class AppsManagementNavigationComponent implements OnInit {
     this.appsManagementDialogParamsService.openedAppId.subscribe(openedAppId => {
       if (openedAppId === this.openedAppId) { return; }
       this.onOpenApp.emit(openedAppId);
-    })
+    });
   }
 
   closeDialog() {

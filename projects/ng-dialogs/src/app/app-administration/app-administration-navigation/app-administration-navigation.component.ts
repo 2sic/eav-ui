@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-app-administration-navigation',
@@ -18,6 +19,7 @@ export class AppAdministrationNavigationComponent implements OnInit {
   ];
 
   constructor(
+    private dialogRef: MatDialogRef<AppAdministrationNavigationComponent>,
     private router: Router,
     private route: ActivatedRoute,
   ) { }
@@ -25,12 +27,8 @@ export class AppAdministrationNavigationComponent implements OnInit {
   ngOnInit() {
   }
 
-  goBack() {
-    this.router.navigate(['../'], { relativeTo: this.route });
-  }
-
   closeDialog() {
-    alert('close dialog');
+    this.dialogRef.close();
   }
 
   changeTab(url: string) {
