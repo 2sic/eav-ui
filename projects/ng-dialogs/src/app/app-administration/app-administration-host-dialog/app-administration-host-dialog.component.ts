@@ -7,11 +7,11 @@ import { AppAdministrationNavigationComponent } from '../app-administration-navi
 import { AppAdministrationParamsService } from '../shared/app-administration-params.service';
 
 @Component({
-  selector: 'app-app-administration-router',
-  templateUrl: './app-administration-router.component.html',
-  styleUrls: ['./app-administration-router.component.scss']
+  selector: 'app-app-administration-host-dialog',
+  templateUrl: './app-administration-host-dialog.component.html',
+  styleUrls: ['./app-administration-host-dialog.component.scss']
 })
-export class AppAdministrationRouterComponent implements OnInit, OnDestroy {
+export class AppAdministrationHostDialogComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private appAdministrationDialogRef: MatDialogRef<AppAdministrationNavigationComponent, any>;
   private tabPath$$ = new BehaviorSubject<string>(undefined);

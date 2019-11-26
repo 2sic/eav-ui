@@ -6,11 +6,11 @@ import { skip } from 'rxjs/operators';
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
 
 @Component({
-  selector: 'app-apps-management-dummy',
-  templateUrl: './apps-management-dummy.component.html',
-  styleUrls: ['./apps-management-dummy.component.scss']
+  selector: 'app-apps-management-host-tab-picker',
+  templateUrl: './apps-management-host-tab-picker.component.html',
+  styleUrls: ['./apps-management-host-tab-picker.component.scss']
 })
-export class AppsManagementDummyComponent implements OnInit, OnDestroy {
+export class AppsManagementHostTabPickerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(

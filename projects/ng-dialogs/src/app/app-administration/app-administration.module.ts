@@ -10,21 +10,21 @@ import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
-import { AppAdministrationRouterComponent } from './app-administration-router/app-administration-router.component';
-import { AppAdministrationDummyComponent } from './app-administration-dummy/app-administration-dummy.component';
+import { AppAdministrationHostDialogComponent } from './app-administration-host-dialog/app-administration-host-dialog.component';
+import { AppAdministrationHostTabPickerComponent } from './app-administration-host-tab-picker/app-administration-host-tab-picker.component';
 import { AppAdministrationParamsService } from './shared/app-administration-params.service';
 
 const routes: Routes = [
   {
-    path: '', component: AppAdministrationRouterComponent, children: [
+    path: '', component: AppAdministrationHostDialogComponent, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: AppAdministrationDummyComponent },
-      { path: 'data', component: AppAdministrationDummyComponent },
-      { path: 'queries', component: AppAdministrationDummyComponent },
-      { path: 'views', component: AppAdministrationDummyComponent },
-      { path: 'web-api', component: AppAdministrationDummyComponent },
-      { path: 'app', component: AppAdministrationDummyComponent },
-      { path: 'global', component: AppAdministrationDummyComponent },
+      { path: 'home', component: AppAdministrationHostTabPickerComponent },
+      { path: 'data', component: AppAdministrationHostTabPickerComponent },
+      { path: 'queries', component: AppAdministrationHostTabPickerComponent },
+      { path: 'views', component: AppAdministrationHostTabPickerComponent },
+      { path: 'web-api', component: AppAdministrationHostTabPickerComponent },
+      { path: 'app', component: AppAdministrationHostTabPickerComponent },
+      { path: 'global', component: AppAdministrationHostTabPickerComponent },
     ]
   },
 ];
@@ -39,8 +39,8 @@ const routes: Routes = [
     WebApiComponent,
     AppConfigurationComponent,
     GlobalSettingsComponent,
-    AppAdministrationRouterComponent,
-    AppAdministrationDummyComponent
+    AppAdministrationHostDialogComponent,
+    AppAdministrationHostTabPickerComponent
   ],
   entryComponents: [
     AppAdministrationNavigationComponent

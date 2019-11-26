@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { AppAdministrationParamsService } from '../shared/app-administration-params.service';
 
 @Component({
-  selector: 'app-app-administration-dummy',
-  templateUrl: './app-administration-dummy.component.html',
-  styleUrls: ['./app-administration-dummy.component.scss']
+  selector: 'app-app-administration-host-tab-picker',
+  templateUrl: './app-administration-host-tab-picker.component.html',
+  styleUrls: ['./app-administration-host-tab-picker.component.scss']
 })
-export class AppAdministrationDummyComponent implements OnInit {
+export class AppAdministrationHostTabPickerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,

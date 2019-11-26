@@ -7,26 +7,26 @@ import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
-import { AppsManagementRouterComponent } from './apps-management-router/apps-management-router.component';
+import { AppsManagementHostDialogComponent } from './apps-management-host-dialog/apps-management-host-dialog.component';
 import { AppsManagementParamsService } from './shared/apps-management-params.service';
-import { AppsManagementDummyComponent } from './apps-management-dummy/apps-management-dummy.component';
+import { AppsManagementHostTabPickerComponent } from './apps-management-host-tab-picker/apps-management-host-tab-picker.component';
 import { AppsManagementDialogParamsService } from './shared/apps-management-dialog-params.service';
 
 const routes: Routes = [
   {
-    path: '', component: AppsManagementRouterComponent, children: [
+    path: '', component: AppsManagementHostDialogComponent, children: [
       { path: '', redirectTo: 'apps', pathMatch: 'full' },
       {
-        path: 'apps', component: AppsManagementDummyComponent, children: [
+        path: 'apps', component: AppsManagementHostTabPickerComponent, children: [
           {
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
           }
         ]
       },
-      { path: 'settings', component: AppsManagementDummyComponent },
-      { path: 'features', component: AppsManagementDummyComponent },
-      { path: 'sxc-insights', component: AppsManagementDummyComponent },
+      { path: 'settings', component: AppsManagementHostTabPickerComponent },
+      { path: 'features', component: AppsManagementHostTabPickerComponent },
+      { path: 'sxc-insights', component: AppsManagementHostTabPickerComponent },
     ]
   },
 ];
@@ -38,8 +38,8 @@ const routes: Routes = [
     ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
-    AppsManagementRouterComponent,
-    AppsManagementDummyComponent,
+    AppsManagementHostDialogComponent,
+    AppsManagementHostTabPickerComponent,
   ],
   entryComponents: [
     AppsManagementNavigationComponent
