@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
 
@@ -8,11 +10,11 @@ import { AppsManagementParamsService } from '../shared/apps-management-params.se
   templateUrl: './apps-management-dummy.component.html',
   styleUrls: ['./apps-management-dummy.component.scss']
 })
-export class AppsManagementDummyComponent implements OnInit {
-  openedAppId: number;
+export class AppsManagementDummyComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
 
   constructor(
-    public router: Router,
+    private router: Router,
     private route: ActivatedRoute,
     private appsManagementParamsService: AppsManagementParamsService,
   ) {
@@ -20,9 +22,18 @@ export class AppsManagementDummyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.appsManagementParamsService.openedAppId.subscribe((openedAppId: number) => {
-      if (openedAppId === this.openedAppId) { return; }
-      this.router.navigate([openedAppId], { relativeTo: this.route });
-    });
+    this.subscriptions.push(
+      // this component will be reinstantiated on tab change which means subscription will always fire so
+      // skip first value because it's either undefined because BehaviorSubject is just created or
+      // it's emitting old value if app administration was already opened and closed
+      this.appsManagementParamsService.openedAppId.pipe(skip(1)).subscribe((openedAppId: number) => {
+        this.router.navigate([openedAppId], { relativeTo: this.route });
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions = null;
   }
 }

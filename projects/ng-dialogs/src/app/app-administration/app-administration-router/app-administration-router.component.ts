@@ -14,11 +14,11 @@ import { AppAdministrationParamsService } from '../shared/app-administration-par
 export class AppAdministrationRouterComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private appAdministrationDialogRef: MatDialogRef<AppAdministrationNavigationComponent, any>;
-  private tabPath$$ = new BehaviorSubject<string>(null);
+  private tabPath$$ = new BehaviorSubject<string>(undefined);
 
   constructor(
-    public dialog: MatDialog,
-    public router: Router,
+    private dialog: MatDialog,
+    private router: Router,
     private route: ActivatedRoute,
     private appAdministrationParamsService: AppAdministrationParamsService,
   ) { }
@@ -47,5 +47,10 @@ export class AppAdministrationRouterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions = null;
+    this.appAdministrationDialogRef.close();
+    this.appAdministrationDialogRef = null;
+    this.tabPath$$.complete();
+    this.tabPath$$ = null;
   }
 }

@@ -1,5 +1,6 @@
-import { Component, OnInit, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 import { AppAdministrationDialogDataModel } from '../shared/app-administration-dialog-data.model';
 
@@ -8,7 +9,7 @@ import { AppAdministrationDialogDataModel } from '../shared/app-administration-d
   templateUrl: './app-administration-navigation.component.html',
   styleUrls: ['./app-administration-navigation.component.scss']
 })
-export class AppAdministrationNavigationComponent implements OnInit {
+export class AppAdministrationNavigationComponent implements OnInit, OnDestroy {
   tabs = [
     { name: 'Home', icon: '', url: 'home' },
     { name: 'Data', icon: '', url: 'data' },
@@ -20,6 +21,7 @@ export class AppAdministrationNavigationComponent implements OnInit {
   ];
   onChangeTab = new EventEmitter();
   tabPath: string;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavigationComponent>,
@@ -27,10 +29,19 @@ export class AppAdministrationNavigationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.appAdministrationDialogData.tabPath$.subscribe(tabPath => {
-      console.log('App administration tab changed:', tabPath);
-      this.tabPath = tabPath;
-    });
+    this.subscriptions.push(
+      this.appAdministrationDialogData.tabPath$.subscribe(tabPath => {
+        console.log('App administration tab changed:', tabPath);
+        this.tabPath = tabPath;
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions = null;
+    this.onChangeTab.complete();
+    this.onChangeTab = null;
   }
 
   closeDialog() {
