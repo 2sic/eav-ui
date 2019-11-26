@@ -12,6 +12,7 @@ import { AppConfigurationComponent } from './app-configuration/app-configuration
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { AppAdministrationRouterComponent } from './app-administration-router/app-administration-router.component';
 import { AppAdministrationDummyComponent } from './app-administration-dummy/app-administration-dummy.component';
+import { AppAdministrationParamsService } from './shared/app-administration-params.service';
 
 const routes: Routes = [
   {
@@ -27,21 +28,6 @@ const routes: Routes = [
     ]
   },
 ];
-
-// const routes: Routes = [
-//   {
-//     path: '', component: AppAdministrationNavigationComponent, children: [
-//       { path: '', redirectTo: 'home', pathMatch: 'full' },
-//       { path: 'home', component: GettingStartedComponent },
-//       { path: 'data', component: DataComponent },
-//       { path: 'queries', component: QueriesComponent },
-//       { path: 'views', component: ViewsComponent },
-//       { path: 'web-api', component: WebApiComponent },
-//       { path: 'app', component: AppConfigurationComponent },
-//       { path: 'global', component: GlobalSettingsComponent },
-//     ]
-//   },
-// ];
 
 @NgModule({
   declarations: [
@@ -64,6 +50,7 @@ const routes: Routes = [
     CommonModule
   ],
   providers: [
+    AppAdministrationParamsService
   ]
 })
 export class AppAdministrationModule { }

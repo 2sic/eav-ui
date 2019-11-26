@@ -7,3 +7,11 @@
     {{ tab.name }}
   </button>
 </div>
+
+<app-getting-started *ngIf="tabPath === 'home'"></app-getting-started>
+<app-data *ngIf="tabPath === 'data'"></app-data>
+<app-queries *ngIf="tabPath === 'queries'"></app-queries>
+<app-views *ngIf="tabPath === 'views'"></app-views>
+<app-web-api *ngIf="tabPath === 'web-api'"></app-web-api>
+<app-app-configuration *ngIf="tabPath === 'app'"></app-app-configuration>
+<app-global-settings *ngIf="tabPath === 'global'"></app-global-settings>

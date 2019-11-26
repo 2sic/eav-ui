@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, EventEmitter, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { AppAdministrationDialogDataModel } from '../shared/app-administration-dialog-data.model';
 
 @Component({
   selector: 'app-app-administration-navigation',
@@ -17,14 +18,19 @@ export class AppAdministrationNavigationComponent implements OnInit {
     { name: 'App', icon: '', url: 'app' },
     { name: 'Global', icon: '', url: 'global' },
   ];
+  onChangeTab = new EventEmitter();
+  tabPath: string;
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavigationComponent>,
-    private router: Router,
-    private route: ActivatedRoute,
+    @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogDataModel,
   ) { }
 
   ngOnInit() {
+    this.appAdministrationDialogData.tabPath$.subscribe(tabPath => {
+      console.log('App administration tab changed:', tabPath);
+      this.tabPath = tabPath;
+    });
   }
 
   closeDialog() {
@@ -32,6 +38,6 @@ export class AppAdministrationNavigationComponent implements OnInit {
   }
 
   changeTab(url: string) {
-    this.router.navigate([`${url}`], { relativeTo: this.route });
+    this.onChangeTab.emit(url);
   }
 }
