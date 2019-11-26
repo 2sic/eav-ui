@@ -15,9 +15,9 @@ import { AppsManagementDialogParamsService } from './shared/apps-management-dial
 const routes: Routes = [
   {
     path: '', component: AppsManagementHostDialogComponent, children: [
-      { path: '', redirectTo: 'apps', pathMatch: 'full' },
+      { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
-        path: 'apps', component: AppsManagementHostTabPickerComponent, children: [
+        path: 'list', component: AppsManagementHostTabPickerComponent, children: [
           {
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)

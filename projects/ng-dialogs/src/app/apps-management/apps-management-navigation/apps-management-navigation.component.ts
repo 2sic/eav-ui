@@ -13,7 +13,7 @@ import { AppsManagementDialogParamsService } from '../shared/apps-management-dia
 })
 export class AppsManagementNavigationComponent implements OnInit, OnDestroy {
   tabs = [
-    { name: 'Apps', icon: '', url: 'apps' },
+    { name: 'Apps', icon: '', url: 'list' },
     { name: 'Settings', icon: '', url: 'settings' },
     { name: 'Features', icon: '', url: 'features' },
     { name: '2sxc Insights', icon: '', url: 'sxc-insights' },

@@ -15,7 +15,7 @@ import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interce
 
 const appRoutes: Routes = [
   {
-    path: ':zoneId',
+    path: ':zoneId/apps',
     loadChildren: () => import('./apps-management/apps-management.module').then(m => m.AppsManagementModule)
   },
   // {
@@ -72,7 +72,7 @@ export function adminEavServiceFactory(injector: Injector): Function {
       });
       const router = injector.get(Router);
       const zoneId = queryParametersFromUrl['zoneId'];
-      router.navigate([zoneId]);
+      router.navigate([`${zoneId}/apps`]);
     } else if (sessionStorage.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
       alert('Missing required url parameters. Please reopen dialog.');
