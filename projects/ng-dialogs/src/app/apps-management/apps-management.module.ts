@@ -16,17 +16,14 @@ const routes: Routes = [
   {
     path: '', component: AppsManagementHostDialogComponent, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
-      {
-        path: 'list', component: AppsManagementHostTabPickerComponent, children: [
-          {
-            path: ':appId',
-            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
-          }
-        ]
-      },
+      { path: 'list', component: AppsManagementHostTabPickerComponent },
       { path: 'settings', component: AppsManagementHostTabPickerComponent },
       { path: 'features', component: AppsManagementHostTabPickerComponent },
       { path: 'sxc-insights', component: AppsManagementHostTabPickerComponent },
+      {
+        path: ':appId',
+        loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+      },
     ]
   },
 ];

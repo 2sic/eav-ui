@@ -18,42 +18,10 @@ const appRoutes: Routes = [
     path: ':zoneId/apps',
     loadChildren: () => import('./apps-management/apps-management.module').then(m => m.AppsManagementModule)
   },
-  // {
-  //   path: ':zoneId', component: AppsManagementNavigationComponent, children: [
-  //     { path: '', redirectTo: 'apps', pathMatch: 'full' },
-  //     {
-  //       path: 'apps', component: AppsListComponent, children: [
-  //         {
-  //           path: ':appId', component: AppAdministrationNavigationComponent, children: [
-  //             { path: '', redirectTo: 'home', pathMatch: 'full' },
-  //             { path: 'home', component: GettingStartedComponent },
-  //             { path: 'data', component: DataComponent },
-  //             { path: 'queries', component: QueriesComponent },
-  //             { path: 'views', component: ViewsComponent },
-  //             { path: 'web-api', component: WebApiComponent },
-  //             { path: 'app', component: AppConfigurationComponent },
-  //             { path: 'global', component: GlobalSettingsComponent },
-  //           ]
-  //         },
-  //       ]
-  //     },
-  //     { path: 'settings', component: ZoneSettingsComponent },
-  //     { path: 'features', component: ManageFeaturesComponent },
-  //     { path: 'sxc-insights', component: SxcInsightsComponent },
-  //   ]
-  // },
-  // {
-  //   path: ':zoneId/:appId', component: AppAdministrationNavigationComponent, children: [
-  //     { path: '', redirectTo: 'home', pathMatch: 'full' },
-  //     { path: 'home', component: GettingStartedComponent },
-  //     { path: 'data', component: DataComponent },
-  //     { path: 'queries', component: QueriesComponent },
-  //     { path: 'views', component: ViewsComponent },
-  //     { path: 'web-api', component: WebApiComponent },
-  //     { path: 'app', component: AppConfigurationComponent },
-  //     { path: 'global', component: GlobalSettingsComponent },
-  //   ]
-  // },
+  {
+    path: ':zoneId/:appId/app',
+    loadChildren: () => import('./app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+  },
 ];
 
 export function adminEavServiceFactory(injector: Injector): Function {

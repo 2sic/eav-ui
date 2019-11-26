@@ -40,7 +40,11 @@ export class AppAdministrationHostDialogComponent implements OnInit, OnDestroy {
       }),
       this.appAdministrationDialogRef.afterClosed().subscribe(result => {
         console.log('App administration dialog was closed. Result:', result);
-        this.router.navigate(['../'], { relativeTo: this.route });
+        if (this.route.parent.parent.parent) {
+          this.router.navigate(['../'], { relativeTo: this.route });
+        } else {
+          alert('Close iframe!');
+        }
       }),
     );
   }
