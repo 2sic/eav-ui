@@ -46,19 +46,7 @@ export class Context {
 
   constructor(@Optional() @SkipSelf() public context: Context) {
     console.log('Context.contstructor');
-    if (context) { this.initFromParentContext(context); }
-
-    // const paramMap = route.snapshot.paramMap;
-    // const x = router.routerState.snapshot.url;
-    // console.log('url', x);
-    // const root = router.routerState.snapshot.root;
-
-    // console.log('EavParams.constructor()', route, paramMap);
-    // console.log('EavParams', route.snapshot.url, {root});
-    // const z = paramMap.get('zoneId');
-    // this.zoneId = parseInt(z, 10);
-    // const a = paramMap.get('appId');
-    // this.appId = parseInt(a, 10);
+    if (context) { this.parent = context; }
   }
 
 
@@ -75,16 +63,16 @@ export class Context {
     this.ready = true;
   }
 
-  /**
-   * Initialize this context from an existing parent.
-   * This is used by child-contexts, which inherit values from the parent.
-   * @private
-   * @param {Context} parent
-   * @memberof Context
-   */
-  private initFromParentContext(parent: Context) {
-    this.parent = parent;
-  }
+  // /**
+  //  * Initialize this context from an existing parent.
+  //  * This is used by child-contexts, which inherit values from the parent.
+  //  * @private
+  //  * @param {Context} parent
+  //  * @memberof Context
+  //  */
+  // private initFromParentContext(parent: Context) {
+  //   this.parent = parent;
+  // }
 
   initRoot() {
     console.log('Context.initRoot');

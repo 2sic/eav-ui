@@ -23,15 +23,15 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appsManagementParamsService: AppsManagementParamsService,
-    // @Inject(EAV_APP_ID) public appId: number,
-    // public eavParams: EavParams,
     public context: Context,
   ) {
+    // todo
     context.init(route);
   }
 
   ngOnInit() {
-    this.context.init(this.route);
+    // todo
+    // this.context.init(this.route);
     this.appsManagementDialogRef = this.dialog.open(AppsManagementNavigationComponent, {
       backdropClass: 'apps-management-dialog-backdrop',
       panelClass: 'apps-management-dialog-panel',
