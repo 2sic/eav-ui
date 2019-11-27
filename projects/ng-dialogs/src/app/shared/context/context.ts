@@ -1,9 +1,12 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
-const keyAppId = 'appId';
 const keyZoneId = 'zoneId';
 const keyRequestToken = 'rvt';
+const keyTabId = 'tid';
+const keyContentBlockId = 'cbid';
+const keyModuleId = 'mid';
+const keyAppId = 'appId';
 
 /**
  * The context provides information
@@ -24,13 +27,13 @@ export class Context {
 
   /** The current Zone ID */
   get zoneId(): number {
-    return this._zoneId || (this._zoneId = this.routeNum(keyZoneId) || this.parent.zoneId );
+    return this._zoneId || (this._zoneId = this.routeNum(keyZoneId) || this.parent.zoneId);
   }
   private _zoneId: number;
 
   /** The current App ID */
   get appId(): number {
-    return this._appId || (this._appId = this.routeNum(keyAppId) || this.parent.appId );
+    return this._appId || (this._appId = this.routeNum(keyAppId) || this.parent.appId);
   }
   private _appId: number;
 
@@ -42,7 +45,23 @@ export class Context {
   get requestToken(): string { return this._rvt || (this._rvt = this.parent.requestToken); }
   private _rvt: string;
 
-  // TODO: spm other "global" properties like
+  /** Tab Id is global */
+  get tabId(): number {
+    return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent._tabId);
+  }
+  private _tabId: number;
+
+  /** Content Block Id is global */
+  get contentBlockId(): number {
+    return this._contentBlockId || (this._contentBlockId = this.routeNum(keyContentBlockId) || this.parent._contentBlockId);
+  }
+  private _contentBlockId: number;
+
+  /** Module Id is global */
+  get moduleId(): number {
+    return this._moduleId || (this._moduleId = this.routeNum(keyModuleId) || this.parent._moduleId);
+  }
+  private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() public context: Context) {
     console.log('Context.contstructor');
@@ -60,19 +79,9 @@ export class Context {
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
     this.routeSnapshot = route.snapshot;
+    this._appId = this.routeNum(keyAppId) || this.parent.appId;
     this.ready = true;
   }
-
-  // /**
-  //  * Initialize this context from an existing parent.
-  //  * This is used by child-contexts, which inherit values from the parent.
-  //  * @private
-  //  * @param {Context} parent
-  //  * @memberof Context
-  //  */
-  // private initFromParentContext(parent: Context) {
-  //   this.parent = parent;
-  // }
 
   initRoot() {
     console.log('Context.initRoot');
@@ -80,13 +89,16 @@ export class Context {
     // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);
     this._zoneId = this.sessionNumber(keyZoneId);
+    this._tabId = this.sessionNumber(keyTabId);
+    this._contentBlockId = this.sessionNumber(keyContentBlockId);
+    this._moduleId = this.sessionNumber(keyModuleId);
 
-    // TODO: SPM - make it initialize all values from the state
-    // TODO: throw error, if the state doesn't have the necessary basic infos
+    if (!this._rvt || !this._zoneId || !this._tabId || !this._contentBlockId || !this._moduleId) {
+      throw new Error('Context is missing some of the required parameters');
+    }
 
     // optional global things
     this._appId = this.sessionNumber(keyAppId);
-
   }
 
   private sessionNumber(name: string): number {

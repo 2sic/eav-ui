@@ -8,7 +8,9 @@
   </button>
 </div>
 
-<app-apps-list *ngIf="tabPath === 'list'"></app-apps-list>
-<app-zone-settings *ngIf="tabPath === 'settings'"></app-zone-settings>
-<app-manage-features *ngIf="tabPath === 'features'"></app-manage-features>
-<app-sxc-insights *ngIf="tabPath === 'sxc-insights'"></app-sxc-insights>
+<div [ngSwitch]="tabPath">
+  <app-apps-list *ngSwitchCase="'list'"></app-apps-list>
+  <app-zone-settings *ngSwitchCase="'settings'"></app-zone-settings>
+  <app-manage-features *ngSwitchCase="'features'"></app-manage-features>
+  <app-sxc-insights *ngSwitchCase="'sxc-insights'"></app-sxc-insights>
+</div>

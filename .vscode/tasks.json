@@ -1,55 +1,55 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "type": "npm",
-        "script": "build-languages",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "release",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "copy-to-dnn-watch",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dev-main-watch",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dev-all",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dialog-local",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dev-all-watch",
-        "group": "build",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dev-dialogs-all-watch",
-        "group": "build",
-        "problemMatcher": []
-      },
-      {
-        "type": "npm",
-        "script": "dialogs-copy-to-dnn-watch",
-        "group": "build",
-        "problemMatcher": []
-      }
-    ]
+  // See https://go.microsoft.com/fwlink/?LinkId=733558 
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build-languages",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "release",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "copy-to-dnn-watch",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dev-main-watch",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dev-all",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dialog-local",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dev-all-watch",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dev-dialogs-all-watch",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dialogs-copy-to-dnn-watch",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -8,7 +8,7 @@ import { AppAdministrationParamsService } from '../shared/app-administration-par
 import { Context } from '../../shared/context/context';
 
 @Component({
-  selector: 'app-app-administration-host-dialog',
+  selector: 'app-app-administration-entry',
   templateUrl: './app-administration-entry.component.html',
   styleUrls: ['./app-administration-entry.component.scss'],
   // providers: [Context],
@@ -35,7 +35,6 @@ export class AppAdministrationEntryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.appId = parseInt(this.route.snapshot.paramMap.get('appId'), 10);
     this.zoneId = parseInt(this.route.snapshot.parent.parent.paramMap.get('zoneId'), 10);
-
 
     this.appAdministrationDialogRef = this.dialog.open(AppAdministrationNavigationComponent, {
       backdropClass: 'app-administration-dialog-backdrop',

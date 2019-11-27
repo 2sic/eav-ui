@@ -2,27 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { QueryParameters } from '../models/query-parameters.model';
+import { Context } from '../context/context';
 
 @Injectable()
 export class HttpHeaderInterceptor implements HttpInterceptor {
-  constructor() { }
+  constructor(
+    public context: Context,
+  ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const queryParameters = new QueryParameters();
-    Object.keys(queryParameters).forEach(key => {
-      if (queryParameters.hasOwnProperty(key)) {
-        queryParameters[key] = sessionStorage.getItem(key);
-      }
-    });
-    // debugger;
     const modified = req.clone({
       setHeaders: {
-        'TabId': queryParameters.tid,
-        'ContentBlockId': queryParameters.cbid,
-        'ModuleId': queryParameters.mid,
+        'TabId': this.context.tabId.toString(),
+        'ContentBlockId': this.context.contentBlockId.toString(),
+        'ModuleId': this.context.moduleId.toString(),
         'Content-Type': 'application/json;charset=UTF-8',
-        'RequestVerificationToken': queryParameters.rvt
+        'RequestVerificationToken': this.context.requestToken,
       }
     });
     return next.handle(modified);

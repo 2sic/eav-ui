@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
-import { Routes, RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { Routes, RouterModule, Router } from '@angular/router';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -72,7 +72,7 @@ export function adminEavServiceFactory(injector: Injector): Function {
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
     Context,
-    ],
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

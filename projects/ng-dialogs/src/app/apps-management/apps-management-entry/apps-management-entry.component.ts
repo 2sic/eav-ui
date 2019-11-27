@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -8,7 +8,7 @@ import { AppsManagementParamsService } from '../shared/apps-management-params.se
 import { Context } from '../../shared/context/context';
 
 @Component({
-  selector: 'app-apps-management-host-dialog',
+  selector: 'app-apps-management-entry',
   templateUrl: './apps-management-entry.component.html',
   styleUrls: ['./apps-management-entry.component.scss'],
   // providers: [Context],
