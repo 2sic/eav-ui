@@ -19,14 +19,14 @@ export class AppsListComponent implements OnInit {
 
   ngOnInit() {
     // http://petar-pc2.sistemi.corp/en-us/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=2
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.zoneId}`)
+    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.context.zoneId}`)
       .subscribe((apps: App[]) => {
         this.apps = apps;
       });
   }
 
   openApp(appId: number) {
-    this.appsManagementDialogParamsService.openedAppId.next(appId);
+    this.appsManagementDialogParamsService.openedAppId$$.next(appId);
   }
 
 }

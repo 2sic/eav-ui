@@ -14,7 +14,7 @@ export class AppAdministrationHostTabPickerComponent implements OnInit {
     private route: ActivatedRoute,
     private appAdministrationParamsService: AppAdministrationParamsService,
   ) {
-    this.appAdministrationParamsService.selectedTabPath.next(this.route.snapshot.url[0].path);
+    this.appAdministrationParamsService.selectedTabPath$$.next(this.route.snapshot.url[0].path);
   }
 
   ngOnInit() {

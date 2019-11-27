@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class AppAdministrationParamsService {
-  selectedTabPath = new BehaviorSubject<string>(undefined);
+  selectedTabPath$$ = new BehaviorSubject<string>(undefined);
 
   constructor() { }
 }

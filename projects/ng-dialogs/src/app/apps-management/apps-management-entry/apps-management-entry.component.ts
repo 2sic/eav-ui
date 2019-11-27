@@ -5,6 +5,7 @@ import { Subscription, BehaviorSubject } from 'rxjs';
 
 import { AppsManagementNavigationComponent } from '../apps-management-navigation/apps-management-navigation.component';
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
+import { AppsManagementDialogDataModel } from '../shared/apps-management-dialog-data.model';
 import { Context } from '../../shared/context/context';
 
 @Component({
@@ -30,18 +31,17 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // todo
-    // this.context.init(this.route);
+    const dialogData: AppsManagementDialogDataModel = {
+      context: this.context,
+      tabPath$: this.tabPath$$.asObservable(),
+    };
     this.appsManagementDialogRef = this.dialog.open(AppsManagementNavigationComponent, {
       backdropClass: 'apps-management-dialog-backdrop',
       panelClass: 'apps-management-dialog-panel',
-      data: {
-        zoneId: this.route.parent.snapshot.paramMap.get('zoneId'),
-        tabPath$: this.tabPath$$.asObservable(),
-      }
+      data: dialogData,
     });
     this.subscriptions.push(
-      this.appsManagementParamsService.selectedTabPath.subscribe(tabPath => {
+      this.appsManagementParamsService.selectedTabPath$$.subscribe(tabPath => {
         this.tabPath$$.next(tabPath);
       }),
       this.appsManagementDialogRef.componentInstance.onChangeTab.subscribe((url: string) => {

@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs';
 
+import { Context } from '../../shared/context/context';
+
 export class AppAdministrationDialogDataModel {
-    zoneId: string;
-    appId: number;
-    tabPath$: Observable<string>;
+  context: Context;
+  tabPath$: Observable<string>;
 }

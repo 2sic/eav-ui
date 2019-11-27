@@ -30,14 +30,14 @@ export class AppsManagementNavigationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.appsManagementDialogParamsService.zoneId = this.appsManagementDialogData.zoneId;
+    this.appsManagementDialogParamsService.context = this.appsManagementDialogData.context;
     this.subscriptions.push(
       this.appsManagementDialogData.tabPath$.subscribe(tabPath => {
         console.log('Apps management tab changed:', tabPath);
         this.tabPath = tabPath;
       }),
       // skip first emit because it will be undefined as BehaviorSubject was just created
-      this.appsManagementDialogParamsService.openedAppId.pipe(skip(1)).subscribe(openedAppId => {
+      this.appsManagementDialogParamsService.openedAppId$$.pipe(skip(1)).subscribe(openedAppId => {
         this.onOpenApp.emit(openedAppId);
       }),
     );
