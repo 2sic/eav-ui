@@ -17,17 +17,30 @@ export class Context {
   /** Determines if the context is ready to use, and everything is initialized */
   public ready = false;
 
+  /** the parent, for hierarchical lookup */
+  private parent: Context;
+
+  private routeSnapshot: ActivatedRouteSnapshot;
+
   /** The current Zone ID */
-  public zoneId: number;
+  get zoneId(): number {
+    return this._zoneId || (this._zoneId = this.routeNum(keyZoneId) || this.parent.zoneId );
+  }
+  private _zoneId: number;
 
   /** The current App ID */
-  public appId: number;
+  get appId(): number {
+    return this._appId || (this._appId = this.routeNum(keyAppId) || this.parent.appId );
+  }
+  private _appId: number;
+
 
   /**
    * The request verification token for http requests
    * It's only loaded from the root, never from sub-contexts
   */
-  public requestToken: string;
+  get requestToken(): string { return this._rvt || (this._rvt = this.parent.requestToken); }
+  private _rvt: string;
 
   // TODO: spm other "global" properties like
 
@@ -58,17 +71,7 @@ export class Context {
    */
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
-    const state = route.snapshot;
-
-    // TODO: always use consts for the keys like 'appId'
-
-    // Note: the zone is always from global, so don't retrieve from route
-    // this.zoneId = this.routeNumber(state, keyZoneId, true) || this.appId;
-
-    this.appId = this.routeNumber(state, keyAppId, true) || this.appId;
-
-    // TODO: SPM more stuff from the route
-
+    this.routeSnapshot = route.snapshot;
     this.ready = true;
   }
 
@@ -80,27 +83,26 @@ export class Context {
    * @memberof Context
    */
   private initFromParentContext(parent: Context) {
-    this.requestToken = parent.requestToken;
-    this.zoneId = parent.zoneId;
-    this.appId = parent.appId;
-
-    // TODO: spm add other, globally shared params
+    this.parent = parent;
   }
 
   initRoot() {
     console.log('Context.initRoot');
 
-    this.requestToken = sessionStorage.getItem(keyRequestToken);
-    this.zoneId = this.sessionNumber(keyZoneId);
-    this.appId = this.sessionNumber(keyAppId);
+    // required, global things
+    this._rvt = sessionStorage.getItem(keyRequestToken);
+    this._zoneId = this.sessionNumber(keyZoneId);
 
-    // TODO: SPM - call this rom the app.module, and make it initialize from the state
+    // TODO: SPM - make it initialize all values from the state
     // TODO: throw error, if the state doesn't have the necessary basic infos
-    // this.appId = -1;
+
+    // optional global things
+    this._appId = this.sessionNumber(keyAppId);
+
   }
 
   private sessionNumber(name: string): number {
-    const result = sessionStorage.getItem(keyZoneId);
+    const result = sessionStorage.getItem(name);
     if (result !== null) {
       const num = parseInt(result, 10);
       return isNaN(num) ? null : num;
@@ -108,27 +110,21 @@ export class Context {
     return null;
   }
 
-   /**
-    * Get a number from the route, or optionally its parents.
-    * @param {ActivatedRouteSnapshot} state
-    * @param {string} name
-    * @param {boolean} [recursive=false]
-    * @returns {number}
-    * @memberof Context
-    */
-   private routeNumber(state: ActivatedRouteSnapshot, name: string, recursive: boolean = false): number {
+  /**
+   * Get a number from the route, or optionally its parents.
+   * @param {string} name
+   * @returns {number} value in route or null
+   * @memberof Context
+   */
+  private routeNum(name: string): number {
     // catch case where state is null, like when the recursive parent is in use
-    if (state == null) { return null; }
+    if (this.routeSnapshot == null) { return null; }
 
-    const result = state.paramMap.get(name);
+    const result = this.routeSnapshot.paramMap.get(name);
     if (result !== null) {
       const num = parseInt(result, 10);
       return isNaN(num) ? null : num;
     }
-
-    return recursive
-      ? this.routeNumber(state.parent, name, true)
-      : null;
   }
 
 
