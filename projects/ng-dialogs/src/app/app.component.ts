@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Context } from './shared/context/context';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  constructor() { }
+  constructor(context: Context) {
+    context.initRoot();
+   }
 
   ngOnInit() {
   }

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
-import { Routes, RouterModule, Router } from '@angular/router';
+import { Routes, RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,7 +12,9 @@ import { QueryParameters } from './shared/models/query-parameters.model';
 import { AppsManagementModule } from './apps-management/apps-management.module';
 import { AppAdministrationModule } from './app-administration/app-administration.module';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
+import { Context } from './shared/context/context';
 
+// TODO: spm - put into own file
 const appRoutes: Routes = [
   {
     path: ':zoneId/apps',
@@ -24,6 +26,7 @@ const appRoutes: Routes = [
   },
 ];
 
+// TODO: spm - put into own file
 export function adminEavServiceFactory(injector: Injector): Function {
   return function () {
     console.log('Setting admin parameters config and clearing route');
@@ -68,7 +71,8 @@ export function adminEavServiceFactory(injector: Injector): Function {
     { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
-  ],
+    Context,
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

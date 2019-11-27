@@ -7,14 +7,15 @@ import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
-import { AppsManagementHostDialogComponent } from './apps-management-host-dialog/apps-management-host-dialog.component';
+import { AppsManagementEntryComponent } from './apps-management-entry/apps-management-entry.component';
 import { AppsManagementParamsService } from './shared/apps-management-params.service';
 import { AppsManagementHostTabPickerComponent } from './apps-management-host-tab-picker/apps-management-host-tab-picker.component';
 import { AppsManagementDialogParamsService } from './shared/apps-management-dialog-params.service';
+import { Context } from '../shared/context/context';
 
 const routes: Routes = [
   {
-    path: '', component: AppsManagementHostDialogComponent, children: [
+    path: '', component: AppsManagementEntryComponent, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       { path: 'list', component: AppsManagementHostTabPickerComponent },
       { path: 'settings', component: AppsManagementHostTabPickerComponent },
@@ -35,7 +36,7 @@ const routes: Routes = [
     ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
-    AppsManagementHostDialogComponent,
+    AppsManagementEntryComponent,
     AppsManagementHostTabPickerComponent,
   ],
   entryComponents: [
@@ -47,7 +48,8 @@ const routes: Routes = [
   ],
   providers: [
     AppsManagementParamsService,
-    AppsManagementDialogParamsService
+    AppsManagementDialogParamsService,
+    Context,
   ]
 })
 export class AppsManagementModule { }

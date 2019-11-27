@@ -1,17 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
 import { AppsManagementNavigationComponent } from '../apps-management-navigation/apps-management-navigation.component';
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
+import { Context } from '../../shared/context/context';
 
 @Component({
   selector: 'app-apps-management-host-dialog',
-  templateUrl: './apps-management-host-dialog.component.html',
-  styleUrls: ['./apps-management-host-dialog.component.scss']
+  templateUrl: './apps-management-entry.component.html',
+  styleUrls: ['./apps-management-entry.component.scss'],
+  // providers: [Context],
 })
-export class AppsManagementHostDialogComponent implements OnInit, OnDestroy {
+export class AppsManagementEntryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private appsManagementDialogRef: MatDialogRef<AppsManagementNavigationComponent, any>;
   private tabPath$$ = new BehaviorSubject<string>(undefined);
@@ -21,9 +23,15 @@ export class AppsManagementHostDialogComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appsManagementParamsService: AppsManagementParamsService,
-  ) { }
+    // @Inject(EAV_APP_ID) public appId: number,
+    // public eavParams: EavParams,
+    public context: Context,
+  ) {
+    context.init(route);
+  }
 
   ngOnInit() {
+    this.context.init(this.route);
     this.appsManagementDialogRef = this.dialog.open(AppsManagementNavigationComponent, {
       backdropClass: 'apps-management-dialog-backdrop',
       panelClass: 'apps-management-dialog-panel',

@@ -10,13 +10,15 @@ import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
-import { AppAdministrationHostDialogComponent } from './app-administration-host-dialog/app-administration-host-dialog.component';
+import { AppAdministrationEntryComponent } from './app-administration-entry/app-administration-entry.component';
 import { AppAdministrationHostTabPickerComponent } from './app-administration-host-tab-picker/app-administration-host-tab-picker.component';
 import { AppAdministrationParamsService } from './shared/app-administration-params.service';
+import { Context } from '../shared/context/context';
 
+// TODO: spm - put into own file
 const routes: Routes = [
   {
-    path: '', component: AppAdministrationHostDialogComponent, children: [
+    path: '', component: AppAdministrationEntryComponent, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: AppAdministrationHostTabPickerComponent },
       { path: 'data', component: AppAdministrationHostTabPickerComponent },
@@ -39,7 +41,7 @@ const routes: Routes = [
     WebApiComponent,
     AppConfigurationComponent,
     GlobalSettingsComponent,
-    AppAdministrationHostDialogComponent,
+    AppAdministrationEntryComponent,
     AppAdministrationHostTabPickerComponent
   ],
   entryComponents: [
@@ -50,7 +52,8 @@ const routes: Routes = [
     CommonModule
   ],
   providers: [
-    AppAdministrationParamsService
+    AppAdministrationParamsService,
+    Context,
   ]
 })
 export class AppAdministrationModule { }
