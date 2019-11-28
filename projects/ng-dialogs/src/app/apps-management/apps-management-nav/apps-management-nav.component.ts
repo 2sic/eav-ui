@@ -5,6 +5,7 @@ import { skip } from 'rxjs/operators';
 
 import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.model';
 import { AppsManagementDialogParamsService } from '../shared/apps-management-dialog-params.service';
+import { NavigationTab } from '../../shared/models/navigation-tab.model';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -12,12 +13,13 @@ import { AppsManagementDialogParamsService } from '../shared/apps-management-dia
   styleUrls: ['./apps-management-nav.component.scss']
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
-  tabs = [
-    { name: 'Apps', icon: '', url: 'list' },
-    { name: 'Settings', icon: '', url: 'settings' },
-    { name: 'Features', icon: '', url: 'features' },
-    { name: '2sxc Insights', icon: '', url: 'sxc-insights' },
-  ];
+  tabs = {
+    apps: { url: 'list', name: 'Apps', icon: '' },
+    settings: { url: 'settings', name: 'Settings', icon: '' },
+    features: { url: 'features', name: 'Features', icon: '' },
+    sxcInsights: { url: 'sxc-insights', name: '2sxc Insights', icon: '' },
+  };
+  tabsArray: NavigationTab[] = [];
   onChangeTab = new EventEmitter();
   tabPath: string;
   onOpenApp = new EventEmitter();
@@ -27,7 +29,11 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogData,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
-  ) { }
+  ) {
+    Object.keys(this.tabs).forEach(key => {
+      this.tabsArray.push(this.tabs[key]);
+    });
+  }
 
   ngOnInit() {
     this.appsManagementDialogParamsService.context = this.appsManagementDialogData.context;

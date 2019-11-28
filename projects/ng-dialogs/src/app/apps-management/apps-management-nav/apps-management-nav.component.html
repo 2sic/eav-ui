@@ -3,14 +3,14 @@
 <h1>Manage Apps in this Zone (Portal)</h1>
 
 <div>
-  <button *ngFor="let tab of tabs; index as i" (click)="changeTab(tab.url)">
+  <button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
     {{ tab.name }}
   </button>
 </div>
 
 <div [ngSwitch]="tabPath">
-  <app-apps-list *ngSwitchCase="'list'"></app-apps-list>
-  <app-zone-settings *ngSwitchCase="'settings'"></app-zone-settings>
-  <app-manage-features *ngSwitchCase="'features'"></app-manage-features>
-  <app-sxc-insights *ngSwitchCase="'sxc-insights'"></app-sxc-insights>
+  <app-apps-list *ngSwitchCase="tabs.apps.url"></app-apps-list>
+  <app-zone-settings *ngSwitchCase="tabs.settings.url"></app-zone-settings>
+  <app-manage-features *ngSwitchCase="tabs.features.url"></app-manage-features>
+  <app-sxc-insights *ngSwitchCase="tabs.sxcInsights.url"></app-sxc-insights>
 </div>
