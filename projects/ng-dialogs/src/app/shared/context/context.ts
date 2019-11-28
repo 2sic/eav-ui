@@ -78,9 +78,8 @@ export class Context {
    */
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
-    this.routeSnapshot = route.snapshot;
-    this._appId = this.routeNum(keyAppId) || this.parent.appId;
-    this.ready = true;
+    this.routeSnapshot = route && route.snapshot;
+    this.ready = route != null;
   }
 
   initRoot() {

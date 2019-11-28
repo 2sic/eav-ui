@@ -12,7 +12,7 @@ import { Context } from '../../shared/context/context';
   selector: 'app-apps-management-entry',
   templateUrl: './apps-management-entry.component.html',
   styleUrls: ['./apps-management-entry.component.scss'],
-  // providers: [Context],
+  providers: [Context],
 })
 export class AppsManagementEntryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
