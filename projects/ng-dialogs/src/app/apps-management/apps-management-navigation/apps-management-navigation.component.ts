@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
-import { AppsManagementDialogDataModel } from '../shared/apps-management-dialog-data.model';
+import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.model';
 import { AppsManagementDialogParamsService } from '../shared/apps-management-dialog-params.service';
 
 @Component({
@@ -25,7 +25,7 @@ export class AppsManagementNavigationComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<AppsManagementNavigationComponent>,
-    @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogDataModel,
+    @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogData,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
   ) { }
 

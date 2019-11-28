@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
-import { AppAdministrationDialogDataModel } from '../shared/models/app-administration-dialog-data.model';
-import { DialogSettingsModel } from '../shared/models/dialog-settings.model';
+import { AppAdministrationDialogData } from '../shared/models/app-administration-dialog-data.model';
+import { DialogSettings } from '../shared/models/dialog-settings.model';
 import { NavigationTab } from '../../shared/models/navigation-tab.model';
 
 @Component({
@@ -25,13 +25,13 @@ export class AppAdministrationNavigationComponent implements OnInit, OnDestroy {
   tabsArray: NavigationTab[] = [];
   onChangeTab = new EventEmitter();
   tabPath: string;
-  dialogSettings: DialogSettingsModel;
+  dialogSettings: DialogSettings;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<AppAdministrationNavigationComponent>,
-    @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogDataModel,
+    @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogData,
   ) {
     Object.keys(this.tabs).forEach(key => {
       this.tabsArray.push(this.tabs[key]);
@@ -46,7 +46,7 @@ export class AppAdministrationNavigationComponent implements OnInit, OnDestroy {
       }),
     );
     this.http.get(`/desktopmodules/2sxc/api/app-sys/system/dialogsettings?appId=${this.appAdministrationDialogData.context.appId}`)
-      .subscribe((dialogSettings: DialogSettingsModel) => {
+      .subscribe((dialogSettings: DialogSettings) => {
         if (dialogSettings.IsContent) {
           this.tabsArray = this.tabsArray.filter(tab => {
             return tab.url !== this.tabs.queries.url

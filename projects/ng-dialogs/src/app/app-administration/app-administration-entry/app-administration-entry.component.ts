@@ -5,7 +5,7 @@ import { Subscription, BehaviorSubject } from 'rxjs';
 
 import { AppAdministrationNavigationComponent } from '../app-administration-navigation/app-administration-navigation.component';
 import { AppAdministrationParamsService } from '../shared/services/app-administration-params.service';
-import { AppAdministrationDialogDataModel } from '../shared/models/app-administration-dialog-data.model';
+import { AppAdministrationDialogData } from '../shared/models/app-administration-dialog-data.model';
 import { Context } from '../../shared/context/context';
 
 @Component({
@@ -30,7 +30,7 @@ export class AppAdministrationEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const dialogData: AppAdministrationDialogDataModel = {
+    const dialogData: AppAdministrationDialogData = {
       context: this.context,
       tabPath$: this.tabPath$$.asObservable(),
     };
