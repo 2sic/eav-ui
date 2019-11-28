@@ -7,11 +7,11 @@ import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.
 import { AppsManagementDialogParamsService } from '../shared/apps-management-dialog-params.service';
 
 @Component({
-  selector: 'app-apps-management-navigation',
-  templateUrl: './apps-management-navigation.component.html',
-  styleUrls: ['./apps-management-navigation.component.scss']
+  selector: 'app-apps-management-nav',
+  templateUrl: './apps-management-nav.component.html',
+  styleUrls: ['./apps-management-nav.component.scss']
 })
-export class AppsManagementNavigationComponent implements OnInit, OnDestroy {
+export class AppsManagementNavComponent implements OnInit, OnDestroy {
   tabs = [
     { name: 'Apps', icon: '', url: 'list' },
     { name: 'Settings', icon: '', url: 'settings' },
@@ -24,7 +24,7 @@ export class AppsManagementNavigationComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<AppsManagementNavigationComponent>,
+    private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogData,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
   ) { }

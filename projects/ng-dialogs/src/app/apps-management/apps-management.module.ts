@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AppsManagementNavigationComponent } from './apps-management-navigation/apps-management-navigation.component';
+import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 import { AppsManagementEntryComponent } from './apps-management-entry/apps-management-entry.component';
 import { AppsManagementParamsService } from './shared/apps-management-params.service';
-import { AppsManagementHostTabPickerComponent } from './apps-management-host-tab-picker/apps-management-host-tab-picker.component';
+import { AppsManagementTabPickerComponent } from './apps-management-tab-picker/apps-management-tab-picker.component';
 import { AppsManagementDialogParamsService } from './shared/apps-management-dialog-params.service';
 import { Context } from '../shared/context/context';
 
@@ -17,10 +17,10 @@ const routes: Routes = [
   {
     path: '', component: AppsManagementEntryComponent, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
-      { path: 'list', component: AppsManagementHostTabPickerComponent },
-      { path: 'settings', component: AppsManagementHostTabPickerComponent },
-      { path: 'features', component: AppsManagementHostTabPickerComponent },
-      { path: 'sxc-insights', component: AppsManagementHostTabPickerComponent },
+      { path: 'list', component: AppsManagementTabPickerComponent },
+      { path: 'settings', component: AppsManagementTabPickerComponent },
+      { path: 'features', component: AppsManagementTabPickerComponent },
+      { path: 'sxc-insights', component: AppsManagementTabPickerComponent },
       {
         path: ':appId',
         loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
@@ -31,16 +31,16 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    AppsManagementNavigationComponent,
+    AppsManagementNavComponent,
     AppsListComponent,
     ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
     AppsManagementEntryComponent,
-    AppsManagementHostTabPickerComponent,
+    AppsManagementTabPickerComponent,
   ],
   entryComponents: [
-    AppsManagementNavigationComponent
+    AppsManagementNavComponent
   ],
   imports: [
     RouterModule.forChild(routes),

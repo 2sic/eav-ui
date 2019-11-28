@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
-import { AppsManagementNavigationComponent } from '../apps-management-navigation/apps-management-navigation.component';
+import { AppsManagementNavComponent } from '../apps-management-nav/apps-management-nav.component';
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
 import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.model';
 import { Context } from '../../shared/context/context';
@@ -16,7 +16,7 @@ import { Context } from '../../shared/context/context';
 })
 export class AppsManagementEntryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
-  private appsManagementDialogRef: MatDialogRef<AppsManagementNavigationComponent, any>;
+  private appsManagementDialogRef: MatDialogRef<AppsManagementNavComponent, any>;
   private tabPath$$ = new BehaviorSubject<string>(undefined);
 
   constructor(
@@ -26,7 +26,6 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
     private appsManagementParamsService: AppsManagementParamsService,
     public context: Context,
   ) {
-    // todo
     context.init(route);
   }
 
@@ -35,7 +34,7 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
       context: this.context,
       tabPath$: this.tabPath$$.asObservable(),
     };
-    this.appsManagementDialogRef = this.dialog.open(AppsManagementNavigationComponent, {
+    this.appsManagementDialogRef = this.dialog.open(AppsManagementNavComponent, {
       backdropClass: 'apps-management-dialog-backdrop',
       panelClass: 'apps-management-dialog-panel',
       data: dialogData,

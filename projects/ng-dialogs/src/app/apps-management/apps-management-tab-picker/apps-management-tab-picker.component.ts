@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { AppsManagementParamsService } from '../shared/apps-management-params.service';
 
 @Component({
-  selector: 'app-apps-management-host-tab-picker',
-  templateUrl: './apps-management-host-tab-picker.component.html',
-  styleUrls: ['./apps-management-host-tab-picker.component.scss']
+  selector: 'app-apps-management-tab-picker',
+  templateUrl: './apps-management-tab-picker.component.html',
+  styleUrls: ['./apps-management-tab-picker.component.scss']
 })
-export class AppsManagementHostTabPickerComponent implements OnInit {
+export class AppsManagementTabPickerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,

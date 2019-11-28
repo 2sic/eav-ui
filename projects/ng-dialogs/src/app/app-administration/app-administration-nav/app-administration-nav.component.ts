@@ -8,11 +8,11 @@ import { DialogSettings } from '../shared/models/dialog-settings.model';
 import { NavigationTab } from '../../shared/models/navigation-tab.model';
 
 @Component({
-  selector: 'app-app-administration-navigation',
-  templateUrl: './app-administration-navigation.component.html',
-  styleUrls: ['./app-administration-navigation.component.scss']
+  selector: 'app-app-administration-nav',
+  templateUrl: './app-administration-nav.component.html',
+  styleUrls: ['./app-administration-nav.component.scss']
 })
-export class AppAdministrationNavigationComponent implements OnInit, OnDestroy {
+export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   tabs = {
     home: { url: 'home', name: 'Home', icon: '' },
     data: { url: 'data', name: 'Data', icon: '' },
@@ -30,7 +30,7 @@ export class AppAdministrationNavigationComponent implements OnInit, OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private dialogRef: MatDialogRef<AppAdministrationNavigationComponent>,
+    private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
     @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogData,
   ) {
     Object.keys(this.tabs).forEach(key => {

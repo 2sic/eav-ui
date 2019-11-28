@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
-import { AppAdministrationNavigationComponent } from '../app-administration-navigation/app-administration-navigation.component';
+import { AppAdministrationNavComponent } from '../app-administration-nav/app-administration-nav.component';
 import { AppAdministrationParamsService } from '../shared/services/app-administration-params.service';
 import { AppAdministrationDialogData } from '../shared/models/app-administration-dialog-data.model';
 import { Context } from '../../shared/context/context';
@@ -16,7 +16,7 @@ import { Context } from '../../shared/context/context';
 })
 export class AppAdministrationEntryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
-  private appAdministrationDialogRef: MatDialogRef<AppAdministrationNavigationComponent, any>;
+  private appAdministrationDialogRef: MatDialogRef<AppAdministrationNavComponent, any>;
   private tabPath$$ = new BehaviorSubject<string>(undefined);
 
   constructor(
@@ -34,7 +34,7 @@ export class AppAdministrationEntryComponent implements OnInit, OnDestroy {
       context: this.context,
       tabPath$: this.tabPath$$.asObservable(),
     };
-    this.appAdministrationDialogRef = this.dialog.open(AppAdministrationNavigationComponent, {
+    this.appAdministrationDialogRef = this.dialog.open(AppAdministrationNavComponent, {
       backdropClass: 'app-administration-dialog-backdrop',
       panelClass: 'app-administration-dialog-panel',
       data: dialogData,
