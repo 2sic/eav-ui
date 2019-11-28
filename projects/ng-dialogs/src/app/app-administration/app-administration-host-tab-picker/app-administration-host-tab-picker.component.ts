@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { AppAdministrationParamsService } from '../shared/app-administration-params.service';
+import { AppAdministrationParamsService } from '../shared/services/app-administration-params.service';
 
 @Component({
   selector: 'app-app-administration-host-tab-picker',

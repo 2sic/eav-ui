@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-getting-started',
@@ -6,11 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./getting-started.component.scss']
 })
 export class GettingStartedComponent implements OnInit {
+  @Input() gettingStartedUrl: string;
+  gettingStartedSafe: SafeUrl;
 
-  constructor() {
-  }
+  constructor(
+    private sanitizer: DomSanitizer,
+  ) { }
 
   ngOnInit() {
+    this.gettingStartedSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.gettingStartedUrl);
   }
 
 }

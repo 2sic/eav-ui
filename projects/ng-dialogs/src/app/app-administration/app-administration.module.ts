@@ -12,7 +12,7 @@ import { AppConfigurationComponent } from './app-configuration/app-configuration
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { AppAdministrationEntryComponent } from './app-administration-entry/app-administration-entry.component';
 import { AppAdministrationHostTabPickerComponent } from './app-administration-host-tab-picker/app-administration-host-tab-picker.component';
-import { AppAdministrationParamsService } from './shared/app-administration-params.service';
+import { AppAdministrationParamsService } from './shared/services/app-administration-params.service';
 import { Context } from '../shared/context/context';
 
 // TODO: spm - put into own file

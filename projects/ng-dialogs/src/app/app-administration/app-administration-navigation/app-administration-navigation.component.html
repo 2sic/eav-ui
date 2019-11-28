@@ -3,17 +3,16 @@
 <h1>Administration</h1>
 
 <div>
-  <button *ngFor="let tab of tabs; index as i" (click)="changeTab(tab.url)">
+  <button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
     {{ tab.name }}
   </button>
 </div>
 
-<div [ngSwitch]="tabPath">
-  <app-getting-started *ngSwitchCase="'home'"></app-getting-started>
-  <app-data *ngSwitchCase="'data'"></app-data>
-  <app-queries *ngSwitchCase="'queries'"></app-queries>
-  <app-views *ngSwitchCase="'views'"></app-views>
-  <app-web-api *ngSwitchCase="'web-api'"></app-web-api>
-  <app-app-configuration *ngSwitchCase="'app'"></app-app-configuration>
-  <app-global-settings *ngSwitchCase="'global'"></app-global-settings>
-</div>
+<app-getting-started *ngIf="tabPath === tabs.home.url && dialogSettings"
+  [gettingStartedUrl]="dialogSettings.GettingStartedUrl"></app-getting-started>
+<app-data *ngIf="tabPath === tabs.data.url"></app-data>
+<app-queries *ngIf="tabPath === tabs.queries.url"></app-queries>
+<app-views *ngIf="tabPath === tabs.views.url"></app-views>
+<app-web-api *ngIf="tabPath === tabs.webApi.url"></app-web-api>
+<app-app-configuration *ngIf="tabPath === tabs.app.url"></app-app-configuration>
+<app-global-settings *ngIf="tabPath === tabs.global.url"></app-global-settings>

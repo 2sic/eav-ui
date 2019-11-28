@@ -37,9 +37,7 @@ export function adminEavServiceFactory(injector: Injector): Function {
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
       const queryParameters = new QueryParameters();
       Object.keys(queryParameters).forEach(key => {
-        if (queryParameters.hasOwnProperty(key)) {
-          sessionStorage.setItem(key, queryParametersFromUrl[key]);
-        }
+        sessionStorage.setItem(key, queryParametersFromUrl[key]);
       });
       const router = injector.get(Router);
       const zoneId = queryParametersFromUrl['zoneId'];
