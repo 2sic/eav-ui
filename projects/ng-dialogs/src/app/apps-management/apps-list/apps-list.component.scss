@@ -1,3 +1,11 @@
+.table {
+  width: 100%;
+
+  &__header {
+    text-align: left;
+  }
+}
+
 .option {
   cursor: pointer;
 

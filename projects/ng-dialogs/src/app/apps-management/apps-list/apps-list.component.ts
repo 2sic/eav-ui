@@ -10,7 +10,7 @@ import { AppsManagementDialogParamsService } from '../shared/apps-management-dia
   styleUrls: ['./apps-list.component.scss']
 })
 export class AppsListComponent implements OnInit {
-  apps: App[] = [];
+  apps: App[];
 
   constructor(
     private http: HttpClient,
@@ -18,14 +18,22 @@ export class AppsListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.context.zoneId}`)
-      .subscribe((apps: App[]) => {
-        this.apps = apps;
-      });
+    this.fetchAppsList();
   }
 
   openApp(appId: number) {
     this.appsManagementDialogParamsService.openedAppId$$.next(appId);
+  }
+
+  reloadApps() {
+    this.fetchAppsList();
+  }
+
+  private fetchAppsList() {
+    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.context.zoneId}`)
+      .subscribe((apps: App[]) => {
+        this.apps = apps;
+      });
   }
 
 }

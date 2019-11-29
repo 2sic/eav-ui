@@ -1,8 +1,23 @@
 <button>more apps</button>
 <button>import app</button>
 <button>create app</button>
-<button>reload apps list</button>
+<button (click)="reloadApps()">reload apps list</button>
 
-<div *ngFor="let app of apps; index as i">
-  <span class="option" (click)="openApp(app.Id)">{{ app.Name }}</span>
-</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="table__header">Name</th>
+      <th class="table__header">Folder</th>
+      <th class="table__header">Show</th>
+      <th class="table__header">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let app of apps; index as i">
+      <td><span class="option" (click)="openApp(app.Id)">{{ app.Name }}</span></td>
+      <td>{{ app.Folder }}</td>
+      <td>{{ !app.IsHidden }}</td>
+      <td><button>X</button></td>
+    </tr>
+  </tbody>
+</table>

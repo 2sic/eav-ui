@@ -7,12 +7,31 @@ body {
   margin: 0;
 }
 
-.admin-dialog-panel {
-  width: 800px;
-  margin: auto;
-  border: 1px solid red;
+.cdk-global-overlay-wrapper {
+  align-items: flex-start !important;
+}
+
+.mat-dialog-container {
+  @extend .hide-scrollbar;
+}
+
+// all dialog panes should have the same width unless specified otherwise
+[class$="-dialog-panel"] {
+  width: 95vw;
+  max-width: 95vw !important;
+  margin-top: 30px;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none !important; // IE 10+
+  overflow: -moz-scrollbars-none !important; // Firefox
+  scrollbar-width: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important; // Safari and Chrome
+  }
 }
 
 // mat-dialog-container {
-  //   background: transparent !important;
-  // }
+//   background: transparent !important;
+// }
