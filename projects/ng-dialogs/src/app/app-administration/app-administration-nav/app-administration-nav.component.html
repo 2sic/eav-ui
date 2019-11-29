@@ -8,9 +8,9 @@
   </button>
 </div>
 
-<app-getting-started *ngIf="tabPath === tabs.home.url && dialogSettings"
+<app-getting-started *ngIf="dialogSettings" [hidden]="tabPath !== tabs.home.url"
   [gettingStartedUrl]="dialogSettings.GettingStartedUrl"></app-getting-started>
-<app-data *ngIf="tabPath === tabs.data.url"></app-data>
+<app-data *ngIf="tabPath === tabs.data.url" [context]="appAdministrationDialogData.context"></app-data>
 <app-queries *ngIf="tabPath === tabs.queries.url"></app-queries>
 <app-views *ngIf="tabPath === tabs.views.url"></app-views>
 <app-web-api *ngIf="tabPath === tabs.webApi.url"></app-web-api>

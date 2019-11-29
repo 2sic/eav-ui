@@ -1,3 +1,7 @@
 <h3>Content-Types and Data</h3>
 
 <button>+</button>
+
+<div *ngFor="let contentType of contentTypes; index as i">
+  <span>{{ contentType.Name }}, {{ contentType.Description }}</span>
+</div>
