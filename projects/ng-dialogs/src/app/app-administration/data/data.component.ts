@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Context } from '../../shared/context/context';
-import { ContentType } from '../shared/models/content-types.model';
+import { ContentType } from '../shared/models/content-type.model';
 
 @Component({
   selector: 'app-data',

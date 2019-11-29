@@ -3,5 +3,6 @@
 <button>+</button>
 
 <div *ngFor="let contentType of contentTypes; index as i">
-  <span>{{ contentType.Name }}, {{ contentType.Description }}</span>
+  <span>{{ contentType.Name }}</span>
+  <span *ngIf="contentType.Description">, {{ contentType.Description }}</span>
 </div>

@@ -7,3 +7,8 @@
 
 <button>+</button>
 <button>import</button>
+
+<div *ngFor="let query of queries; index as i">
+  <span>{{ query.Name }}</span>
+  <span *ngIf="query.Description">, {{ query.Description }}</span>
+</div>
