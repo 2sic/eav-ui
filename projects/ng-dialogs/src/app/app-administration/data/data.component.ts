@@ -11,8 +11,8 @@ import { ContentType } from '../shared/models/content-type.model';
 })
 export class DataComponent implements OnInit {
   @Input() context: Context;
-  private scope = '2SexyContent'; // spm figure out how scope works
   contentTypes: ContentType[];
+  private scope = '2SexyContent'; // spm figure out how scope works
 
   constructor(
     private http: HttpClient,

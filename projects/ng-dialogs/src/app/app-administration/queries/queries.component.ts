@@ -11,8 +11,8 @@ import { Query } from '../shared/models/query.model';
 })
 export class QueriesComponent implements OnInit {
   @Input() context: Context;
-  private contentType = 'DataPipeline';
   queries: Query[];
+  private contentType = 'DataPipeline';
 
   constructor(
     private http: HttpClient,

@@ -1,1 +1,8 @@
 <button>+</button>
+
+<div *ngFor="let view of views; index as i">
+  <span>{{ view.Name }}</span>
+  <span *ngIf="view.TemplatePath">, {{ view.TemplatePath }}</span>
+  <span *ngIf="view.ContentType">, {{ view.ContentType.Name }}</span>
+  <span *ngIf="view.ContentType && view.ContentType.DemoId">, {{ view.ContentType.DemoId }}</span>
+</div>
