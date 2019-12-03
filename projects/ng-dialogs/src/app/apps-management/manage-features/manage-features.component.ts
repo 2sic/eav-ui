@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Feature } from '../shared/feature.model';
+import { Feature } from '../shared/models/feature.model';
 
 @Component({
   selector: 'app-manage-features',

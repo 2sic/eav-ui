@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { Context } from '../../shared/context/context';
+import { Context } from '../../../shared/context/context';
 
 export class AppsManagementDialogData {
   constructor(

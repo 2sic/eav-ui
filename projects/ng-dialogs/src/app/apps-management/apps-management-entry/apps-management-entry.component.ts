@@ -4,8 +4,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
 import { AppsManagementNavComponent } from '../apps-management-nav/apps-management-nav.component';
-import { AppsManagementParamsService } from '../shared/apps-management-params.service';
-import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.model';
+import { AppsManagementParamsService } from '../shared/services/apps-management-params.service';
+import { AppsManagementDialogData } from '../shared/models/apps-management-dialog-data.model';
 import { Context } from '../../shared/context/context';
 
 @Component({

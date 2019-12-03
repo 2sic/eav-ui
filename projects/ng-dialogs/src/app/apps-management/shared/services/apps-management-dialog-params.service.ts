@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { Context } from '../../shared/context/context';
+import { Context } from '../../../shared/context/context';
 
 @Injectable()
 /** Dialog has separate params service because services in mat dialog are in separate scope */

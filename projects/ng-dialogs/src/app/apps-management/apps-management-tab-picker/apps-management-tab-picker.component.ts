@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { AppsManagementParamsService } from '../shared/apps-management-params.service';
+import { AppsManagementParamsService } from '../shared/services/apps-management-params.service';
 
 @Component({
   selector: 'app-apps-management-tab-picker',

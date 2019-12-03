@@ -3,8 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
-import { AppsManagementDialogData } from '../shared/apps-management-dialog-data.model';
-import { AppsManagementDialogParamsService } from '../shared/apps-management-dialog-params.service';
+import { AppsManagementDialogData } from '../shared/models/apps-management-dialog-data.model';
+import { AppsManagementDialogParamsService } from '../shared/services/apps-management-dialog-params.service';
 import { NavigationTab } from '../../shared/models/navigation-tab.model';
 
 @Component({
