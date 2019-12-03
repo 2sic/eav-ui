@@ -5,6 +5,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
@@ -18,6 +19,7 @@ import { AppsManagementDialogParamsService } from './shared/services/apps-manage
 import { Context } from '../shared/context/context';
 import { AppsListShowComponent } from './shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from './shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListService } from './shared/services/apps-list.service';
 
 const routes: Routes = [
   {
@@ -58,9 +60,11 @@ const routes: Routes = [
     AgGridModule.withComponents([]),
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
   ],
   providers: [
     AppsManagementParamsService,
+    AppsListService,
     AppsManagementDialogParamsService,
     Context,
   ]

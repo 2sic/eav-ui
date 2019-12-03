@@ -1,10 +1,16 @@
-<button mat-button (click)="browseCatalog()">
+<button mat-button matTooltip="Find more apps" (click)="browseCatalog()">
   <mat-icon>search</mat-icon>
   more apps
 </button>
-<button mat-button>import app</button>
-<button mat-button>create app</button>
-<button mat-button (click)="reloadApps()">reload apps list</button>
+<button mat-icon-button matTooltip="Import app">
+  <mat-icon>open_in_browser</mat-icon>
+</button>
+<button mat-icon-button matTooltip="Create app" (click)="createApp()">
+  <mat-icon>add</mat-icon>
+</button>
+<button mat-icon-button matTooltip="Reload apps list" (click)="reloadApps()">
+  <mat-icon>refresh</mat-icon>
+</button>
 
 <ag-grid-angular class="ag-theme-material apps-grid" [rowData]="apps" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"

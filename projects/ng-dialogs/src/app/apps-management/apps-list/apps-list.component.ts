@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-// tslint:disable-next-line:max-line-length
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
 import { AppsManagementDialogParamsService } from '../shared/services/apps-management-dialog-params.service';
+import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 
@@ -35,8 +34,8 @@ export class AppsListComponent implements OnInit {
   modules = AllCommunityModules;
 
   constructor(
-    private http: HttpClient,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
+    private appsListService: AppsListService,
   ) { }
 
   ngOnInit() {
@@ -55,6 +54,19 @@ export class AppsListComponent implements OnInit {
     window.open('http://2sxc.org/apps');
   }
 
+  createApp() {
+    const name = prompt('Enter App Name (will also be used for folder)');
+    if (name) {
+      this.appsListService.create(this.appsManagementDialogParamsService.context.zoneId, name).subscribe(() => {
+        this.fetchAppsList();
+      });
+    }
+  }
+
+  importApp() {
+    // open modal, upload app, close modal, refresh list
+  }
+
   reloadApps() {
     this.fetchAppsList();
   }
@@ -70,9 +82,9 @@ export class AppsListComponent implements OnInit {
     if (result === null) {
       return;
     } else if (result === app.Name || result === 'yes!') {
-      // spm Move to service
-      // svc.delete(app.Id);
-      console.log('delete me', app);
+      this.appsListService.delete(this.appsManagementDialogParamsService.context.zoneId, app.Id).subscribe(() => {
+        this.fetchAppsList();
+      });
     } else {
       alert('input did not match - will not delete'); // spm Translate
     }
@@ -83,11 +95,9 @@ export class AppsListComponent implements OnInit {
   }
 
   private fetchAppsList() {
-    // spm Move to service
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/apps?zoneId=${this.appsManagementDialogParamsService.context.zoneId}`)
-      .subscribe((apps: App[]) => {
-        this.apps = apps;
-      });
+    this.appsListService.getAll(this.appsManagementDialogParamsService.context.zoneId).subscribe((apps: App[]) => {
+      this.apps = apps;
+    });
   }
 
 }
