@@ -1,15 +1,4 @@
-.table {
+.apps-grid {
   width: 100%;
-
-  &__header {
-    text-align: left;
-  }
-}
-
-.option {
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  height: 500px;
 }

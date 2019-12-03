@@ -2,6 +2,9 @@
 @import '~@angular/material/theming';
 @include mat-core();
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@ag-grid-community/all-modules/dist/styles/ag-grid.css';
+@import '@ag-grid-community/all-modules/dist/styles/ag-theme-material.css';
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 
 body {
   margin: 0;
@@ -32,6 +35,20 @@ body {
   }
 }
 
-// mat-dialog-container {
-//   background: transparent !important;
-// }
+.mat-dialog-container {
+  // background: transparent !important;
+  height: auto !important;
+}
+
+.ag-body-viewport {
+  @extend .hide-scrollbar;
+}
+
+.ag-row:hover .clickable {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &.ag-column-hover {
+    color: blue; // spm Make this 2sxc blue color
+  }
+}

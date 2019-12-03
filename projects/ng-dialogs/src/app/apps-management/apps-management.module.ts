@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { AgGridModule } from '@ag-grid-community/angular';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
@@ -12,6 +16,8 @@ import { AppsManagementParamsService } from './shared/apps-management-params.ser
 import { AppsManagementTabPickerComponent } from './apps-management-tab-picker/apps-management-tab-picker.component';
 import { AppsManagementDialogParamsService } from './shared/apps-management-dialog-params.service';
 import { Context } from '../shared/context/context';
+import { AppsListShowComponent } from './shared/ag-grid-components/apps-list-show/apps-list-show.component';
+import { AppsListActionsComponent } from './shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 
 const routes: Routes = [
   {
@@ -38,13 +44,20 @@ const routes: Routes = [
     SxcInsightsComponent,
     AppsManagementEntryComponent,
     AppsManagementTabPickerComponent,
+    AppsListShowComponent,
+    AppsListActionsComponent,
   ],
   entryComponents: [
-    AppsManagementNavComponent
+    AppsManagementNavComponent,
+    AppsListShowComponent,
+    AppsListActionsComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
-    CommonModule
+    CommonModule,
+    AgGridModule.withComponents([]),
+    MatButtonModule,
+    MatIconModule,
   ],
   providers: [
     AppsManagementParamsService,

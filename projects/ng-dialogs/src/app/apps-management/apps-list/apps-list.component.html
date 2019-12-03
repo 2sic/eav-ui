@@ -1,23 +1,12 @@
-<button>more apps</button>
-<button>import app</button>
-<button>create app</button>
-<button (click)="reloadApps()">reload apps list</button>
+<button mat-button (click)="browseCatalog()">
+  <mat-icon>search</mat-icon>
+  more apps
+</button>
+<button mat-button>import app</button>
+<button mat-button>create app</button>
+<button mat-button (click)="reloadApps()">reload apps list</button>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th class="table__header">Name</th>
-      <th class="table__header">Folder</th>
-      <th class="table__header">Show</th>
-      <th class="table__header">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let app of apps; index as i">
-      <td><span class="option" (click)="openApp(app.Id)">{{ app.Name }}</span></td>
-      <td>{{ app.Folder }}</td>
-      <td>{{ !app.IsHidden }}</td>
-      <td><button>X</button></td>
-    </tr>
-  </tbody>
-</table>
+<ag-grid-angular class="ag-theme-material apps-grid" [rowData]="apps" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>

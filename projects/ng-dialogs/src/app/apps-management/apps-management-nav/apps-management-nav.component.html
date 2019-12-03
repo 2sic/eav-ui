@@ -1,9 +1,13 @@
-<button (click)="closeDialog()">X</button>
+<div class="title-container">
+  <h1>Manage Apps in this Zone (Portal)</h1>
 
-<h1>Manage Apps in this Zone (Portal)</h1>
+  <button mat-icon-button (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
 <div>
-  <button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
+  <button mat-button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
     {{ tab.name }}
   </button>
 </div>
