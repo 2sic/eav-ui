@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -14,22 +13,7 @@ import { AppAdministrationEntryComponent } from './app-administration-entry/app-
 import { AppAdministrationTabPickerComponent } from './app-administration-tab-picker/app-administration-tab-picker.component';
 import { AppAdministrationParamsService } from './shared/services/app-administration-params.service';
 import { Context } from '../shared/context/context';
-
-// TODO: spm - put into own file
-const routes: Routes = [
-  {
-    path: '', component: AppAdministrationEntryComponent, children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: AppAdministrationTabPickerComponent },
-      { path: 'data', component: AppAdministrationTabPickerComponent },
-      { path: 'queries', component: AppAdministrationTabPickerComponent },
-      { path: 'views', component: AppAdministrationTabPickerComponent },
-      { path: 'web-api', component: AppAdministrationTabPickerComponent },
-      { path: 'app', component: AppAdministrationTabPickerComponent },
-      { path: 'global', component: AppAdministrationTabPickerComponent },
-    ]
-  },
-];
+import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 
 @NgModule({
   declarations: [
@@ -45,11 +29,11 @@ const routes: Routes = [
     AppAdministrationTabPickerComponent
   ],
   entryComponents: [
-    AppAdministrationNavComponent
+    AppAdministrationNavComponent,
   ],
   imports: [
-    RouterModule.forChild(routes),
-    CommonModule
+    AppAdministrationRoutingModule,
+    CommonModule,
   ],
   providers: [
     AppAdministrationParamsService,
