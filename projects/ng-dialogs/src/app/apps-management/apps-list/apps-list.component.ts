@@ -23,9 +23,9 @@ export class AppsListComponent implements OnInit {
   columnDefs: ColDef[] = [
     { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Folder', field: 'Folder', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
-    { headerName: 'Show', field: 'IsHidden', cellRenderer: 'appsListShowComponent' },
+    { headerName: 'Show', field: 'IsHidden', cellRenderer: 'appsListShowComponent', width: 100 },
     {
-      headerName: 'Actions', cellRenderer: 'appsListActionsComponent', cellRendererParams: {
+      headerName: 'Actions', cellRenderer: 'appsListActionsComponent', width: 100, cellRendererParams: {
         onDelete: this.handleDeleteClicked.bind(this)
       }
     },

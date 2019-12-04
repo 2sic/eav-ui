@@ -21,6 +21,10 @@ import { Context } from '../shared/context/context';
 import { AppsListShowComponent } from './shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from './shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListService } from './shared/services/apps-list.service';
+import { FeaturesListEnabledComponent } from './shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListUiComponent } from './shared/ag-grid-components/features-list-ui/features-list-ui.component';
+import { FeaturesListPublicComponent } from './shared/ag-grid-components/features-list-public/features-list-public.component';
+import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
 
 @NgModule({
   declarations: [
@@ -33,11 +37,19 @@ import { AppsListService } from './shared/services/apps-list.service';
     AppsManagementTabPickerComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
+    FeaturesListEnabledComponent,
+    FeaturesListUiComponent,
+    FeaturesListPublicComponent,
+    FeaturesListSecurityComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
+    FeaturesListEnabledComponent,
+    FeaturesListUiComponent,
+    FeaturesListPublicComponent,
+    FeaturesListSecurityComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

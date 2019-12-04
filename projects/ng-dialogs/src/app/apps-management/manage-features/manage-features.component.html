@@ -1,12 +1,15 @@
 <p>These are the system features - they apply to all zones / apps.</p>
 
-<button>manage features</button>
-<button>reload</button>
+<button mat-button>
+  <mat-icon>settings_applications</mat-icon>
+  manage features
+</button>
+<button mat-button (click)="reloadFeatures()">
+  <mat-icon>refresh</mat-icon>
+  reload
+</button>
 
-<div *ngFor="let feature of features; index as i">
-  <span>{{ feature.enabled }}</span>
-  <span>, {{ feature.id }}</span>
-  <span>, {{ feature.expires.toISOString().substring(0, 10) }}</span>
-  <span>, {{ feature.ui }}</span>
-  <span>, {{ feature.public }}</span>
-</div>
+<ag-grid-angular class="ag-theme-material features-grid" [rowData]="features" [columnDefs]="columnDefs"
+  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>
