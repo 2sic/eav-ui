@@ -1,12 +1,15 @@
-<button (click)="closeDialog()">X</button>
+<div class="title-container">
+  <h1>Administration</h1>
 
-<h1>Administration</h1>
-
-<div>
-  <button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
-    {{ tab.name }}
+  <button mat-icon-button (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
   </button>
 </div>
+
+<button mat-button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
+  <mat-icon>{{ tab.icon }}</mat-icon>
+  {{ tab.name }}
+</button>
 
 <app-getting-started *ngIf="dialogSettings" [hidden]="tabPath !== tabs.home.url"
   [gettingStartedUrl]="dialogSettings.GettingStartedUrl"></app-getting-started>

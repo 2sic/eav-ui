@@ -14,13 +14,13 @@ import { NavigationTab } from '../../shared/models/navigation-tab.model';
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   tabs = {
-    home: { url: 'home', name: 'Home', icon: '' },
-    data: { url: 'data', name: 'Data', icon: '' },
-    queries: { url: 'queries', name: 'Queries', icon: '' },
-    views: { url: 'views', name: 'Views', icon: '' },
-    webApi: { url: 'web-api', name: 'WebApi', icon: '' },
-    app: { url: 'app', name: 'App', icon: '' },
-    global: { url: 'global', name: 'Global', icon: '' },
+    home: { url: 'home', name: 'Home', icon: 'home' },
+    data: { url: 'data', name: 'Data', icon: 'list' },
+    queries: { url: 'queries', name: 'Queries', icon: 'filter_list' },
+    views: { url: 'views', name: 'Views', icon: 'image' },
+    webApi: { url: 'web-api', name: 'WebApi', icon: 'flash_on' },
+    app: { url: 'app', name: 'App', icon: 'web_asset' },
+    global: { url: 'global', name: 'Global', icon: 'public' },
   };
   tabsArray: NavigationTab[] = [];
   onChangeTab = new EventEmitter();

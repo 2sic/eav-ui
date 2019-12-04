@@ -6,11 +6,10 @@
   </button>
 </div>
 
-<div>
-  <button mat-button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
-    {{ tab.name }}
-  </button>
-</div>
+<button mat-button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
+  <mat-icon>{{ tab.icon }}</mat-icon>
+  {{ tab.name }}
+</button>
 
 <div [ngSwitch]="tabPath">
   <app-apps-list *ngSwitchCase="tabs.apps.url"></app-apps-list>

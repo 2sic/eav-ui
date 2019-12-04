@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// material components
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
 import { DataComponent } from './data/data.component';
@@ -34,6 +38,8 @@ import { AppAdministrationRoutingModule } from './app-administration-routing.mod
   imports: [
     AppAdministrationRoutingModule,
     CommonModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   providers: [
     AppAdministrationParamsService,
