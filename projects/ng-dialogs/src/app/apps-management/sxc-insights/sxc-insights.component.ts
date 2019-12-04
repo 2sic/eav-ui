@@ -12,4 +12,7 @@ export class SxcInsightsComponent implements OnInit {
   ngOnInit() {
   }
 
+  openInsights() {
+    window.open('/desktopmodules/2sxc/api/sys/insights/help');
+  }
 }

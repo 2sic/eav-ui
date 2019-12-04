@@ -40,6 +40,10 @@ body {
   height: auto !important;
 }
 
+.not-implemented {
+  color: red;
+}
+
 .ag-body-viewport {
   @extend .hide-scrollbar;
 }
