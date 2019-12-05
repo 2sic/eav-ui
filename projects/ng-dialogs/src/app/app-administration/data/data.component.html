@@ -1,8 +1,10 @@
 <h3>Content-Types and Data</h3>
 
-<button>+</button>
+<button mat-icon-button class="not-implemented" matTooltip="Add content type">
+  <mat-icon>add_box</mat-icon>
+</button>
 
-<div *ngFor="let contentType of contentTypes; index as i">
-  <span>{{ contentType.Name }}</span>
-  <span *ngIf="contentType.Description">, {{ contentType.Description }}</span>
-</div>
+<ag-grid-angular class="ag-theme-material content-types-grid" [rowData]="contentTypes" [columnDefs]="columnDefs"
+  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>

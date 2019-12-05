@@ -2,3 +2,13 @@
   display: flex;
   justify-content: space-between;
 }
+
+.tabs {
+  &:hover:not(.selected) {
+    border-top: 2px solid lightblue;
+  }
+
+  &.selected {
+    border-top: 2px solid blue;
+  }
+}

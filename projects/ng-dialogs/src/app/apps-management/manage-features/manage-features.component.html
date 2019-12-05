@@ -2,11 +2,11 @@
 
 <button mat-button class="not-implemented">
   <mat-icon>tune</mat-icon>
-  manage features
+  <span>manage features</span>
 </button>
 <button mat-button (click)="reloadFeatures()">
   <mat-icon>refresh</mat-icon>
-  reload
+  <span>reload</span>
 </button>
 
 <ag-grid-angular class="ag-theme-material features-grid" [rowData]="features" [columnDefs]="columnDefs"

@@ -6,9 +6,11 @@
   </button>
 </div>
 
-<button mat-button *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)">
+<button mat-button class="tabs" *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)" [ngClass]="{
+  'selected': tabPath === tab.url
+}">
   <mat-icon>{{ tab.icon }}</mat-icon>
-  {{ tab.name }}
+  <span>{{ tab.name }}</span>
 </button>
 
 <app-getting-started *ngIf="dialogSettings" [hidden]="tabPath !== tabs.home.url"

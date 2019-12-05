@@ -56,3 +56,18 @@ body {
     color: blue; // spm Make this 2sxc blue color
   }
 }
+
+// only highlight text with underline and color
+.ag-row:hover .clickable-with-button {
+  cursor: pointer;
+
+  .text {
+    text-decoration: underline;
+  }
+
+  &.ag-column-hover {
+    .text {
+      color: blue; // spm Make this 2sxc blue color
+    }
+  }
+}

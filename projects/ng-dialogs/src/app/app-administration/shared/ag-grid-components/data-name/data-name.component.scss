@@ -1,0 +1,24 @@
+.data-name-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hover-pair {
+  .hover-default {
+    display: block;
+  }
+
+  .hover-hover {
+    display: none;
+  }
+
+  &:hover {
+    .hover-default {
+      display: none;
+    }
+
+    .hover-hover {
+      display: block;
+    }
+  }
+}
