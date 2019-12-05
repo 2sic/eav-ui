@@ -8,7 +8,7 @@
 
 <button mat-button class="tabs" *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)" [ngClass]="{
   'selected': tabPath === tab.url
-}">
+}" [matTooltip]="tab.name">
   <mat-icon>{{ tab.icon }}</mat-icon>
   <span>{{ tab.name }}</span>
 </button>

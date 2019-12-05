@@ -23,6 +23,7 @@ import { AppAdministrationRoutingModule } from './app-administration-routing.mod
 import { DataNameComponent } from './shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
+import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries-description/queries-description.component';
 
 @NgModule({
   declarations: [
@@ -39,12 +40,14 @@ import { DataActionsComponent } from './shared/ag-grid-components/data-actions/d
     DataNameComponent,
     DataFieldsComponent,
     DataActionsComponent,
+    QueriesDescriptionComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
     DataNameComponent,
     DataFieldsComponent,
     DataActionsComponent,
+    QueriesDescriptionComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

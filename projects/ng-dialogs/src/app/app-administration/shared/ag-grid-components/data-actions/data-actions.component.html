@@ -1,25 +1,25 @@
 <div class="data-actions-container">
   <div>
     <button mat-button
-      matTooltip="Rename - this is an own content-type, it does not use the definition of another content-type - read 2sxc.org/help?tag=shared-types"
+      [matTooltip]="'Rename - this is an own content-type, it does not use the definition of another content-type - read 2sxc.org/help?tag=shared-types'"
       (click)="renameContentType()" class="not-implemented">
       <mat-icon>edit</mat-icon>
     </button>
-    <button mat-button matTooltip="Metadata" (click)="editMetadata()" class="not-implemented">
+    <button mat-button [matTooltip]="'Metadata'" (click)="editMetadata()" class="not-implemented">
       <mat-icon>local_offer</mat-icon>
     </button>
-    <button mat-button matTooltip="Export" (click)="exportContent()" class="not-implemented">
+    <button mat-button [matTooltip]="'Export'" (click)="exportContent()" class="not-implemented">
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-button matTooltip="Import" (click)="importContent()" class="not-implemented">
+    <button mat-button [matTooltip]="'Import'" (click)="importContent()" class="not-implemented">
       <mat-icon>cloud_upload</mat-icon>
     </button>
-    <button mat-button matTooltip="Permissions" (click)="openPermissions()" class="not-implemented">
+    <button mat-button [matTooltip]="'Permissions'" (click)="openPermissions()" class="not-implemented">
       <mat-icon>person</mat-icon>
     </button>
   </div>
   <div>
-    <button mat-button matTooltip="Delete content type" (click)="deleteContentType()" class="not-implemented">
+    <button mat-button [matTooltip]="'Delete content type'" (click)="deleteContentType()" class="not-implemented">
       <mat-icon>delete</mat-icon>
     </button>
   </div>

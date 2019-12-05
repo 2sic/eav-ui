@@ -1,0 +1,24 @@
+<div class="queries-description-container">
+  <div class="text">
+    {{ query.Description}}
+  </div>
+
+  <div>
+    <button mat-button [matTooltip]="'Edit'" (click)="editQuery($event)" class="not-implemented">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-button [matTooltip]="'Copy'" (click)="copyQuery($event)" class="not-implemented">
+      <mat-icon>file_copy</mat-icon>
+    </button>
+    <button mat-button [matTooltip]="'Permissions'" (click)="openPermissions($event)" class="not-implemented">
+      <mat-icon>person</mat-icon>
+    </button>
+    <button mat-button [matTooltip]="'Export'" (click)="exportQuery($event)" class="not-implemented">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+
+    <button mat-button [matTooltip]="'Delete content type'" (click)="deleteQuery($event)" class="not-implemented">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

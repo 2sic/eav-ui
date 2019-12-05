@@ -1,5 +1,5 @@
 <div class="data-fields-container">
-  <button mat-button (click)="openFields()" matTooltip="Edit fields" class="not-implemented">
+  <button mat-button (click)="openFields()" [matTooltip]="'Edit fields'" class="not-implemented">
     <mat-icon>storage</mat-icon>
     <span>{{contentType.Fields}}</span>
   </button>

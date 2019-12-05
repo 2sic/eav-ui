@@ -5,10 +5,14 @@
   <a href="http://2sxc.org/en/help?tag=visualquerydesigner" target="_blank">read more</a>
 </div>
 
-<button>+</button>
-<button>import</button>
+<button mat-button [matTooltip]="'Create a new query'" class="not-implemented">
+  <mat-icon>add_box</mat-icon>
+</button>
+<button mat-button [matTooltip]="'Import query'" class="not-implemented">
+  <mat-icon>cloud_upload</mat-icon>
+</button>
 
-<div *ngFor="let query of queries; index as i">
-  <span>{{ query.Name }}</span>
-  <span *ngIf="query.Description">, {{ query.Description }}</span>
-</div>
+<ag-grid-angular class="ag-theme-material queries-grid" [rowData]="queries" [columnDefs]="columnDefs"
+  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>
