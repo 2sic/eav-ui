@@ -3,5 +3,6 @@ export class NavigationTab {
     public url: string,
     public name: string,
     public icon: string,
+    public tooltip: string,
   ) { }
 }

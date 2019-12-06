@@ -1,14 +1,14 @@
 <div class="title-container">
   <h1>Administration</h1>
 
-  <button mat-icon-button (click)="closeDialog()">
+  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
 
 <button mat-button class="tabs" *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)" [ngClass]="{
   'selected': tabPath === tab.url
-}" [matTooltip]="tab.name">
+}" [matTooltip]="tab.tooltip">
   <mat-icon>{{ tab.icon }}</mat-icon>
   <span>{{ tab.name }}</span>
 </button>

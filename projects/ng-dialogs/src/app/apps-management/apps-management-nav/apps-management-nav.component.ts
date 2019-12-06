@@ -14,10 +14,10 @@ import { NavigationTab } from '../../shared/models/navigation-tab.model';
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
   tabs = {
-    apps: { url: 'list', name: 'Apps', icon: 'star_border' },
-    settings: { url: 'settings', name: 'Settings', icon: 'settings_applications' },
-    features: { url: 'features', name: 'Features', icon: 'tune' },
-    sxcInsights: { url: 'sxc-insights', name: '2sxc Insights', icon: 'storage' },
+    apps: { url: 'list', name: 'Apps', icon: 'star_border', tooltip: 'Apps' },
+    settings: { url: 'settings', name: 'Settings', icon: 'settings_applications', tooltip: 'Settings' },
+    features: { url: 'features', name: 'Features', icon: 'tune', tooltip: 'These settings apply to all zones/portals' },
+    sxcInsights: { url: 'sxc-insights', name: '2sxc Insights', icon: 'storage', tooltip: 'Insights' },
   };
   tabsArray: NavigationTab[] = [];
   onChangeTab = new EventEmitter();

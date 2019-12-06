@@ -1,8 +1,10 @@
-<button>+</button>
+<div>
+  <button mat-icon-button class="not-implemented">
+    <mat-icon>add_box</mat-icon>
+  </button>
 
-<div *ngFor="let view of views; index as i">
-  <span>{{ view.Name }}</span>
-  <span *ngIf="view.TemplatePath">, {{ view.TemplatePath }}</span>
-  <span *ngIf="view.ContentType">, {{ view.ContentType.Name }}</span>
-  <span *ngIf="view.ContentType && view.ContentType.DemoId">, {{ view.ContentType.DemoId }}</span>
+  <ag-grid-angular class="ag-theme-material views-grid" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
 </div>

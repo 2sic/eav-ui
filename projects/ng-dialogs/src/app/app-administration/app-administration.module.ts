@@ -24,6 +24,8 @@ import { DataNameComponent } from './shared/ag-grid-components/data-name/data-na
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
 import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries-description/queries-description.component';
+import { ViewsShowComponent } from './shared/ag-grid-components/views-show/views-show.component';
+import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions/views-actions.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries
     DataFieldsComponent,
     DataActionsComponent,
     QueriesDescriptionComponent,
+    ViewsShowComponent,
+    ViewsActionsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -48,6 +52,8 @@ import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries
     DataFieldsComponent,
     DataActionsComponent,
     QueriesDescriptionComponent,
+    ViewsShowComponent,
+    ViewsActionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
