@@ -38,6 +38,11 @@
             "script": "dev-all-watch",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "prod-all",
+            "problemMatcher": []
         }
     ]
 }
