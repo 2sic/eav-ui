@@ -2,7 +2,7 @@
   <mat-icon>search</mat-icon>
   <span>more apps</span>
 </button>
-<button mat-icon-button [matTooltip]="'Import app'" class="not-implemented">
+<button mat-icon-button [matTooltip]="'Import app'" (click)="importApp()">
   <mat-icon>cloud_upload</mat-icon>
 </button>
 <button mat-icon-button [matTooltip]="'Create app'" (click)="createApp()">

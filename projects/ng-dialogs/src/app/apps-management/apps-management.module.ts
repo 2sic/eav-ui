@@ -6,6 +6,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
@@ -25,6 +26,8 @@ import { FeaturesListEnabledComponent } from './shared/ag-grid-components/featur
 import { FeaturesListUiComponent } from './shared/ag-grid-components/features-list-ui/features-list-ui.component';
 import { FeaturesListPublicComponent } from './shared/ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
+import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
+import { ImportAppService } from './shared/services/import-app.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +44,7 @@ import { FeaturesListSecurityComponent } from './shared/ag-grid-components/featu
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
+    ImportAppComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,
@@ -50,6 +54,7 @@ import { FeaturesListSecurityComponent } from './shared/ag-grid-components/featu
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
+    ImportAppComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -57,6 +62,7 @@ import { FeaturesListSecurityComponent } from './shared/ag-grid-components/featu
     AgGridModule.withComponents([]),
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     MatTooltipModule,
   ],
   providers: [
@@ -64,6 +70,7 @@ import { FeaturesListSecurityComponent } from './shared/ag-grid-components/featu
     AppsListService,
     AppsManagementDialogParamsService,
     Context,
+    ImportAppService,
   ]
 })
 export class AppsManagementModule { }

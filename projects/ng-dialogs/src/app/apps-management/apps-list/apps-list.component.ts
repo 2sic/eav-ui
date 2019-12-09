@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
@@ -6,40 +8,51 @@ import { AppsManagementDialogParamsService } from '../shared/services/apps-manag
 import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
+import { ImportAppComponent } from '../shared/modals/import-app/import-app.component';
+import { ImportAppDialogData } from '../shared/models/import-app-dialog-data.model';
 
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
   styleUrls: ['./apps-list.component.scss']
 })
-export class AppsListComponent implements OnInit {
+export class AppsListComponent implements OnInit, OnDestroy {
   apps: App[];
-
   frameworkComponents = {
     appsListShowComponent: AppsListShowComponent,
     appsListActionsComponent: AppsListActionsComponent,
   };
-
   columnDefs: ColDef[] = [
     { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Folder', field: 'Folder', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Show', field: 'IsHidden', cellRenderer: 'appsListShowComponent', width: 100 },
     {
-      headerName: 'Actions', cellRenderer: 'appsListActionsComponent', width: 100, cellRendererParams: {
-        onDelete: this.handleDeleteClicked.bind(this)
+      headerName: 'Actions', cellRenderer: 'appsListActionsComponent', width: 100, cellRendererParams: <AppsListActionsParams>{
+        onDelete: this.deleteApp.bind(this),
       }
     },
   ];
-
   modules = AllCommunityModules;
 
+  private subscriptions: Subscription[] = [];
+  private importAppDialogRef: MatDialogRef<ImportAppComponent, any>;
+
   constructor(
+    private dialog: MatDialog,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
     private appsListService: AppsListService,
   ) { }
 
   ngOnInit() {
     this.fetchAppsList();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions = null;
+    this.importAppDialogRef.close();
+    this.importAppDialogRef = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -65,6 +78,20 @@ export class AppsListComponent implements OnInit {
 
   importApp() {
     // open modal, upload app, close modal, refresh list
+    const importAppDialogData: ImportAppDialogData = {
+      context: this.appsManagementDialogParamsService.context,
+    };
+    this.importAppDialogRef = this.dialog.open(ImportAppComponent, {
+      backdropClass: 'import-app-dialog-backdrop',
+      panelClass: 'import-app-dialog-panel',
+      data: importAppDialogData,
+    });
+    this.subscriptions.push(
+      this.importAppDialogRef.afterClosed().subscribe(result => {
+        console.log('Import app dialog was closed. Result:', result);
+        this.reloadApps();
+      }),
+    );
   }
 
   reloadApps() {
@@ -76,7 +103,7 @@ export class AppsListComponent implements OnInit {
     this.openApp(appData.Id);
   }
 
-  private handleDeleteClicked(app: App) {
+  private deleteApp(app: App) {
     // tslint:disable-next-line:max-line-length
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here: sure you want to delete '${app.Name}' (${app.Id})?`); // spm Translate
     if (result === null) {
