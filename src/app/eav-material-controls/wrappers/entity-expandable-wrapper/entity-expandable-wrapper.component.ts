@@ -10,6 +10,7 @@ import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -39,9 +40,12 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
 
-  constructor(private validationMessagesService: ValidationMessagesService,
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private languageInstanceService: LanguageInstanceService,
+  ) {
   }
 
   ngOnInit() {
@@ -50,9 +54,9 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
       this.config.field.expanded.subscribe(expanded => {
         this.dialogIsOpen = expanded;
         if (expanded) {
-          document.body.classList.add('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
         } else {
-          document.body.classList.remove('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
         }
       }),
     );

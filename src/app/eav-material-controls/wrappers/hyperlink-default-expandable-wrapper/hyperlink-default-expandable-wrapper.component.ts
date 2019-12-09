@@ -12,6 +12,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -48,6 +49,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private eavService: EavService,
     private zone: NgZone,
     private dialog: MatDialog,
+    private languageInstanceService: LanguageInstanceService,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -64,9 +66,9 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
       this.config.field.expanded.subscribe(expanded => {
         this.dialogIsOpen = expanded;
         if (expanded) {
-          document.body.classList.add('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
         } else {
-          document.body.classList.remove('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
         }
       }),
     );

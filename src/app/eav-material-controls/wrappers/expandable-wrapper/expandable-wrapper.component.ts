@@ -16,6 +16,7 @@ import { FeatureService } from '../../../shared/store/ngrx-data/feature.service'
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -59,6 +60,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private inputTypeService: InputTypeService,
     private zone: NgZone,
     private changeDetector: ChangeDetectorRef,
+    private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
@@ -76,9 +78,9 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
       this.config.field.expanded.subscribe(expanded => {
         this.dialogIsOpen = expanded;
         if (expanded) {
-          document.body.classList.add('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
         } else {
-          document.body.classList.remove('field-expanded');
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
         }
       }),
     );

@@ -73,6 +73,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   debugEnabled = false;
   debugInfoIsOpen = false;
   eventListeners: ElementEventListener[] = [];
+  hideHeader: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
@@ -103,7 +104,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, this.eavConfig.lang);
+    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, this.eavConfig.lang, false);
     this.currentLanguage = this.eavConfig.lang;
     this.loadIconsService.load();
   }
@@ -121,6 +122,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
     this.checkFormsState();
     this.loadDebugEnabled();
+    this.hideHeaderSubscribe();
   }
 
   ngAfterContentChecked() {
@@ -586,4 +588,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
+  private hideHeaderSubscribe() {
+    this.subscriptions.push(
+      this.languageInstanceService.getHideHeader(this.formId).subscribe(hideHeader => {
+        this.hideHeader = hideHeader;
+      }),
+    );
+  }
 }
