@@ -14,8 +14,8 @@ export class MouseScrollHelper {
   ) {
     this.ngZone.runOutsideAngular(() => {
       const registerScroll = this.registerScroll.bind(this);
-      this.header.addEventListener('mousedown', registerScroll, { passive: true });
-      this.headerDownListener = { element: this.header, type: 'mousedown', listener: registerScroll };
+      this.header.addEventListener('pointerdown', registerScroll, { passive: true });
+      this.headerDownListener = { element: this.header, type: 'pointerdown', listener: registerScroll };
     });
   }
 
@@ -46,13 +46,13 @@ export class MouseScrollHelper {
 
     const doScroll = this.doScroll.bind(this);
     const removeScroll = this.removeScroll.bind(this);
-    document.addEventListener('mousemove', doScroll, { passive: true });
-    document.addEventListener('mouseup', removeScroll, { passive: true });
-    document.addEventListener('mouseleave', removeScroll, { passive: true });
+    document.addEventListener('pointermove', doScroll, { passive: true });
+    document.addEventListener('pointerup', removeScroll, { passive: true });
+    document.addEventListener('pointerleave', removeScroll, { passive: true });
     this.eventListeners.push(
-      { element: document, type: 'mousemove', listener: doScroll },
-      { element: document, type: 'mouseup', listener: removeScroll },
-      { element: document, type: 'mouseleave', listener: removeScroll },
+      { element: document, type: 'pointermove', listener: doScroll },
+      { element: document, type: 'pointerup', listener: removeScroll },
+      { element: document, type: 'pointerleave', listener: removeScroll },
     );
   }
 
