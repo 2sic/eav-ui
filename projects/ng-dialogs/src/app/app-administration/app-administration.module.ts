@@ -6,6 +6,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -62,6 +63,7 @@ import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions
     MatIconModule,
     MatTooltipModule,
     AgGridModule.withComponents([]),
+    MatTabsModule,
   ],
   providers: [
     AppAdministrationParamsService,

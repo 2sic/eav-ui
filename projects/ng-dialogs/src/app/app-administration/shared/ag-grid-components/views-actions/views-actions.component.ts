@@ -28,7 +28,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     // this.params.onOpenFields(this.app);
   }
 
-  deleteQuery(event: MouseEvent) {
+  deleteView(event: MouseEvent) {
     event.stopPropagation();
     alert('Delete view!');
     // this.params.onOpenFields(this.app);

@@ -6,18 +6,61 @@
   </button>
 </div>
 
-<button mat-button class="tabs" *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)" [ngClass]="{
-  'selected': tabPath === tab.url
-}" [matTooltip]="tab.tooltip">
-  <mat-icon>{{ tab.icon }}</mat-icon>
-  <span>{{ tab.name }}</span>
-</button>
+<mat-tab-group dynamicHeight *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Getting Started'">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </div>
+    <app-getting-started [gettingStartedUrl]="dialogSettings.GettingStartedUrl">
+    </app-getting-started>
+  </mat-tab>
 
-<app-getting-started *ngIf="dialogSettings" [hidden]="tabPath !== tabs.home.url"
-  [gettingStartedUrl]="dialogSettings.GettingStartedUrl"></app-getting-started>
-<app-data *ngIf="tabPath === tabs.data.url" [context]="appAdministrationDialogData.context"></app-data>
-<app-queries *ngIf="tabPath === tabs.queries.url" [context]="appAdministrationDialogData.context"></app-queries>
-<app-views *ngIf="tabPath === tabs.views.url" [context]="appAdministrationDialogData.context"></app-views>
-<app-web-api *ngIf="tabPath === tabs.webApi.url"></app-web-api>
-<app-app-configuration *ngIf="tabPath === tabs.app.url"></app-app-configuration>
-<app-global-settings *ngIf="tabPath === tabs.global.url"></app-global-settings>
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Content'">
+      <mat-icon>list</mat-icon>
+      <span>Data</span>
+    </div>
+    <app-data *matTabContent [context]="appAdministrationDialogData.context"></app-data>
+  </mat-tab>
+
+  <mat-tab *ngIf="!dialogSettings.IsContent">
+    <div *matTabLabel class="tab-container" [matTooltip]="'Query Designer'">
+      <mat-icon>filter_list</mat-icon>
+      <span>Queries</span>
+    </div>
+    <app-queries *matTabContent [context]="appAdministrationDialogData.context"></app-queries>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Views / Templates'">
+      <mat-icon>image</mat-icon>
+      <span>Views</span>
+    </div>
+    <app-views *matTabContent [context]="appAdministrationDialogData.context"></app-views>
+  </mat-tab>
+
+  <mat-tab *ngIf="!dialogSettings.IsContent">
+    <div *matTabLabel class="tab-container" [matTooltip]="'WebApi / Data'">
+      <mat-icon>flash_on</mat-icon>
+      <span>WebApi</span>
+    </div>
+    <app-web-api *matTabContent></app-web-api>
+  </mat-tab>
+
+  <mat-tab *ngIf="!dialogSettings.IsContent">
+    <div *matTabLabel class="tab-container" [matTooltip]="'App Settings'">
+      <mat-icon>web_asset</mat-icon>
+      <span>App</span>
+    </div>
+    <app-app-configuration *matTabContent></app-app-configuration>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Portal / Languages'">
+      <mat-icon>public</mat-icon>
+      <span>Global</span>
+    </div>
+    <app-global-settings *matTabContent></app-global-settings>
+  </mat-tab>
+</mat-tab-group>
