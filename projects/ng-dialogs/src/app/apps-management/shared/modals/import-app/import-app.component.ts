@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { ImportAppService } from '../../services/import-app.service';
@@ -10,7 +10,7 @@ import { ImportAppResult } from '../../models/import-app-result.model';
   templateUrl: './import-app.component.html',
   styleUrls: ['./import-app.component.scss']
 })
-export class ImportAppComponent implements OnInit {
+export class ImportAppComponent implements OnInit, OnDestroy {
   isImporting = false;
   importFile: File;
   importResult: ImportAppResult;
@@ -22,6 +22,10 @@ export class ImportAppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.closeDialog();
   }
 
   importApp(changedName?: string) {
@@ -51,5 +55,6 @@ export class ImportAppComponent implements OnInit {
   closeDialog() {
     this.importFile = null;
     this.dialogRef.close();
+    this.dialogRef = null;
   }
 }

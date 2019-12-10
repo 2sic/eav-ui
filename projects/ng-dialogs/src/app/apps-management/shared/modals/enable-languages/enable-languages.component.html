@@ -1,0 +1,8 @@
+<h4>Languages / Cultures</h4>
+
+<div>Manage the enabled / disable languages for this Zone (this portal)</div>
+
+<ag-grid-angular class="ag-theme-material languages-grid" [rowData]="languages" [columnDefs]="columnDefs"
+  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
+</ag-grid-angular>

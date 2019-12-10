@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
@@ -28,6 +29,9 @@ import { FeaturesListPublicComponent } from './shared/ag-grid-components/feature
 import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
 import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ImportAppService } from './shared/services/import-app.service';
+import { EnableLanguagesComponent } from './shared/modals/enable-languages/enable-languages.component';
+import { EnableLanguagesService } from './shared/services/enable-languages.service';
+import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +49,8 @@ import { ImportAppService } from './shared/services/import-app.service';
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
     ImportAppComponent,
+    EnableLanguagesComponent,
+    EnableLanguagesStatusComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,
@@ -55,6 +61,8 @@ import { ImportAppService } from './shared/services/import-app.service';
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
     ImportAppComponent,
+    EnableLanguagesComponent,
+    EnableLanguagesStatusComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -64,10 +72,12 @@ import { ImportAppService } from './shared/services/import-app.service';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
+    MatSlideToggleModule,
   ],
   providers: [
     AppsManagementParamsService,
     AppsListService,
+    EnableLanguagesService,
     AppsManagementDialogParamsService,
     Context,
     ImportAppService,

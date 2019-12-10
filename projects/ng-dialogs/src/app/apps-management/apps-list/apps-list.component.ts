@@ -51,8 +51,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subscriptions = null;
-    this.importAppDialogRef.close();
-    this.importAppDialogRef = null;
+    if (this.importAppDialogRef) {
+      this.importAppDialogRef.close();
+      this.importAppDialogRef = null;
+    }
   }
 
   onGridReady(params: GridReadyEvent) {
