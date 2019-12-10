@@ -6,16 +6,36 @@
   </button>
 </div>
 
-<button mat-button class="tabs" *ngFor="let tab of tabsArray; index as i" (click)="changeTab(tab.url)" [ngClass]="{
-  'selected': tabPath === tab.url
-}" [matTooltip]="tab.tooltip">
-  <mat-icon>{{ tab.icon }}</mat-icon>
-  <span>{{ tab.name }}</span>
-</button>
+<mat-tab-group dynamicHeight (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Apps'">
+      <mat-icon>star_border</mat-icon>
+      <span>Apps</span>
+    </div>
+    <app-apps-list *matTabContent></app-apps-list>
+  </mat-tab>
 
-<div [ngSwitch]="tabPath">
-  <app-apps-list *ngSwitchCase="tabs.apps.url"></app-apps-list>
-  <app-zone-settings *ngSwitchCase="tabs.settings.url"></app-zone-settings>
-  <app-manage-features *ngSwitchCase="tabs.features.url"></app-manage-features>
-  <app-sxc-insights *ngSwitchCase="tabs.sxcInsights.url"></app-sxc-insights>
-</div>
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Settings'">
+      <mat-icon>settings_applications</mat-icon>
+      <span>Settings</span>
+    </div>
+    <app-zone-settings *matTabContent></app-zone-settings>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'These settings apply to all zones/portals'">
+      <mat-icon>tune</mat-icon>
+      <span>Features</span>
+    </div>
+    <app-manage-features *matTabContent></app-manage-features>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="tab-container" [matTooltip]="'Insights'">
+      <mat-icon>storage</mat-icon>
+      <span>2sxc Insights</span>
+    </div>
+    <app-sxc-insights *matTabContent></app-sxc-insights>
+  </mat-tab>
+</mat-tab-group>

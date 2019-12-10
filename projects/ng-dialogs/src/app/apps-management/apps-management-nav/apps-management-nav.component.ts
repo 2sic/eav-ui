@@ -1,11 +1,11 @@
 import { Component, OnInit, EventEmitter, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
 import { AppsManagementDialogData } from '../shared/models/apps-management-dialog-data.model';
 import { AppsManagementDialogParamsService } from '../shared/services/apps-management-dialog-params.service';
-import { NavigationTab } from '../../shared/models/navigation-tab.model';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -13,15 +13,9 @@ import { NavigationTab } from '../../shared/models/navigation-tab.model';
   styleUrls: ['./apps-management-nav.component.scss']
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
-  tabs = {
-    apps: { url: 'list', name: 'Apps', icon: 'star_border', tooltip: 'Apps' },
-    settings: { url: 'settings', name: 'Settings', icon: 'settings_applications', tooltip: 'Settings' },
-    features: { url: 'features', name: 'Features', icon: 'tune', tooltip: 'These settings apply to all zones/portals' },
-    sxcInsights: { url: 'sxc-insights', name: '2sxc Insights', icon: 'storage', tooltip: 'Insights' },
-  };
-  tabsArray: NavigationTab[] = [];
+  tabs = ['list', 'settings', 'features', 'sxc-insights']; // tabs order has to match template
   onChangeTab = new EventEmitter();
-  tabPath: string;
+  tabIndex: number;
   onOpenApp = new EventEmitter();
   private subscriptions: Subscription[] = [];
 
@@ -29,18 +23,14 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
     @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogData,
     private appsManagementDialogParamsService: AppsManagementDialogParamsService,
-  ) {
-    Object.keys(this.tabs).forEach(key => {
-      this.tabsArray.push(this.tabs[key]);
-    });
-  }
+  ) { }
 
   ngOnInit() {
     this.appsManagementDialogParamsService.context = this.appsManagementDialogData.context;
     this.subscriptions.push(
       this.appsManagementDialogData.tabPath$.subscribe(tabPath => {
         console.log('Apps management tab changed:', tabPath);
-        this.tabPath = tabPath;
+        this.tabIndex = this.tabs.indexOf(tabPath);
       }),
       // skip first emit because it will be undefined as BehaviorSubject was just created
       this.appsManagementDialogParamsService.openedAppId$$.pipe(skip(1)).subscribe(openedAppId => {
@@ -62,8 +52,8 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  changeTab(url: string) {
-    this.onChangeTab.emit(url);
+  changeTab(event: MatTabChangeEvent) {
+    this.onChangeTab.emit(this.tabs[event.index]);
   }
 
 }

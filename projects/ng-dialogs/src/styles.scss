@@ -44,6 +44,10 @@ body {
   color: red;
 }
 
+.mat-tab-body-content {
+  @extend .hide-scrollbar;
+}
+
 .ag-body-viewport {
   @extend .hide-scrollbar;
 }
