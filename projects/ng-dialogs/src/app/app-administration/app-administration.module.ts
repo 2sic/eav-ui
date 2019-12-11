@@ -27,6 +27,10 @@ import { DataActionsComponent } from './shared/ag-grid-components/data-actions/d
 import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries-description/queries-description.component';
 import { ViewsShowComponent } from './shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions/views-actions.component';
+import { AppDialogConfigService } from './shared/services/app-dialog-config.service';
+import { ContentTypesService } from './shared/services/content-types.service';
+import { PipelinesService } from './shared/services/pipelines.service';
+import { TemplatesService } from './shared/services/templates.service';
 
 @NgModule({
   declarations: [
@@ -68,6 +72,10 @@ import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions
   providers: [
     AppAdministrationParamsService,
     Context,
+    AppDialogConfigService,
+    ContentTypesService,
+    PipelinesService,
+    TemplatesService,
   ]
 })
 export class AppAdministrationModule { }

@@ -1,11 +1,11 @@
 import { Component, OnInit, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 
 import { AppAdministrationDialogData } from '../shared/models/app-administration-dialog-data.model';
 import { DialogSettings } from '../shared/models/dialog-settings.model';
+import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -20,13 +20,13 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private http: HttpClient,
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
     @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogData,
+    private appDialogConfigService: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/system/dialogsettings?appId=${this.appAdministrationDialogData.context.appId}`)
+    this.appDialogConfigService.getDialogSettings(this.appAdministrationDialogData.context.appId)
       .subscribe((dialogSettings: DialogSettings) => {
         if (dialogSettings.IsContent) {
           this.tabs = this.tabs.filter(tab => {

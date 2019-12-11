@@ -15,9 +15,7 @@ import { EnableLanguagesStatusParams } from '../../models/enable-languages-statu
 })
 export class EnableLanguagesComponent implements OnInit, OnDestroy {
   languages: EnableLanguage[];
-  frameworkComponents = {
-    enableLanguagesStatusComponent: EnableLanguagesStatusComponent
-  };
+
   columnDefs: ColDef[] = [
     { headerName: 'Code', field: 'Code', cellClass: 'clickable', onCellClicked: this.handleNameClicked.bind(this), width: 100 },
     { headerName: 'Culture', field: 'Culture', cellClass: 'clickable', onCellClicked: this.handleNameClicked.bind(this) },
@@ -28,6 +26,9 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
       }
     },
   ];
+  frameworkComponents = {
+    enableLanguagesStatusComponent: EnableLanguagesStatusComponent
+  };
   modules = AllCommunityModules;
 
   constructor(

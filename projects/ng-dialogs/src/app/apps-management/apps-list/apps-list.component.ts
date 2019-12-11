@@ -19,10 +19,7 @@ import { ImportAppDialogData } from '../shared/models/import-app-dialog-data.mod
 })
 export class AppsListComponent implements OnInit, OnDestroy {
   apps: App[];
-  frameworkComponents = {
-    appsListShowComponent: AppsListShowComponent,
-    appsListActionsComponent: AppsListActionsComponent,
-  };
+
   columnDefs: ColDef[] = [
     { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Folder', field: 'Folder', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
@@ -33,6 +30,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
       }
     },
   ];
+  frameworkComponents = {
+    appsListShowComponent: AppsListShowComponent,
+    appsListActionsComponent: AppsListActionsComponent,
+  };
   modules = AllCommunityModules;
 
   private subscriptions: Subscription[] = [];

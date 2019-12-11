@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
 
 import { Context } from '../../shared/context/context';
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
+import { TemplatesService } from '../shared/services/templates.service';
 
 @Component({
   selector: 'app-views',
@@ -15,10 +15,7 @@ import { ViewsActionsComponent } from '../shared/ag-grid-components/views-action
 export class ViewsComponent implements OnInit {
   @Input() context: Context;
   views: View[];
-  frameworkComponents = {
-    viewsShowComponent: ViewsShowComponent,
-    viewsActionsComponent: ViewsActionsComponent,
-  };
+
   columnDefs: ColDef[] = [
     { headerName: 'Template Name', field: 'Name', cellClass: 'clickable' },
     { headerName: 'Path', field: 'TemplatePath', cellClass: 'clickable' },
@@ -28,17 +25,20 @@ export class ViewsComponent implements OnInit {
     { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable' },
     { headerName: 'Actions', cellClass: 'clickable', width: 100, cellRenderer: 'viewsActionsComponent' },
   ];
+  frameworkComponents = {
+    viewsShowComponent: ViewsShowComponent,
+    viewsActionsComponent: ViewsActionsComponent,
+  };
   modules = AllCommunityModules;
 
   constructor(
-    private http: HttpClient,
+    private templatesService: TemplatesService,
   ) { }
 
   ngOnInit() {
-    this.http.get(`/desktopmodules/2sxc/api/app-sys/template/getall?appId=${this.context.appId}`)
-      .subscribe((views: View[]) => {
-        this.views = views;
-      });
+    this.templatesService.getAll(this.context.appId).subscribe((views: View[]) => {
+      this.views = views;
+    });
   }
 
   onGridReady(params: GridReadyEvent) {
