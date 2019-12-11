@@ -88,7 +88,7 @@ function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean, but
       menubar: false,
       toolbar: ' undo redo removeformat '
         + '| bold formatgroup '
-        + '| h1 h2 hgroup '
+        + '| h2 h3 hgroup '
         + '| listgroup '
         + '| linkgroup '
         + '| '
@@ -102,7 +102,7 @@ function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean, but
       menubar: false,
       toolbar: ' undo redo removeformat '
         + '| bold formatgroup '
-        + '| h1 h2 hgroup '
+        + '| h2 h3 hgroup '
         + '| listgroup '
         + '| linkfiles linkgroup '
         + '| '
@@ -116,7 +116,7 @@ function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean, but
       toolbar: ' undo redo removeformat '
         + '| styleselect '
         + '| bold italic '
-        + '| h1 h2 hgroup '
+        + '| h2 h3 hgroup '
         + '| bullist numlist outdent indent '
         + '| ' + (!inlineMode ? ' images linkfiles' : '') + ' linkgrouppro '
         + '| '
