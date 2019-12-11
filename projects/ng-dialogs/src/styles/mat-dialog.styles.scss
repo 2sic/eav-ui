@@ -1,0 +1,16 @@
+.cdk-global-overlay-wrapper {
+  align-items: flex-start !important;
+}
+
+.mat-dialog-container {
+  // background: transparent !important;
+  height: auto !important;
+  @extend .hide-scrollbar;
+}
+
+// all dialog panes should have the same width unless specified otherwise
+[class$="-dialog-panel"] {
+  width: 95vw;
+  max-width: 95vw !important;
+  margin-top: 30px;
+}

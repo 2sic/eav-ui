@@ -61,3 +61,6 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+// spm hammerjs might have memory leaks. If problematic remove with:
+// https://stackoverflow.com/questions/51810143/remove-hammerjs-from-a-angular-material-project
+import 'hammerjs';

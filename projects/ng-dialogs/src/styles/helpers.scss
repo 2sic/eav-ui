@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none !important; // IE 10+
+  overflow: -moz-scrollbars-none !important; // Firefox
+  scrollbar-width: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important; // Safari and Chrome
+  }
+}
+
+.not-implemented {
+  color: red;
+}

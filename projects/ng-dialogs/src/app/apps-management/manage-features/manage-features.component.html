@@ -9,9 +9,9 @@
   <span>reload</span>
 </button>
 
-<ag-grid-angular class="ag-theme-material features-grid" *ngIf="!showManagement" [rowData]="features"
-  [columnDefs]="columnDefs" [modules]="modules" [frameworkComponents]="frameworkComponents"
-  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+<ag-grid-angular class="ag-theme-material" *ngIf="!showManagement" [rowData]="features" [columnDefs]="columnDefs"
+  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
 </ag-grid-angular>
 
 <mat-spinner *ngIf="showSpinner" [mode]="'indeterminate'" [diameter]="'20'"></mat-spinner>

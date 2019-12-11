@@ -1,0 +1,33 @@
+.ag-body-viewport {
+  @extend .hide-scrollbar;
+}
+
+.ag-theme-material {
+  width: 100%;
+  height: 500px;
+  // spm make height based on table size. Header 57px + number of rows * 48px. Maybe set max number of rows and paging
+}
+
+.ag-row:hover .clickable {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &.ag-column-hover {
+    color: blue; // spm Make this 2sxc blue color
+  }
+}
+
+// only highlight text with underline and color
+.ag-row:hover .clickable-with-button {
+  cursor: pointer;
+
+  .text {
+    text-decoration: underline;
+  }
+
+  &.ag-column-hover {
+    .text {
+      color: blue; // spm Make this 2sxc blue color
+    }
+  }
+}

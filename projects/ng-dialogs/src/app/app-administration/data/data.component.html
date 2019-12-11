@@ -4,7 +4,7 @@
   <mat-icon>add_box</mat-icon>
 </button>
 
-<ag-grid-angular class="ag-theme-material content-types-grid" [rowData]="contentTypes" [columnDefs]="columnDefs"
-  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+<ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
   (gridReady)="onGridReady($event)">
 </ag-grid-angular>

@@ -12,7 +12,7 @@
   <mat-icon>cloud_upload</mat-icon>
 </button>
 
-<ag-grid-angular class="ag-theme-material queries-grid" [rowData]="queries" [columnDefs]="columnDefs"
-  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
+<ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
   (gridReady)="onGridReady($event)">
 </ag-grid-angular>

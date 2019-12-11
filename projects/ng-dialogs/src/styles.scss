@@ -6,72 +6,7 @@
 @import '@ag-grid-community/all-modules/dist/styles/ag-theme-material.css';
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 
-body {
-  margin: 0;
-}
-
-.cdk-global-overlay-wrapper {
-  align-items: flex-start !important;
-}
-
-.mat-dialog-container {
-  @extend .hide-scrollbar;
-}
-
-// all dialog panes should have the same width unless specified otherwise
-[class$="-dialog-panel"] {
-  width: 95vw;
-  max-width: 95vw !important;
-  margin-top: 30px;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none !important; // IE 10+
-  overflow: -moz-scrollbars-none !important; // Firefox
-  scrollbar-width: none !important;
-
-  &::-webkit-scrollbar {
-    display: none !important; // Safari and Chrome
-  }
-}
-
-.mat-dialog-container {
-  // background: transparent !important;
-  height: auto !important;
-}
-
-.not-implemented {
-  color: red;
-}
-
-.mat-tab-body-content {
-  @extend .hide-scrollbar;
-}
-
-.ag-body-viewport {
-  @extend .hide-scrollbar;
-}
-
-.ag-row:hover .clickable {
-  text-decoration: underline;
-  cursor: pointer;
-
-  &.ag-column-hover {
-    color: blue; // spm Make this 2sxc blue color
-  }
-}
-
-// only highlight text with underline and color
-.ag-row:hover .clickable-with-button {
-  cursor: pointer;
-
-  .text {
-    text-decoration: underline;
-  }
-
-  &.ag-column-hover {
-    .text {
-      color: blue; // spm Make this 2sxc blue color
-    }
-  }
-}
+@import './styles/helpers.scss';
+@import './styles/mat-dialog.styles.scss';
+@import './styles/mat-tabs.styles.scss';
+@import './styles/ag-grid.styles.scss';
