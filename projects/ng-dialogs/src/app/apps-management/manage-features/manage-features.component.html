@@ -1,6 +1,6 @@
 <p>These are the system features - they apply to all zones / apps.</p>
 
-<button mat-button [matTooltip]="'Manage features'" class="not-implemented">
+<button mat-button [matTooltip]="'Manage features'" (click)="toggleManagement()">
   <mat-icon>tune</mat-icon>
   <span>manage features</span>
 </button>
@@ -9,7 +9,11 @@
   <span>reload</span>
 </button>
 
-<ag-grid-angular class="ag-theme-material features-grid" [rowData]="features" [columnDefs]="columnDefs"
-  [modules]="modules" [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
-  (gridReady)="onGridReady($event)">
+<ag-grid-angular class="ag-theme-material features-grid" *ngIf="!showManagement" [rowData]="features"
+  [columnDefs]="columnDefs" [modules]="modules" [frameworkComponents]="frameworkComponents"
+  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
 </ag-grid-angular>
+
+<mat-spinner *ngIf="showSpinner" [mode]="'indeterminate'" [diameter]="'20'"></mat-spinner>
+
+<iframe style="border: none; width: 100%; height: 500px" *ngIf="showManagement" [src]="managementUrl"></iframe>

@@ -33,6 +33,7 @@ import { ImportAppService } from './shared/services/import-app.service';
 import { EnableLanguagesComponent } from './shared/modals/enable-languages/enable-languages.component';
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
+import { FeaturesConfigService } from './shared/services/features-config.service';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enab
     AppsManagementDialogParamsService,
     Context,
     ImportAppService,
+    FeaturesConfigService,
   ]
 })
 export class AppsManagementModule { }
