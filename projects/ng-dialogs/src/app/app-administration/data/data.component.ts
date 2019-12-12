@@ -9,10 +9,10 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { ContentTypeEdit } from '../shared/models/content-type-edit.model';
 import { EditContentTypeComponent } from '../shared/modals/edit-content-type/edit-content-type.component';
 import { EditContentTypeDialogData } from '../shared/models/edit-content-type-dialog-data.model';
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
+import { DataActionsParams } from '../shared/models/data-actions-params';
 
 @Component({
   selector: 'app-data',
@@ -30,7 +30,11 @@ export class DataComponent implements OnInit, OnDestroy {
     },
     { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent' },
-    { headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent' },
+    {
+      headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
+        onEdit: this.editContentType.bind(this),
+      }
+    },
   ];
   frameworkComponents = {
     dataNameComponent: DataNameComponent,
@@ -73,7 +77,7 @@ export class DataComponent implements OnInit, OnDestroy {
     // open content type data modal
   }
 
-  editContentType(contentType: ContentTypeEdit) {
+  editContentType(contentType: ContentType) {
     const dialogData: EditContentTypeDialogData = {
       context: this.context,
       contentType: contentType,

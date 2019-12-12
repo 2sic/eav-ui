@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { EditContentTypeDialogData } from '../../models/edit-content-type-dialog-data.model';
-import { ContentTypeEditExtended } from '../../models/content-type-edit.model';
+import { ContentTypeEdit } from '../../models/content-type.model';
 import { EavConfigurationService } from '../../services/eav-configuration.service';
 import { ContentTypesService } from '../../services/content-types.service';
 
@@ -12,7 +12,7 @@ import { ContentTypesService } from '../../services/content-types.service';
   styleUrls: ['./edit-content-type.component.scss']
 })
 export class EditContentTypeComponent implements OnInit {
-  contentType: ContentTypeEditExtended;
+  contentType: ContentTypeEdit;
   isNew: boolean;
 
   constructor(
@@ -26,6 +26,7 @@ export class EditContentTypeComponent implements OnInit {
     if (!this.editContentTypeDialogData.contentType) {
       this.isNew = true;
       this.contentType = {
+        ...this.editContentTypeDialogData.contentType,
         StaticName: '',
         Name: '',
         Description: '',
@@ -36,10 +37,7 @@ export class EditContentTypeComponent implements OnInit {
     } else {
       this.isNew = false;
       this.contentType = {
-        StaticName: this.editContentTypeDialogData.contentType.StaticName,
-        Name: this.editContentTypeDialogData.contentType.Name,
-        Description: this.editContentTypeDialogData.contentType.Description,
-        Scope: this.editContentTypeDialogData.contentType.Scope,
+        ...this.editContentTypeDialogData.contentType,
         ChangeStaticName: false,
         NewStaticName: '',
       };

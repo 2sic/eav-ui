@@ -24,3 +24,8 @@ export class ContentTypeMetadata {
   Notes: string;
   Title: string;
 }
+
+export class ContentTypeEdit extends ContentType {
+  ChangeStaticName: boolean;
+  NewStaticName: string;
+}

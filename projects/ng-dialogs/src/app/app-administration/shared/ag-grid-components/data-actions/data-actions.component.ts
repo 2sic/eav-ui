@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../../models/content-type.model';
+import { DataActionsParams } from '../../models/data-actions-params';
 
 @Component({
   selector: 'app-data-actions',
@@ -10,10 +10,10 @@ import { ContentType } from '../../models/content-type.model';
   styleUrls: ['./data-actions.component.scss']
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams;
+  params: DataActionsParams;
   contentType: ContentType;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: DataActionsParams) {
     this.params = params;
     this.contentType = params.data;
   }
@@ -22,9 +22,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  renameContentType() {
-    alert('Rename content type!');
-    // this.params.onOpenFields(this.app);
+  editContentType() {
+    this.params.onEdit(this.contentType);
   }
 
   editMetadata() {

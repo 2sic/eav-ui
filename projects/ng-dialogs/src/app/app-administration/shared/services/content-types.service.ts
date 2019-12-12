@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { ContentTypeEditExtended } from '../models/content-type-edit.model';
+import { ContentTypeEdit } from '../models/content-type.model';
 
 @Injectable()
 export class ContentTypesService {
@@ -13,7 +13,7 @@ export class ContentTypesService {
     return this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${appId}&scope=${scope}`);
   }
 
-  save(contentType: ContentTypeEditExtended, appId: number) {
+  save(contentType: ContentTypeEdit, appId: number) {
     return this.http.post('/desktopmodules/2sxc/api/eav/contenttype/save/', contentType, { params: { appid: appId.toString() } });
   }
 
