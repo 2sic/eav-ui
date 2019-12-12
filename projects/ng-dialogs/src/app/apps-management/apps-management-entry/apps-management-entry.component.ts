@@ -49,8 +49,8 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
       this.appsManagementDialogRef.componentInstance.onOpenApp.subscribe((openedAppId: number) => {
         this.router.navigate([openedAppId], { relativeTo: this.route });
       }),
-      this.appsManagementDialogRef.afterClosed().subscribe(result => {
-        console.log('Apps management dialog was closed. Result:', result);
+      this.appsManagementDialogRef.afterClosed().subscribe(() => {
+        console.log('Apps management dialog was closed.');
         if (this.route.parent.parent.parent) {
           this.router.navigate(['../'], { relativeTo: this.route });
         } else {

@@ -90,8 +90,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
       data: importAppDialogData,
     });
     this.subscriptions.push(
-      this.importAppDialogRef.afterClosed().subscribe(result => {
-        console.log('Import app dialog was closed. Result:', result);
+      this.importAppDialogRef.afterClosed().subscribe(() => {
+        console.log('Import app dialog was closed.');
         this.reloadApps();
       }),
     );

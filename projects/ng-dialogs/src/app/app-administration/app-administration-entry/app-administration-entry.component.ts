@@ -46,8 +46,8 @@ export class AppAdministrationEntryComponent implements OnInit, OnDestroy {
       this.appAdministrationDialogRef.componentInstance.onChangeTab.subscribe((url: string) => {
         this.router.navigate([url], { relativeTo: this.route });
       }),
-      this.appAdministrationDialogRef.afterClosed().subscribe(result => {
-        console.log('App administration dialog was closed. Result:', result);
+      this.appAdministrationDialogRef.afterClosed().subscribe(() => {
+        console.log('App administration dialog was closed.');
         if (this.route.parent.parent.parent) {
           this.router.navigate(['../'], { relativeTo: this.route });
         } else {

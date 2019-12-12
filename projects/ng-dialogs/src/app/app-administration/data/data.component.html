@@ -1,7 +1,7 @@
 <h3>Content-Types and Data</h3>
 
-<button mat-icon-button class="not-implemented" [matTooltip]="'Add content type'">
-  <mat-icon>add_box</mat-icon>
+<button mat-icon-button [matTooltip]="'Add content type'" (click)="editContentType(null)">
+  <mat-icon>add</mat-icon>
 </button>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [columnDefs]="columnDefs" [modules]="modules"

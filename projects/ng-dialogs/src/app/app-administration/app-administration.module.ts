@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { FormsModule } from '@angular/forms';
 
 // material components
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -31,6 +33,8 @@ import { AppDialogConfigService } from './shared/services/app-dialog-config.serv
 import { ContentTypesService } from './shared/services/content-types.service';
 import { PipelinesService } from './shared/services/pipelines.service';
 import { TemplatesService } from './shared/services/templates.service';
+import { EditContentTypeComponent } from './shared/modals/edit-content-type/edit-content-type.component';
+import { EavConfigurationService } from './shared/services/eav-configuration.service';
 
 @NgModule({
   declarations: [
@@ -50,6 +54,7 @@ import { TemplatesService } from './shared/services/templates.service';
     QueriesDescriptionComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
+    EditContentTypeComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -59,6 +64,7 @@ import { TemplatesService } from './shared/services/templates.service';
     QueriesDescriptionComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
+    EditContentTypeComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -68,6 +74,8 @@ import { TemplatesService } from './shared/services/templates.service';
     MatTooltipModule,
     AgGridModule.withComponents([]),
     MatTabsModule,
+    FormsModule,
+    MatInputModule,
   ],
   providers: [
     AppAdministrationParamsService,
@@ -76,6 +84,7 @@ import { TemplatesService } from './shared/services/templates.service';
     ContentTypesService,
     PipelinesService,
     TemplatesService,
+    EavConfigurationService,
   ]
 })
 export class AppAdministrationModule { }

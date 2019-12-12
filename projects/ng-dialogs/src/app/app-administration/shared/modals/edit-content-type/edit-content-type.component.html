@@ -1,0 +1,26 @@
+<div class="title-container">
+  <h1 *ngIf="isNew">New Content Type</h1>
+  <h1 *ngIf="!isNew">Edit Content Type</h1>
+
+  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<form (ngSubmit)="onSubmit()" #ngForm="ngForm" class="edit-form">
+  <mat-form-field class="edit-input">
+    <input matInput type="text" placeholder="Name" [(ngModel)]="contentType.Name" name="Name">
+  </mat-form-field>
+
+  <mat-form-field class="edit-input">
+    <input matInput type="text" placeholder="Description" [(ngModel)]="contentType.Description" name="Description">
+  </mat-form-field>
+
+  <mat-form-field class="edit-input">
+    <input matInput type="text" placeholder="Scope" [(ngModel)]="contentType.Scope" name="Scope" [disabled]="'true'">
+  </mat-form-field>
+
+  <button mat-icon-button type="submit" [disabled]="!ngForm.form.valid">
+    <mat-icon>done</mat-icon>
+  </button>
+</form>

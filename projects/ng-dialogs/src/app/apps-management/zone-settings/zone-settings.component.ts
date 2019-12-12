@@ -42,8 +42,8 @@ export class ZoneSettingsComponent implements OnInit, OnDestroy {
       data: languagesDialogData,
     });
     this.subscriptions.push(
-      this.languagesDialogRef.afterClosed().subscribe(result => {
-        console.log('Enable Languages dialog was closed. Result:', result);
+      this.languagesDialogRef.afterClosed().subscribe(() => {
+        console.log('Enable Languages dialog was closed.');
       }),
     );
   }
