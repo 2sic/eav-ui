@@ -80,7 +80,7 @@ export class DataComponent implements OnInit, OnDestroy {
     };
     this.editContentTypeDialogRef = this.dialog.open(EditContentTypeComponent, {
       backdropClass: 'edit-content-type-dialog-backdrop',
-      panelClass: 'edit-content-type-dialog-panel',
+      panelClass: ['edit-content-type-dialog-panel', 'dialog-panel-small'],
       data: dialogData,
     });
     this.subscriptions.push(

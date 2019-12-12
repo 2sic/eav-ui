@@ -38,7 +38,7 @@ export class ZoneSettingsComponent implements OnInit, OnDestroy {
     };
     this.languagesDialogRef = this.dialog.open(EnableLanguagesComponent, {
       backdropClass: 'enable-languages-dialog-backdrop',
-      panelClass: 'enable-languages-dialog-panel',
+      panelClass: ['enable-languages-dialog-panel', 'dialog-panel-medium'],
       data: languagesDialogData,
     });
     this.subscriptions.push(

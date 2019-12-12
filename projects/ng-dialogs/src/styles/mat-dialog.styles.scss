@@ -1,3 +1,8 @@
+$dialog-margin-top: 30px;
+$dialog-width-large: 95vw;
+$dialog-width-medium: 50vw;
+$dialog-width-small: 40vw;
+
 .cdk-global-overlay-wrapper {
   align-items: flex-start !important;
 }
@@ -8,9 +13,25 @@
   @extend .hide-scrollbar;
 }
 
-// all dialog panes should have the same width unless specified otherwise
-[class$="-dialog-panel"] {
-  width: 95vw;
-  max-width: 95vw !important;
-  margin-top: 30px;
+.dialog-panel-large {
+  width: $dialog-width-large;
+  max-width: $dialog-width-large !important;
+  margin-top: $dialog-margin-top;
+}
+
+.dialog-panel-medium {
+  width: $dialog-width-medium;
+  max-width: $dialog-width-medium !important;
+  margin-top: $dialog-margin-top;
+}
+
+.dialog-panel-small {
+  width: $dialog-width-small;
+  max-width: $dialog-width-small !important;
+  margin-top: $dialog-margin-top;
+}
+
+.dialog-title-container {
+  display: flex;
+  justify-content: space-between;
 }

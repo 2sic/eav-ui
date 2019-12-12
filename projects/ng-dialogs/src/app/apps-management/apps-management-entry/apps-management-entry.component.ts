@@ -36,7 +36,7 @@ export class AppsManagementEntryComponent implements OnInit, OnDestroy {
     };
     this.appsManagementDialogRef = this.dialog.open(AppsManagementNavComponent, {
       backdropClass: 'apps-management-dialog-backdrop',
-      panelClass: 'apps-management-dialog-panel',
+      panelClass: ['apps-management-dialog-panel', 'dialog-panel-large'],
       data: dialogData,
     });
     this.subscriptions.push(

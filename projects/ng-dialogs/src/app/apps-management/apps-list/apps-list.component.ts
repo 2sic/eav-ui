@@ -86,7 +86,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     };
     this.importAppDialogRef = this.dialog.open(ImportAppComponent, {
       backdropClass: 'import-app-dialog-backdrop',
-      panelClass: 'import-app-dialog-panel',
+      panelClass: ['import-app-dialog-panel', 'dialog-panel-medium'],
       data: importAppDialogData,
     });
     this.subscriptions.push(
