@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../../models/content-type.model';
+import { DataNameParams } from '../../models/data-name-params';
 
 @Component({
   selector: 'app-data-name',
@@ -10,10 +10,10 @@ import { ContentType } from '../../models/content-type.model';
   styleUrls: ['./data-name.component.scss']
 })
 export class DataNameComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams;
+  params: DataNameParams;
   contentType: ContentType;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: DataNameParams) {
     this.params = params;
     this.contentType = params.data;
   }
@@ -22,9 +22,8 @@ export class DataNameComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  addData(event: MouseEvent) {
+  addItem(event: MouseEvent) {
     event.stopPropagation();
-    alert('Add data!');
-    // this.params.onAddData(this.app);
+    this.params.onAddItem(this.contentType);
   }
 }

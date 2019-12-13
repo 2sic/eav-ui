@@ -13,6 +13,7 @@ import { EditContentTypeComponent } from '../shared/modals/edit-content-type/edi
 import { EditContentTypeDialogData } from '../shared/models/edit-content-type-dialog-data.model';
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 import { DataActionsParams } from '../shared/models/data-actions-params';
+import { DataNameParams } from '../shared/models/data-name-params';
 
 @Component({
   selector: 'app-data',
@@ -25,8 +26,10 @@ export class DataComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', cellClass: 'clickable-with-button',
-      cellRenderer: 'dataNameComponent', onCellClicked: this.handleNameCellClicked.bind(this)
+      headerName: 'Name', field: 'Name', cellClass: 'clickable-with-button', cellRenderer: 'dataNameComponent',
+      onCellClicked: this.handleNameCellClicked.bind(this), cellRendererParams: <DataNameParams>{
+        onAddItem: this.addItem.bind(this),
+      }
     },
     { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
     { headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent' },
@@ -101,4 +104,9 @@ export class DataComponent implements OnInit, OnDestroy {
         this.contentTypes = contentTypes;
       });
   }
+
+  private addItem(contentType: ContentType) {
+    alert('Open Edit Ui');
+  }
+
 }
