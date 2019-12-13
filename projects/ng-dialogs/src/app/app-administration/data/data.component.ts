@@ -36,6 +36,7 @@ export class DataComponent implements OnInit, OnDestroy {
     {
       headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
         onEdit: this.editContentType.bind(this),
+        onDelete: this.deleteContentType.bind(this),
       }
     },
   ];
@@ -96,6 +97,15 @@ export class DataComponent implements OnInit, OnDestroy {
         this.fetchContentTypes();
       }),
     );
+  }
+
+  deleteContentType(contentType: ContentType) {
+    console.log('Delete content type', contentType);
+    if (confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) {
+      this.contentTypesService.delete(contentType, this.context.appId).subscribe((result: boolean) => {
+        this.fetchContentTypes();
+      });
+    }
   }
 
   private fetchContentTypes() {

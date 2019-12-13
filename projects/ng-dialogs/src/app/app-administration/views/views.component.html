@@ -4,7 +4,7 @@
   </button>
 
   <ag-grid-angular class="ag-theme-material" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"
-    [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
-    (gridReady)="onGridReady($event)">
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true"
+    (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 </div>

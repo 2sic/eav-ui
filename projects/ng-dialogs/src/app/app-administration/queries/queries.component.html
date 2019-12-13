@@ -13,6 +13,6 @@
 </button>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
-  [frameworkComponents]="frameworkComponents" (gridSizeChanged)="onGridSizeChanged($event)"
-  (gridReady)="onGridReady($event)">
+  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true"
+  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
 </ag-grid-angular>

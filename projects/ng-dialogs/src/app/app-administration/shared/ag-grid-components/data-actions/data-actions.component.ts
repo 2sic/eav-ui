@@ -47,7 +47,6 @@ export class DataActionsComponent implements ICellRendererAngularComp {
   }
 
   deleteContentType() {
-    alert('Delete content type!');
-    // this.params.onOpenFields(this.app);
+    this.params.onDelete(this.contentType);
   }
 }
