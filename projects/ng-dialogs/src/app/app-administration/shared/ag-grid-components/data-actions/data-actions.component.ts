@@ -26,9 +26,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.onEdit(this.contentType);
   }
 
-  editMetadata() {
-    alert('Edit metadata!');
-    // this.params.onOpenFields(this.app);
+  createOrEditMetadata() {
+    this.params.onCreateOrEditMetadata(this.contentType);
   }
 
   exportContent() {

@@ -4,5 +4,6 @@ import { ContentType } from './content-type.model';
 
 export interface DataActionsParams extends ICellRendererParams {
   onEdit(contentType: ContentType): void;
+  onCreateOrEditMetadata(contentType: ContentType): void;
   onDelete(contentType: ContentType): void;
 }

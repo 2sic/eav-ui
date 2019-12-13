@@ -36,6 +36,7 @@ export class DataComponent implements OnInit, OnDestroy {
     {
       headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
         onEdit: this.editContentType.bind(this),
+        onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
         onDelete: this.deleteContentType.bind(this),
       }
     },
@@ -81,7 +82,7 @@ export class DataComponent implements OnInit, OnDestroy {
     // open content type data modal
   }
 
-  editContentType(contentType: ContentType) {
+  private editContentType(contentType: ContentType) {
     const dialogData: EditContentTypeDialogData = {
       context: this.context,
       contentType: contentType,
@@ -99,7 +100,30 @@ export class DataComponent implements OnInit, OnDestroy {
     );
   }
 
-  deleteContentType(contentType: ContentType) {
+  private createOrEditMetadata(contentType: ContentType) {
+    alert('Create or edit metadata!');
+    const title = 'ContentType Metadata';
+    if (contentType.Metadata) {
+      // open edit dialog with { EntityId: item.Metadata.Id, Title: title }
+    } else {
+      const metadataType = 'ContentType';
+      // otherwise the content type for new-assignment
+      /*
+        {
+          ContentTypeName: metadataType,
+          Metadata: {
+            Key: item.StaticName,
+            KeyType: "string",
+            TargetType: eavConfig.metadataOfContentType
+          },
+          Title: title,
+          Prefill: { Label: item.Name, Description: item.Description }
+        }
+       */
+    }
+  }
+
+  private deleteContentType(contentType: ContentType) {
     console.log('Delete content type', contentType);
     if (confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) {
       this.contentTypesService.delete(contentType, this.context.appId).subscribe((result: boolean) => {
