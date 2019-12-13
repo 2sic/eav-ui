@@ -14,6 +14,8 @@ import { EditContentTypeDialogData } from '../shared/models/edit-content-type-di
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
+import { ContentExportComponent } from '../shared/modals/content-export/content-export.component';
+import { ContentExportDialogData } from '../shared/models/content-export-dialog-data.model';
 
 @Component({
   selector: 'app-data',
@@ -37,6 +39,7 @@ export class DataComponent implements OnInit, OnDestroy {
       headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
         onEdit: this.editContentType.bind(this),
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
+        onOpenExport: this.openExport.bind(this),
         onDelete: this.deleteContentType.bind(this),
       }
     },
@@ -51,6 +54,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private scope: string;
   private subscriptions: Subscription[] = [];
   private editContentTypeDialogRef: MatDialogRef<EditContentTypeComponent, any>;
+  private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
 
   constructor(
     private dialog: MatDialog,
@@ -121,6 +125,24 @@ export class DataComponent implements OnInit, OnDestroy {
         }
        */
     }
+  }
+
+  private openExport(contentType: ContentType) {
+    const dialogData: ContentExportDialogData = {
+      appId: this.context.appId,
+      staticName: contentType.StaticName,
+    };
+    this.contentExportDialogRef = this.dialog.open(ContentExportComponent, {
+      backdropClass: 'content-export-dialog-backdrop',
+      panelClass: ['content-export-dialog-panel', 'dialog-panel-medium'],
+      data: dialogData,
+    });
+    this.subscriptions.push(
+      this.contentExportDialogRef.afterClosed().subscribe(() => {
+        console.log('Content export dialog was closed.');
+        this.fetchContentTypes();
+      }),
+    );
   }
 
   private deleteContentType(contentType: ContentType) {

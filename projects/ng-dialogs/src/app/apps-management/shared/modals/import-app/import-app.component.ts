@@ -54,7 +54,9 @@ export class ImportAppComponent implements OnInit, OnDestroy {
 
   closeDialog() {
     this.importFile = null;
-    this.dialogRef.close();
-    this.dialogRef = null;
+    if (this.dialogRef) {
+      this.dialogRef.close();
+      this.dialogRef = null;
+    }
   }
 }
