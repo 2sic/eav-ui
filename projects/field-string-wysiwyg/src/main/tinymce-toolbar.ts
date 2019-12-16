@@ -62,7 +62,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     text: 'Link.Anchor.Tooltip',
     tooltip: 'Link.Anchor.Tooltip',
     icon: 'custom-anchor',
-    value: (api) => { editor.execCommand('mceAnchor'); },
+    value: (api: any) => { editor.execCommand('mceAnchor'); },
   });
   const linkgroup = {
     icon: 'link',
@@ -280,19 +280,24 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   // h1, h2, etc. buttons, inspired by http://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
   // note that the complex array is needed because auto-translate only happens if the string is identical
   [['pre', 'Preformatted', 'Preformatted'],
-  ['p', 'Paragraph', 'Paragraph'],
+  /*
+    custom p, H1-H6 only for the toolbar listpreview menu
+    [name, buttonCommand, tooltip, text, icon]
+  */
+  ['cp', 'p', 'Paragraph', 'Paragraph', 'custom-image-p'],
   // ['code', 'Code', 'Code'],
-  ['h1', 'Heading 1', 'H1'],
-  ['h2', 'Heading 2', 'H2'],
-  ['h3', 'Heading 3', 'H3'],
-  ['h4', 'Heading 4', 'H4'],
-  ['h5', 'Heading 5', 'H5'],
-  ['h6', 'Heading 6', 'H6']].forEach((tag) => {
+  ['ch1', 'h1', 'Heading 1', 'H1', 'custom-image-h1'],
+  ['ch2', 'h2', 'Heading 2', 'H2', 'custom-image-h2'],
+  ['ch3', 'h3', 'Heading 3', 'H3', 'custom-image-h3'],
+  ['ch4', 'h4', 'Heading 4', 'H4', 'custom-image-h4'],
+  ['ch5', 'h5', 'Heading 5', 'H5', 'custom-image-h5'],
+  ['ch6', 'h6', 'Heading 6', 'H6', 'custom-image-h6']].forEach((tag) => {
     editor.ui.registry.addButton(tag[0], {
-      tooltip: tag[1],
+      icon: tag[4],
+      tooltip: tag[2],
       text: tag[2],
       onAction: (_: any) => {
-        editor.execCommand('mceToggleFormat', false, tag[0]);
+        editor.execCommand('mceToggleFormat', false, tag[1]);
       },
       onSetup: initOnPostRender(tag[0], editor),
     });
@@ -300,6 +305,8 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
 
   // Group of buttons with an h3 to start and showing h4-6 + p
   editor.ui.registry.addSplitButton('hgroup', {
+    presets: 'listpreview',
+    columns: 4,
     ...editor.ui.registry.getAll().buttons.h4,
     onItemAction: (api: any, value: any) => {
       value(api);
@@ -307,37 +314,37 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     fetch: (callback: any) => {
       const items = [
         {
-          ...editor.ui.registry.getAll().buttons.p,
-          type: 'choiceitem',
-          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'p'); },
-        },
-        {
-          ...editor.ui.registry.getAll().buttons.h1,
+          ...editor.ui.registry.getAll().buttons.ch1,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h1'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h2,
+          ...editor.ui.registry.getAll().buttons.ch2,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h2'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h3,
+          ...editor.ui.registry.getAll().buttons.ch3,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h3'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h4,
+          ...editor.ui.registry.getAll().buttons.cp,
+          type: 'choiceitem',
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'p'); },
+        },
+        {
+          ...editor.ui.registry.getAll().buttons.ch4,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h4'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h5,
+          ...editor.ui.registry.getAll().buttons.ch5,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h5'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h6,
+          ...editor.ui.registry.getAll().buttons.ch6,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h6'); },
         },

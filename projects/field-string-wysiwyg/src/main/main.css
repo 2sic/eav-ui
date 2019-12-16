@@ -24,6 +24,8 @@ field-string-wysiwyg {
   overflow-y: scroll;
   background-color: #fff;
   padding: 0 8px 1px 8px;
+  /* min-height 1px less because of padding pixel bottom */
+  min-height: 119px;
   /* Probably not needed */
   /*
   position: relative;
