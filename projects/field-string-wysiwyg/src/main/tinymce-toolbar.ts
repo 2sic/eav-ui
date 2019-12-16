@@ -192,28 +192,28 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
 
   // Drop-down with numbered list, bullet list, ...
   editor.ui.registry.addSplitButton('listgroup', {
-    tooltip: 'Numbered list',  // official tinymce key
-    icon: 'ordered-list',
+    tooltip: 'Bullet list',  // official tinymce key
+    icon: 'unordered-list',
     presets: 'listpreview',
     columns: 3,
     // for unknown reasons, this just doesn't activate correctly :( - neither does the bullist
     // spm numlist and bullist are not considered formats and don't trigger formatChanged
-    onSetup: initOnPostRender('numlist', editor),
+    onSetup: initOnPostRender('bullist', editor),
     onAction: (_: any) => {
-      editor.execCommand('InsertOrderedList');
+      editor.execCommand('InsertUnorderedList');
     },
     onItemAction: (api: any, value: any) => {
       value(api);
     },
     fetch: (callback: any) => {
       const items = [
-        {
-          type: 'choiceitem',
-          text: 'Bullet list',
-          tooltip: 'Bullet list',
-          icon: 'unordered-list',
-          value: (api: any) => { editor.execCommand('InsertUnorderedList'); },
-        },
+        // {
+        //   type: 'choiceitem',
+        //   text: 'Numbered list',
+        //   tooltip: 'Numbered list',
+        //   icon: 'ordered-list',
+        //   value: (api: any) => { editor.execCommand('InsertOrderedList'); },
+        // },
         {
           type: 'choiceitem',
           text: 'Decrease indent',
