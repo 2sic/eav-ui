@@ -8,7 +8,12 @@ import * as imageH3 from '../../../../src/icons/2sxc/H3.svg';
 import * as imageH4 from '../../../../src/icons/2sxc/H4.svg';
 import * as imageH5 from '../../../../src/icons/2sxc/H5.svg';
 import * as imageH6 from '../../../../src/icons/2sxc/H6.svg';
-import * as imageP from '../../../../src/icons/2sxc/p.svg';
+import * as imageU1 from '../../../../src/icons/2sxc/U1.svg';
+import * as imageU2 from '../../../../src/icons/2sxc/U2.svg';
+import * as imageU3 from '../../../../src/icons/2sxc/U3.svg';
+import * as imageU4 from '../../../../src/icons/2sxc/U4.svg';
+import * as imageU5 from '../../../../src/icons/2sxc/U5.svg';
+import * as imageU6 from '../../../../src/icons/2sxc/U6.svg';
 // font-awesome icons
 import * as anchor from '../../../../src/icons/font-awesome/anchor.svg';
 import * as file from '../../../../src/icons/font-awesome/file.svg';
@@ -30,7 +35,12 @@ const customTinyMceIcons: any = {
   'custom-image-h4': imageH4,
   'custom-image-h5': imageH5,
   'custom-image-h6': imageH6,
-  'custom-image-p': imageP,
+  'custom-image-u1': imageU1,
+  'custom-image-u2': imageU2,
+  'custom-image-u3': imageU3,
+  'custom-image-u4': imageU4,
+  'custom-image-u5': imageU5,
+  'custom-image-u6': imageU6,
   'custom-school': school,
   'custom-sitemap': sitemap,
 };

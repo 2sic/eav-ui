@@ -247,19 +247,20 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
 
   // h1, h2, etc. buttons, inspired by http://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
   // note that the complex array is needed because auto-translate only happens if the string is identical
-  [['pre', 'Preformatted', 'Preformatted'],
   /*
     custom p, H1-H6 only for the toolbar listpreview menu
     [name, buttonCommand, tooltip, text, icon]
   */
-  ['cp', 'p', 'Paragraph', 'Paragraph', 'custom-image-p'],
+  const isGerman = editor.settings.language === 'de';
+  [['pre', 'Preformatted', 'Preformatted'],
+  ['cp', 'p', 'Paragraph', 'Paragraph', 'paragraph'],
   // ['code', 'Code', 'Code'],
-  ['ch1', 'h1', 'Heading 1', 'H1', 'custom-image-h1'],
-  ['ch2', 'h2', 'Heading 2', 'H2', 'custom-image-h2'],
-  ['ch3', 'h3', 'Heading 3', 'H3', 'custom-image-h3'],
-  ['ch4', 'h4', 'Heading 4', 'H4', 'custom-image-h4'],
-  ['ch5', 'h5', 'Heading 5', 'H5', 'custom-image-h5'],
-  ['ch6', 'h6', 'Heading 6', 'H6', 'custom-image-h6']].forEach((tag) => {
+  ['ch1', 'h1', 'Heading 1', 'H1', isGerman ? 'custom-image-u1' : 'custom-image-h1'],
+  ['ch2', 'h2', 'Heading 2', 'H2', isGerman ? 'custom-image-u2' : 'custom-image-h2'],
+  ['ch3', 'h3', 'Heading 3', 'H3', isGerman ? 'custom-image-u3' : 'custom-image-h3'],
+  ['ch4', 'h4', 'Heading 4', 'H4', isGerman ? 'custom-image-u4' : 'custom-image-h4'],
+  ['ch5', 'h5', 'Heading 5', 'H5', isGerman ? 'custom-image-u5' : 'custom-image-h5'],
+  ['ch6', 'h6', 'Heading 6', 'H6', isGerman ? 'custom-image-u6' : 'custom-image-h6']].forEach((tag) => {
     editor.ui.registry.addButton(tag[0], {
       icon: tag[4],
       tooltip: tag[2],
@@ -271,6 +272,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     });
   });
 
+  console.log('buttons:', editor.ui.registry.getAll());
   // Group of buttons with an h3 to start and showing h4-6 + p
   const blockquoteButton = editor.ui.registry.getAll().buttons.blockquote;
   editor.ui.registry.addSplitButton('hgroup', {
