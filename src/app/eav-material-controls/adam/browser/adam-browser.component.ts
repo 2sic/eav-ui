@@ -118,7 +118,8 @@ export class AdamBrowserComponent implements OnInit {
 
     // TODO: when to load folders??? Before was toggle!!!
     this.items$ = this.svc.liveListCache$;
-    this.loadFileList();
+    // loading items on adam load might not be required because they are loaded when field is toggled, file uploaded...
+    // this.loadFileList();
     // TODO: when set folders??? Before was toggle!!!
     // this.folders = this.svc.folders;
 
