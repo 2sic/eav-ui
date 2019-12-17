@@ -272,6 +272,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   });
 
   // Group of buttons with an h3 to start and showing h4-6 + p
+  const blockquoteButton = editor.ui.registry.getAll().buttons.blockquote;
   editor.ui.registry.addSplitButton('hgroup', {
     ...editor.ui.registry.getAll().buttons.h4,
     presets: 'listpreview',
@@ -315,6 +316,12 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
           ...editor.ui.registry.getAll().buttons.ch6,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h6'); },
+        },
+        {
+          ...blockquoteButton,
+          type: 'choiceitem',
+          text: blockquoteButton.tooltip,
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'blockquote'); },
         },
       ];
       callback(items);
