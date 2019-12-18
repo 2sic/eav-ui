@@ -35,8 +35,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (this.currentLanguage !== this.defaultLanguage) {
       if (this.group.controls[this.config.field.name].disabled) {
         this.translateUnlink(this.config.field.name);
-      } else {
-        this.linkToDefault(this.config.field.name);
       }
     }
   }

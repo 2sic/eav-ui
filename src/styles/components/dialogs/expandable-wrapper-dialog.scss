@@ -192,19 +192,3 @@
     margin-top: 17px;
   }
 }
-
-// override for expandable field header to be visible on safari
-// as main dialog header was above it otherwise
-.field-expanded {
-  .form-header-container {
-    display: none;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(#{$edit-ui-dialog-max-height} + #{$edit-ui-dialog-header-max-height}) !important;
-
-    @media (max-width: 600px) {
-      max-height: calc(#{$edit-ui-dialog-max-height-mobile} + #{$edit-ui-dialog-header-max-height}) !important;
-    }
-  }
-}

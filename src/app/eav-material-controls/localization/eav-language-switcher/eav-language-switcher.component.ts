@@ -5,7 +5,6 @@ import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
-import { TouchScrollHelper } from './eav-language-switcher-services/touch-scroll-helper';
 import { CenterSelectedHelper } from './eav-language-switcher-services/center-selected-helper';
 import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
 import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
@@ -29,7 +28,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   private centerSelectedService: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsService: ShowShadowsHelper;
-  private touchScrollHelper: TouchScrollHelper;
 
   constructor(
     private languageService: LanguageService,
@@ -49,7 +47,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.showShadowsService = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
       this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
     this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
-    this.touchScrollHelper = new TouchScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
     this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
@@ -59,7 +56,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
 
   ngOnDestroy() {
     this.centerSelectedService.destroy();
-    this.touchScrollHelper.destroy();
     this.mouseScrollHelper.destroy();
     this.showShadowsService.destroy();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });

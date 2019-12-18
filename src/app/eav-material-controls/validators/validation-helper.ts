@@ -1,6 +1,8 @@
 import { ValidatorFn, Validators } from '@angular/forms';
+
 import { FieldSettings } from '../../shared/models/eav';
 import { CustomValidators } from './custom-validators';
+import { InputTypesConstants } from '../../shared/constants';
 
 export class ValidationHelper {
 
@@ -29,7 +31,9 @@ export class ValidationHelper {
         const validation: ValidatorFn[] = [];
 
         const required = settings.Required ? settings.Required : false;
-        if (required) {
+        const isHyperlinkLibrary = settings.InputType === InputTypesConstants.hyperlinkLibrary;
+        // hyperlink-library field will set custom required validator
+        if (required && !isHyperlinkLibrary) {
             validation.push(Validators.required);
         }
 
