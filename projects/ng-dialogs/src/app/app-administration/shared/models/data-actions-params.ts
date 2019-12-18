@@ -6,5 +6,6 @@ export interface DataActionsParams extends ICellRendererParams {
   onEdit(contentType: ContentType): void;
   onCreateOrEditMetadata(contentType: ContentType): void;
   onOpenExport(contentType: ContentType): void;
+  onOpenImport(contentType: ContentType): void;
   onDelete(contentType: ContentType): void;
 }

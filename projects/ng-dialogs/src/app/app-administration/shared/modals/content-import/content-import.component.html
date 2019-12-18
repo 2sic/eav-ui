@@ -1,0 +1,125 @@
+<!-- HEADER -->
+<div class="dialog-title-container">
+  <h3>
+    <span>Import Content / Data</span>
+    <span *ngIf="viewStateSelected > 0">&nbsp;Step {{ viewStateSelected }} of 3</span>
+  </h3>
+
+  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div>This will import content-items into 2sxc. It requires that you already defined the content-type before you try
+  importing, and that you created the import-file using the template provided by the Export. Please visit <a
+    href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
+</div>
+<!-- END HEADER -->
+
+<div [ngSwitch]="viewStateSelected">
+
+  <!-- FORM -->
+  <form #ngForm="ngForm" class="edit-form" *ngSwitchCase="1">
+    <div>
+      <button mat-button [matTooltip]="'Open file browser'" (click)="fileInput.click()">
+        <span>Choose file * </span>
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <span *ngIf="formValues.file">{{ formValues.file.name }}</span>
+      <input #fileInput type="file" (change)="fileChange($event)" class="hidden" />
+    </div>
+
+    <div>
+      <mat-label>References to pages / files</mat-label>
+      <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
+        <mat-radio-button class="radio-button" [value]="'Keep'">
+          Import links as written in the file (for example /Portals/...)
+        </mat-radio-button>
+        <mat-radio-button class="radio-button" [value]="'Resolve'">
+          Try to resolve paths to references
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div>
+      <mat-label>Clear all other entities</mat-label>
+      <mat-radio-group class="radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
+        <mat-radio-button class="radio-button" [value]="'None'">
+          Keep all entities not found in import
+        </mat-radio-button>
+        <mat-radio-button class="radio-button" [value]="'All'">
+          Remove all entities not found in import
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div>Remember to backup your DNN first!</div>
+
+    <button mat-button type="button" (click)="evaluateContent()" [disabled]="!formValues.file || !formValues.file.name">
+      Preview Import
+    </button>
+  </form>
+  <!-- END FORM -->
+
+  <!-- WAITING -->
+  <div *ngSwitchCase="0">Please wait while processing...</div>
+  <!-- END WAITING -->
+
+  <!-- EVALUATION RESULT -->
+  <div *ngSwitchCase="2">
+    <div *ngIf="evaluationResult">
+      <!-- DETAILS / STATISTICS -->
+      <div *ngIf="evaluationResult.Succeeded">
+        <h4>Try to import file '{{ formValues.file.name }}'</h4>
+        <h5>File contains:</h5>
+        <ul>
+          <li>{{ evaluationResult.Detail.DocumentElementsCount }} content-items (records/entities)</li>
+          <li>{{ evaluationResult.Detail.LanguagesInDocumentCount }} languages</li>
+          <li>{{ evaluationResult.Detail.AttributeNamesInDocument.length }} columns:
+            {{ evaluationResult.Detail.AttributeNamesInDocument.join(', ') }}</li>
+        </ul>
+        <h5>If you press Import, it will:</h5>
+        <ul>
+          <li>Create {{ evaluationResult.Detail.AmountOfEntitiesCreated }} content-items</li>
+          <li>Update {{ evaluationResult.Detail.AmountOfEntitiesUpdated }} content-items</li>
+          <li>Delete {{ evaluationResult.Detail.AmountOfEntitiesDeleted }} content-items</li>
+          <li>Ignore {{ evaluationResult.Detail.AttributeNamesNotImported.length }} columns:
+            {{ evaluationResult.Detail.AttributeNamesNotImported.join(', ') }}</li>
+        </ul>
+        <div>Note: The import validates much data and may take several minutes.</div>
+      </div>
+      <!-- END DETAILS / STATISTICS -->
+      <!-- ERRORS -->
+      <div *ngIf="!evaluationResult.Succeeded">
+        <h4>Try to import file '{{ formValues.file.name }}'</h4>
+        <ul>
+          <li *ngFor="let error of evaluationResult.Detail">
+            <div>{{ errors[error.ErrorCode] }}</div>
+            <div *ngIf="error.ErrorDetail"><i>Details: {{ error.ErrorDetail }}</i></div>
+            <div *ngIf="error.LineNumber"><i>Line-no: {{ error.LineNumber }}</i></div>
+            <div *ngIf="error.LineDetail"><i>Line-details: {{ error.LineDetail }}</i></div>
+          </li>
+        </ul>
+      </div>
+      <!-- END ERRORS -->
+      <div>
+        <button mat-icon-button type="button" (click)="back()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <button mat-button type="button" (click)="importContent()" [disabled]="!evaluationResult.Succeeded">
+          Import
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- END EVALUATION RESULT -->
+
+  <!-- IMPORT RESULT -->
+  <div *ngSwitchCase="3">
+    <div *ngIf="importResult">
+      <div *ngIf="importResult.Succeeded">Import done.</div>
+      <div *ngIf="!importResult.Succeeded">Import failed.</div>
+    </div>
+  </div>
+  <!-- END IMPORT RESULT -->
+</div>

@@ -16,6 +16,8 @@ import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { ContentExportComponent } from '../shared/modals/content-export/content-export.component';
 import { ContentExportDialogData } from '../shared/models/content-export-dialog-data.model';
+import { ContentImportDialogData } from '../shared/models/content-import-dialog-data.model';
+import { ContentImportComponent } from '../shared/modals/content-import/content-import.component';
 
 @Component({
   selector: 'app-data',
@@ -40,6 +42,7 @@ export class DataComponent implements OnInit, OnDestroy {
         onEdit: this.editContentType.bind(this),
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
         onOpenExport: this.openExport.bind(this),
+        onOpenImport: this.openImport.bind(this),
         onDelete: this.deleteContentType.bind(this),
       }
     },
@@ -55,6 +58,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private editContentTypeDialogRef: MatDialogRef<EditContentTypeComponent, any>;
   private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
+  private contentImportDialogRef: MatDialogRef<ContentImportComponent, any>;
 
   constructor(
     private dialog: MatDialog,
@@ -140,6 +144,24 @@ export class DataComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.contentExportDialogRef.afterClosed().subscribe(() => {
         console.log('Content export dialog was closed.');
+        this.fetchContentTypes();
+      }),
+    );
+  }
+
+  private openImport(contentType: ContentType) {
+    const dialogData: ContentImportDialogData = {
+      appId: this.context.appId,
+      staticName: contentType.StaticName,
+    };
+    this.contentImportDialogRef = this.dialog.open(ContentImportComponent, {
+      backdropClass: 'content-import-dialog-backdrop',
+      panelClass: ['content-import-dialog-panel', 'dialog-panel-medium'],
+      data: dialogData,
+    });
+    this.subscriptions.push(
+      this.contentImportDialogRef.afterClosed().subscribe(() => {
+        console.log('Content import dialog was closed.');
         this.fetchContentTypes();
       }),
     );

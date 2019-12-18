@@ -34,9 +34,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.onOpenExport(this.contentType);
   }
 
-  importContent() {
-    alert('Import content!');
-    // this.params.onOpenFields(this.app);
+  openImport() {
+    this.params.onOpenImport(this.contentType);
   }
 
   openPermissions() {

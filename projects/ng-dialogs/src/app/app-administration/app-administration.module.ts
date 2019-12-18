@@ -39,6 +39,8 @@ import { EditContentTypeComponent } from './shared/modals/edit-content-type/edit
 import { EavConfigurationService } from './shared/services/eav-configuration.service';
 import { ContentExportComponent } from './shared/modals/content-export/content-export.component';
 import { ContentExportService } from './shared/services/content-export.service';
+import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
+import { ContentImportService } from './shared/services/content-import.service';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,7 @@ import { ContentExportService } from './shared/services/content-export.service';
     ViewsActionsComponent,
     EditContentTypeComponent,
     ContentExportComponent,
+    ContentImportComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -71,6 +74,7 @@ import { ContentExportService } from './shared/services/content-export.service';
     ViewsActionsComponent,
     EditContentTypeComponent,
     ContentExportComponent,
+    ContentImportComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -94,6 +98,7 @@ import { ContentExportService } from './shared/services/content-export.service';
     TemplatesService,
     EavConfigurationService,
     ContentExportService,
+    ContentImportService,
   ]
 })
 export class AppAdministrationModule { }
