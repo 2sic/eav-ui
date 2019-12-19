@@ -42,6 +42,8 @@ import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
 import { ContentImportService } from './shared/services/content-import.service';
 import { PermissionsComponent } from './shared/modals/permissions/permissions.component';
+import { PermissionsService } from './shared/services/permissions.service';
+import { MetadataService } from './shared/services/metadata.service';
 
 @NgModule({
   declarations: [
@@ -102,6 +104,8 @@ import { PermissionsComponent } from './shared/modals/permissions/permissions.co
     EavConfigurationService,
     ContentExportService,
     ContentImportService,
+    PermissionsService,
+    MetadataService,
   ]
 })
 export class AppAdministrationModule { }

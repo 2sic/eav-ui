@@ -175,6 +175,8 @@ export class DataComponent implements OnInit, OnDestroy {
     const dialogData: PermissionsDialogData = {
       appId: this.context.appId,
       staticName: contentType.StaticName,
+      type: 4, // spm figure out what type is
+      keyType: 'guid', // spm figure out what keyType is
     };
     this.permissionsDialogRef = this.dialog.open(PermissionsComponent, {
       backdropClass: 'permissions-dialog-backdrop',

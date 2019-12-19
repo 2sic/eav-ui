@@ -1,1 +1,21 @@
-<p>Permissions component works</p>
+<div class="dialog-title-container">
+  <h1>Permissions</h1>
+
+  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div>
+  <button mat-button type="button" (click)="add()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-button type="button" (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+
+  <ag-grid-angular class="ag-theme-material" [rowData]="permissions" [columnDefs]="columnDefs" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true"
+    (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
+</div>
