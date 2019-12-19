@@ -18,6 +18,8 @@ import { ContentExportComponent } from '../shared/modals/content-export/content-
 import { ContentExportDialogData } from '../shared/models/content-export-dialog-data.model';
 import { ContentImportDialogData } from '../shared/models/content-import-dialog-data.model';
 import { ContentImportComponent } from '../shared/modals/content-import/content-import.component';
+import { PermissionsDialogData } from '../shared/models/permissions-dialog-data.model';
+import { PermissionsComponent } from '../shared/modals/permissions/permissions.component';
 
 @Component({
   selector: 'app-data',
@@ -43,6 +45,7 @@ export class DataComponent implements OnInit, OnDestroy {
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
         onOpenExport: this.openExport.bind(this),
         onOpenImport: this.openImport.bind(this),
+        onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteContentType.bind(this),
       }
     },
@@ -59,6 +62,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private editContentTypeDialogRef: MatDialogRef<EditContentTypeComponent, any>;
   private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
   private contentImportDialogRef: MatDialogRef<ContentImportComponent, any>;
+  private permissionsDialogRef: MatDialogRef<PermissionsComponent, any>;
 
   constructor(
     private dialog: MatDialog,
@@ -162,6 +166,24 @@ export class DataComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.contentImportDialogRef.afterClosed().subscribe(() => {
         console.log('Content import dialog was closed.');
+        this.fetchContentTypes();
+      }),
+    );
+  }
+
+  private openPermissions(contentType: ContentType) {
+    const dialogData: PermissionsDialogData = {
+      appId: this.context.appId,
+      staticName: contentType.StaticName,
+    };
+    this.permissionsDialogRef = this.dialog.open(PermissionsComponent, {
+      backdropClass: 'permissions-dialog-backdrop',
+      panelClass: ['permissions-dialog-panel', 'dialog-panel-large'],
+      data: dialogData,
+    });
+    this.subscriptions.push(
+      this.permissionsDialogRef.afterClosed().subscribe(() => {
+        console.log('Permissions dialog was closed.');
         this.fetchContentTypes();
       }),
     );

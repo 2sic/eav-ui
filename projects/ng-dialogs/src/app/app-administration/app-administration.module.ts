@@ -41,6 +41,7 @@ import { ContentExportComponent } from './shared/modals/content-export/content-e
 import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
 import { ContentImportService } from './shared/services/content-import.service';
+import { PermissionsComponent } from './shared/modals/permissions/permissions.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ContentImportService } from './shared/services/content-import.service';
     EditContentTypeComponent,
     ContentExportComponent,
     ContentImportComponent,
+    PermissionsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -75,6 +77,7 @@ import { ContentImportService } from './shared/services/content-import.service';
     EditContentTypeComponent,
     ContentExportComponent,
     ContentImportComponent,
+    PermissionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

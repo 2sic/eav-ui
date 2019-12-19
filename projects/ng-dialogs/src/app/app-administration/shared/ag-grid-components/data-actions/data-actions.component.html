@@ -11,10 +11,11 @@
     <button mat-button [matTooltip]="'Export'" (click)="openExport()" class="almost-implemented">
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-button [matTooltip]="'Import'" (click)="openImport()" class="not-implemented">
+    <button mat-button [matTooltip]="'Import'" (click)="openImport()">
       <mat-icon>cloud_upload</mat-icon>
     </button>
-    <button mat-button [matTooltip]="'Permissions'" (click)="openPermissions()" class="not-implemented">
+    <button mat-button [matTooltip]="'Permissions'" *ngIf="enableAppFeatures && isGuid(contentType.StaticName)"
+      (click)="openPermissions()" class="not-implemented">
       <mat-icon>person</mat-icon>
     </button>
   </div>
