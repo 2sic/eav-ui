@@ -44,6 +44,8 @@ import { ContentImportService } from './shared/services/content-import.service';
 import { PermissionsComponent } from './shared/modals/permissions/permissions.component';
 import { PermissionsService } from './shared/services/permissions.service';
 import { MetadataService } from './shared/services/metadata.service';
+import { PermissionsGrantComponent } from './shared/ag-grid-components/permissions-grant/permissions-grant.component';
+import { EntitiesService } from './shared/services/entities.service';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,7 @@ import { MetadataService } from './shared/services/metadata.service';
     ContentExportComponent,
     ContentImportComponent,
     PermissionsComponent,
+    PermissionsGrantComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -80,6 +83,7 @@ import { MetadataService } from './shared/services/metadata.service';
     ContentExportComponent,
     ContentImportComponent,
     PermissionsComponent,
+    PermissionsGrantComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -106,6 +110,7 @@ import { MetadataService } from './shared/services/metadata.service';
     ContentImportService,
     PermissionsService,
     MetadataService,
+    EntitiesService,
   ]
 })
 export class AppAdministrationModule { }

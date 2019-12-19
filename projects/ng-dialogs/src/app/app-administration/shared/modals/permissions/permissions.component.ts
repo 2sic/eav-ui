@@ -5,6 +5,8 @@ import { GridReadyEvent, GridSizeChangedEvent, ColDef, AllCommunityModules } fro
 import { PermissionsDialogData } from '../../models/permissions-dialog-data.model';
 import { PermissionsService } from '../../services/permissions.service';
 import { Permission } from '../../models/permission.model';
+import { PermissionsGrantComponent } from '../../ag-grid-components/permissions-grant/permissions-grant.component';
+import { PermissionsGrantParams } from '../../models/permissions-grant-params';
 
 @Component({
   selector: 'app-permissions',
@@ -17,9 +19,15 @@ export class PermissionsComponent implements OnInit {
   columnDefs: ColDef[] = [
     { headerName: 'Name', field: 'Title', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this), },
     { headerName: 'Condition', field: 'Identity', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this), },
-    { headerName: 'Grant', field: 'Grant', cellClass: 'clickable-with-button', onCellClicked: this.handleNameCellClicked.bind(this), },
+    {
+      headerName: 'Grant', cellClass: 'clickable-with-button', onCellClicked: this.handleNameCellClicked.bind(this),
+      cellRenderer: 'permissionsGrantComponent', cellRendererParams: <PermissionsGrantParams>{
+        onDelete: this.deletePermission.bind(this),
+      },
+    },
   ];
   frameworkComponents = {
+    permissionsGrantComponent: PermissionsGrantComponent,
   };
   modules = AllCommunityModules;
 
@@ -54,9 +62,12 @@ export class PermissionsComponent implements OnInit {
     this.fetchPermissions();
   }
 
-  tryToDelete(item) {
-    // if (confirm("Delete '" + item.Title + "' (" + item.Id + ') ?')) // todo: probably change .Title to ._Title
-    //   svc.delete(item.Id);
+  private deletePermission(permission: Permission) {
+    if (confirm(`Delete '${permission.Title}' (${permission.Id})?`)) {
+      this.permissionsService.delete(this.permissionsDialogData.appId, permission.Id).subscribe(() => {
+        this.fetchPermissions();
+      });
+    }
   }
 
   closeDialog() {
