@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../../models/content-type.model';
+import { DataFieldsParams } from '../../models/data-fields-params';
 
 @Component({
   selector: 'app-data-fields',
@@ -10,10 +10,10 @@ import { ContentType } from '../../models/content-type.model';
   styleUrls: ['./data-fields.component.scss']
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams;
+  params: DataFieldsParams;
   contentType: ContentType;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: DataFieldsParams) {
     this.params = params;
     this.contentType = params.data;
   }
@@ -22,8 +22,7 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openFields() {
-    alert('Open fields!');
-    // this.params.onOpenFields(this.app);
+  editFields() {
+    this.params.onEditFields(this.contentType);
   }
 }

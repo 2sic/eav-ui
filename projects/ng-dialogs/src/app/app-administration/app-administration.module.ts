@@ -46,6 +46,7 @@ import { PermissionsService } from './shared/services/permissions.service';
 import { MetadataService } from './shared/services/metadata.service';
 import { PermissionsGrantComponent } from './shared/ag-grid-components/permissions-grant/permissions-grant.component';
 import { EntitiesService } from './shared/services/entities.service';
+import { EditFieldsComponent } from './shared/modals/edit-fields/edit-fields.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { EntitiesService } from './shared/services/entities.service';
     ContentImportComponent,
     PermissionsComponent,
     PermissionsGrantComponent,
+    EditFieldsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -84,6 +86,7 @@ import { EntitiesService } from './shared/services/entities.service';
     ContentImportComponent,
     PermissionsComponent,
     PermissionsGrantComponent,
+    EditFieldsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

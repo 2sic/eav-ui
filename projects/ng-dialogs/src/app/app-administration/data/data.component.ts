@@ -20,6 +20,9 @@ import { ContentImportDialogData } from '../shared/models/content-import-dialog-
 import { ContentImportComponent } from '../shared/modals/content-import/content-import.component';
 import { PermissionsDialogData } from '../shared/models/permissions-dialog-data.model';
 import { PermissionsComponent } from '../shared/modals/permissions/permissions.component';
+import { DataFieldsParams } from '../shared/models/data-fields-params';
+import { EditFieldsDialogData } from '../shared/models/edit-fields-dialog-data.model';
+import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.component';
 
 @Component({
   selector: 'app-data',
@@ -38,7 +41,11 @@ export class DataComponent implements OnInit, OnDestroy {
       }
     },
     { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
-    { headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent' },
+    {
+      headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
+        onEditFields: this.editFields.bind(this),
+      }
+    },
     {
       headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
         onEdit: this.editContentType.bind(this),
@@ -59,6 +66,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private scope: string;
   private subscriptions: Subscription[] = [];
+  private editFieldsDialogRef: MatDialogRef<EditFieldsComponent, any>;
   private editContentTypeDialogRef: MatDialogRef<EditContentTypeComponent, any>;
   private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
   private contentImportDialogRef: MatDialogRef<ContentImportComponent, any>;
@@ -92,6 +100,28 @@ export class DataComponent implements OnInit, OnDestroy {
     const contentType = <ContentType>params.data;
     alert('Open content type data!');
     // open content type data modal
+  }
+
+  private addItem(contentType: ContentType) {
+    alert('Open Edit Ui');
+  }
+
+  private editFields(contentType: ContentType) {
+    const dialogData: EditFieldsDialogData = {
+      appId: this.context.appId,
+      staticName: contentType.StaticName,
+    };
+    this.editFieldsDialogRef = this.dialog.open(EditFieldsComponent, {
+      backdropClass: 'edit-fields-dialog-backdrop',
+      panelClass: ['edit-fields-dialog-panel', 'dialog-panel-large'],
+      data: dialogData,
+    });
+    this.subscriptions.push(
+      this.editFieldsDialogRef.afterClosed().subscribe(() => {
+        console.log('Edit fields dialog was closed.');
+        this.fetchContentTypes();
+      }),
+    );
   }
 
   private editContentType(contentType: ContentType) {
@@ -205,10 +235,6 @@ export class DataComponent implements OnInit, OnDestroy {
       .subscribe((contentTypes: ContentType[]) => {
         this.contentTypes = contentTypes;
       });
-  }
-
-  private addItem(contentType: ContentType) {
-    alert('Open Edit Ui');
   }
 
 }
