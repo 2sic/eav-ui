@@ -109,7 +109,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private editFields(contentType: ContentType) {
     const dialogData: EditFieldsDialogData = {
       appId: this.context.appId,
-      staticName: contentType.StaticName,
+      contentType: contentType,
     };
     this.editFieldsDialogRef = this.dialog.open(EditFieldsComponent, {
       backdropClass: 'edit-fields-dialog-backdrop',

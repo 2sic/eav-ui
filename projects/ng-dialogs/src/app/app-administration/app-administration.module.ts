@@ -47,6 +47,7 @@ import { MetadataService } from './shared/services/metadata.service';
 import { PermissionsGrantComponent } from './shared/ag-grid-components/permissions-grant/permissions-grant.component';
 import { EntitiesService } from './shared/services/entities.service';
 import { EditFieldsComponent } from './shared/modals/edit-fields/edit-fields.component';
+import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { EditFieldsComponent } from './shared/modals/edit-fields/edit-fields.com
     PermissionsService,
     MetadataService,
     EntitiesService,
+    ContentTypesFieldsService,
   ]
 })
 export class AppAdministrationModule { }
