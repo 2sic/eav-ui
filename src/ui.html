@@ -18,6 +18,10 @@
       }
     })();
   </script>
+  <script>
+    // create an empty _jsApi so $2sxc can initialize - must fill afterwards!
+    window._jsApi = {};
+  </script>
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -31,6 +35,7 @@
 
     var apiUrl = reqParam("portalroot") + "desktopmodules/2sxc/api/";
     createFakeSf(apiUrl);
+    loadEnvironment();
 
     /**
      * first check in local storage if we have this parameter
@@ -68,6 +73,17 @@
           getServiceRoot: function () { return apiUrl; }
         }
       }
+    }
+
+    // New initializer for 10.25
+    function loadEnvironment() {
+      var jsApi = {
+          page: $2sxc.urlParams.require("tid"),
+          rvt: $2sxc.urlParams.require("rvt"),
+          root: $2sxc.urlParams.require("portalroot"),
+          api: $2sxc.urlParams.require("portalroot") + "desktopmodules/2sxc/api/"
+      }
+      $2sxc.env.load(jsApi);
     }
   </script>
 </head>
