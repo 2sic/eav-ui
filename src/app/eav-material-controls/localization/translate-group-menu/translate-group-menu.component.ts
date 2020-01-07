@@ -371,7 +371,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * translate a field configuration (labels, validation, )
    * @param currentLanguage
    */
-  private translateAllConfiguration(currentLanguage: string) {
+  private translateAllConfiguration() {
     this.config.field.settings = LocalizationHelper.translateSettings(this.config.field.fullSettings,
       this.currentLanguage, this.defaultLanguage);
     this.config.field.label = this.config.field.settings.Name || null;
@@ -384,7 +384,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
 
-        this.translateAllConfiguration(this.currentLanguage);
+        this.translateAllConfiguration();
         this.refreshControlConfig(this.config.field.name);
       })
     );
@@ -395,7 +395,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.defaultLanguage$.subscribe(defaultLanguage => {
         this.defaultLanguage = defaultLanguage;
 
-        this.translateAllConfiguration(this.currentLanguage);
+        this.translateAllConfiguration();
         this.refreshControlConfig(this.config.field.name);
       })
     );
