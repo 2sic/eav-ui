@@ -10,6 +10,8 @@ import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/mode
 import { EavGroupAssignment } from '../../../shared/models/eav/eav-group-assignment';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { ValidationHelper } from '../../validators/validation-helper';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -53,6 +55,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLang => {
         this.currentLanguage = currentLang;
+        this.translateAllConfiguration();
         if (this.fieldConfig.isParentGroup) { this.calculateItemName(); }
         this.calculateDescription();
       }),
@@ -111,5 +114,13 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   changeAnchorTarget(event: MouseEvent) {
     (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
+  }
+
+  private translateAllConfiguration() {
+    this.config.field.settings = LocalizationHelper.translateSettings(this.config.field.fullSettings,
+      this.currentLanguage, this.defaultLanguage);
+    this.config.field.label = this.config.field.settings.Name || null;
+    this.config.field.validation = ValidationHelper.getValidations(this.config.field.settings);
+    this.config.field.required = ValidationHelper.isRequired(this.config.field.settings);
   }
 }
