@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
@@ -68,6 +69,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
   ],
   imports: [
     AppsManagementRoutingModule,
+    MatDialogModule,
     CommonModule,
     AgGridModule.withComponents([]),
     MatButtonModule,

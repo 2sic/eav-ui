@@ -7,8 +7,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AppsManagementModule } from './apps-management/apps-management.module';
-import { AppAdministrationModule } from './app-administration/app-administration.module';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 import { Context } from './shared/context/context';
 import { adminEavServiceFactory } from './shared/factories/admin-eav-service.factory';
@@ -25,8 +23,6 @@ import { adminEavServiceFactory } from './shared/factories/admin-eav-service.fac
     HttpClientModule,
     MatDialogModule,
     BrowserAnimationsModule,
-    AppsManagementModule,
-    AppAdministrationModule,
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector], multi: true },

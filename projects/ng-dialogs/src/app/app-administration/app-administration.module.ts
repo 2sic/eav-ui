@@ -11,6 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -91,6 +92,7 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
   ],
   imports: [
     AppAdministrationRoutingModule,
+    MatDialogModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,
