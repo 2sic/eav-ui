@@ -29,4 +29,10 @@ export class ContentTypesFieldsService {
         return fields;
       }));
   }
+
+  reOrder(appId: number, idArray: number[], contentType: ContentType) {
+    console.log(idArray);
+    return this.http.get('/desktopmodules/2sxc/api/eav/contenttype/reorder',
+      { params: { appid: appId.toString(), contentTypeId: contentType.Id.toString(), newSortOrder: JSON.stringify(idArray) } });
+  }
 }

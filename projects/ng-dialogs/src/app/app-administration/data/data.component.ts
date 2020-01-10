@@ -124,7 +124,7 @@ export class DataComponent implements OnInit, OnDestroy {
     );
   }
 
-  private editContentType(contentType: ContentType) {
+  editContentType(contentType: ContentType) {
     const dialogData: EditContentTypeDialogData = {
       context: this.context,
       contentType: contentType,
