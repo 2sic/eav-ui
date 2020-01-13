@@ -10,6 +10,10 @@ const appRoutes: Routes = [
     path: ':zoneId/:appId/app',
     loadChildren: () => import('./app-administration/app-administration.module').then(m => m.AppAdministrationModule)
   },
+  {
+    path: ':zoneId/:appId/code',
+    loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
+  },
 ];
 
 @NgModule({
