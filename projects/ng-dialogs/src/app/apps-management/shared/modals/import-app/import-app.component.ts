@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { ImportAppService } from '../../services/import-app.service';
-import { ImportAppDialogData } from '../../models/import-app-dialog-data.model';
 import { ImportAppResult } from '../../models/import-app-result.model';
 
 @Component({
@@ -17,7 +16,6 @@ export class ImportAppComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<ImportAppComponent>,
-    @Inject(MAT_DIALOG_DATA) public importAppDialogData: ImportAppDialogData,
     private importAppService: ImportAppService,
   ) { }
 
@@ -31,8 +29,7 @@ export class ImportAppComponent implements OnInit, OnDestroy {
   importApp(changedName?: string) {
     this.isImporting = true;
 
-    this.importAppService.importApp(this.importFile, changedName,
-      this.importAppDialogData.context.appId, this.importAppDialogData.context.zoneId)
+    this.importAppService.importApp(this.importFile, changedName)
       .subscribe((result: ImportAppResult) => {
         this.isImporting = false;
 

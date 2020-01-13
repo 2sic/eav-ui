@@ -6,6 +6,8 @@
   </button>
 </div>
 
+<router-outlet></router-outlet>
+
 <mat-tab-group dynamicHeight *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
   <mat-tab>
     <div *matTabLabel class="tab-container" [matTooltip]="'Getting Started'">
@@ -21,7 +23,7 @@
       <mat-icon>list</mat-icon>
       <span>Data</span>
     </div>
-    <app-data *matTabContent [context]="appAdministrationDialogData.context"></app-data>
+    <app-data *matTabContent></app-data>
   </mat-tab>
 
   <mat-tab *ngIf="!dialogSettings.IsContent">
@@ -29,7 +31,7 @@
       <mat-icon>filter_list</mat-icon>
       <span>Queries</span>
     </div>
-    <app-queries *matTabContent [context]="appAdministrationDialogData.context"></app-queries>
+    <app-queries *matTabContent></app-queries>
   </mat-tab>
 
   <mat-tab>
@@ -37,7 +39,7 @@
       <mat-icon>image</mat-icon>
       <span>Views</span>
     </div>
-    <app-views *matTabContent [context]="appAdministrationDialogData.context"></app-views>
+    <app-views *matTabContent></app-views>
   </mat-tab>
 
   <mat-tab *ngIf="!dialogSettings.IsContent">

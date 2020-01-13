@@ -7,7 +7,7 @@ import { Context } from '../context/context';
 @Injectable()
 export class HttpHeaderInterceptor implements HttpInterceptor {
   constructor(
-    public context: Context,
+    private context: Context,
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

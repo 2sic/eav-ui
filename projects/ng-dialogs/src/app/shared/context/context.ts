@@ -64,7 +64,7 @@ export class Context {
   private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() public context: Context) {
-    console.log('Context.contstructor');
+    console.log('Context.constructor');
     if (context) { this.parent = context; }
   }
 

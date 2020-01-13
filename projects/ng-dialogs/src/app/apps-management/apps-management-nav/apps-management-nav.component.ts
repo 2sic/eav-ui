@@ -1,11 +1,9 @@
-import { Component, OnInit, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
-
-import { AppsManagementDialogData } from '../shared/models/apps-management-dialog-data.model';
-import { AppsManagementDialogParamsService } from '../shared/services/apps-management-dialog-params.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -14,27 +12,24 @@ import { AppsManagementDialogParamsService } from '../shared/services/apps-manag
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
   tabs = ['list', 'settings', 'features', 'sxc-insights']; // tabs order has to match template
-  onChangeTab = new EventEmitter();
   tabIndex: number;
-  onOpenApp = new EventEmitter();
+
   private subscriptions: Subscription[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
-    @Inject(MAT_DIALOG_DATA) public appsManagementDialogData: AppsManagementDialogData,
-    private appsManagementDialogParamsService: AppsManagementDialogParamsService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.appsManagementDialogParamsService.context = this.appsManagementDialogData.context;
+    // set tab initially
+    this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
+
     this.subscriptions.push(
-      this.appsManagementDialogData.tabPath$.subscribe(tabPath => {
-        console.log('Apps management tab changed:', tabPath);
-        this.tabIndex = this.tabs.indexOf(tabPath);
-      }),
-      // skip first emit because it will be undefined as BehaviorSubject was just created
-      this.appsManagementDialogParamsService.openedAppId$$.pipe(skip(1)).subscribe(openedAppId => {
-        this.onOpenApp.emit(openedAppId);
+      // change tab when route changed
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+        this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
       }),
     );
   }
@@ -42,10 +37,6 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subscriptions = null;
-    this.onChangeTab.complete();
-    this.onChangeTab = null;
-    this.onOpenApp.complete();
-    this.onOpenApp = null;
   }
 
   closeDialog() {
@@ -53,7 +44,8 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
   }
 
   changeTab(event: MatTabChangeEvent) {
-    this.onChangeTab.emit(this.tabs[event.index]);
+    const path = this.tabs[event.index];
+    this.router.navigate([path], { relativeTo: this.route });
   }
 
 }

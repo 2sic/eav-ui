@@ -1,7 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
 
-import { Context } from '../../shared/context/context';
 import { Query } from '../shared/models/query.model';
 import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
 import { PipelinesService } from '../shared/services/pipelines.service';
@@ -12,15 +11,14 @@ import { PipelinesService } from '../shared/services/pipelines.service';
   styleUrls: ['./queries.component.scss']
 })
 export class QueriesComponent implements OnInit {
-  @Input() context: Context;
   queries: Query[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'Id', cellClass: 'clickable', width: 50, onCellClicked: this.handleNameClicked.bind(this) },
-    { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.handleNameClicked.bind(this) },
+    { headerName: 'ID', field: 'Id', cellClass: 'clickable', width: 50, onCellClicked: this.openVisualQueryDesigner.bind(this) },
+    { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.openVisualQueryDesigner.bind(this) },
     {
       headerName: 'Description', field: 'Description', cellClass: 'clickable-with-button',
-      onCellClicked: this.handleNameClicked.bind(this), cellRenderer: 'queriesDescriptionComponent',
+      onCellClicked: this.openVisualQueryDesigner.bind(this), cellRenderer: 'queriesDescriptionComponent',
     },
   ];
   frameworkComponents = {
@@ -35,7 +33,7 @@ export class QueriesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.pipelinesService.getAll(this.context.appId, this.contentType).subscribe((queries: Query[]) => {
+    this.pipelinesService.getAll(this.contentType).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
   }
@@ -48,7 +46,7 @@ export class QueriesComponent implements OnInit {
     params.api.sizeColumnsToFit();
   }
 
-  private handleNameClicked() {
+  private openVisualQueryDesigner() {
     alert('Open visual query designer');
   }
 }

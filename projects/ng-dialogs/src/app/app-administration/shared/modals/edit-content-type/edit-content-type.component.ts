@@ -45,7 +45,7 @@ export class EditContentTypeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.contentTypesService.save(this.contentType, this.editContentTypeDialogData.context.appId).subscribe((result: boolean) => {
+    this.contentTypesService.save(this.contentType).subscribe((result: boolean) => {
       this.closeDialog();
     });
   }

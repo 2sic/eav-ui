@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
 import { Context } from './shared/context/context';
 
 @Component({
@@ -6,13 +7,12 @@ import { Context } from './shared/context/context';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  constructor(context: Context) {
-    context.initRoot();
-   }
-
-  ngOnInit() {
+  constructor(
+    private context: Context,
+  ) {
+    this.context.initRoot();
   }
 
 }

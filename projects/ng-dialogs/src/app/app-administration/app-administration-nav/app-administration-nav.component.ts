@@ -1,11 +1,12 @@
-import { Component, OnInit, EventEmitter, Inject, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 
-import { AppAdministrationDialogData } from '../shared/models/app-administration-dialog-data.model';
 import { DialogSettings } from '../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -14,41 +15,42 @@ import { AppDialogConfigService } from '../shared/services/app-dialog-config.ser
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app', 'global']; // tabs has to match template and filter below
-  onChangeTab = new EventEmitter();
   tabIndex: number;
   dialogSettings: DialogSettings;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
-    @Inject(MAT_DIALOG_DATA) public appAdministrationDialogData: AppAdministrationDialogData,
     private appDialogConfigService: AppDialogConfigService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.appDialogConfigService.getDialogSettings(this.appAdministrationDialogData.context.appId)
-      .subscribe((dialogSettings: DialogSettings) => {
+    // set tab initially
+    this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
+
+    this.subscriptions.push(
+      // change tab when route changed
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+        this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
+      }),
+
+      this.appDialogConfigService.getDialogSettings().subscribe((dialogSettings: DialogSettings) => {
         if (dialogSettings.IsContent) {
           this.tabs = this.tabs.filter(tab => {
             return !(tab === 'queries' || tab === 'web-api' || tab === 'app');
           });
         }
         this.dialogSettings = dialogSettings; // needed to filter tabs
-
-        this.subscriptions.push(
-          this.appAdministrationDialogData.tabPath$.subscribe(tabPath => {
-            console.log('App administration tab changed:', tabPath);
-            this.tabIndex = this.tabs.indexOf(tabPath);
-          }),
-        );
-      });
+      }),
+    );
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subscriptions = null;
-    this.onChangeTab.complete();
-    this.onChangeTab = null;
   }
 
   closeDialog() {
@@ -56,6 +58,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   }
 
   changeTab(event: MatTabChangeEvent) {
-    this.onChangeTab.emit(this.tabs[event.index]);
+    const path = this.tabs[event.index];
+    this.router.navigate([path], { relativeTo: this.route });
   }
 }

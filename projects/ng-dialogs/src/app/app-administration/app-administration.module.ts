@@ -22,8 +22,6 @@ import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { AppAdministrationEntryComponent } from './app-administration-entry/app-administration-entry.component';
-import { AppAdministrationTabPickerComponent } from './app-administration-tab-picker/app-administration-tab-picker.component';
-import { AppAdministrationParamsService } from './shared/services/app-administration-params.service';
 import { Context } from '../shared/context/context';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { DataNameComponent } from './shared/ag-grid-components/data-name/data-name.component';
@@ -61,7 +59,6 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
     AppConfigurationComponent,
     GlobalSettingsComponent,
     AppAdministrationEntryComponent,
-    AppAdministrationTabPickerComponent,
     DataNameComponent,
     DataFieldsComponent,
     DataActionsComponent,
@@ -105,7 +102,6 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
     MatRadioModule,
   ],
   providers: [
-    AppAdministrationParamsService,
     Context,
     AppDialogConfigService,
     ContentTypesService,

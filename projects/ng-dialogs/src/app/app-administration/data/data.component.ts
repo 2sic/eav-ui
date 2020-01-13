@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
@@ -30,7 +30,6 @@ import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.co
   styleUrls: ['./data.component.scss']
 })
 export class DataComponent implements OnInit, OnDestroy {
-  @Input() context: Context;
   contentTypes: ContentType[];
 
   columnDefs: ColDef[] = [
@@ -76,6 +75,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private contentTypesService: ContentTypesService,
     private eavConfigurationService: EavConfigurationService,
+    private context: Context,
   ) { }
 
   ngOnInit() {
@@ -224,14 +224,14 @@ export class DataComponent implements OnInit, OnDestroy {
   private deleteContentType(contentType: ContentType) {
     console.log('Delete content type', contentType);
     if (confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) {
-      this.contentTypesService.delete(contentType, this.context.appId).subscribe((result: boolean) => {
+      this.contentTypesService.delete(contentType).subscribe((result: boolean) => {
         this.fetchContentTypes();
       });
     }
   }
 
   private fetchContentTypes() {
-    this.contentTypesService.retrieveContentTypes(this.context.appId, this.scope)
+    this.contentTypesService.retrieveContentTypes(this.scope)
       .subscribe((contentTypes: ContentType[]) => {
         this.contentTypes = contentTypes;
       });

@@ -1,10 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
-import { AppsManagementDialogParamsService } from '../shared/services/apps-management-dialog-params.service';
 import { EnableLanguagesComponent } from '../shared/modals/enable-languages/enable-languages.component';
-import { EnableLanguagesDialogData } from '../shared/models/enable-languages-dialog-data.model';
 
 @Component({
   selector: 'app-zone-settings',
@@ -17,7 +15,7 @@ export class ZoneSettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialog: MatDialog,
-    private appsManagementDialogParamsService: AppsManagementDialogParamsService,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -33,13 +31,12 @@ export class ZoneSettingsComponent implements OnInit, OnDestroy {
   }
 
   openLanguages() {
-    const languagesDialogData: EnableLanguagesDialogData = {
-      context: this.appsManagementDialogParamsService.context,
-    };
     this.languagesDialogRef = this.dialog.open(EnableLanguagesComponent, {
       backdropClass: 'enable-languages-dialog-backdrop',
       panelClass: ['enable-languages-dialog-panel', 'dialog-panel-medium'],
-      data: languagesDialogData,
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
     });
     this.subscriptions.push(
       this.languagesDialogRef.afterClosed().subscribe(() => {

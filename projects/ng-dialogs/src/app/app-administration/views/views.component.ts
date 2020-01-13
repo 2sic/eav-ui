@@ -1,7 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
 
-import { Context } from '../../shared/context/context';
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
@@ -13,7 +12,6 @@ import { TemplatesService } from '../shared/services/templates.service';
   styleUrls: ['./views.component.scss']
 })
 export class ViewsComponent implements OnInit {
-  @Input() context: Context;
   views: View[];
 
   columnDefs: ColDef[] = [
@@ -36,7 +34,7 @@ export class ViewsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.templatesService.getAll(this.context.appId).subscribe((views: View[]) => {
+    this.templatesService.getAll().subscribe((views: View[]) => {
       this.views = views;
     });
   }

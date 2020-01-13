@@ -1,8 +1,6 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { EnableLanguagesDialogData } from '../../models/enable-languages-dialog-data.model';
 import { EnableLanguagesService } from '../../services/enable-languages.service';
 import { EnableLanguage } from '../../models/enable-language.model';
 import { EnableLanguagesStatusComponent } from '../../ag-grid-components/enable-languages-status/enable-languages-status.component';
@@ -32,7 +30,6 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private enableLanguagesDialogData: EnableLanguagesDialogData,
     private languagesService: EnableLanguagesService,
   ) { }
 
