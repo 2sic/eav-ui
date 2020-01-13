@@ -1,11 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent } from '@ag-grid-community/all-modules';
+import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi } from '@ag-grid-community/all-modules';
 
 import { EditFieldsDialogData } from '../../models/edit-fields-dialog-data.model';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
 import { Field } from '../../models/field.model';
-import { Context } from '../../../../shared/context/context';
 
 @Component({
   selector: 'app-edit-fields',
@@ -16,7 +15,7 @@ export class EditFieldsComponent implements OnInit {
   fields: Field[];
   enableTextSelection = true;
 
-  private gridApi;
+  private gridApi: GridApi;
   columnDefs: ColDef[] = [
     { headerName: 'Title', field: 'IsTitle' },
     { headerName: 'Static Name', field: 'StaticName' },
@@ -55,7 +54,7 @@ export class EditFieldsComponent implements OnInit {
   onRowDragEnd(event: RowDragEvent) {
     this.enableTextSelection = true;
     const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(this.editFieldsDialogData.appId, idArray, this.editFieldsDialogData.contentType)
+    this.contentTypesFieldsService.reOrder(idArray, this.editFieldsDialogData.contentType)
       .subscribe((res: boolean) => {
         console.log('onRowDragEnd reOrder res:', res);
         this.fetchFields();
@@ -94,7 +93,7 @@ export class EditFieldsComponent implements OnInit {
   }
 
   private fetchFields() {
-    this.contentTypesFieldsService.getFields(this.editFieldsDialogData.appId, this.editFieldsDialogData.contentType)
+    this.contentTypesFieldsService.getFields(this.editFieldsDialogData.contentType)
       .subscribe((fields: Field[]) => {
         this.fields = fields;
       });

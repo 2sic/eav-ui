@@ -2,16 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ContentImport, ImportContentRequest } from '../models/content-import.model';
+import { Context } from '../../../shared/context/context';
 
 @Injectable()
 export class ContentImportService {
   constructor(
     private http: HttpClient,
+    private context: Context,
   ) { }
 
   async evaluateContent(formValues: ContentImport) {
     const requestData: ImportContentRequest = {
-      AppId: formValues.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
+      AppId: this.context.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
       ContentType: formValues.contentType, ContentBase64: await this.toBase64(formValues.file),
       ResourcesReferences: formValues.resourcesReferences, ClearEntities: formValues.clearEntities,
     };
@@ -20,7 +22,7 @@ export class ContentImportService {
 
   async importContent(formValues: ContentImport) {
     const requestData: ImportContentRequest = {
-      AppId: formValues.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
+      AppId: this.context.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
       ContentType: formValues.contentType, ContentBase64: await this.toBase64(formValues.file),
       ResourcesReferences: formValues.resourcesReferences, ClearEntities: formValues.clearEntities,
     };

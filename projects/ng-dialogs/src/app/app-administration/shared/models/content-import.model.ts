@@ -1,5 +1,4 @@
 export class ContentImport {
-  appId: number;
   defaultLanguage: string;
   contentType: string;
   file: File;

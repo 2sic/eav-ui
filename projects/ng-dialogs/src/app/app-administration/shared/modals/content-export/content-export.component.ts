@@ -17,7 +17,7 @@ export class ContentExportComponent implements OnInit {
     { key: 'en-US', value: 'en-Us' },
     { key: 'en-US', value: 'en-Us' },
   ];
-  itemIds = []; // spm Figure out how to get to list of ids and what it means
+  itemIds: number[] = []; // spm Figure out how to get to list of ids and what it means
   hasIdList: boolean; // spm Figure out how to get to list of ids and what it means
 
   constructor(
@@ -27,7 +27,6 @@ export class ContentExportComponent implements OnInit {
   ) {
     this.hasIdList = (Array.isArray(this.itemIds) && this.itemIds.length > 0);
     this.formValues = {
-      appId: this.contentExportDialogData.appId,
       defaultLanguage: 'en-US', // spm Figure out what default language is
       contentTypeStaticName: this.contentExportDialogData.staticName,
       language: 'All',
@@ -41,15 +40,12 @@ export class ContentExportComponent implements OnInit {
   }
 
   exportContent() {
-    // http://petar-pc2.sistemi.corp/en-us/desktopmodules/2sxc/api/eav/ContentExport/ExportContent
-    // ?appId=17&language=&defaultLanguage=en-US&contentType=80adb152-efad-4aa4-855e-74c5ef230e1f
-    // &recordExport=All&resourcesReferences=Link&languageReferences=Link
     this.contentExportService.exportContent(this.formValues,
       this.hasIdList && this.formValues.recordExport === 'Selection' ? this.itemIds : null);
   }
 
   exportJson() {
-    this.contentExportService.exportJson(this.contentExportDialogData.appId, this.formValues.contentTypeStaticName);
+    this.contentExportService.exportJson(this.formValues.contentTypeStaticName);
   }
 
   closeDialog() {

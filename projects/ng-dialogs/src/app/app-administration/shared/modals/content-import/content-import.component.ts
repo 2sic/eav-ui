@@ -41,7 +41,6 @@ export class ContentImportComponent implements OnInit {
   ) {
     this.viewStateSelected = this.viewStates.default;
     this.formValues = {
-      appId: this.contentImportDialogData.appId,
       defaultLanguage: 'en-US', // spm Figure out what the default language is
       contentType: this.contentImportDialogData.staticName,
       file: null,

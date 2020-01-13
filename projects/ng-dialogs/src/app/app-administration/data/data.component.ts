@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
@@ -76,6 +76,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private eavConfigurationService: EavConfigurationService,
     private context: Context,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -108,12 +109,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private editFields(contentType: ContentType) {
     const dialogData: EditFieldsDialogData = {
-      appId: this.context.appId,
       contentType: contentType,
     };
     this.editFieldsDialogRef = this.dialog.open(EditFieldsComponent, {
       backdropClass: 'edit-fields-dialog-backdrop',
       panelClass: ['edit-fields-dialog-panel', 'dialog-panel-large'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
       data: dialogData,
     });
     this.subscriptions.push(
@@ -126,12 +129,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   editContentType(contentType: ContentType) {
     const dialogData: EditContentTypeDialogData = {
-      context: this.context,
       contentType: contentType,
     };
     this.editContentTypeDialogRef = this.dialog.open(EditContentTypeComponent, {
       backdropClass: 'edit-content-type-dialog-backdrop',
       panelClass: ['edit-content-type-dialog-panel', 'dialog-panel-small'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
       data: dialogData,
     });
     this.subscriptions.push(
@@ -167,12 +172,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openExport(contentType: ContentType) {
     const dialogData: ContentExportDialogData = {
-      appId: this.context.appId,
       staticName: contentType.StaticName,
     };
     this.contentExportDialogRef = this.dialog.open(ContentExportComponent, {
       backdropClass: 'content-export-dialog-backdrop',
       panelClass: ['content-export-dialog-panel', 'dialog-panel-medium'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
       data: dialogData,
     });
     this.subscriptions.push(
@@ -185,12 +192,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openImport(contentType: ContentType) {
     const dialogData: ContentImportDialogData = {
-      appId: this.context.appId,
       staticName: contentType.StaticName,
     };
     this.contentImportDialogRef = this.dialog.open(ContentImportComponent, {
       backdropClass: 'content-import-dialog-backdrop',
       panelClass: ['content-import-dialog-panel', 'dialog-panel-medium'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
       data: dialogData,
     });
     this.subscriptions.push(
@@ -203,7 +212,6 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openPermissions(contentType: ContentType) {
     const dialogData: PermissionsDialogData = {
-      appId: this.context.appId,
       staticName: contentType.StaticName,
       type: 4, // spm figure out what type is
       keyType: 'guid', // spm figure out what keyType is
@@ -211,6 +219,9 @@ export class DataComponent implements OnInit, OnDestroy {
     this.permissionsDialogRef = this.dialog.open(PermissionsComponent, {
       backdropClass: 'permissions-dialog-backdrop',
       panelClass: ['permissions-dialog-panel', 'dialog-panel-large'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
       data: dialogData,
     });
     this.subscriptions.push(

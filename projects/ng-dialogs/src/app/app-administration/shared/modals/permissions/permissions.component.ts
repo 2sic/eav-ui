@@ -64,7 +64,7 @@ export class PermissionsComponent implements OnInit {
 
   private deletePermission(permission: Permission) {
     if (confirm(`Delete '${permission.Title}' (${permission.Id})?`)) {
-      this.permissionsService.delete(this.permissionsDialogData.appId, permission.Id).subscribe(() => {
+      this.permissionsService.delete(permission.Id).subscribe(() => {
         this.fetchPermissions();
       });
     }
@@ -90,8 +90,7 @@ export class PermissionsComponent implements OnInit {
   }
 
   private fetchPermissions() {
-    this.permissionsService.getAll(
-      this.permissionsDialogData.appId, this.permissionsDialogData.type,
+    this.permissionsService.getAll(this.permissionsDialogData.type,
       this.permissionsDialogData.keyType, this.permissionsDialogData.staticName
     ).subscribe((permissions: Permission[]) => {
       this.permissions = permissions;

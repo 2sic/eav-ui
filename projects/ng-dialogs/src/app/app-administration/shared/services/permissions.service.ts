@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { MetadataService } from './metadata.service';
 import { EntitiesService } from './entities.service';
+import { Context } from '../../../shared/context/context';
 
 @Injectable()
 export class PermissionsService {
@@ -11,13 +12,14 @@ export class PermissionsService {
   constructor(
     private metadataService: MetadataService,
     private entitiesService: EntitiesService,
+    private context: Context,
   ) { }
 
-  getAll(appId: number, targetType: number, keyType: string, contentTypeStaticName: string) {
-    return this.metadataService.getMetadata(appId, targetType, keyType, contentTypeStaticName, this.ctName);
+  getAll(targetType: number, keyType: string, contentTypeStaticName: string) {
+    return this.metadataService.getMetadata(this.context.appId, targetType, keyType, contentTypeStaticName, this.ctName);
   }
 
-  delete(appId: number, id: number) {
-    return this.entitiesService.delete(appId, this.ctName, id, false);
+  delete(id: number) {
+    return this.entitiesService.delete(this.context.appId, this.ctName, id, false);
   }
 }

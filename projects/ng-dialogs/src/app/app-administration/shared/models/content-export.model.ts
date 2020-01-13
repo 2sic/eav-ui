@@ -1,5 +1,4 @@
 export class ContentExport {
-  appId: number;
   defaultLanguage: string;
   contentTypeStaticName: string;
   language: string;
