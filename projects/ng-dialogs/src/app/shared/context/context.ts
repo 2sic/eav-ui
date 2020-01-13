@@ -79,6 +79,9 @@ export class Context {
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
     this.routeSnapshot = route && route.snapshot;
+    // clear cached values
+    this._zoneId = null;
+    this._appId = null;
     this.ready = route != null;
   }
 
