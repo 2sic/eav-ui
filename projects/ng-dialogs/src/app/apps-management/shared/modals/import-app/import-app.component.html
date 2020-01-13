@@ -1,7 +1,7 @@
 <div>
   <div class="dialog-title-container">
     <h1>Import App</h1>
-    <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -17,7 +17,7 @@
     <div>For further help visit <a href="http://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.</div>
 
     <div>
-      <button mat-button [matTooltip]="'Open file browser'" (click)="fileInput.click()">
+      <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
         <span *ngIf="!importFile">Select file</span>
         <span *ngIf="importFile">{{ importFile.name }}</span>
       </button>

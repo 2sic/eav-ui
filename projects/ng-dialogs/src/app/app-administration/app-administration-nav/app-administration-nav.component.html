@@ -1,7 +1,7 @@
 <div class="dialog-title-container">
   <h1>Administration</h1>
 
-  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+  <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -10,7 +10,7 @@
 
 <mat-tab-group dynamicHeight *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
   <mat-tab>
-    <div *matTabLabel class="tab-container" [matTooltip]="'Getting Started'">
+    <div *matTabLabel class="tab-container" matTooltip="Getting Started">
       <mat-icon>home</mat-icon>
       <span>Home</span>
     </div>
@@ -19,7 +19,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" [matTooltip]="'Content'">
+    <div *matTabLabel class="tab-container" matTooltip="Content">
       <mat-icon>list</mat-icon>
       <span>Data</span>
     </div>
@@ -27,7 +27,7 @@
   </mat-tab>
 
   <mat-tab *ngIf="!dialogSettings.IsContent">
-    <div *matTabLabel class="tab-container" [matTooltip]="'Query Designer'">
+    <div *matTabLabel class="tab-container" matTooltip="Query Designer">
       <mat-icon>filter_list</mat-icon>
       <span>Queries</span>
     </div>
@@ -35,7 +35,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" [matTooltip]="'Views / Templates'">
+    <div *matTabLabel class="tab-container" matTooltip="Views / Templates">
       <mat-icon>image</mat-icon>
       <span>Views</span>
     </div>
@@ -43,7 +43,7 @@
   </mat-tab>
 
   <mat-tab *ngIf="!dialogSettings.IsContent">
-    <div *matTabLabel class="tab-container" [matTooltip]="'WebApi / Data'">
+    <div *matTabLabel class="tab-container" matTooltip="WebApi / Data">
       <mat-icon>flash_on</mat-icon>
       <span>WebApi</span>
     </div>
@@ -51,7 +51,7 @@
   </mat-tab>
 
   <mat-tab *ngIf="!dialogSettings.IsContent">
-    <div *matTabLabel class="tab-container" [matTooltip]="'App Settings'">
+    <div *matTabLabel class="tab-container" matTooltip="App Settings">
       <mat-icon>web_asset</mat-icon>
       <span>App</span>
     </div>
@@ -59,7 +59,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" [matTooltip]="'Portal / Languages'">
+    <div *matTabLabel class="tab-container" matTooltip="Portal / Languages">
       <mat-icon>public</mat-icon>
       <span>Global</span>
     </div>

@@ -1,6 +1,6 @@
 <div class="data-name-container">
   <span class="text">{{ contentType.Name }}</span>
-  <button mat-button [matTooltip]="'Add data'" class="hover-pair not-implemented">
+  <button mat-button matTooltip="Add data" class="hover-pair not-implemented">
     <span class="hover-default">{{ contentType.Items }}</span>
     <mat-icon class="hover-hover" (click)="addItem($event)">add</mat-icon>
   </button>

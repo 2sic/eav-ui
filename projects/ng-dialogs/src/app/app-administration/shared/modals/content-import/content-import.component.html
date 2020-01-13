@@ -5,7 +5,7 @@
     <span *ngIf="viewStateSelected > 0">&nbsp;Step {{ viewStateSelected }} of 3</span>
   </h3>
 
-  <button mat-icon-button [matTooltip]="'Close dialog'" (click)="closeDialog()">
+  <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -21,7 +21,7 @@
   <!-- FORM -->
   <form #ngForm="ngForm" class="edit-form" *ngSwitchCase="1">
     <div>
-      <button mat-button [matTooltip]="'Open file browser'" (click)="fileInput.click()">
+      <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
         <span>Choose file * </span>
         <mat-icon>cloud_upload</mat-icon>
       </button>
