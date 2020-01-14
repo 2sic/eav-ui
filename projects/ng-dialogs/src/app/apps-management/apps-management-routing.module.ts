@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppsManagementEntryComponent } from './apps-management-entry/apps-management-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { ImportAppEntryComponent } from './shared/modals/import-app-entry/import-app-entry.component';
+import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-entry/enable-languages-entry.component';
 
 const appsManagementRoutes: Routes = [
   {
@@ -14,7 +15,11 @@ const appsManagementRoutes: Routes = [
           { path: 'import', component: ImportAppEntryComponent },
         ]
       },
-      { path: 'settings', component: EmptyRouteComponent },
+      {
+        path: 'settings', component: EmptyRouteComponent, children: [
+          { path: 'languages', component: EnableLanguagesEntryComponent },
+        ]
+      },
       { path: 'features', component: EmptyRouteComponent },
       { path: 'sxc-insights', component: EmptyRouteComponent },
       {

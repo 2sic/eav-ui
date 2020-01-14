@@ -34,6 +34,7 @@ import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enab
 import { FeaturesConfigService } from './shared/services/features-config.service';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { ImportAppEntryComponent } from './shared/modals/import-app-entry/import-app-entry.component';
+import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-entry/enable-languages-entry.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ImportAppEntryComponent } from './shared/modals/import-app-entry/import
     EnableLanguagesStatusComponent,
     EmptyRouteComponent,
     ImportAppEntryComponent,
+    EnableLanguagesEntryComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,

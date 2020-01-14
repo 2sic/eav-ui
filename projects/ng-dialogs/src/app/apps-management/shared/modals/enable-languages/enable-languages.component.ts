@@ -61,7 +61,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
   }
 
   private fetchLanguages() {
-    this.languagesService.getAll().subscribe((languages: EnableLanguage[]) => {
+    this.languagesService.getAll().subscribe(languages => {
       this.languages = languages;
     });
   }
