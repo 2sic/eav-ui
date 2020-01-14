@@ -21,9 +21,9 @@ import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { GlobalSettingsComponent } from './global-settings/global-settings.component';
-import { AppAdministrationEntryComponent } from './app-administration-entry/app-administration-entry.component';
 import { Context } from '../shared/context/context';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
+import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { DataNameComponent } from './shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
@@ -58,7 +58,6 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
     WebApiComponent,
     AppConfigurationComponent,
     GlobalSettingsComponent,
-    AppAdministrationEntryComponent,
     DataNameComponent,
     DataFieldsComponent,
     DataActionsComponent,
@@ -89,6 +88,7 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
   ],
   imports: [
     AppAdministrationRoutingModule,
+    SharedComponentsModule,
     MatDialogModule,
     CommonModule,
     MatButtonModule,

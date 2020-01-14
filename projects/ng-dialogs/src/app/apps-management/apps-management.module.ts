@@ -12,6 +12,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
+import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
@@ -31,8 +32,6 @@ import { EnableLanguagesComponent } from './shared/modals/enable-languages/enabl
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { FeaturesConfigService } from './shared/services/features-config.service';
-import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { DialogEntryComponent } from './shared/modals/dialog-entry/dialog-entry.component';
 
 @NgModule({
   declarations: [
@@ -50,8 +49,6 @@ import { DialogEntryComponent } from './shared/modals/dialog-entry/dialog-entry.
     ImportAppComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
-    EmptyRouteComponent,
-    DialogEntryComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,
@@ -67,6 +64,7 @@ import { DialogEntryComponent } from './shared/modals/dialog-entry/dialog-entry.
   ],
   imports: [
     AppsManagementRoutingModule,
+    SharedComponentsModule,
     MatDialogModule,
     CommonModule,
     AgGridModule.withComponents([]),

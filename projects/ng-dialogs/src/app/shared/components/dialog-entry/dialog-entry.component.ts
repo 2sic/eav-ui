@@ -4,11 +4,12 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, APPS_MANAGEMENT_DIALOG_CLOSED, IMPORT_APP_DIALOG, IMPORT_APP_DIALOG_CLOSED, ENABLE_LANGUAGES_DIALOG, ENABLE_LANGUAGES_DIALOG_CLOSED } from '../../constants/navigation-messages';
-import { Context } from '../../../../shared/context/context';
-import { AppsManagementNavComponent } from '../../../apps-management-nav/apps-management-nav.component';
-import { ImportAppComponent } from '../import-app/import-app.component';
-import { EnableLanguagesComponent } from '../enable-languages/enable-languages.component';
+import { APPS_MANAGEMENT_DIALOG, APPS_MANAGEMENT_DIALOG_CLOSED, IMPORT_APP_DIALOG, IMPORT_APP_DIALOG_CLOSED, ENABLE_LANGUAGES_DIALOG, ENABLE_LANGUAGES_DIALOG_CLOSED, APP_ADMINISTRATION_DIALOG, APP_ADMINISTRATION_DIALOG_CLOSED } from '../../constants/navigation-messages';
+import { Context } from '../../context/context';
+import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
+import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
+import { EnableLanguagesComponent } from '../../../apps-management/shared/modals/enable-languages/enable-languages.component';
+import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -85,6 +86,14 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.component = EnableLanguagesComponent;
         this.panelSize = 'medium';
         this.onCloseMessage = ENABLE_LANGUAGES_DIALOG_CLOSED;
+        break;
+
+      case APP_ADMINISTRATION_DIALOG:
+        // this is module root dialog and has to init context
+        this.component = AppAdministrationNavComponent;
+        this.panelSize = 'large';
+        this.onCloseMessage = APP_ADMINISTRATION_DIALOG_CLOSED;
+        this.context.init(this.route);
         break;
       default:
         throw new Error(`This Dialog was not configured: ${this.dialogType}.`);
