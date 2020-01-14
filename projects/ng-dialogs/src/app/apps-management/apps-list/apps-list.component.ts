@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
@@ -9,7 +9,7 @@ import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { ImportAppComponent } from '../shared/modals/import-app/import-app.component';
+import { IMPORT_APP_DIALOG_CLOSED } from '../shared/constants/navigation-messages';
 
 @Component({
   selector: 'app-apps-list',
@@ -35,28 +35,23 @@ export class AppsListComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  private subscriptions: Subscription[] = [];
-  private importAppDialogRef: MatDialogRef<ImportAppComponent, any>;
+  private subscription: Subscription = new Subscription();
 
   constructor(
-    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
-    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
     this.fetchAppsList();
+    // if /list has a child /import which has dialog opened, subscribe to dialog closed message
+    const child = this.route.firstChild.firstChild;
+    if (child && child.snapshot.url[0] && child.snapshot.url[0].path === 'import') { this.subToImportDialogClosed(); }
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subscriptions = null;
-    if (this.importAppDialogRef) {
-      this.importAppDialogRef.close();
-      this.importAppDialogRef = null;
-    }
+    this.subscription.unsubscribe();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -73,31 +68,21 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   createApp() {
     const name = prompt('Enter App Name (will also be used for folder)');
-    if (name) {
-      this.appsListService.create(name).subscribe(() => {
-        this.fetchAppsList();
-      });
-    }
+    if (!name) { return; }
+    this.appsListService.create(name).subscribe(() => {
+      this.fetchAppsList();
+    });
   }
 
   importApp() {
-    this.importAppDialogRef = this.dialog.open(ImportAppComponent, {
-      backdropClass: 'import-app-dialog-backdrop',
-      panelClass: ['import-app-dialog-panel', 'dialog-panel-medium'],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-    });
-    this.subscriptions.push(
-      this.importAppDialogRef.afterClosed().subscribe(() => {
-        console.log('Import app dialog was closed.');
-        this.reloadApps();
-      }),
-    );
+    this.subToImportDialogClosed();
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
-  reloadApps() {
-    this.fetchAppsList();
+  fetchAppsList() {
+    this.appsListService.getAll().subscribe(apps => {
+      this.apps = apps;
+    });
   }
 
   private deleteApp(app: App) {
@@ -119,10 +104,18 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
   }
 
-  private fetchAppsList() {
-    this.appsListService.getAll().subscribe((apps: App[]) => {
-      this.apps = apps;
-    });
+  private subToImportDialogClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => {
+          if (!(event instanceof NavigationEnd)) { return false; }
+          const navigation = this.router.getCurrentNavigation();
+          if (!navigation.extras.state) { return false; }
+          return navigation.extras.state.message === IMPORT_APP_DIALOG_CLOSED;
+        }),
+        take(1),
+      ).subscribe(event => { this.fetchAppsList(); }),
+    );
   }
 
 }
