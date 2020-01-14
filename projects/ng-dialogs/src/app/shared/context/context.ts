@@ -17,10 +17,13 @@ const keyAppId = 'appId';
 @Injectable()
 export class Context {
 
+  /** Id of current context */
+  public id: number;
+
   /** Determines if the context is ready to use, and everything is initialized */
   public ready = false;
 
-  /** the parent, for hierarchical lookup */
+  /** The parent, for hierarchical lookup */
   private parent: Context;
 
   private routeSnapshot: ActivatedRouteSnapshot;
@@ -63,15 +66,20 @@ export class Context {
   }
   private _moduleId: number;
 
-  constructor(@Optional() @SkipSelf() public context: Context) {
+  constructor(@Optional() @SkipSelf() parentContext: Context) {
     console.log('Context.constructor');
-    if (context) { this.parent = context; }
+    this.parent = parentContext;
+
+    // spm I've given id to every context to make it easier to follow how things work
+    const globalWindow = <any>window;
+    if (!globalWindow.contextId) { globalWindow.contextId = 0; }
+    this.id = globalWindow.contextId++;
   }
 
 
   /**
    * This is the initializer at entry-componets of modules
-   * It ensures that within that component, the context has the values given by the route
+   * It ensures that within that module, the context has the values given by the route
    *
    * @param {ActivatedRoute} route
    * @memberof Context
@@ -101,6 +109,8 @@ export class Context {
 
     // optional global things
     this._appId = this.sessionNumber(keyAppId);
+
+    this.ready = true;
   }
 
   private sessionNumber(name: string): number {

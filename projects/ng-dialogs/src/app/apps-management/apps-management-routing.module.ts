@@ -1,23 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AppsManagementEntryComponent } from './apps-management-entry/apps-management-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { ImportAppEntryComponent } from './shared/modals/import-app-entry/import-app-entry.component';
-import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-entry/enable-languages-entry.component';
+import { DialogEntryComponent } from './shared/modals/dialog-entry/dialog-entry.component';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG } from './shared/constants/navigation-messages';
 
 const appsManagementRoutes: Routes = [
   {
-    path: '', component: AppsManagementEntryComponent, children: [
+    path: '', component: DialogEntryComponent, data: { dialogType: APPS_MANAGEMENT_DIALOG }, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
         path: 'list', component: EmptyRouteComponent, children: [
-          { path: 'import', component: ImportAppEntryComponent },
+          { path: 'import', component: DialogEntryComponent, data: { dialogType: IMPORT_APP_DIALOG } },
         ]
       },
       {
         path: 'settings', component: EmptyRouteComponent, children: [
-          { path: 'languages', component: EnableLanguagesEntryComponent },
+          { path: 'languages', component: DialogEntryComponent, data: { dialogType: ENABLE_LANGUAGES_DIALOG } },
         ]
       },
       { path: 'features', component: EmptyRouteComponent },

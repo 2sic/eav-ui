@@ -17,7 +17,6 @@ import { AppsListComponent } from './apps-list/apps-list.component';
 import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
-import { AppsManagementEntryComponent } from './apps-management-entry/apps-management-entry.component';
 import { Context } from '../shared/context/context';
 import { AppsListShowComponent } from './shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from './shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
@@ -33,8 +32,7 @@ import { EnableLanguagesService } from './shared/services/enable-languages.servi
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { FeaturesConfigService } from './shared/services/features-config.service';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { ImportAppEntryComponent } from './shared/modals/import-app-entry/import-app-entry.component';
-import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-entry/enable-languages-entry.component';
+import { DialogEntryComponent } from './shared/modals/dialog-entry/dialog-entry.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +41,6 @@ import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-
     ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
-    AppsManagementEntryComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
     FeaturesListEnabledComponent,
@@ -54,8 +51,7 @@ import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
     EmptyRouteComponent,
-    ImportAppEntryComponent,
-    EnableLanguagesEntryComponent,
+    DialogEntryComponent,
   ],
   entryComponents: [
     AppsManagementNavComponent,
@@ -68,7 +64,6 @@ import { EnableLanguagesEntryComponent } from './shared/modals/enable-languages-
     ImportAppComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
-    EmptyRouteComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

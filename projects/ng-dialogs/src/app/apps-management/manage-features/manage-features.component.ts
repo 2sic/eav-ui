@@ -103,7 +103,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
       if (url.indexOf('error: user needs host permissions') > -1) {
         this.showManagement = false;
-        throw Error('User needs host permissions!');
+        throw new Error('User needs host permissions!');
       }
 
       this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
