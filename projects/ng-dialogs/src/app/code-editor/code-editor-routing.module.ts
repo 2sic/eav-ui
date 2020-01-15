@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CodeEditorEntryComponent } from './code-editor-entry/code-editor-entry.component';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { CODE_EDITOR_DIALOG } from '../shared/constants/navigation-messages';
 
 const routes: Routes = [
-  { path: '', component: CodeEditorEntryComponent },
+  { path: '', component: DialogEntryComponent, data: { dialogType: CODE_EDITOR_DIALOG } },
 ];
 
 @NgModule({

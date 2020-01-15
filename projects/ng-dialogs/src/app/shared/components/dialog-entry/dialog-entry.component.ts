@@ -4,12 +4,13 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, APPS_MANAGEMENT_DIALOG_CLOSED, IMPORT_APP_DIALOG, IMPORT_APP_DIALOG_CLOSED, ENABLE_LANGUAGES_DIALOG, ENABLE_LANGUAGES_DIALOG_CLOSED, APP_ADMINISTRATION_DIALOG, APP_ADMINISTRATION_DIALOG_CLOSED } from '../../constants/navigation-messages';
+import { APPS_MANAGEMENT_DIALOG, APPS_MANAGEMENT_DIALOG_CLOSED, IMPORT_APP_DIALOG, IMPORT_APP_DIALOG_CLOSED, ENABLE_LANGUAGES_DIALOG, ENABLE_LANGUAGES_DIALOG_CLOSED, APP_ADMINISTRATION_DIALOG, APP_ADMINISTRATION_DIALOG_CLOSED, CODE_EDITOR_DIALOG, CODE_EDITOR_DIALOG_CLOSED } from '../../constants/navigation-messages';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
 import { EnableLanguagesComponent } from '../../../apps-management/shared/modals/enable-languages/enable-languages.component';
 import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
+import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -93,6 +94,14 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.component = AppAdministrationNavComponent;
         this.panelSize = 'large';
         this.onCloseMessage = APP_ADMINISTRATION_DIALOG_CLOSED;
+        this.context.init(this.route);
+        break;
+
+      case CODE_EDITOR_DIALOG:
+        // this is module root dialog and has to init context
+        this.component = CodeEditorComponent;
+        this.panelSize = 'fullscreen';
+        this.onCloseMessage = CODE_EDITOR_DIALOG_CLOSED;
         this.context.init(this.route);
         break;
       default:
