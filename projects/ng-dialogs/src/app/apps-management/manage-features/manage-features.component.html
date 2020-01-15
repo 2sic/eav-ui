@@ -14,6 +14,6 @@
   [suppressScrollOnNewData]="true" (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
 </ag-grid-angular>
 
-<mat-spinner *ngIf="showSpinner" [mode]="'indeterminate'" [diameter]="'20'"></mat-spinner>
+<mat-spinner *ngIf="showSpinner" mode="indeterminate" diameter="20"></mat-spinner>
 
 <iframe style="border: none; width: 100%; height: 500px" *ngIf="showManagement" [src]="managementUrl"></iframe>

@@ -10,7 +10,7 @@
 <router-outlet></router-outlet>
 
 <!-- spm we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-<mat-tab-group mat-dialog-content dynamicHeight (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+<mat-tab-group dynamicHeight (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
   <mat-tab>
     <div *matTabLabel class="tab-container" matTooltip="Apps">
       <mat-icon>star_border</mat-icon>

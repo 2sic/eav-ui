@@ -1,49 +1,48 @@
-<div>
+<div mat-dialog-title>
   <div class="dialog-title-container">
-    <h1>Import App</h1>
+    <div>Import App</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
+</div>
 
-  <mat-spinner *ngIf="isImporting" [mode]="'indeterminate'" [diameter]="'20'"></mat-spinner>
+<mat-spinner *ngIf="isImporting" mode="indeterminate" diameter="20"></mat-spinner>
 
-  <div *ngIf="!importResult || (importResult && !importResult.Messages)">
-    <div>
-      Select an app package (zip) from your computer to import an app. New apps can be downloaded on
-      <a href="http://2sxc.org/apps">http://2sxc.org/apps</a>.
-    </div>
-
-    <div>For further help visit <a href="http://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.</div>
-
-    <div>
-      <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
-        <span *ngIf="!importFile">Select file</span>
-        <span *ngIf="importFile">{{ importFile.name }}</span>
-      </button>
-      <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
-    </div>
-
-    <div>
-      <button mat-button [disabled]="!importFile || isImporting" (click)="importApp()">Import</button>
-    </div>
+<div *ngIf="!importResult || (importResult && !importResult.Messages)">
+  <div>
+    Select an app package (zip) from your computer to import an app. New apps can be downloaded on
+    <a href="http://2sxc.org/apps">http://2sxc.org/apps</a>.
   </div>
 
-  <div *ngIf="importResult && importResult.Messages && !isImporting">
-    <div *ngIf="importResult.Succeeded" class="sxc-message sxc-message-info">
-      The import has been done. See the messages below for more information.
-    </div>
-    <div *ngIf="!importResult.Succeeded" class="sxc-message sxc-message-error">
-      The import failed. See the messages below for more information.
-    </div>
-    <div *ngFor="let message of importResult.Messages" class="sxc-message" [ngClass]="{
-        'sxc-message-warning': message.MessageType == 0,
-        'sxc-message-success': message.MessageType == 1,
-        'sxc-message-error': message.MessageType == 2,
-        'sxc-message-success-hidden': importResult._hideSuccessMessages
-      }">
-      {{ message.Text }}
-    </div>
+  <div>For further help visit <a href="http://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.</div>
+
+  <div>
+    <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
+      <span *ngIf="!importFile">Select file</span>
+      <span *ngIf="importFile">{{ importFile.name }}</span>
+    </button>
+    <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
   </div>
 
+  <div>
+    <button mat-button [disabled]="!importFile || isImporting" (click)="importApp()">Import</button>
+  </div>
+</div>
+
+<div *ngIf="importResult && importResult.Messages && !isImporting">
+  <div *ngIf="importResult.Succeeded" class="sxc-message sxc-message-info">
+    The import has been done. See the messages below for more information.
+  </div>
+  <div *ngIf="!importResult.Succeeded" class="sxc-message sxc-message-error">
+    The import failed. See the messages below for more information.
+  </div>
+  <div *ngFor="let message of importResult.Messages" class="sxc-message" [ngClass]="{
+          'sxc-message-warning': message.MessageType == 0,
+          'sxc-message-success': message.MessageType == 1,
+          'sxc-message-error': message.MessageType == 2,
+          'sxc-message-success-hidden': importResult._hideSuccessMessages
+        }">
+    {{ message.Text }}
+  </div>
 </div>

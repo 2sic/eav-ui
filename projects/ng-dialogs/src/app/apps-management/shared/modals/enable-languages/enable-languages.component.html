@@ -1,6 +1,13 @@
-<h4>Languages / Cultures</h4>
+<div mat-dialog-title>
+  <div class="dialog-title-container">
+    <div>Languages / Cultures</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
 
-<div>Manage the enabled / disable languages for this Zone (this portal)</div>
+<div>Manage the enabled / disabled languages for this Zone (this portal)</div>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="languages" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
