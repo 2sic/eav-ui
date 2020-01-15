@@ -86,7 +86,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   }
 
   private fetchFeatures() {
-    this.featuresConfigService.getAll().subscribe((features: Feature[]) => {
+    this.featuresConfigService.getAll().subscribe(features => {
       features.forEach(feature => {
         feature.expires = new Date(feature.expires);
       });
@@ -98,7 +98,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     this.showSpinner = true;
     this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(''); // reset url
 
-    this.featuresConfigService.getManageFeaturesUrl().subscribe((url: string) => {
+    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
       this.showSpinner = false;
 
       if (url.indexOf('error: user needs host permissions') > -1) {
@@ -122,7 +122,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     try {
       const features = <ManageFeaturesMessageData>event.data;
       const featuresString = JSON.stringify(features);
-      this.featuresConfigService.saveFeatures(featuresString).subscribe((result: boolean) => {
+      this.featuresConfigService.saveFeatures(featuresString).subscribe(result => {
         this.showManagement = false;
         this.fetchFeatures();
         this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);

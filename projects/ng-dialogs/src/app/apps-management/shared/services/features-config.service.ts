@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import { Feature } from '../models/feature.model';
 
 @Injectable()
 export class FeaturesConfigService {
@@ -8,14 +11,14 @@ export class FeaturesConfigService {
   ) { }
 
   getAll() {
-    return this.http.get(`/desktopmodules/2sxc/api/app-sys/system/features`);
+    return <Observable<Feature[]>>this.http.get(`/desktopmodules/2sxc/api/app-sys/system/features`);
   }
 
   getManageFeaturesUrl() {
-    return this.http.get(`/desktopmodules/2sxc/api/app-sys/system/managefeaturesurl`);
+    return <Observable<string>>this.http.get(`/desktopmodules/2sxc/api/app-sys/system/managefeaturesurl`);
   }
 
   saveFeatures(featuresString: string) {
-    return this.http.post(`/desktopmodules/2sxc/api/app-sys/system/SaveFeatures`, featuresString);
+    return <Observable<boolean>>this.http.post(`/desktopmodules/2sxc/api/app-sys/system/SaveFeatures`, featuresString);
   }
 }

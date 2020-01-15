@@ -15,7 +15,7 @@ export class EnableLanguagesService {
   }
 
   toggle(code: string, enable: boolean) {
-    return <Observable<any>>this.http.get('/desktopmodules/2sxc/api/app-sys/system/switchlanguage',
+    return <Observable<null>>this.http.get('/desktopmodules/2sxc/api/app-sys/system/switchlanguage',
       { params: { cultureCode: code, enable: enable.toString() } }
     );
   }

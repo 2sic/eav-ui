@@ -30,7 +30,7 @@ export class ImportAppComponent implements OnInit, OnDestroy {
     this.isImporting = true;
 
     this.importAppService.importApp(this.importFile, changedName)
-      .subscribe((result: ImportAppResult) => {
+      .subscribe(result => {
         this.isImporting = false;
 
         this.importResult = result;
