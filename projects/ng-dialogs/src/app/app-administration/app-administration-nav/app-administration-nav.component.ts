@@ -3,10 +3,10 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { DialogSettings } from '../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-app-administration-nav',

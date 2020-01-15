@@ -1,13 +1,14 @@
 <!-- HEADER -->
-<div class="dialog-title-container">
-  <h3>
-    <span>Import Content / Data</span>
-    <span *ngIf="viewStateSelected > 0">&nbsp;Step {{ viewStateSelected }} of 3</span>
-  </h3>
-
-  <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-    <mat-icon>close</mat-icon>
-  </button>
+<div mat-dialog-title>
+  <div class="dialog-title-container">
+    <div>
+      <span>Import Content / Data</span>
+      <span *ngIf="viewStateSelected > 0">&nbsp;Step {{ viewStateSelected }} of 3</span>
+    </div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 </div>
 
 <div>This will import content-items into 2sxc. It requires that you already defined the content-type before you try
