@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
@@ -10,6 +9,7 @@ import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-sh
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
 import { IMPORT_APP_DIALOG_CLOSED } from '../../shared/constants/navigation-messages';
+import { DialogService } from '../../shared/components/dialog-closed/dialog.service';
 
 @Component({
   selector: 'app-apps-list',
@@ -41,17 +41,22 @@ export class AppsListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
+    private dialogService: DialogService,
   ) { }
 
   ngOnInit() {
     this.fetchAppsList();
-    // if /list has a child /import which has dialog opened, subscribe to dialog closed message
+
     const child = this.route.firstChild.firstChild;
-    if (child && child.snapshot.url[0] && child.snapshot.url[0].path === 'import') { this.subToImportDialogClosed(); }
+    if (child && child.snapshot.url[0] && child.snapshot.url[0].path === 'import') {
+      // if /list has a child /import which has dialog opened, subscribe to dialog closed message
+      this.refreshOnSubDialogClosed(IMPORT_APP_DIALOG_CLOSED);
+    }
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -75,7 +80,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   importApp() {
-    this.subToImportDialogClosed();
+    this.refreshOnSubDialogClosed(IMPORT_APP_DIALOG_CLOSED);
     this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
@@ -104,17 +109,12 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
   }
 
-  private subToImportDialogClosed() {
+  private refreshOnSubDialogClosed(message: string) {
     this.subscription.add(
-      this.router.events.pipe(
-        filter(event => {
-          if (!(event instanceof NavigationEnd)) { return false; }
-          const navigation = this.router.getCurrentNavigation();
-          if (!navigation.extras.state) { return false; }
-          return navigation.extras.state.message === IMPORT_APP_DIALOG_CLOSED;
-        }),
-        take(1),
-      ).subscribe(event => { this.fetchAppsList(); }),
+      this.dialogService.subToClosed(message).subscribe(event => {
+        console.log('Dialog closed event captured');
+        this.fetchAppsList();
+      })
     );
   }
 

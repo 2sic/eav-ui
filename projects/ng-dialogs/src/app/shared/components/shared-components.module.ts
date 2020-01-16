@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { EmptyRouteComponent } from './empty-route/empty-route.component';
 import { DialogEntryComponent } from './dialog-entry/dialog-entry.component';
+import { DialogService } from './dialog-closed/dialog.service';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { DialogEntryComponent } from './dialog-entry/dialog-entry.component';
     RouterModule,
   ],
   providers: [
+    DialogService,
   ],
   exports: [
     EmptyRouteComponent,

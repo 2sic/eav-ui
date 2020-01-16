@@ -1,14 +1,14 @@
 <div mat-dialog-title>
   <div class="dialog-title-container">
-    <div *ngIf="isNew">New Content Type</div>
-    <div *ngIf="!isNew">Edit Content Type</div>
+    <div *ngIf="!id">New Content Type</div>
+    <div *ngIf="id">Edit Content Type</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>
 
-<form (ngSubmit)="onSubmit()" #ngForm="ngForm" class="edit-form">
+<form *ngIf="contentType" (ngSubmit)="onSubmit()" #ngForm="ngForm" class="edit-form">
   <mat-form-field class="edit-input">
     <input matInput type="text" placeholder="Name" [(ngModel)]="contentType.Name" name="Name">
   </mat-form-field>

@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 
-import { EditContentTypeDialogData } from '../../models/edit-content-type-dialog-data.model';
 import { ContentTypeEdit } from '../../models/content-type.model';
-import { EavConfigurationService } from '../../services/eav-configuration.service';
 import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
@@ -12,40 +11,37 @@ import { ContentTypesService } from '../../services/content-types.service';
   styleUrls: ['./edit-content-type.component.scss']
 })
 export class EditContentTypeComponent implements OnInit {
+  scope: string;
+  id: number;
   contentType: ContentTypeEdit;
-  isNew: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
-    @Inject(MAT_DIALOG_DATA) public editContentTypeDialogData: EditContentTypeDialogData,
-    private eavConfigurationService: EavConfigurationService,
+    private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
-  ) { }
+  ) {
+    this.scope = this.route.snapshot.paramMap.get('scope');
+    this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
+  }
 
   ngOnInit() {
-    if (!this.editContentTypeDialogData.contentType) {
-      this.isNew = true;
+    if (!this.id) {
       this.contentType = {
-        ...this.editContentTypeDialogData.contentType,
+        ...(new ContentTypeEdit()),
         StaticName: '',
         Name: '',
         Description: '',
-        Scope: this.eavConfigurationService.contentType.defaultScope,
+        Scope: this.scope,
         ChangeStaticName: false,
         NewStaticName: '',
       };
     } else {
-      this.isNew = false;
-      this.contentType = {
-        ...this.editContentTypeDialogData.contentType,
-        ChangeStaticName: false,
-        NewStaticName: '',
-      };
+      this.fetchContentType();
     }
   }
 
   onSubmit() {
-    this.contentTypesService.save(this.contentType).subscribe((result: boolean) => {
+    this.contentTypesService.save(this.contentType).subscribe(result => {
       this.closeDialog();
     });
   }
@@ -54,4 +50,13 @@ export class EditContentTypeComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  private fetchContentType() {
+    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
+      this.contentType = {
+        ...contentTypes.find(contentType => contentType.Id === this.id),
+        ChangeStaticName: false,
+        NewStaticName: '',
+      };
+    });
+  }
 }
