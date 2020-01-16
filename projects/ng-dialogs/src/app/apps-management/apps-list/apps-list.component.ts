@@ -8,7 +8,7 @@ import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { IMPORT_APP_DIALOG_CLOSED } from '../../shared/constants/navigation-messages';
+import { IMPORT_APP_DIALOG } from '../../shared/constants/navigation-messages';
 import { DialogService } from '../../shared/components/dialog-closed/dialog.service';
 
 @Component({
@@ -47,11 +47,12 @@ export class AppsListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchAppsList();
 
-    const child = this.route.firstChild.firstChild;
-    if (child && child.snapshot.url[0] && child.snapshot.url[0].path === 'import') {
-      // if /list has a child /import which has dialog opened, subscribe to dialog closed message
-      this.refreshOnSubDialogClosed(IMPORT_APP_DIALOG_CLOSED);
-    }
+    this.subscription.add(
+      this.dialogService.subToClosed([IMPORT_APP_DIALOG]).subscribe(dialog => {
+        console.log('Dialog closed event captured:', dialog);
+        this.fetchAppsList();
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -80,7 +81,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   importApp() {
-    this.refreshOnSubDialogClosed(IMPORT_APP_DIALOG_CLOSED);
     this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
@@ -107,15 +107,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   private openApp(params: CellClickedEvent) {
     const appId = (<App>params.data).Id;
     this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
-  }
-
-  private refreshOnSubDialogClosed(message: string) {
-    this.subscription.add(
-      this.dialogService.subToClosed(message).subscribe(event => {
-        console.log('Dialog closed event captured');
-        this.fetchAppsList();
-      })
-    );
   }
 
 }

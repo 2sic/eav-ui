@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, APPS_MANAGEMENT_DIALOG_CLOSED, IMPORT_APP_DIALOG, IMPORT_APP_DIALOG_CLOSED, ENABLE_LANGUAGES_DIALOG, ENABLE_LANGUAGES_DIALOG_CLOSED, APP_ADMINISTRATION_DIALOG, APP_ADMINISTRATION_DIALOG_CLOSED, CODE_EDITOR_DIALOG, CODE_EDITOR_DIALOG_CLOSED, ADD_CONTENT_TYPE_DIALOG, ADD_CONTENT_TYPE_DIALOG_CLOSED, EDIT_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG_CLOSED } from '../../constants/navigation-messages';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG } from '../../constants/navigation-messages';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -12,6 +12,7 @@ import { EnableLanguagesComponent } from '../../../apps-management/shared/modals
 import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
 import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
+import { DialogService } from '../dialog-closed/dialog.service';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -24,7 +25,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   private dialogType: string;
   private component: any;
   private panelSize: string;
-  private onCloseMessage: string;
 
   constructor(
     private dialog: MatDialog,
@@ -32,12 +32,14 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
+    private dialogService: DialogService,
   ) {
     this.configureDialog();
   }
 
   ngOnInit() {
     console.log('Open dialog:', this.dialogType, 'Context id:', this.context.id, 'Context:', this.context);
+
     this.dialogRef = this.dialog.open(this.component, {
       backdropClass: 'dialog-backdrop',
       panelClass: ['dialog-panel', `dialog-panel-${this.panelSize}`],
@@ -45,17 +47,21 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       autoFocus: false,
       closeOnNavigation: false,
     });
+
     this.subscription.add(
       this.dialogRef.afterClosed().subscribe(() => {
-        console.log('Dialog was closed:', this.onCloseMessage);
-        if (this.route.pathFromRoot.length > 3) {
-          if (this.route.snapshot.url.length > 0) {
-            this.router.navigate(['./'], { relativeTo: this.route.parent, state: { message: this.onCloseMessage } });
-          } else {
-            this.router.navigate(['../'], { relativeTo: this.route, state: { message: this.onCloseMessage } });
-          }
-        } else {
+        console.log('Dialog was closed:', this.dialogType);
+        this.dialogService.fireClosed(this.dialogType);
+
+        if (this.route.pathFromRoot.length <= 3) {
           alert('Close iframe!');
+          return;
+        }
+
+        if (this.route.snapshot.url.length > 0) {
+          this.router.navigate(['./'], { relativeTo: this.route.parent });
+        } else {
+          this.router.navigate(['../'], { relativeTo: this.route });
         }
       }),
     );
@@ -80,43 +86,36 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         // this is module root dialog and has to init context
         this.component = AppsManagementNavComponent;
         this.panelSize = 'large';
-        this.onCloseMessage = APPS_MANAGEMENT_DIALOG_CLOSED;
         this.context.init(this.route);
         break;
       case IMPORT_APP_DIALOG:
         this.component = ImportAppComponent;
         this.panelSize = 'medium';
-        this.onCloseMessage = IMPORT_APP_DIALOG_CLOSED;
         break;
       case ENABLE_LANGUAGES_DIALOG:
         this.component = EnableLanguagesComponent;
         this.panelSize = 'medium';
-        this.onCloseMessage = ENABLE_LANGUAGES_DIALOG_CLOSED;
         break;
 
       case APP_ADMINISTRATION_DIALOG:
         // this is module root dialog and has to init context
         this.component = AppAdministrationNavComponent;
         this.panelSize = 'large';
-        this.onCloseMessage = APP_ADMINISTRATION_DIALOG_CLOSED;
         this.context.init(this.route);
         break;
       case ADD_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;
         this.panelSize = 'small';
-        this.onCloseMessage = ADD_CONTENT_TYPE_DIALOG_CLOSED;
         break;
       case EDIT_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;
         this.panelSize = 'small';
-        this.onCloseMessage = EDIT_CONTENT_TYPE_DIALOG_CLOSED;
         break;
 
       case CODE_EDITOR_DIALOG:
         // this is module root dialog and has to init context
         this.component = CodeEditorComponent;
         this.panelSize = 'fullscreen';
-        this.onCloseMessage = CODE_EDITOR_DIALOG_CLOSED;
         this.context.init(this.route);
         break;
       default:

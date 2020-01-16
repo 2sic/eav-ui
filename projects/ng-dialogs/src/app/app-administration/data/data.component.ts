@@ -21,8 +21,8 @@ import { PermissionsComponent } from '../shared/modals/permissions/permissions.c
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { EditFieldsDialogData } from '../shared/models/edit-fields-dialog-data.model';
 import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.component';
-import { ADD_CONTENT_TYPE_DIALOG_CLOSED, EDIT_CONTENT_TYPE_DIALOG_CLOSED } from '../../shared/constants/navigation-messages';
 import { DialogService } from '../../shared/components/dialog-closed/dialog.service';
+import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG } from '../../shared/constants/navigation-messages';
 
 @Component({
   selector: 'app-data',
@@ -83,7 +83,13 @@ export class DataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.scope = this.eavConfigurationService.contentType.defaultScope; // spm figure out how scope works
     this.fetchContentTypes();
-    this.initChildDialogSub();
+
+    this.subscription.add(
+      this.dialogService.subToClosed([ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG]).subscribe(dialog => {
+        console.log('Dialog closed event captured:', dialog);
+        this.fetchContentTypes();
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -131,10 +137,8 @@ export class DataComponent implements OnInit, OnDestroy {
 
   editContentType(contentType: ContentType) {
     if (!contentType) {
-      this.refreshOnSubDialogClosed(ADD_CONTENT_TYPE_DIALOG_CLOSED);
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
-      this.refreshOnSubDialogClosed(EDIT_CONTENT_TYPE_DIALOG_CLOSED);
       this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
     }
   }
@@ -237,32 +241,6 @@ export class DataComponent implements OnInit, OnDestroy {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       this.contentTypes = contentTypes;
     });
-  }
-
-  private refreshOnSubDialogClosed(message: string) {
-    this.subscription.add(
-      this.dialogService.subToClosed(message).subscribe(event => {
-        console.log('Dialog closed event captured');
-        this.fetchContentTypes();
-      })
-    );
-  }
-
-  private initChildDialogSub() {
-    const child = this.route.firstChild.firstChild;
-    if (!child) { return; }
-    if (child.snapshot.url.length === 0) { return; }
-    let childPath = '';
-    child.snapshot.url.forEach((segment, index) => {
-      childPath += (index > 0 ? '/' : '') + segment;
-    });
-    if (childPath.match(/.\/add/)) {
-      // ':scope/add'
-      this.refreshOnSubDialogClosed(ADD_CONTENT_TYPE_DIALOG_CLOSED);
-    } else if (childPath.match(/.\/.\/edit/)) {
-      // ':scope/:contentTypeId/edit'
-      this.refreshOnSubDialogClosed(EDIT_CONTENT_TYPE_DIALOG_CLOSED);
-    }
   }
 
 }
