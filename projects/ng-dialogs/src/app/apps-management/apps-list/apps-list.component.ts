@@ -8,7 +8,7 @@ import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { IMPORT_APP_DIALOG } from '../../shared/constants/navigation-messages';
+import { IMPORT_APP_DIALOG } from '../../shared/constants/dialog-names';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 
 @Component({

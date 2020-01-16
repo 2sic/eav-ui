@@ -35,7 +35,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     {
       headerName: 'Expires', field: 'expires', width: 100, cellRenderer: (params: ICellRendererParams) => {
         const feature: Feature = params.data;
-        return (feature.expires as Date).toLocaleDateString();
+        return (<Date>feature.expires).toLocaleDateString();
       }
     },
     { headerName: 'UI', field: 'ui', width: 100, cellRenderer: 'featuresListUiComponent' },

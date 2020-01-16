@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG } from '../../constants/navigation-messages';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -13,6 +13,7 @@ import { AppAdministrationNavComponent } from '../../../app-administration/app-a
 import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
 import { DialogService } from '../dialog-service/dialog.service';
+import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -110,6 +111,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       case EDIT_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;
         this.panelSize = 'small';
+        break;
+      case IMPORT_CONTENT_TYPE_DIALOG:
+        this.component = ContentImportComponent;
+        this.panelSize = 'medium';
         break;
 
       case CODE_EDITOR_DIALOG:

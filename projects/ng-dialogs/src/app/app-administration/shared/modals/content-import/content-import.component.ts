@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
-import { ContentImportDialogData } from '../../models/content-import-dialog-data.model';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
 import { ContentImportService } from '../../services/content-import.service';
 
@@ -36,13 +36,13 @@ export class ContentImportComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<ContentImportComponent>,
-    @Inject(MAT_DIALOG_DATA) private contentImportDialogData: ContentImportDialogData,
+    private route: ActivatedRoute,
     private contentImportService: ContentImportService,
   ) {
     this.viewStateSelected = this.viewStates.default;
     this.formValues = {
       defaultLanguage: 'en-US', // spm Figure out what the default language is
-      contentType: this.contentImportDialogData.staticName,
+      contentType: this.route.snapshot.paramMap.get('contentTypeStaticName'),
       file: null,
       resourcesReferences: 'Keep',
       clearEntities: 'None',
@@ -54,7 +54,7 @@ export class ContentImportComponent implements OnInit {
 
   async evaluateContent() {
     this.viewStateSelected = this.viewStates.waiting;
-    return (await this.contentImportService.evaluateContent(this.formValues)).subscribe((result: EvaluateContentResult) => {
+    return (await this.contentImportService.evaluateContent(this.formValues)).subscribe(result => {
       this.evaluationResult = result;
       this.viewStateSelected = this.viewStates.evaluated;
     });
@@ -62,7 +62,7 @@ export class ContentImportComponent implements OnInit {
 
   async importContent() {
     this.viewStateSelected = this.viewStates.waiting;
-    return (await this.contentImportService.importContent(this.formValues)).subscribe((result: ImportContentResult) => {
+    return (await this.contentImportService.importContent(this.formValues)).subscribe(result => {
       this.importResult = result;
       this.viewStateSelected = this.viewStates.imported;
     });
@@ -78,6 +78,6 @@ export class ContentImportComponent implements OnInit {
   }
 
   fileChange(event: Event) {
-    this.formValues.file = (event.target as HTMLInputElement).files[0];
+    this.formValues.file = (<HTMLInputElement>event.target).files[0];
   }
 }

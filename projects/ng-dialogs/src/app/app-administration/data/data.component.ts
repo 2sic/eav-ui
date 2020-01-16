@@ -14,15 +14,13 @@ import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { ContentExportComponent } from '../shared/modals/content-export/content-export.component';
 import { ContentExportDialogData } from '../shared/models/content-export-dialog-data.model';
-import { ContentImportDialogData } from '../shared/models/content-import-dialog-data.model';
-import { ContentImportComponent } from '../shared/modals/content-import/content-import.component';
 import { PermissionsDialogData } from '../shared/models/permissions-dialog-data.model';
 import { PermissionsComponent } from '../shared/modals/permissions/permissions.component';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { EditFieldsDialogData } from '../shared/models/edit-fields-dialog-data.model';
 import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.component';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG } from '../../shared/constants/navigation-messages';
+import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-data',
@@ -67,7 +65,6 @@ export class DataComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   private editFieldsDialogRef: MatDialogRef<EditFieldsComponent, any>;
   private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
-  private contentImportDialogRef: MatDialogRef<ContentImportComponent, any>;
   private permissionsDialogRef: MatDialogRef<PermissionsComponent, any>;
 
   constructor(
@@ -85,7 +82,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.fetchContentTypes();
 
     this.subscription.add(
-      this.dialogService.subToClosed([ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG]).subscribe(dialog => {
+      this.dialogService.subToClosed([ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG]).subscribe(dialog => {
         console.log('Dialog closed event captured:', dialog);
         this.fetchContentTypes();
       })
@@ -187,23 +184,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openImport(contentType: ContentType) {
-    const dialogData: ContentImportDialogData = {
-      staticName: contentType.StaticName,
-    };
-    this.contentImportDialogRef = this.dialog.open(ContentImportComponent, {
-      backdropClass: 'content-import-dialog-backdrop',
-      panelClass: ['content-import-dialog-panel', 'dialog-panel-medium'],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      data: dialogData,
-    });
-    this.subscription.add(
-      this.contentImportDialogRef.afterClosed().subscribe(() => {
-        console.log('Content import dialog was closed.');
-        this.fetchContentTypes();
-      }),
-    );
+    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
   }
 
   private openPermissions(contentType: ContentType) {

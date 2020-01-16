@@ -46,7 +46,7 @@ export class ImportAppComponent implements OnInit, OnDestroy {
   }
 
   fileChange(event: Event) {
-    this.importFile = (event.target as HTMLInputElement).files[0];
+    this.importFile = (<HTMLInputElement>event.target).files[0];
   }
 
   closeDialog() {
