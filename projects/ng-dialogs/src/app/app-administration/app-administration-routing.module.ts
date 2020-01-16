@@ -7,13 +7,13 @@ import { APP_ADMINISTRATION_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_D
 
 const appAdministrationRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialogType: APP_ADMINISTRATION_DIALOG }, children: [
+    path: '', component: DialogEntryComponent, data: { dialogName: APP_ADMINISTRATION_DIALOG }, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: EmptyRouteComponent },
       {
         path: 'data', component: EmptyRouteComponent, children: [
-          { path: ':scope/add', component: DialogEntryComponent, data: { dialogType: ADD_CONTENT_TYPE_DIALOG } },
-          { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogType: EDIT_CONTENT_TYPE_DIALOG } },
+          { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
+          { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_DIALOG } },
         ]
       },
       { path: 'queries', component: EmptyRouteComponent },

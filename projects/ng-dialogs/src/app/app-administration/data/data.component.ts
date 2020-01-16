@@ -21,7 +21,7 @@ import { PermissionsComponent } from '../shared/modals/permissions/permissions.c
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { EditFieldsDialogData } from '../shared/models/edit-fields-dialog-data.model';
 import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.component';
-import { DialogService } from '../../shared/components/dialog-closed/dialog.service';
+import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG } from '../../shared/constants/navigation-messages';
 
 @Component({

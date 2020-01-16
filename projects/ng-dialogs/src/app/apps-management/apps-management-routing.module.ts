@@ -7,16 +7,16 @@ import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG } fr
 
 const appsManagementRoutes: Routes = [
   {
-    path: '', component: DialogEntryComponent, data: { dialogType: APPS_MANAGEMENT_DIALOG }, children: [
+    path: '', component: DialogEntryComponent, data: { dialogName: APPS_MANAGEMENT_DIALOG }, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
         path: 'list', component: EmptyRouteComponent, children: [
-          { path: 'import', component: DialogEntryComponent, data: { dialogType: IMPORT_APP_DIALOG } },
+          { path: 'import', component: DialogEntryComponent, data: { dialogName: IMPORT_APP_DIALOG } },
         ]
       },
       {
         path: 'settings', component: EmptyRouteComponent, children: [
-          { path: 'languages', component: DialogEntryComponent, data: { dialogType: ENABLE_LANGUAGES_DIALOG } },
+          { path: 'languages', component: DialogEntryComponent, data: { dialogName: ENABLE_LANGUAGES_DIALOG } },
         ]
       },
       { path: 'features', component: EmptyRouteComponent },

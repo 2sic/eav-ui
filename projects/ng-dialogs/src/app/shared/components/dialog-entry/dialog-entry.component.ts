@@ -12,7 +12,7 @@ import { EnableLanguagesComponent } from '../../../apps-management/shared/modals
 import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
 import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
-import { DialogService } from '../dialog-closed/dialog.service';
+import { DialogService } from '../dialog-service/dialog.service';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -22,9 +22,9 @@ import { DialogService } from '../dialog-closed/dialog.service';
 export class DialogEntryComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   private dialogRef: MatDialogRef<any, any>;
-  private dialogType: string;
+  private dialogName: string;
   private component: any;
-  private panelSize: string;
+  private panelSize: 'small' | 'medium' | 'large' | 'fullscreen'; // has to match css
 
   constructor(
     private dialog: MatDialog,
@@ -38,7 +38,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('Open dialog:', this.dialogType, 'Context id:', this.context.id, 'Context:', this.context);
+    console.log('Open dialog:', this.dialogName, 'Context id:', this.context.id, 'Context:', this.context);
 
     this.dialogRef = this.dialog.open(this.component, {
       backdropClass: 'dialog-backdrop',
@@ -50,8 +50,8 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dialogRef.afterClosed().subscribe(() => {
-        console.log('Dialog was closed:', this.dialogType);
-        this.dialogService.fireClosed(this.dialogType);
+        console.log('Dialog was closed:', this.dialogName);
+        this.dialogService.fireClosed(this.dialogName);
 
         if (this.route.pathFromRoot.length <= 3) {
           alert('Close iframe!');
@@ -76,12 +76,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   private configureDialog() {
-    this.dialogType = this.route.snapshot.data.dialogType;
-    if (!this.dialogType) {
-      throw new Error(`Could not find dialog type: ${this.dialogType}. Did you forget to add dialogType to route data?`);
+    this.dialogName = this.route.snapshot.data.dialogName;
+    if (!this.dialogName) {
+      throw new Error(`Could not find dialog type: ${this.dialogName}. Did you forget to add dialogName to route data?`);
     }
 
-    switch (this.dialogType) {
+    switch (this.dialogName) {
       case APPS_MANAGEMENT_DIALOG:
         // this is module root dialog and has to init context
         this.component = AppsManagementNavComponent;
@@ -119,7 +119,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.context.init(this.route);
         break;
       default:
-        throw new Error(`This Dialog was not configured: ${this.dialogType}.`);
+        throw new Error(`This Dialog was not configured: ${this.dialogName}.`);
     }
   }
 
