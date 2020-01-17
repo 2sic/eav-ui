@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
@@ -12,15 +11,10 @@ import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
-import { ContentExportComponent } from '../shared/modals/content-export/content-export.component';
-import { ContentExportDialogData } from '../shared/models/content-export-dialog-data.model';
-import { PermissionsDialogData } from '../shared/models/permissions-dialog-data.model';
-import { PermissionsComponent } from '../shared/modals/permissions/permissions.component';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
-import { EditFieldsDialogData } from '../shared/models/edit-fields-dialog-data.model';
-import { EditFieldsComponent } from '../shared/modals/edit-fields/edit-fields.component';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG } from '../../shared/constants/dialog-names';
+// tslint:disable-next-line:max-line-length
+import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-data',
@@ -63,30 +57,19 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private scope: string;
   private subscription: Subscription = new Subscription();
-  private editFieldsDialogRef: MatDialogRef<EditFieldsComponent, any>;
-  private contentExportDialogRef: MatDialogRef<ContentExportComponent, any>;
-  private permissionsDialogRef: MatDialogRef<PermissionsComponent, any>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private dialog: MatDialog,
     private contentTypesService: ContentTypesService,
     private eavConfigurationService: EavConfigurationService,
-    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
     this.scope = this.eavConfigurationService.contentType.defaultScope; // spm figure out how scope works
     this.fetchContentTypes();
-
-    this.subscription.add(
-      this.dialogService.subToClosed([ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG]).subscribe(dialog => {
-        console.log('Dialog closed event captured:', dialog);
-        this.fetchContentTypes();
-      })
-    );
+    this.refreshOnClosedChildDialogs();
   }
 
   ngOnDestroy() {
@@ -108,36 +91,20 @@ export class DataComponent implements OnInit, OnDestroy {
     // open content type data modal
   }
 
-  private addItem(contentType: ContentType) {
-    alert('Open Edit Ui');
-  }
-
-  private editFields(contentType: ContentType) {
-    const dialogData: EditFieldsDialogData = {
-      contentType: contentType,
-    };
-    this.editFieldsDialogRef = this.dialog.open(EditFieldsComponent, {
-      backdropClass: 'edit-fields-dialog-backdrop',
-      panelClass: ['edit-fields-dialog-panel', 'dialog-panel-large'],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      data: dialogData,
-    });
-    this.subscription.add(
-      this.editFieldsDialogRef.afterClosed().subscribe(() => {
-        console.log('Edit fields dialog was closed.');
-        this.fetchContentTypes();
-      }),
-    );
-  }
-
   editContentType(contentType: ContentType) {
     if (!contentType) {
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
       this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
     }
+  }
+
+  private addItem(contentType: ContentType) {
+    alert('Open Edit Ui');
+  }
+
+  private editFields(contentType: ContentType) {
+    this.router.navigate([`${this.scope}/${contentType.StaticName}/fields`], { relativeTo: this.route.firstChild });
   }
 
   private createOrEditMetadata(contentType: ContentType) {
@@ -164,23 +131,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openExport(contentType: ContentType) {
-    const dialogData: ContentExportDialogData = {
-      staticName: contentType.StaticName,
-    };
-    this.contentExportDialogRef = this.dialog.open(ContentExportComponent, {
-      backdropClass: 'content-export-dialog-backdrop',
-      panelClass: ['content-export-dialog-panel', 'dialog-panel-medium'],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      data: dialogData,
-    });
-    this.subscription.add(
-      this.contentExportDialogRef.afterClosed().subscribe(() => {
-        console.log('Content export dialog was closed.');
-        this.fetchContentTypes();
-      }),
-    );
+    this.router.navigate([`${contentType.StaticName}/export`], { relativeTo: this.route.firstChild });
   }
 
   private openImport(contentType: ContentType) {
@@ -188,40 +139,40 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    const dialogData: PermissionsDialogData = {
-      staticName: contentType.StaticName,
-      type: 4, // spm figure out what type is
-      keyType: 'guid', // spm figure out what keyType is
-    };
-    this.permissionsDialogRef = this.dialog.open(PermissionsComponent, {
-      backdropClass: 'permissions-dialog-backdrop',
-      panelClass: ['permissions-dialog-panel', 'dialog-panel-large'],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      data: dialogData,
-    });
-    this.subscription.add(
-      this.permissionsDialogRef.afterClosed().subscribe(() => {
-        console.log('Permissions dialog was closed.');
-        this.fetchContentTypes();
-      }),
-    );
+    // spm figure out what type=4 and keyType='guid' mean
+    this.router.navigate([`${contentType.StaticName}/4/guid/permissions`], { relativeTo: this.route.firstChild });
   }
 
   private deleteContentType(contentType: ContentType) {
-    console.log('Delete content type', contentType);
-    if (confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) {
-      this.contentTypesService.delete(contentType).subscribe(result => {
-        this.fetchContentTypes();
-      });
-    }
+    if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) { return; }
+
+    this.contentTypesService.delete(contentType).subscribe(result => {
+      this.fetchContentTypes();
+    });
   }
 
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       this.contentTypes = contentTypes;
     });
+  }
+
+  private refreshOnClosedChildDialogs() {
+    this.subscription.add(
+      this.dialogService
+        .subToClosed([
+          ADD_CONTENT_TYPE_DIALOG,
+          EDIT_CONTENT_TYPE_DIALOG,
+          EDIT_FIELDS_DIALOG,
+          EXPORT_CONTENT_TYPE_DIALOG,
+          IMPORT_CONTENT_TYPE_DIALOG,
+          SET_PERMISSIONS_DIALOG,
+        ])
+        .subscribe(dialogName => {
+          console.log('Dialog closed event captured:', dialogName);
+          this.fetchContentTypes();
+        }),
+    );
   }
 
 }

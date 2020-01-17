@@ -48,8 +48,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.fetchAppsList();
 
     this.subscription.add(
-      this.dialogService.subToClosed([IMPORT_APP_DIALOG]).subscribe(dialog => {
-        console.log('Dialog closed event captured:', dialog);
+      this.dialogService.subToClosed([IMPORT_APP_DIALOG]).subscribe(dialogName => {
+        console.log('Dialog closed event captured:', dialogName);
         this.fetchAppsList();
       })
     );

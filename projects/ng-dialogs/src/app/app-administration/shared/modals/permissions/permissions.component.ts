@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 import { GridReadyEvent, GridSizeChangedEvent, ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 
-import { PermissionsDialogData } from '../../models/permissions-dialog-data.model';
 import { PermissionsService } from '../../services/permissions.service';
 import { Permission } from '../../models/permission.model';
 import { PermissionsGrantComponent } from '../../ag-grid-components/permissions-grant/permissions-grant.component';
@@ -33,7 +33,7 @@ export class PermissionsComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
-    @Inject(MAT_DIALOG_DATA) private permissionsDialogData: PermissionsDialogData,
+    private route: ActivatedRoute,
     private permissionsService: PermissionsService,
   ) { }
 
@@ -63,11 +63,11 @@ export class PermissionsComponent implements OnInit {
   }
 
   private deletePermission(permission: Permission) {
-    if (confirm(`Delete '${permission.Title}' (${permission.Id})?`)) {
-      this.permissionsService.delete(permission.Id).subscribe(() => {
-        this.fetchPermissions();
-      });
-    }
+    if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) { return; }
+
+    this.permissionsService.delete(permission.Id).subscribe(() => {
+      this.fetchPermissions();
+    });
   }
 
   closeDialog() {
@@ -90,9 +90,10 @@ export class PermissionsComponent implements OnInit {
   }
 
   private fetchPermissions() {
-    this.permissionsService.getAll(this.permissionsDialogData.type,
-      this.permissionsDialogData.keyType, this.permissionsDialogData.staticName
-    ).subscribe((permissions: Permission[]) => {
+    const type = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+    const keyType = this.route.snapshot.paramMap.get('keyType');
+    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+    this.permissionsService.getAll(type, keyType, contentTypeStaticName).subscribe(permissions => {
       this.permissions = permissions;
     });
   }

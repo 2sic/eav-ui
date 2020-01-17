@@ -38,7 +38,8 @@ export class ContentTypesFieldsService {
   reOrder(idArray: number[], contentType: ContentType) {
     return <Observable<boolean>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/reorder', {
       params: {
-        appid: this.context.appId.toString(), contentTypeId: contentType.Id.toString(),
+        appid: this.context.appId.toString(),
+        contentTypeId: contentType.Id.toString(),
         newSortOrder: JSON.stringify(idArray),
       }
     });

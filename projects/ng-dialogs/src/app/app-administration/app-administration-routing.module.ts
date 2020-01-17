@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 // tslint:disable-next-line:max-line-length
-import { APP_ADMINISTRATION_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG } from '../shared/constants/dialog-names';
+import { APP_ADMINISTRATION_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG } from '../shared/constants/dialog-names';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -15,7 +15,18 @@ const appAdministrationRoutes: Routes = [
         path: 'data', component: EmptyRouteComponent, children: [
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
           { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_DIALOG } },
+          {
+            path: ':scope/:contentTypeStaticName/fields', component: DialogEntryComponent, data: {
+              dialogName: EDIT_FIELDS_DIALOG
+            }
+          },
+          { path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },
           { path: ':contentTypeStaticName/import', component: DialogEntryComponent, data: { dialogName: IMPORT_CONTENT_TYPE_DIALOG } },
+          {
+            path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+              dialogName: SET_PERMISSIONS_DIALOG
+            }
+          },
         ]
       },
       { path: 'queries', component: EmptyRouteComponent },

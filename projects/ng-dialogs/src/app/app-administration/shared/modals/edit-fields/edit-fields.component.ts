@@ -1,9 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi } from '@ag-grid-community/all-modules';
 
-import { EditFieldsDialogData } from '../../models/edit-fields-dialog-data.model';
+import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
+import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
 
 @Component({
@@ -28,14 +30,22 @@ export class EditFieldsComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
+  private scope: string;
+  private contentTypeStaticName: string;
+  private contentType: ContentType;
+
   constructor(
     private dialogRef: MatDialogRef<EditFieldsComponent>,
-    @Inject(MAT_DIALOG_DATA) public editFieldsDialogData: EditFieldsDialogData,
+    private route: ActivatedRoute,
+    private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
-  ) { }
+  ) {
+    this.scope = this.route.snapshot.paramMap.get('scope');
+    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  }
 
   ngOnInit() {
-    this.fetchFields();
+    this.fetchData();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -54,7 +64,7 @@ export class EditFieldsComponent implements OnInit {
   onRowDragEnd(event: RowDragEvent) {
     this.enableTextSelection = true;
     const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.editFieldsDialogData.contentType).subscribe(res => {
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(res => {
       this.fetchFields();
     });
   }
@@ -91,8 +101,16 @@ export class EditFieldsComponent implements OnInit {
   }
 
   private fetchFields() {
-    this.contentTypesFieldsService.getFields(this.editFieldsDialogData.contentType).subscribe(fields => {
+    this.contentTypesFieldsService.getFields(this.contentType).subscribe(fields => {
       this.fields = fields;
+    });
+  }
+
+  private fetchData() {
+    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
+      this.contentType = contentTypes.find(contentType => contentType.StaticName === this.contentTypeStaticName);
+
+      this.fetchFields();
     });
   }
 }

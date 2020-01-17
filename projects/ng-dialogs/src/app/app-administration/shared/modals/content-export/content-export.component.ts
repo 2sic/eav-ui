@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 
-import { ContentExportDialogData } from '../../models/content-export-dialog-data.model';
 import { ContentExport } from '../../models/content-export.model';
 import { ContentExportService } from '../../services/content-export.service';
 
@@ -22,13 +22,13 @@ export class ContentExportComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
-    @Inject(MAT_DIALOG_DATA) public contentExportDialogData: ContentExportDialogData,
+    private route: ActivatedRoute,
     private contentExportService: ContentExportService,
   ) {
     this.hasIdList = (Array.isArray(this.itemIds) && this.itemIds.length > 0);
     this.formValues = {
       defaultLanguage: 'en-US', // spm Figure out what default language is
-      contentTypeStaticName: this.contentExportDialogData.staticName,
+      contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
       language: 'All',
       recordExport: this.hasIdList ? 'Selection' : 'All',
       languageReferences: 'Link',
