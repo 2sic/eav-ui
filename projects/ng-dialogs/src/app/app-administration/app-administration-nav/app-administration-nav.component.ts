@@ -37,7 +37,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
         this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
       }),
 
-      this.appDialogConfigService.getDialogSettings().subscribe((dialogSettings: DialogSettings) => {
+      this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
         if (dialogSettings.IsContent) {
           this.tabs = this.tabs.filter(tab => {
             return !(tab === 'queries' || tab === 'web-api' || tab === 'app');

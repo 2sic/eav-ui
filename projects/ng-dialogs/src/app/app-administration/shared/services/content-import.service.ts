@@ -14,18 +14,24 @@ export class ContentImportService {
 
   async evaluateContent(formValues: ContentImport) {
     const requestData: ImportContentRequest = {
-      AppId: this.context.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
-      ContentType: formValues.contentType, ContentBase64: await this.toBase64(formValues.file),
-      ResourcesReferences: formValues.resourcesReferences, ClearEntities: formValues.clearEntities,
+      AppId: this.context.appId.toString(),
+      DefaultLanguage: formValues.defaultLanguage,
+      ContentType: formValues.contentType,
+      ContentBase64: await this.toBase64(formValues.file),
+      ResourcesReferences: formValues.resourcesReferences,
+      ClearEntities: formValues.clearEntities,
     };
     return <Observable<EvaluateContentResult>>this.http.post('/desktopmodules/2sxc/api/eav/ContentImport/EvaluateContent', requestData);
   }
 
   async importContent(formValues: ContentImport) {
     const requestData: ImportContentRequest = {
-      AppId: this.context.appId.toString(), DefaultLanguage: formValues.defaultLanguage,
-      ContentType: formValues.contentType, ContentBase64: await this.toBase64(formValues.file),
-      ResourcesReferences: formValues.resourcesReferences, ClearEntities: formValues.clearEntities,
+      AppId: this.context.appId.toString(),
+      DefaultLanguage: formValues.defaultLanguage,
+      ContentType: formValues.contentType,
+      ContentBase64: await this.toBase64(formValues.file),
+      ResourcesReferences: formValues.resourcesReferences,
+      ClearEntities: formValues.clearEntities,
     };
     return <Observable<ImportContentResult>>this.http.post('/desktopmodules/2sxc/api/eav/ContentImport/ImportContent', requestData);
   }

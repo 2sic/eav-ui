@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { Context } from '../../../shared/context/context';
+import { Query } from '../models/query.model';
 
 @Injectable()
 export class PipelinesService {
@@ -11,7 +13,9 @@ export class PipelinesService {
   ) { }
 
   getAll(contentType: string) {
-    return this.http.get(`/desktopmodules/2sxc/api/eav/Entities/GetEntities?appId=${this.context.appId}&contentType=${contentType}`);
+    return <Observable<Query[]>>(
+      this.http.get(`/desktopmodules/2sxc/api/eav/Entities/GetEntities?appId=${this.context.appId}&contentType=${contentType}`)
+    );
   }
 
 }

@@ -54,11 +54,9 @@ export class EditFieldsComponent implements OnInit {
   onRowDragEnd(event: RowDragEvent) {
     this.enableTextSelection = true;
     const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.editFieldsDialogData.contentType)
-      .subscribe((res: boolean) => {
-        console.log('onRowDragEnd reOrder res:', res);
-        this.fetchFields();
-      });
+    this.contentTypesFieldsService.reOrder(idArray, this.editFieldsDialogData.contentType).subscribe(res => {
+      this.fetchFields();
+    });
   }
 
   onRowDragMove(event: RowDragEvent) {
@@ -93,9 +91,8 @@ export class EditFieldsComponent implements OnInit {
   }
 
   private fetchFields() {
-    this.contentTypesFieldsService.getFields(this.editFieldsDialogData.contentType)
-      .subscribe((fields: Field[]) => {
-        this.fields = fields;
-      });
+    this.contentTypesFieldsService.getFields(this.editFieldsDialogData.contentType).subscribe(fields => {
+      this.fields = fields;
+    });
   }
 }

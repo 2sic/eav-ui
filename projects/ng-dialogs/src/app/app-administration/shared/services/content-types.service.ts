@@ -13,23 +13,22 @@ export class ContentTypesService {
   ) { }
 
   retrieveContentTypes(scope: string) {
-    return <Observable<ContentType[]>>this.http.get(
-      `/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`
+    return <Observable<ContentType[]>>(
+      this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`)
     );
   }
 
   save(contentType: ContentTypeEdit) {
-    return <Observable<boolean>>this.http.post(
-      '/desktopmodules/2sxc/api/eav/contenttype/save/',
-      contentType,
-      { params: { appid: this.context.appId.toString() } }
+    return <Observable<boolean>>(
+      this.http.post('/desktopmodules/2sxc/api/eav/contenttype/save/', contentType, { params: { appid: this.context.appId.toString() } })
     );
   }
 
   delete(contentType: ContentType) {
-    return <Observable<boolean>>this.http.get(
-      '/desktopmodules/2sxc/api/eav/contenttype/delete',
-      { params: { appid: this.context.appId.toString(), staticName: contentType.StaticName } }
+    return <Observable<boolean>>(
+      this.http.get('/desktopmodules/2sxc/api/eav/contenttype/delete', {
+        params: { appid: this.context.appId.toString(), staticName: contentType.StaticName }
+      })
     );
   }
 

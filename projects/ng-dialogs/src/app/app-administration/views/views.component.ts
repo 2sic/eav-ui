@@ -34,7 +34,7 @@ export class ViewsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.templatesService.getAll().subscribe((views: View[]) => {
+    this.templatesService.getAll().subscribe(views => {
       this.views = views;
     });
   }

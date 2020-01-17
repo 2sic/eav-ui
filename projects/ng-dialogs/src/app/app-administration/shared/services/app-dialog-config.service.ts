@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { Context } from '../../../shared/context/context';
+import { DialogSettings } from '../models/dialog-settings.model';
 
 @Injectable()
 export class AppDialogConfigService {
@@ -11,7 +13,7 @@ export class AppDialogConfigService {
   ) { }
 
   getDialogSettings() {
-    return this.http.get(`/desktopmodules/2sxc/api/app-sys/system/dialogsettings?appId=${this.context.appId}`);
+    return <Observable<DialogSettings>>this.http.get(`/desktopmodules/2sxc/api/app-sys/system/dialogsettings?appId=${this.context.appId}`);
   }
 
 }
