@@ -19,7 +19,7 @@ export class EditFieldsComponent implements OnInit {
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
-    { headerName: 'Title', field: 'IsTitle' },
+    { headerName: 'Title', field: 'IsTitle', rowDrag: true },
     { headerName: 'Static Name', field: 'StaticName' },
     { headerName: 'Data Type', field: 'Type' },
     { headerName: 'Input Type', field: 'InputType' },
