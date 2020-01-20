@@ -56,3 +56,9 @@
   height: 100%;
   align-items: center;
 }
+
+.actions {
+  .mat-icon:hover {
+    cursor: pointer;
+  }
+}

@@ -21,10 +21,11 @@ export class EditFieldsComponent implements OnInit {
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Title', field: 'IsTitle', rowDrag: true,
+      headerName: 'Title', field: 'IsTitle', rowDrag: true, cellClass: 'actions',
       cellRenderer: (params: ICellRendererParams) => {
         return '<div class="icon-container">'
-          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true">'
+          // tslint:disable-next-line:max-line-length
+          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" title="Use as title field">'
           + (params.value ? 'star' : 'star_border')
           + '</mat-icon>'
           + '</div>';
@@ -33,17 +34,28 @@ export class EditFieldsComponent implements OnInit {
     { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     { headerName: 'Data Type', field: 'Type', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     {
-      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button',
+      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button actions',
       cellRenderer: (params: ICellRendererParams) => {
-        return '<div class="icon-container">'
+        return '<div class="icon-container" title="Change Input Type">'
           + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true">edit</mat-icon>'
+          + '&nbsp;'
           + `<span class="text">${params.value}</span>`
           + '</div>';
       }, onCellClicked: this.editInputType.bind(this),
     },
     { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
-    { headerName: '' },
+    {
+      headerName: '', cellClass: 'actions', cellRenderer: () => {
+        return '<div class="icon-container">'
+          // tslint:disable-next-line:max-line-length
+          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="rename" title="Rename">settings_applications</mat-icon>'
+          + '&nbsp;'
+          // tslint:disable-next-line:max-line-length
+          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="delete" title="Delete">delete</mat-icon>'
+          + '</div>';
+      }, onCellClicked: this.activateAction.bind(this),
+    },
   ];
   frameworkComponents = {
   };
@@ -147,5 +159,29 @@ export class EditFieldsComponent implements OnInit {
   private editInputType(params: CellClickedEvent) {
     const field = <Field>params.data;
     alert('Edit Input Type');
+  }
+
+  private activateAction(params: CellClickedEvent) {
+    const field = <Field>params.data;
+    const action = (<HTMLElement>(<MouseEvent>params.event).target).getAttribute('action');
+
+    switch (action) {
+      case 'rename':
+        const newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`);
+        if (!newName) { break; }
+        this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
+          this.fetchFields();
+        });
+        break;
+      case 'delete':
+        if (field.IsTitle) { alert('Can\'t delete title'); break; }
+        if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { break; }
+        this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
+          this.fetchFields();
+        });
+        break;
+      default:
+        return;
+    }
   }
 }

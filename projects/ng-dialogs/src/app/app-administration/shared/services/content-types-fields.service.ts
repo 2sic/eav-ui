@@ -55,4 +55,27 @@ export class ContentTypesFieldsService {
     });
   }
 
+  rename(item: Field, contentType: ContentType, newName: string) {
+    return <Observable<null>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/rename', {
+      params: {
+        appid: this.context.appId.toString(),
+        contentTypeId: contentType.Id.toString(),
+        attributeId: item.Id.toString(),
+        newName: newName,
+      }
+    });
+  }
+
+  delete(item: Field, contentType: ContentType) {
+    if (item.IsTitle) { throw new Error('Can\'t delete Title'); }
+
+    return <Observable<boolean>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/deletefield', {
+      params: {
+        appid: this.context.appId.toString(),
+        contentTypeId: contentType.Id.toString(),
+        attributeId: item.Id.toString(),
+      }
+    });
+  }
+
 }
