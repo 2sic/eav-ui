@@ -44,4 +44,15 @@ export class ContentTypesFieldsService {
       }
     });
   }
+
+  setTitle(item: Field, contentType: ContentType) {
+    return <Observable<null>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/setTitle', {
+      params: {
+        appid: this.context.appId.toString(),
+        contentTypeId: contentType.Id.toString(),
+        attributeId: item.Id.toString(),
+      }
+    });
+  }
+
 }

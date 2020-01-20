@@ -38,3 +38,21 @@
     }
   }
 }
+
+.clickable-single:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: blue; // spm Make this 2sxc blue color
+}
+
+.clickable-single-with-button:hover .text {
+  text-decoration: underline;
+  cursor: pointer;
+  color: blue; // spm Make this 2sxc blue color
+}
+
+.icon-container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}

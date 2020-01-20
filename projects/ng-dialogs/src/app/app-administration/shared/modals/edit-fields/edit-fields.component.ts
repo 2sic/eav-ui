@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
-import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi } from '@ag-grid-community/all-modules';
+// tslint:disable-next-line:max-line-length
+import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, ICellRendererParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
@@ -19,12 +20,30 @@ export class EditFieldsComponent implements OnInit {
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
-    { headerName: 'Title', field: 'IsTitle', rowDrag: true },
-    { headerName: 'Static Name', field: 'StaticName' },
-    { headerName: 'Data Type', field: 'Type' },
-    { headerName: 'Input Type', field: 'InputType' },
-    { headerName: 'Label', field: 'Metadata.All.Name' },
-    { headerName: 'Notes', field: 'Metadata.All.Notes' },
+    {
+      headerName: 'Title', field: 'IsTitle', rowDrag: true,
+      cellRenderer: (params: ICellRendererParams) => {
+        return '<div class="icon-container">'
+          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true">'
+          + (params.value ? 'star' : 'star_border')
+          + '</mat-icon>'
+          + '</div>';
+      }, onCellClicked: this.setTitle.bind(this),
+    },
+    { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
+    { headerName: 'Data Type', field: 'Type', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
+    {
+      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button',
+      cellRenderer: (params: ICellRendererParams) => {
+        return '<div class="icon-container">'
+          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true">edit</mat-icon>'
+          + `<span class="text">${params.value}</span>`
+          + '</div>';
+      }, onCellClicked: this.editInputType.bind(this),
+    },
+    { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
+    { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
+    { headerName: '' },
   ];
   frameworkComponents = {
   };
@@ -112,5 +131,21 @@ export class EditFieldsComponent implements OnInit {
 
       this.fetchFields();
     });
+  }
+
+  private setTitle(params: CellClickedEvent) {
+    this.contentTypesFieldsService.setTitle(<Field>params.data, this.contentType).subscribe(() => {
+      this.fetchFields();
+    });
+  }
+
+  private editContentType(params: CellClickedEvent) {
+    const field = <Field>params.data;
+    alert('Edit Content Type');
+  }
+
+  private editInputType(params: CellClickedEvent) {
+    const field = <Field>params.data;
+    alert('Edit Input Type');
   }
 }
