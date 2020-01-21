@@ -34,9 +34,7 @@ export class ViewsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.templatesService.getAll().subscribe(views => {
-      this.views = views;
-    });
+    this.fetchTemplates();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -47,5 +45,10 @@ export class ViewsComponent implements OnInit {
     params.api.sizeColumnsToFit();
   }
 
+  fetchTemplates() {
+    this.templatesService.getAll().subscribe(views => {
+      this.views = views;
+    });
+  }
 
 }

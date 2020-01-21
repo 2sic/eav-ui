@@ -33,9 +33,7 @@ export class QueriesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.pipelinesService.getAll(this.contentType).subscribe((queries: Query[]) => {
-      this.queries = queries;
-    });
+    this.fetchPipelines();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -44,6 +42,12 @@ export class QueriesComponent implements OnInit {
 
   onGridSizeChanged(params: GridSizeChangedEvent) {
     params.api.sizeColumnsToFit();
+  }
+
+  fetchPipelines() {
+    this.pipelinesService.getAll(this.contentType).subscribe((queries: Query[]) => {
+      this.queries = queries;
+    });
   }
 
   private openVisualQueryDesigner() {

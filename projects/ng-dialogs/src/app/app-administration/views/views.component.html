@@ -1,6 +1,9 @@
 <div>
-  <button mat-icon-button class="not-implemented">
+  <button mat-icon-button class="edit-ui">
     <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button (click)="fetchTemplates()">
+    <mat-icon>refresh</mat-icon>
   </button>
 
   <ag-grid-angular class="ag-theme-material" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"

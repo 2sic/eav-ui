@@ -5,11 +5,14 @@
   <a href="http://2sxc.org/en/help?tag=visualquerydesigner" target="_blank">read more</a>
 </div>
 
-<button mat-button matTooltip="Create a new query" class="not-implemented">
+<button mat-button matTooltip="Create a new query" class="edit-ui">
   <mat-icon>add</mat-icon>
 </button>
 <button mat-button matTooltip="Import query" class="not-implemented">
   <mat-icon>cloud_upload</mat-icon>
+</button>
+<button mat-button matTooltip="Refresh" (click)="fetchPipelines()">
+  <mat-icon>refresh</mat-icon>
 </button>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
