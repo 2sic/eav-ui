@@ -11,6 +11,15 @@ export class Field {
   I18nKey: string;
 }
 
+export class NewField {
+  Id = 0;
+  Type = 'String';
+  InputType = 'string-default';
+  StaticName = '';
+
+  constructor(public AppId: number, public ContentTypeId: number, public IsTitle: boolean, public SortOrder: number) { }
+}
+
 export class FieldMetadata {
   All: FieldMetadataKey;
   [key: string]: FieldMetadataKey;
@@ -31,4 +40,11 @@ export class FieldInputTypeConfig { // spm See whether this type exists in edit 
   AngularAssets: string;
   AngularMode: string;
   UseAdam: boolean;
+}
+
+export class FieldInputTypeOption {
+  dataType: string;
+  inputType: string;
+  label: string;
+  description: string;
 }

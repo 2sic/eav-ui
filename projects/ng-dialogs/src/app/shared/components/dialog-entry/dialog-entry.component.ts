@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -17,6 +17,7 @@ import { EditFieldsComponent } from '../../../app-administration/shared/modals/e
 import { ContentExportComponent } from '../../../app-administration/shared/modals/content-export/content-export.component';
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 import { PermissionsComponent } from '../../../app-administration/shared/modals/permissions/permissions.component';
+import { ContentTypesFieldsAddComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -118,6 +119,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       case EDIT_FIELDS_DIALOG:
         this.component = EditFieldsComponent;
         this.panelSize = 'large';
+        break;
+      case CONTENT_TYPES_FIELDS_ADD_DIALOG:
+        this.component = ContentTypesFieldsAddComponent;
+        this.panelSize = 'medium';
         break;
       case EXPORT_CONTENT_TYPE_DIALOG:
         this.component = ContentExportComponent;

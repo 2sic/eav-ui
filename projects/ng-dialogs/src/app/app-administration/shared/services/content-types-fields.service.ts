@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ContentType } from '../models/content-type.model';
-import { Field } from '../models/field.model';
+import { Field, FieldInputTypeConfig, FieldInputTypeOption, NewField } from '../models/field.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
@@ -13,6 +13,30 @@ export class ContentTypesFieldsService {
     private http: HttpClient,
     private context: Context,
   ) { }
+
+  typeListRetrieve() {
+    return <Observable<string[]>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/datatypes/',
+      { params: { appid: this.context.appId.toString() } }
+    );
+  }
+
+  getInputTypesList() {
+    return this.http.get('/desktopmodules/2sxc/api/eav/contenttype/inputtypes/',
+      { params: { appid: this.context.appId.toString() } }
+    ).pipe(
+      map((inputConfigs: FieldInputTypeConfig[]) => {
+        const inputTypeOptions = inputConfigs.map(config => {
+          return <FieldInputTypeOption>{
+            dataType: config.Type.substring(0, config.Type.indexOf('-')),
+            inputType: config.Type,
+            label: config.Label,
+            description: config.Description,
+          };
+        });
+        return inputTypeOptions;
+      })
+    );
+  }
 
   getFields(contentType: ContentType) {
     return this.http.get('/desktopmodules/2sxc/api/eav/contenttype/getfields',
@@ -76,6 +100,10 @@ export class ContentTypesFieldsService {
         attributeId: item.Id.toString(),
       }
     });
+  }
+
+  add(item: NewField) {
+    return <Observable<number>>this.http.get('/desktopmodules/2sxc/api/eav/contenttype/addfield/', { params: <any>item });
   }
 
 }

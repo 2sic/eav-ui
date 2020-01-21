@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
 import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, ICellRendererParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
@@ -8,6 +9,8 @@ import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
 import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
+import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
+import { CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../../../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-edit-fields',
@@ -64,19 +67,25 @@ export class EditFieldsComponent implements OnInit {
   private scope: string;
   private contentTypeStaticName: string;
   private contentType: ContentType;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<EditFieldsComponent>,
     private route: ActivatedRoute,
+    private router: Router,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    private dialogService: DialogService,
   ) {
     this.scope = this.route.snapshot.paramMap.get('scope');
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
-  ngOnInit() {
-    this.fetchData();
+  async ngOnInit() {
+    this.contentType = (await this.contentTypesService.retrieveContentTypes(this.scope).toPromise())
+      .find(contentType => contentType.StaticName === this.contentTypeStaticName);
+    await this.fetchFields();
+    this.refreshOnClosedChildDialogs();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -128,21 +137,11 @@ export class EditFieldsComponent implements OnInit {
   }
 
   add() {
-    alert('Add fields');
+    this.router.navigate([`add`], { relativeTo: this.route });
   }
 
-  private fetchFields() {
-    this.contentTypesFieldsService.getFields(this.contentType).subscribe(fields => {
-      this.fields = fields;
-    });
-  }
-
-  private fetchData() {
-    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      this.contentType = contentTypes.find(contentType => contentType.StaticName === this.contentTypeStaticName);
-
-      this.fetchFields();
-    });
+  private async fetchFields() {
+    this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
   }
 
   private setTitle(params: CellClickedEvent) {
@@ -183,5 +182,14 @@ export class EditFieldsComponent implements OnInit {
       default:
         return;
     }
+  }
+
+  private refreshOnClosedChildDialogs() {
+    this.subscription.add(
+      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG]).subscribe(async dialogName => {
+        console.log('Dialog closed event captured:', dialogName);
+        await this.fetchFields();
+      }),
+    );
   }
 }

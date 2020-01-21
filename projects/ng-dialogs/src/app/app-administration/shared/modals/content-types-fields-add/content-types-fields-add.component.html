@@ -1,0 +1,31 @@
+<div mat-dialog-title>
+  <div class="dialog-title-container">
+    <div>Add Fields</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="row-container" *ngFor="let newField of newFields">
+  <mat-form-field>
+    <input matInput placeholder="Static Name" [(ngModel)]="newField.StaticName" name="StaticName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Type" (selectionChange)="resetSubTypes(newField)" [(ngModel)]="newField.Type" name="Type">
+      <mat-option *ngFor="let type of dataTypes" [value]="type">{{ type }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-select placeholder="Input Type" [(ngModel)]="newField.InputType" name="InputType">
+      <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
+        {{ option.inputType }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<button mat-button type="button" (click)="submit()" class="almost-implemented">
+  <mat-icon>done</mat-icon>
+</button>
