@@ -12,6 +12,12 @@ export class ContentTypesService {
     private context: Context,
   ) { }
 
+  retrieveContentType(staticName: string) {
+    return <Observable<ContentType>>(
+      this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&contentTypeId=${staticName}`)
+    );
+  }
+
   retrieveContentTypes(scope: string) {
     return <Observable<ContentType[]>>(
       this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`)

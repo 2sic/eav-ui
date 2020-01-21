@@ -64,7 +64,6 @@ export class EditFieldsComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
-  private scope: string;
   private contentTypeStaticName: string;
   private contentType: ContentType;
   private subscription: Subscription = new Subscription();
@@ -77,13 +76,11 @@ export class EditFieldsComponent implements OnInit {
     private contentTypesFieldsService: ContentTypesFieldsService,
     private dialogService: DialogService,
   ) {
-    this.scope = this.route.snapshot.paramMap.get('scope');
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
   async ngOnInit() {
-    this.contentType = (await this.contentTypesService.retrieveContentTypes(this.scope).toPromise())
-      .find(contentType => contentType.StaticName === this.contentTypeStaticName);
+    this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
     await this.fetchFields();
     this.refreshOnClosedChildDialogs();
   }
@@ -186,9 +183,9 @@ export class EditFieldsComponent implements OnInit {
 
   private refreshOnClosedChildDialogs() {
     this.subscription.add(
-      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG]).subscribe(async dialogName => {
+      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG]).subscribe(dialogName => {
         console.log('Dialog closed event captured:', dialogName);
-        await this.fetchFields();
+        this.fetchFields();
       }),
     );
   }

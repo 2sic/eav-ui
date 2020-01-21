@@ -20,7 +20,6 @@ export class ContentTypesFieldsAddComponent implements OnInit {
   inputTypeOptions: FieldInputTypeOption[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
 
-  private scope: string;
   private contentTypeStaticName: string;
   private contentType: ContentType;
 
@@ -31,13 +30,11 @@ export class ContentTypesFieldsAddComponent implements OnInit {
     private contentTypesFieldsService: ContentTypesFieldsService,
     private context: Context,
   ) {
-    this.scope = this.route.parent.snapshot.paramMap.get('scope');
     this.contentTypeStaticName = this.route.parent.snapshot.paramMap.get('contentTypeStaticName');
   }
 
   async ngOnInit() {
-    this.contentType = (await this.contentTypesService.retrieveContentTypes(this.scope).toPromise())
-      .find(contentType => contentType.StaticName === this.contentTypeStaticName);
+    this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
     this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
     this.dataTypes = await this.contentTypesFieldsService.typeListRetrieve().toPromise();
     this.inputTypeOptions = await this.contentTypesFieldsService.getInputTypesList().toPromise();

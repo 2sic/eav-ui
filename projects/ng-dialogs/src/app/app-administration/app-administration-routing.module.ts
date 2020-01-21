@@ -16,9 +16,7 @@ const appAdministrationRoutes: Routes = [
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
           { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_DIALOG } },
           {
-            path: ':scope/:contentTypeStaticName/fields', component: DialogEntryComponent, data: {
-              dialogName: EDIT_FIELDS_DIALOG
-            }, children: [
+            path: ':contentTypeStaticName/fields', component: DialogEntryComponent, data: { dialogName: EDIT_FIELDS_DIALOG }, children: [
               {
                 path: 'add', component: DialogEntryComponent, data: {
                   dialogName: CONTENT_TYPES_FIELDS_ADD_DIALOG

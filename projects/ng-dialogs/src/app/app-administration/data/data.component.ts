@@ -104,7 +104,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private editFields(contentType: ContentType) {
-    this.router.navigate([`${this.scope}/${contentType.StaticName}/fields`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`${contentType.StaticName}/fields`], { relativeTo: this.route.firstChild });
   }
 
   private createOrEditMetadata(contentType: ContentType) {
