@@ -99,6 +99,20 @@ export class DataComponent implements OnInit, OnDestroy {
     }
   }
 
+  fetchContentTypes() {
+    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
+      this.contentTypes = contentTypes;
+    });
+  }
+
+  createGhost() {
+    alert('Create ghost');
+  }
+
+  changeScope() {
+    alert('Change scope');
+  }
+
   private addItem(contentType: ContentType) {
     alert('Open Edit Ui');
   }
@@ -148,12 +162,6 @@ export class DataComponent implements OnInit, OnDestroy {
 
     this.contentTypesService.delete(contentType).subscribe(result => {
       this.fetchContentTypes();
-    });
-  }
-
-  private fetchContentTypes() {
-    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      this.contentTypes = contentTypes;
     });
   }
 
