@@ -1,54 +1,66 @@
 @import "../../../styles/variables.scss";
 
 .mat-card {
-    padding: 0;
-    margin: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    @media (max-width: 600px) {
-        border-radius: 0;
-    }
-    height: $edit-ui-dialog-debug-max-height;
-    z-index: 1;
-    width: 100%;
+  padding: 0;
+  margin: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  @media (max-width: 600px) {
+    border-radius: 0;
+  }
+
+  height: $edit-ui-dialog-debug-max-height;
+  z-index: 1;
+  width: 100%;
 }
+
 .mat-card.debug-enabled {
-    height: auto;
+  height: auto;
 }
+
 .debug-buttons-container {
-    padding-top: 17px;
-    padding-right: 16px;
-    padding-bottom: 15px;
-    padding-left: 16px;
-    height: $edit-ui-dialog-debug-max-height;
-    width: 100%;
+  padding-top: 17px;
+  padding-right: 16px;
+  padding-bottom: 15px;
+  padding-left: 16px;
+  height: $edit-ui-dialog-debug-max-height;
+  width: 100%;
 }
+
 .debug-info-container {
-    margin: $debug-info-container-margin !important;
-    margin-top: 0 !important;
-    width: calc(100% - 2 * #{$debug-info-container-margin});
-    height: $debug-info-container-height;
-    position: relative;
+  margin: $debug-info-container-margin !important;
+  margin-top: 0 !important;
+  width: calc(100% - 2 * #{$debug-info-container-margin});
+  height: $debug-info-container-height;
+  position: relative;
 }
+
 .debug-dump {
-    width: calc(100% - 10px);
-    margin: 0px;
-    padding: 10px;
-    padding-right: 0;
-    border: 0px;
-    height: calc(100% - 20px);
-    resize: none;
-    background-color: $editUI-disabled-background;
+  width: calc(100% - 10px);
+  margin: 0px;
+  padding: 10px;
+  padding-right: 0;
+  border: 0px;
+  height: calc(100% - 20px);
+  resize: none;
+  background-color: $editUI-disabled-background;
 }
+
 .mat-icon-button {
-    margin-right: 12px;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
+  margin-right: 12px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
 }
+
 .mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px !important;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px !important;
+}
+
+.debug-button-copy {
+  visibility: hidden;
 }

@@ -15,8 +15,8 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
   }
 
   /** Add language instance to ngrx-data */
-  public addLanguageInstance(formId: number, currentLanguage: string, defaultLanguage: string, uiLanguage: string) {
-    const languageInstance: LanguageInstance = { formId, currentLanguage, defaultLanguage, uiLanguage };
+  public addLanguageInstance(formId: number, currentLanguage: string, defaultLanguage: string, uiLanguage: string, hideHeader: boolean) {
+    const languageInstance: LanguageInstance = { formId, currentLanguage, defaultLanguage, uiLanguage, hideHeader };
     this.addOneToCache(languageInstance);
   }
 
@@ -36,9 +36,23 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
     );
   }
 
+  /** Get hideHeader for the form. Fix for safari and mobile browsers */
+  public getHideHeader(formId: number) {
+    return this.entities$.pipe(
+      map(languageInstances => languageInstances.find(langInstance => langInstance.formId === formId).hideHeader),
+      distinctUntilChanged((oldHide, newHide) => oldHide === newHide),
+    );
+  }
+
   /** Updated currentLanguage for a form with given formId. If form with given id isn't found, nothing is updated */
   public updateCurrentLanguage(formId: number, newLanguage: string) {
     const languageInstance: Partial<LanguageInstance> = { formId, currentLanguage: newLanguage };
+    this.updateOneInCache(languageInstance);
+  }
+
+  /** Update hideHeader for the form. Fix for safari and mobile browsers */
+  public updateHideHeader(formId: number, hideHeader: boolean) {
+    const languageInstance: Partial<LanguageInstance> = { formId, hideHeader: hideHeader };
     this.updateOneInCache(languageInstance);
   }
 

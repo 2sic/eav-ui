@@ -19,6 +19,7 @@ export class ConnectorInstance<T> implements ConnectorObservable<T> {
 
 export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
   value$: Observable<T>;
+  forceConnectorSave$: Observable<null>;
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
@@ -27,6 +28,7 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
     value$: Observable<T>
   ) {
     this.value$ = value$;
+    this.forceConnectorSave$ = connectorHost.forceConnectorSave$;
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;
@@ -46,4 +48,5 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
 /** Props and methods available to the connector to communicate with the host */
 export class ConnectorHost<T> {
   update: (value: T) => void;
+  forceConnectorSave$: Observable<null>;
 }

@@ -1,181 +1,194 @@
-
 .c-ew {
-    &__container {
-        border-radius: $edit-ui-dialog-border-radius;
-        position: fixed;
-        z-index: 2;
-        top: 0;
-        left: 0;
-        right: 0;  
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        align-items: self-start;
-        justify-content: center;
-        display: flex;
+  &__container {
+    border-radius: $edit-ui-dialog-border-radius;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: self-start;
+    justify-content: center;
+    display: flex;
+  }
+
+  &__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__dialog {
+    z-index: 3;
+    flex-direction: column;
+    display: flex;
+    max-width: $edit-ui-dialog-max-width;
+    width: 100vw;
+    margin-top: 24px;
+    min-height: $expandable-wrapper-max-height;
+    max-height: $expandable-wrapper-max-height;
+
+    @media (max-width: 600px) {
+      margin-top: 0;
+      min-height: $expandable-wrapper-max-height-mobile;
+      max-height: $expandable-wrapper-max-height-mobile;
     }
 
-    &__backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
+    padding: 0;
+
+    .mat-dialog-actions {
+      padding: 16px;
     }
 
-    &__dialog {
-        z-index: 3;
-        flex-direction: column;
-        display: flex;
-        max-width: $edit-ui-dialog-max-width;
-        width: 100vw; 
-        margin-top: 24px;
-        min-height: $expandable-wrapper-max-height;
-        max-height: $expandable-wrapper-max-height;
-        @media (max-width: 600px) {
-            margin-top: 0;
-            min-height: $expandable-wrapper-max-height-mobile;
-            max-height: $expandable-wrapper-max-height-mobile;
-        }
-        padding: 0;
-        .mat-dialog-actions {
-            padding: 16px;
+    &-header {
+      z-index: 4;
+
+      .mat-card {
+        border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
+        padding: 16px;
+        align-items: center;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        height: 52px;
+        z-index: 1;
+
+        // box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+        .back-arrow {
+          margin-right: 12px;
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+
+          .mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+          }
         }
 
-        &-header {
-            z-index:4;
-            .mat-card {
-                border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
-                padding: 16px;
-                align-items: center;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-                height: 52px;
-                z-index: 1;
-                // box-shadow: 0 2px 5px rgba(0,0,0,0.26);
-                .back-arrow {
-                    margin-right: 12px;
-                    width: 30px;
-                    height: 30px;
-                    line-height: 30px;
-                    .mat-icon {
-                        font-size: 16px;
-                        width: 16px;
-                        height: 16px;
-                        line-height: 16px;
-                    }
-                }
-                .title {
-                    font-size: 16px;
-                    font-weight: 500;
-                    margin-top: 1px;
-                    line-height: 20px;
-                }
-            }
+        .title {
+          font-size: 16px;
+          font-weight: 500;
+          margin-top: 1px;
+          line-height: 20px;
         }
-
-        &-content {
-            position:relative;
-            background: map_get($mat-eav-item-dialog-background, 50);
-            border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
-            .mdc-layout-grid {
-                padding: 16px;
-                .mat-card {
-                    height: 100%;
-                }
-            }
-        }
+      }
     }
+
+    &-content {
+      position: relative;
+      background: map_get($mat-eav-item-dialog-background, 50);
+      border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+
+      .mdc-layout-grid {
+        padding: 16px;
+
+        .mat-card {
+          height: 100%;
+        }
+      }
+    }
+  }
 }
+
 // // Expandable wrapper 
 .c-ew__dialog-content {
+  .adam-dialog-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .adam-dialog-content {
+    flex: 1 1 100%;
+    overflow: scroll;
+    // Hide scroll
+    -ms-overflow-style: none; // IE 10+
+    overflow: -moz-scrollbars-none; // Firefox
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none; // Safari and Chrome
+    }
+  }
+
+  adam-browser {
+    background: white;
+    z-index: 2;
+  }
+
+  adam-hint {
+    z-index: 1;
+  }
+
+  // // important for tinyMCE
+  .mce-tinymce {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: stretch;
+    border-width: 0px !important;
+  }
+
+  &--empty {
     .adam-dialog-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
+      flex: 1 1 100%;
     }
 
     .adam-dialog-content {
-        flex: 1 1 100%;
-        overflow: scroll;
-        // Hide scroll
-        -ms-overflow-style: none;  // IE 10+
-        overflow: -moz-scrollbars-none;  // Firefox
-        scrollbar-width: none;
-        &::-webkit-scrollbar { 
-            display: none;  // Safari and Chrome
-        }
+      flex: 1 1 auto;
     }
 
     adam-browser {
-        background: white;
-        z-index: 2;
-    }   
+      flex: 1 1 100%;
+      overflow: scroll;
 
-    adam-hint {
-        z-index:1;
+      // hide scroll bar
+      -ms-overflow-style: none; // IE 10+
+      overflow: -moz-scrollbars-none; // Firefox
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none; // Safari and Chrome
+      }
     }
-    
-    // // important for tinyMCE
-    .mce-tinymce {
-        display: flex; 
-        flex-direction: column;
-        flex: 1;
-        align-items:stretch;
-        border-width: 0px!important;
-    }
+  }
 
-    &--empty {
-        .adam-dialog-container {
-            flex: 1 1 100%;
-        }
-
-        .adam-dialog-content {
-            flex: 1 1 auto;
-        }   
-
-        adam-browser {
-            flex: 1 1 100%;
-            overflow: scroll;  
-
-            // hide scroll bar
-            -ms-overflow-style: none;  // IE 10+
-            overflow: -moz-scrollbars-none;  // Firefox
-            scrollbar-width: none;
-            &::-webkit-scrollbar { 
-                display: none;  // Safari and Chrome
-            }
-        }
-    }
-
-   adam-hint {
-       z-index:3;
-   }
+  adam-hint {
+    z-index: 3;
+  }
 }
 
 .c-ew__preview-container {
 
-    .mat-list .mat-list-item .mat-list-item-content {
-        max-height: 24px;
-        padding: 0 16px 0 16px;
-    }
-        
-    /* content block placeholders */
-    /* added in 08.04.06 - purpose still secret :)*/
-    .sxc-content-block {
-        background-color: #B0DCFF; /* temporary color */
-        height: 75px;
-    }
-    .sxc-content-block::after {
-        color: white;
-        content: "App / Content";
-        position: absolute;
-        text-align: center;
-        font-size: 25px;
-        display: inline-block;
-        width: 100%;
-        margin-top: 17px;
-    }
+  .mat-list .mat-list-item .mat-list-item-content {
+    max-height: 24px;
+    padding: 0 16px 0 16px;
+  }
+
+  /* content block placeholders */
+  /* added in 08.04.06 - purpose still secret :)*/
+  .sxc-content-block {
+    background-color: #B0DCFF;
+    /* temporary color */
+    height: 75px;
+  }
+
+  .sxc-content-block::after {
+    color: white;
+    content: "App / Content";
+    position: absolute;
+    text-align: center;
+    font-size: 25px;
+    display: inline-block;
+    width: 100%;
+    margin-top: 17px;
+  }
 }

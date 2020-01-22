@@ -16,6 +16,7 @@ import { FeatureService } from '../../../shared/store/ngrx-data/feature.service'
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -38,8 +39,8 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   isWysiwyg = false;
 
   get value() {
-    return this.group.controls[this.config.field.name].value
-      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block');
+    return this.group.controls[this.config.field.name].value ? this.group.controls[this.config.field.name].value
+      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') : '';
   }
   get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
@@ -59,6 +60,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private inputTypeService: InputTypeService,
     private zone: NgZone,
     private changeDetector: ChangeDetectorRef,
+    private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
@@ -73,7 +75,14 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);
 
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.config.field.expanded.subscribe(expanded => {
+        this.dialogIsOpen = expanded;
+        if (expanded) {
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
+        } else {
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
+        }
+      }),
     );
   }
 
@@ -90,10 +99,12 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   expandDialog() {
     console.log('ExpandableWrapperComponent expandDialog');
     this.config.field.expanded.next(true);
+    this.eavService.forceConnectorSave$$.next();
   }
   closeDialog() {
     console.log('ExpandableWrapperComponent closeDialog');
     this.config.field.expanded.next(false);
+    this.eavService.forceConnectorSave$$.next();
   }
 
   ngOnDestroy() {

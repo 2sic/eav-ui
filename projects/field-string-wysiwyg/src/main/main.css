@@ -10,6 +10,11 @@ field-string-wysiwyg {
   flex-shrink: 0;
 }
 
+.inline-wysiwyg .tinymce-toolbar-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  min-height: 38px;
+}
+
 .tinymce-container {
   position: relative;
   height: 100%;
@@ -19,6 +24,8 @@ field-string-wysiwyg {
   overflow-y: scroll;
   background-color: #fff;
   padding: 0 8px 1px 8px;
+  /* min-height 1px less because of padding pixel bottom */
+  min-height: 119px;
   /* Probably not needed */
   /*
   position: relative;
@@ -37,11 +44,16 @@ field-string-wysiwyg {
   font-weight: 400; 
   */
   font-size: medium;
-  -ms-overflow-style: none; /* IE 10+ */
-  overflow: -moz-scrollbars-none; /* Firefox */
-  scrollbar-width: none; /* Firefox */
+  /* IE 10+ */
+  -ms-overflow-style: none;
+  /* Firefox */
+  overflow: -moz-scrollbars-none;
+  /* Firefox */
+  scrollbar-width: none;
 }
-.tinymce-container::-webkit-scrollbar { /* Chrome */
+
+.tinymce-container::-webkit-scrollbar {
+  /* Chrome */
   display: none;
 }
 

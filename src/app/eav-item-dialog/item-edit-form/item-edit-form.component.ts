@@ -130,7 +130,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
       // important to be after patchValue
       const formSet: FormSet = {
         formId: this.formId,
-        formValues: formValues
+        entityGuid: this.item.entity.guid,
+        entityValues: formValues
       };
       this.eavService.triggerFormSetValueChange(formSet);
     }

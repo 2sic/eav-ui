@@ -1,6 +1,8 @@
 <div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)"
   style="position: relative">
-  <div mat-dialog-actions>
+  <div mat-dialog-actions class="form-header-container" [ngClass]="{
+    'u-display-none': hideHeader
+  }">
     <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
       [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"
       [isParentDialog]="isParentDialog">
@@ -9,12 +11,12 @@
   <div style="position: relative">
     <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
     'debug-enabled': debugEnabled,
-    'debug-info-is-open': debugInfoIsOpen
+    'debug-info-is-open': debugInfoIsOpen,
+    'hide-header-height-fix': hideHeader
   }">
       <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" [@slideLeft]="animationStateLeft"
-            [@slideRight]="animationStateRight">
+          <div #slideable class="mdc-layout-grid__cell--span-12">
             <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
               <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange($event)">
               </app-item-edit-form>

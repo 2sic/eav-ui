@@ -40,12 +40,12 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   });
 
   // Link group with web-link, page-link, unlink, anchor
+  const linkButton = editor.ui.registry.getAll().buttons.link;
   const linkgroupItems = [
     {
+      ...linkButton,
       type: 'choiceitem',
-      text: 'Insert/edit link',
-      tooltip: 'Insert/edit link',
-      icon: 'link',
+      text: linkButton.tooltip,
       value: (api: any) => { editor.execCommand('mceLink'); },
     },
     {
@@ -62,17 +62,12 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     text: 'Link.Anchor.Tooltip',
     tooltip: 'Link.Anchor.Tooltip',
     icon: 'custom-anchor',
-    value: (api) => { editor.execCommand('mceAnchor'); },
+    value: (api: any) => { editor.execCommand('mceAnchor'); },
   });
   const linkgroup = {
-    icon: 'link',
-    tooltip: 'Insert/edit link',
+    ...linkButton,
     presets: 'listpreview',
     columns: 3,
-    onSetup: initOnPostRender('link', editor),
-    onAction: (_: any) => {
-      editor.execCommand('mceLink');
-    },
     onItemAction: (api: any, value: any) => {
       value(api);
     },
@@ -81,15 +76,19 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     },
   };
   const linkgroupPro = { ...linkgroup };
-  linkgroupPro.fetch = (callback) => {
+  linkgroupPro.fetch = (callback: any) => {
     callback(linkgroupProItems);
   };
   editor.ui.registry.addSplitButton('linkgroup', linkgroup);
   editor.ui.registry.addSplitButton('linkgrouppro', linkgroupPro);
 
+  const imageButton = editor.ui.registry.getAll().buttons.image;
+  const alignleftButton = editor.ui.registry.getAll().buttons.alignleft;
+  const aligncenterButton = editor.ui.registry.getAll().buttons.aligncenter;
+  const alignrightButton = editor.ui.registry.getAll().buttons.alignright;
   // Group with images (adam) - only in PRO mode
   editor.ui.registry.addSplitButton('images', {
-    icon: 'image',
+    ...imageButton,
     tooltip: 'Image.AdamImage.Tooltip',
     presets: 'listpreview',
     columns: 3,
@@ -102,10 +101,10 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     fetch: (callback: any) => {
       const items = [
         {
+          ...imageButton,
           type: 'choiceitem',
           text: 'Image.AdamImage.Tooltip',
           tooltip: 'Image.AdamImage.Tooltip',
-          icon: 'image',
           value: (api: any) => { fieldStringWysiwyg.toggleAdam(true); },
         },
         {
@@ -117,31 +116,28 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
         },
         // note: all these use i18n from tinyMce standard
         {
+          ...imageButton,
           type: 'choiceitem',
-          text: 'Insert\/edit image',
-          tooltip: 'Insert\/edit image',
+          text: imageButton.tooltip,
           icon: 'link',
           value: (api: any) => { editor.execCommand('mceImage'); },
         },
         {
+          ...alignleftButton,
           type: 'choiceitem',
-          text: 'Align left',
-          tooltip: 'Align left',
-          icon: 'align-left',
+          text: alignleftButton.tooltip,
           value: (api: any) => { editor.execCommand('JustifyLeft'); },
         },
         {
+          ...aligncenterButton,
           type: 'choiceitem',
-          text: 'Align center',
-          tooltip: 'Align center',
-          icon: 'align-center',
+          text: aligncenterButton.tooltip,
           value: (api: any) => { editor.execCommand('JustifyCenter'); },
         },
         {
+          ...alignrightButton,
           type: 'choiceitem',
-          text: 'Align right',
-          tooltip: 'Align right',
-          icon: 'align-right',
+          text: alignrightButton.tooltip,
           value: (api: any) => { editor.execCommand('JustifyRight'); },
         },
       ];
@@ -149,40 +145,36 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     },
   });
 
+  const italicButton = editor.ui.registry.getAll().buttons.italic;
+  const strikethroughButton = editor.ui.registry.getAll().buttons.strikethrough;
+  const superscriptButton = editor.ui.registry.getAll().buttons.superscript;
+  const subscriptButton = editor.ui.registry.getAll().buttons.subscript;
   // Drop-down with italic, strikethrough, ...
   editor.ui.registry.addSplitButton('formatgroup', {
-    tooltip: 'Italic',  // will be autotranslated
-    icon: 'italic',
+    ...italicButton,
     presets: 'listpreview',
     columns: 3,
-    onSetup: initOnPostRender('italic', editor),
-    onAction: (_: any) => {
-      editor.execCommand('Italic');
-    },
     onItemAction: (api: any, value: any) => {
       value(api);
     },
     fetch: (callback: any) => {
       const items = [
         {
+          ...strikethroughButton,
           type: 'choiceitem',
-          text: 'Strikethrough',
-          tooltip: 'Strikethrough',
-          icon: 'strike-through',
+          text: strikethroughButton.tooltip,
           value: (api: any) => { editor.execCommand('Strikethrough'); },
         },
         {
+          ...superscriptButton,
           type: 'choiceitem',
-          text: 'Superscript',
-          tooltip: 'Superscript',
-          icon: 'superscript',
+          text: superscriptButton.tooltip,
           value: (api: any) => { editor.execCommand('Superscript'); },
         },
         {
+          ...subscriptButton,
           type: 'choiceitem',
-          text: 'Subscript',
-          tooltip: 'Subscript',
-          icon: 'subscript',
+          text: subscriptButton.tooltip,
           value: (api: any) => { editor.execCommand('Subscript'); },
         },
       ];
@@ -190,58 +182,34 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
     },
   });
 
+  const bullistButton = editor.ui.registry.getAll().buttons.bullist;
+  const outdentButton = editor.ui.registry.getAll().buttons.outdent;
+  const indentButton = editor.ui.registry.getAll().buttons.indent;
   // Drop-down with numbered list, bullet list, ...
   editor.ui.registry.addSplitButton('listgroup', {
-    tooltip: 'Numbered list',  // official tinymce key
-    icon: 'ordered-list',
+    ...bullistButton,
     presets: 'listpreview',
     columns: 3,
-    // for unknown reasons, this just doesn't activate correctly :( - neither does the bullist
-    // spm numlist and bullist are not considered formats and don't trigger formatChanged
-    onSetup: initOnPostRender('numlist', editor),
-    onAction: (_: any) => {
-      editor.execCommand('InsertOrderedList');
-    },
     onItemAction: (api: any, value: any) => {
       value(api);
     },
     fetch: (callback: any) => {
       const items = [
         {
+          ...outdentButton,
           type: 'choiceitem',
-          text: 'Bullet list',
-          tooltip: 'Bullet list',
-          icon: 'unordered-list',
-          value: (api: any) => { editor.execCommand('InsertUnorderedList'); },
-        },
-        {
-          type: 'choiceitem',
-          text: 'Decrease indent',
-          tooltip: 'Decrease indent',
-          icon: 'outdent',
+          text: outdentButton.tooltip,
           value: (api: any) => { editor.execCommand('Outdent'); },
         },
         {
+          ...indentButton,
           type: 'choiceitem',
-          text: 'Increase indent',
-          tooltip: 'Increase indent',
-          icon: 'indent',
+          text: indentButton.tooltip,
           value: (api: any) => { editor.execCommand('Indent'); },
         },
       ];
       callback(items);
     },
-    // spm fix onPostRender on bullist
-    // menu: [
-    //     {
-    //         icon: 'bullist',
-    //         text: 'Bullet list',
-    //         onPostRender: initOnPostRender('bullist', editor),
-    //         onAction: () => { editor.execCommand('InsertUnorderedList'); }
-    //     },
-    //     { icon: 'outdent', text: 'Outdent', onAction: () => { editor.execCommand('Outdent'); } },
-    //     { icon: 'indent', text: 'Indent', onAction: () => { editor.execCommand('Indent'); } }
-    // ]
   });
 
   // Switch normal / advanced mode
@@ -279,52 +247,83 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
 
   // h1, h2, etc. buttons, inspired by http://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
   // note that the complex array is needed because auto-translate only happens if the string is identical
+  /*
+    custom p, H1-H6 only for the toolbar listpreview menu
+    [name, buttonCommand, tooltip, text, icon]
+  */
+  const isGerman = editor.settings.language === 'de';
   [['pre', 'Preformatted', 'Preformatted'],
-  ['p', 'Paragraph', 'Paragraph'],
+  ['cp', 'p', 'Paragraph', 'Paragraph', 'paragraph'],
   // ['code', 'Code', 'Code'],
-  ['h1', 'Heading 1', 'H1'],
-  ['h2', 'Heading 2', 'H2'],
-  ['h3', 'Heading 3', 'H3'],
-  ['h4', 'Heading 4', 'Heading 4'],
-  ['h5', 'Heading 5', 'Heading 5'],
-  ['h6', 'Heading 6', 'Heading 6']].forEach((tag) => {
+  ['ch1', 'h1', 'Heading 1', 'H1', isGerman ? 'custom-image-u1' : 'custom-image-h1'],
+  ['ch2', 'h2', 'Heading 2', 'H2', isGerman ? 'custom-image-u2' : 'custom-image-h2'],
+  ['ch3', 'h3', 'Heading 3', 'H3', isGerman ? 'custom-image-u3' : 'custom-image-h3'],
+  ['ch4', 'h4', 'Heading 4', 'H4', isGerman ? 'custom-image-u4' : 'custom-image-h4'],
+  ['ch5', 'h5', 'Heading 5', 'H5', isGerman ? 'custom-image-u5' : 'custom-image-h5'],
+  ['ch6', 'h6', 'Heading 6', 'H6', isGerman ? 'custom-image-u6' : 'custom-image-h6']].forEach((tag) => {
     editor.ui.registry.addButton(tag[0], {
-      tooltip: tag[1],
+      icon: tag[4],
+      tooltip: tag[2],
       text: tag[2],
       onAction: (_: any) => {
-        editor.execCommand('mceToggleFormat', false, tag[0]);
+        editor.execCommand('mceToggleFormat', false, tag[1]);
       },
       onSetup: initOnPostRender(tag[0], editor),
     });
   });
 
+  console.log('buttons:', editor.ui.registry.getAll());
   // Group of buttons with an h3 to start and showing h4-6 + p
+  const blockquoteButton = editor.ui.registry.getAll().buttons.blockquote;
   editor.ui.registry.addSplitButton('hgroup', {
-    ...editor.ui.registry.getAll().buttons.h3,
+    ...editor.ui.registry.getAll().buttons.h4,
+    presets: 'listpreview',
+    columns: 4,
     onItemAction: (api: any, value: any) => {
       value(api);
     },
     fetch: (callback: any) => {
       const items = [
         {
-          ...editor.ui.registry.getAll().buttons.h4,
+          ...editor.ui.registry.getAll().buttons.ch1,
+          type: 'choiceitem',
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h1'); },
+        },
+        {
+          ...editor.ui.registry.getAll().buttons.ch2,
+          type: 'choiceitem',
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h2'); },
+        },
+        {
+          ...editor.ui.registry.getAll().buttons.ch3,
+          type: 'choiceitem',
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h3'); },
+        },
+        {
+          ...editor.ui.registry.getAll().buttons.cp,
+          type: 'choiceitem',
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'p'); },
+        },
+        {
+          ...editor.ui.registry.getAll().buttons.ch4,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h4'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h5,
+          ...editor.ui.registry.getAll().buttons.ch5,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h5'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.h6,
+          ...editor.ui.registry.getAll().buttons.ch6,
           type: 'choiceitem',
           value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'h6'); },
         },
         {
-          ...editor.ui.registry.getAll().buttons.p,
+          ...blockquoteButton,
           type: 'choiceitem',
-          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'p'); },
+          text: blockquoteButton.tooltip,
+          value: (api: any) => { editor.execCommand('mceToggleFormat', false, 'blockquote'); },
         },
       ];
       callback(items);
@@ -420,7 +419,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   });
   editor.ui.registry.addContextToolbar('li,ol,ul', {
     predicate: makeTagDetector('li,ol,ul', editor),
-    items: 'bullist numlist | outdent indent',
+    items: 'numlist bullist | outdent indent',
   });
 }
 

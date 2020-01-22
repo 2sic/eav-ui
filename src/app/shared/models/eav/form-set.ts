@@ -1,4 +1,5 @@
 export class FormSet {
   formId: number;
-  formValues: { [name: string]: any };
+  entityGuid: string;
+  entityValues: { [name: string]: any };
 }

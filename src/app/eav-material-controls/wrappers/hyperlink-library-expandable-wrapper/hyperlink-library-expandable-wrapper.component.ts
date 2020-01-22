@@ -10,6 +10,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
@@ -37,11 +38,19 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   constructor(
     private fileTypeService: FileTypeService,
     private zone: NgZone,
+    private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.config.field.expanded.subscribe(expanded => {
+        this.dialogIsOpen = expanded;
+        if (expanded) {
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
+        } else {
+          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
+        }
+      }),
     );
   }
 

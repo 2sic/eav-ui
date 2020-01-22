@@ -55,14 +55,19 @@
             [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value"
             matTooltip="{{'Fields.Hyperlink.Default.Tooltip' | translate }}" matTooltipPosition="above"
             (blur)="setTouched()" appPasteClipboardImage [config]="config" [elementType]="'input'">
-          <div matSuffix fxLayoutAlign="center center">
+          <div matSuffix fxLayoutAlign="center center" *ngIf="adamButton || pageButton">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
             'c-ew__preview-suffix-text--disabled': control.disabled
-          }">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
-            <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" [disabled]="control.disabled"
-              type="button" (click)="expandDialog()"
-              matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate}}">
+          }">{{ adamButton ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}</div>
+            <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" *ngIf="adamButton"
+              [disabled]="control.disabled" type="button" (click)="expandDialog()"
+              matTooltip="{{ 'Fields.Hyperlink.Default.Fullscreen' | translate }}" appClickStopPropagation>
               <mat-icon svgIcon="apple"></mat-icon>
+            </button>
+            <button mat-icon-button class="c-ew__preview-suffix-icon" tabindex="-1" *ngIf="pageButton"
+              [disabled]="control.disabled" type="button" (click)="openPageDialog()"
+              matTooltip="{{ 'Fields.Hyperlink.Default.PageTip' | translate }}" appClickStopPropagation>
+              <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
           <mat-label [ngClass]="{'mat-error' : control.invalid && control.touched}">
@@ -85,7 +90,8 @@
       <div class="c__helper-wrapper">
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
-        <div align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide fxShow.gt-xs>
+        <div *ngIf="adamButton" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
+          fxShow.gt-xs>
           <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
         </div>
       </div>

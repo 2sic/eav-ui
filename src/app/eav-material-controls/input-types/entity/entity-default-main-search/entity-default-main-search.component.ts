@@ -55,7 +55,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   get enableTextEntry(): boolean { return this.config.field.settings.EnableTextEntry || false; }
   get entityType(): string { return this.config.field.settings.EntityType || ''; }
   get enableAddExisting(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
-  get enableCreate(): boolean { return this.config.field.settings.EnableAddExisting === false ? false : true; }
+  get enableCreate(): boolean { return this.config.field.settings.EnableCreate === false ? false : true; }
   get enableEdit(): boolean { return this.config.field.settings.EnableEdit === false ? false : true; }
   get enableRemove(): boolean { return this.config.field.settings.EnableRemove === false ? false : true; }
   get enableDelete(): boolean { return this.config.field.settings.EnableDelete || false; }

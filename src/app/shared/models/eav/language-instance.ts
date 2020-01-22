@@ -4,5 +4,6 @@ export class LanguageInstance {
     public currentLanguage: string,
     public defaultLanguage: string,
     public uiLanguage: string,
+    public hideHeader: boolean,
   ) { }
 }

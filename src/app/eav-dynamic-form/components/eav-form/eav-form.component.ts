@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
   exportAs: 'appEavForm',
@@ -36,7 +37,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     return !environment.production;
   }
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private eavService: EavService) { }
 
   ngOnInit() {
     // let group = this.formBuilder.group({});
