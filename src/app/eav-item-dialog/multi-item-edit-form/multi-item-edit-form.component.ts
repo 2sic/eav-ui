@@ -180,29 +180,31 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   /** Save all forms */
   saveAll(close: boolean) {
-    if (this.formsAreValid || this.allControlsAreDisabled) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
-        itemEditFormComponent.form.submitOutside();
-      });
-      console.log('saveAll', close);
-      this.snackBarOpen(this.translate.instant('Message.Saving'));
-
-      if (close) {
-        this.formIsSaved = true;
-      }
-    } else {
-      this.calculateAllValidationMessages();
-      const fieldErrors: FieldErrorMessage[] = [];
-      this.formErrors.forEach(formError => {
-        Object.keys(formError).forEach(key => {
-          fieldErrors.push({ field: key, message: formError[key] });
+    this.eavService.forceConnectorSave$$.next();
+    // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
+    setTimeout(() => {
+      if (this.formsAreValid || this.allControlsAreDisabled) {
+        console.log('TINYMCE SAVE saveAll');
+        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+          itemEditFormComponent.form.submitOutside();
         });
-      });
-      this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: { fieldErrors: fieldErrors },
-        duration: 5000
-      });
-    }
+        console.log('saveAll', close);
+        this.snackBarOpen(this.translate.instant('Message.Saving'));
+        if (close) { this.formIsSaved = true; }
+      } else {
+        this.calculateAllValidationMessages();
+        const fieldErrors: FieldErrorMessage[] = [];
+        this.formErrors.forEach(formError => {
+          Object.keys(formError).forEach(key => {
+            fieldErrors.push({ field: key, message: formError[key] });
+          });
+        });
+        this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
+          data: { fieldErrors: fieldErrors },
+          duration: 5000
+        });
+      }
+    }, 100);
   }
 
   trackByFn(index, item) {
@@ -439,6 +441,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           IsPublished: this.publishMode === 'show',
           DraftShouldBranch: this.publishMode === 'branch'
         };
+        console.log('TINYMCE SAVE savemany body:', body.Items[0].Entity.Attributes.String.TinyMCE);
         return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
           .pipe(map(data => {
             this.enableDraft = true; // after saving, we can re-save as draft

@@ -16,7 +16,12 @@ import { FormSet } from '../models/eav/form-set';
 
 @Injectable()
 export class EavService {
-
+  /**
+   * Tells subscribed custom components that they should submit their values,
+   * e.g. form is going to be saved and we don't want to miss any values.
+   * Custom components run outside Angular zone and we have to wait for their values to update.
+   */
+  forceConnectorSave$$ = new Subject<null>();
   // this formSetValueChangeSource observable is using in external components
   private formSetValueChangeSource = new Subject<FormSet>();
   formSetValueChange$ = this.formSetValueChangeSource.asObservable();

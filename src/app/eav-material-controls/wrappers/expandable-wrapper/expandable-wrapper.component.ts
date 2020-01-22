@@ -99,10 +99,12 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   expandDialog() {
     console.log('ExpandableWrapperComponent expandDialog');
     this.config.field.expanded.next(true);
+    this.eavService.forceConnectorSave$$.next();
   }
   closeDialog() {
     console.log('ExpandableWrapperComponent closeDialog');
     this.config.field.expanded.next(false);
+    this.eavService.forceConnectorSave$$.next();
   }
 
   ngOnDestroy() {

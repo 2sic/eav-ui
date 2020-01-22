@@ -118,7 +118,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     editor.on('remove', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE removed', event);
       this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-      this.subscriptions = [];
+      this.subscriptions = null;
       this.editorContent = null;
     });
 
@@ -152,23 +152,15 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       }
     });
 
-    editor.on('change', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE value changed', event);
-      this.editorContent = editor.getContent();
-      this.connector.data.update(this.editorContent);
-    });
+    editor.on('change', this.saveValue.bind(this));
+    editor.on('undo', this.saveValue.bind(this));
+    editor.on('redo', this.saveValue.bind(this));
+    this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
+  }
 
-    editor.on('undo', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE value changed', event);
-      this.editorContent = editor.getContent();
-      this.connector.data.update(this.editorContent);
-    });
-
-    editor.on('redo', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE value changed', event);
-      this.editorContent = editor.getContent();
-      this.connector.data.update(this.editorContent);
-    });
+  private saveValue(event: any) {
+    this.editorContent = this.editor.getContent();
+    this.connector.data.update(this.editorContent);
   }
 
   disconnectedCallback() {

@@ -149,6 +149,7 @@ export class ConnectorService {
       update: value => {
         this._ngZone.run(() => this.update(value));
       },
+      forceConnectorSave$: this.eavService.forceConnectorSave$$,
     };
     this.previousValue = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);

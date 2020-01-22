@@ -1,6 +1,8 @@
+import { Subscription } from 'rxjs';
 import { } from 'google-maps';
 
 import { EavExperimentalInputField } from '../shared/models';
+import { ConnectorDataObservable } from '../../../shared/connector';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import { defaultCoordinates, mapsParameters } from '../shared/constants';
@@ -22,12 +24,14 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   mapApiUrl = mapsParameters.mapApiUrl;
   mapContainer: HTMLDivElement;
   marker: google.maps.Marker;
+  private subscription: Subscription;
 
   constructor() {
     super();
     console.log('FieldCustomGps constructor called');
     this.fieldInitialized = false;
     this.eventListeners = [];
+    this.subscription = new Subscription();
   }
 
   connectedCallback() {
@@ -100,6 +104,9 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     );
 
     this.marker.addListener('dragend', this.onMarkerDragend.bind(this));
+    this.subscription.add(
+      (<ConnectorDataObservable<string>>this.connector.data).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
+    );
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral) {
@@ -172,6 +179,8 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
       const listener = eventListener.listener;
       element.removeEventListener(type, listener);
     });
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 }
 
