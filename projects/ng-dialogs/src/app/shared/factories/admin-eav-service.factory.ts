@@ -1,7 +1,7 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { UrlHelper } from '../../../../../../src/app/shared/helpers/url-helper';
+import { UrlHelper } from '../../../../../edit/src/app/shared/helpers/url-helper';
 import { QueryParameters } from '../models/query-parameters.model';
 
 export function adminEavServiceFactory(injector: Injector): Function {
