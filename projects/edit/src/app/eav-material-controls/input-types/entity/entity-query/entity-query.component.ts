@@ -6,10 +6,10 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
-import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
+// import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
+// import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector

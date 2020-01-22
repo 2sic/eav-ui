@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { ConnectorObservable } from '../../../../../../../../projects/shared/connector';
+import { ConnectorObservable } from '../../../../../../../../../shared/connector';
 import { InputTypeName } from '../../../../../../shared/models/input-field-models';
 import { FormSet } from '../../../../../../shared/models/eav/form-set';
 

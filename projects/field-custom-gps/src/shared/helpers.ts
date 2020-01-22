@@ -1,5 +1,5 @@
 // google material icons
-import * as mapMarker from '../../../../src/icons/font-awesome/map-marker-alt-solid.svg';
+import * as mapMarker from '../../../edit/src/icons/font-awesome/map-marker-alt-solid.svg';
 
 export const customGpsIcons = {
   mapMarker: mapMarker,

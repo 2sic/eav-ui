@@ -11,7 +11,7 @@ import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-it
 import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';
-import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 // spm probably not needed
 // import { EavService } from '../../../../shared/services/eav.service';

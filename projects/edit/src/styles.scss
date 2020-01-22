@@ -3,6 +3,6 @@
 
 @import '~@angular/material/theming';
 @include mat-core();
-@import '../theme.scss';
+@import '../../../theme.scss';
 @import "~@material/layout-grid/mdc-layout-grid";
 @import 'styles/app.scss';

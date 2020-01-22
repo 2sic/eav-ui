@@ -9,9 +9,9 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
-import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { FieldMaskService } from '../../../../../../../shared/field-mask.service';;
+// import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
+// import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector

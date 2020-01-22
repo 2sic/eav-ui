@@ -5,32 +5,32 @@
   "projects": {
     "eav-item-dialog-angular": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "projects/edit/src",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "./dist/main",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "index": "projects/edit/src/index.html",
+            "main": "projects/edit/src/main.ts",
+            "tsConfig": "projects/edit/src/tsconfig.app.json",
+            "polyfills": "projects/edit/src/polyfills.ts",
             "showCircularDependencies": false,
             "assets": [],
             "styles": [
-              "src/styles.scss"
+              "projects/edit/src/styles.scss"
             ],
             "scripts": [
-              "src/scripts/dropzone-dragging-helper.js",
-              "src/scripts/clipboard-paste/paste.js",
+              "projects/edit/src/scripts/dropzone-dragging-helper.js",
+              "projects/edit/src/scripts/clipboard-paste/paste.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "./"
+                "./projects/edit/"
               ]
             }
           },
@@ -46,8 +46,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/edit/src/environments/environment.ts",
+                  "with": "projects/edit/src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -74,16 +74,16 @@
         "test": {
           "builder": "ngx-build-plus:karma",
           "options": {
-            "main": "src/test.ts",
+            "main": "projects/edit/src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
+            "polyfills": "projects/edit/src/polyfills.ts",
+            "tsConfig": "projects/edit/src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "src/styles.scss"
+              "projects/edit/src/styles.scss"
             ],
             "assets": [
-              "src/assets"
+              "projects/edit/src/assets"
             ]
           }
         },
@@ -91,8 +91,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "projects/edit/src/tsconfig.app.json",
+              "projects/edit/src/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -102,8 +102,8 @@
       }
     },
     "eav-item-dialog-angular-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
+      "root": "projects/edit/e2e",
+      "sourceRoot": "projects/edit/e2e",
       "projectType": "application",
       "architect": {
         "e2e": {
@@ -117,7 +117,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "e2e/tsconfig.e2e.json"
+              "projects/edit/e2e/tsconfig.e2e.json"
             ],
             "exclude": [
               "**/node_modules/**"

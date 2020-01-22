@@ -16,7 +16,7 @@ import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-
 import { MetadataConstants } from '../../../shared/constants';
 import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
-import { FeaturesGuidsConstants } from '../../../../../projects/shared/features-guids.constants';
+import { FeaturesGuidsConstants } from '../../../../../../shared/features-guids.constants';
 
 @Component({
   // tslint:disable-next-line:component-selector

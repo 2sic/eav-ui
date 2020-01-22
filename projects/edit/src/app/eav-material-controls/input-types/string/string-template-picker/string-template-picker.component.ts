@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
-import { FieldMaskService } from '../../../../../../projects/shared/field-mask.service';
+import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
 import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-assets.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';

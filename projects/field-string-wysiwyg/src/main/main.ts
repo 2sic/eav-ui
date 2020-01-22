@@ -118,7 +118,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     editor.on('remove', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE removed', event);
       this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-      this.subscriptions = null;
+      this.subscriptions = [];
       this.editorContent = null;
     });
 

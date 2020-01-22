@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
 function buildHtml(name) {
-  let htmlSourcePath = './src/' + name + '.html';
+  let htmlSourcePath = './projects/edit/src/' + name + '.html';
   let htmlOutputPath = './dist/' + name + '.html';
 
   let ngDialogs = false;

@@ -1,8 +1,8 @@
 import { Directive, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FeatureService } from '../store/ngrx-data/feature.service';
-import { FeaturesGuidsConstants } from '../../../../projects/shared/features-guids.constants';
-import { ElementEventListener } from '../../../../projects/shared/element-event-listener-model';
+import { FeaturesGuidsConstants } from '../../../../../shared/features-guids.constants';
+import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
 import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
 
 @Directive({ selector: '[appPasteClipboardImage]' })

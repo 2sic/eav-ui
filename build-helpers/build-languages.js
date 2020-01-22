@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
 (async function buildLanguages() {
-  const languagesDir = './src/i18n';
+  const languagesDir = './projects/edit/src/i18n';
   const languagesTempDir = './dist/i18n';
 
   const files = await fs.readdir(languagesDir);
