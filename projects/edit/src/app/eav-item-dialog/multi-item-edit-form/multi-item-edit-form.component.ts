@@ -1,12 +1,11 @@
 // tslint:disable-next-line:max-line-length
 import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -33,6 +32,7 @@ import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
+import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -57,7 +57,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   formErrors: { [key: string]: any }[] = [];
   formsAreValid = false;
-  formsAreDirty = {};
+  formsAreDirty: { [key: string]: boolean } = {};
   allControlsAreDisabled = true;
 
   formSaveAllObservables$: Observable<Action>[] = [];
@@ -65,8 +65,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   languages$: Observable<Language[]>;
   languages: Language[];
   Object = Object;
-  publishMode = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
-  versioningOptions;
+  publishMode: 'branch' | 'show' | 'hide' = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
+  versioningOptions: VersioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
   extendedSaveButtonIsReduced = false;
   debugEnabled$: Observable<boolean>;
@@ -76,7 +76,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   hideHeader: boolean;
 
   constructor(
-    public dialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    public dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
     @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
@@ -147,29 +147,23 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     });
   }
 
-  toggleDebugEnabled(event) {
+  toggleDebugEnabled(event: KeyboardEvent) {
     const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
-    if (enableDebugEvent) {
-      this.globalConfigurationService.loadDebugEnabled(!this.debugEnabled);
-    }
+    if (enableDebugEvent) { this.globalConfigurationService.loadDebugEnabled(!this.debugEnabled); }
   }
 
   debugInfoOpened(opened: boolean) {
     this.debugInfoIsOpen = opened;
   }
 
-  /**
-   * observe formValue changes from all child forms
-   */
+  /** observe formValue changes from all child forms */
   formValueChange() {
     this.checkFormsState();
     // reset form errors
     this.formErrors = [];
   }
 
-  /**
-   * close form dialog or if close is disabled show a message
-   */
+  /** close form dialog or if close is disabled show a message */
   closeDialog(saveResult?: any) {
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
@@ -207,7 +201,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }, 100);
   }
 
-  trackByFn(index, item) {
+  trackByFn(index: number, item: Item) {
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
   }
 
@@ -240,15 +234,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     );
   }
 
-  /**
-   * Determine is from is dirty on any language. If any form is dirty we need to ask to save.
-   */
+  /** Determine is from is dirty on any language. If any form is dirty we need to ask to save */
   private areFormsDirtyAnyLanguage() {
     let isDirty = false;
     Object.keys(this.formsAreDirty).forEach(key => {
-      if (this.formsAreDirty[key] === true) {
-        isDirty = true;
-      }
+      if (this.formsAreDirty[key] === true) { isDirty = true; }
     });
     return isDirty;
   }
@@ -257,15 +247,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const windowBeforeUnloadBound = this.windowBeforeUnload.bind(this);
     window.addEventListener('beforeunload', windowBeforeUnloadBound);
     this.eventListeners.push({ element: window, type: 'beforeunload', listener: windowBeforeUnloadBound });
-    this.dialogRef.backdropClick().subscribe(result => {
-      this.closeDialog();
-    });
+    this.dialogRef.backdropClick().subscribe(result => { this.closeDialog(); });
+
     // spm Bind save events here
     this.dialogRef.keydownEvents().subscribe(e => {
       // escape key
-      if (e.keyCode === 27) {
-        this.closeDialog();
-      }
+      if (e.keyCode === 27) { this.closeDialog(); }
       // CTRL + S
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
         e.preventDefault();
@@ -295,10 +282,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  private getVersioningOptions() {
-    if (!this.eavConfig.partOfPage) {
-      return { show: true, hide: true, branch: true };
-    }
+  private getVersioningOptions(): VersioningOptions {
+    if (!this.eavConfig.partOfPage) { return { show: true, hide: true, branch: true }; }
+
     const req = this.eavConfig.publishing || '';
     switch (req) {
       case '':
@@ -430,7 +416,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(zip(...this.formSaveAllObservables$)
       .pipe(switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
         console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
-        const allItems = [];
+        const allItems: JsonItem1[] = [];
         actions.forEach(action => {
           const item = JsonItem1.create(action.item);
           // do not try to save item which doesn't have any fields, nothing could have changed about it
@@ -523,7 +509,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       : isPublished ? 'show' : 'hide';
     // if publish mode is prohibited, revert to default
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
-      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0];
+      this.publishMode = <'branch' | 'show' | 'hide'>Object.keys(this.eavConfig.versioningOptions)[0];
     }
   }
 
@@ -558,17 +544,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   private reduceExtendedSaveButton() {
-    setTimeout(() => {
-      this.extendedSaveButtonIsReduced = true;
-    }, 5000);
+    setTimeout(() => { this.extendedSaveButtonIsReduced = true; }, 5000);
   }
 
   private loadDebugEnabled() {
     // set initial debug enabled value
     this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
-    this.debugEnabled$.pipe(take(1)).subscribe(debugEnabled => {
-      this.debugEnabled = debugEnabled;
-    });
+    this.debugEnabled$.pipe(take(1)).subscribe(debugEnabled => { this.debugEnabled = debugEnabled; });
+
     // subscribe to debug enabled changes
     this.subscriptions.push(
       this.debugEnabled$.subscribe(debugEnabled => {
@@ -585,9 +568,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     );
     // set debug enabled if came in the url, but only for parent form to not overwrite value with child forms
     if (this.eavConfig.debug === 'true' && this.isParentDialog) {
-      setTimeout(() => {
-        this.globalConfigurationService.loadDebugEnabled(true);
-      }, 0);
+      setTimeout(() => { this.globalConfigurationService.loadDebugEnabled(true); }, 0);
     }
   }
 

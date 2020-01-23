@@ -13,6 +13,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -80,9 +81,10 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
-  setValue(event) {
-    if (event.target.value === this.control.value) { return; }
-    this.control.patchValue(event.target.value);
+  setValue(event: Event) {
+    const eventTarget = event.target as HTMLInputElement;
+    if (eventTarget.value === this.control.value) { return; }
+    this.control.patchValue(eventTarget.value);
     this.control.markAsDirty();
   }
 
@@ -115,7 +117,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
       this.dialog);
   }
 
-  private processResultOfPagePicker(value) {
+  private processResultOfPagePicker(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
   }
@@ -166,7 +168,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
       if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
       // check if update is for this field
       if (formSet.entityValues[this.config.field.name] === this.oldValue) { return; }
-      this.oldValue = formSet[this.config.field.name];
+      this.oldValue = formSet.entityValues[this.config.field.name];
 
       this.setLink(formSet.entityValues[this.config.field.name]);
     });

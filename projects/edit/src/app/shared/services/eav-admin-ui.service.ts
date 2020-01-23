@@ -14,14 +14,14 @@ export class EavAdminUiService {
       */
     public openItemEditWithContent = (
         dialog: MatDialog, component: any, persistedData: AdminDialogPersistedData
-    ): MatDialogRef<{}, any> => {
+    ): MatDialogRef<any, any> => {
         return this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent, persistedData);
     }
 
     /**
      * Open a modal dialog containing the given component. With EntityId.
      */
-    public openItemEditWithEntityId = (dialog: MatDialog, component: any, entityId: string): MatDialogRef<{}, any> => {
+    public openItemEditWithEntityId = (dialog: MatDialog, component: any, entityId: string): MatDialogRef<any, any> => {
         return this.openModalDialog(dialog, component, entityId, null, DialogTypeConstants.itemEditWithEntityId, null);
     }
 
@@ -33,7 +33,7 @@ export class EavAdminUiService {
         component: any,
         contentTypeName: any,
         persistedData: AdminDialogPersistedData
-    ): MatDialogRef<{}, any> => {
+    ): MatDialogRef<any, any> => {
         return this.openModalDialog(dialog, component, null, contentTypeName, DialogTypeConstants.itemNewEntity, persistedData);
     }
 
@@ -47,7 +47,7 @@ export class EavAdminUiService {
         contentTypeName: any,
         dialogType: DialogTypeConstants,
         persistedData: AdminDialogPersistedData
-    ): MatDialogRef<{}, any> => {
+    ): MatDialogRef<any, any> => {
         let item = null;
         let payload = null;
         switch (dialogType) {
@@ -99,7 +99,7 @@ export class EavAdminUiService {
     }
 
     // TODO: unite all modals function in one.
-    public openPagePickerModal = (dialog: MatDialog, component: any, type: string, connector: any): MatDialogRef<{}, any> => {
+    public openPagePickerModal = (dialog: MatDialog, component: any, type: string, connector: any): MatDialogRef<any, any> => {
         return dialog.open(component, {
             width: '650px',
             data: <DnnBridgeDialogData>{

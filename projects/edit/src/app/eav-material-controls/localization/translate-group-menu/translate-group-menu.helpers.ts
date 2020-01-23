@@ -21,7 +21,7 @@ export class TranslateGroupMenuHelpers {
   }
 
   private static calculateShortDimensions(dimensions: string[], currentLanguage: string): string[] {
-    const dimensionsMap: Map<string, string[]> = new Map();
+    const dimensionsMap: { [key: string]: string[] } = {};
     const shortCurrentLanguage = currentLanguage.slice(0, currentLanguage.indexOf('-'));
 
     dimensionsMap[shortCurrentLanguage] = [];

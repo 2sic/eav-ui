@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SanitizeService {
 
   constructor() { }
 
-  private removeFromStart(sanitized, charToRemove) {
+  private removeFromStart(sanitized: string, charToRemove: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -17,7 +15,7 @@ export class SanitizeService {
     return sanitized;
   }
 
-  private removeFromEnd(sanitized, charToRemove) {
+  private removeFromEnd(sanitized: string, charToRemove: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -27,7 +25,7 @@ export class SanitizeService {
     return sanitized;
   }
 
-  private cleanBadPath = function (sanitized) {
+  private cleanBadPath = function (sanitized: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -46,7 +44,7 @@ export class SanitizeService {
   };
 
   // sanitize path
-  public sanitizePath(sanitized) {
+  public sanitizePath(sanitized: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -69,7 +67,7 @@ export class SanitizeService {
   }
 
   // sanitize file or folder name
-  public sanitizeName(sanitized) {
+  public sanitizeName(sanitized: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 

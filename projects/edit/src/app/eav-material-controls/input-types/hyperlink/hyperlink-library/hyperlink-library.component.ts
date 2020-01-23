@@ -21,7 +21,7 @@ import { CustomValidators } from '../../../validators/custom-validators';
 })
 export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   adamModeConfig: AdamModeConfig = {
     usePortalRoot: false
@@ -56,14 +56,10 @@ export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
   private attachAdam() {
     if (this.config.adam) {
       // callbacks - functions called from adam
-      this.config.adam.updateCallback = (fileItem) => { };
+      this.config.adam.updateCallback = (fileItem: any) => { };
 
       // binding for dropzone
-      this.config.adam.afterUploadCallback = (fileItem) => { };
-
-      // return value from form
-      // this.config.currentFieldConfig.adam.getValueCallback = () =>
-      // this.config.currentFieldConfig.adam.afterUploadCallback = (fileItem) => { };
+      this.config.adam.afterUploadCallback = (fileItem: any) => { };
 
       console.log('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
@@ -82,18 +78,6 @@ export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
         folderDepth: this.folderDepth,
         metadataContentTypes: this.metadataContentTypes
       }));
-
-      // this.config.currentFieldConfig.adam.setConfig(
-      //   new AdamConfig(this.adamModeConfig,
-      //     this.allowAssetsInRoot,
-      //     true, // autoLoad
-      //     false, // enableSelect
-      //     '', // fileFilter
-      //     this.folderDepth,
-      //     this.metadataContentTypes,
-      //     '', // subFolder
-      //   )
-      // );
     }
   }
 

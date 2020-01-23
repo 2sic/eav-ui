@@ -6,8 +6,6 @@ import { Observable } from 'rxjs';
 import { AdamService } from '../adam.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
-import { EavService } from '../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -40,16 +38,10 @@ import { FeaturesGuidsConstants } from '../../../../../../shared/features-guids.
   ]
 })
 export class AdamBrowserComponent implements OnInit {
-
   @Input() config: FieldConfigSet;
 
-  // Identity fields
-  // @Input() contentTypeName: any;
-  // @Input() entityGuid: any;
-  // @Input() fieldName: any;
-
   // New Configuration
-  @Input() url;
+  @Input() url: string;
 
   // basic functionality
   @Input() disabled = false;
@@ -59,44 +51,40 @@ export class AdamBrowserComponent implements OnInit {
 
   // Configuration
   adamModeConfig = { usePortalRoot: false };
-  allowAssetsInRoot;
+  allowAssetsInRoot: boolean;
   autoLoad = false;
   enableSelect = true;
   fileFilter = '';
   folderDepth = 0;
-  metadataContentTypes;
-  showImagesOnly;
+  metadataContentTypes: string;
+  showImagesOnly: boolean;
   subFolder = '';
 
-  showFolders;
+  showFolders: boolean;
 
   // callback is set in attachAdam
-  updateCallback;
-  afterUploadCallback;
-  getValueCallback;
+  updateCallback: Function;
+  afterUploadCallback: Function;
+  getValueCallback: Function;
 
-  allowedFileTypes = [];
+  allowedFileTypes: string[] = [];
   clipboardPasteImageFunctionalityDisabled = true;
   items: AdamItem[];
   items$: Observable<AdamItem[]>; // = this.svc.liveList();
-  oldConfig;
-  svc;
-
-  private eavConfig: EavConfiguration;
+  oldConfig: any;
+  svc: any;
 
   get folders() {
     return this.svc ? this.svc.folders : [];
   }
 
-  constructor(private adamService: AdamService,
+  constructor(
+    private adamService: AdamService,
     private fileTypeService: FileTypeService,
-    private eavService: EavService,
     private featureService: FeatureService,
     private eavAdminUiService: EavAdminUiService,
-    private dialog: MatDialog) {
-
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit() {
     this.subFolder = this.config.field.settings.Paths || '';
@@ -123,9 +111,7 @@ export class AdamBrowserComponent implements OnInit {
     // TODO: when set folders??? Before was toggle!!!
     // this.folders = this.svc.folders;
 
-    if (this.autoLoad) {
-      this.toggle(null);
-    }
+    if (this.autoLoad) { this.toggle(null); }
   }
 
   initConfig() {
@@ -150,13 +136,10 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   addFolder() {
-    if (this.disabled) {
-      return;
-    }
+    if (this.disabled) { return; }
+
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
-    if (folderName) {
-      this.svc.addFolder(folderName).subscribe();
-    }
+    if (folderName) { this.svc.addFolder(folderName).subscribe(); }
   }
 
   allowEdit(): boolean {
@@ -167,14 +150,11 @@ export class AdamBrowserComponent implements OnInit {
     return (this.allowEdit()) && (this.svc.folders.length < this.folderDepth);
   }
 
-  del(item) {
-    if (this.disabled) {
-      return;
-    }
+  del(item: AdamItem) {
+    if (this.disabled) { return; }
+
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
-    if (ok) {
-      this.svc.deleteItem(item).subscribe();
-    }
+    if (ok) { this.svc.deleteItem(item).subscribe(); }
   }
 
   addItemMetadata(item: AdamItem) {
@@ -199,7 +179,7 @@ export class AdamBrowserComponent implements OnInit {
     });
   }
 
-  editItemMetadata(metadataId) {
+  editItemMetadata(metadataId: string) {
     const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
 
     dialogRef.afterClosed().subscribe(result => {
@@ -216,8 +196,9 @@ export class AdamBrowserComponent implements OnInit {
     });
   }
 
-  getMetadataType = function (item) {
-    let found;
+  getMetadataType(item: AdamItem) {
+    let found: string[];
+    // debugger
 
     // check if it's a folder and if this has a special registration
     if (item.Type === 'folder') {
@@ -237,16 +218,14 @@ export class AdamBrowserComponent implements OnInit {
 
     // nothing found so far, go for the default with nothing as the prefix
     found = this.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
-    if (found) {
-      return found[1];
-    }
+    if (found) { return found[1]; }
 
     // this is if we don't find anything
     return null;
   };
 
   //#region Folder Navigation
-  goIntoFolder(folder) {
+  goIntoFolder(folder: AdamItem) {
     const subFolder = this.svc.goIntoFolder(folder);
     // this.refresh();
     this.subFolder = subFolder;
@@ -265,39 +244,30 @@ export class AdamBrowserComponent implements OnInit {
     return this.fileTypeService.getIconClass(item.Name);
   }
 
-  // load svc...
-  // vm.svc = adamSvc(vm.contentTypeName, vm.entityGuid, vm.fieldName, vm.subFolder, $scope.adamModeConfig);
+  openUploadClick = (event: Event) => this.openUpload.emit();
 
-  openUploadClick = (event) => this.openUpload.emit();
-
-  rename(item) {
+  rename(item: AdamItem) {
     if (this.disabled) { return; }
 
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
-    if (newName) {
-      this.svc.rename(item, newName).subscribe();
-    }
+    if (newName) { this.svc.rename(item, newName).subscribe(); }
   }
 
   refresh = () => this.svc.liveListReload();
 
-  select(fileItem) {
-    if (this.disabled || !this.enableSelect) {
-      return;
-    }
+  select(fileItem: AdamItem) {
+    if (this.disabled || !this.enableSelect) { return; }
     this.updateCallback(fileItem);
   }
 
-  toggle(newConfig) {
+  toggle(newConfig: { [key: string]: any }) {
     // Reload configuration
     this.initConfig();
     let configChanged = false;
 
     if (newConfig) {
       // Detect changes in config, allows correct toggle behaviour
-      if (JSON.stringify(newConfig) !== this.oldConfig) {
-        configChanged = true;
-      }
+      if (JSON.stringify(newConfig) !== this.oldConfig) { configChanged = true; }
       this.oldConfig = JSON.stringify(newConfig);
 
       this.showImagesOnly = newConfig.showImagesOnly;
@@ -326,9 +296,7 @@ export class AdamBrowserComponent implements OnInit {
       this.folderDepth = 99;
     }
 
-    if (this.show) {
-      this.refresh();
-    }
+    if (this.show) { this.refresh(); }
   }
 
   /**
@@ -354,12 +322,10 @@ export class AdamBrowserComponent implements OnInit {
     // Reload configuration
     this.initConfig();
     this.show = this.autoLoad;
-    if (this.show) {
-      this.refresh();
-    }
+    if (this.show) { this.refresh(); }
   }
 
-  private itemDefinition = function (item, metadataType) {
+  private itemDefinition = function (item: AdamItem, metadataType: string) {
     const title = 'EditFormTitle.Metadata'; // todo: i18n
     return item.MetadataId !== 0
       ? { EntityId: item.MetadataId, Title: title } // if defined, return the entity-number to edit
@@ -373,7 +339,6 @@ export class AdamBrowserComponent implements OnInit {
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
       };
-
   };
 
   private setAllowedFileTypes() {

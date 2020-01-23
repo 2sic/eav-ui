@@ -7,7 +7,7 @@ export class FileTypeService {
 
   private defaultIcon = 'file';
   private checkImgRegEx = /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
-  private customExtensions = {
+  private customExtensions: { [key: string]: string } = {
     doc: 'file-word',
     docx: 'file-word',
     xls: 'file-excel',
@@ -30,26 +30,26 @@ export class FileTypeService {
     xsl: 'file-code',
   };
 
-  private matExtensions = {
+  private matExtensions: { [key: string]: string } = {
     vcf: 'person',
   };
 
-  public getExtension = (filename) => {
+  public getExtension = (filename: string) => {
     return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
   }
 
-  public getIconClass = (filename) => {
+  public getIconClass = (filename: string) => {
     const ext = this.getExtension(filename);
     return this.matExtensions[ext]
       || this.customExtensions[ext]
       || this.defaultIcon;
   }
 
-  public isKnownType = (filename) => {
+  public isKnownType = (filename: string) => {
     return this.matExtensions[this.getExtension(filename)] !== undefined;
   }
 
-  public isImage = (filename) => {
+  public isImage = (filename: string) => {
     return this.checkImgRegEx.test(filename);
   }
 }

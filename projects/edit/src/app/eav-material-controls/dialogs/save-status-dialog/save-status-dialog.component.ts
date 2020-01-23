@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { VersioningOptions } from '../../../shared/models/eav/versioning-options';
 
 @Component({
   selector: 'app-save-status-dialog',
@@ -7,8 +8,8 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./save-status-dialog.component.scss']
 })
 export class SaveStatusDialogComponent implements OnInit {
-  versioningOptions;
-  publishMode: string;
+  versioningOptions: VersioningOptions;
+  publishMode: 'branch' | 'show' | 'hide';
 
   constructor(public dialogRef: MatDialogRef<SaveStatusDialogComponent>) { }
 

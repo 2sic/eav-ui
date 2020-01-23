@@ -1,30 +1,25 @@
-import { Directive, Inject, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Directive, Inject, OnInit, Input, ElementRef } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DnnBridgeDialogData } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavService } from '../../../../shared/services/eav.service';
 import { fromEvent } from 'rxjs';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 
-@Directive({
-  selector: '[appWebFormBridge]'
-})
+@Directive({ selector: '[appWebFormBridge]' })
 export class WebFormBridgeDirective implements OnInit {
+  @Input() bridgeSyncHeight: boolean;
 
-  @Input()
-  bridgeSyncHeight: boolean;
+  get bridge() { return this.dialogData.connector; }
+  get type() { return this.dialogData.type; }
 
-  get bridge() {
-    return this.dialogData.connector;
-  }
-  get type() {
-    return this.dialogData.type;
-  }
-
-  private eavConfig;
+  private eavConfig: EavConfiguration;
   private webFormsBridgeUrl = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public dialogData: DnnBridgeDialogData,
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public dialogData: DnnBridgeDialogData,
     private elementRef: ElementRef,
-    private eavService: EavService) {
+    private eavService: EavService,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 

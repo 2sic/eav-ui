@@ -48,7 +48,7 @@ export class ConnectorService {
    */
   // spm 2019.04.08. move to experimentalProps
   private externalInputTypeHost = {
-    attachAdam: (adamSetValue, adamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
+    attachAdam: (adamSetValue: Function, adamAfterUpload: Function) => this.attachAdam(adamSetValue, adamAfterUpload),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
@@ -76,37 +76,33 @@ export class ConnectorService {
       this.config.field.name);
 
     if (urlFromId$) {
-      // this.subscriptions.push(
       urlFromId$.subscribe((data) => {
-        if (data) {
-          urlCallback(data);
-        }
+        if (data) { urlCallback(data); }
       });
-      // );
     } else {
       urlCallback(value);
     }
   }
 
-  private attachAdam(adamSetValue, adamAfterUpload) {
+  private attachAdam(adamSetValue: Function, adamAfterUpload: Function) {
     // spm check if adam is enabled
     if (!this.config.adam) { return; }
 
     if (!adamSetValue || !adamAfterUpload) {
       // callbacks - functions called from adam, old wysiwyg
-      this.config.adam.updateCallback = (value) =>
+      this.config.adam.updateCallback = (value: any) =>
         this.customEl.adamSetValueCallback
           ? this.customEl.adamSetValueCallback = value
           : alert('adam attached but adamSetValue method not exist');
 
-      this.config.adam.afterUploadCallback = (value) =>
+      this.config.adam.afterUploadCallback = (value: any) =>
         this.customEl.adamAfterUploadCallback
           ? this.customEl.adamAfterUploadCallback = value
           : alert('adam attached but adamAfterUpload method not exist');
     } else {
       // new wysiwyg
-      this.config.adam.updateCallback = (value) => { adamSetValue(value); };
-      this.config.adam.afterUploadCallback = (value) => { adamAfterUpload(value); };
+      this.config.adam.updateCallback = (value: any) => { adamSetValue(value); };
+      this.config.adam.afterUploadCallback = (value: any) => { adamAfterUpload(value); };
     }
     // return value from form
     this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
@@ -234,15 +230,9 @@ export class ConnectorService {
   }
 
   public destroy() {
-    // spm 2019.04.05. figure out which subscriptions we have to end manually
     console.log('Connector destroyed');
-    // return;
-    this.subscriptions.forEach(subscription => {
-      subscription.unsubscribe();
-    });
-    this.subjects.forEach(subject => {
-      subject.complete();
-    });
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subjects.forEach(subject => { subject.complete(); });
     this.customEl.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }

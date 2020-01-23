@@ -1,7 +1,7 @@
 import { NgZone } from '@angular/core';
 import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
-declare const draggingClass: any;
-declare const windowBodyTimeouts: any;
+declare const draggingClass: string;
+declare const windowBodyTimeouts: number[];
 
 export class DropzoneDraggingHelper {
   private eventListeners: ElementEventListener[] = [];
@@ -26,7 +26,7 @@ export class DropzoneDraggingHelper {
       function dropListener() {
         document.body.classList.remove(draggingClass);
       }
-      function clearTimeouts(timeoutsArray) {
+      function clearTimeouts(timeoutsArray: number[]) {
         for (let i = 0; i < timeoutsArray.length; i++) {
           clearTimeout(timeoutsArray[i]);
         }

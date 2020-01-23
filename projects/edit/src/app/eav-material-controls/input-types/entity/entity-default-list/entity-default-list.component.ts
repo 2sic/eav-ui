@@ -85,7 +85,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     return entity ? entity.Text : fallback;
   }
 
-  private getEntityId(value): string {
+  private getEntityId(value: string): string {
     if (value === null) { return 'empty slot'; }
 
     const entity = this.availableEntities.find(f => f.Value === value);
@@ -195,7 +195,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
    * set chosen entities list and if change return true
    * @param values
    */
-  private setChosenEntities(values: string[]): boolean {
+  setChosenEntities(values: string[]): boolean {
     const updatedValues = this.mapFromEntityListToNameList(values);
     if (this.chosenEntities !== updatedValues) {
       this.chosenEntities = updatedValues;

@@ -102,7 +102,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  save(event) {
+  save(event: { [key: string]: any }) {
     console.log('form save', event);
     // Use this to emit value out
     this.submit.emit(this.value);

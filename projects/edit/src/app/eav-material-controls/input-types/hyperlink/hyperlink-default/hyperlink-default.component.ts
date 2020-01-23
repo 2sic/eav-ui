@@ -11,6 +11,8 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -24,7 +26,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   showPreview = true;
   toggleAdamValue = false;
@@ -32,13 +34,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   control: AbstractControl;
 
   private oldValue: any;
-
-
-  // TODOD: temp
-  private eavConfig;
-
+  private eavConfig: EavConfiguration;
   private subscriptions: Subscription[] = [];
-
   private adamModeConfig: AdamModeConfig = {
     usePortalRoot: false
   };
@@ -67,10 +64,12 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more';
   }
 
-  constructor(private fileTypeService: FileTypeService,
+  constructor(
+    private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -82,7 +81,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
   }
 
   private setFormValue(formControlName: string, value: any) {
@@ -117,11 +116,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   //#region dnn-page picker dialog
 
   // the callback when something was selected
-  private processResultOfPagePicker(value) {
+  private processResultOfPagePicker(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
-    if (value) {
-      this.setFormValue(this.config.field.name, `page:${value.id}`);
-    }
+    if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
   }
 
   // open the dialog
@@ -139,11 +136,11 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   //#region new adam: callbacks only
 
-  setValue(fileItem) {
+  setValue(fileItem: any) {
     this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
   }
 
-  toggleAdam(usePortalRoot, showImagesOnly) {
+  toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot
@@ -171,11 +168,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
    * Update test-link if necessary - both when typing or if link was set by dialogs
    * @param value
    */
-  private setLink(value: string) {
-    // const oldValue = this.value;
-    if (!value) {
-      return null;
-    }
+  private setLink(value: string): void {
+    if (!value) { return null; }
+
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
@@ -184,13 +179,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.config.field.name);
 
     if (urlFromId$) {
-      // this.subscriptions.push(
       urlFromId$.subscribe((data) => {
-        if (data) {
-          this.link = data;
-        }
+        if (data) { this.link = data; }
       });
-      // );
     } else {
       this.link = value;
     }
@@ -199,26 +190,14 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   private attachAdam() {
     if (this.config.adam) {
       // callbacks - functions called from adam
-      this.config.adam.updateCallback = (value) => this.setValue(value);
+      this.config.adam.updateCallback = (value: any) => this.setValue(value);
 
       // binding for dropzone
-      this.config.adam.afterUploadCallback = (value) => this.setValue(value);
+      this.config.adam.afterUploadCallback = (value: any) => this.setValue(value);
 
       // return value from form
       this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
-      // set adam configuration (initial config)
-      // this.config.currentFieldConfig.adam.setConfig(
-      //   new AdamConfig(this.adamModeConfig,
-      //     true, // allowAssetsRoot
-      //     false, // autoLoad
-      //     true, // enableSelect
-      //     this.fileFilter, // fileFilter
-      //     0, // folderDepth
-      //     '', // metadataContentTypes
-      //     '', // subFolder
-      //   )
-      // );
       console.log('HyperDefault setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         fileFilter: this.fileFilter
@@ -228,14 +207,6 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
         adamModeConfig: this.adamModeConfig,
         fileFilter: this.fileFilter
       }));
-      //   new AdamConfig(this.adamModeConfig,
-      //     true, // allowAssetsInRoot
-      //     false, // autoLoad
-      //     true, // enableSelect
-      //     this.fileFilter, // fileFilter
-      //     0, // folderDepth
-      //     '', // metadataContentTypes
-      //     '', // subFolder
     }
   }
 

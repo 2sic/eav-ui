@@ -17,7 +17,7 @@ export class SvcCreatorService {
 
     // use a promise-result to re-fill the live list of all items, return the promise again
     // const _liveListUpdateWithResult = function
-    const updateLiveAll = (result) => {
+    const updateLiveAll = (result: any) => {
       // TODO:
       // if (t.msg.isOpened) {
       //   toastr.clear(t.msg);
@@ -48,7 +48,7 @@ export class SvcCreatorService {
       // $translate("General.Messages.Loading").then(function (msg) {
       //   t.msg = toastr.info(msg);
       // });
-      liveListSourceRead$().subscribe(s => updateLiveAll(s));
+      liveListSourceRead$().subscribe((s: any) => updateLiveAll(s));
     };
 
     /**

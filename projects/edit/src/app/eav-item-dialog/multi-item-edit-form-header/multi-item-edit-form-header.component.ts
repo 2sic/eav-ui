@@ -22,7 +22,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit, OnDestroy {
   languages: Language[];
 
   constructor(
-    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent>,
+    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
     private dialog: MatDialog,
     private languageService: LanguageService,
   ) { }

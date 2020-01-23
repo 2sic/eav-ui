@@ -88,7 +88,7 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
     }
   }
 
-  private preCleane = (key, value) => {
+  private preCleane = (key: string, value: string) => {
     return value.replace('/', '-').replace('\\', '-'); // this will remove slashes which could look like path-parts
   }
 

@@ -167,7 +167,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
-  copyFromAll(languageKey) {
+  copyFromAll(languageKey: string) {
     this.setTranslationState(TranslationLinkTypeConstants.linkCopyFrom, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
       this.copyFrom(languageKey, attributeKey);
@@ -217,7 +217,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-  linkReadOnlyAll(languageKey) {
+  linkReadOnlyAll(languageKey: string) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
       this.linkReadOnly(languageKey, attributeKey);
@@ -242,7 +242,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.refreshControlConfig(attributeKey);
   }
 
-  linkReadWriteAll(languageKey) {
+  linkReadWriteAll(languageKey: string) {
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
     Object.keys(this.attributes).forEach(attributeKey => {
       this.linkReadWrite(languageKey, attributeKey);

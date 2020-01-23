@@ -31,8 +31,8 @@ export class DnnBridgeService {
 
     const connector: DnnBridgeConnector = new DnnBridgeConnector(params, callback, type);
 
-    let modalInstance: MatDialogRef<{}, any> = null;
-    connector.valueChanged = (value) => {
+    let modalInstance: MatDialogRef<any, any> = null;
+    connector.valueChanged = (value: any) => {
       modalInstance.close();
       callback(value);
     };

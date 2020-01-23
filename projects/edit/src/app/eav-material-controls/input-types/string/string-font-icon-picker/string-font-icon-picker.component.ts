@@ -6,9 +6,9 @@ import { map, startWith } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { Field } from '../../../../eav-dynamic-form/model/field';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
+import { StringFontIconPickerIcon } from '../../../../shared/models/input-types/string-font-icon-picker-icon';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -23,9 +23,8 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   group: FormGroup;
 
-  icons = [];
-  // filteredIcons: Observable<{ rule: CSSStyleRule, class: string }>;
-  filteredIcons: Observable<any>;
+  icons: StringFontIconPickerIcon[] = [];
+  filteredIcons: Observable<StringFontIconPickerIcon[]>;
   private subscriptions: Subscription[] = [];
 
   get files(): string {
@@ -50,7 +49,6 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
 
   constructor(
     private scriptsLoaderService: ScriptsLoaderService,
-    private validationMessagesService: ValidationMessagesService,
   ) { }
 
   ngOnInit() {
@@ -62,32 +60,39 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
   }
 
-  getIconClasses(className) {
-    const charcount = className.length, foundList = [], duplicateDetector = {};
+  getIconClasses(className: string) {
+    const charcount = className.length
+    const foundList: { rule: CSSRule; class: string; }[] = []
+    const duplicateDetector: { [key: string]: boolean } = {};
 
-    if (!className) {
-      return foundList;
-    }
+    if (!className) { return foundList; }
 
     for (let ssSet = 0; ssSet < document.styleSheets.length; ssSet++) {
-      try {
-        const classes = (<CSSStyleSheet>document.styleSheets[ssSet]).rules || (<CSSStyleSheet>document.styleSheets[ssSet]).cssRules;
+      const documentStylesSet = <CSSStyleSheet>document.styleSheets[ssSet];
+      if (documentStylesSet) {
+        let classes: CSSRuleList;
+        // errors happen if browser denies access to css rules
+        try {
+          classes = documentStylesSet.rules;
+        } catch (error) { }
+        if (!classes) {
+          try {
+            classes = documentStylesSet.cssRules;
+          } catch (error) { }
+        }
         if (classes) {
           for (let x = 0; x < classes.length; x++) {
             if ((<CSSStyleRule>classes[x]).selectorText && (<CSSStyleRule>classes[x]).selectorText.substring(0, charcount) === className) {
               // prevent duplicate-add...
-              const txt = (<CSSStyleRule>classes[x]).selectorText,
-                icnClass = txt.substring(0, txt.indexOf(':')).replace('.', '');
+              const txt = (<CSSStyleRule>classes[x]).selectorText;
+              const icnClass = txt.substring(0, txt.indexOf(':')).replace('.', '');
               if (!duplicateDetector[icnClass]) {
-                foundList.push({ rule: classes[x], 'class': icnClass });
+                foundList.push({ rule: classes[x], class: icnClass });
                 duplicateDetector[icnClass] = true;
               }
             }
           }
         }
-      } catch (error) {
-        // try catch imortant because can't find CSSStyleSheet rules error
-        console.log('Icon picker CSSStyleSheet error: ', error);
       }
     }
 
@@ -113,7 +118,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     this.group.controls[this.config.field.name].patchValue(this.value);
   }
 
-  private filterStates(value: string): string[] {
+  private filterStates(value: string): StringFontIconPickerIcon[] {
     const filterValue = value.toLowerCase();
     return this.icons.filter(icon => icon.class.toLowerCase().indexOf(filterValue) >= 0);
   }

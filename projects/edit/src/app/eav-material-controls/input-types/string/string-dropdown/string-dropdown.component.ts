@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { EavService } from '../../../../shared/services/eav.service';
 
@@ -23,7 +22,7 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
   group: FormGroup;
 
   freeTextMode = false;
-  selectOptions = [];
+  selectOptions: { label: string, value: string }[] = [];
   subscriptions: Subscription[] = [];
 
   get enableTextEntry() {
@@ -47,7 +46,6 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
   }
 
   constructor(
-    private validationMessagesService: ValidationMessagesService,
     private eavService: EavService,
   ) { }
 
@@ -65,7 +63,7 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
     this.subscriptions.push(updateOptionsSub);
   }
 
-  freeTextModeChange(event) {
+  freeTextModeChange(event: Event) {
     this.freeTextMode = !this.freeTextMode;
     // Stops dropdown from opening
     event.stopPropagation();
@@ -73,25 +71,21 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
 
   private setFreeTextMode() {
     if (this.value) {
-      const isInSelectOptions: boolean = this.selectOptions.find(s => s.value === this.value);
-      if (!isInSelectOptions && this.enableTextEntry) {
-        return true;
-      }
+      const isInSelectOptions: boolean = !!this.selectOptions.find(s => s.value === this.value);
+      if (!isInSelectOptions && this.enableTextEntry) { return true; }
     }
     return false;
   }
 
-  /**
-  * Read settings Dropdown values
-  */
-  private setOptionsFromDropdownValues(): any {
+  /** Read settings Dropdown values */
+  private setOptionsFromDropdownValues() {
     const currentValue = this.group.controls[this.config.field.name].value;
     let currentValueFound = false;
-    let options = [];
+    let options: { label: string, value: string }[] = [];
     if (this.config.field.settings.DropdownValues) {
-      const dropdownValues = this.config.field.settings.DropdownValues;
-      options = dropdownValues.replace(/\r/g, '').split('\n');
-      options = options.map(e => {
+      const dropdownValues: string = this.config.field.settings.DropdownValues;
+      const dropdownValuesArray = dropdownValues.replace(/\r/g, '').split('\n');
+      options = dropdownValuesArray.map(e => {
         const s = e.split(':');
         const maybeWantedEmptyVal = s[1];
         const key = s.shift(); // take first, shrink the array
@@ -114,6 +108,6 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach(sub => { sub.unsubscribe() });
   }
 }

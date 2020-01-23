@@ -9,6 +9,7 @@ import { FieldMaskService } from '../../../../../../../shared/field-mask.service
 import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-assets.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';
+import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -24,7 +25,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   @Input() group: FormGroup;
   private typeWatcher: FieldMaskService;
   private locWatcher: FieldMaskService;
-  file: { ext: string, prefix: string, suggestion: string, body: string };
+  file: StringTemplatePickerFile;
   templates: string[];
   private eavConfig: EavConfiguration;
   private svcApp: AssetsSvc;
@@ -63,7 +64,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   }
 
   private setFileConfig(type: string) {
-    const specs = {
+    const specs: { [key: string]: StringTemplatePickerFile } = {
       // tslint:disable-next-line:max-line-length
       'Token': { ext: '.html', prefix: '', suggestion: 'yourfile.html', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
       // tslint:disable-next-line:max-line-length
@@ -88,7 +89,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   /** filter to only show files which are applicable to this */
   isValidFile(paths: string[], ext: string) {
     // set the required parameter name to **number**
-    const out = [];
+    const out: string[] = [];
     paths.forEach(path => {
       if (path.slice(path.length - ext.length) === ext) {
         out.push(path);

@@ -24,7 +24,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     });
   }
 
-  public updateItemId(itemData: {}) {
+  public updateItemId(itemData: { [key: string]: number }) {
     // itemData: { e92f626e-aca6-43d1-a509-c79aa744b4fa: 10483 }
     const guid = Object.keys(itemData)[0];
     const entityId = itemData[guid];

@@ -1,13 +1,12 @@
 
 import { FormGroup } from '@angular/forms';
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,7 +16,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 })
 @InputType({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
@@ -35,10 +34,10 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
     super.ngOnInit();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
   }
 
-  callAvailableEntities(value) {
+  callAvailableEntities(event: Event) {
     this.getAvailableEntities();
   }
 }

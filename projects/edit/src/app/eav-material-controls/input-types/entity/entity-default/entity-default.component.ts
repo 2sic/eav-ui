@@ -10,8 +10,6 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { FieldMaskService } from '../../../../../../../shared/field-mask.service';;
-// import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
-// import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,13 +19,10 @@ import { FieldMaskService } from '../../../../../../../shared/field-mask.service
 })
 @InputType({})
 export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
-
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   availableEntities: EntityInfo[] = [];
-
-  // private contentType: FieldMaskService;
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
@@ -41,21 +36,14 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
 
   get value() { return this.group.controls[this.config.field.name].value; }
 
-  constructor(private entityService: EntityService,
-    private eavService: EavService) {
+  constructor(
+    private entityService: EntityService,
+    private eavService: EavService,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-    // // Initialize entities
-    // const sourceMask = this.entityType || null;
-    // // this will contain the auto-resolve type (based on other contentType-field)
-    // this.contentType = new FieldMaskService(sourceMask, this.maybeReload, null, null);
-    // // don't get it, it must be blank to start with, so it will be loaded at least 1x lastContentType = contentType.resolve();
-    // // this.setData();
-    // this.setAvailableEntities(this.config.currentFieldConfig.inputType);
-    // // this.chosenEntitiesSubscribeToChanges();
-
     // Initialize url parameters mask
     const sourceMask = this.entityType || null;
     // this will contain the auto-resolve url parameters
@@ -66,10 +54,10 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
   }
 
-  callAvailableEntities(value) {
+  callAvailableEntities(event: Event) {
     this.getAvailableEntities();
   }
 

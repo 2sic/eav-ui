@@ -7,7 +7,7 @@ export interface LanguageButton extends Language {
 /** Calculates properties of language buttons, e.g. name to be desplayed */
 export function calculateLanguageButtons(languages: Language[]): LanguageButton[] {
   const languageButtons: LanguageButton[] = [];
-  const regionlessNamesCount: Map<string, number> = new Map();
+  const regionlessNamesCount: { [key: string]: number } = {};
 
   // count the number of repetitions of the same language without region key
   // e.g. English (United States) and English (Australia) are both English

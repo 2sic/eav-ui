@@ -7,7 +7,7 @@ export class ValidationMessagesService {
 
   constructor() { }
 
-  // return list of error messages
+  /** return list of error messages */
   public validationMessages(): any {
     const messages = {
       required: (config: FieldConfigSet) => {
@@ -30,13 +30,15 @@ export class ValidationMessagesService {
     return messages;
   }
 
-  // Validate form instance
-  // check_dirty true will only emit errors if the field is touched
-  // check_dirty false will check all fields independent of
-  // being touched or not. Use this as the last check before submitting
+  /**
+   * Validate form instance
+   * check_dirty true will only emit errors if the field is touched
+   * check_dirty false will check all fields independent of
+   * being touched or not. Use this as the last check before submitting
+   */
   public validateForm(formToValidate: FormGroup, checkDirty?: boolean): any {
     const form = formToValidate;
-    const formErrors = {};
+    const formErrors: { [key: string]: any } = {};
     Object.keys(form.controls).forEach(key => {
       // for (const control in form.controls) {
       const control = form.controls[key];

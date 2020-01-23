@@ -6,7 +6,6 @@ import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-fi
 import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,31 +15,27 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
   get label() { return this.config.field.settings.Label || ''; }
-
   get value() { return this.config.field.settings.Value || ''; }
-
-  // constructor() {
-  // }
 
   ngOnInit() {
     // important for calling a FieldMaskService from extended component
     super.ngOnInit();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
   }
 
-  callAvailableEntities(value) {
+  callAvailableEntities(event: Event) {
     this.getAvailableEntities();
   }
 
-  queryEntityMapping = (entity) => {
+  queryEntityMapping = (entity: any) => {
     return { Value: entity[this.value], Text: entity[this.label], Id: entity.Id };
   }
 }

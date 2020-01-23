@@ -102,8 +102,8 @@ export class EavFieldDirective implements OnInit {
    * @param selector
    */
   private readComponentType(selector: string): Type<any> {
-    const factories = Array.from(this.resolver['_factories'].values());
-    const componentType = factories.find((x: any) => x.selector === selector)['componentType'];
+    const factories = Array.from((this.resolver as any)['_factories'].values());
+    const componentType = (factories.find((x: any) => x.selector === selector) as any)['componentType'];
 
     return componentType;
   }

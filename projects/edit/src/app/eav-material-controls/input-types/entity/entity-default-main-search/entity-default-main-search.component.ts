@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,10 +13,7 @@ import { EntityDefaultListComponent } from '../entity-default-list/entity-defaul
 import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
-// spm probably not needed
-// import { EavService } from '../../../../shared/services/eav.service';
-// import { EntityService } from '../../../../shared/services/entity.service';
-// import { QueryService } from '../../../../shared/services/query.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-entity-default-main-search',
@@ -24,8 +21,8 @@ import { GlobalConfigurationService } from '../../../../shared/services/global-c
   styleUrls: ['./entity-default-main-search.component.scss']
 })
 export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
-  @ViewChild('autoCompleteInput', { static: false }) autoCompleteInputControl;
-  @ViewChild(EntityDefaultListComponent, { static: true }) entityDefaultListComponent;
+  @ViewChild('autoCompleteInput', { static: false }) autoCompleteInputControl: ElementRef;
+  @ViewChild(EntityDefaultListComponent, { static: true }) entityDefaultListComponent: EntityDefaultListComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
@@ -96,27 +93,23 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.contentTypeMask.destroy();
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
   }
 
-  freeTextModeChange(event) {
+  freeTextModeChange(event: Event) {
     this.freeTextMode = !this.freeTextMode;
     // Stops dropdown from opening
     event.stopPropagation();
   }
 
-  optionSelected(event) {
+  optionSelected(event: MatAutocompleteSelectedEvent) {
     this.addEntity(event.option.value);
     this.autoCompleteInputControl.nativeElement.value = null;
   }
 
-  /**
-   * Determine is entityID in chosenEntities
-   */
-  isInChosenEntities = (value): boolean => {
-    if (this.chosenEntities.find(e => e.name === value)) {
-      return true;
-    }
+  /** Determine is entityID in chosenEntities */
+  isInChosenEntities = (value: string): boolean => {
+    if (this.chosenEntities.find((e: any) => e.name === value)) { return true; }
 
     return false;
   }
@@ -199,9 +192,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   }
 
   getPlaceholder() {
-    if (this.availableEntities && this.availableEntities.length > 0) {
-      return 'search';
-    }
+    if (this.availableEntities && this.availableEntities.length > 0) { return 'search'; }
 
     if (this.error) {
       return this.error;

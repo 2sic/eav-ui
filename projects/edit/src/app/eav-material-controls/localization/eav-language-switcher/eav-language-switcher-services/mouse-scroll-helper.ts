@@ -39,7 +39,7 @@ export class MouseScrollHelper {
     if (disabled || event.button !== 0) { return; }
 
     window.getSelection().removeAllRanges();
-    this.oldScrollBehavior = getComputedStyle(this.header)['scroll-behavior'];
+    this.oldScrollBehavior = getComputedStyle(this.header).getPropertyValue('scroll-behavior');
 
     this.header.style.scrollBehavior = 'auto';
     this.positionX = event.pageX;

@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -6,10 +6,8 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
-// import { EntityDefaultMainSearchComponent } from '../../entity/entity-default-main-search/entity-default-main-search.component';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
-// import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,7 +17,6 @@ import { FieldMaskService } from '../../../../../../../shared/field-mask.service
 })
 @InputType({})
 export class EntityQueryComponent implements Field, OnInit, OnDestroy {
-
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
 
@@ -35,8 +32,8 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
   constructor(
     private queryService: QueryService,
-    private translate: TranslateService) {
-  }
+    private translate: TranslateService,
+  ) { }
 
   ngOnInit() {
     // Initialize url parameters mask
@@ -47,10 +44,10 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     this.subscribeToMaskFieldsChanges();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
   }
 
-  callAvailableEntities(value) {
+  callAvailableEntities(event: Event) {
     this.getAvailableEntities();
   }
 
@@ -84,13 +81,11 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     }
   }
 
-  queryEntityMapping = (entity) => {
+  queryEntityMapping = (entity: any) => {
     return { Value: entity.Guid, Text: entity.Title, Id: entity.Id };
   }
 
-  /**
-  *  get all mask field and subcribe to changes. On every change getAvailableEntities.
-  */
+  /**  get all mask field and subcribe to changes. On every change getAvailableEntities */
   private subscribeToMaskFieldsChanges() {
     this.fieldMaskService.fieldList().forEach((e, i) => {
       if (this.group.controls[e]) {

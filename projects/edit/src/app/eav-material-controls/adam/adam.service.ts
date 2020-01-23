@@ -4,7 +4,6 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { UrlHelper } from '../../shared/helpers/url-helper';
 import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
 import { EavService } from '../../shared/services/eav.service';
@@ -13,7 +12,6 @@ import { SanitizeService } from './sanitize.service';
 
 @Injectable()
 export class AdamService {
-
   private eavConfig: EavConfiguration;
 
   constructor(
@@ -25,34 +23,29 @@ export class AdamService {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
-  createSvc(subfolder, serviceConfig, url) {
+  createSvc(subfolder: string, serviceConfig: any, url: string) {
     // TODO: find how to solve serviceRoot
     // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
     // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
-    const folders = [];
+    const folders: AdamItem[] = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
     const startingSubfolder = subfolder;
     let allowEdit: boolean;
 
-    const getAllowEdit = () => {
-      // return true;
-      return allowEdit;
-    };
+    const getAllowEdit = () => { return allowEdit; };
 
-    const checkAllowEdit = (items) => {
+    const checkAllowEdit = (items: AdamItem[]) => {
       const currentFolder = items.find(item => item.Name === '.');
       if (currentFolder) {
         allowEdit = currentFolder.AllowEdit;
-        // return currentFolder.AllowEdit;
       } else {
         // currentFolder missing
         allowEdit = false;
-        // return false;
       }
     };
 
     // extend a json-response with a path (based on the adam-root) to also have a fullPath
-    const addFullPath = (value: AdamItem, key) => {
+    const addFullPath = (value: AdamItem, key: any) => {
       // 2dm 2018-03-29 special fix - sometimes the path already has the full path, sometimes not
       // it should actually be resolved properly, but because I don't have time
       // ATM (data comes from different web-services, which are also used in other places
@@ -64,7 +57,7 @@ export class AdamService {
     };
 
     // create folder
-    const addFolder = (newfolder) => {
+    const addFolder = (newfolder: string) => {
       // maybe create model for data
       return this.httpClient.post(url + '/folder',
         {},
@@ -86,7 +79,7 @@ export class AdamService {
         );
     };
 
-    const goIntoFolder = (childFolder): string => {
+    const goIntoFolder = (childFolder: AdamItem): string => {
       folders.push(childFolder);
       const pathParts = childFolder.Path.split('/');
       let subPath = '';
@@ -148,15 +141,15 @@ export class AdamService {
 
     // delete, then reload
     // IF verb DELETE fails, so I'm using get for now
-    const deleteItem = (item) => {
+    const deleteItem = (item: AdamItem) => {
       return this.httpClient.get(url + '/delete',
         {
           params: {
             subfolder: subfolder,
-            isFolder: item.IsFolder,
-            id: item.Id,
+            isFolder: item.IsFolder.toString(),
+            id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: this.eavConfig.appId
+            appId: this.eavConfig.appId,
           }
         })
         .pipe(
@@ -170,16 +163,16 @@ export class AdamService {
     };
 
     // rename, then reload
-    const rename = (item, newName) => {
+    const rename = (item: AdamItem, newName: string) => {
       return this.httpClient.get(url + '/rename',
         {
           params: {
             subfolder: subfolder,
-            isFolder: item.IsFolder,
-            id: item.Id,
+            isFolder: item.IsFolder.toString(),
+            id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,
             newName: this.sanitizeSvc.sanitizeName(newName),
-            appId: this.eavConfig.appId
+            appId: this.eavConfig.appId,
           }
         })
         .pipe(
@@ -217,7 +210,7 @@ export class AdamService {
       goUp,
       deleteItem,
       rename,
-      liveListReload: null,
+      liveListReload: null as any,
       getAllowEdit,
     };
 

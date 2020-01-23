@@ -65,10 +65,9 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   ngAfterViewInit() { }
 
   // TODO: same method in entity - !!!
-  getEntityText = (value): string => {
-    if (value === null) {
-      return 'empty slot';
-    }
+  getEntityText = (value: string): string => {
+    if (value === null) { return 'empty slot'; }
+
     const entities = this.availableEntities.filter(f => f.Value === value);
     if (entities.length > 0) {
       return entities.length > 0 ? entities[0].Text :
