@@ -49,7 +49,7 @@ export class PermissionsComponent implements OnInit {
     params.api.sizeColumnsToFit();
   }
 
-  edit(item) {
+  edit(item: any) {
     // eavAdminDialogs.openItemEditWithEntityId(item.Id, svc.liveListReload);
   }
 
@@ -74,7 +74,7 @@ export class PermissionsComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  private openMetadata(targetType, keyType, key, contentType, closeCallback) {
+  private openMetadata(targetType: any, keyType: any, key: any, contentType: any, closeCallback: any) {
     // const items = [
     //   {
     //     ContentTypeName: contentType,
