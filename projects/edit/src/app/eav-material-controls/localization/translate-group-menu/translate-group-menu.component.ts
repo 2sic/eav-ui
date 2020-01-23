@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import isEqual from 'lodash/isEqual';
+import isEqual from 'lodash-es/isEqual';
 
 import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';

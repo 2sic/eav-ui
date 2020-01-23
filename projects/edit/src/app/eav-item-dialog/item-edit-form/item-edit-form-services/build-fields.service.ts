@@ -3,7 +3,7 @@ import { ValidatorFn } from '@angular/forms';
 import { of, BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from 'lodash-es/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
 import { EavAttributes, FieldSettings, ContentType, Item, Language } from '../../../shared/models/eav';
