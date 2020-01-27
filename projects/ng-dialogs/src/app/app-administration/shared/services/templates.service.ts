@@ -16,4 +16,11 @@ export class TemplatesService {
     return <Observable<View[]>>this.http.get(`/desktopmodules/2sxc/api/app-sys/template/getall?appId=${this.context.appId}`);
   }
 
+  delete(id: number) {
+    return <Observable<boolean>>(
+      this.http.get('/desktopmodules/2sxc/api/app-sys/template/delete', {
+        params: { appId: this.context.appId.toString(), Id: id.toString() },
+      })
+    );
+  }
 }

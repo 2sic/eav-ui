@@ -5,6 +5,7 @@ import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
+import { ViewsActionsParams } from '../shared/models/views-actions-params';
 
 @Component({
   selector: 'app-views',
@@ -21,7 +22,12 @@ export class ViewsComponent implements OnInit {
     { headerName: 'Demo Item', field: 'ContentType.DemoId', cellClass: 'clickable' },
     { headerName: 'Show', field: 'IsHidden', width: 100, cellRenderer: 'viewsShowComponent' },
     { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable' },
-    { headerName: 'Actions', cellClass: 'clickable', width: 100, cellRenderer: 'viewsActionsComponent' },
+    {
+      headerName: 'Actions', width: 100, cellRenderer: 'viewsActionsComponent',
+      cellRendererParams: <ViewsActionsParams>{
+        onDelete: this.deleteView.bind(this),
+      }
+    },
   ];
   frameworkComponents = {
     viewsShowComponent: ViewsShowComponent,
@@ -48,6 +54,13 @@ export class ViewsComponent implements OnInit {
   fetchTemplates() {
     this.templatesService.getAll().subscribe(views => {
       this.views = views;
+    });
+  }
+
+  private deleteView(view: View) {
+    if (!confirm(`delete '${view.Name}' (${view.Id})?`)) { return; }
+    this.templatesService.delete(view.Id).subscribe(res => {
+      this.fetchTemplates();
     });
   }
 

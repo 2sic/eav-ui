@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { View } from '../../models/view.model';
+import { ViewsActionsParams } from '../../models/views-actions-params';
 
 @Component({
   selector: 'app-views-actions',
@@ -10,10 +10,10 @@ import { View } from '../../models/view.model';
   styleUrls: ['./views-actions.component.scss']
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams;
+  params: ViewsActionsParams;
   view: View;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: ViewsActionsParams) {
     this.params = params;
     this.view = params.data;
   }
@@ -30,7 +30,6 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
 
   deleteView(event: MouseEvent) {
     event.stopPropagation();
-    alert('Delete view!');
-    // this.params.onOpenFields(this.app);
+    this.params.onDelete(this.view);
   }
 }
