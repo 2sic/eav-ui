@@ -62,6 +62,8 @@
   },
   "private": true,
   "dependencies": {
+    "@2sic.com/2sxc-typings": "^10.25.2",
+    "@2sic.com/dnn-sxc-angular": "^10.25.2",
     "@ag-grid-community/all-modules": "^22.0.0",
     "@ag-grid-community/angular": "^22.0.0",
     "@angular/animations": "^8.2.4",
