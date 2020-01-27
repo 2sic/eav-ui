@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -27,6 +27,8 @@ import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { EntityDataModule } from '@ngrx/data';
 import { entityConfig } from './shared/store/ngrx-data/entity-metadata';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { editEavServiceFactory } from './shared/factories/edit-eav-service.factory';
 declare const sxcVersion: string;
 
 const routes: Routes = [
@@ -46,7 +48,6 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
-    // DropzoneModule,
     StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
@@ -66,6 +67,8 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   exports: [RouterModule],
   providers: [
+    { provide: APP_INITIALIZER, useFactory: editEavServiceFactory, deps: [Injector], multi: true },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     EavService,
     AdamService,
     SvcCreatorService,
@@ -73,11 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
     EntityService,
     EavAdminUiService,
     QueryService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HeaderInterceptor,
-      multi: true
-    },
+    { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
     // { provide: RuntimeSettings, useValue: DnnSettings },
     // DnnInterceptor,
   ],

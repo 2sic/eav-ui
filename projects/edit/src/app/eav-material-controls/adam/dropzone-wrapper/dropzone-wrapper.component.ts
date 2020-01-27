@@ -60,7 +60,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
         'ModuleId': this.eavConfig.mid,
         'TabId': this.eavConfig.tid,
         'ContentBlockId': this.eavConfig.cbid,
-        'RequestVerificationToken': (window as any).$.ServicesFramework(0).getAntiForgeryValue(),
+        'RequestVerificationToken': this.eavConfig.rvt,
       },
       dictDefaultMessage: '',
       addRemoveLinks: false,

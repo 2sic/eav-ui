@@ -108,21 +108,14 @@ export class EavService {
       );
   }
 
-  /**
-  * Trigger on form change - this is using in external components
-  */
+  /** Trigger on form change - this is using in external components */
   public triggerFormSetValueChange(formSet: FormSet) {
     this.formSetValueChangeSource.next(formSet);
   }
 
-  /**
- * Set Eav Configuration
- */
+  /** Set Eav Configuration */
   private setEavConfiguration(route: ActivatedRoute) {
-    const queryStringParameters = UrlHelper.readQueryStringParameters(route.snapshot.fragment);
-    console.log('queryStringParameters', queryStringParameters);
-    // const eavConfiguration: EavConfiguration = UrlHelper.getEavConfiguration(queryStringParameters);
-    this.eavConfig = UrlHelper.getEavConfiguration(queryStringParameters);
+    this.eavConfig = UrlHelper.getEavConfigurationFromSessionStorage();
   }
 
   private handleError(error: any) {

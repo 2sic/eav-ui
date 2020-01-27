@@ -2,10 +2,11 @@ import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UrlHelper } from '../../../../../edit/src/app/shared/helpers/url-helper';
-import { QueryParameters } from '../models/query-parameters.model';
+import { QueryParameters } from '../../../../../ng-dialogs/src/app/shared/models/query-parameters.model';
 
-export function adminEavServiceFactory(injector: Injector) {
+export function editEavServiceFactory(injector: Injector) {
   return function () {
+    debugger;
     console.log('Setting parameters config and clearing route');
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
@@ -18,7 +19,8 @@ export function adminEavServiceFactory(injector: Injector) {
       });
       const router = injector.get(Router);
       const zoneId = sessionStorage['zoneId'];
-      router.navigate([`${zoneId}/apps`]);
+      const appId = sessionStorage['appId'];
+      router.navigate([`${zoneId}/${appId}/edit`]);
     } else if (sessionStorage.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
       alert('Missing required url parameters. Please reopen dialog.');

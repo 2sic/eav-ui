@@ -20,7 +20,7 @@ export class HeaderInterceptor implements HttpInterceptor {
         'ContentBlockId': this.eavConfig.cbid,
         'ModuleId': this.eavConfig.mid,
         'Content-Type': 'application/json;charset=UTF-8',
-        'RequestVerificationToken': (window as any).$.ServicesFramework(0).getAntiForgeryValue()
+        'RequestVerificationToken': this.eavConfig.rvt,
       }
     });
     return next.handle(modified);

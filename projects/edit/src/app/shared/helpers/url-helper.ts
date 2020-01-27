@@ -48,8 +48,34 @@ export class UrlHelper {
       queryParams['portalroot'],
       queryParams['publishing'],
       queryParams['tid'],
+      queryParams['rvt'],
       queryParams['websiteroot'],
       UrlHelper.getVersioningOptions(queryParams['partOfPage'] === 'true', queryParams['publishing'])
+    );
+  }
+
+  /** Create EavConfiguration from sessionStorage */
+  static getEavConfigurationFromSessionStorage() {
+    return new EavConfiguration(
+      sessionStorage['zoneId'],
+      sessionStorage['appId'],
+      sessionStorage['approot'],
+      sessionStorage['cbid'],
+      sessionStorage['debug'],
+      sessionStorage['dialog'],
+      sessionStorage['items'],
+      sessionStorage['lang'],
+      sessionStorage['langpri'],
+      sessionStorage['langs'],
+      sessionStorage['mid'],
+      sessionStorage['mode'],
+      sessionStorage['partOfPage'],
+      sessionStorage['portalroot'],
+      sessionStorage['publishing'],
+      sessionStorage['tid'],
+      sessionStorage['rvt'],
+      sessionStorage['websiteroot'],
+      UrlHelper.getVersioningOptions(sessionStorage['partOfPage'] === 'true', sessionStorage['publishing'])
     );
   }
 
