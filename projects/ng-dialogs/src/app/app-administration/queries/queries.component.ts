@@ -4,6 +4,7 @@ import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } fro
 import { Query } from '../shared/models/query.model';
 import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
 import { PipelinesService } from '../shared/services/pipelines.service';
+import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 
 @Component({
   selector: 'app-queries',
@@ -19,6 +20,10 @@ export class QueriesComponent implements OnInit {
     {
       headerName: 'Description', field: 'Description', cellClass: 'clickable-with-button',
       onCellClicked: this.openVisualQueryDesigner.bind(this), cellRenderer: 'queriesDescriptionComponent',
+      cellRendererParams: <PipelinesActionsParams>{
+        onOpenPermissions: this.openPermissions.bind(this),
+        onDelete: this.deleteQuery.bind(this),
+      }
     },
   ];
   frameworkComponents = {
@@ -52,5 +57,16 @@ export class QueriesComponent implements OnInit {
 
   private openVisualQueryDesigner() {
     alert('Open visual query designer');
+  }
+
+  private openPermissions(query: Query) {
+    alert('Open permissions');
+  }
+
+  private deleteQuery(query: Query) {
+    if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
+    this.pipelinesService.delete(query.Id).subscribe(res => {
+      this.fetchPipelines();
+    });
   }
 }

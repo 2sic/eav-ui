@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { Query } from '../../models/query.model';
+import { PipelinesActionsParams } from '../../models/pipeline-actions-params';
 
 @Component({
   selector: 'app-queries-description',
@@ -10,10 +10,10 @@ import { Query } from '../../models/query.model';
   styleUrls: ['./queries-description.component.scss']
 })
 export class QueriesDescriptionComponent implements ICellRendererAngularComp {
-  params: ICellRendererParams;
+  params: PipelinesActionsParams;
   query: Query;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: PipelinesActionsParams) {
     this.params = params;
     this.query = params.data;
   }
@@ -48,7 +48,6 @@ export class QueriesDescriptionComponent implements ICellRendererAngularComp {
 
   deleteQuery(event: MouseEvent) {
     event.stopPropagation();
-    alert('Delete query!');
-    // this.params.onOpenFields(this.app);
+    this.params.onDelete(this.query);
   }
 }

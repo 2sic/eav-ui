@@ -18,4 +18,11 @@ export class PipelinesService {
     );
   }
 
+  delete(id: number) {
+    return <Observable<boolean>>(
+      this.http.get('/desktopmodules/2sxc/api/eav/PipelineDesigner/DeletePipeline', {
+        params: { appId: this.context.appId.toString(), Id: id.toString() },
+      })
+    );
+  }
 }
