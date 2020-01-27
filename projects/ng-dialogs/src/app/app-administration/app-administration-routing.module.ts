@@ -34,7 +34,15 @@ const appAdministrationRoutes: Routes = [
         ]
       },
       { path: 'queries', component: EmptyRouteComponent },
-      { path: 'views', component: EmptyRouteComponent },
+      {
+        path: 'views', component: EmptyRouteComponent, children: [
+          {
+            path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+              dialogName: SET_PERMISSIONS_DIALOG
+            }
+          },
+        ]
+      },
       { path: 'web-api', component: EmptyRouteComponent },
       { path: 'app', component: EmptyRouteComponent },
       { path: 'global', component: EmptyRouteComponent },

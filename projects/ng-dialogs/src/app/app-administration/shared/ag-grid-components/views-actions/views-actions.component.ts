@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { View } from '../../models/view.model';
-import { ViewsActionsParams } from '../../models/views-actions-params';
+import { ViewActionsParams } from '../../models/view-actions-params';
 
 @Component({
   selector: 'app-views-actions',
@@ -10,10 +10,10 @@ import { ViewsActionsParams } from '../../models/views-actions-params';
   styleUrls: ['./views-actions.component.scss']
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
-  params: ViewsActionsParams;
+  params: ViewActionsParams;
   view: View;
 
-  agInit(params: ViewsActionsParams) {
+  agInit(params: ViewActionsParams) {
     this.params = params;
     this.view = params.data;
   }
@@ -24,8 +24,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
 
   openPermissions(event: MouseEvent) {
     event.stopPropagation();
-    alert('Open permissions!');
-    // this.params.onOpenFields(this.app);
+    this.params.onOpenPermissions(this.view);
   }
 
   deleteView(event: MouseEvent) {

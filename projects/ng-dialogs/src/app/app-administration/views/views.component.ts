@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
 
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
-import { ViewsActionsParams } from '../shared/models/views-actions-params';
+import { ViewActionsParams } from '../shared/models/view-actions-params';
 
 @Component({
   selector: 'app-views',
@@ -24,7 +25,8 @@ export class ViewsComponent implements OnInit {
     { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable' },
     {
       headerName: 'Actions', width: 100, cellRenderer: 'viewsActionsComponent',
-      cellRendererParams: <ViewsActionsParams>{
+      cellRendererParams: <ViewActionsParams>{
+        onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteView.bind(this),
       }
     },
@@ -37,6 +39,8 @@ export class ViewsComponent implements OnInit {
 
   constructor(
     private templatesService: TemplatesService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -57,8 +61,13 @@ export class ViewsComponent implements OnInit {
     });
   }
 
+  private openPermissions(view: View) {
+    // spm figure out what type=4 and keyType='guid' mean
+    this.router.navigate([`${view.Guid}/4/guid/permissions`], { relativeTo: this.route.firstChild });
+  }
+
   private deleteView(view: View) {
-    if (!confirm(`delete '${view.Name}' (${view.Id})?`)) { return; }
+    if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
     this.templatesService.delete(view.Id).subscribe(res => {
       this.fetchTemplates();
     });
