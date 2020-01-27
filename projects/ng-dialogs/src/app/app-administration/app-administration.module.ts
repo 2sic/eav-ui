@@ -20,7 +20,6 @@ import { QueriesComponent } from './queries/queries.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
-import { GlobalSettingsComponent } from './global-settings/global-settings.component';
 import { Context } from '../shared/context/context';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
@@ -58,7 +57,6 @@ import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fi
     ViewsComponent,
     WebApiComponent,
     AppConfigurationComponent,
-    GlobalSettingsComponent,
     DataNameComponent,
     DataFieldsComponent,
     DataActionsComponent,
