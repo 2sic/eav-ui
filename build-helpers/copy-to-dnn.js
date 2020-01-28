@@ -18,11 +18,12 @@ args.forEach((val, index) => {
   // console.log(`${index}: ${val}`);
   if (val === '--watch') {
     watchEnabled = true;
-  } else if (val === '--ng-dialogs') {
-    sourcePath = 'dist/ng-dialogs';
-    sourcePathMain = 'dist/ng-dialogs/main';
-    outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit/ng-dialogs';
   }
+  // else if (val === '--ng-dialogs') {
+  //   sourcePath = 'dist';
+  //   sourcePathMain = 'dist/main';
+  //   outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+  // }
 });
 
 const calculatePaths = (path) => {

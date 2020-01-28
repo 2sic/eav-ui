@@ -14,8 +14,8 @@ function buildHtml(name) {
     if (val === '--ng-dialogs') {
       ngDialogs = true;
       htmlSourcePath = './projects/ng-dialogs/src/' + name + '.html';
-      htmlOutputPath = './dist/ng-dialogs/' + name + '.html';
-      fs.ensureDirSync('./dist/ng-dialogs/');
+      htmlOutputPath = './dist/' + name + '.html';
+      fs.ensureDirSync('./dist/');
     }
   });
 

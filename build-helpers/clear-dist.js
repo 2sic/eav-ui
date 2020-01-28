@@ -11,7 +11,7 @@ args.forEach((val, index) => {
 });
 
 if (ngDialogs) {
-  fs.emptyDirSync('./dist/ng-dialogs');
+  fs.emptyDirSync('./dist');
   console.log(chalkSuccess('NgDialogs dist folder emptied!'));
 } else {
   fs.emptyDirSync('./dist');
