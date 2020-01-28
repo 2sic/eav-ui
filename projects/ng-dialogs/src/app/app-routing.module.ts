@@ -14,6 +14,10 @@ const appRoutes: Routes = [
     path: ':zoneId/:appId/code',
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
+  {
+    path: ':zoneId/:appId/edit',
+    loadChildren: () => import('../../../edit/src/app/app.module').then(m => m.AppModule)
+  },
 ];
 
 @NgModule({

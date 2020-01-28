@@ -1,4 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -25,9 +24,9 @@ import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
-import { EntityDataModule } from '@ngrx/data';
+import { EntityDataModule, EntityDefinitionService } from '@ngrx/data';
 import { entityConfig } from './shared/store/ngrx-data/entity-metadata';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LocationStrategy, HashLocationStrategy, CommonModule } from '@angular/common';
 import { editEavServiceFactory } from './shared/factories/edit-eav-service.factory';
 declare const sxcVersion: string;
 
@@ -47,28 +46,28 @@ export function createTranslateLoader(http: HttpClient) {
     AppComponent
   ],
   imports: [
-    BrowserModule,
-    StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
-    EffectsModule.forRoot([]),
-    StoreDevtoolsModule.instrument({ maxAge: 25 }),
-    EntityDataModule.forRoot(entityConfig),
+    // BrowserModule,
+    CommonModule,
+    // StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
+    // EffectsModule.forRoot([]),
+    // StoreDevtoolsModule.instrument({ maxAge: 25 }),
+    // EntityDataModule.forRoot(entityConfig),
     HttpClientModule,
-    RouterModule.forRoot(routes),
-    BrowserAnimationsModule,
+    RouterModule.forChild(routes),
+    // BrowserAnimationsModule,
     EavItemDialogModule,
-    TranslateModule.forRoot(
-      {
-        loader: {
-          provide: TranslateLoader,
-          useFactory: (createTranslateLoader),
-          deps: [HttpClient]
-        }
-      })
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    })
   ],
   exports: [RouterModule],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: editEavServiceFactory, deps: [Injector], multi: true },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    // { provide: APP_INITIALIZER, useFactory: editEavServiceFactory, deps: [Injector], multi: true },
+    // { provide: LocationStrategy, useClass: HashLocationStrategy },
     EavService,
     AdamService,
     SvcCreatorService,
@@ -80,6 +79,6 @@ export function createTranslateLoader(http: HttpClient) {
     // { provide: RuntimeSettings, useValue: DnnSettings },
     // DnnInterceptor,
   ],
-  bootstrap: [AppComponent],
+  // bootstrap: [AppComponent],
 })
 export class AppModule { }
