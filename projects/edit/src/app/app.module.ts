@@ -1,40 +1,26 @@
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EffectsModule } from '@ngrx/effects';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
-
-// import { DnnInterceptor, RuntimeSettings } from '@2sic.com/dnn-sxc-angular';
-// import { DnnSettings } from './dnn-settings/dnn-settings';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 
 import { AppComponent } from './app.component';
-import { metaReducers } from './shared/store';
 import { EavService } from './shared/services/eav.service';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AdamService } from './eav-material-controls/adam/adam.service';
 import { SvcCreatorService } from './shared/services/svc-creator.service';
-
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
-import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
-import { EntityDataModule, EntityDefinitionService } from '@ngrx/data';
-import { entityConfig } from './shared/store/ngrx-data/entity-metadata';
-import { LocationStrategy, HashLocationStrategy, CommonModule } from '@angular/common';
-import { editEavServiceFactory } from './shared/factories/edit-eav-service.factory';
+import { HeaderInterceptor } from './shared/interceptors/interceptors';
 declare const sxcVersion: string;
 
 const routes: Routes = [
-  {
-    path: '**',
-    component: OpenMultiItemDialogComponent
-  }
+  { path: '', component: OpenMultiItemDialogComponent },
 ];
 
 export function createTranslateLoader(http: HttpClient) {
@@ -43,18 +29,12 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
-    // BrowserModule,
     CommonModule,
-    // StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
-    // EffectsModule.forRoot([]),
-    // StoreDevtoolsModule.instrument({ maxAge: 25 }),
-    // EntityDataModule.forRoot(entityConfig),
     HttpClientModule,
     RouterModule.forChild(routes),
-    // BrowserAnimationsModule,
     EavItemDialogModule,
     TranslateModule.forRoot({
       loader: {
@@ -64,10 +44,11 @@ export function createTranslateLoader(http: HttpClient) {
       }
     })
   ],
-  exports: [RouterModule],
+  exports: [
+    RouterModule,
+  ],
   providers: [
-    // { provide: APP_INITIALIZER, useFactory: editEavServiceFactory, deps: [Injector], multi: true },
-    // { provide: LocationStrategy, useClass: HashLocationStrategy },
+    DnnInterceptor,
     EavService,
     AdamService,
     SvcCreatorService,
@@ -76,9 +57,6 @@ export function createTranslateLoader(http: HttpClient) {
     EavAdminUiService,
     QueryService,
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
-    // { provide: RuntimeSettings, useValue: DnnSettings },
-    // DnnInterceptor,
   ],
-  // bootstrap: [AppComponent],
 })
 export class AppModule { }

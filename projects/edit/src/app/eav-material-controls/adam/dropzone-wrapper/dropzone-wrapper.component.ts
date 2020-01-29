@@ -2,6 +2,7 @@ import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit } 
 import { FormGroup } from '@angular/forms';
 import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject } from 'rxjs';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -30,7 +31,10 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     return this.group.controls[this.config.field.name].disabled;
   }
 
-  constructor(private eavService: EavService) {
+  constructor(
+    private eavService: EavService,
+    private dnnContext: DnnContext,
+  ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
@@ -56,12 +60,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
       paramName: 'uploadfile',
       maxThumbnailFilesize: 10,
-      headers: {
-        'ModuleId': this.eavConfig.mid,
-        'TabId': this.eavConfig.tid,
-        'ContentBlockId': this.eavConfig.cbid,
-        'RequestVerificationToken': this.eavConfig.rvt,
-      },
+      headers: this.dnnContext.sxc.webApi.headers(),
       dictDefaultMessage: '',
       addRemoveLinks: false,
       // '.field-' + field.toLowerCase() + ' .dropzone-previews',
