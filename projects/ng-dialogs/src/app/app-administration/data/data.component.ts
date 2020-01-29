@@ -87,8 +87,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   handleNameCellClicked(params: CellClickedEvent) {
     const contentType = <ContentType>params.data;
-    alert('Open content type data!');
-    // open content type data modal
+    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
   }
 
   editContentType(contentType: ContentType) {
@@ -114,7 +113,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private addItem(contentType: ContentType) {
-    alert('Open Edit Ui');
+    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
   }
 
   private editFields(contentType: ContentType) {
@@ -122,7 +121,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    alert('Create or edit metadata!');
+    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
     const title = 'ContentType Metadata';
     if (contentType.Metadata) {
       // open edit dialog with { EntityId: item.Metadata.Id, Title: title }

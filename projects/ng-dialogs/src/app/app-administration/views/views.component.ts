@@ -17,12 +17,12 @@ export class ViewsComponent implements OnInit {
   views: View[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Template Name', field: 'Name', cellClass: 'clickable' },
-    { headerName: 'Path', field: 'TemplatePath', cellClass: 'clickable' },
-    { headerName: 'Content Type', field: 'ContentType.Name', cellClass: 'clickable' },
-    { headerName: 'Demo Item', field: 'ContentType.DemoId', cellClass: 'clickable' },
-    { headerName: 'Show', field: 'IsHidden', width: 100, cellRenderer: 'viewsShowComponent' },
-    { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable' },
+    { headerName: 'Template Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
+    { headerName: 'Path', field: 'TemplatePath', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
+    { headerName: 'Content Type', field: 'ContentType.Name', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
+    { headerName: 'Demo Item', field: 'ContentType.DemoId', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
+    { headerName: 'Show', field: 'IsHidden', width: 100, cellRenderer: 'viewsShowComponent', onCellClicked: this.editView.bind(this) },
+    { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
     {
       headerName: 'Actions', width: 100, cellRenderer: 'viewsActionsComponent',
       cellRendererParams: <ViewActionsParams>{
@@ -59,6 +59,10 @@ export class ViewsComponent implements OnInit {
     this.templatesService.getAll().subscribe(views => {
       this.views = views;
     });
+  }
+
+  editView() {
+    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
   }
 
   private openPermissions(view: View) {

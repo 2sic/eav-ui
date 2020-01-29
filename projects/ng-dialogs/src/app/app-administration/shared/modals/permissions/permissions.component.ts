@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { GridReadyEvent, GridSizeChangedEvent, ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 
@@ -33,6 +33,7 @@ export class PermissionsComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
+    private router: Router,
     private route: ActivatedRoute,
     private permissionsService: PermissionsService,
   ) { }
@@ -54,8 +55,8 @@ export class PermissionsComponent implements OnInit {
   }
 
   add() {
-    alert('Add new permission');
     // vm.openMetadata(svc.targetType, svc.keyType, svc.key, svc.ctName, svc.liveListReload);
+    this.router.navigate(['edit'], { relativeTo: this.route });
   }
 
   refresh() {

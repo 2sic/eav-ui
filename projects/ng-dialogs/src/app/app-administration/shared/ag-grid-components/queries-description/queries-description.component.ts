@@ -24,8 +24,7 @@ export class QueriesDescriptionComponent implements ICellRendererAngularComp {
 
   editQuery(event: MouseEvent) {
     event.stopPropagation();
-    alert('Edit query!');
-    // this.params.onOpenFields(this.app);
+    this.params.onEditPipeline(this.query);
   }
 
   copyQuery(event: MouseEvent) {

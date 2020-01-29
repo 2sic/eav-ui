@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
 
 import { Query } from '../shared/models/query.model';
@@ -21,6 +22,7 @@ export class QueriesComponent implements OnInit {
       headerName: 'Description', field: 'Description', cellClass: 'clickable-with-button',
       onCellClicked: this.openVisualQueryDesigner.bind(this), cellRenderer: 'queriesDescriptionComponent',
       cellRendererParams: <PipelinesActionsParams>{
+        onEditPipeline: this.editQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteQuery.bind(this),
       }
@@ -34,6 +36,8 @@ export class QueriesComponent implements OnInit {
   private contentType = 'DataPipeline'; // spm Figure out what is data pipeline
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
   ) { }
 
@@ -53,6 +57,10 @@ export class QueriesComponent implements OnInit {
     this.pipelinesService.getAll(this.contentType).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
+  }
+
+  editQuery() {
+    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
   }
 
   private openVisualQueryDesigner() {

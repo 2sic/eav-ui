@@ -17,6 +17,7 @@ import { EditFieldsComponent } from '../../../app-administration/shared/modals/e
 import { ContentExportComponent } from '../../../app-administration/shared/modals/content-export/content-export.component';
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 import { PermissionsComponent } from '../../../app-administration/shared/modals/permissions/permissions.component';
+// tslint:disable-next-line:max-line-length
 import { ContentTypesFieldsAddComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
 
 @Component({
@@ -59,7 +60,9 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.dialogService.fireClosed(this.dialogName);
 
         if (this.route.pathFromRoot.length <= 3) {
-          alert('Close iframe!');
+          try {
+            (window.parent as any).$2sxc.totalPopup.close();
+          } catch (error) { }
           return;
         }
 

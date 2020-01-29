@@ -13,6 +13,10 @@ const appAdministrationRoutes: Routes = [
       { path: 'home', component: EmptyRouteComponent },
       {
         path: 'data', component: EmptyRouteComponent, children: [
+          {
+            path: 'edit',
+            loadChildren: () => import('../../../../edit/src/app/app.module').then(m => m.AppModule)
+          },
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
           { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_DIALOG } },
           {
@@ -29,17 +33,38 @@ const appAdministrationRoutes: Routes = [
           {
             path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
               dialogName: SET_PERMISSIONS_DIALOG
-            }
+            }, children: [
+              {
+                path: 'edit',
+                loadChildren: () => import('../../../../edit/src/app/app.module').then(m => m.AppModule)
+              },
+            ]
           },
         ]
       },
-      { path: 'queries', component: EmptyRouteComponent },
+      {
+        path: 'queries', component: EmptyRouteComponent, children: [
+          {
+            path: 'edit',
+            loadChildren: () => import('../../../../edit/src/app/app.module').then(m => m.AppModule)
+          },
+        ]
+      },
       {
         path: 'views', component: EmptyRouteComponent, children: [
           {
+            path: 'edit',
+            loadChildren: () => import('../../../../edit/src/app/app.module').then(m => m.AppModule)
+          },
+          {
             path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
               dialogName: SET_PERMISSIONS_DIALOG
-            }
+            }, children: [
+              {
+                path: 'edit',
+                loadChildren: () => import('../../../../edit/src/app/app.module').then(m => m.AppModule)
+              },
+            ]
           },
         ]
       },
