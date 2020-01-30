@@ -4,6 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/src/app/shared/helpers/url-helper';
 import { QueryParameters } from '../models/query-parameters.model';
+import { saveToSession, readFromSession } from '../helpers/session-storage.helper';
 declare const $2sxc: SxcRoot;
 
 export function adminEavServiceFactory(injector: Injector) {
@@ -16,11 +17,19 @@ export function adminEavServiceFactory(injector: Injector) {
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
       const queryParameters = new QueryParameters();
       Object.keys(queryParameters).forEach(key => {
-        sessionStorage.setItem(key, queryParametersFromUrl[key]);
+        saveToSession(key, queryParametersFromUrl[key]);
       });
       const router = injector.get(Router);
-      const zoneId = sessionStorage['zoneId'];
-      router.navigate([`${zoneId}/apps`]);
+      const zoneId = readFromSession('zoneId');
+      const appId = readFromSession('appId');
+      const dialog = readFromSession('dialog');
+      switch (dialog) {
+        case 'edit':
+          router.navigate([`${zoneId}/${appId}/edit`]);
+          break;
+        default:
+          router.navigate([`${zoneId}/apps`]);
+      }
     } else if (sessionStorage.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
       alert('Missing required url parameters. Please reopen dialog.');
@@ -32,11 +41,10 @@ export function adminEavServiceFactory(injector: Injector) {
 }
 
 function loadEnvironment() {
-  const jsApi = {
-    page: sessionStorage['tid'],
-    rvt: sessionStorage['rvt'],
-    root: sessionStorage['portalroot'],
-    api: sessionStorage['portalroot'] + 'desktopmodules/2sxc/api/',
-  };
-  $2sxc.env.load(jsApi);
+  $2sxc.env.load({
+    page: parseInt(readFromSession('tid'), 10),
+    rvt: readFromSession('rvt'),
+    root: readFromSession('portalroot'),
+    api: readFromSession('portalroot') + 'desktopmodules/2sxc/api/',
+  });
 }

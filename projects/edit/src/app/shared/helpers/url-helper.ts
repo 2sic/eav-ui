@@ -1,21 +1,11 @@
-import { HttpHeaders } from '@angular/common/http';
 import { EavConfiguration } from '../models/eav-configuration';
 import { UrlConstants } from '../constants/url-constants';
 import { VersioningOptions } from '../models/eav/versioning-options';
+import { readFromSession } from '../../../../../ng-dialogs/src/app/shared/helpers/session-storage.helper';
 
 export class UrlHelper {
 
   private static readonly serviceScopes = ['app', 'app-sys', 'app-api', 'app-query', 'app-content', 'eav', 'view', 'dnn'];
-
-  static createHeader = (tabId: string, moduleId: string, contentBlockId: string): HttpHeaders => {
-    return new HttpHeaders({
-      'TabId': tabId,
-      'ContentBlockId': moduleId,
-      'ModuleId': contentBlockId,
-      'Content-Type': 'application/json;charset=UTF-8',
-      'RequestVerificationToken': 'abcdefgihjklmnop',
-    });
-  }
 
   static readQueryStringParameters(url: string): { [key: string]: string } {
     const queryParams: { [key: string]: string } = {};
@@ -27,55 +17,28 @@ export class UrlHelper {
     return queryParams;
   }
 
-  /**
-   * Create EavCongiguration from queryStringParams
-   */
-  static getEavConfiguration = (queryParams: { [key: string]: string }): EavConfiguration => {
-    return new EavConfiguration(
-      queryParams['zoneId'],
-      queryParams['appId'],
-      queryParams['approot'],
-      queryParams['cbid'],
-      queryParams['debug'],
-      queryParams['dialog'],
-      queryParams['items'],
-      queryParams['lang'],
-      queryParams['langpri'],
-      queryParams['langs'],
-      queryParams['mid'],
-      queryParams['mode'],
-      queryParams['partOfPage'],
-      queryParams['portalroot'],
-      queryParams['publishing'],
-      queryParams['tid'],
-      queryParams['rvt'],
-      queryParams['websiteroot'],
-      UrlHelper.getVersioningOptions(queryParams['partOfPage'] === 'true', queryParams['publishing'])
-    );
-  }
-
   /** Create EavConfiguration from sessionStorage */
-  static getEavConfigurationFromSessionStorage() {
+  static getEavConfiguration() {
     return new EavConfiguration(
-      sessionStorage['zoneId'],
-      sessionStorage['appId'],
-      sessionStorage['approot'],
-      sessionStorage['cbid'],
-      sessionStorage['debug'],
-      sessionStorage['dialog'],
-      sessionStorage['items'],
-      sessionStorage['lang'],
-      sessionStorage['langpri'],
-      sessionStorage['langs'],
-      sessionStorage['mid'],
-      sessionStorage['mode'],
-      sessionStorage['partOfPage'],
-      sessionStorage['portalroot'],
-      sessionStorage['publishing'],
-      sessionStorage['tid'],
-      sessionStorage['rvt'],
-      sessionStorage['websiteroot'],
-      UrlHelper.getVersioningOptions(sessionStorage['partOfPage'] === 'true', sessionStorage['publishing'])
+      readFromSession('zoneId'),
+      readFromSession('appId'),
+      readFromSession('approot'),
+      readFromSession('cbid'),
+      readFromSession('debug'),
+      readFromSession('dialog'),
+      readFromSession('items'),
+      readFromSession('lang'),
+      readFromSession('langpri'),
+      readFromSession('langs'),
+      readFromSession('mid'),
+      readFromSession('mode'),
+      readFromSession('partOfPage'),
+      readFromSession('portalroot'),
+      readFromSession('publishing'),
+      readFromSession('tid'),
+      readFromSession('rvt'),
+      readFromSession('websiteroot'),
+      UrlHelper.getVersioningOptions(readFromSession('partOfPage') === 'true', readFromSession('publishing'))
     );
   }
 

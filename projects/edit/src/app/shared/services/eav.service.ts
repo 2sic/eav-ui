@@ -88,7 +88,7 @@ export class EavService {
 
   /** Set Eav Configuration */
   private setEavConfiguration(route: ActivatedRoute) {
-    this.eavConfig = UrlHelper.getEavConfigurationFromSessionStorage();
+    this.eavConfig = UrlHelper.getEavConfiguration();
   }
 
   private handleError(error: Error) {
