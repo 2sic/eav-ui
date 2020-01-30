@@ -1,41 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentTypeEdit, ContentType } from '../models/content-type.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
 export class ContentTypesService {
-  constructor(
-    private http: HttpClient,
-    private context: Context,
-  ) { }
+  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   retrieveContentType(staticName: string) {
     return <Observable<ContentType>>(
-      this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&contentTypeId=${staticName}`)
+      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/contenttype/get/?appId=${this.context.appId}&contentTypeId=${staticName}`))
     );
   }
 
   retrieveContentTypes(scope: string) {
     return <Observable<ContentType[]>>(
-      this.http.get(`/desktopmodules/2sxc/api/eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`)
+      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`))
     );
   }
 
   save(contentType: ContentTypeEdit) {
-    return <Observable<boolean>>(
-      this.http.post('/desktopmodules/2sxc/api/eav/contenttype/save/', contentType, { params: { appid: this.context.appId.toString() } })
-    );
+    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save/'), contentType, {
+      params: { appid: this.context.appId.toString() },
+    });
   }
 
   delete(contentType: ContentType) {
-    return <Observable<boolean>>(
-      this.http.get('/desktopmodules/2sxc/api/eav/contenttype/delete', {
-        params: { appid: this.context.appId.toString(), staticName: contentType.StaticName }
-      })
-    );
+    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/delete'), {
+      params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
+    });
   }
-
 }

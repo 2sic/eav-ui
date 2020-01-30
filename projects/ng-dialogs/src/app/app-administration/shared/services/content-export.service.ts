@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentExport } from '../models/content-export.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
 export class ContentExportService {
-  constructor(
-    private context: Context,
-  ) { }
+  constructor(private context: Context, private dnnContext: DnnContext) { }
 
   exportContent(values: ContentExport, selectedIds: number[]) {
     const selectedIdsString = selectedIds ? '&selectedids=' + selectedIds.join() : '';
-    const url = '/desktopmodules/2sxc/api/eav/ContentExport/ExportContent'
+    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/ExportContent')
       + '?appId=' + this.context.appId
       + '&language=' + values.language
       + '&defaultLanguage=' + values.defaultLanguage
@@ -25,11 +24,10 @@ export class ContentExportService {
   }
 
   exportJson(typeName: string) {
-    const url = '/desktopmodules/2sxc/api/eav/ContentExport/DownloadTypeAsJson'
+    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/DownloadTypeAsJson')
       + '?appId=' + this.context.appId
       + '&name=' + typeName;
 
     window.open(url, '_blank', '');
   }
-
 }

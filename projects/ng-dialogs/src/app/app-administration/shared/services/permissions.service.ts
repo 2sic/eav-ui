@@ -11,11 +11,7 @@ export class PermissionsService {
   private ctName = 'PermissionConfiguration'; // spm Figure this out
   private ctId = 0; // spm Figure this out
 
-  constructor(
-    private metadataService: MetadataService,
-    private entitiesService: EntitiesService,
-    private context: Context,
-  ) { }
+  constructor(private metadataService: MetadataService, private entitiesService: EntitiesService, private context: Context) { }
 
   getAll(targetType: number, keyType: string, contentTypeStaticName: string) {
     return <Observable<Permission[]>>(

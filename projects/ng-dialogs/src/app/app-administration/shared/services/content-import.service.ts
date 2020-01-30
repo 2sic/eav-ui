@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentImport, ImportContentRequest, EvaluateContentResult, ImportContentResult } from '../models/content-import.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
 export class ContentImportService {
-  constructor(
-    private http: HttpClient,
-    private context: Context,
-  ) { }
+  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   async evaluateContent(formValues: ContentImport) {
     const requestData: ImportContentRequest = {
@@ -21,7 +19,9 @@ export class ContentImportService {
       ResourcesReferences: formValues.resourcesReferences,
       ClearEntities: formValues.clearEntities,
     };
-    return <Observable<EvaluateContentResult>>this.http.post('/desktopmodules/2sxc/api/eav/ContentImport/EvaluateContent', requestData);
+    return <Observable<EvaluateContentResult>>(
+      this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/EvaluateContent'), requestData)
+    );
   }
 
   async importContent(formValues: ContentImport) {
@@ -33,7 +33,9 @@ export class ContentImportService {
       ResourcesReferences: formValues.resourcesReferences,
       ClearEntities: formValues.clearEntities,
     };
-    return <Observable<ImportContentResult>>this.http.post('/desktopmodules/2sxc/api/eav/ContentImport/ImportContent', requestData);
+    return <Observable<ImportContentResult>>(
+      this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/ImportContent'), requestData)
+    );
   }
 
   private toBase64(file: File): Promise<string> {
@@ -44,5 +46,4 @@ export class ContentImportService {
       reader.onerror = error => reject(error);
     });
   }
-
 }
