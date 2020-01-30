@@ -1,11 +1,8 @@
 import { EavConfiguration } from '../models/eav-configuration';
-import { UrlConstants } from '../constants/url-constants';
 import { VersioningOptions } from '../models/eav/versioning-options';
 import { readFromSession } from '../../../../../ng-dialogs/src/app/shared/helpers/session-storage.helper';
 
 export class UrlHelper {
-
-  private static readonly serviceScopes = ['app', 'app-sys', 'app-api', 'app-query', 'app-content', 'eav', 'view', 'dnn'];
 
   static readQueryStringParameters(url: string): { [key: string]: string } {
     const queryParams: { [key: string]: string } = {};
@@ -57,22 +54,7 @@ export class UrlHelper {
     }
   }
 
-  /**
-   * converts a short api-call path like "/app/Blog/query/xyz" to the DNN full path
-   * which varies from installation to installation like "/desktopmodules/api/2sxc/app/..."
-   * @param virtualPath
-   * @returns mapped path
-   */
-  public static resolveServiceUrl(virtualPath: string, serviceRoot: string): string {
-    const scope = virtualPath.split('/')[0].toLowerCase();
-
-    // stop if it's not one of our special paths
-    if (this.serviceScopes.indexOf(scope) === -1) { return virtualPath; }
-
-    return serviceRoot + scope + '/' + virtualPath.substring(virtualPath.indexOf('/') + 1);
-  }
-
-  public static replaceUrlParam(url: string, paramName: string, paramValue: string) {
+  static replaceUrlParam(url: string, paramName: string, paramValue: string) {
     if (paramValue === null) { paramValue = ''; }
 
     const pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
@@ -82,13 +64,8 @@ export class UrlHelper {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  public static getUrlPrefix(area: string, eavConfig: EavConfiguration) {
+  static getUrlPrefix(area: string, eavConfig: EavConfiguration) {
     let result = '';
-    if (area === 'api') {
-      const serviceRoot = eavConfig.portalroot + UrlConstants.apiRoot;
-      const url = UrlHelper.resolveServiceUrl('eav/', serviceRoot);
-      result = url.substr(0, url.length - 5);
-    }
 
     if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar
     if (area === 'zone') { result = eavConfig.portalroot; }                      // used to link to the site-root (like an image)

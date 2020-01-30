@@ -8,8 +8,6 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
-import { UrlHelper } from '../../../shared/helpers/url-helper';
-import { UrlConstants } from '../../../shared/constants/url-constants';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -21,7 +19,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   @ViewChild(DropzoneDirective, { static: false }) dropzoneRef?: DropzoneDirective;
 
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   private eavConfig: EavConfiguration;
   url: string;
@@ -31,20 +29,15 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     return this.group.controls[this.config.field.name].disabled;
   }
 
-  constructor(
-    private eavService: EavService,
-    private dnnContext: DnnContext,
-  ) {
+  constructor(private eavService: EavService, private dnnContext: DnnContext) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-    const serviceRoot = this.eavConfig.portalroot + UrlConstants.apiRoot;
     const contentType = this.config.entity.header.contentTypeName;
     const entityGuid = this.config.entity.header.guid;
     const field = this.config.field.name;
-
-    this.url = UrlHelper.resolveServiceUrl(`app-content/${contentType}/${entityGuid}/${field}`, serviceRoot);
+    this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
 
     const dropzoneConfig: DropzoneConfigInterface = {
       // usePortalRoot is updated in AdamBrowser. Switches between Adam and DNN image
@@ -54,9 +47,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       autoReset: null,
       errorReset: null,
       cancelReset: null,
-      // 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/app-content/106ba6ed-f807-475a-b004-cd77e6b317bd/
-      // 386ec145-d884-4fea-935b-a4d8d0c68d8d/HyperLinkStaticName?usePortalRoot=false&appId=7',
-      // urlRoot: 'http://2sxc-dnn742.dnndev.me/',
       maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
       paramName: 'uploadfile',
       maxThumbnailFilesize: 10,

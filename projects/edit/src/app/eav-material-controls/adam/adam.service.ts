@@ -24,15 +24,12 @@ export class AdamService {
   }
 
   createSvc(subfolder: string, serviceConfig: any, url: string) {
-    // TODO: find how to solve serviceRoot
-    // const serviceRoot = 'http://2sxc-dnn742.dnndev.me/en-us/desktopmodules/2sxc/api/';
-    // const url = url, //UrlHelper.resolveServiceUrl('app-content/' + contentType + '/' + entityGuid + '/' + field, serviceRoot);
     const folders: AdamItem[] = [];
     const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
     const startingSubfolder = subfolder;
     let allowEdit: boolean;
 
-    const getAllowEdit = () => { return allowEdit; };
+    const getAllowEdit = () => allowEdit;
 
     const checkAllowEdit = (items: AdamItem[]) => {
       const currentFolder = items.find(item => item.Name === '.');
@@ -58,7 +55,6 @@ export class AdamService {
 
     // create folder
     const addFolder = (newfolder: string) => {
-      // maybe create model for data
       return this.httpClient.post(url + '/folder',
         {},
         {
@@ -116,7 +112,6 @@ export class AdamService {
 
     const getAll = (): Observable<AdamItem[]> => {
       console.log('GET ALL subfolder:', subfolder);
-      // maybe create model for data
       return this.httpClient.get(url + '/items',
         {
           params: {
