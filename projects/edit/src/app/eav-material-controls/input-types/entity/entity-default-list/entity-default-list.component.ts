@@ -122,10 +122,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * delete entity
-   * @param value
-   */
+  /** delete entity */
   deleteItemInSlot(item: string, index: number) {
     if (this.entityType === '') {
       alert('delete not possible - no type specified in entity field configuration');
@@ -134,20 +131,22 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     const entity: EntityInfo = this.availableEntities.find(f => f.Value === item);
     const id = entity.Id;
     const title = entity.Text;
-    // TODO:contentType.resolve()
-    const contentTypeTemp = this.entityType; // contentType.resolve()
-    // Then delete entity item:
-    this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, false).subscribe(result => {
+    const contentType = this.entityType; // TODO: contentType.resolve()
 
+    let entityDelete$ = this.entityService.delete(this.eavConfig.appId, contentType, id, title, false);
+    if (!entityDelete$) { return; }
+    entityDelete$.subscribe(result => {
       if (result === null || result.status >= 200 && result.status < 300) {
-        // TODO: make message
         this.removeSlot(item, index);
         this.setData();
+        entityDelete$ = null;
       } else {
-        // TODO: message success
-        this.entityService.delete(this.eavConfig.appId, contentTypeTemp, id, title, true).subscribe(items => {
+        entityDelete$ = this.entityService.delete(this.eavConfig.appId, contentType, id, title, true);
+        if (!entityDelete$) { return; }
+        entityDelete$.subscribe(items => {
           this.removeSlot(item, index);
           this.setData();
+          entityDelete$ = null;
         });
       }
     });

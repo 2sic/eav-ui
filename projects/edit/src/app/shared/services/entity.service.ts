@@ -1,25 +1,13 @@
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { throwError, Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-
-import { UrlConstants } from '../constants/url-constants';
-import { EavConfiguration } from '../models/eav-configuration';
-import { EavService } from './eav.service';
+import { catchError } from 'rxjs/operators';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 @Injectable()
 export class EntityService {
-  private eavConfig: EavConfiguration;
-
-  constructor(
-    private httpClient: HttpClient,
-    private translate: TranslateService,
-    private eavService: EavService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  constructor(private httpClient: HttpClient, private translate: TranslateService, private dnnContext: DnnContext) { }
 
   /**
    * get availableEntities - (used in entity-default input type)
@@ -27,56 +15,34 @@ export class EntityService {
    * @param body
    * @param ctName
    */
-  public getAvailableEntities(apiId: string, body: string, ctName: string): Observable<any> {
-    // maybe create model for data
-    return this.httpClient.post(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/EntityPicker/getavailableentities`,
-      body,
-      {
+  getAvailableEntities(apiId: string, body: string, ctName: string) {
+    return <Observable<any>>this.httpClient
+      .post(this.dnnContext.$2sxc.http.apiUrl('eav/EntityPicker/getavailableentities'), body, {
         params: {
           contentTypeName: ctName,
-          appId: apiId
-        }
-      }
-    ).pipe(
-      map((data: any) => {
-        return data;
-      }),
-      // tap(data => console.log('getAvailableEntities: ', data)),
-      catchError(error => this.handleError(error))
-    );
+          appId: apiId,
+        },
+      })
+      .pipe(catchError(error => this.handleError(error)));
   }
 
-  public delete(appId: string, type: string, id: string, itemTitle: string, tryForce: boolean): Observable<any> {
-    const msg = this.translate.instant('Data.Delete.Question', { title: itemTitle, id: id });
-    if (!confirm(msg)) {
-      return null;
-    } else {
-      console.log('GET delete method:');
-      return this.httpClient.get(`${this.eavConfig.portalroot + UrlConstants.apiRoot}eav/entities/delete`,
-        {
-          // ignoreErrors: 'true',
-          params: {
-            'contentType': type,
-            'id': id,
-            'appId': appId,
-            'force': tryForce.toString()
-          }
-        })
-        .pipe(
-          map((data: any) => {
-            console.log('data retun', data);
-            return data;
-          }),
-          // tap(data => console.log('entity delete: ', data)),
-          catchError(error => of(error))
-        );
+  delete(appId: string, type: string, id: string, title: string, tryForce: boolean) {
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title: title, id: id }))) {
+      return;
     }
-
-    // return null;
+    return <Observable<any>>this.httpClient
+      .get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
+        params: {
+          contentType: type,
+          id: id,
+          appId: appId,
+          force: tryForce.toString(),
+        },
+      })
+      .pipe(catchError(error => of(error)));
   }
 
-  private handleError(error: any) {
-    // In a real world app, we might send the error to remote logging infrastructure
+  private handleError(error: Error) {
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
     return throwError(errMsg);

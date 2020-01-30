@@ -221,8 +221,7 @@ export class AdamService {
     return svc;
   }
 
-  private handleError(error: any) {
-    // In a real world app, we might send the error to remote logging infrastructure
+  private handleError(error: Error) {
     const errMsg = error.message || 'Server error';
     console.error(errMsg);
     return throwError(errMsg);

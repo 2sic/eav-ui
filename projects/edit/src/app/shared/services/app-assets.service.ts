@@ -1,23 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { UrlConstants } from '../constants/url-constants';
-import { EavConfiguration } from '../models/eav-configuration';
-import { EavService } from './eav.service';
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AppAssetsService {
-  private eavConfig: EavConfiguration;
-
-  constructor(
-    private httpClient: HttpClient,
-    private eavService: EavService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  constructor(private httpClient: HttpClient, private dnnContext: DnnContext) { }
 
   createSvc(appId: string, global: boolean): AssetsSvc {
     const params = {
@@ -26,15 +14,14 @@ export class AppAssetsService {
     };
 
     const getAll = () => {
-      return this.httpClient.get(
-        `${this.eavConfig.portalroot + UrlConstants.apiRoot}app-sys/appassets/list`,
-        { params: Object.assign({}, params, { withSubfolders: 'true' }) }
-      );
+      return this.httpClient.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
+        params: Object.assign({}, params, { withSubfolders: 'true' }),
+      });
     };
 
     const create = (path: string, content: any) => {
       return this.httpClient.post(
-        `${this.eavConfig.portalroot + UrlConstants.apiRoot}app-sys/appassets/create`,
+        this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'),
         { content: content || '' },
         { params: Object.assign({}, params, { path: path }) },
       );
@@ -42,7 +29,6 @@ export class AppAssetsService {
 
     return { getAll, create };
   }
-
 }
 
 export interface AssetsSvc {
