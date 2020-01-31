@@ -16,7 +16,6 @@ import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers } from '../../../edit/shared/store';
 import { EavService } from '../../../edit/shared/services/eav.service';
-import { environment } from '../environments/environment';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 
 @NgModule({
@@ -32,7 +31,7 @@ import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interce
     BrowserAnimationsModule,
     StoreModule.forRoot({}, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot([]),
-    !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 25 }) : [],
+    StoreDevtoolsModule.instrument({ maxAge: 25 }),
     EntityDataModule.forRoot(entityConfig),
   ],
   providers: [
