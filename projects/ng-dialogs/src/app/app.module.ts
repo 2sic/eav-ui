@@ -16,7 +16,7 @@ import { adminEavServiceFactory } from './shared/factories/admin-eav-service.fac
 import { entityConfig } from '../../../edit/src/app/shared/store/ngrx-data/entity-metadata';
 import { metaReducers } from '../../../edit/src/app/shared/store';
 import { EavService } from '../../../edit/src/app/shared/services/eav.service';
-import { environment } from '../../../edit/src/environments/environment';
+import { environment } from '../environments/environment';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 
 @NgModule({
