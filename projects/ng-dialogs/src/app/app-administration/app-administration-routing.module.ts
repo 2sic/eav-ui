@@ -15,7 +15,7 @@ const appAdministrationRoutes: Routes = [
         path: 'data', component: EmptyRouteComponent, children: [
           {
             path: 'edit',
-            loadChildren: () => import('../../../../edit/app.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
           { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_DIALOG } },
@@ -36,7 +36,7 @@ const appAdministrationRoutes: Routes = [
             }, children: [
               {
                 path: 'edit',
-                loadChildren: () => import('../../../../edit/app.module').then(m => m.EditModule)
+                loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
           },
@@ -46,7 +46,7 @@ const appAdministrationRoutes: Routes = [
         path: 'queries', component: EmptyRouteComponent, children: [
           {
             path: 'edit',
-            loadChildren: () => import('../../../../edit/app.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
         ]
       },
@@ -54,7 +54,7 @@ const appAdministrationRoutes: Routes = [
         path: 'views', component: EmptyRouteComponent, children: [
           {
             path: 'edit',
-            loadChildren: () => import('../../../../edit/app.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
             path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
@@ -62,7 +62,7 @@ const appAdministrationRoutes: Routes = [
             }, children: [
               {
                 path: 'edit',
-                loadChildren: () => import('../../../../edit/app.module').then(m => m.EditModule)
+                loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
           },
