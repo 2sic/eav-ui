@@ -9,7 +9,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldMaskService } from '../../../../../../../shared/field-mask.service';;
+import { FieldMaskService } from '../../../../../shared/field-mask.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

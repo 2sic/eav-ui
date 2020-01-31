@@ -1,26 +1,26 @@
 // 2sxc icons
-import * as contentBlock from '../../../edit/src/icons/2sxc/content-block.svg';
-import * as fileDnn from '../../../edit/src/icons/2sxc/file-dnn.svg';
-import * as imageDnn from '../../../edit/src/icons/2sxc/image-dnn.svg';
-import * as imageH1 from '../../../edit/src/icons/2sxc/H1.svg';
-import * as imageH2 from '../../../edit/src/icons/2sxc/H2.svg';
-import * as imageH3 from '../../../edit/src/icons/2sxc/H3.svg';
-import * as imageH4 from '../../../edit/src/icons/2sxc/H4.svg';
-import * as imageH5 from '../../../edit/src/icons/2sxc/H5.svg';
-import * as imageH6 from '../../../edit/src/icons/2sxc/H6.svg';
-import * as imageU1 from '../../../edit/src/icons/2sxc/U1.svg';
-import * as imageU2 from '../../../edit/src/icons/2sxc/U2.svg';
-import * as imageU3 from '../../../edit/src/icons/2sxc/U3.svg';
-import * as imageU4 from '../../../edit/src/icons/2sxc/U4.svg';
-import * as imageU5 from '../../../edit/src/icons/2sxc/U5.svg';
-import * as imageU6 from '../../../edit/src/icons/2sxc/U6.svg';
+import * as contentBlock from '../../../edit/assets/icons/2sxc/content-block.svg';
+import * as fileDnn from '../../../edit/assets/icons/2sxc/file-dnn.svg';
+import * as imageDnn from '../../../edit/assets/icons/2sxc/image-dnn.svg';
+import * as imageH1 from '../../../edit/assets/icons/2sxc/H1.svg';
+import * as imageH2 from '../../../edit/assets/icons/2sxc/H2.svg';
+import * as imageH3 from '../../../edit/assets/icons/2sxc/H3.svg';
+import * as imageH4 from '../../../edit/assets/icons/2sxc/H4.svg';
+import * as imageH5 from '../../../edit/assets/icons/2sxc/H5.svg';
+import * as imageH6 from '../../../edit/assets/icons/2sxc/H6.svg';
+import * as imageU1 from '../../../edit/assets/icons/2sxc/U1.svg';
+import * as imageU2 from '../../../edit/assets/icons/2sxc/U2.svg';
+import * as imageU3 from '../../../edit/assets/icons/2sxc/U3.svg';
+import * as imageU4 from '../../../edit/assets/icons/2sxc/U4.svg';
+import * as imageU5 from '../../../edit/assets/icons/2sxc/U5.svg';
+import * as imageU6 from '../../../edit/assets/icons/2sxc/U6.svg';
 // font-awesome icons
-import * as anchor from '../../../edit/src/icons/font-awesome/anchor.svg';
-import * as file from '../../../edit/src/icons/font-awesome/file.svg';
-import * as filePdf from '../../../edit/src/icons/font-awesome/file-pdf.svg';
-import * as sitemap from '../../../edit/src/icons/font-awesome/sitemap.svg';
+import * as anchor from '../../../edit/assets/icons/font-awesome/anchor.svg';
+import * as file from '../../../edit/assets/icons/font-awesome/file.svg';
+import * as filePdf from '../../../edit/assets/icons/font-awesome/file-pdf.svg';
+import * as sitemap from '../../../edit/assets/icons/font-awesome/sitemap.svg';
 // google material icons
-import * as school from '../../../edit/src/icons/google-material/baseline-school-24px.svg';
+import * as school from '../../../edit/assets/icons/google-material/baseline-school-24px.svg';
 
 const customTinyMceIcons: any = {
   'custom-anchor': anchor,

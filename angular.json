@@ -31,8 +31,8 @@
               "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": [
-              "projects/edit/src/scripts/dropzone-dragging-helper.js",
-              "projects/edit/src/scripts/clipboard-paste/paste.js",
+              "projects/edit/assets/scripts/dropzone-dragging-helper.js",
+              "projects/edit/assets/scripts/clipboard-paste/paste.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
               }

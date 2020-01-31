@@ -1,5 +1,5 @@
-@import "../../../../styles/variables.scss";
-@import "../../../../styles/theme/material-colors.scss";
+@import "../../../assets/styles/variables.scss";
+@import "../../../assets/styles/theme/material-colors.scss";
 
 .c-fht {
     &__container {
@@ -8,6 +8,7 @@
         &--no-hint {
             padding: $helper-text-padding--no-hint;
         }
+
         &--last {
             padding: $helper-text-padding--last;
 
@@ -20,7 +21,7 @@
             color: rgba($editUI-foreground-color, 0.44);
 
             &--ellipsis {
-                white-space: nowrap; 
+                white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-height: 16px;
@@ -42,7 +43,7 @@
             border-color: map_get($mat-eav-item-dialog-error, 500);
         }
 
-        .c-ew__color--accent{
+        .c-ew__color--accent {
             color: map_get($mat-eav-item-dialog-secondary, 500);
         }
 

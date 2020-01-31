@@ -1,6 +1,6 @@
 import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
 
-import { environment } from '../../../../../../ng-dialogs/src/environments/environment';
+import { environment } from '../../../../ng-dialogs/src/environments/environment';
 import * as fromGlobalConfiguration from './global-configuration.reducer';
 
 export interface EavState {

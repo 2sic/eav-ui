@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../../../../shared/connector';
-import { FieldConfig } from '../../../../../../../../../shared/field-config';
+import { ConnectorObservable, ConnectorDataObservable } from '../../../../../../../shared/connector';
+import { FieldConfig } from '../../../../../../../shared/field-config';
 
 export class ConnectorInstance<T> implements ConnectorObservable<T> {
   field$: Observable<FieldConfig>;

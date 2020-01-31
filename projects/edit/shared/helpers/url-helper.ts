@@ -1,6 +1,6 @@
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
-import { readFromSession } from '../../../../../ng-dialogs/src/app/shared/helpers/session-storage.helper';
+import { readFromSession } from '../../../ng-dialogs/src/app/shared/helpers/session-storage.helper';
 
 export class UrlHelper {
 

@@ -13,9 +13,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Context } from './shared/context/context';
 import { adminEavServiceFactory } from './shared/factories/admin-eav-service.factory';
-import { entityConfig } from '../../../edit/src/app/shared/store/ngrx-data/entity-metadata';
-import { metaReducers } from '../../../edit/src/app/shared/store';
-import { EavService } from '../../../edit/src/app/shared/services/eav.service';
+import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
+import { metaReducers } from '../../../edit/shared/store';
+import { EavService } from '../../../edit/shared/services/eav.service';
 import { environment } from '../environments/environment';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 

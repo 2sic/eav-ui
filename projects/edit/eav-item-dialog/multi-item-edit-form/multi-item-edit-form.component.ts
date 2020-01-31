@@ -31,7 +31,7 @@ import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
-import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 
 @Component({

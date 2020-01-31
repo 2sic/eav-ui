@@ -1,6 +1,5 @@
-
-@import "../../../../styles/variables.scss";
-@import "../../../../styles/theme/material-colors.scss";
+@import "../../../assets/styles/variables.scss";
+@import "../../../assets/styles/theme/material-colors.scss";
 
 $hyperlink-default-height: 78px;
 
@@ -15,6 +14,7 @@ $hyperlink-default-height: 78px;
             padding-left: 8px;
             margin-top: -4px;
         }
+
         &-hint {
             color: rgba($editUI-foreground-color, 0.44);
             font-size: 12px;
@@ -28,7 +28,7 @@ $hyperlink-default-height: 78px;
     }
 
     .thumbnail-before-input {
-        background-color:  rgba($editUI-foreground-color, 0.08);
+        background-color: rgba($editUI-foreground-color, 0.08);
         width: $hyperlink-default-height;
         height: $hyperlink-default-height;
         border-radius: $edit-ui-input-border-radius;
@@ -53,6 +53,7 @@ $hyperlink-default-height: 78px;
 
         &--disabled {
             cursor: default;
+
             .c-ew__preview-field-hint {
                 color: $editUI-label-disabled-color;
             }
@@ -70,11 +71,13 @@ $hyperlink-default-height: 78px;
             color: $editUI-label-disabled-color;
         }
     }
+
     @media (min-width: 601px) {
         &-suffix-icon {
             top: 0 !important;
         }
     }
+
     @media (max-width: 600px) {
         &-suffix-icon {
             top: 10px !important;
@@ -91,6 +94,7 @@ $hyperlink-default-height: 78px;
         // spm width 1% is required. Otherwise field breaks
         width: 1%;
     }
+
     &--right {
         flex: 0 0 auto;
         padding-top: 0.54166667em;

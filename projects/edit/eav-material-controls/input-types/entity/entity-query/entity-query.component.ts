@@ -7,7 +7,7 @@ import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-fi
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldMaskService } from '../../../../../../../shared/field-mask.service';
+import { FieldMaskService } from '../../../../../shared/field-mask.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

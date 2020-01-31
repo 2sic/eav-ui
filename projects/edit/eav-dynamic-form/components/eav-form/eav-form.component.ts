@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { Subscription } from 'rxjs';
-import { environment } from '../../../../../../ng-dialogs/src/environments/environment';
+import { environment } from '../../../../ng-dialogs/src/environments/environment';
 import { EavService } from '../../../shared/services/eav.service';
 
 @Component({

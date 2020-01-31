@@ -2,7 +2,7 @@ import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
-import { UrlHelper } from '../../../../../edit/src/app/shared/helpers/url-helper';
+import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 import { QueryParameters } from '../models/query-parameters.model';
 import { saveToSession, readFromSession } from '../helpers/session-storage.helper';
 declare const $2sxc: SxcRoot;

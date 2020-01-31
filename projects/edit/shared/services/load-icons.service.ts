@@ -2,23 +2,23 @@ import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import apple from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48.svg';
-import appleFilled from '!raw-loader!../../../icons/2sxc/Material-Icon-Adam-48-filled.svg';
-import draftBranch from '!raw-loader!../../../icons/font-awesome/draft-branch.svg';
-import file from '!raw-loader!../../../icons/font-awesome/file.svg';
-import fileArchive from '!raw-loader!../../../icons/font-awesome/file-archive.svg';
-import fileAudio from '!raw-loader!../../../icons/font-awesome/file-audio.svg';
-import fileCode from '!raw-loader!../../../icons/font-awesome/file-code.svg';
-import fileExcel from '!raw-loader!../../../icons/font-awesome/file-excel.svg';
-import fileImage from '!raw-loader!../../../icons/font-awesome/file-image.svg';
-import filePdf from '!raw-loader!../../../icons/font-awesome/file-pdf.svg';
-import filePowerpoint from '!raw-loader!../../../icons/font-awesome/file-powerpoint.svg';
-import fileText from '!raw-loader!../../../icons/font-awesome/file-text.svg';
-import fileVideo from '!raw-loader!../../../icons/font-awesome/file-video.svg';
-import fileWord from '!raw-loader!../../../icons/font-awesome/file-word.svg';
-import folder from '!raw-loader!../../../icons/font-awesome/folder.svg';
-import folderPlus from '!raw-loader!../../../icons/font-awesome/folder-plus.svg';
-import sitemap from '!raw-loader!../../../icons/font-awesome/sitemap.svg';
+import apple from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48.svg';
+import appleFilled from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48-filled.svg';
+import draftBranch from '!raw-loader!../../assets/icons/font-awesome/draft-branch.svg';
+import file from '!raw-loader!../../assets/icons/font-awesome/file.svg';
+import fileArchive from '!raw-loader!../../assets/icons/font-awesome/file-archive.svg';
+import fileAudio from '!raw-loader!../../assets/icons/font-awesome/file-audio.svg';
+import fileCode from '!raw-loader!../../assets/icons/font-awesome/file-code.svg';
+import fileExcel from '!raw-loader!../../assets/icons/font-awesome/file-excel.svg';
+import fileImage from '!raw-loader!../../assets/icons/font-awesome/file-image.svg';
+import filePdf from '!raw-loader!../../assets/icons/font-awesome/file-pdf.svg';
+import filePowerpoint from '!raw-loader!../../assets/icons/font-awesome/file-powerpoint.svg';
+import fileText from '!raw-loader!../../assets/icons/font-awesome/file-text.svg';
+import fileVideo from '!raw-loader!../../assets/icons/font-awesome/file-video.svg';
+import fileWord from '!raw-loader!../../assets/icons/font-awesome/file-word.svg';
+import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
+import folderPlus from '!raw-loader!../../assets/icons/font-awesome/folder-plus.svg';
+import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
 
 @Injectable({
   providedIn: 'root'
