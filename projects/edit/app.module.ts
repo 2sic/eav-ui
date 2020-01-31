@@ -49,4 +49,4 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
   ],
 })
-export class AppModule { }
+export class EditModule { }
