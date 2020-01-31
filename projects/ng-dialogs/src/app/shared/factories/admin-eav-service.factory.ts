@@ -7,7 +7,7 @@ import { QueryParameters } from '../models/query-parameters.model';
 import { saveToSession, readFromSession } from '../helpers/session-storage.helper';
 declare const $2sxc: SxcRoot;
 
-export function adminEavServiceFactory(injector: Injector) {
+export function paramsInitFactory(injector: Injector) {
   return function () {
     console.log('Setting parameters config and clearing route');
     const isParamsRoute = !window.location.hash.startsWith('#/');

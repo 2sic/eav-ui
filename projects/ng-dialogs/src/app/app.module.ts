@@ -12,7 +12,7 @@ import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Context } from './shared/context/context';
-import { adminEavServiceFactory } from './shared/factories/admin-eav-service.factory';
+import { paramsInitFactory } from './shared/factories/admin-eav-service.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers } from '../../../edit/shared/store';
 import { EavService } from '../../../edit/shared/services/eav.service';
@@ -36,7 +36,7 @@ import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interce
     EntityDataModule.forRoot(entityConfig),
   ],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: adminEavServiceFactory, deps: [Injector], multi: true },
+    { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     DnnInterceptor,
     { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
