@@ -1,6 +1,5 @@
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
-import { readFromSession } from '../../../ng-dialogs/src/app/shared/helpers/session-storage.helper';
 
 export class UrlHelper {
 
@@ -17,25 +16,25 @@ export class UrlHelper {
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration() {
     return new EavConfiguration(
-      readFromSession('zoneId'),
-      readFromSession('appId'),
-      readFromSession('approot'),
-      readFromSession('cbid'),
-      readFromSession('debug'),
-      readFromSession('dialog'),
-      readFromSession('items'),
-      readFromSession('lang'),
-      readFromSession('langpri'),
-      readFromSession('langs'),
-      readFromSession('mid'),
-      readFromSession('mode'),
-      readFromSession('partOfPage'),
-      readFromSession('portalroot'),
-      readFromSession('publishing'),
-      readFromSession('tid'),
-      readFromSession('rvt'),
-      readFromSession('websiteroot'),
-      UrlHelper.getVersioningOptions(readFromSession('partOfPage') === 'true', readFromSession('publishing'))
+      sessionStorage.getItem('zoneId'),
+      sessionStorage.getItem('appId'),
+      sessionStorage.getItem('approot'),
+      sessionStorage.getItem('cbid'),
+      sessionStorage.getItem('debug'),
+      sessionStorage.getItem('dialog'),
+      sessionStorage.getItem('items'),
+      sessionStorage.getItem('lang'),
+      sessionStorage.getItem('langpri'),
+      sessionStorage.getItem('langs'),
+      sessionStorage.getItem('mid'),
+      sessionStorage.getItem('mode'),
+      sessionStorage.getItem('partOfPage'),
+      sessionStorage.getItem('portalroot'),
+      sessionStorage.getItem('publishing'),
+      sessionStorage.getItem('tid'),
+      sessionStorage.getItem('rvt'),
+      sessionStorage.getItem('websiteroot'),
+      UrlHelper.getVersioningOptions(sessionStorage.getItem('partOfPage') === 'true', sessionStorage.getItem('publishing'))
     );
   }
 

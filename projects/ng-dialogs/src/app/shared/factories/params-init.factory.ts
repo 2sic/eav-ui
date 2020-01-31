@@ -4,7 +4,6 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 import { QueryParameters } from '../models/query-parameters.model';
-import { saveToSession, readFromSession } from '../helpers/session-storage.helper';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -17,12 +16,14 @@ export function paramsInitFactory(injector: Injector) {
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
       const queryParameters = new QueryParameters();
       Object.keys(queryParameters).forEach(key => {
-        saveToSession(key, queryParametersFromUrl[key]);
+        const value = queryParametersFromUrl[key];
+        if (value === undefined || value === null) { return; }
+        sessionStorage.setItem(key, value);
       });
       const router = injector.get(Router);
-      const zoneId = readFromSession('zoneId');
-      const appId = readFromSession('appId');
-      const dialog = readFromSession('dialog');
+      const zoneId = sessionStorage.getItem('zoneId');
+      const appId = sessionStorage.getItem('appId');
+      const dialog = sessionStorage.getItem('dialog');
       switch (dialog) {
         case 'edit':
           router.navigate([`${zoneId}/${appId}/edit`]);
@@ -42,9 +43,9 @@ export function paramsInitFactory(injector: Injector) {
 
 function loadEnvironment() {
   $2sxc.env.load({
-    page: parseInt(readFromSession('tid'), 10),
-    rvt: readFromSession('rvt'),
-    root: readFromSession('portalroot'),
-    api: readFromSession('portalroot') + 'desktopmodules/2sxc/api/',
+    page: parseInt(sessionStorage.getItem('tid'), 10),
+    rvt: sessionStorage.getItem('rvt'),
+    root: sessionStorage.getItem('portalroot'),
+    api: sessionStorage.getItem('portalroot') + 'desktopmodules/2sxc/api/',
   });
 }
