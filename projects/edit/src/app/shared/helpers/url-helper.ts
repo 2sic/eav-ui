@@ -70,8 +70,6 @@ export class UrlHelper {
     if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar
     if (area === 'zone') { result = eavConfig.portalroot; }                      // used to link to the site-root (like an image)
     if (area === 'app') { result = eavConfig.approot; }                          // used to find the app-root of something inside an app
-    if (area === 'dialog') { result = eavConfig.systemroot + 'dnn'; }            // note: not tested yet
-    if (area === 'dialog-page') { result = eavConfig.systemroot + 'dnn/ui.html'; } // note: not tested yet
     if (result.endsWith('/')) { result = result.substring(0, result.length - 1); }
 
     return result;
