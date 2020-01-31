@@ -3,132 +3,13 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "eav-item-dialog-angular": {
-      "root": "",
-      "sourceRoot": "projects/edit/src",
-      "projectType": "application",
-      "architect": {
-        "build": {
-          "builder": "ngx-build-plus:browser",
-          "options": {
-            "outputPath": "./dist/main",
-            "index": "projects/edit/src/index.html",
-            "main": "projects/edit/src/main.ts",
-            "tsConfig": "projects/edit/src/tsconfig.app.json",
-            "polyfills": "projects/edit/src/polyfills.ts",
-            "showCircularDependencies": false,
-            "assets": [],
-            "styles": [
-              "projects/edit/src/styles.scss"
-            ],
-            "scripts": [
-              "projects/edit/src/scripts/dropzone-dragging-helper.js",
-              "projects/edit/src/scripts/clipboard-paste/paste.js",
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              }
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "./projects/edit/"
-              ]
-            }
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "projects/edit/src/environments/environment.ts",
-                  "with": "projects/edit/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "ngx-build-plus:dev-server",
-          "options": {
-            "browserTarget": "eav-item-dialog-angular:build",
-            "publicHost": "http://localhost:4200"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "eav-item-dialog-angular:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "eav-item-dialog-angular:build"
-          }
-        },
-        "test": {
-          "builder": "ngx-build-plus:karma",
-          "options": {
-            "main": "projects/edit/src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "projects/edit/src/polyfills.ts",
-            "tsConfig": "projects/edit/src/tsconfig.spec.json",
-            "scripts": [],
-            "styles": [
-              "projects/edit/src/styles.scss"
-            ],
-            "assets": [
-              "projects/edit/src/assets"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/edit/src/tsconfig.app.json",
-              "projects/edit/src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "eav-item-dialog-angular-e2e": {
-      "root": "projects/edit/e2e",
-      "sourceRoot": "projects/edit/e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "eav-item-dialog-angular:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/edit/e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
     "ng-dialogs": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "projects/ng-dialogs",
       "sourceRoot": "projects/ng-dialogs/src",
       "prefix": "app",
@@ -136,11 +17,13 @@
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "outputPath": "dist/main",
+            "outputPath": "dist/ng-dialogs",
             "index": "projects/ng-dialogs/src/index.html",
             "main": "projects/ng-dialogs/src/main.ts",
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
             "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
+            "showCircularDependencies": false,
+            "aot": false,
             "assets": [
               "projects/ng-dialogs/src/assets"
             ],
@@ -166,6 +49,7 @@
               "optimization": true,
               "outputHashing": "none",
               "sourceMap": true,
+              "extractCss": false,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -193,7 +77,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "ngx-build-plus:karma",
           "options": {
             "main": "projects/ng-dialogs/src/test.ts",
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
@@ -203,7 +87,7 @@
               "projects/ng-dialogs/src/assets"
             ],
             "styles": [
-              "projects/ng-dialogs/src/styles.css"
+              "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": []
           }
@@ -236,14 +120,5 @@
       }
     }
   },
-  "defaultProject": "ng-dialogs",
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "app",
-      "styleext": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "app"
-    }
-  }
+  "defaultProject": "ng-dialogs"
 }

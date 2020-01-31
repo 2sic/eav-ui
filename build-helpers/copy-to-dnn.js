@@ -6,7 +6,7 @@ const chokidar = require('chokidar');
 const fs = require('fs-extra');
 
 let sourcePath = 'dist';
-let sourcePathMain = 'dist/main';
+let sourcePathMain = 'dist/ng-dialogs';
 let outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
 const excludeDirs = [
   'out-tsc',
@@ -19,11 +19,6 @@ args.forEach((val, index) => {
   if (val === '--watch') {
     watchEnabled = true;
   }
-  // else if (val === '--ng-dialogs') {
-  //   sourcePath = 'dist';
-  //   sourcePathMain = 'dist/main';
-  //   outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
-  // }
 });
 
 const calculatePaths = (path) => {
