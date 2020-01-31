@@ -236,7 +236,7 @@
       }
     }
   },
-  "defaultProject": "eav-item-dialog-angular",
+  "defaultProject": "ng-dialogs",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
