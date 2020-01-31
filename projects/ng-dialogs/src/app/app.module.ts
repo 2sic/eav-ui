@@ -12,7 +12,7 @@ import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Context } from './shared/context/context';
-import { paramsInitFactory } from './shared/factories/admin-eav-service.factory';
+import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers } from '../../../edit/shared/store';
 import { EavService } from '../../../edit/shared/services/eav.service';
