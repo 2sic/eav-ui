@@ -46,7 +46,6 @@ import {
     StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
-import { TextEntryWrapperComponent } from './wrappers/text-entry-wrapper/text-entry-wrapper.component';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
@@ -93,7 +92,6 @@ import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboa
     declarations: [
         // wrappers
         CollapsibleWrapperComponent,
-        TextEntryWrapperComponent,
         // types
         StringDefaultComponent,
         StringUrlPathComponent,
@@ -200,7 +198,6 @@ import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboa
         StringFontIconPickerComponent,
         StringUrlPathComponent,
         StringTemplatePickerComponent,
-        TextEntryWrapperComponent,
         LinkToOtherLanguageComponent,
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,

@@ -5,7 +5,7 @@
       {{item.label}}
     </mat-option>
   </mat-select>
-  <input matInput *ngIf="freeTextMode" type="text" [id]="id" class="form-control input-material material"
+  <input matInput *ngIf="freeTextMode" type="text" class="form-control input-material material"
     [required]='config.field.required' [formControlName]="config.field.name" [placeholder]="config.field.placeholder">
   <button mat-icon-button matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)" [disabled]="disabled"
     type="button">

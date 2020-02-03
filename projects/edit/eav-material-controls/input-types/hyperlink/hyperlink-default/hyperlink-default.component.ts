@@ -94,7 +94,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   icon = () => this.fileTypeService.getIconClass(this.link);
 
-  thumbnailUrl(size: number, quote: boolean) {
+  thumbnailUrl(size?: number, quote?: boolean) {
     let result = this.link;
     if (size === 1) {
       result = result + '?w=72&h=72&mode=crop';
@@ -140,7 +140,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
   }
 
-  toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
+  toggleAdam(usePortalRoot?: boolean, showImagesOnly?: boolean) {
     this.config.adam.toggle({
       showImagesOnly: showImagesOnly,
       usePortalRoot: usePortalRoot

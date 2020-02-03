@@ -15,7 +15,7 @@ export class ContentImportComponent implements OnInit {
   viewStateSelected: number;
   evaluationResult: EvaluateContentResult;
   importResult: ImportContentResult;
-  errors = {
+  errors: { [key: string]: string } = {
     '0': 'Unknown error occured.',
     '1': 'Selected content-type does not exist.',
     '2': 'Document is not a valid XML file.',

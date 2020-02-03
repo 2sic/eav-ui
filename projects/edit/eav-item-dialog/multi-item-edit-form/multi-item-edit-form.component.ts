@@ -157,7 +157,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /** observe formValue changes from all child forms */
-  formValueChange() {
+  formValueChange(event: Event) {
     this.checkFormsState();
     // reset form errors
     this.formErrors = [];

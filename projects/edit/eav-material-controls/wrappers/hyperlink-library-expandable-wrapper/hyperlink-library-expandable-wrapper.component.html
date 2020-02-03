@@ -55,7 +55,7 @@
         </ng-container>
         <!-- file list -->
         <div
-          *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
+          *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
           <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon" matTooltip="{{ item.Name }}">
             <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
             <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>

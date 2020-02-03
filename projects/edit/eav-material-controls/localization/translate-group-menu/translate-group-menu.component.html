@@ -33,11 +33,11 @@
     </button>
   </div>
   <mat-menu #rootMenu2="matMenu" [overlapTrigger]="true">
-    <button mat-menu-item type="button" (click)="translateUnlink(config.field.name, config.field.inputType)"
+    <button mat-menu-item type="button" (click)="translateUnlink(config.field.name)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'translate' }">
       {{ 'LangMenu.Translate' | translate }}
     </button>
-    <button mat-menu-item type="button" (click)="linkToDefault(config.field.name, config.field.inputType)"
+    <button mat-menu-item type="button" (click)="linkToDefault(config.field.name)"
       [ngClass]="{'menu-item-selected' : translationState.linkType === 'dontTranslate'}">
       {{ 'LangMenu.NoTranslate' | translate }}
     </button>

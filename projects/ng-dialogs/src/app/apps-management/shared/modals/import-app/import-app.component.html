@@ -40,8 +40,7 @@
   <div *ngFor="let message of importResult.Messages" class="sxc-message" [ngClass]="{
           'sxc-message-warning': message.MessageType == 0,
           'sxc-message-success': message.MessageType == 1,
-          'sxc-message-error': message.MessageType == 2,
-          'sxc-message-success-hidden': importResult._hideSuccessMessages
+          'sxc-message-error': message.MessageType == 2
         }">
     {{ message.Text }}
   </div>
