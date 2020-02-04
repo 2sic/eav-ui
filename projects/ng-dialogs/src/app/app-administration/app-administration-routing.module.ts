@@ -14,7 +14,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'data', component: EmptyRouteComponent, children: [
           {
-            path: 'edit',
+            path: 'edit/:items',
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
@@ -35,7 +35,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                path: 'edit',
+                path: 'edit/:items',
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
@@ -45,7 +45,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'queries', component: EmptyRouteComponent, children: [
           {
-            path: 'edit',
+            path: 'edit/:items',
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
         ]
@@ -53,7 +53,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'views', component: EmptyRouteComponent, children: [
           {
-            path: 'edit',
+            path: 'edit/:items',
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
@@ -61,7 +61,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                path: 'edit',
+                path: 'edit/:items',
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]

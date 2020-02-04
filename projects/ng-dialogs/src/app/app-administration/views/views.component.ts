@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
 import { ViewActionsParams } from '../shared/models/view-actions-params';
+import { EditUiItem } from '../shared/models/edit-ui-item.model';
 
 @Component({
   selector: 'app-views',
@@ -61,8 +62,10 @@ export class ViewsComponent implements OnInit {
     });
   }
 
-  editView() {
-    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
+  editView(params: CellClickedEvent) {
+    const view = <View>params.data;
+    const items: EditUiItem[] = [{ EntityId: view.Id.toString(), Title: view.Name }];
+    this.router.navigate([`edit/${encodeURIComponent(JSON.stringify(items))}`], { relativeTo: this.route.firstChild });
   }
 
   private openPermissions(view: View) {

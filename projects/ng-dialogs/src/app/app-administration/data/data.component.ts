@@ -87,7 +87,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   handleNameCellClicked(params: CellClickedEvent) {
     const contentType = <ContentType>params.data;
-    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
+    alert('Open table with data');
   }
 
   editContentType(contentType: ContentType) {
