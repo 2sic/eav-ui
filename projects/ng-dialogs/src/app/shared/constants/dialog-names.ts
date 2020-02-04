@@ -15,3 +15,6 @@ export const SET_PERMISSIONS_DIALOG = 'SET_PERMISSIONS_DIALOG';
 
 // code editor
 export const CODE_EDITOR_DIALOG = 'CODE_EDITOR_DIALOG';
+
+// edit-ui
+export const ITEMS_EDIT_DIALOG = 'ITEMS_EDIT_DIALOG';

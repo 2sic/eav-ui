@@ -15,6 +15,7 @@ import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { EditRoutingModule } from './edit-routing.module';
+import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/components/shared-components.module';
 declare const sxcVersion: string;
 
 export function createTranslateLoader(http: HttpClient) {
@@ -26,6 +27,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   imports: [
     EditRoutingModule,
+    SharedComponentsModule,
     CommonModule,
     HttpClientModule,
     EavItemDialogModule,

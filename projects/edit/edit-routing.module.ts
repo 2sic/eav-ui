@@ -1,10 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { OpenMultiItemDialogComponent } from './eav-item-dialog/dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
+import { DialogEntryComponent } from '../ng-dialogs/src/app/shared/components/dialog-entry/dialog-entry.component';
+import { ITEMS_EDIT_DIALOG } from '../ng-dialogs/src/app/shared/constants/dialog-names';
 
 const editRoutes: Routes = [
-  { path: '', component: OpenMultiItemDialogComponent },
+  {
+    path: '', component: DialogEntryComponent, data: { dialogName: ITEMS_EDIT_DIALOG }, children: [
+      {
+        path: 'edit/:items',
+        loadChildren: () => import('./edit.module').then(m => m.EditModule)
+      },
+    ]
+  },
 ];
 
 @NgModule({

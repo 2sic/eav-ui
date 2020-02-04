@@ -15,7 +15,7 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    path: ':zoneId/:appId/edit',
+    path: ':zoneId/:appId/edit/:items',
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule)
   },
 ];

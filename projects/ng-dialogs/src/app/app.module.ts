@@ -17,6 +17,7 @@ import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metada
 import { metaReducers } from '../../../edit/shared/store';
 import { EavService } from '../../../edit/shared/services/eav.service';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
+import { SharedComponentsModule } from './shared/components/shared-components.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interce
   ],
   imports: [
     AppRoutingModule,
+    SharedComponentsModule.forRoot(),
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,

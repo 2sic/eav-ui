@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { Subscription } from 'rxjs';
 
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
 import { ViewActionsParams } from '../shared/models/view-actions-params';
-import { EditUiItem } from '../shared/models/edit-ui-item.model';
+import { EditForm } from '../shared/models/edit-ui-item.model';
+import { DialogService } from '../../shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-views',
   templateUrl: './views.component.html',
   styleUrls: ['./views.component.scss']
 })
-export class ViewsComponent implements OnInit {
+export class ViewsComponent implements OnInit, OnDestroy {
   views: View[];
 
   columnDefs: ColDef[] = [
@@ -38,14 +41,28 @@ export class ViewsComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
+  private subscription: Subscription = new Subscription();
+
   constructor(
     private templatesService: TemplatesService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialogService: DialogService,
   ) { }
 
   ngOnInit() {
     this.fetchTemplates();
+    this.subscription.add(
+      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(dialogName => {
+        console.log('Dialog closed event captured:', dialogName);
+        this.fetchTemplates();
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -64,8 +81,11 @@ export class ViewsComponent implements OnInit {
 
   editView(params: CellClickedEvent) {
     const view = <View>params.data;
-    const items: EditUiItem[] = [{ EntityId: view.Id.toString(), Title: view.Name }];
-    this.router.navigate([`edit/${encodeURIComponent(JSON.stringify(items))}`], { relativeTo: this.route.firstChild });
+    const form: EditForm = {
+      editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
+      persistedData: { isParentDialog: true },
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
   private openPermissions(view: View) {

@@ -39,6 +39,7 @@ import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/mu
   ],
   imports: [
     CommonModule,
+    RouterModule,
     MatButtonModule,
     MatCheckboxModule,
     MatInputModule,
@@ -62,7 +63,7 @@ import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/mu
   entryComponents: [
     MultiItemEditFormComponent
   ],
-  exports: [RouterModule],
+  exports: [],
   providers: [
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
   ],

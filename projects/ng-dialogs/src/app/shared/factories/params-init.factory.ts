@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot } from '../constants/sessions-keys';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems } from '../constants/sessions-keys';
+import { EditForm, EditItem } from '../../app-administration/shared/models/edit-ui-item.model';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -23,9 +24,12 @@ export function paramsInitFactory(injector: Injector) {
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
       const dialog = sessionStorage.getItem(keyDialog);
+      const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
         case 'edit':
-          router.navigate([`${zoneId}/${appId}/edit`]);
+          const parsedItems: EditItem[] = JSON.parse(items);
+          const form: EditForm = { editItems: parsedItems, persistedData: { isParentDialog: true } };
+          router.navigate([`${zoneId}/${appId}/edit/${JSON.stringify(form)}`]);
           break;
         default:
           router.navigate([`${zoneId}/apps`]);

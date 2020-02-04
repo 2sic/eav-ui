@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { EmptyRouteComponent } from './empty-route/empty-route.component';
@@ -16,11 +16,17 @@ import { DialogService } from './dialog-service/dialog.service';
     RouterModule,
   ],
   providers: [
-    DialogService,
   ],
   exports: [
     EmptyRouteComponent,
     DialogEntryComponent,
   ]
 })
-export class SharedComponentsModule { }
+export class SharedComponentsModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SharedComponentsModule,
+      providers: [DialogService]
+    };
+  }
+}

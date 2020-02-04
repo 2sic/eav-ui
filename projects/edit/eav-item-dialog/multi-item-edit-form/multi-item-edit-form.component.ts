@@ -1,5 +1,6 @@
 // tslint:disable-next-line:max-line-length
 import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
@@ -33,6 +34,7 @@ import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
+import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-ui-item.model';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -77,7 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
-    @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
+    // @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
@@ -93,13 +95,18 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
     private ngZone: NgZone,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
+    // this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
+    const form: EditForm = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
+    this.eavConfig.items = JSON.stringify(form.editItems);
+    this.isParentDialog = form.persistedData.isParentDialog;
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
@@ -205,6 +212,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
   }
 
+  openChild() {
+    const form: EditForm = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
+    form.persistedData = {};
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+  }
+
   /**
    * after a data load is finished load all that data to form
    * @param data
@@ -308,7 +321,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * Load all data for forms
    */
   private loadItemsData() {
-    const loadBody = this.formDialogData.item || this.eavConfig.items;
+    const loadBody = this.eavConfig.items;
 
     this.eavService.loadAllDataForForm(this.eavConfig.appId, loadBody).subscribe(data => {
       this.afterLoadItemsData(data);
