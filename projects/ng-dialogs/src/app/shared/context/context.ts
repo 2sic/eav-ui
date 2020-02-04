@@ -1,12 +1,6 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-
-export const keyZoneId = 'zoneId';
-export const keyRequestToken = 'rvt';
-export const keyTabId = 'tid';
-export const keyContentBlockId = 'cbid';
-export const keyModuleId = 'mid';
-export const keyAppId = 'appId';
+import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken } from '../constants/sessions-keys';
 
 /**
  * The context provides information

@@ -1,5 +1,7 @@
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
+// tslint:disable-next-line:max-line-length
+import { keyZoneId, keyAppId, keyAppRoot, keyContentBlockId, keyDebug, keyDialog, keyItems, keyLang, keyLangPri, keyLangs, keyModuleId, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyTabId, keyRequestToken, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/sessions-keys';
 
 export class UrlHelper {
 
@@ -16,25 +18,25 @@ export class UrlHelper {
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration() {
     return new EavConfiguration(
-      sessionStorage.getItem('zoneId'),
-      sessionStorage.getItem('appId'),
-      sessionStorage.getItem('approot'),
-      sessionStorage.getItem('cbid'),
-      sessionStorage.getItem('debug'),
-      sessionStorage.getItem('dialog'),
-      sessionStorage.getItem('items'),
-      sessionStorage.getItem('lang'),
-      sessionStorage.getItem('langpri'),
-      sessionStorage.getItem('langs'),
-      sessionStorage.getItem('mid'),
-      sessionStorage.getItem('mode'),
-      sessionStorage.getItem('partOfPage'),
-      sessionStorage.getItem('portalroot'),
-      sessionStorage.getItem('publishing'),
-      sessionStorage.getItem('tid'),
-      sessionStorage.getItem('rvt'),
-      sessionStorage.getItem('websiteroot'),
-      UrlHelper.getVersioningOptions(sessionStorage.getItem('partOfPage') === 'true', sessionStorage.getItem('publishing'))
+      sessionStorage.getItem(keyZoneId),
+      sessionStorage.getItem(keyAppId),
+      sessionStorage.getItem(keyAppRoot),
+      sessionStorage.getItem(keyContentBlockId),
+      sessionStorage.getItem(keyDebug),
+      sessionStorage.getItem(keyDialog),
+      sessionStorage.getItem(keyItems),
+      sessionStorage.getItem(keyLang),
+      sessionStorage.getItem(keyLangPri),
+      sessionStorage.getItem(keyLangs),
+      sessionStorage.getItem(keyModuleId),
+      sessionStorage.getItem(keyMode),
+      sessionStorage.getItem(keyPartOfPage),
+      sessionStorage.getItem(keyPortalRoot),
+      sessionStorage.getItem(keyPublishing),
+      sessionStorage.getItem(keyTabId),
+      sessionStorage.getItem(keyRequestToken),
+      sessionStorage.getItem(keyWebsiteRoot),
+      UrlHelper.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
     );
   }
 

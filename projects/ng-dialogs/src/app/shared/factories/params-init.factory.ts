@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
-import { QueryParameters } from '../models/query-parameters.model';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot } from '../constants/sessions-keys';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -14,16 +14,15 @@ export function paramsInitFactory(injector: Injector) {
       // if params route save params and redirect
       const urlHash = window.location.hash.substring(1); // substring removes first # char
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
-      const queryParameters = new QueryParameters();
-      Object.keys(queryParameters).forEach(key => {
+      Object.keys(queryParametersFromUrl).forEach(key => {
         const value = queryParametersFromUrl[key];
         if (value === undefined || value === null) { return; }
         sessionStorage.setItem(key, value);
       });
       const router = injector.get(Router);
-      const zoneId = sessionStorage.getItem('zoneId');
-      const appId = sessionStorage.getItem('appId');
-      const dialog = sessionStorage.getItem('dialog');
+      const zoneId = sessionStorage.getItem(keyZoneId);
+      const appId = sessionStorage.getItem(keyAppId);
+      const dialog = sessionStorage.getItem(keyDialog);
       switch (dialog) {
         case 'edit':
           router.navigate([`${zoneId}/${appId}/edit`]);
@@ -43,9 +42,9 @@ export function paramsInitFactory(injector: Injector) {
 
 function loadEnvironment() {
   $2sxc.env.load({
-    page: parseInt(sessionStorage.getItem('tid'), 10),
-    rvt: sessionStorage.getItem('rvt'),
-    root: sessionStorage.getItem('portalroot'),
-    api: sessionStorage.getItem('portalroot') + 'desktopmodules/2sxc/api/',
+    page: parseInt(sessionStorage.getItem(keyTabId), 10),
+    rvt: sessionStorage.getItem(keyRequestToken),
+    root: sessionStorage.getItem(keyPortalRoot),
+    api: sessionStorage.getItem(keyPortalRoot) + 'desktopmodules/2sxc/api/',
   });
 }

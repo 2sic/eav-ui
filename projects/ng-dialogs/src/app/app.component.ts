@@ -1,7 +1,8 @@
 import { Component, ElementRef } from '@angular/core';
 import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context, keyModuleId, keyContentBlockId } from './shared/context/context';
+import { Context } from './shared/context/context';
+import { keyModuleId, keyContentBlockId } from './shared/constants/sessions-keys';
 
 @Component({
   selector: 'app-root',
@@ -18,8 +19,8 @@ export class AppComponent extends DnnAppComponent {
     super(
       el,
       dnnContext.preConfigure({
-        moduleId: sessionStorage[keyModuleId],
-        contentBlockId: sessionStorage[keyContentBlockId],
+        moduleId: parseInt(sessionStorage.getItem(keyModuleId), 10),
+        contentBlockId: parseInt(sessionStorage.getItem(keyContentBlockId), 10),
       }),
     );
     this.context.initRoot();
