@@ -82,6 +82,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   editView(params: CellClickedEvent) {
     const view = <View>params.data;
     const form: EditForm = {
+      addItems: null,
       editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
       persistedData: { isParentDialog: true },
     };

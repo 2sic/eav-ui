@@ -79,6 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   constructor(
     public dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
+    // spm Clean this up
     // @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
@@ -102,9 +103,10 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+    // spm Clean this up
     // this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
     const form: EditForm = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
-    this.eavConfig.items = JSON.stringify(form.editItems);
+    this.eavConfig.items = form.addItems ? form.addItems as any : JSON.stringify(form.editItems);
     this.isParentDialog = form.persistedData.isParentDialog;
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
@@ -314,6 +316,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    * Load all data for forms
    */
   private loadItemsData() {
+    // spm Clean this up
+    // const loadBody = this.formDialogData.item || this.eavConfig.items;
     const loadBody = this.eavConfig.items;
 
     this.eavService.loadAllDataForForm(this.eavConfig.appId, loadBody).subscribe(data => {

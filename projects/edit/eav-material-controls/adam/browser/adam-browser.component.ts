@@ -162,26 +162,37 @@ export class AdamBrowserComponent implements OnInit {
     if (ok) { this.svc.deleteItem(item).subscribe(); }
   }
 
-  addItemMetadata(item: AdamItem) {
-    const items = [
-      this.itemDefinition(item, this.getMetadataType(item))
-    ];
-
-    const metadataFor: EavFor = {
-      Target: items[0].Metadata.TargetType,
-      String: items[0].Metadata.Key,
+  addItemMetadata(adamItem: AdamItem) {
+    const newItem = this.itemDefinition(adamItem, this.getMetadataType(adamItem));
+    const form: EditForm = {
+      addItems: [{
+        ContentTypeName: newItem.ContentTypeName,
+        For: {
+          Target: newItem.Metadata.TargetType,
+          String: newItem.Metadata.Key,
+        }
+      }],
+      editItems: null,
+      persistedData: { isParentDialog: false },
     };
-    const persistedData: AdminDialogPersistedData = {
-      metadataFor
-    };
-    const dialogRef = this.eavAdminUiService
-      .openItemNewEntity(this.dialog, MultiItemEditFormComponent, items[0].ContentTypeName, persistedData);
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        item.MetadataId = result[Object.keys(result)[0]];
-      }
-    });
+    // spm Clean this up
+    // const metadataFor: EavFor = {
+    //   Target: items[0].Metadata.TargetType,
+    //   String: items[0].Metadata.Key,
+    // };
+    // const persistedData: AdminDialogPersistedData = {
+    //   metadataFor
+    // };
+    // const dialogRef = this.eavAdminUiService
+    //   .openItemNewEntity(this.dialog, MultiItemEditFormComponent, items[0].ContentTypeName, persistedData);
+
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     item.MetadataId = result[Object.keys(result)[0]];
+    //   }
+    // });
   }
 
   editItemMetadata(metadataId: string) {
@@ -191,8 +202,9 @@ export class AdamBrowserComponent implements OnInit {
     //   console.log('editItemMetadata result', result);
     // });
     const form: EditForm = {
+      addItems: null,
       editItems: [{ EntityId: metadataId.toString(), Title: null }],
-      persistedData: {},
+      persistedData: { isParentDialog: false },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
