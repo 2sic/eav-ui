@@ -34,7 +34,7 @@ import { FormSet } from '../../shared/models/eav/form-set';
 import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
-import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-ui-item.model';
+import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 
 @Component({
   selector: 'app-multi-item-edit-form',

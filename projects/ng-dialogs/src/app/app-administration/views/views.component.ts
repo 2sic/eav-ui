@@ -8,7 +8,7 @@ import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/view
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
 import { ViewActionsParams } from '../shared/models/view-actions-params';
-import { EditForm } from '../shared/models/edit-ui-item.model';
+import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 

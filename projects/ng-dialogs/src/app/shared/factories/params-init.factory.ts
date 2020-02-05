@@ -4,7 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems } from '../constants/sessions-keys';
-import { EditForm, EditItem } from '../../app-administration/shared/models/edit-ui-item.model';
+import { EditForm, EditItem } from '../../app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
