@@ -15,6 +15,9 @@ import { MetadataConstants } from '../../../shared/constants';
 import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
+import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-ui-item.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DialogService } from '../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -84,6 +87,8 @@ export class AdamBrowserComponent implements OnInit {
     private featureService: FeatureService,
     private eavAdminUiService: EavAdminUiService,
     private dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -180,11 +185,16 @@ export class AdamBrowserComponent implements OnInit {
   }
 
   editItemMetadata(metadataId: string) {
-    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('editItemMetadata result', result);
-    });
+    // spm Clean this up
+    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log('editItemMetadata result', result);
+    // });
+    const form: EditForm = {
+      editItems: [{ EntityId: metadataId.toString(), Title: null }],
+      persistedData: {},
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   goUp = () => {

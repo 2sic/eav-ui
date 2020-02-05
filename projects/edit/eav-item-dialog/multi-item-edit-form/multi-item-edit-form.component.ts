@@ -1,6 +1,6 @@
 // tslint:disable-next-line:max-line-length
 import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
@@ -96,7 +96,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private loadIconsService: LoadIconsService,
     private ngZone: NgZone,
     private route: ActivatedRoute,
-    private router: Router,
   ) {
     // Read configuration from queryString
     this.eavConfig = this.eavService.getEavConfiguration();
@@ -210,12 +209,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   trackByFn(index: number, item: Item) {
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
-  }
-
-  openChild() {
-    const form: EditForm = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
-    form.persistedData = {};
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   /**
