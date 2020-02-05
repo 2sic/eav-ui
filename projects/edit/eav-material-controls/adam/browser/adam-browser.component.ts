@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AdamService } from '../adam.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
@@ -15,9 +15,10 @@ import { MetadataConstants } from '../../../shared/constants';
 import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
-import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-ui-item.model';
+import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from '../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -40,7 +41,7 @@ import { DialogService } from '../../../../ng-dialogs/src/app/shared/components/
     ])
   ]
 })
-export class AdamBrowserComponent implements OnInit {
+export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
 
   // New Configuration
@@ -77,6 +78,7 @@ export class AdamBrowserComponent implements OnInit {
   oldConfig: any;
   svc: any;
 
+  private subscription = new Subscription();
   get folders() {
     return this.svc ? this.svc.folders : [];
   }
@@ -89,9 +91,22 @@ export class AdamBrowserComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
+    private dialogService: DialogService,
   ) { }
 
   ngOnInit() {
+    this.subscription.add(
+      this.dialogService
+        .subToClosed([ITEMS_EDIT_DIALOG], {
+          formId: this.config.form.formId,
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        })
+        .subscribe(dialogName => {
+          console.log('Dialog closed event captured:', dialogName);
+          this.refresh();
+        }),
+    );
     this.subFolder = this.config.field.settings.Paths || '';
     // fixed leading "/"
     if (this.subFolder.startsWith('/') || this.subFolder.startsWith('\\')) {
@@ -117,6 +132,11 @@ export class AdamBrowserComponent implements OnInit {
     // this.folders = this.svc.folders;
 
     if (this.autoLoad) { this.toggle(null); }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   initConfig() {
@@ -173,7 +193,14 @@ export class AdamBrowserComponent implements OnInit {
         }
       }],
       editItems: null,
-      persistedData: { isParentDialog: false },
+      persistedData: {
+        isParentDialog: false,
+        parent: {
+          formId: this.config.form.formId,
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        },
+      },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
 
@@ -244,7 +271,7 @@ export class AdamBrowserComponent implements OnInit {
 
     // this is if we don't find anything
     return null;
-  };
+  }
 
   //#region Folder Navigation
   goIntoFolder(folder: AdamItem) {

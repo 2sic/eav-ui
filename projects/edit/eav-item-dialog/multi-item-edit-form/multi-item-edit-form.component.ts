@@ -35,6 +35,7 @@ import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { SubToClosedParent } from '../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -47,6 +48,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
+  private editFormData: EditForm;
   slide = 'initial';
   slideListenersAdded = false;
 
@@ -105,9 +107,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     // spm Clean this up
     // this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
-    const form: EditForm = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
-    this.eavConfig.items = form.addItems ? form.addItems as any : JSON.stringify(form.editItems);
-    this.isParentDialog = form.persistedData.isParentDialog;
+    this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
+    this.eavConfig.items = this.editFormData.addItems ? this.editFormData.addItems as any : JSON.stringify(this.editFormData.editItems);
+    this.isParentDialog = this.editFormData.persistedData.isParentDialog;
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
@@ -172,11 +174,12 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /** close form dialog or if close is disabled show a message */
-  closeDialog(saveResult?: any) {
+  closeDialog() {
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(saveResult);
+      const parent: SubToClosedParent = this.editFormData.persistedData.parent;
+      this.dialogRef.close(parent);
     }
   }
 
@@ -461,7 +464,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.snackBarOpen(this.translate.instant('Message.Saved'));
         this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
-          this.closeDialog(action.data);
+          this.closeDialog();
         }
       }));
     this.subscriptions.push(this.actions$
