@@ -1,5 +1,5 @@
 import { EavFor } from '../../../../../../edit/shared/models/eav';
-import { EditDialogPersistedData } from '../../../../../../edit/shared/models/eav/admin-dialog-persisted-data';
+import { EditDialogPersistedData } from '../../../../../../edit/shared/models/eav/edit-dialog-persisted-data';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export class EditForm {

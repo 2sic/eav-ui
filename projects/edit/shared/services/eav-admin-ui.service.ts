@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef, DialogPosition } from '@angular/material/dialo
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
-import { EditDialogPersistedData } from '../models/eav/admin-dialog-persisted-data';
+import { EditDialogPersistedData } from '../models/eav/edit-dialog-persisted-data';
 
 @Injectable()
 export class EavAdminUiService {
