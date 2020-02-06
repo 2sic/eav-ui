@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
@@ -16,7 +17,6 @@ import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from '../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
@@ -98,7 +98,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.dialogService
         .subToClosed([ITEMS_EDIT_DIALOG], {
-          formId: this.config.form.formId,
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         })
@@ -196,7 +195,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       persistedData: {
         isParentDialog: false,
         parent: {
-          formId: this.config.form.formId,
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         },

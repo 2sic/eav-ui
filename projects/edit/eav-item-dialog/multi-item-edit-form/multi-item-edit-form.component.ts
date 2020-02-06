@@ -1,12 +1,13 @@
 // tslint:disable-next-line:max-line-length
 import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, zip, of, Subscription } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import 'reflect-metadata';
 import * as fromItems from '../../shared/store/actions/item.actions';
@@ -19,7 +20,6 @@ import { EavService } from '../../shared/services/eav.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
-import { TranslateService } from '@ngx-translate/core';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';

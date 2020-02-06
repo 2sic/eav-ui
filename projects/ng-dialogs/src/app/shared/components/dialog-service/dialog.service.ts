@@ -15,7 +15,7 @@ export class DialogService {
           return dialogs.includes(closedDialog);
         } else {
           return dialogs
-            .map(dialog => `${dialog}-${parent.formId}-${parent.entityId}-${parent.fieldName}`)
+            .map(dialog => `${dialog}-${parent.entityId}-${parent.fieldName}`)
             .includes(closedDialog);
         }
       }),
@@ -23,17 +23,15 @@ export class DialogService {
   }
 
   fireClosed(dialog: string, parent?: SubToClosedParent) {
-    if (!parent) {
-      this.dialogClosed.next(dialog);
-    } else {
-      this.dialogClosed.next(`${dialog}-${parent.formId}-${parent.entityId}-${parent.fieldName}`);
-    }
+    let dialogName = dialog;
+    if (parent) { dialogName = `${dialog}-${parent.entityId}-${parent.fieldName}`; }
+    console.log('Dialog was closed:', dialogName);
+    this.dialogClosed.next(dialogName);
   }
 }
 
 /** Tells which field in edit-ui opened child edit-ui to filter update when child closes */
 export class SubToClosedParent {
-  formId: number;
   entityId: number;
   fieldName: string;
 }

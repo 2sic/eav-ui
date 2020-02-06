@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +14,6 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { Router, ActivatedRoute } from '@angular/router';
 import { DialogService } from '../../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
@@ -77,7 +77,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.dialogService
         .subToClosed([ITEMS_EDIT_DIALOG], {
-          formId: this.config.form.formId,
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         })
@@ -130,7 +129,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       persistedData: {
         isParentDialog: false,
         parent: {
-          formId: this.config.form.formId,
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         },

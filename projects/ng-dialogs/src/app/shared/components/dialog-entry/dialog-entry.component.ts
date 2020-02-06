@@ -58,7 +58,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dialogRef.afterClosed().subscribe((parent: SubToClosedParent) => {
-        console.log('Dialog was closed:', this.dialogName);
         this.dialogService.fireClosed(this.dialogName, parent);
 
         if (this.route.pathFromRoot.length <= 3) {
