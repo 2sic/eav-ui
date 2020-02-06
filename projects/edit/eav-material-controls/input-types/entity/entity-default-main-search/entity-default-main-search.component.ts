@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +15,9 @@ import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DialogService } from '../../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/constants/dialog-names';
+import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 
 @Component({
   selector: 'app-entity-default-main-search',
@@ -45,7 +49,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   debugEnabled$: Observable<boolean>;
   debugEnabled = false;
 
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get allowMultiValue(): boolean { return this.config.field.settings.AllowMultiValue || false; }
@@ -72,6 +76,9 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private translate: TranslateService,
     private globalConfigurationService: GlobalConfigurationService,
+    private dialogService: DialogService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -80,10 +87,23 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     this.disableAddNew = !!!this.contentTypeMask.resolve();
     // subscribe to debug enabled changes
     this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
-    this.subscriptions.push(
+    this.subscription.add(
       this.debugEnabled$.subscribe(debugEnabled => {
         this.debugEnabled = debugEnabled;
       })
+    );
+    this.subscription.add(
+      this.dialogService
+        .subToClosed([ITEMS_EDIT_DIALOG], {
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        })
+        .subscribe(closedDialog => {
+          console.log('Dialog closed event captured:', closedDialog);
+          if (!closedDialog.data.result) { return; }
+          this.addEntity(Object.keys(closedDialog.data.result)[0]);
+          this.setData();
+        }),
     );
   }
 
@@ -93,7 +113,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.contentTypeMask.destroy();
-    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe(); });
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   freeTextModeChange(event: Event) {
@@ -135,14 +156,29 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   openNewEntityDialog() {
     const contentTypeName = this.contentTypeMask ? this.contentTypeMask.resolve() : this.entityType;
-    const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, contentTypeName, null);
+    // spm Clean this up
+    // const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, contentTypeName, null);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.addEntity(Object.keys(result)[0]);
-        this.setData();
-      }
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.addEntity(Object.keys(result)[0]);
+    //     this.setData();
+    //   }
+    // });
+    const form: EditForm = {
+      addItems: [{
+        ContentTypeName: contentTypeName,
+      }],
+      editItems: null,
+      persistedData: {
+        isParentDialog: false,
+        toNotify: {
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        },
+      },
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   private setData() {

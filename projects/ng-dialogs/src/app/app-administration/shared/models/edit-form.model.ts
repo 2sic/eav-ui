@@ -10,6 +10,8 @@ export class EditItem {
 }
 
 export class AddItem {
+  /** Content type */
   ContentTypeName: string;
-  For: EavFor;
+  /** Add item as metadata to another item */
+  For?: EavFor;
 }
