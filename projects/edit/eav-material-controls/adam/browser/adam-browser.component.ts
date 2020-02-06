@@ -194,7 +194,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       editItems: null,
       persistedData: {
         isParentDialog: false,
-        parent: {
+        toNotify: {
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         },

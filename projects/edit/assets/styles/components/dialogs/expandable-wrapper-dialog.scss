@@ -91,7 +91,7 @@
         padding: 16px;
 
         .mat-card {
-          height: 100%;
+          height: calc(100% - 32px);
         }
       }
     }

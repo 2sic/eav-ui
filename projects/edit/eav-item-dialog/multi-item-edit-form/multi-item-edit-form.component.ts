@@ -35,7 +35,7 @@ import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { SubToClosedParent } from '../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
+import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -174,12 +174,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /** close form dialog or if close is disabled show a message */
-  closeDialog() {
+  closeDialog(saveResult?: any) {
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      const parent: SubToClosedParent = this.editFormData.persistedData.parent;
-      this.dialogRef.close(parent);
+      const closedDialogData: ClosedDialogData = {
+        result: saveResult,
+        toNotify: this.editFormData.persistedData.toNotify,
+      };
+      this.dialogRef.close(closedDialogData);
     }
   }
 
@@ -464,7 +467,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.snackBarOpen(this.translate.instant('Message.Saved'));
         this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
-          this.closeDialog();
+          this.closeDialog(action.data);
         }
       }));
     this.subscriptions.push(this.actions$
