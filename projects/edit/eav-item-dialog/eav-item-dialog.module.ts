@@ -25,7 +25,6 @@ import { EavMaterialControlsModule } from '../eav-material-controls/eav-material
 import { reducers } from '../shared/store';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { OpenMultiItemDialogComponent } from './dialogs/open-multi-item-dialog/open-multi-item-dialog.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 
@@ -33,7 +32,6 @@ import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/mu
   declarations: [
     MultiItemEditFormComponent,
     ItemEditFormComponent,
-    OpenMultiItemDialogComponent,
     MultiItemEditFormHeaderComponent,
     MultiItemEditFormDebugComponent
   ],
