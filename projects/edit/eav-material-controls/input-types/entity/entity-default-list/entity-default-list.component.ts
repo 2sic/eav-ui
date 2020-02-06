@@ -12,6 +12,10 @@ import { EavService } from '../../../..//shared/services/eav.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { Helper } from '../../../../shared/helpers/helper';
+import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DialogService } from '../../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
 @Component({
   selector: 'app-entity-default-list',
@@ -34,7 +38,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
   // private contentType: FieldMaskService;
   private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
   private eavConfig: EavConfiguration;
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
@@ -60,6 +64,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     private eavAdminUiService: EavAdminUiService,
     private dialog: MatDialog,
     private translate: TranslateService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dialogService: DialogService,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -67,10 +74,23 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setChosenEntities(this.controlValue);
     this.chosenEntitiesSubscribeToChanges();
+    this.subscription.add(
+      this.dialogService
+        .subToClosed([ITEMS_EDIT_DIALOG], {
+          formId: this.config.form.formId,
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        })
+        .subscribe(dialogName => {
+          console.log('Dialog closed event captured:', dialogName);
+          this.setData();
+        }),
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   getEntityText(entityGuidOrStringValue: string): string {
@@ -98,11 +118,25 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
    */
   edit(value: string) {
     const entityId = this.getEntityId(value);
-    const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
+    // spm Clean this up
+    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.setData();
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.setData();
+    // });
+    const form: EditForm = {
+      addItems: null,
+      editItems: [{ EntityId: entityId, Title: null }],
+      persistedData: {
+        isParentDialog: false,
+        parent: {
+          formId: this.config.form.formId,
+          entityId: this.config.entity.entityId,
+          fieldName: this.config.field.name,
+        },
+      },
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   /**
@@ -207,14 +241,12 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.group.controls[this.config.field.name].markAsDirty();
   }
 
-  /**
-  * subscribe to form value changes
-  */
+  /** subscribe to form value changes */
   private chosenEntitiesSubscribeToChanges() {
-    this.subscriptions.push(this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
+    this.subscription.add(this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
     }));
-    this.subscriptions.push(this.eavService.formSetValueChange$.subscribe(formSet => {
+    this.subscription.add(this.eavService.formSetValueChange$.subscribe(formSet => {
       // check if update is for current form
       if (formSet.formId !== this.config.form.formId) { return; }
       // check if update is for current entity
