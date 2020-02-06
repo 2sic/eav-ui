@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -28,6 +29,8 @@ import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dial
   styleUrls: ['./dialog-entry.component.scss']
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
+  production: boolean;
+
   private subscription: Subscription = new Subscription();
   private dialogRef: MatDialogRef<any, any>;
   private dialogName: string;
@@ -43,6 +46,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private context: Context,
     private dialogService: DialogService,
   ) {
+    this.production = environment.production;
     this.configureDialog();
   }
 
