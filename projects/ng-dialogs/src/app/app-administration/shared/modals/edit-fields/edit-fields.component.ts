@@ -183,8 +183,8 @@ export class EditFieldsComponent implements OnInit {
 
   private refreshOnClosedChildDialogs() {
     this.subscription.add(
-      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG]).subscribe(dialogName => {
-        console.log('Dialog closed event captured:', dialogName);
+      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG]).subscribe(closedDialog => {
+        console.log('Dialog closed event captured:', closedDialog);
         this.fetchFields();
       }),
     );

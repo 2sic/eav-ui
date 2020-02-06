@@ -53,8 +53,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchTemplates();
     this.subscription.add(
-      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(dialogName => {
-        console.log('Dialog closed event captured:', dialogName);
+      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+        console.log('Dialog closed event captured:', closedDialog);
         this.fetchTemplates();
       })
     );

@@ -12,7 +12,8 @@ import { EnableLanguagesComponent } from '../../../apps-management/shared/modals
 import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
 import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
-import { DialogService, ClosedDialogData } from '../dialog-service/dialog.service';
+import { DialogService } from '../dialog-service/dialog.service';
+import { ClosedDialogData } from '../../models/closed-dialog.model';
 import { EditFieldsComponent } from '../../../app-administration/shared/modals/edit-fields/edit-fields.component';
 import { ContentExportComponent } from '../../../app-administration/shared/modals/content-export/content-export.component';
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';

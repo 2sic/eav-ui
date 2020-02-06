@@ -93,7 +93,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.contentTypeMask.destroy();
-    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
+    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe(); });
   }
 
   freeTextModeChange(event: Event) {

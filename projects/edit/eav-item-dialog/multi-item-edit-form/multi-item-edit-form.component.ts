@@ -35,7 +35,7 @@ import { sortLanguages } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
+import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/models/closed-dialog.model';
 
 @Component({
   selector: 'app-multi-item-edit-form',

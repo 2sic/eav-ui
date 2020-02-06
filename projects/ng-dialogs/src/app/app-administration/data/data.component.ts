@@ -175,8 +175,8 @@ export class DataComponent implements OnInit, OnDestroy {
           IMPORT_CONTENT_TYPE_DIALOG,
           SET_PERMISSIONS_DIALOG,
         ])
-        .subscribe(dialogName => {
-          console.log('Dialog closed event captured:', dialogName);
+        .subscribe(closedDialog => {
+          console.log('Dialog closed event captured:', closedDialog);
           this.fetchContentTypes();
         }),
     );

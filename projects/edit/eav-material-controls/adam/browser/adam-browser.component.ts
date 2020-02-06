@@ -101,8 +101,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
         })
-        .subscribe(dialogName => {
-          console.log('Dialog closed event captured:', dialogName);
+        .subscribe(closedDialog => {
+          console.log('Dialog closed event captured:', closedDialog);
           this.refresh();
         }),
     );
