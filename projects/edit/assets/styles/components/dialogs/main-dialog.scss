@@ -14,7 +14,7 @@
 .c-multi-item-dialog {
   width: 100vw;
   max-width: 800px !important;
-  margin-top: $edit-ui-dialog-top-padding;
+  margin-top: $edit-ui-dialog-top-padding !important;
 
   @media (max-width: 600px) {
     margin-top: 0 !important;

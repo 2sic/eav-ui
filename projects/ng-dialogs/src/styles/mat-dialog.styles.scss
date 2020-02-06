@@ -3,10 +3,6 @@ $dialog-width-large: 95vw;
 $dialog-width-medium: 50vw;
 $dialog-width-small: 40vw;
 
-.cdk-global-overlay-wrapper {
-  align-items: flex-start !important;
-}
-
 .mat-dialog-container {
   // background: transparent !important;
   height: auto !important;
@@ -17,7 +13,7 @@ $dialog-width-small: 40vw;
   width: 100vw;
   max-width: 100vw !important;
   height: 100vh;
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 
 .dialog-panel-fullscreen {
@@ -27,7 +23,7 @@ $dialog-width-small: 40vw;
 .dialog-panel-large {
   width: $dialog-width-large;
   max-width: $dialog-width-large !important;
-  margin-top: $dialog-margin-top;
+  margin-top: $dialog-margin-top !important;
 
   @media (max-width: 600px) {
     @include dialog-panel-fullscreen();
@@ -37,7 +33,7 @@ $dialog-width-small: 40vw;
 .dialog-panel-medium {
   width: $dialog-width-medium;
   max-width: $dialog-width-medium !important;
-  margin-top: $dialog-margin-top;
+  margin-top: $dialog-margin-top !important;
 
   @media (max-width: 600px) {
     @include dialog-panel-fullscreen();
@@ -47,7 +43,7 @@ $dialog-width-small: 40vw;
 .dialog-panel-small {
   width: $dialog-width-small;
   max-width: $dialog-width-small !important;
-  margin-top: $dialog-margin-top;
+  margin-top: $dialog-margin-top !important;
 
   @media (max-width: 600px) {
     @include dialog-panel-fullscreen();
