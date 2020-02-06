@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 
 import { AdamService } from '../adam.service';
@@ -10,7 +9,6 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
 import { MetadataConstants } from '../../../shared/constants';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
@@ -85,8 +83,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private adamService: AdamService,
     private fileTypeService: FileTypeService,
     private featureService: FeatureService,
-    private eavAdminUiService: EavAdminUiService,
-    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
@@ -199,31 +195,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
-
-    // spm Clean this up
-    // const metadataFor: EavFor = {
-    //   Target: items[0].Metadata.TargetType,
-    //   String: items[0].Metadata.Key,
-    // };
-    // const persistedData: AdminDialogPersistedData = {
-    //   metadataFor
-    // };
-    // const dialogRef = this.eavAdminUiService
-    //   .openItemNewEntity(this.dialog, MultiItemEditFormComponent, items[0].ContentTypeName, persistedData);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     item.MetadataId = result[Object.keys(result)[0]];
-    //   }
-    // });
   }
 
   editItemMetadata(metadataId: string) {
-    // spm Clean this up
-    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, metadataId);
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log('editItemMetadata result', result);
-    // });
     const form: EditForm = {
       addItems: null,
       editItems: [{ EntityId: metadataId.toString(), Title: null }],
@@ -243,7 +217,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   getMetadataType(item: AdamItem) {
     let found: string[];
-    // debugger
 
     // check if it's a folder and if this has a special registration
     if (item.Type === 'folder') {

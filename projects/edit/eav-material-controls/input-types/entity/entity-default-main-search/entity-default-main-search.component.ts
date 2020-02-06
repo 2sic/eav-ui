@@ -1,15 +1,12 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
-import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
 import { EntityDefaultListComponent } from '../entity-default-list/entity-default-list.component';
 import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
@@ -71,9 +68,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     .getErrorMessage(this.group.controls[this.config.field.name], this.config, true)
 
   constructor(
-    private eavAdminUiService: EavAdminUiService,
     private validationMessagesService: ValidationMessagesService,
-    private dialog: MatDialog,
     private translate: TranslateService,
     private globalConfigurationService: GlobalConfigurationService,
     private dialogService: DialogService,
@@ -156,19 +151,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
 
   openNewEntityDialog() {
     const contentTypeName = this.contentTypeMask ? this.contentTypeMask.resolve() : this.entityType;
-    // spm Clean this up
-    // const dialogRef = this.eavAdminUiService.openItemNewEntity(this.dialog, MultiItemEditFormComponent, contentTypeName, null);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.addEntity(Object.keys(result)[0]);
-    //     this.setData();
-    //   }
-    // });
     const form: EditForm = {
-      addItems: [{
-        ContentTypeName: contentTypeName,
-      }],
+      addItems: [{ ContentTypeName: contentTypeName }],
       editItems: null,
       persistedData: {
         isParentDialog: false,

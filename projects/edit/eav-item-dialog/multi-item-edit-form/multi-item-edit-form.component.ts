@@ -1,7 +1,7 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, Inject, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, zip, of, Subscription } from 'rxjs';
@@ -23,7 +23,6 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
-import { AdminDialogData } from '../../shared/models/eav/admin-dialog-data';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 // tslint:disable-next-line:max-line-length
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -80,9 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   hideHeader: boolean;
 
   constructor(
-    public dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
-    // spm Clean this up
-    // @Inject(MAT_DIALOG_DATA) public formDialogData: AdminDialogData,
+    private dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
@@ -105,8 +102,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    // spm Clean this up
-    // this.isParentDialog = this.formDialogData.persistedData ? this.formDialogData.persistedData.isParentDialog : false;
     this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
     this.eavConfig.items = this.editFormData.addItems ? this.editFormData.addItems as any : JSON.stringify(this.editFormData.editItems);
     this.isParentDialog = this.editFormData.persistedData.isParentDialog;
@@ -261,7 +256,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     const windowBeforeUnloadBound = this.windowBeforeUnload.bind(this);
     window.addEventListener('beforeunload', windowBeforeUnloadBound);
     this.eventListeners.push({ element: window, type: 'beforeunload', listener: windowBeforeUnloadBound });
-    this.dialogRef.backdropClick().subscribe(result => { this.closeDialog(); });
+    this.dialogRef.backdropClick().subscribe(e => { this.closeDialog(); });
 
     // spm Bind save events here
     this.dialogRef.keydownEvents().subscribe(e => {
@@ -318,15 +313,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     );
   }
 
-  /**
-   * Load all data for forms
-   */
+  /** Load all data for forms */
   private loadItemsData() {
-    // spm Clean this up
-    // const loadBody = this.formDialogData.item || this.eavConfig.items;
-    const loadBody = this.eavConfig.items;
-
-    this.eavService.loadAllDataForForm(this.eavConfig.appId, loadBody).subscribe(data => {
+    this.eavService.loadAllDataForForm(this.eavConfig.appId, this.eavConfig.items).subscribe(data => {
       this.afterLoadItemsData(data);
     });
   }

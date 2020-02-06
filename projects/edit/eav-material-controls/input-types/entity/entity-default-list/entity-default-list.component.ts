@@ -1,14 +1,11 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { EavAdminUiService } from '../../../../shared/services/eav-admin-ui.service';
-import { MultiItemEditFormComponent } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { EavService } from '../../../..//shared/services/eav.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -61,8 +58,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   constructor(
     private entityService: EntityService,
     private eavService: EavService,
-    private eavAdminUiService: EavAdminUiService,
-    private dialog: MatDialog,
     private translate: TranslateService,
     private router: Router,
     private route: ActivatedRoute,
@@ -117,12 +112,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
    */
   edit(value: string) {
     const entityId = this.getEntityId(value);
-    // spm Clean this up
-    // const dialogRef = this.eavAdminUiService.openItemEditWithEntityId(this.dialog, MultiItemEditFormComponent, entityId);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   this.setData();
-    // });
     const form: EditForm = {
       addItems: null,
       editItems: [{ EntityId: entityId, Title: null }],
