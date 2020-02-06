@@ -1,17 +1,17 @@
-import { Injectable, ViewContainerRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef, DialogPosition } from '@angular/material/dialog';
 
 import { DialogTypeConstants } from '../constants/type-constants';
 import { AdminDialogData } from '../models/eav/admin-dialog-data';
 import { DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
-import { AdminDialogPersistedData } from '../models/eav';
+import { EditDialogPersistedData } from '../models/eav/admin-dialog-persisted-data';
 
 @Injectable()
 export class EavAdminUiService {
   constructor() { }
 
   /** Open a modal dialog containing the given component */
-  public openItemEditWithContent(dialog: MatDialog, component: any, persistedData: AdminDialogPersistedData) {
+  public openItemEditWithContent(dialog: MatDialog, component: any, persistedData: EditDialogPersistedData) {
     return <MatDialogRef<any, any>>(
       this.openModalDialog(dialog, component, null, null, DialogTypeConstants.itemEditWithContent, persistedData)
     );
@@ -25,7 +25,7 @@ export class EavAdminUiService {
   }
 
   /** Open a modal dialog containing the given component. With ContentTypeName */
-  public openItemNewEntity(dialog: MatDialog, component: any, contentTypeName: any, persistedData: AdminDialogPersistedData) {
+  public openItemNewEntity(dialog: MatDialog, component: any, contentTypeName: any, persistedData: EditDialogPersistedData) {
     return <MatDialogRef<any, any>>(
       this.openModalDialog(dialog, component, null, contentTypeName, DialogTypeConstants.itemNewEntity, persistedData)
     );
@@ -38,7 +38,7 @@ export class EavAdminUiService {
     entityId: string,
     contentTypeName: any,
     dialogType: DialogTypeConstants,
-    persistedData: AdminDialogPersistedData,
+    persistedData: EditDialogPersistedData,
   ) {
     let item = null;
     let payload = null;

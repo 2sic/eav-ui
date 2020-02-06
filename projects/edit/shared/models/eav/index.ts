@@ -11,4 +11,3 @@ export { Language } from './language';
 export { FieldSettings } from '../../../../shared/field-settings';
 export { InputType } from './input-type';
 export { EavFor } from './eav-for';
-export { AdminDialogPersistedData } from './admin-dialog-persisted-data';

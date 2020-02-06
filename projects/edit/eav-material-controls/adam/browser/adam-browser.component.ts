@@ -11,9 +11,7 @@ import { FeatureService } from '../../../shared/store/ngrx-data/feature.service'
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavAdminUiService } from '../../../shared/services/eav-admin-ui.service';
-import { MultiItemEditFormComponent } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { MetadataConstants } from '../../../shared/constants';
-import { EavFor, AdminDialogPersistedData } from '../../../shared/models/eav';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
