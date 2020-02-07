@@ -81,13 +81,7 @@ export class Context {
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
     this.routeSnapshot = route && route.snapshot;
-    // clear cached values
-    this._zoneId = null;
-    this._appId = null;
-    this._rvt = null;
-    this._tabId = null;
-    this._contentBlockId = null;
-    this._moduleId = null;
+    this.clearCachedValues();
     this.ready = route != null;
   }
 
@@ -137,4 +131,17 @@ export class Context {
     }
   }
 
+  /**
+   * Clears cached values. Required when one module instance is opened multiple times,
+   * e.g. Apps Management -> App Admin for appId 2 -> back -> App Admin for appId 17.
+   * Module is reused, and so is context and it contains values for previous appId.
+   */
+  private clearCachedValues() {
+    this._zoneId = null;
+    this._appId = null;
+    this._rvt = null;
+    this._tabId = null;
+    this._contentBlockId = null;
+    this._moduleId = null;
+  }
 }

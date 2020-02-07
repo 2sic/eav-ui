@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyAppRoot, keyContentBlockId, keyDebug, keyDialog, keyItems, keyLang, keyLangPri, keyLangs, keyModuleId, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyTabId, keyRequestToken, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/sessions-keys';
+import { keyAppRoot, keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/sessions-keys';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 
 export class UrlHelper {
@@ -22,29 +22,22 @@ export class UrlHelper {
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
     const editFormData = JSON.parse(decodeURIComponent(route.snapshot.params.items));
     return new EavConfiguration(
-      // sessionStorage.getItem(keyZoneId),
       context.zoneId.toString(),
-      // sessionStorage.getItem(keyAppId),
       context.appId.toString(),
       sessionStorage.getItem(keyAppRoot),
-      // sessionStorage.getItem(keyContentBlockId),
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      // sessionStorage.getItem(keyItems),
       editFormData.addItems ? editFormData.addItems as any : JSON.stringify(editFormData.editItems),
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),
-      // sessionStorage.getItem(keyModuleId),
       context.moduleId.toString(),
       sessionStorage.getItem(keyMode),
       sessionStorage.getItem(keyPartOfPage),
       sessionStorage.getItem(keyPortalRoot),
       sessionStorage.getItem(keyPublishing),
-      // sessionStorage.getItem(keyTabId),
       context.tabId.toString(),
-      // sessionStorage.getItem(keyRequestToken),
       context.requestToken.toString(),
       sessionStorage.getItem(keyWebsiteRoot),
       UrlHelper.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
