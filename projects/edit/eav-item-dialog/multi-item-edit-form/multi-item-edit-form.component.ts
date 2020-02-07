@@ -35,6 +35,7 @@ import { ElementEventListener } from '../../../shared/element-event-listener-mod
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/models/closed-dialog.model';
+import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -96,14 +97,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private loadIconsService: LoadIconsService,
     private ngZone: NgZone,
     private route: ActivatedRoute,
+    private context: Context,
   ) {
     // Read configuration from queryString
+    this.eavService.setEavConfiguration(this.route, this.context);
     this.eavConfig = this.eavService.getEavConfiguration();
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
-    this.eavConfig.items = this.editFormData.addItems ? this.editFormData.addItems as any : JSON.stringify(this.editFormData.editItems);
     this.isParentDialog = this.editFormData.persistedData.isParentDialog;
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));

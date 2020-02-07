@@ -15,7 +15,6 @@ import { Context } from './shared/context/context';
 import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers } from '../../../edit/shared/store';
-import { EavService } from '../../../edit/shared/services/eav.service';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 import { SharedComponentsModule } from './shared/components/shared-components.module';
 
@@ -42,7 +41,6 @@ import { SharedComponentsModule } from './shared/components/shared-components.mo
     DnnInterceptor,
     { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
     Context,
-    EavService,
   ],
   bootstrap: [AppComponent]
 })

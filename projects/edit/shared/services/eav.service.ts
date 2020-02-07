@@ -12,6 +12,7 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { FormSet } from '../models/eav/form-set';
+import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 
 @Injectable()
 export class EavService {
@@ -31,20 +32,11 @@ export class EavService {
   constructor(
     private httpClient: HttpClient,
     private store: Store<fromStore.EavState>,
-    private route: ActivatedRoute,
     private dnnContext: DnnContext,
   ) { }
 
   getEavConfiguration(): EavConfiguration {
-    if (!this.eavConfig) {
-      this.setEavConfiguration(this.route);
-    }
-
-    if (this.eavConfig) {
-      return this.eavConfig;
-    } else {
-      console.log('Configuration data not set');
-    }
+    return this.eavConfig;
   }
 
   loadAllDataForForm(appId: string, items: string | any) {
@@ -87,8 +79,8 @@ export class EavService {
   }
 
   /** Set Eav Configuration */
-  private setEavConfiguration(route: ActivatedRoute) {
-    this.eavConfig = UrlHelper.getEavConfiguration();
+  setEavConfiguration(route: ActivatedRoute, context: Context) {
+    this.eavConfig = UrlHelper.getEavConfiguration(route, context);
   }
 
   private handleError(error: Error) {
