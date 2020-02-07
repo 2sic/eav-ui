@@ -17,6 +17,7 @@ import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metada
 import { metaReducers } from '../../../edit/shared/store';
 import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
 import { SharedComponentsModule } from './shared/components/shared-components.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SharedComponentsModule } from './shared/components/shared-components.mo
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25 }),
     EntityDataModule.forRoot(entityConfig),
+    TranslateModule.forRoot(),
   ],
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },

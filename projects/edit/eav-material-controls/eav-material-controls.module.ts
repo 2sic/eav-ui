@@ -26,7 +26,7 @@ import { OwlDateTimeModule, OwlDateTimeIntl } from 'ng-pick-datetime';
 import { OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from 'ng-pick-datetime-moment';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
-import { CollapsibleWrapperComponent/*, FormFieldWrapperComponent*/ } from './wrappers';
+import { CollapsibleWrapperComponent } from './wrappers';
 import {
   BooleanDefaultComponent,
   DatetimeDefaultComponent,
@@ -88,9 +88,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
 
 @NgModule({
   declarations: [
-    // wrappers
     CollapsibleWrapperComponent,
-    // types
     StringDefaultComponent,
     StringUrlPathComponent,
     StringDropdownComponent,
@@ -139,7 +137,6 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     CustomDefaultComponent,
   ],
   imports: [
-    // DndDraggable,
     SharedComponentsModule,
     CommonModule,
     DndListModule,
@@ -169,8 +166,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     ReactiveFormsModule,
     MatRippleModule,
     MatChipsModule,
-    // FontAwesomeModule,
-    TranslateModule.forChild(),
+    TranslateModule,
   ],
   entryComponents: [
     BooleanDefaultComponent,
