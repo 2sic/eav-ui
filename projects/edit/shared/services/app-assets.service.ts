@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AppAssetsService {
   constructor(private httpClient: HttpClient, private dnnContext: DnnContext) { }
 

@@ -17,7 +17,7 @@ export interface LoadFile {
   domEl: HTMLLinkElement | HTMLScriptElement;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ScriptsLoaderService {
   private eavConfig: EavConfiguration;
   private loadedFiles: LoadFile[] = [];

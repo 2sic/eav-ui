@@ -27,6 +27,8 @@ import { reducers } from '../shared/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
+import { LoadIconsService } from '../shared/services/load-icons.service';
+import { BuildFieldsService } from './item-edit-form/item-edit-form-services/build-fields.service';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/mu
   ],
   exports: [],
   providers: [
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    LoadIconsService,
+    BuildFieldsService,
   ],
 })
 export class EavItemDialogModule { }

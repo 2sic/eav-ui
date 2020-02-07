@@ -20,9 +20,7 @@ import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
 import folderPlus from '!raw-loader!../../assets/icons/font-awesome/folder-plus.svg';
 import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LoadIconsService {
   private icons = [
     { name: 'apple', html: apple },

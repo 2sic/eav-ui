@@ -17,7 +17,7 @@ import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.ser
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class BuildFieldsService {
   private contentType$: Observable<ContentType>;
   private item: Item;

@@ -83,6 +83,8 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/components/shared-components.module';
+import { AppAssetsService } from '../shared/services/app-assets.service';
+import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
 
 @NgModule({
   declarations: [
@@ -212,6 +214,8 @@ import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/componen
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride },
+    AppAssetsService,
+    ScriptsLoaderService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
