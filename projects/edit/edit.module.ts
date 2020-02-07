@@ -16,6 +16,7 @@ import { QueryService } from './shared/services/query.service';
 import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { EditRoutingModule } from './edit-routing.module';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/components/shared-components.module';
+import { Context } from '../ng-dialogs/src/app/shared/context/context';
 declare const sxcVersion: string;
 
 export function createTranslateLoader(http: HttpClient) {
@@ -49,6 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
     EavAdminUiService,
     QueryService,
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
+    Context,
   ],
 })
 export class EditModule { }
