@@ -44,19 +44,19 @@ export class Context {
 
   /** Tab Id is global */
   get tabId(): number {
-    return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent._tabId);
+    return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent.tabId);
   }
   private _tabId: number;
 
   /** Content Block Id is global */
   get contentBlockId(): number {
-    return this._contentBlockId || (this._contentBlockId = this.routeNum(keyContentBlockId) || this.parent._contentBlockId);
+    return this._contentBlockId || (this._contentBlockId = this.routeNum(keyContentBlockId) || this.parent.contentBlockId);
   }
   private _contentBlockId: number;
 
   /** Module Id is global */
   get moduleId(): number {
-    return this._moduleId || (this._moduleId = this.routeNum(keyModuleId) || this.parent._moduleId);
+    return this._moduleId || (this._moduleId = this.routeNum(keyModuleId) || this.parent.moduleId);
   }
   private _moduleId: number;
 
@@ -84,6 +84,10 @@ export class Context {
     // clear cached values
     this._zoneId = null;
     this._appId = null;
+    this._rvt = null;
+    this._tabId = null;
+    this._contentBlockId = null;
+    this._moduleId = null;
     this.ready = route != null;
   }
 
@@ -132,6 +136,5 @@ export class Context {
       return isNaN(num) ? null : num;
     }
   }
-
 
 }
