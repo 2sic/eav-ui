@@ -5,6 +5,7 @@ import { VersioningOptions } from '../models/eav/versioning-options';
 // tslint:disable-next-line:max-line-length
 import { keyAppRoot, keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/sessions-keys';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
+import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 
 export class UrlHelper {
 
@@ -20,7 +21,7 @@ export class UrlHelper {
 
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
-    const editFormData = JSON.parse(decodeURIComponent(route.snapshot.params.items));
+    const editFormData: EditForm = JSON.parse(decodeURIComponent(route.snapshot.params.items));
     return new EavConfiguration(
       context.zoneId.toString(),
       context.appId.toString(),
@@ -28,7 +29,7 @@ export class UrlHelper {
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      editFormData.addItems ? editFormData.addItems as any : JSON.stringify(editFormData.editItems),
+      editFormData.addItems ? editFormData.addItems as unknown as string : JSON.stringify(editFormData.editItems),
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),
