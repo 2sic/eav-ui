@@ -8,6 +8,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { InputType as InputTypeModel } from '../../../../shared/models/eav';
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
+import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -27,11 +28,16 @@ export class ExternalWebComponentComponent implements OnInit, OnDestroy {
   constructor(
     private inputTypeService: InputTypeService,
     private scriptsLoaderService: ScriptsLoaderService,
+    private expandableFieldService: ExpandableFieldService,
   ) { }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => { this.shouldShowConnector = expanded; }),
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.shouldShowConnector) { return; }
+        this.shouldShowConnector = dialogShouldBeOpen;
+      }),
     );
     this.loadAssets();
   }

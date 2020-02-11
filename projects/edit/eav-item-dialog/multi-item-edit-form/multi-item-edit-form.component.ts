@@ -36,6 +36,7 @@ import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/models/closed-dialog.model';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
+import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -98,6 +99,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     private ngZone: NgZone,
     private route: ActivatedRoute,
     private context: Context,
+    private expandableFieldService: ExpandableFieldService,
   ) {
     // Read configuration from queryString
     this.eavService.setEavConfiguration(this.route, this.context);
@@ -105,6 +107,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+    this.expandableFieldService.init(this.route);
     this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
     this.isParentDialog = this.editFormData.persistedData.isParentDialog;
     if (this.isParentDialog) {
@@ -145,6 +148,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.expandableFieldService.destroy();
     this.languageInstanceService.removeLanguageInstance(this.formId);
     this.eventListeners.forEach(eventListener => {
       const element = eventListener.element;

@@ -18,6 +18,7 @@ import { InputFieldHelper } from '../../../../../shared/helpers/input-field-help
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
+import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -39,6 +40,7 @@ export class ConnectorService {
     private group: FormGroup,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
+    private expandableFieldService: ExpandableFieldService,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
   }
@@ -173,19 +175,26 @@ export class ConnectorService {
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
       expand: (expand) => {
-        this._ngZone.run(() => { this.config.field.expanded.next(expand); });
+        this._ngZone.run(() => {
+          this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId);
+        });
       },
       setFocused: (focused) => {
         this._ngZone.run(() => { this.config.field.focused = focused; });
-      }
+      },
+      expandedField$: this.expandableFieldService.getObservable(),
     };
     // optional props
     if (this.config.dropzoneConfig$) {
       experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
     }
     if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
+      let expanded = false;
+      this.expandableFieldService.getObservable().pipe(take(1)).subscribe(expandedFieldId => {
+        expanded = (this.config.field.index === expandedFieldId);
+      });
       experimentalProps.wysiwygSettings = {
-        inlineMode: this.config.field.settings.Dialog === 'inline' && !this.config.field.expanded.value,
+        inlineMode: this.config.field.settings.Dialog === 'inline' && !expanded,
         buttonSource: this.config.field.settings.ButtonSource,
         buttonAdvanced: this.config.field.settings.ButtonAdvanced,
       };

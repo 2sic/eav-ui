@@ -30,6 +30,7 @@ export class ExperimentalProps {
   expand: (expand: boolean) => void;
   setFocused: (focused: boolean) => void;
   wysiwygSettings?: WysiwygSettings; // only if field is of WYSIWYG input type
+  expandedField$: Observable<number>;
 }
 
 export class WysiwygSettings {

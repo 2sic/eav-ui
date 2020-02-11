@@ -6,11 +6,9 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { FileTypeService } from '../../../shared/services/file-type.service';
-import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../shared/services/eav.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
@@ -23,7 +21,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
   @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
@@ -38,18 +36,15 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   constructor(
     private fileTypeService: FileTypeService,
     private zone: NgZone,
-    private languageInstanceService: LanguageInstanceService,
+    private expandableFieldService: ExpandableFieldService,
   ) { }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => {
-        this.dialogIsOpen = expanded;
-        if (expanded) {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
-        } else {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
-        }
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+        this.dialogIsOpen = dialogShouldBeOpen;
       }),
     );
   }
@@ -70,11 +65,11 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   expandDialog() {
     console.log('HyperlinkLibraryExpandableWrapperComponent expandDialog');
-    this.config.field.expanded.next(true);
+    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
     console.log('HyperlinkLibraryExpandableWrapperComponent closeDialog');
-    this.config.field.expanded.next(false);
+    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 
   ngOnDestroy() {

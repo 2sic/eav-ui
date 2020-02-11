@@ -21,6 +21,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private editor: any;
   private firstInit: boolean;
   private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16';
+  private dialogIsOpen: boolean;
 
   constructor() {
     super();
@@ -105,9 +106,12 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
         // Inline only subscriptions
         this.subscriptions.push(
-          // field type is FieldConfigAngular
-          (this.connector.field as any).expanded.subscribe((expanded: boolean) => {
-            if (!this.firstInit && !expanded) { setTimeout(() => { editor.focus(false); }, 100); }
+          this.experimental.expandedField$.subscribe(expandedFieldId => {
+            const dialogShouldBeOpen = (this.connector.field.index === expandedFieldId);
+            if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+            this.dialogIsOpen = dialogShouldBeOpen;
+
+            if (!this.firstInit && !this.dialogIsOpen) { setTimeout(() => { editor.focus(false); }, 100); }
           }),
         );
       }

@@ -18,6 +18,7 @@ import { EditRoutingModule } from './edit-routing.module';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/components/shared-components.module';
 import { Context } from '../ng-dialogs/src/app/shared/context/context';
 import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
+import { ExpandableFieldService } from './shared/services/expandable-field.service';
 declare const sxcVersion: string;
 
 export function createTranslateLoader(http: HttpClient) {
@@ -53,6 +54,7 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
     Context,
     SanitizeService,
+    ExpandableFieldService,
   ],
 })
 export class EditModule { }

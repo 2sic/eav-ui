@@ -16,7 +16,7 @@ import { FeatureService } from '../../../shared/store/ngrx-data/feature.service'
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -60,7 +60,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private inputTypeService: InputTypeService,
     private zone: NgZone,
     private changeDetector: ChangeDetectorRef,
-    private languageInstanceService: LanguageInstanceService,
+    private expandableFieldService: ExpandableFieldService,
   ) { }
 
   ngOnInit() {
@@ -71,17 +71,14 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     const previewElName = !this.inlineMode ? `field-${this.config.field.inputType}-preview` : `field-${this.config.field.inputType}`;
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
-      this.inputTypeService);
+      this.inputTypeService, this.expandableFieldService);
     this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName);
 
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => {
-        this.dialogIsOpen = expanded;
-        if (expanded) {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
-        } else {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
-        }
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+        this.dialogIsOpen = dialogShouldBeOpen;
       }),
     );
   }
@@ -98,13 +95,11 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   expandDialog() {
     console.log('ExpandableWrapperComponent expandDialog');
-    this.config.field.expanded.next(true);
-    this.eavService.forceConnectorSave$$.next();
+    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
     console.log('ExpandableWrapperComponent closeDialog');
-    this.config.field.expanded.next(false);
-    this.eavService.forceConnectorSave$$.next();
+    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 
   ngOnDestroy() {

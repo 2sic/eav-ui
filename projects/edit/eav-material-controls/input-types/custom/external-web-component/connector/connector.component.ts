@@ -10,6 +10,7 @@ import { ContentTypeService } from '../../../../../shared/store/ngrx-data/conten
 import { ConnectorService } from './connector.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
+import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-connector',
@@ -31,6 +32,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private contentTypeService: ContentTypeService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
+    private expandableFieldService: ExpandableFieldService,
   ) { }
 
   ngAfterViewInit() {
@@ -38,7 +40,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     const customElName = `field-${this.config.field.inputType}`;
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.customElContainer, this.config, this.group, this.featureService,
-      this.inputTypeService);
+      this.inputTypeService, this.expandableFieldService);
     this.customElConnector.createElementWebComponent(this.config, this.group, this.customElContainer, customElName);
   }
 

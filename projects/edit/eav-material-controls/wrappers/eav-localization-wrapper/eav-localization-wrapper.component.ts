@@ -5,6 +5,7 @@ import { Subscription, Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -25,6 +26,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
+    private expandableFieldService: ExpandableFieldService,
   ) { }
 
   get inputDisabled() {
@@ -37,7 +39,11 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => { this.currentLanguage = currentLanguage; }),
       this.defaultLanguage$.subscribe(defaultLanguage => { this.defaultLanguage = defaultLanguage; }),
-      this.config.field.expanded.subscribe(expanded => { this.dialogIsOpen = expanded; }),
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+        this.dialogIsOpen = dialogShouldBeOpen;
+      }),
     );
   }
 

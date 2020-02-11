@@ -183,7 +183,6 @@ export class BuildFieldsService {
         settings: settingsTranslated,
         fullSettings: fullSettings,
         wrappers: wrappers,
-        expanded: new BehaviorSubject(false),
         focused: false,
         isExternal: calculatedInputType.isExternal,
         disableI18n: disableI18n,

@@ -1,16 +1,14 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EntityFieldConfigSet } from '../../../shared/models/entity/entity-field-config-set';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
-import { EavService } from '../../../shared/services/eav.service';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -22,7 +20,7 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   @Input() config: EntityFieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   dialogIsOpen = false;
   private subscriptions: Subscription[] = [];
@@ -41,23 +39,17 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
   private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
 
   constructor(
-    private validationMessagesService: ValidationMessagesService,
-    private eavService: EavService,
     private translate: TranslateService,
-    private languageInstanceService: LanguageInstanceService,
-  ) {
-  }
+    private expandableFieldService: ExpandableFieldService,
+  ) { }
 
   ngOnInit() {
     // this.setAvailableEntities();
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => {
-        this.dialogIsOpen = expanded;
-        if (expanded) {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
-        } else {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
-        }
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+        this.dialogIsOpen = dialogShouldBeOpen;
       }),
     );
   }
@@ -78,11 +70,11 @@ export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, A
 
   expandDialog() {
     console.log('EntityExpandableWrapperComponent expandDialog');
-    this.config.field.expanded.next(true);
+    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
     console.log('EntityExpandableWrapperComponent closeDialog');
-    this.config.field.expanded.next(false);
+    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 
   ngOnDestroy() {

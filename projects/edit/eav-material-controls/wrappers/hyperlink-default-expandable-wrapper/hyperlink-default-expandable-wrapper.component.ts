@@ -12,8 +12,8 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -50,7 +50,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private eavService: EavService,
     private zone: NgZone,
     private dialog: MatDialog,
-    private languageInstanceService: LanguageInstanceService,
+    private expandableFieldService: ExpandableFieldService,
   ) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
@@ -64,13 +64,10 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.setLink(this.control.value);
     this.suscribeValueChanges();
     this.subscriptions.push(
-      this.config.field.expanded.subscribe(expanded => {
-        this.dialogIsOpen = expanded;
-        if (expanded) {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, true);
-        } else {
-          this.languageInstanceService.updateHideHeader(this.config.form.formId, false);
-        }
+      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+        this.dialogIsOpen = dialogShouldBeOpen;
       }),
     );
   }
@@ -99,11 +96,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   expandDialog() {
     console.log('HyperlinkDefaultExpandableWrapperComponent expandDialog');
-    this.config.field.expanded.next(true);
+    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
     console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
-    this.config.field.expanded.next(false);
+    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 
   openPageDialog() {
