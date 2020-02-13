@@ -1,4 +1,4 @@
-export function fixMenuPositions(container: HTMLElement) {
+export function fixMenuPositions(fieldStringWysiwyg: HTMLElement) {
   const observer = new MutationObserver((mutations: MutationRecord[]) => {
     for (let i = 0; i < mutations.length; i++) {
       const mutation = mutations[i];
@@ -10,7 +10,7 @@ export function fixMenuPositions(container: HTMLElement) {
         const toxMenu = addedNode;
         const containerPaddingTopBottom = 10;
         const containerPaddingSides = 0;
-        const containerOffsets = container.getBoundingClientRect();
+        const containerOffsets = fieldStringWysiwyg.getBoundingClientRect();
         const containerTop = containerOffsets.top + containerPaddingTopBottom;
         const containerLeft = containerOffsets.left + containerPaddingSides;
         const containerBottom = containerOffsets.bottom - containerPaddingTopBottom;
@@ -77,6 +77,7 @@ export function fixMenuPositions(container: HTMLElement) {
       }
     }
   });
-  observer.observe(container, { subtree: true, childList: true });
+  const toolbarContainer = fieldStringWysiwyg.querySelector('.tinymce-toolbar-container');
+  observer.observe(toolbarContainer, { subtree: true, childList: true });
   return observer;
 }
