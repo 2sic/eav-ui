@@ -64,10 +64,9 @@ export class ExpandableFieldService {
       delete editFormData.persistedData.expandedFieldId;
     }
     const newFormDataString = JSON.stringify(editFormData);
-    // spm use lastOccurrence to update url
-    // const lastOccurrence = newUrl.lastIndexOf(oldFormDataString);
-    // if (lastOccurrence <= 0) { return; }
-    newUrl = newUrl.replace(oldFormDataString, newFormDataString);
+    const lastIndex = newUrl.lastIndexOf(oldFormDataString);
+    if (lastIndex <= 0) { return; }
+    newUrl = newUrl.substring(0, lastIndex) + newUrl.substring(lastIndex).replace(oldFormDataString, newFormDataString);
     this.router.navigate([newUrl]);
   }
 }
