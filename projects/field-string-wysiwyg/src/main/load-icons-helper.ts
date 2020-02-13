@@ -21,6 +21,8 @@ import * as filePdf from '../../../../src/icons/font-awesome/file-pdf.svg';
 import * as sitemap from '../../../../src/icons/font-awesome/sitemap.svg';
 // google material icons
 import * as school from '../../../../src/icons/google-material/baseline-school-24px.svg';
+// tinymce icons
+import * as paragraph from '../../../../src/icons/tinymce/paragraph.svg';
 
 const customTinyMceIcons: any = {
   'custom-anchor': anchor,
@@ -43,6 +45,7 @@ const customTinyMceIcons: any = {
   'custom-image-u6': imageU6,
   'custom-school': school,
   'custom-sitemap': sitemap,
+  'custom-paragraph': paragraph,
 };
 
 export function loadCustomIcons(editor: any) {
