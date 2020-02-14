@@ -42,14 +42,21 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       this.classList.add('full-wysiwyg');
     }
 
-    const tinyMceScriptLoaded = !!(window as any).tinymce;
-    if (tinyMceScriptLoaded) {
+    const tinyMceSrc = `${this.tinyMceBaseUrl}/tinymce.min.js`;
+
+    const scriptLoaded = !!(<any>window).tinymce;
+    if (scriptLoaded) {
       this.tinyMceScriptLoaded();
     } else {
-      const script = document.createElement('script');
-      script.src = `${this.tinyMceBaseUrl}/tinymce.min.js`;
-      script.onload = this.tinyMceScriptLoaded.bind(this);
-      this.appendChild(script);
+      const scriptElement = <HTMLScriptElement>document.querySelector('script[src="' + tinyMceSrc + '"]');
+      if (scriptElement) {
+        scriptElement.addEventListener('load', this.tinyMceScriptLoaded.bind(this), { once: true });
+      } else {
+        const script = document.createElement('script');
+        script.src = tinyMceSrc;
+        script.addEventListener('load', this.tinyMceScriptLoaded.bind(this), { once: true });
+        this.appendChild(script);
+      }
     }
   }
 

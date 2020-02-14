@@ -124,7 +124,9 @@ export class ConnectorService {
     };
   }
 
-  public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {
+  public createElementWebComponent(
+    config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string, inlineMode: boolean
+  ) {
     this.customElContainer = customElContainer;
     this.config = config;
     this.group = group;
@@ -134,7 +136,7 @@ export class ConnectorService {
     // spm pass language service secretly as well
     this.customEl.translateService = this.translateService;
 
-    this.customEl.experimental = this.calculateExperimentalProps();
+    this.customEl.experimental = this.calculateExperimentalProps(inlineMode);
     this.customEl.connector = this.buildConnector();
     console.log('Petar order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
@@ -157,7 +159,7 @@ export class ConnectorService {
     return connector;
   }
 
-  private calculateExperimentalProps(): ExperimentalProps {
+  private calculateExperimentalProps(inlineMode: boolean): ExperimentalProps {
     let allInputTypeNames: InputTypeName[];
     const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(take(1)).subscribe(data => {
@@ -189,12 +191,8 @@ export class ConnectorService {
       experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
     }
     if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
-      let expanded = false;
-      this.expandableFieldService.getObservable().pipe(take(1)).subscribe(expandedFieldId => {
-        expanded = (this.config.field.index === expandedFieldId);
-      });
       experimentalProps.wysiwygSettings = {
-        inlineMode: this.config.field.settings.Dialog === 'inline' && !expanded,
+        inlineMode: inlineMode,
         buttonSource: this.config.field.settings.ButtonSource,
         buttonAdvanced: this.config.field.settings.ButtonAdvanced,
       };
