@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
+import { Subscription } from 'rxjs';
 
 import { Query } from '../shared/models/query.model';
 import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
@@ -8,13 +9,15 @@ import { PipelinesService } from '../shared/services/pipelines.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
+import { DialogService } from '../../shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-queries',
   templateUrl: './queries.component.html',
   styleUrls: ['./queries.component.scss']
 })
-export class QueriesComponent implements OnInit {
+export class QueriesComponent implements OnInit, OnDestroy {
   queries: Query[];
 
   columnDefs: ColDef[] = [
@@ -35,17 +38,29 @@ export class QueriesComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
-  private contentType = 'DataPipeline'; // spm Figure out what is data pipeline
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
+    private dialogService: DialogService,
     private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
     this.fetchPipelines();
+    this.subscription.add(
+      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+        console.log('Dialog closed event captured:', closedDialog);
+        this.fetchPipelines();
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -57,7 +72,7 @@ export class QueriesComponent implements OnInit {
   }
 
   fetchPipelines() {
-    this.pipelinesService.getAll(this.contentType).subscribe((queries: Query[]) => {
+    this.pipelinesService.getAll(this.eavConfigurationService.contentType.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
   }
