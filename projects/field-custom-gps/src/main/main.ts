@@ -65,14 +65,19 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
     }
 
-    const mapScriptLoaded = !!(window as any).google;
-    if (mapScriptLoaded) {
+    const scriptLoaded = !!(<any>window).google;
+    if (scriptLoaded) {
       this.mapScriptLoaded();
     } else {
-      const script = document.createElement('script');
-      script.src = this.mapApiUrl;
-      script.onload = this.mapScriptLoaded.bind(this);
-      this.appendChild(script);
+      const scriptElement = <HTMLScriptElement>document.querySelector('script[src="' + this.mapApiUrl + '"]');
+      if (scriptElement) {
+        scriptElement.addEventListener('load', this.mapScriptLoaded.bind(this), { once: true });
+      } else {
+        const script = document.createElement('script');
+        script.src = this.mapApiUrl;
+        script.addEventListener('load', this.mapScriptLoaded.bind(this), { once: true });
+        this.appendChild(script);
+      }
     }
   }
 
