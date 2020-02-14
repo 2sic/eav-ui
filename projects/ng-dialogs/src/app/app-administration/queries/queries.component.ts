@@ -6,6 +6,8 @@ import { Query } from '../shared/models/query.model';
 import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
 import { PipelinesService } from '../shared/services/pipelines.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
+import { EditForm } from '../shared/models/edit-form.model';
+import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 
 @Component({
   selector: 'app-queries',
@@ -39,6 +41,7 @@ export class QueriesComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
+    private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -59,8 +62,27 @@ export class QueriesComponent implements OnInit {
     });
   }
 
-  editQuery() {
-    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
+  editQuery(query: Query) {
+    let form: EditForm;
+    if (query === null) {
+      // spm fix prefill and &user[canDesign]=true&user[canDevelop]=true
+      // var items = [{
+      //   ContentTypeName: 'DataPipeline',
+      //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
+      // }];
+      form = {
+        addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.query }],
+        editItems: null,
+        persistedData: { isParentDialog: true },
+      };
+    } else {
+      form = {
+        addItems: null,
+        editItems: [{ EntityId: query.Id.toString(), Title: query.Name }],
+        persistedData: { isParentDialog: true },
+      };
+    }
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
   private openVisualQueryDesigner() {

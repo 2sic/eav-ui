@@ -84,14 +84,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
   editView(params: CellClickedEvent) {
     let form: EditForm;
     if (params === null) {
-      // add view
       form = {
         addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.template }],
         editItems: null,
         persistedData: { isParentDialog: true },
       };
     } else {
-      // edit view
       const view = <View>params.data;
       form = {
         addItems: null,
