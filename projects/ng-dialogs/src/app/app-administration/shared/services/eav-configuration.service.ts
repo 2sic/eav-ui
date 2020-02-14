@@ -12,6 +12,8 @@ export class EavConfigurationService {
   contentType = {
     // this is the main schema and the data you usually see is from here
     defaultScope: '2SexyContent',
+    // content type containing app templates (views)
+    template: '2SexyContent-Template',
     // this contains content-types for configuration, settings and resources of the app
     app: '2SexyContent-App',
     // this contains view-definitions, content-types etc.

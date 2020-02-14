@@ -11,6 +11,7 @@ import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
+import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 
 @Component({
   selector: 'app-views',
@@ -48,6 +49,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
+    private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -80,12 +82,23 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   editView(params: CellClickedEvent) {
-    const view = <View>params.data;
-    const form: EditForm = {
-      addItems: null,
-      editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
-      persistedData: { isParentDialog: true },
-    };
+    let form: EditForm;
+    if (params === null) {
+      // add view
+      form = {
+        addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.template }],
+        editItems: null,
+        persistedData: { isParentDialog: true },
+      };
+    } else {
+      // edit view
+      const view = <View>params.data;
+      form = {
+        addItems: null,
+        editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
+        persistedData: { isParentDialog: true },
+      };
+    }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
