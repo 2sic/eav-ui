@@ -30,7 +30,7 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../shared/models/eav/form-set';
-import { sortLanguages } from './multi-item-edit-form.helpers';
+import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
@@ -109,7 +109,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     this.expandableFieldService.init(this.route);
     this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
-    this.isParentDialog = this.editFormData.persistedData.isParentDialog;
+    this.isParentDialog = calculateIsParentDialog(this.route);
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);

@@ -116,7 +116,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       addItems: null,
       editItems: [{ EntityId: entityId, Title: null }],
       persistedData: {
-        isParentDialog: false,
         toNotify: {
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,

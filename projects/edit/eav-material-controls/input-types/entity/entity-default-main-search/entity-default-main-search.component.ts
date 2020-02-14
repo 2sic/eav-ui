@@ -155,7 +155,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
       addItems: [{ ContentTypeName: contentTypeName }],
       editItems: null,
       persistedData: {
-        isParentDialog: false,
         toNotify: {
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,

@@ -87,14 +87,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
       form = {
         addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.template }],
         editItems: null,
-        persistedData: { isParentDialog: true },
+        persistedData: {},
       };
     } else {
       const view = <View>params.data;
       form = {
         addItems: null,
         editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
-        persistedData: { isParentDialog: true },
+        persistedData: {},
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });

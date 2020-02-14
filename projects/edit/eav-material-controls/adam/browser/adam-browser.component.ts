@@ -187,7 +187,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       }],
       editItems: null,
       persistedData: {
-        isParentDialog: false,
         toNotify: {
           entityId: this.config.entity.entityId,
           fieldName: this.config.field.name,
@@ -201,7 +200,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       addItems: null,
       editItems: [{ EntityId: metadataId.toString(), Title: null }],
-      persistedData: { isParentDialog: false },
+      persistedData: {},
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
