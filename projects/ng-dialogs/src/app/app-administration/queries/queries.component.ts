@@ -112,7 +112,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    alert('Open permissions');
+    // spm figure out what type=4 and keyType='guid' mean
+    this.router.navigate([`${query.Guid}/4/guid/permissions`], { relativeTo: this.route.firstChild });
   }
 
   private deleteQuery(query: Query) {

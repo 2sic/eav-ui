@@ -40,8 +40,7 @@ export class QueriesDescriptionComponent implements ICellRendererAngularComp {
 
   openPermissions(event: MouseEvent) {
     event.stopPropagation();
-    alert('Open permissions!');
-    // this.params.onOpenFields(this.app);
+    this.params.onOpenPermissions(this.query);
   }
 
   deleteQuery(event: MouseEvent) {
