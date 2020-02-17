@@ -15,7 +15,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'data', component: EmptyRouteComponent, children: [
           {
-            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+            matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
@@ -36,7 +36,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+                matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
@@ -46,7 +46,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'queries', component: EmptyRouteComponent, children: [
           {
-            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+            matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
         ]
@@ -54,7 +54,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'views', component: EmptyRouteComponent, children: [
           {
-            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+            matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
@@ -62,7 +62,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+                matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]

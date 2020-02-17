@@ -9,7 +9,7 @@ const editRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialogName: ITEMS_EDIT_DIALOG }, children: [
       {
-        matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
+        matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
         loadChildren: () => import('./edit.module').then(m => m.EditModule)
       },
     ]

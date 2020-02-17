@@ -60,10 +60,10 @@ export class ExpandableFieldService {
     }
 
     const routeParams = this.route.snapshot.params;
-    const oldEditUrl = `edit/${routeParams.items}` + (routeParams.expandedFieldId ? `/${routeParams.expandedFieldId}` : '');
+    const oldEditUrl = `edit/${routeParams.items}` + (routeParams.expandedFieldId ? `/details/${routeParams.expandedFieldId}` : '');
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
-    const newEditUrl = `edit/${routeParams.items}` + (expand ? `/${fieldId}` : '');
+    const newEditUrl = `edit/${routeParams.items}` + (expand ? `/details/${fieldId}` : '');
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl]);
   }

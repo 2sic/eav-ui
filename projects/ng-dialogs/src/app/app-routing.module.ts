@@ -17,7 +17,7 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    matcher: editRoot, // ':zoneId/:appId/edit/:items' or ':zoneId/:appId/edit/:items/:expandedFieldId'
+    matcher: editRoot, // ':zoneId/:appId/edit/:items' or ':zoneId/:appId/edit/:items/details/:expandedFieldId'
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule)
   },
 ];
