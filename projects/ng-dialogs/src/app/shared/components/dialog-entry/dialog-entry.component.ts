@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -22,6 +22,7 @@ import { PermissionsComponent } from '../../../app-administration/shared/modals/
 // tslint:disable-next-line:max-line-length
 import { ContentTypesFieldsAddComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
 import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -147,6 +148,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       case SET_PERMISSIONS_DIALOG:
         this.component = PermissionsComponent;
         this.panelSize = 'large';
+        break;
+      case IMPORT_QUERY_DIALOG:
+        this.component = ImportQueryComponent;
+        this.panelSize = 'medium';
         break;
 
       case CODE_EDITOR_DIALOG:

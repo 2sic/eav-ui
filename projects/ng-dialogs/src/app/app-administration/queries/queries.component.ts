@@ -11,7 +11,7 @@ import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params
 import { EditForm } from '../shared/models/edit-form.model';
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
+import { IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-queries',
@@ -55,7 +55,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchQueries();
     this.subscription.add(
-      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+      this.dialogService.subToClosed([IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
         console.log('Dialog closed event captured:', closedDialog);
         this.fetchQueries();
       })
@@ -79,6 +79,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.pipelinesService.getAll(this.eavConfigurationService.contentType.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
+  }
+
+  importQuery() {
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
   editQuery(query: Query) {

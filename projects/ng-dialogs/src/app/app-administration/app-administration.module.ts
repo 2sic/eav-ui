@@ -47,6 +47,7 @@ import { EntitiesService } from './shared/services/entities.service';
 import { EditFieldsComponent } from './shared/modals/edit-fields/edit-fields.component';
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fields-add/content-types-fields-add.component';
+import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fi
     PermissionsGrantComponent,
     EditFieldsComponent,
     ContentTypesFieldsAddComponent,
+    ImportQueryComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -86,6 +88,7 @@ import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fi
     PermissionsGrantComponent,
     EditFieldsComponent,
     ContentTypesFieldsAddComponent,
+    ImportQueryComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
