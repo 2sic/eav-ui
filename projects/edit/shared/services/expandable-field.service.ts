@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
@@ -19,8 +18,12 @@ export class ExpandableFieldService {
     this.route = route;
     this.subscription.add(
       this.route.params.subscribe(params => {
-        const editFormData: EditForm = JSON.parse(decodeURIComponent(params.items));
-        this.expandedField$$.next(editFormData.persistedData.expandedFieldId);
+        if (!params.hasOwnProperty('expandedFieldId')) {
+          this.expandedField$$.next(null);
+          return;
+        }
+        const expandedFieldId = parseInt(params.expandedFieldId, 10);
+        this.expandedField$$.next(expandedFieldId);
       }),
     );
   }
@@ -47,26 +50,21 @@ export class ExpandableFieldService {
     while (lastChild.firstChild) {
       lastChild = lastChild.firstChild;
     }
-    let newUrl = '';
+    let currentUrl = '';
     for (const path of lastChild.snapshot.pathFromRoot) {
       if (path.url.length <= 0) { continue; }
       for (const urlSegment of path.url) {
         if (!urlSegment.path) { continue; }
-        newUrl += '/' + urlSegment.path;
+        currentUrl += '/' + urlSegment.path;
       }
     }
 
-    const oldFormDataString = this.route.snapshot.params.items;
-    const editFormData: EditForm = JSON.parse(decodeURIComponent(oldFormDataString));
-    if (expand) {
-      editFormData.persistedData.expandedFieldId = fieldId;
-    } else {
-      delete editFormData.persistedData.expandedFieldId;
-    }
-    const newFormDataString = JSON.stringify(editFormData);
-    const lastIndex = newUrl.lastIndexOf(oldFormDataString);
+    const routeParams = this.route.snapshot.params;
+    const oldEditUrl = `edit/${routeParams.items}` + (routeParams.expandedFieldId ? `/${routeParams.expandedFieldId}` : '');
+    const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
-    newUrl = newUrl.substring(0, lastIndex) + newUrl.substring(lastIndex).replace(oldFormDataString, newFormDataString);
+    const newEditUrl = `edit/${routeParams.items}` + (expand ? `/${fieldId}` : '');
+    const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
     this.router.navigate([newUrl]);
   }
 }
