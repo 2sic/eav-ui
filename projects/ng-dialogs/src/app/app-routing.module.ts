@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { editRoot } from '../../../edit/edit.matcher';
+
 const appRoutes: Routes = [
   {
     path: ':zoneId/apps',
@@ -15,7 +17,7 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    path: ':zoneId/:appId/edit/:items',
+    matcher: editRoot, // ':zoneId/:appId/edit/:items' or ':zoneId/:appId/edit/:items/:expandedFieldId'
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule)
   },
 ];

@@ -5,6 +5,7 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 // tslint:disable-next-line:max-line-length
 import { APP_ADMINISTRATION_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../shared/constants/dialog-names';
+import { edit } from '../../../../edit/edit.matcher';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -14,7 +15,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'data', component: EmptyRouteComponent, children: [
           {
-            path: 'edit/:items',
+            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           { path: ':scope/add', component: DialogEntryComponent, data: { dialogName: ADD_CONTENT_TYPE_DIALOG } },
@@ -35,7 +36,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                path: 'edit/:items',
+                matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
@@ -45,7 +46,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'queries', component: EmptyRouteComponent, children: [
           {
-            path: 'edit/:items',
+            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
         ]
@@ -53,7 +54,7 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'views', component: EmptyRouteComponent, children: [
           {
-            path: 'edit/:items',
+            matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
@@ -61,7 +62,7 @@ const appAdministrationRoutes: Routes = [
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
-                path: 'edit/:items',
+                matcher: edit, // 'edit/:items' or 'edit/:items'/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
             ]
