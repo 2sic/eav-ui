@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Query } from '../shared/models/query.model';
 import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
 import { PipelinesService } from '../shared/services/pipelines.service';
+import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { EavConfigurationService } from '../shared/services/eav-configuration.service';
@@ -30,6 +31,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         onEditQuery: this.editQuery.bind(this),
         onCloneQuery: this.cloneQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
+        onExportQuery: this.exportQuery.bind(this),
         onDelete: this.deleteQuery.bind(this),
       }
     },
@@ -45,6 +47,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
+    private contentExportService: ContentExportService,
     private dialogService: DialogService,
     private eavConfigurationService: EavConfigurationService,
   ) { }
@@ -114,6 +117,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private openPermissions(query: Query) {
     // spm figure out what type=4 and keyType='guid' mean
     this.router.navigate([`${query.Guid}/4/guid/permissions`], { relativeTo: this.route.firstChild });
+  }
+
+  private exportQuery(query: Query) {
+    this.contentExportService.exportEntity(query.Id, 'Query', true);
   }
 
   private deleteQuery(query: Query) {

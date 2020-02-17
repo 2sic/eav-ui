@@ -30,4 +30,14 @@ export class ContentExportService {
 
     window.open(url, '_blank', '');
   }
+
+  exportEntity(id: number, prefix: string, metadata: boolean) {
+    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/DownloadEntityAsJson')
+      + '?appId=' + this.context.appId
+      + '&id=' + id
+      + '&prefix=' + prefix
+      + '&withMetadata=' + metadata;
+
+    window.open(url, '_blank', '');
+  }
 }

@@ -34,8 +34,7 @@ export class QueriesDescriptionComponent implements ICellRendererAngularComp {
 
   exportQuery(event: MouseEvent) {
     event.stopPropagation();
-    alert('Export query!');
-    // this.params.onOpenFields(this.app);
+    this.params.onExportQuery(this.query);
   }
 
   openPermissions(event: MouseEvent) {
