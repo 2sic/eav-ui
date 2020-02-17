@@ -24,13 +24,12 @@ export class QueriesDescriptionComponent implements ICellRendererAngularComp {
 
   editQuery(event: MouseEvent) {
     event.stopPropagation();
-    this.params.onEditPipeline(this.query);
+    this.params.onEditQuery(this.query);
   }
 
-  copyQuery(event: MouseEvent) {
+  cloneQuery(event: MouseEvent) {
     event.stopPropagation();
-    alert('Copy query!');
-    // this.params.onOpenFields(this.app);
+    this.params.onCloneQuery(this.query);
   }
 
   exportQuery(event: MouseEvent) {

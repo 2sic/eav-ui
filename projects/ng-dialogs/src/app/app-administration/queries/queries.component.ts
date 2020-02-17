@@ -27,7 +27,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
       headerName: 'Description', field: 'Description', cellClass: 'clickable-with-button',
       onCellClicked: this.openVisualQueryDesigner.bind(this), cellRenderer: 'queriesDescriptionComponent',
       cellRendererParams: <PipelinesActionsParams>{
-        onEditPipeline: this.editQuery.bind(this),
+        onEditQuery: this.editQuery.bind(this),
+        onCloneQuery: this.cloneQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteQuery.bind(this),
       }
@@ -49,11 +50,11 @@ export class QueriesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.fetchPipelines();
+    this.fetchQueries();
     this.subscription.add(
       this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
         console.log('Dialog closed event captured:', closedDialog);
-        this.fetchPipelines();
+        this.fetchQueries();
       })
     );
   }
@@ -71,7 +72,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     params.api.sizeColumnsToFit();
   }
 
-  fetchPipelines() {
+  fetchQueries() {
     this.pipelinesService.getAll(this.eavConfigurationService.contentType.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
@@ -104,6 +105,12 @@ export class QueriesComponent implements OnInit, OnDestroy {
     alert('Open visual query designer');
   }
 
+  private cloneQuery(query: Query) {
+    this.pipelinesService.clonePipeline(query.Id).subscribe(() => {
+      this.fetchQueries();
+    });
+  }
+
   private openPermissions(query: Query) {
     alert('Open permissions');
   }
@@ -111,7 +118,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private deleteQuery(query: Query) {
     if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
     this.pipelinesService.delete(query.Id).subscribe(res => {
-      this.fetchPipelines();
+      this.fetchQueries();
     });
   }
 }

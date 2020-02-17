@@ -16,6 +16,12 @@ export class PipelinesService {
     );
   }
 
+  clonePipeline(id: number) {
+    return <Observable<null>>(
+      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/PipelineDesigner/ClonePipeline?Id=${id}&appId=${this.context.appId}`))
+    );
+  }
+
   delete(id: number) {
     return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/DeletePipeline'), {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
