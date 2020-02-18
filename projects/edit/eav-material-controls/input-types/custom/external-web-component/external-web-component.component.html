@@ -1,2 +1,2 @@
-<mat-spinner *ngIf="loadingSpinner"></mat-spinner>
+<mat-spinner *ngIf="loadingSpinner" color="accent"></mat-spinner>
 <app-connector [config]="config" [group]="group" *ngIf="!loadingSpinner && shouldShowConnector"></app-connector>

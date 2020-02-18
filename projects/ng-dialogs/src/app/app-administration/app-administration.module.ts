@@ -48,6 +48,7 @@ import { EditFieldsComponent } from './shared/modals/edit-fields/edit-fields.com
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fields-add/content-types-fields-add.component';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { ImportQueryComponent } from './shared/modals/import-query/import-query.
     MatInputModule,
     MatSelectModule,
     MatRadioModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     Context,

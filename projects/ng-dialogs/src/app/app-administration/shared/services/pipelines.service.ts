@@ -5,6 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../../shared/context/context';
 import { Query } from '../models/query.model';
+import { toBase64 } from '../../../shared/helpers/fileToBase64.helper';
 
 @Injectable()
 export class PipelinesService {
@@ -14,6 +15,13 @@ export class PipelinesService {
     return <Observable<Query[]>>(
       this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/Entities/GetEntities?appId=${this.context.appId}&contentType=${contentType}`))
     );
+  }
+
+  async importQuery(file: File) {
+    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/pipelinedesigner/importquery'), {
+      AppId: this.context.appId.toString(),
+      ContentBase64: await toBase64(file),
+    });
   }
 
   clonePipeline(id: number) {

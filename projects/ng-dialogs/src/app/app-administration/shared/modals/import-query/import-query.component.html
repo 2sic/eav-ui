@@ -1,0 +1,30 @@
+<div mat-dialog-title>
+  <div class="dialog-title-container">
+    <div>Import Query</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div [ngSwitch]="viewState">
+  <div *ngSwitchCase="1">
+    <div>
+      <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
+        <span *ngIf="!importFile">Select file</span>
+        <span *ngIf="importFile">{{ importFile.name }}</span>
+      </button>
+      <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
+    </div>
+
+    <div>
+      <button mat-button [disabled]="!importFile" (click)="importQuery()">Import</button>
+    </div>
+  </div>
+  <div *ngSwitchCase="2">
+    <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+  </div>
+  <div *ngSwitchCase="3">
+    Import completed!
+  </div>
+</div>
