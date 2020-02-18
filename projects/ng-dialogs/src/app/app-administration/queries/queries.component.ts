@@ -9,7 +9,7 @@ import { PipelinesService } from '../shared/services/pipelines.service';
 import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { EavConfigurationService } from '../shared/services/eav-configuration.service';
+import { eavConfiguration } from '../shared/services/eav-configuration.service';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
@@ -49,7 +49,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private pipelinesService: PipelinesService,
     private contentExportService: ContentExportService,
     private dialogService: DialogService,
-    private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -76,7 +75,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   fetchQueries() {
-    this.pipelinesService.getAll(this.eavConfigurationService.contentType.query).subscribe((queries: Query[]) => {
+    this.pipelinesService.getAll(eavConfiguration.contentType.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
   }
@@ -94,7 +93,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
       // }];
       form = {
-        addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.query }],
+        addItems: [{ ContentTypeName: eavConfiguration.contentType.query }],
         editItems: null,
         persistedData: {},
       };

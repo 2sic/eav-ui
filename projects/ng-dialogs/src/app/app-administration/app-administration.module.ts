@@ -34,7 +34,6 @@ import { ContentTypesService } from './shared/services/content-types.service';
 import { PipelinesService } from './shared/services/pipelines.service';
 import { TemplatesService } from './shared/services/templates.service';
 import { EditContentTypeComponent } from './shared/modals/edit-content-type/edit-content-type.component';
-import { EavConfigurationService } from './shared/services/eav-configuration.service';
 import { ContentExportComponent } from './shared/modals/content-export/content-export.component';
 import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
@@ -114,7 +113,6 @@ import { WebApisService } from './shared/services/web-apis.service';
     ContentTypesService,
     PipelinesService,
     TemplatesService,
-    EavConfigurationService,
     ContentExportService,
     ContentImportService,
     PermissionsService,

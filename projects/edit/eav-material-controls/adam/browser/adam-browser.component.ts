@@ -9,7 +9,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { MetadataConstants } from '../../../shared/constants';
+import { eavConfiguration } from '../../../../ng-dialogs/src/app/app-administration/shared/services/eav-configuration.service';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
@@ -342,6 +342,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (this.show) { this.refresh(); }
   }
 
+  // spm clean this up. Method barely does anything
   private itemDefinition = function (item: AdamItem, metadataType: string) {
     const title = 'EditFormTitle.Metadata'; // todo: i18n
     return item.MetadataId !== 0
@@ -351,7 +352,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         Metadata: {
           Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
           KeyType: 'string',
-          TargetType: MetadataConstants.MetadataOfCmsObject
+          TargetType: eavConfiguration.metadata.metadataOfCmsObject.value,
         },
         Title: title,
         Prefill: { EntityTitle: item.Name } // possibly prefill the entity title

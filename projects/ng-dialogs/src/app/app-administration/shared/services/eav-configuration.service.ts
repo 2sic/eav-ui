@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
+export const eavConfiguration = {
+  metadata: {
+    metadataOfAttribute: { key: 2, value: 'EAV Field Properties' },
+    metadataOfApp: { key: 3, value: 'App' },
+    metadataOfEntity: { key: 4, value: 'Entity' },
+    metadataOfContentType: { key: 5, value: 'ContentType' },
+    metadataOfZone: { key: 6, value: 'Zone' },
+    metadataOfCmsObject: { key: 10, value: 'CmsObject' },
+  },
 
-@Injectable()
-export class EavConfigurationService {
-  metadataOfAttribute = 2;
-  metadataOfApp = 3;
-  metadataOfEntity = 4;
-  metadataOfContentType = 5;
-  metadataOfZone = 6;
-  metadataOfCmsObject = 10;
-
-  contentType = {
+  contentType: {
     // this is the main schema and the data you usually see is from here
     defaultScope: '2SexyContent',
     // this contains content-types for configuration, settings and resources of the app
@@ -20,9 +19,9 @@ export class EavConfigurationService {
     system: 'System',
     // content type containing app templates (views)
     template: '2SexyContent-Template',
+    // content type containing permissions
+    permissions: 'PermissionConfiguration',
     // content type containing queries
     query: 'DataPipeline',
-  };
-
-  constructor() { }
-}
+  },
+};

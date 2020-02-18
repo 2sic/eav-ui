@@ -11,7 +11,7 @@ import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
-import { EavConfigurationService } from '../shared/services/eav-configuration.service';
+import { eavConfiguration } from '../shared/services/eav-configuration.service';
 
 @Component({
   selector: 'app-views',
@@ -49,7 +49,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
-    private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -85,7 +84,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     let form: EditForm;
     if (params === null) {
       form = {
-        addItems: [{ ContentTypeName: this.eavConfigurationService.contentType.template }],
+        addItems: [{ ContentTypeName: eavConfiguration.contentType.template }],
         editItems: null,
         persistedData: {},
       };

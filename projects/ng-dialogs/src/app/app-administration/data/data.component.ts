@@ -8,7 +8,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { EavConfigurationService } from '../shared/services/eav-configuration.service';
+import { eavConfiguration } from '../shared/services/eav-configuration.service';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
@@ -63,11 +63,10 @@ export class DataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
-    private eavConfigurationService: EavConfigurationService,
   ) { }
 
   ngOnInit() {
-    this.scope = this.eavConfigurationService.contentType.defaultScope; // spm figure out how scope works
+    this.scope = eavConfiguration.contentType.defaultScope; // spm figure out how scope works
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
   }
