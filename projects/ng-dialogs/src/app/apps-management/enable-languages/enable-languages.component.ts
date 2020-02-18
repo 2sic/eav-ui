@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
-import { MatDialogRef } from '@angular/material/dialog';
 
 import { EnableLanguagesService } from '../shared/services/enable-languages.service';
 import { EnableLanguage } from '../shared/models/enable-language.model';
@@ -12,7 +11,7 @@ import { EnableLanguagesStatusParams } from '../shared/models/enable-languages-s
   templateUrl: './enable-languages.component.html',
   styleUrls: ['./enable-languages.component.scss']
 })
-export class EnableLanguagesComponent implements OnInit, OnDestroy {
+export class EnableLanguagesComponent implements OnInit {
   languages: EnableLanguage[];
 
   columnDefs: ColDef[] = [
@@ -30,17 +29,10 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  constructor(
-    private dialogRef: MatDialogRef<EnableLanguagesComponent>,
-    private languagesService: EnableLanguagesService,
-  ) { }
+  constructor(private languagesService: EnableLanguagesService) { }
 
   ngOnInit() {
     this.fetchLanguages();
-  }
-
-  ngOnDestroy() {
-    this.closeDialog();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -67,12 +59,5 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
     this.languagesService.getAll().subscribe(languages => {
       this.languages = languages;
     });
-  }
-
-  closeDialog() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-      this.dialogRef = null;
-    }
   }
 }
