@@ -5,7 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { AdamBrowserComponent } from '../browser/adam-browser.component';
-import { InputTypesConstants } from '../../../shared/constants';
+import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
 
 @Component({
   selector: 'app-adam-attach-wrapper',

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
-import { InputTypesConstants } from '../../../shared/constants';
+import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
 
 @Directive({
   selector: '[appEavField]'
