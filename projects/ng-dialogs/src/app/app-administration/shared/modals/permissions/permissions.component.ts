@@ -37,6 +37,9 @@ export class PermissionsComponent implements OnInit {
   modules = AllCommunityModules;
 
   private subscription: Subscription = new Subscription();
+  private targetType: number;
+  private keyType: string;
+  private key: string;
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
@@ -47,6 +50,9 @@ export class PermissionsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+    this.keyType = this.route.snapshot.paramMap.get('keyType');
+    this.key = this.route.snapshot.paramMap.get('key');
     this.fetchPermissions();
     this.subscription.add(
       this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
@@ -65,11 +71,7 @@ export class PermissionsComponent implements OnInit {
   }
 
   fetchPermissions() {
-    // spm clean this up using constants
-    const type = parseInt(this.route.snapshot.paramMap.get('type'), 10);
-    const keyType = this.route.snapshot.paramMap.get('keyType');
-    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    this.permissionsService.getAll(type, keyType, contentTypeStaticName).subscribe(permissions => {
+    this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
       this.permissions = permissions;
     });
   }
@@ -77,14 +79,14 @@ export class PermissionsComponent implements OnInit {
   editPermission(params: CellClickedEvent) {
     let form: EditForm;
     if (params === null) {
-      const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
       form = {
         addItems: [{
-          // spm clean this up using constants
           ContentTypeName: eavConfiguration.contentType.permissions,
           For: {
             Target: eavConfiguration.metadata.entity.target,
-            Guid: contentTypeStaticName,
+            ...(this.keyType === eavConfiguration.metadata.keyTypes.guid && { Guid: this.key }),
+            ...(this.keyType === eavConfiguration.metadata.keyTypes.number && { Number: parseInt(this.key, 10) }),
+            ...(this.keyType === eavConfiguration.metadata.keyTypes.string && { String: this.key }),
           }
         }],
         editItems: null,

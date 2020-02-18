@@ -32,7 +32,7 @@ const appAdministrationRoutes: Routes = [
           { path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },
           { path: ':contentTypeStaticName/import', component: DialogEntryComponent, data: { dialogName: IMPORT_CONTENT_TYPE_DIALOG } },
           {
-            path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+            path: ':key/:type/:keyType/permissions', component: DialogEntryComponent, data: {
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
@@ -51,7 +51,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
-            path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+            path: ':key/:type/:keyType/permissions', component: DialogEntryComponent, data: {
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {
@@ -69,7 +69,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
-            path: ':contentTypeStaticName/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+            path: ':key/:type/:keyType/permissions', component: DialogEntryComponent, data: {
               dialogName: SET_PERMISSIONS_DIALOG
             }, children: [
               {

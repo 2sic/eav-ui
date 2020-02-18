@@ -13,13 +13,13 @@ export class PermissionsService {
 
   constructor(private metadataService: MetadataService, private entitiesService: EntitiesService, private context: Context) { }
 
-  getAll(targetType: number, keyType: string, contentTypeStaticName: string) {
+  getAll(targetType: number, keyType: string, key: string) {
     return <Observable<Permission[]>>(
       this.metadataService.getMetadata(
         this.context.appId,
         targetType,
         keyType,
-        contentTypeStaticName,
+        key,
         eavConfiguration.contentType.permissions,
       )
     );
