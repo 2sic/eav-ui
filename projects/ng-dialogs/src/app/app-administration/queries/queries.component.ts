@@ -9,7 +9,7 @@ import { PipelinesService } from '../shared/services/pipelines.service';
 import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { eavConfiguration } from '../../shared/constants/eav-configuration.service';
+import { eavConfiguration } from '../../shared/constants/eav-configuration';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
