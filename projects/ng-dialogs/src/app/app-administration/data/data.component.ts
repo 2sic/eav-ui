@@ -151,8 +151,10 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    // spm figure out what type=4 and keyType='guid' mean
-    this.router.navigate([`${contentType.StaticName}/4/guid/permissions`], { relativeTo: this.route.firstChild });
+    this.router.navigate(
+      [`${contentType.StaticName}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.metadata.keyTypes.guid}/permissions`],
+      { relativeTo: this.route.firstChild }
+    );
   }
 
   private deleteContentType(contentType: ContentType) {

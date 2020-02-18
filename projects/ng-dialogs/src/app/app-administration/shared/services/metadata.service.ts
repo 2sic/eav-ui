@@ -9,7 +9,7 @@ export class MetadataService {
   /**
    * Fetches metadata for given key in metadata content type
    * @param appId just the appId
-   * @param typeId // spm figure this out
+   * @param typeId metadataOf something. For more info checkout out eavConfiguration file
    * @param keyType e.g. for keyType === guid, key === contentTypeStaticName
    * @param key key of content type for which we search for permissions. Key is connected with keyType
    * @param contentTypeName name of content type where permissions are stored

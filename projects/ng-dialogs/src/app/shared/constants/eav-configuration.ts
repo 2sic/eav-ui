@@ -1,11 +1,23 @@
 export const eavConfiguration = {
   metadata: {
-    metadataOfAttribute: { key: 2, value: 'EAV Field Properties' },
-    metadataOfApp: { key: 3, value: 'App' },
-    metadataOfEntity: { key: 4, value: 'Entity' },
-    metadataOfContentType: { key: 5, value: 'ContentType' },
-    metadataOfZone: { key: 6, value: 'Zone' },
-    metadataOfCmsObject: { key: 10, value: 'CmsObject' },
+    /** metadataOfAttribute */
+    attribute: { type: 2, target: 'EAV Field Properties' },
+    /** metadataOfApp */
+    app: { type: 3, target: 'App' },
+    /** metadataOfEntity */
+    entity: { type: 4, target: 'Entity' },
+    /** metadataOfContentType */
+    contentType: { type: 5, target: 'ContentType' },
+    /** metadataOfZone */
+    zone: { type: 6, target: 'Zone' },
+    /** metadataOfCmsObject */
+    cmsObject: { type: 10, target: 'CmsObject' },
+    /** what is the loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
+    keyTypes: {
+      guid: 'guid',
+      string: 'string',
+      number: 'number',
+    }
   },
 
   contentType: {

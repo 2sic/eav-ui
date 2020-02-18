@@ -176,13 +176,12 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   addItemMetadata(adamItem: AdamItem) {
-    const newItem = this.itemDefinition(adamItem, this.getMetadataType(adamItem));
     const form: EditForm = {
       addItems: [{
-        ContentTypeName: newItem.ContentTypeName,
+        ContentTypeName: this.getMetadataType(adamItem),
         For: {
-          Target: newItem.Metadata.TargetType,
-          String: newItem.Metadata.Key,
+          Target: eavConfiguration.metadata.cmsObject.target,
+          String: (adamItem.Type === 'folder' ? 'folder' : 'file') + ':' + adamItem.Id,
         }
       }],
       editItems: null,
@@ -341,23 +340,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.show = this.autoLoad;
     if (this.show) { this.refresh(); }
   }
-
-  // spm clean this up. Method barely does anything
-  private itemDefinition = function (item: AdamItem, metadataType: string) {
-    const title = 'EditFormTitle.Metadata'; // todo: i18n
-    return item.MetadataId !== 0
-      ? { EntityId: item.MetadataId, Title: title } // if defined, return the entity-number to edit
-      : {
-        ContentTypeName: metadataType, // otherwise the content type for new-assegnment
-        Metadata: {
-          Key: (item.Type === 'folder' ? 'folder' : 'file') + ':' + item.Id,
-          KeyType: 'string',
-          TargetType: eavConfiguration.metadata.metadataOfCmsObject.value,
-        },
-        Title: title,
-        Prefill: { EntityTitle: item.Name } // possibly prefill the entity title
-      };
-  };
 
   private setAllowedFileTypes() {
     if (this.fileFilter) {

@@ -100,8 +100,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(view: View) {
-    // spm figure out what type=4 and keyType='guid' mean
-    this.router.navigate([`${view.Guid}/4/guid/permissions`], { relativeTo: this.route.firstChild });
+    this.router.navigate(
+      [`${view.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.metadata.keyTypes.guid}/permissions`],
+      { relativeTo: this.route.firstChild }
+    );
   }
 
   private deleteView(view: View) {

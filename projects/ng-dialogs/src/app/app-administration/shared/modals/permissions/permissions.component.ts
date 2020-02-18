@@ -83,7 +83,7 @@ export class PermissionsComponent implements OnInit {
           // spm clean this up using constants
           ContentTypeName: eavConfiguration.contentType.permissions,
           For: {
-            Target: eavConfiguration.metadata.metadataOfEntity.value,
+            Target: eavConfiguration.metadata.entity.target,
             Guid: contentTypeStaticName,
           }
         }],

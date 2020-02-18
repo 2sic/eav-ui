@@ -118,8 +118,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    // spm figure out what type=4 and keyType='guid' mean
-    this.router.navigate([`${query.Guid}/4/guid/permissions`], { relativeTo: this.route.firstChild });
+    this.router.navigate(
+      [`${query.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.metadata.keyTypes.guid}/permissions`],
+      { relativeTo: this.route.firstChild }
+    );
   }
 
   private exportQuery(query: Query) {
