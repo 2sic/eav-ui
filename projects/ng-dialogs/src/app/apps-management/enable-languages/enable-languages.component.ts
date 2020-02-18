@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { EnableLanguagesService } from '../../services/enable-languages.service';
-import { EnableLanguage } from '../../models/enable-language.model';
-import { EnableLanguagesStatusComponent } from '../../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { EnableLanguagesStatusParams } from '../../models/enable-languages-status-params.model';
+import { EnableLanguagesService } from '../shared/services/enable-languages.service';
+import { EnableLanguage } from '../shared/models/enable-language.model';
+import { EnableLanguagesStatusComponent } from '../shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
+import { EnableLanguagesStatusParams } from '../shared/models/enable-languages-status-params.model';
 
 @Component({
   selector: 'app-enable-languages',

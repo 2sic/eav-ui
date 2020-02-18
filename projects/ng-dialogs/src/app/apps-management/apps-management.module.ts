@@ -15,7 +15,6 @@ import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
-import { ZoneSettingsComponent } from './zone-settings/zone-settings.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 import { Context } from '../shared/context/context';
@@ -28,7 +27,7 @@ import { FeaturesListPublicComponent } from './shared/ag-grid-components/feature
 import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
 import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ImportAppService } from './shared/services/import-app.service';
-import { EnableLanguagesComponent } from './shared/modals/enable-languages/enable-languages.component';
+import { EnableLanguagesComponent } from './enable-languages/enable-languages.component';
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { FeaturesConfigService } from './shared/services/features-config.service';
@@ -37,7 +36,6 @@ import { FeaturesConfigService } from './shared/services/features-config.service
   declarations: [
     AppsManagementNavComponent,
     AppsListComponent,
-    ZoneSettingsComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
     AppsListShowComponent,

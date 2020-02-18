@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, ENABLE_LANGUAGES_DIALOG } from '../shared/constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG } from '../shared/constants/dialog-names';
 
 const appsManagementRoutes: Routes = [
   {
@@ -14,11 +14,7 @@ const appsManagementRoutes: Routes = [
           { path: 'import', component: DialogEntryComponent, data: { dialogName: IMPORT_APP_DIALOG } },
         ]
       },
-      {
-        path: 'settings', component: EmptyRouteComponent, children: [
-          { path: 'languages', component: DialogEntryComponent, data: { dialogName: ENABLE_LANGUAGES_DIALOG } },
-        ]
-      },
+      { path: 'languages', component: EmptyRouteComponent },
       { path: 'features', component: EmptyRouteComponent },
       { path: 'sxc-insights', component: EmptyRouteComponent },
       {

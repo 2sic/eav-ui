@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./apps-management-nav.component.scss']
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
-  tabs = ['list', 'settings', 'features', 'sxc-insights']; // tabs order has to match template
+  tabs = ['list', 'languages', 'features', 'sxc-insights']; // tabs order has to match template
   tabIndex: number;
 
   private subscriptions: Subscription[] = [];
