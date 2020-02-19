@@ -17,7 +17,7 @@
       <mat-label>Scope</mat-label>
       <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
         <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption">{{ scopeOption }}</mat-option>
-        <mat-option value="Manual">Manual</mat-option>
+        <mat-option value="Other">Other...</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
