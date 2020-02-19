@@ -15,7 +15,7 @@
   <mat-form-field appearance="standard" class="edit-input">
     <mat-label>Languages</mat-label>
     <mat-select [(ngModel)]="formValues.language" name="Language">
-      <mat-option [value]="'All'">All</mat-option>
+      <mat-option value="All">All</mat-option>
       <mat-option *ngFor="let lang of languages" [value]="lang.value">{{ lang.key }}</mat-option>
     </mat-select>
   </mat-form-field>
@@ -23,10 +23,10 @@
   <div>
     <mat-label>Export data</mat-label>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.recordExport" name="RecordExport">
-      <mat-radio-button class="radio-button" [value]="'Blank'">No, just export blank data schema (for new data import)
+      <mat-radio-button class="radio-button" value="Blank">No, just export blank data schema (for new data import)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" [value]="'All'">Yes, export all content-items</mat-radio-button>
-      <mat-radio-button class="radio-button" *ngIf="hasIdList" [value]="'Selection'">Export selected {{itemIds.length}}
+      <mat-radio-button class="radio-button" value="All">Yes, export all content-items</mat-radio-button>
+      <mat-radio-button class="radio-button" *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
         items</mat-radio-button>
     </mat-radio-group>
   </div>
@@ -35,9 +35,9 @@
     <mat-label>Value references to other languages</mat-label>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
       [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button class="radio-button" [value]="'Link'">Keep references to other languages (for re-import)
+      <mat-radio-button class="radio-button" value="Link">Keep references to other languages (for re-import)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" [value]="'Resolve'">Replace references with values</mat-radio-button>
+      <mat-radio-button class="radio-button" value="Resolve">Replace references with values</mat-radio-button>
     </mat-radio-group>
   </div>
 
@@ -45,9 +45,9 @@
     <mat-label>File / page references</mat-label>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
       [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button class="radio-button" [value]="'Link'">Keep references (for re-import, for example Page:4711)
+      <mat-radio-button class="radio-button" value="Link">Keep references (for re-import, for example Page:4711)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" [value]="'Resolve'">Replace references with real URLs (for example
+      <mat-radio-button class="radio-button" value="Resolve">Replace references with real URLs (for example
         /Portals/0...)
       </mat-radio-button>
     </mat-radio-group>

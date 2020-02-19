@@ -33,10 +33,10 @@
     <div>
       <mat-label>References to pages / files</mat-label>
       <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
-        <mat-radio-button class="radio-button" [value]="'Keep'">
+        <mat-radio-button class="radio-button" value="Keep">
           Import links as written in the file (for example /Portals/...)
         </mat-radio-button>
-        <mat-radio-button class="radio-button" [value]="'Resolve'">
+        <mat-radio-button class="radio-button" value="Resolve">
           Try to resolve paths to references
         </mat-radio-button>
       </mat-radio-group>
@@ -45,10 +45,10 @@
     <div>
       <mat-label>Clear all other entities</mat-label>
       <mat-radio-group class="radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
-        <mat-radio-button class="radio-button" [value]="'None'">
+        <mat-radio-button class="radio-button" value="None">
           Keep all entities not found in import
         </mat-radio-button>
-        <mat-radio-button class="radio-button" [value]="'All'">
+        <mat-radio-button class="radio-button" value="All">
           Remove all entities not found in import
         </mat-radio-button>
       </mat-radio-group>
