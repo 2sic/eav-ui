@@ -113,7 +113,12 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private addItem(contentType: ContentType) {
-    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
+    const form: EditForm = {
+      addItems: [{ ContentTypeName: contentType.StaticName }],
+      editItems: null,
+      persistedData: {},
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
   private editFields(contentType: ContentType) {
