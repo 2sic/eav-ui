@@ -80,7 +80,7 @@ export class PermissionsComponent implements OnInit {
     let form: EditForm;
     if (params === null) {
       let target: string;
-      const keys = Object.keys(eavConstants.metadata);
+      const keys = <('attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject')[]>Object.keys(eavConstants.metadata);
       for (const key of keys) {
         if (eavConstants.metadata[key].type !== this.targetType) { continue; }
         target = eavConstants.metadata[key].target;

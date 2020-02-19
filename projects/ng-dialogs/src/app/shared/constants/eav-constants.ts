@@ -1,6 +1,4 @@
-import { EavConstants } from '../models/eav-constants.model';
-
-export const eavConstants: EavConstants = {
+export const eavConstants = {
   metadata: {
     /** metadataOfAttribute */
     attribute: { type: 2, target: 'EAV Field Properties' },
