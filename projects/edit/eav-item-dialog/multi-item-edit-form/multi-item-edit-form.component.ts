@@ -150,6 +150,15 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.expandableFieldService.destroy();
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    if (this.isParentDialog) {
+      // clear the rest of the store
+      this.languageInstanceService.clearCache();
+      this.languageService.clearCache();
+      this.itemService.clearCache();
+      this.inputTypeService.clearCache();
+      this.featureService.clearCache();
+      this.contentTypeService.clearCache();
+    }
     this.eventListeners.forEach(eventListener => {
       const element = eventListener.element;
       const type = eventListener.type;
