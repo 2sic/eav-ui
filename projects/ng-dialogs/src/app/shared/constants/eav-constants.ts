@@ -14,7 +14,7 @@ export const eavConstants = {
     cmsObject: { type: 10, target: 'CmsObject' },
   },
 
-  /** what is the loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
+  /** Loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
   keyTypes: {
     guid: 'guid',
     string: 'string',
@@ -22,19 +22,21 @@ export const eavConstants = {
   },
 
   contentType: {
-    // this is the main schema and the data you usually see is from here
+    /** This is the main schema and the data you usually see is from here */
     defaultScope: '2SexyContent',
-    // this contains content-types for configuration, settings and resources of the app
+    /** This contains content-types for configuration, settings and resources of the app */
     app: '2SexyContent-App',
-    // this contains view-definitions, content-types etc.
+    /** This contains view-definitions, content-types etc. */
     cmsSystem: '2SexyContent-System',
-    // this contains core EAV data like input-field configurations and similar
+    /** This contains core EAV data like input-field configurations and similar */
     system: 'System',
-    // content type containing app templates (views)
+    /** Content type containing app templates (views) */
     template: '2SexyContent-Template',
-    // content type containing permissions
+    /** Content type containing permissions */
     permissions: 'PermissionConfiguration',
-    // content type containing queries
+    /** Content type containing queries */
     query: 'DataPipeline',
+    /** Content type containing content type metadata (app administration > data > metadata) */
+    contentType: 'ContentType',
   },
 };

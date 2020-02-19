@@ -1,5 +1,7 @@
 <div class="data-name-container">
-  <span class="text">{{ contentType.Name }}</span>
+  <span class="text">{{ contentType.Label }}
+    <span *ngIf="contentType.Name !== contentType.Label">({{contentType.Name}})</span>
+  </span>
   <button mat-button matTooltip="Add data" (click)="addItem($event)" class="hover-pair edit-ui">
     <span class="hover-default">{{ contentType.Items }}</span>
     <mat-icon class="hover-hover">add</mat-icon>

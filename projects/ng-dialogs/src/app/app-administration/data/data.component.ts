@@ -14,7 +14,8 @@ import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 // tslint:disable-next-line:max-line-length
-import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG } from '../../shared/constants/dialog-names';
+import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
+import { EditForm } from '../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-data',
@@ -120,16 +121,12 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    this.router.navigate(['edit'], { relativeTo: this.route.firstChild });
-    const title = 'ContentType Metadata';
-    if (contentType.Metadata) {
-      // open edit dialog with { EntityId: item.Metadata.Id, Title: title }
-    } else {
-      const metadataType = 'ContentType';
-      // otherwise the content type for new-assignment
+    let form: EditForm;
+    if (!contentType.Metadata) {
       /*
+        // spm fix prefill
         {
-          ContentTypeName: metadataType,
+          ContentTypeName: 'ContentType',
           Metadata: {
             Key: item.StaticName,
             KeyType: "string",
@@ -138,8 +135,26 @@ export class DataComponent implements OnInit, OnDestroy {
           Title: title,
           Prefill: { Label: item.Name, Description: item.Description }
         }
-       */
+      */
+      form = {
+        addItems: [{
+          ContentTypeName: eavConstants.contentType.contentType,
+          For: {
+            Target: eavConstants.metadata.contentType.target,
+            String: contentType.StaticName,
+          }
+        }],
+        editItems: null,
+        persistedData: {},
+      };
+    } else {
+      form = {
+        addItems: null,
+        editItems: [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
+        persistedData: {},
+      };
     }
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
   private openExport(contentType: ContentType) {
@@ -175,6 +190,7 @@ export class DataComponent implements OnInit, OnDestroy {
           EXPORT_CONTENT_TYPE_DIALOG,
           IMPORT_CONTENT_TYPE_DIALOG,
           SET_PERMISSIONS_DIALOG,
+          ITEMS_EDIT_DIALOG,
         ])
         .subscribe(closedDialog => {
           console.log('Dialog closed event captured:', closedDialog);
