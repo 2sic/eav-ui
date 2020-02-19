@@ -26,7 +26,17 @@ const appAdministrationRoutes: Routes = [
                 path: 'add', component: DialogEntryComponent, data: {
                   dialogName: CONTENT_TYPES_FIELDS_ADD_DIALOG
                 }
-              }
+              },
+              {
+                path: ':key/:type/:keyType/permissions', component: DialogEntryComponent, data: {
+                  dialogName: SET_PERMISSIONS_DIALOG
+                }, children: [
+                  {
+                    matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
+                    loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+                  },
+                ]
+              },
             ]
           },
           { path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },

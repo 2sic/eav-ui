@@ -79,14 +79,21 @@ export class PermissionsComponent implements OnInit {
   editPermission(params: CellClickedEvent) {
     let form: EditForm;
     if (params === null) {
+      let target: string;
+      const keys = Object.keys(eavConfiguration.metadata);
+      for (const key of keys) {
+        if (eavConfiguration.metadata[key].type !== this.targetType) { continue; }
+        target = eavConfiguration.metadata[key].target;
+        break;
+      }
       form = {
         addItems: [{
           ContentTypeName: eavConfiguration.contentType.permissions,
           For: {
-            Target: eavConfiguration.metadata.entity.target,
-            ...(this.keyType === eavConfiguration.metadata.keyTypes.guid && { Guid: this.key }),
-            ...(this.keyType === eavConfiguration.metadata.keyTypes.number && { Number: parseInt(this.key, 10) }),
-            ...(this.keyType === eavConfiguration.metadata.keyTypes.string && { String: this.key }),
+            Target: target,
+            ...(this.keyType === eavConfiguration.keyTypes.guid && { Guid: this.key }),
+            ...(this.keyType === eavConfiguration.keyTypes.number && { Number: parseInt(this.key, 10) }),
+            ...(this.keyType === eavConfiguration.keyTypes.string && { String: this.key }),
           }
         }],
         editItems: null,

@@ -11,6 +11,7 @@ import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../../../../shared/constants/dialog-names';
+import { eavConfiguration } from '../../../../shared/constants/eav-configuration';
 
 @Component({
   selector: 'app-edit-fields',
@@ -49,13 +50,17 @@ export class EditFieldsComponent implements OnInit {
     { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     {
-      headerName: '', cellClass: 'actions', cellRenderer: () => {
+      headerName: '', cellClass: 'actions', cellRenderer: (params: ICellRendererParams) => {
+        const field = <Field>params.data;
+        const showPermissions = field.InputType === 'string-wysiwyg' || field.Type === 'Hyperlink';
         return '<div class="icon-container">'
           // tslint:disable-next-line:max-line-length
           + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="rename" title="Rename">settings_applications</mat-icon>'
           + '&nbsp;'
           // tslint:disable-next-line:max-line-length
           + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="delete" title="Delete">delete</mat-icon>'
+          // tslint:disable-next-line:max-line-length
+          + (showPermissions ? '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="permissions" title="Permissions">person</mat-icon>' : '')
           + '</div>';
       }, onCellClicked: this.activateAction.bind(this),
     },
@@ -175,6 +180,12 @@ export class EditFieldsComponent implements OnInit {
         this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
           this.fetchFields();
         });
+        break;
+      case 'permissions':
+        this.router.navigate(
+          [`${field.Id}/${eavConfiguration.metadata.attribute.type}/${eavConfiguration.keyTypes.number}/permissions`],
+          { relativeTo: this.route }
+        );
         break;
       default:
         return;

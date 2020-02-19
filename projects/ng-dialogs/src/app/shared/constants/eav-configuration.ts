@@ -1,4 +1,4 @@
-export const eavConfiguration = {
+export const eavConfiguration: EavConfiguration = {
   metadata: {
     /** metadataOfAttribute */
     attribute: { type: 2, target: 'EAV Field Properties' },
@@ -12,12 +12,13 @@ export const eavConfiguration = {
     zone: { type: 6, target: 'Zone' },
     /** metadataOfCmsObject */
     cmsObject: { type: 10, target: 'CmsObject' },
-    /** what is the loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
-    keyTypes: {
-      guid: 'guid',
-      string: 'string',
-      number: 'number',
-    }
+  },
+
+  /** what is the loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
+  keyTypes: {
+    guid: 'guid',
+    string: 'string',
+    number: 'number',
   },
 
   contentType: {
@@ -37,3 +38,14 @@ export const eavConfiguration = {
     query: 'DataPipeline',
   },
 };
+
+interface EavConfiguration {
+  metadata: {
+    [key: string]: {
+      type: number;
+      target: string;
+    }
+  };
+  keyTypes: { [key: string]: string };
+  contentType: { [key: string]: string };
+}

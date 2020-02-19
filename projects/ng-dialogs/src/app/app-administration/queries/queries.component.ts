@@ -119,7 +119,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private openPermissions(query: Query) {
     this.router.navigate(
-      [`${query.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.metadata.keyTypes.guid}/permissions`],
+      [`${query.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.keyTypes.guid}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }
