@@ -1,3 +1,6 @@
+export type EavMetadata = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
+export type EavContentType = 'defaultScope' | 'app' | 'cmsSystem' | 'system' | 'template' | 'permissions' | 'query' | 'contentType';
+
 export const eavConstants = {
   metadata: {
     /** metadataOfAttribute */

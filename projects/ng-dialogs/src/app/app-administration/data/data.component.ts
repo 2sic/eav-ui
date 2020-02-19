@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSelectChange } from '@angular/material/select';
 import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
@@ -8,7 +9,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { eavConstants } from '../../shared/constants/eav-constants';
+import { eavConstants, EavContentType } from '../../shared/constants/eav-constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
@@ -24,6 +25,8 @@ import { EditForm } from '../shared/models/edit-form.model';
 })
 export class DataComponent implements OnInit, OnDestroy {
   contentTypes: ContentType[];
+  scope: string;
+  scopeOptions: string[];
 
   columnDefs: ColDef[] = [
     {
@@ -56,7 +59,6 @@ export class DataComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  private scope: string;
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -64,10 +66,14 @@ export class DataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
-  ) { }
+  ) {
+    this.scope = eavConstants.contentType.defaultScope;
+    this.scopeOptions = Object.keys(eavConstants.contentType).map((key: EavContentType) => {
+      return eavConstants.contentType[key];
+    });
+  }
 
   ngOnInit() {
-    this.scope = eavConstants.contentType.defaultScope; // spm figure out how scope works
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
   }
@@ -108,8 +114,19 @@ export class DataComponent implements OnInit, OnDestroy {
     alert('Create ghost');
   }
 
-  changeScope() {
-    alert('Change scope');
+  changeScope(event: MatSelectChange) {
+    let newScope = event.value;
+    if (newScope === 'Manual') {
+      // tslint:disable-next-line:max-line-length
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
+      if (!newScope) {
+        newScope = eavConstants.contentType.defaultScope;
+      } else if (!this.scopeOptions.includes(newScope)) {
+        this.scopeOptions.push(newScope);
+      }
+    }
+    this.scope = newScope;
+    this.fetchContentTypes();
   }
 
   private addItem(contentType: ContentType) {

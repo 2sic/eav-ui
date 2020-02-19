@@ -1,17 +1,27 @@
 <h3>Content-Types and Data</h3>
 
-<button mat-icon-button matTooltip="Add content type" (click)="editContentType(null)" class="almost-implemented">
-  <mat-icon>add</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Refresh" (click)="fetchContentTypes()">
-  <mat-icon>refresh</mat-icon>
-</button>
-<button mat-icon-button matTooltip="todo" (click)="createGhost()" class="not-implemented">
-  <mat-icon>adb</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Change scope" (click)="changeScope()" class="not-implemented">
-  <mat-icon>adjust</mat-icon>
-</button>
+<div class="actions-container">
+  <div>
+    <button mat-icon-button matTooltip="Add content type" (click)="editContentType(null)" class="almost-implemented">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Refresh" (click)="fetchContentTypes()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Ghost" (click)="createGhost()" class="not-implemented">
+      <mat-icon>adb</mat-icon>
+    </button>
+  </div>
+  <div>
+    <mat-form-field appearance="standard" class="scope-dropdown">
+      <mat-label>Scope</mat-label>
+      <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
+        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption">{{ scopeOption }}</mat-option>
+        <mat-option value="Manual">Manual</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
