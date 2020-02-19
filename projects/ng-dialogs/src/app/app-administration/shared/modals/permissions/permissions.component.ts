@@ -11,7 +11,7 @@ import { PermissionsGrantParams } from '../../models/permissions-grant-params';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConstants, EavMetadata } from '../../../../shared/constants/eav-constants';
+import { eavConstants, EavMetadataKey } from '../../../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-permissions',
@@ -80,7 +80,7 @@ export class PermissionsComponent implements OnInit {
     let form: EditForm;
     if (params === null) {
       let target: string;
-      const keys = <EavMetadata[]>Object.keys(eavConstants.metadata);
+      const keys = <EavMetadataKey[]>Object.keys(eavConstants.metadata);
       for (const key of keys) {
         if (eavConstants.metadata[key].type !== this.targetType) { continue; }
         target = eavConstants.metadata[key].target;
@@ -88,7 +88,7 @@ export class PermissionsComponent implements OnInit {
       }
       form = {
         addItems: [{
-          ContentTypeName: eavConstants.contentType.permissions,
+          ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
             Target: target,
             ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),

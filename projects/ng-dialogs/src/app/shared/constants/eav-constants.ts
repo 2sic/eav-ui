@@ -1,5 +1,5 @@
-export type EavMetadata = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
-export type EavContentType = 'defaultScope' | 'app' | 'cmsSystem' | 'system' | 'template' | 'permissions' | 'query' | 'contentType';
+export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
+export type EavScopesKey = 'default' | 'app' | 'cmsSystem' | 'system';
 
 export const eavConstants = {
   metadata: {
@@ -24,15 +24,20 @@ export const eavConstants = {
     number: 'number',
   },
 
-  contentType: {
+  /** Scopes */
+  scopes: {
     /** This is the main schema and the data you usually see is from here */
-    defaultScope: '2SexyContent',
+    default: '2SexyContent',
     /** This contains content-types for configuration, settings and resources of the app */
     app: '2SexyContent-App',
     /** This contains view-definitions, content-types etc. */
     cmsSystem: '2SexyContent-System',
     /** This contains core EAV data like input-field configurations and similar */
     system: 'System',
+  },
+
+  /** Content types where templates, permissions, etc. are stored */
+  contentTypes: {
     /** Content type containing app templates (views) */
     template: '2SexyContent-Template',
     /** Content type containing permissions */
@@ -41,5 +46,5 @@ export const eavConstants = {
     query: 'DataPipeline',
     /** Content type containing content type metadata (app administration > data > metadata) */
     contentType: 'ContentType',
-  },
+  }
 };

@@ -9,7 +9,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavContentType } from '../../shared/constants/eav-constants';
+import { eavConstants, EavScopesKey } from '../../shared/constants/eav-constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
@@ -67,9 +67,9 @@ export class DataComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
   ) {
-    this.scope = eavConstants.contentType.defaultScope;
-    this.scopeOptions = Object.keys(eavConstants.contentType).map((key: EavContentType) => {
-      return eavConstants.contentType[key];
+    this.scope = eavConstants.scopes.default;
+    this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => {
+      return eavConstants.scopes[key];
     });
   }
 
@@ -120,7 +120,7 @@ export class DataComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
-        newScope = eavConstants.contentType.defaultScope;
+        newScope = eavConstants.scopes.default;
       } else if (!this.scopeOptions.includes(newScope)) {
         this.scopeOptions.push(newScope);
       }
@@ -160,7 +160,7 @@ export class DataComponent implements OnInit, OnDestroy {
       */
       form = {
         addItems: [{
-          ContentTypeName: eavConstants.contentType.contentType,
+          ContentTypeName: eavConstants.contentTypes.contentType,
           For: {
             Target: eavConstants.metadata.contentType.target,
             String: contentType.StaticName,

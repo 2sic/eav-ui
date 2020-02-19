@@ -75,7 +75,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   fetchQueries() {
-    this.pipelinesService.getAll(eavConstants.contentType.query).subscribe((queries: Query[]) => {
+    this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
   }
@@ -93,7 +93,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
       // }];
       form = {
-        addItems: [{ ContentTypeName: eavConstants.contentType.query }],
+        addItems: [{ ContentTypeName: eavConstants.contentTypes.query }],
         editItems: null,
         persistedData: {},
       };
