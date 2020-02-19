@@ -11,7 +11,7 @@ import { PermissionsGrantParams } from '../../models/permissions-grant-params';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConstants } from '../../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-permissions',

@@ -11,7 +11,7 @@ import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConstants } from '../../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-edit-fields',

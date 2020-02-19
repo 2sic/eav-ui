@@ -11,7 +11,7 @@ import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
-import { eavConstants } from '../../shared/constants/eav-configuration';
+import { eavConstants } from '../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-views',

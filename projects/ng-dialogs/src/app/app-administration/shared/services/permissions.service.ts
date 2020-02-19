@@ -5,7 +5,7 @@ import { MetadataService } from './metadata.service';
 import { EntitiesService } from './entities.service';
 import { Context } from '../../../shared/context/context';
 import { Permission } from '../models/permission.model';
-import { eavConstants } from '../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../shared/constants/eav-constants';
 
 @Injectable()
 export class PermissionsService {

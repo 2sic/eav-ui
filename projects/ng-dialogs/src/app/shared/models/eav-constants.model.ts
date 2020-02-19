@@ -5,6 +5,10 @@ export interface EavConstants {
       target: string;
     }
   };
-  keyTypes: { [key: string]: string };
-  contentType: { [key: string]: string };
+  keyTypes: {
+    [key: string]: string;
+  };
+  contentType: {
+    [key: string]: string;
+  };
 }
