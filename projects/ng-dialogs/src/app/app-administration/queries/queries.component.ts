@@ -9,7 +9,7 @@ import { PipelinesService } from '../shared/services/pipelines.service';
 import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { eavConfiguration } from '../../shared/constants/eav-configuration';
+import { eavConstants } from '../../shared/constants/eav-configuration';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
@@ -75,7 +75,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   fetchQueries() {
-    this.pipelinesService.getAll(eavConfiguration.contentType.query).subscribe((queries: Query[]) => {
+    this.pipelinesService.getAll(eavConstants.contentType.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
   }
@@ -93,7 +93,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
       // }];
       form = {
-        addItems: [{ ContentTypeName: eavConfiguration.contentType.query }],
+        addItems: [{ ContentTypeName: eavConstants.contentType.query }],
         editItems: null,
         persistedData: {},
       };
@@ -119,7 +119,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private openPermissions(query: Query) {
     this.router.navigate(
-      [`${query.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.keyTypes.guid}/permissions`],
+      [`${query.Guid}/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }

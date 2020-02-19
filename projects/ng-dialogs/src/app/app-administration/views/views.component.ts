@@ -11,7 +11,7 @@ import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
-import { eavConfiguration } from '../../shared/constants/eav-configuration';
+import { eavConstants } from '../../shared/constants/eav-configuration';
 
 @Component({
   selector: 'app-views',
@@ -84,7 +84,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     let form: EditForm;
     if (params === null) {
       form = {
-        addItems: [{ ContentTypeName: eavConfiguration.contentType.template }],
+        addItems: [{ ContentTypeName: eavConstants.contentType.template }],
         editItems: null,
         persistedData: {},
       };
@@ -101,7 +101,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private openPermissions(view: View) {
     this.router.navigate(
-      [`${view.Guid}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.keyTypes.guid}/permissions`],
+      [`${view.Guid}/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }

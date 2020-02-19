@@ -11,7 +11,7 @@ import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { CONTENT_TYPES_FIELDS_ADD_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConfiguration } from '../../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../../shared/constants/eav-configuration';
 
 @Component({
   selector: 'app-edit-fields',
@@ -183,7 +183,7 @@ export class EditFieldsComponent implements OnInit {
         break;
       case 'permissions':
         this.router.navigate(
-          [`${field.Id}/${eavConfiguration.metadata.attribute.type}/${eavConfiguration.keyTypes.number}/permissions`],
+          [`${field.Id}/${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/permissions`],
           { relativeTo: this.route }
         );
         break;

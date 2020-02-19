@@ -1,4 +1,6 @@
-export const eavConfiguration: EavConfiguration = {
+import { EavConstants } from '../models/eav-constants.model';
+
+export const eavConstants: EavConstants = {
   metadata: {
     /** metadataOfAttribute */
     attribute: { type: 2, target: 'EAV Field Properties' },
@@ -38,14 +40,3 @@ export const eavConfiguration: EavConfiguration = {
     query: 'DataPipeline',
   },
 };
-
-interface EavConfiguration {
-  metadata: {
-    [key: string]: {
-      type: number;
-      target: string;
-    }
-  };
-  keyTypes: { [key: string]: string };
-  contentType: { [key: string]: string };
-}

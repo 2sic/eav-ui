@@ -11,7 +11,7 @@ import { PermissionsGrantParams } from '../../models/permissions-grant-params';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConfiguration } from '../../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../../shared/constants/eav-configuration';
 
 @Component({
   selector: 'app-permissions',
@@ -80,20 +80,20 @@ export class PermissionsComponent implements OnInit {
     let form: EditForm;
     if (params === null) {
       let target: string;
-      const keys = Object.keys(eavConfiguration.metadata);
+      const keys = Object.keys(eavConstants.metadata);
       for (const key of keys) {
-        if (eavConfiguration.metadata[key].type !== this.targetType) { continue; }
-        target = eavConfiguration.metadata[key].target;
+        if (eavConstants.metadata[key].type !== this.targetType) { continue; }
+        target = eavConstants.metadata[key].target;
         break;
       }
       form = {
         addItems: [{
-          ContentTypeName: eavConfiguration.contentType.permissions,
+          ContentTypeName: eavConstants.contentType.permissions,
           For: {
             Target: target,
-            ...(this.keyType === eavConfiguration.keyTypes.guid && { Guid: this.key }),
-            ...(this.keyType === eavConfiguration.keyTypes.number && { Number: parseInt(this.key, 10) }),
-            ...(this.keyType === eavConfiguration.keyTypes.string && { String: this.key }),
+            ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
+            ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
+            ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
           }
         }],
         editItems: null,

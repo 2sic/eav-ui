@@ -8,7 +8,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { eavConfiguration } from '../../shared/constants/eav-configuration';
+import { eavConstants } from '../../shared/constants/eav-configuration';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
@@ -66,7 +66,7 @@ export class DataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.scope = eavConfiguration.contentType.defaultScope; // spm figure out how scope works
+    this.scope = eavConstants.contentType.defaultScope; // spm figure out how scope works
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
   }
@@ -152,7 +152,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openPermissions(contentType: ContentType) {
     this.router.navigate(
-      [`${contentType.StaticName}/${eavConfiguration.metadata.entity.type}/${eavConfiguration.keyTypes.guid}/permissions`],
+      [`${contentType.StaticName}/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }

@@ -5,7 +5,7 @@ import { MetadataService } from './metadata.service';
 import { EntitiesService } from './entities.service';
 import { Context } from '../../../shared/context/context';
 import { Permission } from '../models/permission.model';
-import { eavConfiguration } from '../../../shared/constants/eav-configuration';
+import { eavConstants } from '../../../shared/constants/eav-configuration';
 
 @Injectable()
 export class PermissionsService {
@@ -20,12 +20,12 @@ export class PermissionsService {
         targetType,
         keyType,
         key,
-        eavConfiguration.contentType.permissions,
+        eavConstants.contentType.permissions,
       )
     );
   }
 
   delete(id: number) {
-    return <Observable<null>>this.entitiesService.delete(this.context.appId, eavConfiguration.contentType.permissions, id, false);
+    return <Observable<null>>this.entitiesService.delete(this.context.appId, eavConstants.contentType.permissions, id, false);
   }
 }
