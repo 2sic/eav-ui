@@ -27,12 +27,13 @@ export class EditFieldsComponent implements OnInit {
     {
       headerName: 'Title', field: 'IsTitle', rowDrag: true, cellClass: 'actions',
       cellRenderer: (params: ICellRendererParams) => {
-        return '<div class="icon-container">'
-          // tslint:disable-next-line:max-line-length
-          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" title="Use as title field">'
-          + (params.value ? 'star' : 'star_border')
-          + '</mat-icon>'
-          + '</div>';
+        return `
+          <div class="icon-container">
+            <mat-icon class="material-icons button" title="Use as title field">
+              ${params.value ? 'star' : 'star_border'}
+            </mat-icon>
+          </div>
+        `;
       }, onCellClicked: this.setTitle.bind(this),
     },
     { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
@@ -40,11 +41,13 @@ export class EditFieldsComponent implements OnInit {
     {
       headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button actions',
       cellRenderer: (params: ICellRendererParams) => {
-        return '<div class="icon-container" title="Change Input Type">'
-          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true">edit</mat-icon>'
-          + '&nbsp;'
-          + `<span class="text">${params.value}</span>`
-          + '</div>';
+        return `
+          <div class="icon-container" title="Change Input Type">
+            <mat-icon class="material-icons button">edit</mat-icon>
+            &nbsp;
+            <span class="text">${params.value}</span>
+          </div>
+        `;
       }, onCellClicked: this.editInputType.bind(this),
     },
     { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
@@ -53,15 +56,16 @@ export class EditFieldsComponent implements OnInit {
       headerName: '', cellClass: 'actions', cellRenderer: (params: ICellRendererParams) => {
         const field = <Field>params.data;
         const showPermissions = field.InputType === 'string-wysiwyg' || field.Type === 'Hyperlink';
-        return '<div class="icon-container">'
-          // tslint:disable-next-line:max-line-length
-          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="rename" title="Rename">settings_applications</mat-icon>'
-          + '&nbsp;'
-          // tslint:disable-next-line:max-line-length
-          + '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="delete" title="Delete">delete</mat-icon>'
-          // tslint:disable-next-line:max-line-length
-          + (showPermissions ? '<mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" role="img" aria-hidden="true" action="permissions" title="Permissions">person</mat-icon>' : '')
-          + '</div>';
+        return `
+          <div class="icon-container">
+            <mat-icon class="material-icons button" action="rename" title="Rename">settings</mat-icon>
+            &nbsp;
+            <mat-icon class="material-icons button" action="delete" title="Delete">delete</mat-icon>
+            ${showPermissions
+            ? '&nbsp;<mat-icon class="material-icons button" action="permissions" title="Permissions">person</mat-icon>'
+            : ''}
+          </div>
+        `;
       }, onCellClicked: this.activateAction.bind(this),
     },
   ];
