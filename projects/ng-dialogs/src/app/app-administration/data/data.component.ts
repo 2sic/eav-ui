@@ -31,11 +31,11 @@ export class DataComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[] = [
     {
       headerName: 'Name', field: 'Name', cellClass: 'clickable-with-button', cellRenderer: 'dataNameComponent',
-      onCellClicked: this.handleNameCellClicked.bind(this), cellRendererParams: <DataNameParams>{
+      onCellClicked: this.showContentItems.bind(this), cellRendererParams: <DataNameParams>{
         onAddItem: this.addItem.bind(this),
       }
     },
-    { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.handleNameCellClicked.bind(this) },
+    { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.showContentItems.bind(this) },
     {
       headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
         onEditFields: this.editFields.bind(this),
@@ -91,9 +91,9 @@ export class DataComponent implements OnInit, OnDestroy {
     params.api.sizeColumnsToFit();
   }
 
-  handleNameCellClicked(params: CellClickedEvent) {
+  showContentItems(params: CellClickedEvent) {
     const contentType = <ContentType>params.data;
-    alert('Open table with data');
+    this.router.navigate([`content-items`], { relativeTo: this.route.firstChild });
   }
 
   editContentType(contentType: ContentType) {

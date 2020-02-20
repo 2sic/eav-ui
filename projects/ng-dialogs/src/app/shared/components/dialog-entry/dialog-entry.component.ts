@@ -5,11 +5,10 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
-import { EnableLanguagesComponent } from '../../../apps-management/enable-languages/enable-languages.component';
 import { AppAdministrationNavComponent } from '../../../app-administration/app-administration-nav/app-administration-nav.component';
 import { CodeEditorComponent } from '../../../code-editor/code-editor/code-editor.component';
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
@@ -23,6 +22,7 @@ import { PermissionsComponent } from '../../../app-administration/shared/modals/
 import { ContentTypesFieldsAddComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
 import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
+import { ContentItemsComponent } from '../../../app-administration/shared/modals/content-items/content-items.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -116,6 +116,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.component = AppAdministrationNavComponent;
         this.panelSize = 'large';
         this.context.init(this.route);
+        break;
+      case CONTENT_ITEMS_DIALOG:
+        this.component = ContentItemsComponent;
+        this.panelSize = 'large';
         break;
       case ADD_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;

@@ -49,6 +49,7 @@ import { ContentTypesFieldsAddComponent } from './shared/modals/content-types-fi
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WebApisService } from './shared/services/web-apis.service';
+import { ContentItemsComponent } from './shared/modals/content-items/content-items.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { WebApisService } from './shared/services/web-apis.service';
     EditFieldsComponent,
     ContentTypesFieldsAddComponent,
     ImportQueryComponent,
+    ContentItemsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -90,6 +92,7 @@ import { WebApisService } from './shared/services/web-apis.service';
     EditFieldsComponent,
     ContentTypesFieldsAddComponent,
     ImportQueryComponent,
+    ContentItemsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
