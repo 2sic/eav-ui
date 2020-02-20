@@ -15,6 +15,17 @@
   }
 }
 
+.ag-cell {
+  &.no-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  &.no-outline {
+    border-color: transparent !important;
+  }
+}
+
 .ag-row:hover .clickable {
   text-decoration: underline;
   cursor: pointer;

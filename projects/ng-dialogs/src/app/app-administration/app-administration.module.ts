@@ -50,6 +50,7 @@ import { ImportQueryComponent } from './shared/modals/import-query/import-query.
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WebApisService } from './shared/services/web-apis.service';
 import { ContentItemsComponent } from './shared/modals/content-items/content-items.component';
+import { ContentItemsService } from './shared/services/content-items.service';
 
 @NgModule({
   declarations: [
@@ -123,6 +124,7 @@ import { ContentItemsComponent } from './shared/modals/content-items/content-ite
     EntitiesService,
     ContentTypesFieldsService,
     WebApisService,
+    ContentItemsService,
   ]
 })
 export class AppAdministrationModule { }

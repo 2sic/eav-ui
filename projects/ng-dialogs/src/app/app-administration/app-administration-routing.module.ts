@@ -14,7 +14,7 @@ const appAdministrationRoutes: Routes = [
       { path: 'home', component: EmptyRouteComponent },
       {
         path: 'data', component: EmptyRouteComponent, children: [
-          { path: 'content-items', component: DialogEntryComponent, data: { dialogName: CONTENT_ITEMS_DIALOG } },
+          { path: ':contentTypeStaticName/items', component: DialogEntryComponent, data: { dialogName: CONTENT_ITEMS_DIALOG } },
           {
             matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
