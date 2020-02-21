@@ -148,7 +148,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         headerName: '', cellClass: 'no-padding no-outline no-select', width: 80, suppressSizeToFit: true,
         onCellClicked: this.activateAction.bind(this), template: `
           <div class="icon-container">
-            <mat-icon class="material-icons pointer not-implemented" action="clone" title="Clone">file_copy</mat-icon>
+            <mat-icon class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</mat-icon>
             &nbsp;
             <mat-icon class="material-icons pointer not-implemented" action="export" title="Export">cloud_download</mat-icon>
             &nbsp;
@@ -170,7 +170,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
     switch (action) {
       case 'clone':
-        alert('Clone item');
+        // spm Implement duplicate entity in the form
+        // var items = [{
+        //   ContentTypeName: contentType,
+        //   DuplicateEntity: item.Id
+        // }];
+        // eavAdminDialogs.openEditItems(items, svc.liveListReload);
+        const form: EditForm = {
+          addItems: [{ ContentTypeName: this.contentTypeStaticName }],
+          editItems: null,
+          persistedData: {},
+        };
+        this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
         break;
       case 'export':
         alert('Export item');
