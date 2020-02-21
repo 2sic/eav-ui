@@ -105,7 +105,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   importItem() {
-    alert('Import item');
+    this.router.navigate(['import'], { relativeTo: this.route });
   }
 
   addMetadata() {
