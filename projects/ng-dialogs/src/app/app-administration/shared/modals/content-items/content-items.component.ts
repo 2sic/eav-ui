@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -11,6 +12,7 @@ import { Field } from '../../models/field.model';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
+import { EntitiesService } from '../../services/entities.service';
 
 @Component({
   selector: 'app-content-items',
@@ -34,6 +36,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
     private dialogService: DialogService,
+    private entitiesService: EntitiesService,
   ) {
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
@@ -129,7 +132,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
             &nbsp;
             <mat-icon class="material-icons pointer not-implemented" action="export" title="Export">cloud_download</mat-icon>
             &nbsp;
-            <mat-icon class="material-icons pointer not-implemented" action="delete" title="Delete">delete</mat-icon>
+            <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
           </div>
         `,
       },
@@ -173,7 +176,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         alert('Export item');
         break;
       case 'delete':
-        alert('Delete item');
+        if (!confirm(`Delete '${item._Title}' (${item.Id})?`)) { break; }
+        this.entitiesService.delete(this.contentTypeStaticName, item.Id, false).subscribe({
+          next: () => {
+            this.fetchItems();
+          },
+          error: (err: HttpErrorResponse) => {
+            if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item.Id})?`)) { return; }
+            this.entitiesService.delete(this.contentTypeStaticName, item.Id, true).subscribe(() => {
+              this.fetchItems();
+            });
+          }
+        });
         break;
       default:
         return;

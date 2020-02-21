@@ -26,6 +26,6 @@ export class PermissionsService {
   }
 
   delete(id: number) {
-    return <Observable<null>>this.entitiesService.delete(this.context.appId, eavConstants.contentTypes.permissions, id, false);
+    return <Observable<null>>this.entitiesService.delete(eavConstants.contentTypes.permissions, id, false);
   }
 }
