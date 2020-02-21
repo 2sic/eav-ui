@@ -73,6 +73,26 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     });
   }
 
+  editItem(params: CellClickedEvent) {
+    let form: EditForm;
+    if (!params) {
+      form = {
+        addItems: [{ ContentTypeName: this.contentTypeStaticName }],
+        editItems: null,
+        persistedData: {},
+      };
+      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    } else {
+      const item = <ContentItem>params.data;
+      form = {
+        addItems: null,
+        editItems: [{ EntityId: item.Id.toString(), Title: item.Title }],
+        persistedData: {},
+      };
+    }
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+  }
+
   exportContent() {
     alert('Export content');
   }
@@ -142,26 +162,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       columnDefs.push({ headerName: column.StaticName, field: column.StaticName, minWidth: 250 });
     }
     this.columnDefs = columnDefs;
-  }
-
-  editItem(params: CellClickedEvent) {
-    let form: EditForm;
-    if (!params) {
-      form = {
-        addItems: [{ ContentTypeName: this.contentTypeStaticName }],
-        editItems: null,
-        persistedData: {},
-      };
-      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
-    } else {
-      const item = <ContentItem>params.data;
-      form = {
-        addItems: null,
-        editItems: [{ EntityId: item.Id.toString(), Title: item.Title }],
-        persistedData: {},
-      };
-    }
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   private activateAction(params: CellClickedEvent) {
