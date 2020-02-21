@@ -11,7 +11,7 @@ import { ContentItem } from '../../models/content-item.model';
 import { Field } from '../../models/field.model';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
+import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 import { EntitiesService } from '../../services/entities.service';
 import { ContentExportService } from '../../services/content-export.service';
 
@@ -49,7 +49,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       this.buildTable(columns);
     });
     this.subscription.add(
-      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+      this.dialogService.subToClosed([IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
         console.log('Dialog closed event captured:', closedDialog);
         this.fetchItems();
       })

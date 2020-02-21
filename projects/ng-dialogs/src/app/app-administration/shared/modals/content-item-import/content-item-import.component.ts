@@ -1,20 +1,47 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+
+import { ContentItemsService } from '../../services/content-items.service';
 
 @Component({
   selector: 'app-content-item-import',
   templateUrl: './content-item-import.component.html',
   styleUrls: ['./content-item-import.component.scss']
 })
-export class ContentItemImportComponent implements OnInit {
+export class ContentItemImportComponent implements OnInit, OnDestroy {
+  private viewStates = {
+    Default: 1,
+    Waiting: 2,
+    Imported: 3
+  };
+  viewState = this.viewStates.Default;
+  importFile: File;
 
-  constructor(private dialogRef: MatDialogRef<ContentItemImportComponent>) { }
+  constructor(private dialogRef: MatDialogRef<ContentItemImportComponent>, private contentItemsService: ContentItemsService) { }
 
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.closeDialog();
+  }
+
+  async importContentItem() {
+    this.viewState = this.viewStates.Waiting;
+    (await this.contentItemsService.importItem(this.importFile)).subscribe(res => {
+      this.viewState = this.viewStates.Imported;
+    });
+  }
+
+  fileChange(event: Event) {
+    this.importFile = (<HTMLInputElement>event.target).files[0];
+  }
+
   closeDialog() {
-    this.dialogRef.close();
+    if (this.dialogRef) {
+      this.dialogRef.close();
+      this.dialogRef = null;
+    }
   }
 
 }

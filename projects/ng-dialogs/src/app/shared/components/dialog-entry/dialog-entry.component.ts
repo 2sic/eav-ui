@@ -124,7 +124,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         break;
       case IMPORT_CONTENT_ITEM_DIALOG:
         this.component = ContentItemImportComponent;
-        this.panelSize = 'small';
+        this.panelSize = 'medium';
         break;
       case ADD_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;
