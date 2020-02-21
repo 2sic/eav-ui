@@ -96,7 +96,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   exportContent() {
-    alert('Export content');
+    /*
+      spm Apply filters to get a list of Ids and export that, not all content type data.
+      Check 2sxc 9 export in contentItemsListController
+      eavAdminDialogs.openContentExport(appId, contentType, null, ids);
+    */
+    this.router.navigate([`${this.contentTypeStaticName}/export`], { relativeTo: this.route });
   }
 
   importItem() {

@@ -20,6 +20,7 @@ const appAdministrationRoutes: Routes = [
                 matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
+              { path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },
             ]
           },
           {
