@@ -25,44 +25,44 @@ export class EditFieldsComponent implements OnInit {
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Title', field: 'IsTitle', rowDrag: true, cellClass: 'actions',
+      headerName: 'Title', field: 'IsTitle', rowDrag: true, cellClass: 'no-padding no-outline no-select',
       cellRenderer: (params: ICellRendererParams) => {
         return `
           <div class="icon-container">
-            <mat-icon class="material-icons button" title="Use as title field">
+            <mat-icon class="material-icons pointer" action="set-title" title="Use as title field">
               ${params.value ? 'star' : 'star_border'}
             </mat-icon>
           </div>
         `;
-      }, onCellClicked: this.setTitle.bind(this),
+      }, onCellClicked: this.activateAction.bind(this),
     },
     { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     { headerName: 'Data Type', field: 'Type', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     {
-      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button actions',
+      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button no-outline no-select',
       cellRenderer: (params: ICellRendererParams) => {
         return `
-          <div class="icon-container" title="Change Input Type">
-            <mat-icon class="material-icons button">edit</mat-icon>
+          <div class="icon-container">
+            <mat-icon class="material-icons pointer" action="change-input-type" title="Change Input Type">edit</mat-icon>
             &nbsp;
-            <span class="text">${params.value}</span>
+            <span class="text" action="change-input-type" title="Change Input Type">${params.value}</span>
           </div>
         `;
-      }, onCellClicked: this.editInputType.bind(this),
+      }, onCellClicked: this.activateAction.bind(this),
     },
     { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editContentType.bind(this) },
     {
-      headerName: '', cellClass: 'actions', cellRenderer: (params: ICellRendererParams) => {
+      headerName: '', cellClass: 'no-padding no-outline no-select', cellRenderer: (params: ICellRendererParams) => {
         const field = <Field>params.data;
         const showPermissions = field.InputType === 'string-wysiwyg' || field.Type === 'Hyperlink';
         return `
           <div class="icon-container">
-            <mat-icon class="material-icons button" action="rename" title="Rename">settings</mat-icon>
+            <mat-icon class="material-icons pointer" action="rename" title="Rename">settings</mat-icon>
             &nbsp;
-            <mat-icon class="material-icons button" action="delete" title="Delete">delete</mat-icon>
+            <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
             ${showPermissions
-            ? '&nbsp;<mat-icon class="material-icons button" action="permissions" title="Permissions">person</mat-icon>'
+            ? '&nbsp;<mat-icon class="material-icons pointer" action="permissions" title="Permissions">person</mat-icon>'
             : ''}
           </div>
         `;
@@ -150,20 +150,9 @@ export class EditFieldsComponent implements OnInit {
     this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
   }
 
-  private setTitle(params: CellClickedEvent) {
-    this.contentTypesFieldsService.setTitle(<Field>params.data, this.contentType).subscribe(() => {
-      this.fetchFields();
-    });
-  }
-
   private editContentType(params: CellClickedEvent) {
     const field = <Field>params.data;
     alert('Edit Content Type');
-  }
-
-  private editInputType(params: CellClickedEvent) {
-    const field = <Field>params.data;
-    alert('Edit Input Type');
   }
 
   private activateAction(params: CellClickedEvent) {
@@ -171,6 +160,14 @@ export class EditFieldsComponent implements OnInit {
     const action = (<HTMLElement>(<MouseEvent>params.event).target).getAttribute('action');
 
     switch (action) {
+      case 'set-title':
+        this.contentTypesFieldsService.setTitle(<Field>params.data, this.contentType).subscribe(() => {
+          this.fetchFields();
+        });
+        break;
+      case 'change-input-type':
+        alert('Change Input Type');
+        break;
       case 'rename':
         const newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`);
         if (!newName) { break; }

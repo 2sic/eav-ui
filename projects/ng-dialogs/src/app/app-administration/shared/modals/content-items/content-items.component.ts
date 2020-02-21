@@ -82,13 +82,13 @@ export class ContentItemsComponent implements OnInit {
         }
       },
       {
-        headerName: 'Status', field: 'IsPublished', width: 90, suppressSizeToFit: true,
+        headerName: 'Status', field: 'IsPublished', cellClass: 'no-outline no-select', width: 90, suppressSizeToFit: true,
         cellRenderer: (params: ICellRendererParams) => {
           const item = <ContentItem>params.data;
           // spm something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
           return `
-            <div class="icon-container" title="${item.IsPublished ? 'Published' : 'Not published'}">
-              <mat-icon class="material-icons">
+            <div class="icon-container">
+              <mat-icon class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
                 ${item.IsPublished ? 'visibility' : 'visibility_off'}
               </mat-icon>
             </div>
@@ -100,14 +100,14 @@ export class ContentItemsComponent implements OnInit {
         onCellClicked: this.editItem.bind(this),
       },
       {
-        headerName: '', cellClass: 'no-padding no-outline', width: 80, suppressSizeToFit: true,
+        headerName: '', cellClass: 'no-padding no-outline no-select', width: 80, suppressSizeToFit: true,
         onCellClicked: this.activateAction.bind(this), template: `
           <div class="icon-container">
-            <mat-icon class="material-icons button not-implemented" action="clone" title="Clone">file_copy</mat-icon>
+            <mat-icon class="material-icons pointer not-implemented" action="clone" title="Clone">file_copy</mat-icon>
             &nbsp;
-            <mat-icon class="material-icons button not-implemented" action="export" title="Export">cloud_download</mat-icon>
+            <mat-icon class="material-icons pointer not-implemented" action="export" title="Export">cloud_download</mat-icon>
             &nbsp;
-            <mat-icon class="material-icons button not-implemented" action="delete" title="Delete">delete</mat-icon>
+            <mat-icon class="material-icons pointer not-implemented" action="delete" title="Delete">delete</mat-icon>
           </div>
         `,
       },

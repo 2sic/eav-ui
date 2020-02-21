@@ -24,6 +24,10 @@
   &.no-outline {
     border-color: transparent !important;
   }
+
+  &.no-select {
+    user-select: none !important;
+  }
 }
 
 .ag-row:hover .clickable {
@@ -68,12 +72,10 @@
   align-items: center;
 }
 
-.material-icons.button {
+.material-icons.pointer {
   cursor: pointer;
 }
 
-.actions {
-  .mat-icon:hover {
-    cursor: pointer;
-  }
+.material-icons.help {
+  cursor: help;
 }
