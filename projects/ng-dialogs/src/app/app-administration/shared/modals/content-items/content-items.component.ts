@@ -176,14 +176,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         alert('Export item');
         break;
       case 'delete':
-        if (!confirm(`Delete '${item._Title}' (${item.Id})?`)) { break; }
-        this.entitiesService.delete(this.contentTypeStaticName, item.Id, false).subscribe({
+        if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { break; }
+        this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
           next: () => {
             this.fetchItems();
           },
           error: (err: HttpErrorResponse) => {
-            if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item.Id})?`)) { return; }
-            this.entitiesService.delete(this.contentTypeStaticName, item.Id, true).subscribe(() => {
+            if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item._RepositoryId})?`)) {
+              return;
+            }
+            this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
               this.fetchItems();
             });
           }
