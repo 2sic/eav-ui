@@ -11,9 +11,11 @@
 </div>
 <!-- END HEADER -->
 
+<router-outlet></router-outlet>
+
 <!-- ACTIONS -->
 <div>
-  <button mat-icon-button matTooltip="Add item" (click)="editItem(null)" class="not-implemented">
+  <button mat-icon-button matTooltip="Add item" (click)="editItem(null)">
     <mat-icon>add</mat-icon>
   </button>
   <button mat-icon-button matTooltip="Export" (click)="exportContent()" class="not-implemented">

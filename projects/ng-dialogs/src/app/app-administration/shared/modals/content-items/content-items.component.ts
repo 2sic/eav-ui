@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
 import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
 import { Field } from '../../models/field.model';
+import { EditForm } from '../../models/edit-form.model';
+import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
   styleUrls: ['./content-items.component.scss']
 })
-export class ContentItemsComponent implements OnInit {
+export class ContentItemsComponent implements OnInit, OnDestroy {
   items: ContentItem[];
 
   columnDefs: ColDef[];
@@ -21,17 +25,35 @@ export class ContentItemsComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
+  private contentTypeStaticName: string;
+  private subscription: Subscription = new Subscription();
+
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
+    private router: Router,
     private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
-  ) { }
+    private dialogService: DialogService,
+  ) {
+    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  }
 
   ngOnInit() {
     this.fetchItems();
-    this.contentItemsService.getColumns(this.route.snapshot.paramMap.get('contentTypeStaticName')).subscribe(columns => {
+    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
       this.buildTable(columns);
     });
+    this.subscription.add(
+      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+        console.log('Dialog closed event captured:', closedDialog);
+        this.fetchItems();
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -43,7 +65,7 @@ export class ContentItemsComponent implements OnInit {
   }
 
   fetchItems() {
-    this.contentItemsService.getAll(this.route.snapshot.paramMap.get('contentTypeStaticName')).subscribe(items => {
+    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
       this.items = items;
     });
   }
@@ -120,12 +142,23 @@ export class ContentItemsComponent implements OnInit {
   }
 
   editItem(params: CellClickedEvent) {
+    let form: EditForm;
     if (!params) {
-      alert('Add item');
-      return;
+      form = {
+        addItems: [{ ContentTypeName: this.contentTypeStaticName }],
+        editItems: null,
+        persistedData: {},
+      };
+      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    } else {
+      const item = <ContentItem>params.data;
+      form = {
+        addItems: null,
+        editItems: [{ EntityId: item.Id.toString(), Title: item.Title }],
+        persistedData: {},
+      };
     }
-    const item = <ContentItem>params.data;
-    alert('Edit item');
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   private activateAction(params: CellClickedEvent) {

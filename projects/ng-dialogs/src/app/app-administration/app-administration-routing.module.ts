@@ -14,7 +14,14 @@ const appAdministrationRoutes: Routes = [
       { path: 'home', component: EmptyRouteComponent },
       {
         path: 'data', component: EmptyRouteComponent, children: [
-          { path: ':contentTypeStaticName/items', component: DialogEntryComponent, data: { dialogName: CONTENT_ITEMS_DIALOG } },
+          {
+            path: ':contentTypeStaticName/items', component: DialogEntryComponent, data: { dialogName: CONTENT_ITEMS_DIALOG }, children: [
+              {
+                matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
+                loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+              },
+            ]
+          },
           {
             matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
