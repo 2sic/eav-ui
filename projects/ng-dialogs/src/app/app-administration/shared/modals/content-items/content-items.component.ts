@@ -13,6 +13,7 @@ import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 import { EntitiesService } from '../../services/entities.service';
+import { ContentExportService } from '../../services/content-export.service';
 
 @Component({
   selector: 'app-content-items',
@@ -37,6 +38,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private contentItemsService: ContentItemsService,
     private dialogService: DialogService,
     private entitiesService: EntitiesService,
+    private contentExportService: ContentExportService,
   ) {
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
@@ -150,7 +152,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           <div class="icon-container">
             <mat-icon class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</mat-icon>
             &nbsp;
-            <mat-icon class="material-icons pointer not-implemented" action="export" title="Export">cloud_download</mat-icon>
+            <mat-icon class="material-icons pointer" action="export" title="Export">cloud_download</mat-icon>
             &nbsp;
             <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
           </div>
@@ -184,7 +186,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
         break;
       case 'export':
-        alert('Export item');
+        this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
         break;
       case 'delete':
         if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { break; }
