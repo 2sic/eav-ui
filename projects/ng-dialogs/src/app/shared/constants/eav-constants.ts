@@ -1,4 +1,5 @@
 export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
+export type EavKeyTypeKey = 'guid' | 'string' | 'number';
 export type EavScopesKey = 'default' | 'app' | 'cmsSystem' | 'system';
 
 export const eavConstants = {

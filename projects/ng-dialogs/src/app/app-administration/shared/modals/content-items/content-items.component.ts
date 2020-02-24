@@ -14,6 +14,7 @@ import { DialogService } from '../../../../shared/components/dialog-service/dial
 import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 import { EntitiesService } from '../../services/entities.service';
 import { ContentExportService } from '../../services/content-export.service';
+import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-content-items',
@@ -109,7 +110,71 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   addMetadata() {
-    alert('Add metadata');
+    if (!confirm(
+      'This is a special operation to add an item which is metadata for another item.'
+      + ' If you didn\'t understand that, this is not for you :). Continue?'
+    )) { return; }
+
+    const metadataKeys = <EavMetadataKey[]>Object.keys(eavConstants.metadata);
+    const validTargetTypes = metadataKeys.map(metaKey => eavConstants.metadata[metaKey].type);
+    const targetType = parseInt(prompt(
+      'What kind of assignment do you want?'
+      + metadataKeys.map(metaKey => `\n${eavConstants.metadata[metaKey].type}: ${eavConstants.metadata[metaKey].target}`),
+      eavConstants.metadata.entity.type.toString()
+    ), 10);
+    if (!targetType) { return alert('No target type entered. Cancelled'); }
+    if (!validTargetTypes.includes(targetType)) { return alert('Invalid target type. Cancelled'); }
+
+    const key = prompt('What key do you want?');
+    if (!key) { return alert('No key entered. Cancelled'); }
+
+    const keyTypeKeys = <EavKeyTypeKey[]>Object.keys(eavConstants.keyTypes);
+    const validKeyTypes = keyTypeKeys.map(keyTypeKey => eavConstants.keyTypes[keyTypeKey]);
+    const keyType = prompt(
+      'What key type do you want?'
+      + keyTypeKeys.map(keyTypeKey => `\n${eavConstants.keyTypes[keyTypeKey]}`),
+      eavConstants.keyTypes.number
+    );
+    if (!keyType) { return alert('No key type entered. Cancelled'); }
+    if (!validKeyTypes.includes(keyType)) { return alert('Invalid key type. Cancelled'); }
+    if (keyType === eavConstants.keyTypes.number && !parseInt(key, 10)) {
+      return alert('Key type number and key don\'t match. Cancelled');
+    }
+
+    // spm Implement title functionality in edit form
+    // const items = [
+    //   {
+    //     ContentTypeName: contentType, // otherwise the content type for new-assegnment
+    //     Metadata: {
+    //       Key: key,
+    //       KeyType: keyType,
+    //       TargetType: targetType
+    //     },
+    //     Title: "Add Metadata for '" + key + "' (" + keyType + ') of type #' + targetType
+    //   }
+    // ];
+
+    let target: string;
+    for (const metaKey of metadataKeys) {
+      if (targetType !== eavConstants.metadata[metaKey].type) { continue; }
+      target = eavConstants.metadata[metaKey].target;
+    }
+
+    const form: EditForm = {
+      addItems: [{
+        ContentTypeName: this.contentTypeStaticName,
+        For: {
+          Target: target,
+          ...(keyType === eavConstants.keyTypes.guid && { Guid: key }),
+          ...(keyType === eavConstants.keyTypes.number && { Number: parseInt(key, 10) }),
+          ...(keyType === eavConstants.keyTypes.string && { String: key }),
+        }
+      }],
+      editItems: null,
+      persistedData: null
+    };
+
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   debugFilter() {
