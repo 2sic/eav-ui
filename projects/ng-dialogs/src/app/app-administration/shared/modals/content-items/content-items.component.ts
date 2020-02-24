@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
@@ -24,6 +24,7 @@ import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/
 export class ContentItemsComponent implements OnInit, OnDestroy {
   items: ContentItem[];
 
+  private gridApi: GridApi;
   columnDefs: ColDef[];
   frameworkComponents = {
   };
@@ -63,6 +64,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
     params.api.sizeColumnsToFit();
   }
 
@@ -173,12 +175,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       editItems: null,
       persistedData: null
     };
-
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
   debugFilter() {
-    alert('Debug filter');
+    // spm Not tested
+    console.warn('Current filter: ', this.gridApi.getFilterModel());
+    alert('Check console for filter information');
   }
 
   closeDialog() {
