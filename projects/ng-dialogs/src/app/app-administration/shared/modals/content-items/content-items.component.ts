@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
@@ -16,7 +16,9 @@ import { EntitiesService } from '../../services/entities.service';
 import { ContentExportService } from '../../services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/constants/eav-constants';
 import { PubMetaFilterComponent } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.component';
-import { PubMeta } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.model';
+// tslint:disable-next-line:max-line-length
+import { cellRendererId, valueGetterStatus, cellRendererStatus, actionsTemplate, valueGetterEntityField, valueGetterDateTime, valueGetterBoolean, cellRendererEntity } from './content-items-table-components';
+import { ExtendedColDef } from '../../models/extended-col-def.model';
 
 @Component({
   selector: 'app-content-items',
@@ -182,7 +184,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    // spm Not tested
     console.warn('Current filter: ', this.gridApi.getFilterModel());
     alert('Check console for filter information');
   }
@@ -194,39 +195,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildTable(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 110, suppressSizeToFit: true, cellClass: 'clickable', onCellClicked: this.editItem.bind(this),
-        filter: 'agNumberColumnFilter',
-        cellRenderer: (params: ICellRendererParams) => {
-          const item = <ContentItem>params.data;
-          return `
-            <div title="Id: ${item.Id}\nRepoId: ${item._RepositoryId}\nGuid: ${item.Guid}">
-              ${item.Id}
-            </div>
-          `;
-        }
+        headerName: 'ID', field: 'Id', width: 110, suppressSizeToFit: true, cellClass: 'clickable',
+        onCellClicked: this.editItem.bind(this), filter: 'agNumberColumnFilter', cellRenderer: cellRendererId,
       },
       {
-        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true,
-        sortable: false, valueGetter: (params: ValueGetterParams) => {
-          const item: ContentItem = params.data;
-          const published: PubMeta = {
-            published: item.IsPublished,
-            metadata: !!item.Metadata,
-          };
-          return published;
-        },
-        filter: 'pubMetaFilterComponent',
-        cellRenderer: (params: ICellRendererParams) => {
-          const item = <ContentItem>params.data;
-          // spm something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
-          return `
-            <div class="icon-container">
-              <mat-icon class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
-                ${item.IsPublished ? 'visibility' : 'visibility_off'}
-              </mat-icon>
-            </div>
-          `;
-        }
+        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
+        valueGetter: valueGetterStatus, filter: 'pubMetaFilterComponent', cellRenderer: cellRendererStatus,
       },
       {
         headerName: 'Title', field: '_Title', cellClass: 'clickable', width: 200, suppressSizeToFit: true,
@@ -234,21 +208,38 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: '', cellClass: 'no-padding no-outline no-select', width: 80, suppressSizeToFit: true,
-        filter: false, sortable: false,
-        onCellClicked: this.activateAction.bind(this), template: `
-          <div class="icon-container">
-            <mat-icon class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</mat-icon>
-            &nbsp;
-            <mat-icon class="material-icons pointer" action="export" title="Export">cloud_download</mat-icon>
-            &nbsp;
-            <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
-          </div>
-        `,
+        filter: false, sortable: false, onCellClicked: this.activateAction.bind(this), template: actionsTemplate,
       },
     ];
     for (const column of columns) {
       if (column.IsTitle) { continue; }
-      columnDefs.push({ headerName: column.StaticName, field: column.StaticName, minWidth: 250 });
+      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250 };
+      switch (column.Type) {
+        case 'Entity':
+          try {
+            colDef.allowMultiValue = column.Metadata.Entity.AllowMultiValue;
+          } catch (e) {
+            colDef.allowMultiValue = true;
+          }
+          colDef.cellRenderer = cellRendererEntity;
+          colDef.valueGetter = valueGetterEntityField;
+          break;
+        case 'DateTime':
+          try {
+            colDef.useTimePicker = column.Metadata.DateTime.UseTimePicker;
+          } catch (e) {
+            colDef.useTimePicker = false;
+          }
+          colDef.valueGetter = valueGetterDateTime;
+          break;
+        case 'Boolean':
+          colDef.valueGetter = valueGetterBoolean;
+          break;
+        case 'Number':
+          colDef.filter = 'number';
+          break;
+      }
+      columnDefs.push(colDef);
     }
     this.columnDefs = columnDefs;
   }
