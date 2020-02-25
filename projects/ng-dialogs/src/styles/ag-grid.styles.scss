@@ -15,6 +15,11 @@
   }
 }
 
+.ag-header-cell-menu-button {
+  opacity: 1 !important;
+  transition: none !important;
+}
+
 .ag-cell {
   &.no-padding {
     padding-left: 0 !important;

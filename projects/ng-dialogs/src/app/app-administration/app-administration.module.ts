@@ -52,6 +52,7 @@ import { WebApisService } from './shared/services/web-apis.service';
 import { ContentItemsComponent } from './shared/modals/content-items/content-items.component';
 import { ContentItemsService } from './shared/services/content-items.service';
 import { ContentItemImportComponent } from './shared/modals/content-item-import/content-item-import.component';
+import { PubMetaFilterComponent } from '../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { ContentItemImportComponent } from './shared/modals/content-item-import/
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,
+    PubMetaFilterComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -97,6 +99,7 @@ import { ContentItemImportComponent } from './shared/modals/content-item-import/
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,
+    PubMetaFilterComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

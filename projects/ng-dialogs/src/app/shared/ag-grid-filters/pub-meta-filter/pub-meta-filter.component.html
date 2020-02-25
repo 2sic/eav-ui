@@ -1,0 +1,14 @@
+<div class="filter-container">
+  <div class="title">Published</div>
+  <mat-radio-group [(ngModel)]="published" (ngModelChange)="filterChanged()">
+    <mat-radio-button value="all">All</mat-radio-button>
+    <mat-radio-button value="true">Published</mat-radio-button>
+    <mat-radio-button value="false">Not published</mat-radio-button>
+  </mat-radio-group>
+  <div class="title">Metadata</div>
+  <mat-radio-group [(ngModel)]="metadata" (ngModelChange)="filterChanged()">
+    <mat-radio-button value="all">All</mat-radio-button>
+    <mat-radio-button value="true">Is metadata</mat-radio-button>
+    <mat-radio-button value="false">Is not metadata</mat-radio-button>
+  </mat-radio-group>
+</div>

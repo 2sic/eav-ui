@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, ICellRendererParams, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
@@ -15,6 +15,8 @@ import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../share
 import { EntitiesService } from '../../services/entities.service';
 import { ContentExportService } from '../../services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/constants/eav-constants';
+import { PubMetaFilterComponent } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.component';
+import { PubMeta } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.model';
 
 @Component({
   selector: 'app-content-items',
@@ -27,6 +29,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private gridApi: GridApi;
   columnDefs: ColDef[];
   frameworkComponents = {
+    pubMetaFilterComponent: PubMetaFilterComponent,
   };
   modules = AllCommunityModules;
 
@@ -191,7 +194,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildTable(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 80, suppressSizeToFit: true, cellClass: 'clickable', onCellClicked: this.editItem.bind(this),
+        headerName: 'ID', field: 'Id', width: 110, suppressSizeToFit: true, cellClass: 'clickable', onCellClicked: this.editItem.bind(this),
+        filter: 'agNumberColumnFilter',
         cellRenderer: (params: ICellRendererParams) => {
           const item = <ContentItem>params.data;
           return `
@@ -202,7 +206,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         }
       },
       {
-        headerName: 'Status', field: 'IsPublished', cellClass: 'no-outline no-select', width: 90, suppressSizeToFit: true,
+        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true,
+        sortable: false, valueGetter: (params: ValueGetterParams) => {
+          const item: ContentItem = params.data;
+          const published: PubMeta = {
+            published: item.IsPublished,
+            metadata: !!item.Metadata,
+          };
+          return published;
+        },
+        filter: 'pubMetaFilterComponent',
         cellRenderer: (params: ICellRendererParams) => {
           const item = <ContentItem>params.data;
           // spm something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
@@ -217,10 +230,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Title', field: '_Title', cellClass: 'clickable', width: 200, suppressSizeToFit: true,
-        onCellClicked: this.editItem.bind(this),
+        filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
         headerName: '', cellClass: 'no-padding no-outline no-select', width: 80, suppressSizeToFit: true,
+        filter: false, sortable: false,
         onCellClicked: this.activateAction.bind(this), template: `
           <div class="icon-container">
             <mat-icon class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</mat-icon>
