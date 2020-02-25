@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ContentExport } from '../../models/content-export.model';
 import { ContentExportService } from '../../services/content-export.service';
+import { Language } from '../../../../../../../edit/shared/models/eav';
 
 @Component({
   selector: 'app-content-export',
@@ -12,11 +13,7 @@ import { ContentExportService } from '../../services/content-export.service';
 })
 export class ContentExportComponent implements OnInit {
   formValues: ContentExport;
-  languages = [ // spm Figure out how to get to list of languages
-    { key: 'en-US', value: 'en-Us' },
-    { key: 'en-US', value: 'en-Us' },
-    { key: 'en-US', value: 'en-Us' },
-  ];
+  languages: Language[] = JSON.parse(sessionStorage.langs);
   itemIds: number[];
   hasIdList = false;
 
@@ -31,7 +28,7 @@ export class ContentExportComponent implements OnInit {
       this.itemIds = selectedIds.split(',').map(id => parseInt(id, 10));
     }
     this.formValues = {
-      defaultLanguage: 'en-US', // spm Figure out what default language is
+      defaultLanguage: sessionStorage.langpri,
       contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
       language: 'All',
       recordExport: this.hasIdList ? 'Selection' : 'All',

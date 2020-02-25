@@ -112,7 +112,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         ids.push((<ContentItem>rowNode.data).Id);
       });
     }
-    this.router.navigate([`${this.contentTypeStaticName}/export${ids.length > 0 ? '/' + ids : ''}`], { relativeTo: this.route });
+    this.router.navigate([`${this.contentTypeStaticName}/export${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
   }
 
   importItem() {
