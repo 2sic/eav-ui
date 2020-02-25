@@ -17,15 +17,19 @@ export class ContentExportComponent implements OnInit {
     { key: 'en-US', value: 'en-Us' },
     { key: 'en-US', value: 'en-Us' },
   ];
-  itemIds: number[] = []; // spm Figure out how to get to list of ids and what it means
-  hasIdList: boolean; // spm Figure out how to get to list of ids and what it means
+  itemIds: number[];
+  hasIdList = false;
 
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
     private contentExportService: ContentExportService,
   ) {
-    this.hasIdList = (Array.isArray(this.itemIds) && this.itemIds.length > 0);
+    const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
+    this.hasIdList = !!selectedIds;
+    if (this.hasIdList) {
+      this.itemIds = selectedIds.split(',').map(id => parseInt(id, 10));
+    }
     this.formValues = {
       defaultLanguage: 'en-US', // spm Figure out what default language is
       contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),

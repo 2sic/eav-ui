@@ -104,12 +104,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   exportContent() {
-    /*
-      spm Apply filters to get a list of Ids and export that, not all content type data.
-      Check 2sxc 9 export in contentItemsListController
-      eavAdminDialogs.openContentExport(appId, contentType, null, ids);
-    */
-    this.router.navigate([`${this.contentTypeStaticName}/export`], { relativeTo: this.route });
+    const filterModel = this.gridApi.getFilterModel();
+    const hasFilters = Object.keys(filterModel).length > 0;
+    const ids: number[] = [];
+    if (hasFilters) {
+      this.gridApi.forEachNodeAfterFilterAndSort(rowNode => {
+        ids.push((<ContentItem>rowNode.data).Id);
+      });
+    }
+    this.router.navigate([`${this.contentTypeStaticName}/export${ids.length > 0 ? '/' + ids : ''}`], { relativeTo: this.route });
   }
 
   importItem() {
@@ -199,7 +202,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         onCellClicked: this.editItem.bind(this), filter: 'agNumberColumnFilter', cellRenderer: cellRendererId,
       },
       {
-        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
+        headerName: 'Status', field: 'IsPublished', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
         valueGetter: valueGetterStatus, filter: 'pubMetaFilterComponent', cellRenderer: cellRendererStatus,
       },
       {
@@ -213,7 +216,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     ];
     for (const column of columns) {
       if (column.IsTitle) { continue; }
-      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250 };
+      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250, filter: true };
       switch (column.Type) {
         case 'Entity':
           try {

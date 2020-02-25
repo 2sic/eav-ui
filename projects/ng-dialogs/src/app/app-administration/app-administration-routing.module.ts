@@ -21,6 +21,8 @@ const appAdministrationRoutes: Routes = [
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
               },
               { path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },
+              // tslint:disable-next-line:max-line-length
+              { path: ':contentTypeStaticName/export/:selectedIds', component: DialogEntryComponent, data: { dialogName: EXPORT_CONTENT_TYPE_DIALOG } },
               { path: 'import', component: DialogEntryComponent, data: { dialogName: IMPORT_CONTENT_ITEM_DIALOG } },
             ]
           },
