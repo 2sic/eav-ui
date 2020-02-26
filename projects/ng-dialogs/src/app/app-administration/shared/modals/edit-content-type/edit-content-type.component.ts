@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
+import { eavConstants, EavScopesKey } from '../../../../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-edit-content-type',
@@ -14,6 +16,8 @@ export class EditContentTypeComponent implements OnInit {
   scope: string;
   id: number;
   contentType: ContentTypeEdit;
+  lockScope = true;
+  scopeOptions: string[];
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
@@ -21,6 +25,7 @@ export class EditContentTypeComponent implements OnInit {
     private contentTypesService: ContentTypesService,
   ) {
     this.scope = this.route.snapshot.paramMap.get('scope');
+    this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
     this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
 
@@ -40,6 +45,36 @@ export class EditContentTypeComponent implements OnInit {
     }
   }
 
+  changeScope(event: MatSelectChange) {
+    let newScope: string = event.value;
+    if (newScope === 'Other') {
+      // tslint:disable-next-line:max-line-length
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
+      if (!newScope) {
+        newScope = eavConstants.scopes.default;
+      } else if (!this.scopeOptions.includes(newScope)) {
+        this.scopeOptions.push(newScope);
+      }
+    }
+    this.contentType.Scope = newScope;
+  }
+
+  unlockScope(event: Event) {
+    event.stopPropagation();
+    this.lockScope = !this.lockScope;
+    if (this.lockScope) {
+      this.contentType.Scope = this.scope;
+    }
+  }
+
+  unlockStaticName(event: Event) {
+    event.stopPropagation();
+    this.contentType.ChangeStaticName = !this.contentType.ChangeStaticName;
+    if (!this.contentType.ChangeStaticName) {
+      this.contentType.NewStaticName = this.contentType.StaticName;
+    }
+  }
+
   onSubmit() {
     this.contentTypesService.save(this.contentType).subscribe(result => {
       this.closeDialog();
@@ -52,10 +87,11 @@ export class EditContentTypeComponent implements OnInit {
 
   private fetchContentType() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
+      const contentType = contentTypes.find(ct => ct.Id === this.id);
       this.contentType = {
-        ...contentTypes.find(contentType => contentType.Id === this.id),
+        ...contentType,
         ChangeStaticName: false,
-        NewStaticName: '',
+        NewStaticName: contentType.StaticName,
       };
     });
   }
