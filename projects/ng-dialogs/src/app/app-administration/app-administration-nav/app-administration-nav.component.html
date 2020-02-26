@@ -9,7 +9,9 @@
 
 <router-outlet></router-outlet>
 
-<mat-tab-group dynamicHeight *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+<!-- spm we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
+<mat-tab-group dynamicHeight color="accent" *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)"
+  [selectedIndex]="tabIndex">
   <mat-tab>
     <div *matTabLabel class="tab-container" matTooltip="Getting Started">
       <mat-icon>home</mat-icon>
