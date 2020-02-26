@@ -7,6 +7,8 @@
   </div>
 </div>
 
+<router-outlet></router-outlet>
+
 <div>
   <button mat-button type="button" (click)="editPermission(null)">
     <mat-icon>add</mat-icon>
@@ -20,4 +22,3 @@
     (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 </div>
-<router-outlet></router-outlet>
