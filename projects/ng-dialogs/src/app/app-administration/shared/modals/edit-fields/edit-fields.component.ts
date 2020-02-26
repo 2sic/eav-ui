@@ -184,7 +184,7 @@ export class EditFieldsComponent implements OnInit {
         break;
       case 'permissions':
         this.router.navigate(
-          [`${field.Id}/${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/permissions`],
+          [`${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}/permissions`],
           { relativeTo: this.route }
         );
         break;

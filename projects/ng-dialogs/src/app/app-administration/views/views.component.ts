@@ -101,7 +101,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private openPermissions(view: View) {
     this.router.navigate(
-      [`${view.Guid}/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/permissions`],
+      [`${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${view.Guid}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }

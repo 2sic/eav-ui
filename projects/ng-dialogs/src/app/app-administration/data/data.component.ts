@@ -187,7 +187,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openPermissions(contentType: ContentType) {
     this.router.navigate(
-      [`${contentType.StaticName}/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/permissions`],
+      [`${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${contentType.StaticName}/permissions`],
       { relativeTo: this.route.firstChild }
     );
   }
