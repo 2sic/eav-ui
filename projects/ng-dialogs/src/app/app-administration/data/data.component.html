@@ -23,6 +23,10 @@
   </div>
 </div>
 
+<p *ngIf="scope !== defaultScope">
+  <b>Warning! You are in a special scope. Changing things here could easily break functionality.</b>
+</p>
+
 <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
   (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">

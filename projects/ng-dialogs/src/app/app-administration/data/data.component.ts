@@ -26,6 +26,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 export class DataComponent implements OnInit, OnDestroy {
   contentTypes: ContentType[];
   scope: string;
+  defaultScope: string;
   scopeOptions: EavScopeOption[];
 
   columnDefs: ColDef[] = [
@@ -68,6 +69,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
   ) {
     this.scope = eavConstants.scopes.default.value;
+    this.defaultScope = eavConstants.scopes.default.value;
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
   }
 
