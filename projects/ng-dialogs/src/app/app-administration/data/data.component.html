@@ -13,7 +13,7 @@
     </button>
   </div>
   <div>
-    <mat-form-field appearance="standard" class="scope-dropdown">
+    <mat-form-field appearance="standard" color="accent" class="scope-dropdown">
       <mat-label>Scope</mat-label>
       <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
         <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption">{{ scopeOption }}</mat-option>
