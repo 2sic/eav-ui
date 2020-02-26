@@ -95,13 +95,13 @@ export class QueriesComponent implements OnInit, OnDestroy {
       form = {
         addItems: [{ ContentTypeName: eavConstants.contentTypes.query }],
         editItems: null,
-        persistedData: {},
+        persistedData: null,
       };
     } else {
       form = {
         addItems: null,
         editItems: [{ EntityId: query.Id.toString(), Title: query.Name }],
-        persistedData: {},
+        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });

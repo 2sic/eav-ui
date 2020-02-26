@@ -190,7 +190,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     } else {
       const closedDialogData: ClosedDialogData = {
         result: saveResult,
-        toNotify: this.editFormData.persistedData.toNotify,
+        toNotify: this.editFormData.persistedData ? this.editFormData.persistedData.toNotify : null,
       };
       this.dialogRef.close(closedDialogData);
     }

@@ -131,7 +131,7 @@ export class DataComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       addItems: [{ ContentTypeName: contentType.StaticName }],
       editItems: null,
-      persistedData: {},
+      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
@@ -165,13 +165,13 @@ export class DataComponent implements OnInit, OnDestroy {
           }
         }],
         editItems: null,
-        persistedData: {},
+        persistedData: null,
       };
     } else {
       form = {
         addItems: null,
         editItems: [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
-        persistedData: {},
+        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });

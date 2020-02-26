@@ -97,14 +97,14 @@ export class PermissionsComponent implements OnInit {
           }
         }],
         editItems: null,
-        persistedData: {},
+        persistedData: null,
       };
     } else {
       const permission = <Permission>params.data;
       form = {
         addItems: null,
         editItems: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
-        persistedData: {},
+        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

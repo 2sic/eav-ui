@@ -89,7 +89,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       form = {
         addItems: [{ ContentTypeName: this.contentTypeStaticName }],
         editItems: null,
-        persistedData: {},
+        persistedData: null,
       };
       this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
     } else {
@@ -97,7 +97,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       form = {
         addItems: null,
         editItems: [{ EntityId: item.Id.toString(), Title: item.Title }],
-        persistedData: {},
+        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
@@ -181,7 +181,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         }
       }],
       editItems: null,
-      persistedData: null
+      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -262,7 +262,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         const form: EditForm = {
           addItems: [{ ContentTypeName: this.contentTypeStaticName }],
           editItems: null,
-          persistedData: {},
+          persistedData: null,
         };
         this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
         break;
