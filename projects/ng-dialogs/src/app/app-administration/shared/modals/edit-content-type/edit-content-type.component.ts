@@ -18,6 +18,7 @@ export class EditContentTypeComponent implements OnInit {
   contentType: ContentTypeEdit;
   lockScope = true;
   scopeOptions: EavScopeOption[];
+  debug = false;
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,

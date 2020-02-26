@@ -46,12 +46,12 @@
       <mat-label>Static Name</mat-label>
       <input matInput type="text" [(ngModel)]="contentType.NewStaticName" name="NewStaticName"
         [disabled]="!contentType.ChangeStaticName">
-      <button mat-icon-button type="button" matSuffix>
+      <button mat-icon-button type="button" matSuffix *ngIf="debug">
         <mat-icon *ngIf="!contentType.ChangeStaticName" (click)="unlockStaticName($event)">lock</mat-icon>
         <mat-icon *ngIf="contentType.ChangeStaticName" (click)="unlockStaticName($event)">lock_open</mat-icon>
       </button>
     </mat-form-field>
-    <mat-hint>Editing static name is usually a very bad idea</mat-hint>
+    <mat-hint *ngIf="debug">Editing static name is usually a very bad idea</mat-hint>
   </div>
 
   <div *ngIf="contentType.SharedDefId" class="edit-input">
