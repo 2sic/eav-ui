@@ -28,7 +28,8 @@
       <mat-label>Scope</mat-label>
       <mat-select [ngModel]="contentType.Scope" name="Scope" (selectionChange)="changeScope($event)"
         [disabled]="lockScope">
-        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption">{{ scopeOption }}</mat-option>
+        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
+        </mat-option>
         <mat-option value="Other">Other...</mat-option>
       </mat-select>
       <button mat-icon-button type="button" matSuffix>

@@ -9,7 +9,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavScopesKey } from '../../shared/constants/eav-constants';
+import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav-constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
@@ -26,7 +26,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 export class DataComponent implements OnInit, OnDestroy {
   contentTypes: ContentType[];
   scope: string;
-  scopeOptions: string[];
+  scopeOptions: EavScopeOption[];
 
   columnDefs: ColDef[] = [
     {
@@ -67,7 +67,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
   ) {
-    this.scope = eavConstants.scopes.default;
+    this.scope = eavConstants.scopes.default.value;
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
   }
 
@@ -118,9 +118,13 @@ export class DataComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
-        newScope = eavConstants.scopes.default;
-      } else if (!this.scopeOptions.includes(newScope)) {
-        this.scopeOptions.push(newScope);
+        newScope = eavConstants.scopes.default.value;
+      } else if (!this.scopeOptions.find(option => option.value === newScope)) {
+        const newScopeOption: EavScopeOption = {
+          name: newScope,
+          value: newScope,
+        };
+        this.scopeOptions.push(newScopeOption);
       }
     }
     this.scope = newScope;
