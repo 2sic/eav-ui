@@ -27,20 +27,20 @@ export function cellRendererStatus(params: ICellRendererParams) {
   // spm something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
   return `
     <div class="icon-container">
-      <mat-icon class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
+      <i class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
         ${item.IsPublished ? 'visibility' : 'visibility_off'}
-      </mat-icon>
+      </i>
     </div>
   `;
 }
 
 export const actionsTemplate = `
   <div class="icon-container">
-    <mat-icon class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</mat-icon>
+    <i class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</i>
     &nbsp;
-    <mat-icon class="material-icons pointer" action="export" title="Export">cloud_download</mat-icon>
+    <i class="material-icons pointer" action="export" title="Export">cloud_download</i>
     &nbsp;
-    <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
+    <i class="material-icons pointer" action="delete" title="Delete">delete</i>
   </div>
 `;
 

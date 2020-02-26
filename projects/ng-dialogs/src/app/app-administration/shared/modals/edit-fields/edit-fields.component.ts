@@ -29,9 +29,9 @@ export class EditFieldsComponent implements OnInit {
       cellRenderer: (params: ICellRendererParams) => {
         return `
           <div class="icon-container">
-            <mat-icon class="material-icons pointer" action="set-title" title="Use as title field">
+            <i class="material-icons pointer" action="set-title" title="Use as title field">
               ${params.value ? 'star' : 'star_border'}
-            </mat-icon>
+            </i>
           </div>
         `;
       }, onCellClicked: this.activateAction.bind(this),
@@ -43,7 +43,7 @@ export class EditFieldsComponent implements OnInit {
       cellRenderer: (params: ICellRendererParams) => {
         return `
           <div class="icon-container">
-            <mat-icon class="material-icons pointer" action="change-input-type" title="Change Input Type">edit</mat-icon>
+            <i class="material-icons pointer" action="change-input-type" title="Change Input Type">edit</i>
             &nbsp;
             <span class="text" action="change-input-type" title="Change Input Type">${params.value}</span>
           </div>
@@ -58,11 +58,11 @@ export class EditFieldsComponent implements OnInit {
         const showPermissions = field.InputType === 'string-wysiwyg' || field.Type === 'Hyperlink';
         return `
           <div class="icon-container">
-            <mat-icon class="material-icons pointer" action="rename" title="Rename">settings</mat-icon>
+            <i class="material-icons pointer" action="rename" title="Rename">settings</i>
             &nbsp;
-            <mat-icon class="material-icons pointer" action="delete" title="Delete">delete</mat-icon>
+            <i class="material-icons pointer" action="delete" title="Delete">delete</i>
             ${showPermissions
-            ? '&nbsp;<mat-icon class="material-icons pointer" action="permissions" title="Permissions">person</mat-icon>'
+            ? '&nbsp;<i class="material-icons pointer" action="permissions" title="Permissions">person</i>'
             : ''}
           </div>
         `;
