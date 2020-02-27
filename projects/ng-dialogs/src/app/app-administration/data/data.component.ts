@@ -117,7 +117,12 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   createGhost() {
-    alert('Create ghost');
+    // tslint:disable-next-line:max-line-length
+    const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
+    if (!sourceName) { return; }
+    this.contentTypesService.createGhost(sourceName).subscribe(res => {
+      this.fetchContentTypes();
+    });
   }
 
   changeScope(event: MatSelectChange) {

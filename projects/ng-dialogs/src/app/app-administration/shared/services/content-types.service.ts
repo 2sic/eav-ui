@@ -33,4 +33,10 @@ export class ContentTypesService {
       params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
     });
   }
+
+  createGhost(sourceStaticName: string) {
+    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/createghost'), {
+      params: { appid: this.context.appId.toString(), sourceStaticName: sourceStaticName },
+    });
+  }
 }
