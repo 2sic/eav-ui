@@ -1,21 +1,19 @@
-import { ActionReducerMap, createFeatureSelector, ActionReducer, MetaReducer, } from '@ngrx/store';
+import { ActionReducerMap, ActionReducer, MetaReducer, } from '@ngrx/store';
 
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 import * as fromGlobalConfiguration from './global-configuration.reducer';
 
 export interface EavState {
-    globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
+  globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
 }
 
-// console.log all actions
+/** Console log all actions */
 export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState> {
-    return function (state: EavState, action: any): EavState {
-        // console.log('[STORE] state', JSON.stringify(state));
-        console.log('[STORE] state', state);
-        console.log('[STORE] action', action);
-
-        return reducer(state, action);
-    };
+  return function (state: EavState, action: any): EavState {
+    console.log('[STORE] state', state);
+    console.log('[STORE] action', action);
+    return reducer(state, action);
+  };
 }
 
 /**
@@ -24,11 +22,9 @@ export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState
  * that will be composed to form the root meta-reducer.
  */
 export const metaReducers: MetaReducer<any>[] = !environment.production
-    ? [logger]
-    : [];
+  ? [logger]
+  : [];
 
 export const reducers: ActionReducerMap<EavState> = {
-    globalConfiguration: fromGlobalConfiguration.globalConfigurationReducer,
+  globalConfiguration: fromGlobalConfiguration.reducer,
 };
-
-export const getEavState = createFeatureSelector<EavState>('eavItemDialog');

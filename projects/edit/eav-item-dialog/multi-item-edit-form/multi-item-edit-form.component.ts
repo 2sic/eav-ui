@@ -74,7 +74,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   versioningOptions: VersioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
   extendedSaveButtonIsReduced = false;
-  debugEnabled$: Observable<boolean>;
   debugEnabled = false;
   debugInfoIsOpen = false;
   eventListeners: ElementEventListener[] = [];
@@ -167,9 +166,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     });
   }
 
-  toggleDebugEnabled(event: KeyboardEvent) {
+  toggleDebugEnabled(event: MouseEvent) {
     const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
-    if (enableDebugEvent) { this.globalConfigurationService.loadDebugEnabled(!this.debugEnabled); }
+    if (enableDebugEvent) { this.globalConfigurationService.toggleDebugEnabled(); }
   }
 
   debugInfoOpened(opened: boolean) {
@@ -569,27 +568,17 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private loadDebugEnabled() {
     // set initial debug enabled value
-    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
-    this.debugEnabled$.pipe(take(1)).subscribe(debugEnabled => { this.debugEnabled = debugEnabled; });
+    const debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    debugEnabled$.pipe(take(1)).subscribe(debugEnabled => { this.debugEnabled = debugEnabled; });
 
     // subscribe to debug enabled changes
     this.subscriptions.push(
-      this.debugEnabled$.subscribe(debugEnabled => {
+      debugEnabled$.subscribe(debugEnabled => {
         if (this.debugEnabled === debugEnabled) { return; }
-
         this.debugEnabled = debugEnabled;
-        if (this.debugEnabled) {
-          this.snackBarOpen(this.translate.instant('Message.DebugEnabled'));
-        } else {
-          this.snackBarOpen(this.translate.instant('Message.DebugDisabled'));
-          this.debugInfoIsOpen = false;
-        }
+        if (!this.debugEnabled) { this.debugInfoIsOpen = false; }
       })
     );
-    // set debug enabled if came in the url, but only for parent form to not overwrite value with child forms
-    if (this.eavConfig.debug === 'true' && this.isParentDialog) {
-      setTimeout(() => { this.globalConfigurationService.loadDebugEnabled(true); }, 0);
-    }
   }
 
   private hideHeaderSubscribe() {

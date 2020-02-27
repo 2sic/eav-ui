@@ -1,27 +1,22 @@
-import * as fromGlobalConfiguration from '../actions/global-configuration.actions';
+import { Action, createReducer, on } from '@ngrx/store';
+
+import { keyDebug } from '../../../../ng-dialogs/src/app/shared/constants/sessions-keys';
+import * as GlobalConfigurationActions from '../actions/global-configuration.actions';
 
 export interface GlobalConfigurationState {
-    debugEnabled: boolean;
+  debugEnabled: boolean;
 }
 
 export const initialState: GlobalConfigurationState = {
-    debugEnabled: false,
+  debugEnabled: sessionStorage.getItem(keyDebug) === 'true',
 };
 
-export function globalConfigurationReducer(state = initialState, action: fromGlobalConfiguration.Actions): GlobalConfigurationState {
-    switch (action.type) {
-        case fromGlobalConfiguration.LOAD_DEBUG_ENABLED: {
-            return {
-                ...state,
-                ...{
-                    debugEnabled: action.debugEnabled,
-                }
-            };
-        }
-        default: {
-            return state;
-        }
-    }
-}
+const globalConfigurationReducer = createReducer(
+  initialState,
+  on(GlobalConfigurationActions.loadDebugEnabled, (state, { debugEnabled }) => ({ ...state, debugEnabled: debugEnabled })),
+  on(GlobalConfigurationActions.toggleDebugEnabled, (state) => ({ ...state, debugEnabled: !state.debugEnabled })),
+);
 
-export const getDebugEnabled = (state: GlobalConfigurationState) => state.debugEnabled;
+export function reducer(state: GlobalConfigurationState | undefined, action: Action) {
+  return globalConfigurationReducer(state, action);
+}

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StoreModule } from '@ngrx/store';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +22,6 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
-import { reducers } from '../shared/store';
 
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
@@ -57,7 +55,6 @@ import { BuildFieldsService } from './item-edit-form/item-edit-form-services/bui
     MatDialogModule,
     MatDividerModule,
     FlexLayoutModule,
-    StoreModule.forFeature('eavItemDialog', reducers),
     TranslateModule,
   ],
   entryComponents: [

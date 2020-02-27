@@ -8,7 +8,7 @@
     <button mat-icon-button matTooltip="Refresh" (click)="fetchContentTypes()">
       <mat-icon>refresh</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Ghost" (click)="createGhost()" class="not-implemented">
+    <button mat-icon-button matTooltip="Ghost" *ngIf="debugEnabled" (click)="createGhost()" class="not-implemented">
       <mat-icon>adb</mat-icon>
     </button>
   </div>

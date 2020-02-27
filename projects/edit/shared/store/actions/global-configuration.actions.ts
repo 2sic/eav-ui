@@ -1,12 +1,9 @@
-import { Action } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
+import { GlobalConfigurationState } from '../reducers/global-configuration.reducer';
 
-export const LOAD_DEBUG_ENABLED = '[GlobalConfiguration] LOAD_DEBUG_ENABLED';
+export const loadDebugEnabled = createAction(
+  '[GlobalConfiguration] LOAD_DEBUG_ENABLED',
+  props<GlobalConfigurationState>()
+);
 
-export class LoadDebugEnabledAction implements Action {
-    readonly type = LOAD_DEBUG_ENABLED;
-
-    constructor(public debugEnabled: boolean) { }
-}
-
-export type Actions
-    = LoadDebugEnabledAction;
+export const toggleDebugEnabled = createAction('[GlobalConfiguration] TOGGLE_DEBUG_ENABLED');

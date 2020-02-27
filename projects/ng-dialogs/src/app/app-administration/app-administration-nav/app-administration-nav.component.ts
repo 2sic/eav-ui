@@ -7,6 +7,7 @@ import { filter } from 'rxjs/operators';
 
 import { DialogSettings } from '../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -25,6 +26,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
     private appDialogConfigService: AppDialogConfigService,
     private router: Router,
     private route: ActivatedRoute,
+    private globalConfigurationService: GlobalConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -60,5 +62,10 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   changeTab(event: MatTabChangeEvent) {
     const path = this.tabs[event.index];
     this.router.navigate([path], { relativeTo: this.route });
+  }
+
+  toggleDebugEnabled(event: MouseEvent) {
+    const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
+    if (enableDebugEvent) { this.globalConfigurationService.toggleDebugEnabled(); }
   }
 }

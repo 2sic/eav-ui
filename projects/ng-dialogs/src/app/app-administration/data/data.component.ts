@@ -17,6 +17,7 @@ import { DialogService } from '../../shared/components/dialog-service/dialog.ser
 // tslint:disable-next-line:max-line-length
 import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { EditForm } from '../shared/models/edit-form.model';
+import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 
 @Component({
   selector: 'app-data',
@@ -28,6 +29,7 @@ export class DataComponent implements OnInit, OnDestroy {
   scope: string;
   defaultScope: string;
   scopeOptions: EavScopeOption[];
+  debugEnabled = false;
 
   columnDefs: ColDef[] = [
     {
@@ -67,6 +69,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
+    private globalConfigurationService: GlobalConfigurationService,
   ) {
     this.scope = eavConstants.scopes.default.value;
     this.defaultScope = eavConstants.scopes.default.value;
@@ -76,6 +79,9 @@ export class DataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
+    this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
+      this.debugEnabled = debugEnabled;
+    });
   }
 
   ngOnDestroy() {
