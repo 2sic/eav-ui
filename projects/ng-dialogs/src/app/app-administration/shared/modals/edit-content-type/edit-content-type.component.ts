@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 
-import { ContentType } from '../../models/content-type.model';
+import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/constants/eav-constants';
 
@@ -15,7 +15,7 @@ import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/c
 export class EditContentTypeComponent implements OnInit {
   scope: string;
   id: number;
-  contentType: ContentType;
+  contentType: ContentTypeEdit;
   lockScope = true;
   scopeOptions: EavScopeOption[];
 
@@ -32,11 +32,13 @@ export class EditContentTypeComponent implements OnInit {
   ngOnInit() {
     if (!this.id) {
       this.contentType = {
-        ...(new ContentType()),
+        ...(new ContentTypeEdit()),
         StaticName: '',
         Name: '',
         Description: '',
         Scope: this.scope,
+        ChangeStaticName: false,
+        NewStaticName: '',
       };
     } else {
       this.fetchContentType();
@@ -81,7 +83,12 @@ export class EditContentTypeComponent implements OnInit {
 
   private fetchContentType() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      this.contentType = contentTypes.find(contentType => contentType.Id === this.id);
+      const contentType = contentTypes.find(ct => ct.Id === this.id);
+      this.contentType = {
+        ...contentType,
+        ChangeStaticName: false,
+        NewStaticName: contentType.StaticName,
+      };
     });
   }
 }

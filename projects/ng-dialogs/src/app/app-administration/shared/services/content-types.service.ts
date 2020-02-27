@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { ContentType } from '../models/content-type.model';
+import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class ContentTypesService {
     );
   }
 
-  save(contentType: ContentType) {
+  save(contentType: ContentTypeEdit) {
     return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save/'), contentType, {
       params: { appid: this.context.appId.toString() },
     });
