@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 
-import { ContentTypeEdit } from '../../models/content-type.model';
+import { ContentType } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/constants/eav-constants';
 
@@ -15,10 +15,9 @@ import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/c
 export class EditContentTypeComponent implements OnInit {
   scope: string;
   id: number;
-  contentType: ContentTypeEdit;
+  contentType: ContentType;
   lockScope = true;
   scopeOptions: EavScopeOption[];
-  debug = false;
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
@@ -33,13 +32,11 @@ export class EditContentTypeComponent implements OnInit {
   ngOnInit() {
     if (!this.id) {
       this.contentType = {
-        ...(new ContentTypeEdit()),
+        ...(new ContentType()),
         StaticName: '',
         Name: '',
         Description: '',
         Scope: this.scope,
-        ChangeStaticName: false,
-        NewStaticName: '',
       };
     } else {
       this.fetchContentType();
@@ -72,14 +69,6 @@ export class EditContentTypeComponent implements OnInit {
     }
   }
 
-  unlockStaticName(event: Event) {
-    event.stopPropagation();
-    this.contentType.ChangeStaticName = !this.contentType.ChangeStaticName;
-    if (!this.contentType.ChangeStaticName) {
-      this.contentType.NewStaticName = this.contentType.StaticName;
-    }
-  }
-
   onSubmit() {
     this.contentTypesService.save(this.contentType).subscribe(result => {
       this.closeDialog();
@@ -92,12 +81,7 @@ export class EditContentTypeComponent implements OnInit {
 
   private fetchContentType() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      const contentType = contentTypes.find(ct => ct.Id === this.id);
-      this.contentType = {
-        ...contentType,
-        ChangeStaticName: false,
-        NewStaticName: contentType.StaticName,
-      };
+      this.contentType = contentTypes.find(contentType => contentType.Id === this.id);
     });
   }
 }
