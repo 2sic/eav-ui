@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
@@ -13,7 +13,6 @@ import { EntityService } from './shared/services/entity.service';
 import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
-import { HeaderInterceptor } from './shared/interceptors/interceptors';
 import { EditRoutingModule } from './edit-routing.module';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/components/shared-components.module';
 import { Context } from '../ng-dialogs/src/app/shared/context/context';
@@ -32,7 +31,6 @@ export function createTranslateLoader(http: HttpClient) {
     EditRoutingModule,
     SharedComponentsModule,
     CommonModule,
-    HttpClientModule,
     EavItemDialogModule,
     TranslateModule.forChild({
       loader: {
@@ -51,7 +49,6 @@ export function createTranslateLoader(http: HttpClient) {
     EntityService,
     EavAdminUiService,
     QueryService,
-    { provide: HTTP_INTERCEPTORS, useClass: HeaderInterceptor, multi: true },
     Context,
     SanitizeService,
     ExpandableFieldService,
