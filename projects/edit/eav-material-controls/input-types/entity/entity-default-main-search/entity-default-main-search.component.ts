@@ -152,8 +152,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   openNewEntityDialog() {
     const contentTypeName = this.contentTypeMask ? this.contentTypeMask.resolve() : this.entityType;
     const form: EditForm = {
-      addItems: [{ ContentTypeName: contentTypeName }],
-      editItems: null,
+      items: [{ ContentTypeName: contentTypeName }],
       persistedData: {
         toNotify: {
           entityId: this.config.entity.entityId,

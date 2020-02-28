@@ -177,14 +177,13 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   addItemMetadata(adamItem: AdamItem) {
     const form: EditForm = {
-      addItems: [{
+      items: [{
         ContentTypeName: this.getMetadataType(adamItem),
         For: {
           Target: eavConstants.metadata.cmsObject.target,
           String: (adamItem.Type === 'folder' ? 'folder' : 'file') + ':' + adamItem.Id,
         }
       }],
-      editItems: null,
       persistedData: {
         toNotify: {
           entityId: this.config.entity.entityId,
@@ -197,8 +196,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   editItemMetadata(metadataId: string) {
     const form: EditForm = {
-      addItems: null,
-      editItems: [{ EntityId: metadataId.toString(), Title: null }],
+      items: [{ EntityId: metadataId.toString(), Title: null }],
       persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

@@ -146,8 +146,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private addItem(contentType: ContentType) {
     const form: EditForm = {
-      addItems: [{ ContentTypeName: contentType.StaticName }],
-      editItems: null,
+      items: [{ ContentTypeName: contentType.StaticName }],
       persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
@@ -158,39 +157,31 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    let form: EditForm;
-    if (!contentType.Metadata) {
-      /*
-        // spm fix prefill
-        {
-          ContentTypeName: 'ContentType',
-          Metadata: {
-            Key: item.StaticName,
-            KeyType: "string",
-            TargetType: eavConfig.metadataOfContentType
-          },
-          Title: title,
-          Prefill: { Label: item.Name, Description: item.Description }
-        }
-      */
-      form = {
-        addItems: [{
+    /*
+      // spm fix prefill
+      {
+        ContentTypeName: 'ContentType',
+        Metadata: {
+          Key: item.StaticName,
+          KeyType: "string",
+          TargetType: eavConfig.metadataOfContentType
+        },
+        Title: title,
+        Prefill: { Label: item.Name, Description: item.Description }
+      }
+    */
+    const form: EditForm = {
+      items: !contentType.Metadata
+        ? [{
           ContentTypeName: eavConstants.contentTypes.contentType,
           For: {
             Target: eavConstants.metadata.contentType.target,
             String: contentType.StaticName,
-          }
-        }],
-        editItems: null,
-        persistedData: null,
-      };
-    } else {
-      form = {
-        addItems: null,
-        editItems: [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
-        persistedData: null,
-      };
-    }
+          },
+        }]
+        : [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
+      persistedData: null,
+    };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 

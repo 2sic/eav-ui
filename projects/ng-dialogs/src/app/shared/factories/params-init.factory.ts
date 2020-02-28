@@ -28,7 +28,7 @@ export function paramsInitFactory(injector: Injector) {
       switch (dialog) {
         case 'edit':
           const parsedItems: EditItem[] = JSON.parse(items);
-          const form: EditForm = { addItems: null, editItems: parsedItems, persistedData: null };
+          const form: EditForm = { items: parsedItems, persistedData: null };
           router.navigate([`${zoneId}/${appId}/edit/${JSON.stringify(form)}`]);
           break;
         default:

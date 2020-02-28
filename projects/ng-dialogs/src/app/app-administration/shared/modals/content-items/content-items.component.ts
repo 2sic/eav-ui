@@ -85,18 +85,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   editItem(params: CellClickedEvent) {
     let form: EditForm;
-    if (!params) {
+    if (params === null) {
       form = {
-        addItems: [{ ContentTypeName: this.contentTypeStaticName }],
-        editItems: null,
+        items: [{ ContentTypeName: this.contentTypeStaticName }],
         persistedData: null,
       };
-      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
     } else {
       const item = <ContentItem>params.data;
       form = {
-        addItems: null,
-        editItems: [{ EntityId: item.Id.toString(), Title: item.Title }],
+        items: [{ EntityId: item.Id.toString(), Title: item.Title }],
         persistedData: null,
       };
     }
@@ -171,7 +168,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
 
     const form: EditForm = {
-      addItems: [{
+      items: [{
         ContentTypeName: this.contentTypeStaticName,
         For: {
           Target: target,
@@ -180,7 +177,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           ...(keyType === eavConstants.keyTypes.string && { String: key }),
         }
       }],
-      editItems: null,
       persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
@@ -260,8 +256,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         // }];
         // eavAdminDialogs.openEditItems(items, svc.liveListReload);
         const form: EditForm = {
-          addItems: [{ ContentTypeName: this.contentTypeStaticName }],
-          editItems: null,
+          items: [{ ContentTypeName: this.contentTypeStaticName }],
           persistedData: null,
         };
         this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

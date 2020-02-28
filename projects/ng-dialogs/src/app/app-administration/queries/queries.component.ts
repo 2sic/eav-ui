@@ -85,25 +85,17 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   editQuery(query: Query) {
-    let form: EditForm;
-    if (query === null) {
-      // spm fix prefill and &user[canDesign]=true&user[canDevelop]=true
-      // var items = [{
-      //   ContentTypeName: 'DataPipeline',
-      //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
-      // }];
-      form = {
-        addItems: [{ ContentTypeName: eavConstants.contentTypes.query }],
-        editItems: null,
-        persistedData: null,
-      };
-    } else {
-      form = {
-        addItems: null,
-        editItems: [{ EntityId: query.Id.toString(), Title: query.Name }],
-        persistedData: null,
-      };
-    }
+    // spm fix prefill and &user[canDesign]=true&user[canDevelop]=true
+    // var items = [{
+    //   ContentTypeName: 'DataPipeline',
+    //   Prefill: { TestParameters: eavConfig.pipelineDesigner.testParameters }
+    // }];
+    const form: EditForm = {
+      items: (query === null)
+        ? [{ ContentTypeName: eavConstants.contentTypes.query }]
+        : [{ EntityId: query.Id.toString(), Title: query.Name }],
+      persistedData: null,
+    };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 

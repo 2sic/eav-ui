@@ -84,15 +84,13 @@ export class ViewsComponent implements OnInit, OnDestroy {
     let form: EditForm;
     if (params === null) {
       form = {
-        addItems: [{ ContentTypeName: eavConstants.contentTypes.template }],
-        editItems: null,
+        items: [{ ContentTypeName: eavConstants.contentTypes.template }],
         persistedData: null,
       };
     } else {
       const view = <View>params.data;
       form = {
-        addItems: null,
-        editItems: [{ EntityId: view.Id.toString(), Title: view.Name }],
+        items: [{ EntityId: view.Id.toString(), Title: view.Name }],
         persistedData: null,
       };
     }

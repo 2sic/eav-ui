@@ -29,7 +29,7 @@ export class UrlHelper {
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      editFormData.addItems ? editFormData.addItems as unknown as string : JSON.stringify(editFormData.editItems),
+      JSON.stringify(editFormData.items),
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),

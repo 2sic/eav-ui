@@ -87,7 +87,7 @@ export class PermissionsComponent implements OnInit {
         break;
       }
       form = {
-        addItems: [{
+        items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
             Target: target,
@@ -96,14 +96,12 @@ export class PermissionsComponent implements OnInit {
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
           }
         }],
-        editItems: null,
         persistedData: null,
       };
     } else {
       const permission = <Permission>params.data;
       form = {
-        addItems: null,
-        editItems: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
+        items: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
         persistedData: null,
       };
     }

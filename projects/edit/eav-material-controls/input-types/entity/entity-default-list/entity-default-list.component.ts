@@ -113,8 +113,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   edit(value: string) {
     const entityId = this.getEntityId(value);
     const form: EditForm = {
-      addItems: null,
-      editItems: [{ EntityId: entityId, Title: null }],
+      items: [{ EntityId: entityId, Title: null }],
       persistedData: {
         toNotify: {
           entityId: this.config.entity.entityId,
