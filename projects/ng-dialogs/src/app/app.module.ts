@@ -17,8 +17,9 @@ import { Context } from './shared/context/context';
 import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers, reducers } from '../../../edit/shared/store';
-import { HttpHeaderInterceptor } from './shared/interceptors/http-header.interceptor';
+import { SetHeadersInterceptor } from './shared/interceptors/http-header.interceptor';
 import { SharedComponentsModule } from './shared/components/shared-components.module';
+import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { SharedComponentsModule } from './shared/components/shared-components.mo
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     DnnInterceptor,
-    { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
     Context,
   ],
   bootstrap: [AppComponent]

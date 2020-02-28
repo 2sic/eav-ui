@@ -3,7 +3,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class HttpHeaderInterceptor implements HttpInterceptor {
+export class SetHeadersInterceptor implements HttpInterceptor {
 
   constructor() { }
 
