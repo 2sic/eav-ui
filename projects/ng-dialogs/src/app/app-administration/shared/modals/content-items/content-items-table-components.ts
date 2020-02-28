@@ -30,6 +30,18 @@ export function cellRendererStatus(params: ICellRendererParams) {
       <i class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
         ${item.IsPublished ? 'visibility' : 'visibility_off'}
       </i>
+      ${item.Metadata
+      ? `
+      &nbsp;
+      <i class="material-icons help" title="${
+      'Metadata'
+      + `\nType: ${item.Metadata.TargetType}`
+      + (item.Metadata.KeyNumber ? `\nNumber: ${item.Metadata.KeyNumber}` : '')
+      + (item.Metadata.KeyString ? `\nString: ${item.Metadata.KeyString}` : '')
+      + (item.Metadata.KeyGuid ? `\nGuid: ${item.Metadata.KeyGuid}` : '')
+      }">local_offer</i>
+      `
+      : ''}
     </div>
   `;
 }
