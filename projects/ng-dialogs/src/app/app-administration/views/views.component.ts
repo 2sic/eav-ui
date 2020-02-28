@@ -42,7 +42,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
 
   constructor(
     private templatesService: TemplatesService,

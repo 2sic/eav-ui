@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import { eavConstants, EavMetadataKey } from '../../../../shared/constants/eav-c
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss']
 })
-export class PermissionsComponent implements OnInit {
+export class PermissionsComponent implements OnInit, OnDestroy {
   permissions: Permission[];
 
   columnDefs: ColDef[] = [
@@ -36,7 +36,7 @@ export class PermissionsComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
   private targetType: number;
   private keyType: string;
   private key: string;
@@ -60,6 +60,11 @@ export class PermissionsComponent implements OnInit {
         this.fetchPermissions();
       })
     );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {

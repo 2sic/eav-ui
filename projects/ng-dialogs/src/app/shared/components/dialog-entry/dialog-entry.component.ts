@@ -33,7 +33,7 @@ import { ContentItemImportComponent } from '../../../app-administration/shared/m
 export class DialogEntryComponent implements OnInit, OnDestroy {
   production: boolean;
 
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
   private dialogRef: MatDialogRef<any, any>;
   private dialogName: string;
   private component: any;
@@ -82,7 +82,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         } else {
           this.router.navigate(['./'], { relativeTo: this.route.parent.parent });
         }
-      }),
+      })
     );
   }
 

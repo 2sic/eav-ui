@@ -76,7 +76,7 @@ export class EditFieldsComponent implements OnInit, OnDestroy {
 
   private contentTypeStaticName: string;
   private contentType: ContentType;
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<EditFieldsComponent>,

@@ -14,7 +14,7 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
   tabs = ['list', 'languages', 'features', 'sxc-insights']; // tabs order has to match template
   tabIndex: number;
 
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
@@ -26,17 +26,17 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
     // set tab initially
     this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
 
-    this.subscriptions.push(
+    this.subscription.add(
       // change tab when route changed
       this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
         this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
-      }),
+      })
     );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subscriptions = null;
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   closeDialog() {

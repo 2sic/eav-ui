@@ -19,7 +19,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   tabIndex: number;
   dialogSettings: DialogSettings;
 
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
@@ -33,12 +33,13 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
     // set tab initially
     this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
 
-    this.subscriptions.push(
+    this.subscription.add(
       // change tab when route changed
       this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
         this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
-      }),
-
+      })
+    );
+    this.subscription.add(
       this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
         if (dialogSettings.IsContent) {
           this.tabs = this.tabs.filter(tab => {
@@ -46,13 +47,13 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
           });
         }
         this.dialogSettings = dialogSettings; // needed to filter tabs
-      }),
+      })
     );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subscriptions = null;
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 
   closeDialog() {

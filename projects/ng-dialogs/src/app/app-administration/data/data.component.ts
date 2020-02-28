@@ -62,7 +62,7 @@ export class DataComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
 
   constructor(
     private router: Router,
@@ -79,9 +79,11 @@ export class DataComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
-    this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
-      this.debugEnabled = debugEnabled;
-    });
+    this.subscription.add(
+      this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
+        this.debugEnabled = debugEnabled;
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -223,7 +225,7 @@ export class DataComponent implements OnInit, OnDestroy {
         .subscribe(closedDialog => {
           console.log('Dialog closed event captured:', closedDialog);
           this.fetchContentTypes();
-        }),
+        })
     );
   }
 

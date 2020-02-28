@@ -36,7 +36,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   private contentTypeStaticName: string;
-  private subscription: Subscription = new Subscription();
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
