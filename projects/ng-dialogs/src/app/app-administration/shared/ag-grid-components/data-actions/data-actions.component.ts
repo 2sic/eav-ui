@@ -13,10 +13,12 @@ export class DataActionsComponent implements ICellRendererAngularComp {
   enableAppFeatures = true; // spm figure out what this is
   params: DataActionsParams;
   contentType: ContentType;
+  showPermissions: boolean;
 
   agInit(params: DataActionsParams) {
     this.params = params;
     this.contentType = params.data;
+    this.showPermissions = this.enableAppFeatures && this.isGuid(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {
@@ -47,7 +49,7 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.onDelete(this.contentType);
   }
 
-  isGuid(txtToTest: string) {
+  private isGuid(txtToTest: string) {
     const patt = new RegExp(/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/i);
     return patt.test(txtToTest); // note: can't use the txtToTest.match because it causes infinite digest cycles
   }
