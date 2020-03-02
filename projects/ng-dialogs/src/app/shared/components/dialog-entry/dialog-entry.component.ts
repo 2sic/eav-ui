@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -125,10 +125,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       case IMPORT_CONTENT_ITEM_DIALOG:
         this.component = ContentItemImportComponent;
         this.panelSize = 'medium';
-        break;
-      case ADD_CONTENT_TYPE_DIALOG:
-        this.component = EditContentTypeComponent;
-        this.panelSize = 'small';
         break;
       case EDIT_CONTENT_TYPE_DIALOG:
         this.component = EditContentTypeComponent;

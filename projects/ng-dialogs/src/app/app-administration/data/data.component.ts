@@ -15,7 +15,7 @@ import { DataNameParams } from '../shared/models/data-name-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 // tslint:disable-next-line:max-line-length
-import { ADD_CONTENT_TYPE_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
+import { EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 
@@ -214,7 +214,6 @@ export class DataComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.dialogService
         .subToClosed([
-          ADD_CONTENT_TYPE_DIALOG,
           EDIT_CONTENT_TYPE_DIALOG,
           EDIT_FIELDS_DIALOG,
           EXPORT_CONTENT_TYPE_DIALOG,
