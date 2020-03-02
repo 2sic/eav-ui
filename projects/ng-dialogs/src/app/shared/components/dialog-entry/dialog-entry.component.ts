@@ -19,7 +19,7 @@ import { ContentExportComponent } from '../../../app-administration/shared/modal
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 import { PermissionsComponent } from '../../../app-administration/shared/modals/permissions/permissions.component';
 // tslint:disable-next-line:max-line-length
-import { EditContentTypeFieldsComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
+import { EditContentTypeFieldsComponent } from '../../../app-administration/shared/modals/edit-content-type-fields/edit-content-type-fields.component';
 import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
 import { ContentItemsComponent } from '../../../app-administration/shared/modals/content-items/content-items.component';

@@ -10,8 +10,8 @@ import { Context } from '../../../../shared/context/context';
 
 @Component({
   selector: 'app-content-types-fields-add',
-  templateUrl: './content-types-fields-add.component.html',
-  styleUrls: ['./content-types-fields-add.component.scss']
+  templateUrl: './edit-content-type-fields.component.html',
+  styleUrls: ['./edit-content-type-fields.component.scss']
 })
 export class EditContentTypeFieldsComponent implements OnInit {
   fields: Field[];
