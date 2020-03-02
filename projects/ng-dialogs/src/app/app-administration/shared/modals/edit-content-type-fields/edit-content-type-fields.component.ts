@@ -9,7 +9,7 @@ import { Field, NewField, FieldInputTypeOption } from '../../models/field.model'
 import { Context } from '../../../../shared/context/context';
 
 @Component({
-  selector: 'app-content-types-fields-add',
+  selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
   styleUrls: ['./edit-content-type-fields.component.scss']
 })

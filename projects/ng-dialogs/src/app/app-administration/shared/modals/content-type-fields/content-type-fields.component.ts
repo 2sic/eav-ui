@@ -15,9 +15,9 @@ import { eavConstants } from '../../../../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
 
 @Component({
-  selector: 'app-edit-fields',
-  templateUrl: './edit-fields.component.html',
-  styleUrls: ['./edit-fields.component.scss']
+  selector: 'app-content-type-fields',
+  templateUrl: './content-type-fields.component.html',
+  styleUrls: ['./content-type-fields.component.scss']
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   fields: Field[];

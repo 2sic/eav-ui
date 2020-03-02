@@ -14,7 +14,7 @@ import { CodeEditorComponent } from '../../../code-editor/code-editor/code-edito
 import { EditContentTypeComponent } from '../../../app-administration/shared/modals/edit-content-type/edit-content-type.component';
 import { DialogService } from '../dialog-service/dialog.service';
 import { ClosedDialogData } from '../../models/closed-dialog.model';
-import { ContentTypeFieldsComponent } from '../../../app-administration/shared/modals/edit-fields/edit-fields.component';
+import { ContentTypeFieldsComponent } from '../../../app-administration/shared/modals/content-type-fields/content-type-fields.component';
 import { ContentExportComponent } from '../../../app-administration/shared/modals/content-export/content-export.component';
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 import { PermissionsComponent } from '../../../app-administration/shared/modals/permissions/permissions.component';

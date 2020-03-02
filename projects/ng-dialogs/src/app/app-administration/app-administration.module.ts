@@ -43,7 +43,7 @@ import { PermissionsService } from './shared/services/permissions.service';
 import { MetadataService } from './shared/services/metadata.service';
 import { PermissionsGrantComponent } from './shared/ag-grid-components/permissions-grant/permissions-grant.component';
 import { EntitiesService } from './shared/services/entities.service';
-import { ContentTypeFieldsComponent } from './shared/modals/edit-fields/edit-fields.component';
+import { ContentTypeFieldsComponent } from './shared/modals/content-type-fields/content-type-fields.component';
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { EditContentTypeFieldsComponent } from './shared/modals/edit-content-type-fields/edit-content-type-fields.component';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
