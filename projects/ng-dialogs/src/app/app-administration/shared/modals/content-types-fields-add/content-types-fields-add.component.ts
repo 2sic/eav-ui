@@ -13,7 +13,7 @@ import { Context } from '../../../../shared/context/context';
   templateUrl: './content-types-fields-add.component.html',
   styleUrls: ['./content-types-fields-add.component.scss']
 })
-export class ContentTypesFieldsAddComponent implements OnInit {
+export class EditContentTypeFieldsComponent implements OnInit {
   fields: Field[];
   newFields: NewField[];
   dataTypes: string[];
@@ -24,7 +24,7 @@ export class ContentTypesFieldsAddComponent implements OnInit {
   private contentType: ContentType;
 
   constructor(
-    private dialogRef: MatDialogRef<ContentTypesFieldsAddComponent>,
+    private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,

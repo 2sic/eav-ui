@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EDIT_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -19,7 +19,7 @@ import { ContentExportComponent } from '../../../app-administration/shared/modal
 import { ContentImportComponent } from '../../../app-administration/shared/modals/content-import/content-import.component';
 import { PermissionsComponent } from '../../../app-administration/shared/modals/permissions/permissions.component';
 // tslint:disable-next-line:max-line-length
-import { ContentTypesFieldsAddComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
+import { EditContentTypeFieldsComponent } from '../../../app-administration/shared/modals/content-types-fields-add/content-types-fields-add.component';
 import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
 import { ContentItemsComponent } from '../../../app-administration/shared/modals/content-items/content-items.component';
@@ -130,12 +130,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         this.component = EditContentTypeComponent;
         this.panelSize = 'small';
         break;
-      case EDIT_FIELDS_DIALOG:
+      case CONTENT_TYPE_FIELDS_DIALOG:
         this.component = EditFieldsComponent;
         this.panelSize = 'large';
         break;
-      case CONTENT_TYPES_FIELDS_ADD_DIALOG:
-        this.component = ContentTypesFieldsAddComponent;
+      case EDIT_CONTENT_TYPE_FIELDS_DIALOG:
+        this.component = EditContentTypeFieldsComponent;
         this.panelSize = 'medium';
         break;
       case EXPORT_CONTENT_TYPE_DIALOG:

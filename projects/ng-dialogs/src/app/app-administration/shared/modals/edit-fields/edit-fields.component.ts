@@ -10,7 +10,7 @@ import { ContentTypesFieldsService } from '../../services/content-types-fields.s
 import { ContentType } from '../../models/content-type.model';
 import { Field } from '../../models/field.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
-import { CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
+import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 import { eavConstants } from '../../../../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
 
@@ -149,7 +149,7 @@ export class EditFieldsComponent implements OnInit, OnDestroy {
   }
 
   add() {
-    this.router.navigate([`add`], { relativeTo: this.route });
+    this.router.navigate(['add'], { relativeTo: this.route });
   }
 
   private async fetchFields() {
@@ -195,7 +195,7 @@ export class EditFieldsComponent implements OnInit, OnDestroy {
         });
         break;
       case 'change-input-type':
-        alert('Change Input Type');
+        this.router.navigate([`edit/${field.Id}`], { relativeTo: this.route });
         break;
       case 'rename':
         const newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`);
@@ -224,7 +224,7 @@ export class EditFieldsComponent implements OnInit, OnDestroy {
 
   private refreshOnClosedChildDialogs() {
     this.subscription.add(
-      this.dialogService.subToClosed([CONTENT_TYPES_FIELDS_ADD_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
+      this.dialogService.subToClosed([EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
         console.log('Dialog closed event captured:', closedDialog);
         this.fetchFields();
       }),
