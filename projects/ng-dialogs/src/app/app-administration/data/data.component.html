@@ -2,13 +2,13 @@
 
 <div class="actions-container">
   <div>
-    <button mat-icon-button matTooltip="Add content type" (click)="editContentType(null)">
+    <button mat-icon-button matTooltip="Create a new content type" (click)="editContentType(null)">
       <mat-icon>add</mat-icon>
     </button>
     <button mat-icon-button matTooltip="Refresh" (click)="fetchContentTypes()">
       <mat-icon>refresh</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Ghost" *ngIf="debugEnabled" (click)="createGhost()">
+    <button mat-icon-button matTooltip="Create a ghost content type" *ngIf="debugEnabled" (click)="createGhost()">
       <mat-icon>adb</mat-icon>
     </button>
   </div>

@@ -1,19 +1,22 @@
 <h3>Visual Queries</h3>
 
-<div>Use the visual designer to create queries or merge data from
-  various sources. This can then be used in views or accessed as JSON (if permissions allow).
+<p>
+  Use the visual designer to create queries or merge data from various sources.
+  This can then be used in views or accessed as JSON (if permissions allow).
   <a href="http://2sxc.org/en/help?tag=visualquerydesigner" target="_blank">read more</a>
-</div>
+</p>
 
-<button mat-button matTooltip="Create a new query" (click)="editQuery(null)">
-  <mat-icon>add</mat-icon>
-</button>
-<button mat-button matTooltip="Import query" (click)="importQuery()">
-  <mat-icon>cloud_upload</mat-icon>
-</button>
-<button mat-button matTooltip="Refresh" (click)="fetchQueries()">
-  <mat-icon>refresh</mat-icon>
-</button>
+<div>
+  <button mat-icon-button matTooltip="Create a new query" (click)="editQuery(null)">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Import query" (click)="importQuery()">
+    <mat-icon>cloud_upload</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Refresh" (click)="fetchQueries()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"

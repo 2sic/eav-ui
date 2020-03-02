@@ -1,13 +1,13 @@
 <div>
-  <button mat-icon-button (click)="editView(null)">
+  <button mat-icon-button matTooltip="Create a new view" (click)="editView(null)">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-icon-button (click)="fetchTemplates()">
+  <button mat-icon-button matTooltip="Refresh" (click)="fetchTemplates()">
     <mat-icon>refresh</mat-icon>
   </button>
-
-  <ag-grid-angular class="ag-theme-material" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"
-    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-    (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
-  </ag-grid-angular>
 </div>
+
+<ag-grid-angular class="ag-theme-material" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
+  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+</ag-grid-angular>

@@ -9,18 +9,15 @@
 
 <router-outlet></router-outlet>
 
-<p class="not-implemented"><b>spm Sort order might be wrong with my form. It happens that two fields have the same sort
-    order after adding fields!</b></p>
-
 <div>
-  <button mat-button type="button" (click)="add()" class="almost-implemented">
+  <button mat-icon-button matTooltip="Add fields" (click)="add()">
     <mat-icon>add</mat-icon>
   </button>
-
-  <ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
-    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="enableTextSelection"
-    [suppressScrollOnNewData]="true" [animateRows]="true" (rowDragEnter)="onRowDragEnter($event)"
-    (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
-    (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
-  </ag-grid-angular>
 </div>
+
+<ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="enableTextSelection"
+  [suppressScrollOnNewData]="true" [animateRows]="true" (rowDragEnter)="onRowDragEnter($event)"
+  (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
+  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+</ag-grid-angular>

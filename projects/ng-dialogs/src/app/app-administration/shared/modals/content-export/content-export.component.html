@@ -7,21 +7,25 @@
   </div>
 </div>
 
-<div>This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
-  export the schema that you can then fill in using Excel. Please visit <a href="http://2sxc.org/help"
-    target="_blank">http://2sxc.org/help</a> for more instructions.</div>
+<p>
+  This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
+  export the schema that you can then fill in using Excel. Please visit
+  <a href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
+</p>
 
 <form #ngForm="ngForm" class="edit-form">
-  <mat-form-field appearance="standard" color="accent" class="edit-input">
-    <mat-label>Languages</mat-label>
-    <mat-select [(ngModel)]="formValues.language" name="Language">
-      <mat-option value="All">All</mat-option>
-      <mat-option *ngFor="let lang of languages" [value]="lang.key">{{ lang.key }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div>
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Languages</mat-label>
+      <mat-select [(ngModel)]="formValues.language" name="Language">
+        <mat-option value="All">All</mat-option>
+        <mat-option *ngFor="let lang of languages" [value]="lang.key">{{ lang.key }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <div>
-    <mat-label>Export data</mat-label>
+    <p>Export data</p>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.recordExport" name="RecordExport">
       <mat-radio-button class="radio-button" value="Blank">No, just export blank data schema (for new data import)
       </mat-radio-button>
@@ -32,7 +36,7 @@
   </div>
 
   <div>
-    <mat-label>Value references to other languages</mat-label>
+    <p>Value references to other languages</p>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
       [disabled]="formValues.recordExport === 'Blank'">
       <mat-radio-button class="radio-button" value="Link">Keep references to other languages (for re-import)
@@ -42,7 +46,7 @@
   </div>
 
   <div>
-    <mat-label>File / page references</mat-label>
+    <p>File / page references</p>
     <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
       [disabled]="formValues.recordExport === 'Blank'">
       <mat-radio-button class="radio-button" value="Link">Keep references (for re-import, for example Page:4711)

@@ -10,15 +10,15 @@
 <router-outlet></router-outlet>
 
 <div>
-  <button mat-button type="button" (click)="editPermission(null)">
+  <button mat-icon-button matTooltip="Create a new permission" (click)="editPermission(null)">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-button type="button" (click)="fetchPermissions()">
+  <button mat-icon-button matTooltip="Refresh" (click)="fetchPermissions()">
     <mat-icon>refresh</mat-icon>
   </button>
-
-  <ag-grid-angular class="ag-theme-material" [rowData]="permissions" [columnDefs]="columnDefs" [modules]="modules"
-    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-    (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
-  </ag-grid-angular>
 </div>
+
+<ag-grid-angular class="ag-theme-material" [rowData]="permissions" [columnDefs]="columnDefs" [modules]="modules"
+  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
+  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+</ag-grid-angular>

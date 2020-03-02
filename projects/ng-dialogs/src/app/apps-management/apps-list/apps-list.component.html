@@ -1,16 +1,18 @@
-<button mat-button matTooltip="Find more apps" (click)="browseCatalog()">
-  <mat-icon>search</mat-icon>
-  <span>more apps</span>
-</button>
-<button mat-icon-button matTooltip="Import app" (click)="importApp()">
-  <mat-icon>cloud_upload</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Create app" (click)="createApp()">
-  <mat-icon>add</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Reload apps list" (click)="fetchAppsList()">
-  <mat-icon>refresh</mat-icon>
-</button>
+<div>
+  <button mat-button matTooltip="Find more apps" (click)="browseCatalog()">
+    <mat-icon>search</mat-icon>
+    <span>more apps</span>
+  </button>
+  <button mat-icon-button matTooltip="Import app" (click)="importApp()">
+    <mat-icon>cloud_upload</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Create app" (click)="createApp()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Reload apps list" (click)="fetchAppsList()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="apps" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"

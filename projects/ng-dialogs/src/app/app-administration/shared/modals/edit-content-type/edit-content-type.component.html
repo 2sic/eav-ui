@@ -37,8 +37,10 @@
         <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
       </button>
     </mat-form-field>
-    <mat-hint>The scope should almost never be changed - <a href="http://2sxc.org/help?tag=scope" _target="_blank">see
-        help</a></mat-hint>
+    <mat-hint>
+      The scope should almost never be changed -
+      <a href="http://2sxc.org/help?tag=scope" _target="_blank">see help</a>
+    </mat-hint>
   </div>
 
   <div class="edit-input">
@@ -50,8 +52,8 @@
 
   <div *ngIf="contentType.SharedDefId" class="edit-input">
     <h3>Shared Content Type (Ghost)</h3>
-    <div>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</div>
-    <div>Uses Type Definition of: {{ contentType.SharedDefId }}</div>
+    <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
+    <p>Uses Type Definition of: {{ contentType.SharedDefId }}</p>
   </div>
 
   <button mat-icon-button type="submit" [disabled]="!ngForm.form.valid">
