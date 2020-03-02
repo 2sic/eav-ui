@@ -14,7 +14,7 @@ import { Context } from '../../../../shared/context/context';
   styleUrls: ['./edit-content-type-fields.component.scss']
 })
 export class EditContentTypeFieldsComponent implements OnInit {
-  fields: Field[];
+  editField: Field;
   newFields: NewField[];
   dataTypes: string[];
   inputTypeOptions: FieldInputTypeOption[];
@@ -35,20 +35,26 @@ export class EditContentTypeFieldsComponent implements OnInit {
 
   async ngOnInit() {
     this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
-    this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
+    const allFields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
+    const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
     this.dataTypes = await this.contentTypesFieldsService.typeListRetrieve().toPromise();
     this.inputTypeOptions = await this.contentTypesFieldsService.getInputTypesList().toPromise();
 
-    this.newFields = [];
-    for (let i = 1; i <= 10; i++) {
-      this.newFields.push(new NewField(
-        this.context.appId,
-        this.contentType.Id,
-        this.fields.length === 0,
-        this.fields.length + i,
-      ));
+    if (!editFieldId) {
+      this.newFields = [];
+      for (let i = 1; i <= 8; i++) {
+        this.newFields.push(new NewField(
+          this.context.appId,
+          this.contentType.Id,
+          allFields.length === 0,
+          allFields.length + i,
+        ));
+      }
+      this.calculateInputTypeOptions(this.newFields);
+    } else {
+      this.editField = allFields.find(field => field.Id === editFieldId);
+      this.calculateInputTypeOptions([this.editField]);
     }
-    this.calculateInputTypeOptions(this.newFields);
   }
 
   closeDialog() {
@@ -60,7 +66,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.calculateInputTypeOptions([newField]);
   }
 
-  async submit() {
+  async addFieldsSubmit() {
     const rowsWithValue = this.newFields.filter(field => field.StaticName);
     for (let i = 0; i < rowsWithValue.length; i++) {
       await this.contentTypesFieldsService.add(rowsWithValue[i]).toPromise();
@@ -68,10 +74,18 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.closeDialog();
   }
 
-  private calculateInputTypeOptions(newFields: NewField[]) {
-    newFields.forEach(newField => {
-      this.filteredInputTypeOptions[newField.SortOrder] = this.inputTypeOptions.filter(option =>
-        option.dataType === newField.Type.toLowerCase());
-    });
+  editFieldSubmit() {
+    this.contentTypesFieldsService
+      .updateInputType(this.editField.Id, this.editField.StaticName, this.editField.InputType)
+      .subscribe(res => {
+        this.closeDialog();
+      });
+  }
+
+  private calculateInputTypeOptions(fields: NewField[] | Field[]) {
+    for (const field of fields) {
+      this.filteredInputTypeOptions[field.SortOrder] = this.inputTypeOptions.filter(option =>
+        option.dataType === field.Type.toLowerCase());
+    }
   }
 }

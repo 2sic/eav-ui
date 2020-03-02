@@ -44,7 +44,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       cellRenderer: (params: ICellRendererParams) => {
         return `
           <div class="icon-container">
-            <i class="material-icons pointer not-implemented" action="change-input-type" title="Change Input Type">edit</i>
+            <i class="material-icons pointer" action="change-input-type" title="Change Input Type">edit</i>
             &nbsp;
             <span class="text" action="change-input-type" title="Change Input Type">${params.value}</span>
           </div>
@@ -195,7 +195,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         });
         break;
       case 'change-input-type':
-        this.router.navigate([`edit/${field.Id}`], { relativeTo: this.route });
+        this.router.navigate([`update/${field.Id}`], { relativeTo: this.route });
         break;
       case 'rename':
         const newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`);

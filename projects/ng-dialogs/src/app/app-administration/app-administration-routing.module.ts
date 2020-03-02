@@ -36,7 +36,7 @@ const appAdministrationRoutes: Routes = [
             path: ':contentTypeStaticName/fields', component: DialogEntryComponent, data: { dialogName: CONTENT_TYPE_FIELDS_DIALOG },
             children: [
               { path: 'add', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_FIELDS_DIALOG } },
-              { path: 'edit/:id', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_FIELDS_DIALOG } },
+              { path: 'update/:id', component: DialogEntryComponent, data: { dialogName: EDIT_CONTENT_TYPE_FIELDS_DIALOG } },
               {
                 matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
                 loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)

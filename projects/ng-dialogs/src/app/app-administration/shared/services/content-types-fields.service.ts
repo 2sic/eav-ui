@@ -109,4 +109,10 @@ export class ContentTypesFieldsService {
   add(item: NewField) {
     return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield/'), { params: <any>item });
   }
+
+  updateInputType(id: number, staticName: string, inputType: string) {
+    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'),
+      { params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType: inputType } }
+    );
+  }
 }

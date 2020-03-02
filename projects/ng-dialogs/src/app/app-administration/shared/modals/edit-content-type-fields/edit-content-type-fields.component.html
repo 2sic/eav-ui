@@ -1,34 +1,68 @@
 <div mat-dialog-title>
   <div class="dialog-title-container">
-    <div>Add Fields</div>
+    <div *ngIf="!newFields && !editField">Fields</div>
+    <div *ngIf="newFields">Add Fields</div>
+    <div *ngIf="editField">Edit Field</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>
 
-<div class="row-container" *ngFor="let newField of newFields">
-  <mat-form-field appearance="standard" color="accent">
-    <mat-label>Static Name</mat-label>
-    <input matInput [(ngModel)]="newField.StaticName" name="StaticName">
-  </mat-form-field>
+<!-- Add fields -->
+<div *ngIf="newFields">
+  <div class="row-container" *ngFor="let newField of newFields">
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Static Name</mat-label>
+      <input matInput [(ngModel)]="newField.StaticName" name="StaticName">
+    </mat-form-field>
 
-  <mat-form-field appearance="standard" color="accent">
-    <mat-label>Data Type</mat-label>
-    <mat-select (selectionChange)="resetSubTypes(newField)" [(ngModel)]="newField.Type" name="Type">
-      <mat-option *ngFor="let type of dataTypes" [value]="type">{{ type }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Data Type</mat-label>
+      <mat-select (selectionChange)="resetSubTypes(newField)" [(ngModel)]="newField.Type" name="Type">
+        <mat-option *ngFor="let type of dataTypes" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="standard" color="accent">
-    <mat-label>Input Type</mat-label>
-    <mat-select [(ngModel)]="newField.InputType" name="InputType">
-      <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
-        {{ option.inputType }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Input Type</mat-label>
+      <mat-select [(ngModel)]="newField.InputType" name="InputType">
+        <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
+          {{ option.inputType }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button mat-icon-button type="button" (click)="addFieldsSubmit()">
+    <mat-icon>done</mat-icon>
+  </button>
 </div>
 
-<button mat-button type="button" (click)="submit()" class="almost-implemented">
-  <mat-icon>done</mat-icon>
-</button>
+<!-- Edit field-->
+<div *ngIf="editField">
+  <div class="row-container">
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Static Name</mat-label>
+      <input matInput [ngModel]="editField.StaticName" name="StaticName" disabled>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Data Type</mat-label>
+      <mat-select [ngModel]="editField.Type" name="Type" disabled>
+        <mat-option [value]="editField.Type">{{ editField.Type }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="standard" color="accent" class="edit-input">
+      <mat-label>Input Type</mat-label>
+      <mat-select [(ngModel)]="editField.InputType" name="InputType">
+        <mat-option *ngFor="let option of filteredInputTypeOptions[editField.SortOrder]" [value]="option.inputType">
+          {{ option.inputType }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <button mat-icon-button type="button" (click)="editFieldSubmit()">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>
