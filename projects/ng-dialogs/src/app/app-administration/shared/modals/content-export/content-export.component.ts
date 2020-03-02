@@ -30,7 +30,7 @@ export class ContentExportComponent implements OnInit {
     this.formValues = {
       defaultLanguage: sessionStorage.langpri,
       contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
-      language: 'All',
+      language: '',
       recordExport: this.hasIdList ? 'Selection' : 'All',
       languageReferences: 'Link',
       resourcesReferences: 'Link',
