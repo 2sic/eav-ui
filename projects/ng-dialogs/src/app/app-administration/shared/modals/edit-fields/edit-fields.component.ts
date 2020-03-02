@@ -19,7 +19,7 @@ import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
   templateUrl: './edit-fields.component.html',
   styleUrls: ['./edit-fields.component.scss']
 })
-export class EditFieldsComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   fields: Field[];
   enableTextSelection = true;
 
@@ -79,7 +79,7 @@ export class EditFieldsComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   constructor(
-    private dialogRef: MatDialogRef<EditFieldsComponent>,
+    private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
     private route: ActivatedRoute,
     private router: Router,
     private contentTypesService: ContentTypesService,
