@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-export-app-all',
@@ -7,8 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExportAppAllComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialogRef: MatDialogRef<ExportAppAllComponent>) { }
 
   ngOnInit() {
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 }
