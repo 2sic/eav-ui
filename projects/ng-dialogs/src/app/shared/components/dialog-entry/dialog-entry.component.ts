@@ -24,7 +24,7 @@ import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dial
 import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
 import { ContentItemsComponent } from '../../../app-administration/shared/modals/content-items/content-items.component';
 import { ContentItemImportComponent } from '../../../app-administration/shared/modals/content-item-import/content-item-import.component';
-import { ExportAppAllComponent } from '../../../app-administration/shared/modals/export-app-all/export-app-all.component';
+import { ExportAppAllComponent } from '../../../app-administration/shared/modals/export-app/export-app.component';
 import { ExportAppPartsComponent } from '../../../app-administration/shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from '../../../app-administration/shared/modals/import-app-parts/import-app-parts.component';
 
