@@ -105,7 +105,14 @@ const appAdministrationRoutes: Routes = [
         ]
       },
       { path: 'web-api', component: EmptyRouteComponent },
-      { path: 'app', component: EmptyRouteComponent },
+      {
+        path: 'app', component: EmptyRouteComponent, children: [
+          {
+            matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+          },
+        ]
+      },
     ]
   },
 ];

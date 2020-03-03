@@ -48,5 +48,9 @@ export const eavConstants = {
     query: 'DataPipeline',
     /** Content type containing content type metadata (app administration > data > metadata) */
     contentType: 'ContentType',
+    /** Content type containing app settings */
+    settings: 'App-Settings',
+    /** Content type containing app resources */
+    resources: 'App-Resources',
   }
 };
