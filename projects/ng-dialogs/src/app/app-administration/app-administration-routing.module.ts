@@ -106,7 +106,6 @@ const appAdministrationRoutes: Routes = [
       },
       { path: 'web-api', component: EmptyRouteComponent },
       { path: 'app', component: EmptyRouteComponent },
-      { path: 'global', component: EmptyRouteComponent },
     ]
   },
 ];

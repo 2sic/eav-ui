@@ -15,7 +15,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
   styleUrls: ['./app-administration-nav.component.scss']
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
-  tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app', 'global']; // tabs has to match template and filter below
+  tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs has to match template and filter below
   tabIndex: number;
   dialogSettings: DialogSettings;
 
