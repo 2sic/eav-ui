@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-export-app-all',
-  templateUrl: './export-app-all.component.html',
-  styleUrls: ['./export-app-all.component.scss']
+  selector: 'app-export-app',
+  templateUrl: './export-app.component.html',
+  styleUrls: ['./export-app.component.scss']
 })
-export class ExportAppAllComponent implements OnInit {
+export class ExportAppComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<ExportAppAllComponent>) { }
+  constructor(private dialogRef: MatDialogRef<ExportAppComponent>) { }
 
   ngOnInit() {
   }
