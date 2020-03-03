@@ -46,4 +46,16 @@ export class AppConfigurationComponent implements OnInit {
       { relativeTo: this.route.firstChild }
     );
   }
+
+  exportAll() {
+    this.router.navigate([`export/all`], { relativeTo: this.route.firstChild });
+  }
+
+  exportParts() {
+    this.router.navigate([`export/parts`], { relativeTo: this.route.firstChild });
+  }
+
+  importParts() {
+    this.router.navigate([`import/parts`], { relativeTo: this.route.firstChild });
+  }
 }

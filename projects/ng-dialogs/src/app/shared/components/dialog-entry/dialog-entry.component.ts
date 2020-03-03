@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 // tslint:disable-next-line:max-line-length
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../../constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG, APP_ADMINISTRATION_DIALOG, CODE_EDITOR_DIALOG, EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG, EXPORT_APP_ALL, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../../constants/dialog-names';
 import { Context } from '../../context/context';
 import { AppsManagementNavComponent } from '../../../apps-management/apps-management-nav/apps-management-nav.component';
 import { ImportAppComponent } from '../../../apps-management/shared/modals/import-app/import-app.component';
@@ -24,6 +24,9 @@ import { MultiItemEditFormComponent } from '../../../../../../edit/eav-item-dial
 import { ImportQueryComponent } from '../../../app-administration/shared/modals/import-query/import-query.component';
 import { ContentItemsComponent } from '../../../app-administration/shared/modals/content-items/content-items.component';
 import { ContentItemImportComponent } from '../../../app-administration/shared/modals/content-item-import/content-item-import.component';
+import { ExportAppAllComponent } from '../../../app-administration/shared/modals/export-app-all/export-app-all.component';
+import { ExportAppPartsComponent } from '../../../app-administration/shared/modals/export-app-parts/export-app-parts.component';
+import { ImportAppPartsComponent } from '../../../app-administration/shared/modals/import-app-parts/import-app-parts.component';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -152,6 +155,18 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         break;
       case IMPORT_QUERY_DIALOG:
         this.component = ImportQueryComponent;
+        this.panelSize = 'medium';
+        break;
+      case EXPORT_APP_ALL:
+        this.component = ExportAppAllComponent;
+        this.panelSize = 'medium';
+        break;
+      case EXPORT_APP_PARTS:
+        this.component = ExportAppPartsComponent;
+        this.panelSize = 'medium';
+        break;
+      case IMPORT_APP_PARTS:
+        this.component = ImportAppPartsComponent;
         this.panelSize = 'medium';
         break;
 

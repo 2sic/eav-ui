@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 // tslint:disable-next-line:max-line-length
-import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../shared/constants/dialog-names';
+import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG, EXPORT_APP_ALL, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../shared/constants/dialog-names';
 import { edit } from '../../../../edit/edit.matcher';
 
 const appAdministrationRoutes: Routes = [
@@ -142,6 +142,9 @@ const appAdministrationRoutes: Routes = [
               },
             ]
           },
+          { path: 'export/all', component: DialogEntryComponent, data: { dialogName: EXPORT_APP_ALL } },
+          { path: 'export/parts', component: DialogEntryComponent, data: { dialogName: EXPORT_APP_PARTS } },
+          { path: 'import/parts', component: DialogEntryComponent, data: { dialogName: IMPORT_APP_PARTS } },
         ]
       },
     ]

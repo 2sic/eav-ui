@@ -69,7 +69,7 @@
 
 <div class="config-box">
   <div class="config-box__buttons-box not-implemented">
-    <button mat-icon-button matTooltip="Export">
+    <button mat-icon-button matTooltip="Export" (click)="exportAll()">
       <mat-icon>cloud_download</mat-icon>
     </button>
   </div>
@@ -83,10 +83,10 @@
 
 <div class="config-box">
   <div class="config-box__buttons-box not-implemented">
-    <button mat-icon-button matTooltip="Export">
+    <button mat-icon-button matTooltip="Export" (click)="exportParts()">
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Import">
+    <button mat-icon-button matTooltip="Import" (click)="importParts()">
       <mat-icon>cloud_upload</mat-icon>
     </button>
   </div>
