@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-container">
+  <div class="dialog-title-box">
     <div>Manage Apps in this Zone (Portal)</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
@@ -12,7 +12,7 @@
 <!-- spm we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
 <mat-tab-group dynamicHeight color="accent" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
   <mat-tab>
-    <div *matTabLabel class="tab-container" matTooltip="Apps">
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Apps">
       <mat-icon>star_border</mat-icon>
       <span>Apps</span>
     </div>
@@ -20,7 +20,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" matTooltip="Settings">
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Settings">
       <mat-icon>public</mat-icon>
       <span>Languages</span>
     </div>
@@ -28,7 +28,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" matTooltip="These settings apply to all zones/portals">
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="These settings apply to all zones/portals">
       <mat-icon>tune</mat-icon>
       <span>Features</span>
     </div>
@@ -36,7 +36,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="tab-container" matTooltip="Insights">
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Insights">
       <mat-icon>storage</mat-icon>
       <span>2sxc Insights</span>
     </div>

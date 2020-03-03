@@ -1,13 +1,19 @@
-.edit-form {
-  width: 100%;
+.field-label {
+  font-size: 18px;
+  margin: 24px 0 0;
 }
 
-.radio-group {
+.mat-radio-group {
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
+  margin: 8px 0;
 }
 
-.radio-button {
+.mat-radio-button {
   margin: 5px;
+  font-size: 14px;
+}
+
+.form-actions-box {
+  padding-top: 8px;
 }

@@ -1,17 +1,29 @@
-.hidden {
-  display: none;
+.file-name {
+  font-size: 14px;
 }
 
-.edit-form {
-  width: 100%;
+.field-label {
+  font-size: 18px;
+  margin: 24px 0 0;
 }
 
-.radio-group {
+.mat-radio-group {
   display: flex;
   flex-direction: column;
-  margin: 15px 0;
+  margin: 8px 0;
 }
 
-.radio-button {
+.mat-radio-button {
   margin: 5px;
+  font-size: 14px;
+}
+
+.hint {
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.progress-message {
+  font-size: 18px;
 }

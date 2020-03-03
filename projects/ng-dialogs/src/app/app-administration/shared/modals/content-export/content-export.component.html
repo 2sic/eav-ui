@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-container">
+  <div class="dialog-title-box">
     <div>Export Content / Data</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
@@ -7,15 +7,15 @@
   </div>
 </div>
 
-<p>
+<p class="dialog-description">
   This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
   export the schema that you can then fill in using Excel. Please visit
   <a href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
 </p>
 
-<form #ngForm="ngForm" class="edit-form">
+<form #ngForm="ngForm">
   <div>
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
+    <mat-form-field appearance="standard" color="accent">
       <mat-label>Languages</mat-label>
       <mat-select [(ngModel)]="formValues.language" name="Language">
         <mat-option value="">All</mat-option>
@@ -25,39 +25,39 @@
   </div>
 
   <div>
-    <p>Export data</p>
-    <mat-radio-group class="radio-group" [(ngModel)]="formValues.recordExport" name="RecordExport">
-      <mat-radio-button class="radio-button" value="Blank">No, just export blank data schema (for new data import)
+    <p class="field-label">Export data</p>
+    <mat-radio-group [(ngModel)]="formValues.recordExport" name="RecordExport">
+      <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" value="All">Yes, export all content-items</mat-radio-button>
-      <mat-radio-button class="radio-button" *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
+      <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
+      <mat-radio-button *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
         items</mat-radio-button>
     </mat-radio-group>
   </div>
 
   <div>
-    <p>Value references to other languages</p>
-    <mat-radio-group class="radio-group" [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
+    <p class="field-label">Value references to other languages</p>
+    <mat-radio-group [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
       [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button class="radio-button" value="Link">Keep references to other languages (for re-import)
+      <mat-radio-button value="Link">Keep references to other languages (for re-import)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" value="Resolve">Replace references with values</mat-radio-button>
+      <mat-radio-button value="Resolve">Replace references with values</mat-radio-button>
     </mat-radio-group>
   </div>
 
   <div>
-    <p>File / page references</p>
-    <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
+    <p class="field-label">File / page references</p>
+    <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
       [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button class="radio-button" value="Link">Keep references (for re-import, for example Page:4711)
+      <mat-radio-button value="Link">Keep references (for re-import, for example Page:4711)
       </mat-radio-button>
-      <mat-radio-button class="radio-button" value="Resolve">Replace references with real URLs (for example
+      <mat-radio-button value="Resolve">Replace references with real URLs (for example
         /Portals/0...)
       </mat-radio-button>
     </mat-radio-group>
   </div>
 
-  <div>
+  <div class="form-actions-box">
     <button mat-button type="button" [disabled]="!ngForm.form.valid" (click)="exportContent()">
       Export
     </button>

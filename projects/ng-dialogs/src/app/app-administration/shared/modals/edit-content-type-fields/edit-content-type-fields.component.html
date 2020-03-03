@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-container">
+  <div class="dialog-title-box">
     <div *ngIf="!newFields && !editField">Fields</div>
     <div *ngIf="newFields">Add Fields</div>
     <div *ngIf="editField">Edit Field</div>
@@ -33,7 +33,7 @@
     </mat-form-field>
   </div>
 
-  <div>
+  <div class="form-actions-box">
     <button mat-icon-button (click)="addFieldsSubmit()">
       <mat-icon>done</mat-icon>
     </button>
@@ -64,7 +64,7 @@
     </mat-form-field>
   </div>
 
-  <div>
+  <div class="form-actions-box">
     <button mat-icon-button (click)="editFieldSubmit()">
       <mat-icon>done</mat-icon>
     </button>

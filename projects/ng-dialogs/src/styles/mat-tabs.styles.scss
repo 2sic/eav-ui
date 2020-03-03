@@ -2,8 +2,12 @@
   @extend .hide-scrollbar;
 }
 
-.tab-container {
+.mat-tab-label-box {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.mat-tab-description {
+  font-size: 14px;
 }

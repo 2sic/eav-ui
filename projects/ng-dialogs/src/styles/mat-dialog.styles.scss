@@ -50,11 +50,15 @@ $dialog-width-small: 40vw;
   }
 }
 
-.dialog-title-container {
+.dialog-title-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 32px;
-  line-height: 32px;
+  font-size: 29px;
+  line-height: 29px;
   font-weight: 400;
+}
+
+.dialog-description {
+  font-size: 14px;
 }

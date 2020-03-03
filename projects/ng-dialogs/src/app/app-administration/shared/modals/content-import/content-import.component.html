@@ -1,6 +1,6 @@
 <!-- HEADER -->
 <div mat-dialog-title>
-  <div class="dialog-title-container">
+  <div class="dialog-title-box">
     <div>
       <span>Import Content / Data</span>
       <span *ngIf="viewStateSelected > 0">&nbsp;Step {{ viewStateSelected }} of 3</span>
@@ -11,7 +11,7 @@
   </div>
 </div>
 
-<p>
+<p class="dialog-description">
   This will import content-items into 2sxc. It requires that you already defined the content-type before you try
   importing, and that you created the import-file using the template provided by the Export. Please visit
   <a href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
@@ -21,50 +21,53 @@
 <div [ngSwitch]="viewStateSelected">
 
   <!-- FORM -->
-  <form #ngForm="ngForm" class="edit-form" *ngSwitchCase="1">
+  <form #ngForm="ngForm" *ngSwitchCase="1">
     <div>
       <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
         <span>Choose file * </span>
         <mat-icon>cloud_upload</mat-icon>
       </button>
-      <span *ngIf="formValues.file">{{ formValues.file.name }}</span>
-      <input #fileInput type="file" (change)="fileChange($event)" class="hidden" />
+      <span *ngIf="formValues.file" class="file-name">{{ formValues.file.name }}</span>
+      <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
     </div>
 
     <div>
-      <p>References to pages / files</p>
-      <mat-radio-group class="radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
-        <mat-radio-button class="radio-button" value="Keep">
+      <p class="field-label">References to pages / files</p>
+      <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
+        <mat-radio-button value="Keep">
           Import links as written in the file (for example /Portals/...)
         </mat-radio-button>
-        <mat-radio-button class="radio-button" value="Resolve">
+        <mat-radio-button value="Resolve">
           Try to resolve paths to references
         </mat-radio-button>
       </mat-radio-group>
     </div>
 
     <div>
-      <p>Clear all other entities</p>
-      <mat-radio-group class="radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
-        <mat-radio-button class="radio-button" value="None">
+      <p class="field-label">Clear all other entities</p>
+      <mat-radio-group [(ngModel)]="formValues.clearEntities" name="ClearEntities">
+        <mat-radio-button value="None">
           Keep all entities not found in import
         </mat-radio-button>
-        <mat-radio-button class="radio-button" value="All">
+        <mat-radio-button value="All">
           Remove all entities not found in import
         </mat-radio-button>
       </mat-radio-group>
     </div>
 
-    <p>Remember to backup your DNN first!</p>
+    <p class="hint">Remember to backup your DNN first!</p>
 
-    <button mat-button type="button" (click)="evaluateContent()" [disabled]="!formValues.file || !formValues.file.name">
-      Preview Import
-    </button>
+    <div class="form-actions-box">
+      <button mat-button type="button" (click)="evaluateContent()"
+        [disabled]="!formValues.file || !formValues.file.name">
+        Preview Import
+      </button>
+    </div>
   </form>
   <!-- END FORM -->
 
   <!-- WAITING -->
-  <p *ngSwitchCase="0">Please wait while processing...</p>
+  <p *ngSwitchCase="0" class="progress-message">Please wait while processing...</p>
   <!-- END WAITING -->
 
   <!-- EVALUATION RESULT -->
@@ -88,7 +91,7 @@
           <li>Ignore {{ evaluationResult.Detail.AttributeNamesNotImported.length }} columns:
             {{ evaluationResult.Detail.AttributeNamesNotImported.join(', ') }}</li>
         </ul>
-        <p>Note: The import validates much data and may take several minutes.</p>
+        <p class="hint">Note: The import validates much data and may take several minutes.</p>
       </div>
       <!-- END DETAILS / STATISTICS -->
       <!-- ERRORS -->
@@ -118,7 +121,7 @@
 
   <!-- IMPORT RESULT -->
   <div *ngSwitchCase="3">
-    <div *ngIf="importResult">
+    <div *ngIf="importResult" class="progress-message">
       <p *ngIf="importResult.Succeeded">Import done.</p>
       <p *ngIf="!importResult.Succeeded">Import failed.</p>
     </div>

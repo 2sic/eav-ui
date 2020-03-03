@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-container">
+  <div class="dialog-title-box">
     <div>Import App</div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
@@ -10,13 +10,12 @@
 <mat-spinner *ngIf="isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
 <div *ngIf="!importResult || (importResult && !importResult.Messages)">
-  <div>
+  <p class="dialog-description">
     Select an app package (zip) from your computer to import an app. New apps can be downloaded on
     <a href="http://2sxc.org/apps">http://2sxc.org/apps</a>.
-  </div>
+    For further help visit <a href="http://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.
+  </p>
 
-  <div>For further help visit <a href="http://2sxc.org/en/help?tag=import-app" target="_blank">2sxc Help</a>.</div>
-  <br />
   <div>
     <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
       <span *ngIf="!importFile">Select file</span>
