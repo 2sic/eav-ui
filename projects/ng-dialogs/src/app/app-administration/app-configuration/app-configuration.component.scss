@@ -1,0 +1,29 @@
+.config-box {
+  margin: 16px 0;
+  display: flex;
+
+  &__buttons-box {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  &__text-box {
+    padding-left: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.text-box {
+  &__title {
+    margin: 0;
+    padding-bottom: 8px;
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 14px;
+  }
+}

@@ -1,3 +1,100 @@
 <h3>App Configuration</h3>
 
-<div>Configure the App and special App-settings here.</div>
+<p class="mat-tab-description">Configure the App and special App-settings here.</p>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Edit app settings">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Configure app settings">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">App Settings</h4>
+    <p class="text-box__description">
+      Settings are configurations used by the app - like SQL-connection strings, default "items-to-show" numbers and
+      things like that. They can also be multi-language, so that a setting (like default RSS-Feed) could be different in
+      each language.
+    </p>
+  </div>
+</div>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Edit app resources">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Configure app resources">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">App Resources</h4>
+    <p class="text-box__description">
+      Resources are used for labels and things like that in the App. They are usually needed to create multi-lingual
+      views and such, and should not be used for App-Settings.
+    </p>
+  </div>
+</div>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Edit app definition">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">App Package Definition</h4>
+    <p class="text-box__description">
+      The app-package definition is important when exporting/importing this app.
+    </p>
+  </div>
+</div>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Edit permissions">
+      <mat-icon>person</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">App Permissions</h4>
+    <p class="text-box__description">
+      Permissions give access to people to the entire app (all content-types / data), so use with care.
+    </p>
+  </div>
+</div>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Export">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">Export this entire App</h4>
+    <p class="text-box__description">
+      Create an app-package (zip) which can be installed in another portal
+    </p>
+  </div>
+</div>
+
+<div class="config-box">
+  <div class="config-box__buttons-box">
+    <button mat-icon-button matTooltip="Export">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Import">
+      <mat-icon>cloud_upload</mat-icon>
+    </button>
+  </div>
+  <div class="config-box__text-box">
+    <h4 class="text-box__title">Export or Import parts of this App</h4>
+    <p class="text-box__description">
+      Create an xml containing parts of the app, e.g. content and templates.
+      Import parts from such an xml into this app.
+    </p>
+  </div>
+</div>
