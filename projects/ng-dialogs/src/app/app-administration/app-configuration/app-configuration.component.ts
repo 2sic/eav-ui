@@ -37,7 +37,7 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   config(staticName: string) {
-
+    this.router.navigate([`${staticName}/fields`], { relativeTo: this.route.firstChild });
   }
 
   openPermissions() {
