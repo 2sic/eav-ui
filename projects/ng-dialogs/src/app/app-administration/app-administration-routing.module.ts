@@ -111,6 +111,16 @@ const appAdministrationRoutes: Routes = [
             matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
+          {
+            path: ':type/:keyType/:key/permissions', component: DialogEntryComponent, data: {
+              dialogName: SET_PERMISSIONS_DIALOG
+            }, children: [
+              {
+                matcher: edit, // 'edit/:items' or 'edit/:items/details/:expandedFieldId'
+                loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+              },
+            ]
+          },
         ]
       },
     ]

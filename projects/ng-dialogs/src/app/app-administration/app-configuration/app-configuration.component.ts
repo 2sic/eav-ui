@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { eavConstants } from '../../shared/constants/eav-constants';
 import { ContentItemsService } from '../shared/services/content-items.service';
 import { EditForm } from '../shared/models/edit-form.model';
+import { Context } from '../../shared/context/context';
 
 @Component({
   selector: 'app-app-configuration',
@@ -13,7 +14,12 @@ import { EditForm } from '../shared/models/edit-form.model';
 export class AppConfigurationComponent implements OnInit {
   eavConstants = eavConstants;
 
-  constructor(private contentItemsService: ContentItemsService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private contentItemsService: ContentItemsService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private context: Context
+  ) { }
 
   ngOnInit() {
   }
@@ -32,5 +38,12 @@ export class AppConfigurationComponent implements OnInit {
 
   config(staticName: string) {
 
+  }
+
+  openPermissions() {
+    this.router.navigate(
+      [`${eavConstants.metadata.app.type}/${eavConstants.keyTypes.number}/${this.context.appId}/permissions`],
+      { relativeTo: this.route.firstChild }
+    );
   }
 }
