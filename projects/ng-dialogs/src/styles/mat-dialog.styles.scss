@@ -1,4 +1,5 @@
 $dialog-margin-top: 24px;
+$dialog-margin-bottom: 24px;
 $dialog-width-large: 95vw;
 $dialog-width-medium: 50vw;
 $dialog-width-small: 40vw;
@@ -6,6 +7,7 @@ $dialog-width-small: 40vw;
 .mat-dialog-container {
   // background: transparent !important;
   height: auto !important;
+  max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom}) !important;
   @extend .hide-scrollbar;
 }
 
