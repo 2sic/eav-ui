@@ -11,3 +11,47 @@
   Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
   For further help visit <a href="http://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
 </p>
+
+<div *ngIf="appInfo">
+  <p class="app-info__title">Specs</p>
+  <ul class="app-info__content">
+    <li>Name: {{appInfo.Name}}</li>
+    <li>Guid: {{appInfo.Guid}}</li>
+    <li>Version: {{appInfo.Version}}</li>
+  </ul>
+
+  <p class="app-info__title">Contains</p>
+  <ul class="app-info__content">
+    <li>{{appInfo.EntitiesCount}} entities</li>
+    <li>{{appInfo.LanguagesCount}} languages</li>
+    <li>
+      {{appInfo.TemplatesCount}} templates (Token: {{appInfo.HasTokenTemplates}}, Razor: {{appInfo.HasRazorTemplates}})
+    </li>
+    <li>{{appInfo.TransferableFilesCount}} files to export</li>
+    <li>{{appInfo.FilesCount}} files in the app folder totally</li>
+  </ul>
+
+  <div class="options-wrapper">
+    <div class="option-box">
+      <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid">
+        <span class="option-box__text">
+          Include all content-groups to re-import the app in an exact copy of this site.
+          Only select this option when you copy an entire DNN site.
+        </span>
+      </mat-checkbox>
+    </div>
+    <div class="option-box">
+      <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups">
+        <span class="option-box__text">
+          Reset the app GUID to zero. You only need this option for special tutorial apps, and usually must not select
+          it.
+        </span>
+      </mat-checkbox>
+    </div>
+  </div>
+
+  <div>
+    <button mat-button (click)="exportApp()" [disabled]="isExporting">Export App</button>
+    <button mat-button (click)="exportGit()" [disabled]="isExporting">Export Data for Github versioning</button>
+  </div>
+</div>

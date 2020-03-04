@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -56,6 +57,7 @@ import { PubMetaFilterComponent } from '../shared/ag-grid-filters/pub-meta-filte
 import { ExportAppComponent } from './shared/modals/export-app/export-app.component';
 import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';
+import { ExportAppService } from './shared/services/export-app.service';
 
 @NgModule({
   declarations: [
@@ -125,6 +127,7 @@ import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import
     MatSelectModule,
     MatRadioModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
   ],
   providers: [
     Context,
@@ -140,6 +143,7 @@ import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import
     ContentTypesFieldsService,
     WebApisService,
     ContentItemsService,
+    ExportAppService,
   ]
 })
 export class AppAdministrationModule { }
