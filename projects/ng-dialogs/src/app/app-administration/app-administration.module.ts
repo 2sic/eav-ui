@@ -58,6 +58,7 @@ import { ExportAppComponent } from './shared/modals/export-app/export-app.compon
 import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';
 import { ExportAppService } from './shared/services/export-app.service';
+import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 
 @NgModule({
   declarations: [
@@ -144,6 +145,7 @@ import { ExportAppService } from './shared/services/export-app.service';
     WebApisService,
     ContentItemsService,
     ExportAppService,
+    ExportAppPartsService,
   ]
 })
 export class AppAdministrationModule { }

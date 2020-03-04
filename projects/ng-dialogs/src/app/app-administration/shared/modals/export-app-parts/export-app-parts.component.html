@@ -1,1 +1,84 @@
-<p>Export app parts</p>
+<div mat-dialog-title>
+  <div class="dialog-title-box">
+    <div>Export Content and Templates from this App</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<p class="dialog-description">
+  This is an advanced feature to export parts of the app.
+  The export will create an xml file which can be imported into another site or app.
+  To export the entire content of the app (for example when duplicating the entire site), go to the app export.
+  For further help visit <a href="http://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
+</p>
+
+<div class="edit-input">
+  <mat-form-field appearance="standard" color="accent">
+    <mat-label>Scope</mat-label>
+    <mat-select [ngModel]="exportScope" name="Scope" (selectionChange)="changeScope($event)" [disabled]="lockScope">
+      <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
+      </mat-option>
+      <mat-option value="Other">Other...</mat-option>
+    </mat-select>
+    <button mat-icon-button type="button" matSuffix>
+      <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
+      <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-hint>
+    The scope should almost never be changed -
+    <a href="http://2sxc.org/help?tag=scope" _target="_blank">see help</a>
+  </mat-hint>
+</div>
+
+<div *ngIf="contentInfo">
+  <ul class="content-info__list content-info__base">
+    <p class="content-info__title">Content Types</p>
+    <li class="content-info__item" *ngFor="let contentType of contentInfo.ContentTypes">
+      <div class="option-box">
+        <mat-checkbox [(ngModel)]="contentType._export">
+          <span class="option-box__text">{{contentType.Name}} ({{contentType.Id}})</span>
+        </mat-checkbox>
+      </div>
+
+      <ul class="content-info__list" *ngIf="contentType.Templates.length > 0">
+        <p class="content-info__subtitle">Templates</p>
+        <li class="content-info__item" *ngFor="let template of contentType.Templates">
+          <div class="option-box">
+            <mat-checkbox [(ngModel)]="template._export">
+              <span class="option-box__text">{{template.Name}} ({{template.Id}})</span>
+            </mat-checkbox>
+          </div>
+        </li>
+      </ul>
+
+      <ul class="content-info__list" *ngIf="contentType.Entities.length > 0">
+        <p class="content-info__subtitle">Entities</p>
+        <li class="content-info__item" *ngFor="let entity of contentType.Entities">
+          <div class="option-box">
+            <mat-checkbox [(ngModel)]="entity._export">
+              <span class="option-box__text">{{entity.Title}} ({{entity.Id}})</span>
+            </mat-checkbox>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul class="content-info__list content-info__base">
+    <p class="content-info__title">Templates Without Content Types</p>
+    <li class="content-info__item" *ngFor="let template of contentInfo.TemplatesWithoutContentTypes">
+      <div class="option-box">
+        <mat-checkbox [(ngModel)]="template._export">
+          <span class="option-box__text">{{template.Name}} ({{template.Id}})</span>
+        </mat-checkbox>
+      </div>
+    </li>
+  </ul>
+
+  <div>
+    <button mat-button (click)="exportAppParts()" [disabled]="isExporting">Export</button>
+  </div>
+</div>
