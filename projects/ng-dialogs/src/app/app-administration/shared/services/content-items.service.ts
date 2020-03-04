@@ -13,13 +13,13 @@ export class ContentItemsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentTypeStaticName: string) {
-    return <Observable<ContentItem[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/entities/GetAllOfTypeForAdmin`), {
+    return <Observable<ContentItem[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/GetAllOfTypeForAdmin'), {
       params: { appId: this.context.appId.toString(), contentType: contentTypeStaticName }
     });
   }
 
   getColumns(contentTypeStaticName: string) {
-    return <Observable<Field[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/contenttype/getfields/`), {
+    return <Observable<Field[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
       params: { appId: this.context.appId.toString(), staticName: contentTypeStaticName }
     });
   }

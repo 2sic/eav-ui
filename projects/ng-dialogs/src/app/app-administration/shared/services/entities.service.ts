@@ -11,12 +11,7 @@ export class EntitiesService {
 
   delete(type: string, id: number, tryForce: boolean) {
     return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
-      params: {
-        contentType: type,
-        id: id.toString(),
-        appId: this.context.appId.toString(),
-        force: tryForce.toString(),
-      },
+      params: { contentType: type, id: id.toString(), appId: this.context.appId.toString(), force: tryForce.toString() },
     });
   }
 }

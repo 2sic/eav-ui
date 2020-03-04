@@ -13,15 +13,15 @@ export class ContentTypesFieldsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   typeListRetrieve() {
-    return <Observable<string[]>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/datatypes/'), { params: { appid: this.context.appId.toString() } })
-    );
+    return <Observable<string[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/datatypes'), {
+      params: { appid: this.context.appId.toString() }
+    });
   }
 
   getInputTypesList() {
     return <Observable<FieldInputTypeOption[]>>(
       this.http
-        .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/inputtypes/'), { params: { appid: this.context.appId.toString() } })
+        .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/inputtypes'), { params: { appid: this.context.appId.toString() } })
         .pipe(
           map((inputConfigs: FieldInputTypeConfig[]) => {
             const inputTypeOptions = inputConfigs.map(config => {
@@ -107,12 +107,12 @@ export class ContentTypesFieldsService {
   }
 
   add(item: NewField) {
-    return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield/'), { params: <any>item });
+    return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield'), { params: <any>item });
   }
 
   updateInputType(id: number, staticName: string, inputType: string) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'),
-      { params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType: inputType } }
-    );
+    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'), {
+      params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType: inputType }
+    });
   }
 }

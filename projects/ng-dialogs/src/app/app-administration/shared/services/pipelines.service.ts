@@ -12,9 +12,9 @@ export class PipelinesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentType: string) {
-    return <Observable<Query[]>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/Entities/GetEntities?appId=${this.context.appId}&contentType=${contentType}`))
-    );
+    return <Observable<Query[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/Entities/GetEntities'), {
+      params: { appId: this.context.appId.toString(), contentType: contentType }
+    });
   }
 
   async importQuery(file: File) {
@@ -25,9 +25,9 @@ export class PipelinesService {
   }
 
   clonePipeline(id: number) {
-    return <Observable<null>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/PipelineDesigner/ClonePipeline?Id=${id}&appId=${this.context.appId}`))
-    );
+    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/ClonePipeline'), {
+      params: { Id: id.toString(), appId: this.context.appId.toString() }
+    });
   }
 
   delete(id: number) {

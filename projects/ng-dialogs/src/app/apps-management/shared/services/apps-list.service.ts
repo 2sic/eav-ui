@@ -11,24 +11,20 @@ export class AppsListService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
-    return <Observable<App[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl(`app-sys/system/apps?zoneId=${this.context.zoneId}`));
+    return <Observable<App[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/apps'), {
+      params: { zoneId: this.context.zoneId.toString() }
+    });
   }
 
   create(name: string) {
-    return <Observable<null>>(
-      this.http.post(
-        this.dnnContext.$2sxc.http.apiUrl('app-sys/system/app'),
-        {},
-        { params: { zoneId: this.context.zoneId.toString(), name: name } },
-      )
-    );
+    return <Observable<null>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/app'), {}, {
+      params: { zoneId: this.context.zoneId.toString(), name: name }
+    });
   }
 
   delete(appId: number) {
-    return <Observable<null>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/deleteapp'), {
-        params: { zoneId: this.context.zoneId.toString(), appId: appId.toString() },
-      })
-    );
+    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/deleteapp'), {
+      params: { zoneId: this.context.zoneId.toString(), appId: appId.toString() },
+    });
   }
 }

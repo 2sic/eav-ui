@@ -11,7 +11,9 @@ export class TemplatesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
-    return <Observable<View[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl(`app-sys/template/getall?appId=${this.context.appId}`));
+    return <Observable<View[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/getall'), {
+      params: { appId: this.context.appId.toString() }
+    });
   }
 
   delete(id: number) {

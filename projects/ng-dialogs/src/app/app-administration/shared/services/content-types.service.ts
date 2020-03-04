@@ -11,19 +11,19 @@ export class ContentTypesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   retrieveContentType(staticName: string) {
-    return <Observable<ContentType>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/contenttype/get/?appId=${this.context.appId}&contentTypeId=${staticName}`))
-    );
+    return <Observable<ContentType>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
+      params: { appId: this.context.appId.toString(), contentTypeId: staticName }
+    });
   }
 
   retrieveContentTypes(scope: string) {
-    return <Observable<ContentType[]>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`eav/contenttype/get/?appId=${this.context.appId}&scope=${scope}`))
-    );
+    return <Observable<ContentType[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
+      params: { appId: this.context.appId.toString(), scope: scope }
+    });
   }
 
   save(contentType: ContentTypeEdit) {
-    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save/'), contentType, {
+    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save'), contentType, {
       params: { appid: this.context.appId.toString() },
     });
   }

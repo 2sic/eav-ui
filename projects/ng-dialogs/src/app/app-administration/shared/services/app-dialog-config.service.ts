@@ -11,8 +11,8 @@ export class AppDialogConfigService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getDialogSettings() {
-    return <Observable<DialogSettings>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl(`app-sys/system/dialogsettings?appId=${this.context.appId}`))
-    );
+    return <Observable<DialogSettings>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/dialogsettings'), {
+      params: { appid: this.context.appId.toString() },
+    });
   }
 }

@@ -14,18 +14,14 @@ export class EnableLanguagesService {
   }
 
   toggle(code: string, enable: boolean) {
-    return <Observable<null>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/switchlanguage'), {
-        params: { cultureCode: code, enable: enable.toString() },
-      })
-    );
+    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/switchlanguage'), {
+      params: { cultureCode: code, enable: enable.toString() },
+    });
   }
 
   save(code: string, enable: boolean) {
-    return <Observable<null>>(
-      this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/switchlanguage'), {
-        params: { cultureCode: code, enable: enable.toString() },
-      })
-    );
+    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/switchlanguage'), {
+      params: { cultureCode: code, enable: enable.toString() },
+    });
   }
 }
