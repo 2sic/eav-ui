@@ -33,7 +33,7 @@ export class ImportAppPartsComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.isImporting = false;
-      }
+      },
     });
   }
 

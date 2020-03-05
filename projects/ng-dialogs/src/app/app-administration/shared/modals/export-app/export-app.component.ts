@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
@@ -27,21 +25,23 @@ export class ExportAppComponent implements OnInit {
   }
 
   exportApp() {
+    // spm Figure out how to capture window loading to disable export button
+    this.isExporting = true;
     this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
+    this.isExporting = false;
   }
 
   exportGit() {
     this.isExporting = true;
-    this.exportAppService.exportForVersionControl(this.includeContentGroups, this.resetAppGuid)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          this.isExporting = false;
-          return throwError(error);
-        }),
-      ).subscribe(res => {
+    this.exportAppService.exportForVersionControl(this.includeContentGroups, this.resetAppGuid).subscribe({
+      next: res => {
         this.isExporting = false;
         alert('Done - please check your \'.data\' folder');
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isExporting = false;
+      },
+    });
   }
 
   closeDialog() {
