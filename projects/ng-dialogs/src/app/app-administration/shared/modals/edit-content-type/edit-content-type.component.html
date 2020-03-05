@@ -15,48 +15,58 @@
       <input matInput type="text" [(ngModel)]="contentType.Name" name="Name">
     </mat-form-field>
   </div>
+  <mat-accordion [@.disabled]="disableAnimation">
+    <mat-expansion-panel expanded="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Advanced</mat-panel-title>
+        <mat-panel-description></mat-panel-description>
+      </mat-expansion-panel-header>
 
-  <div class="edit-input">
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Description</mat-label>
-      <input matInput type="text" [(ngModel)]="contentType.Description" name="Description">
-    </mat-form-field>
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Description</mat-label>
+          <input matInput type="text" [(ngModel)]="contentType.Description" name="Description">
+        </mat-form-field>
+      </div>
+
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Scope</mat-label>
+          <mat-select [ngModel]="contentType.Scope" name="Scope" (selectionChange)="changeScope($event)"
+            [disabled]="lockScope">
+            <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
+            </mat-option>
+            <mat-option value="Other">Other...</mat-option>
+          </mat-select>
+          <button mat-icon-button type="button" matSuffix>
+            <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
+            <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-hint>
+          The scope should almost never be changed -
+          <a href="http://2sxc.org/help?tag=scope" _target="_blank">see help</a>
+        </mat-hint>
+      </div>
+
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Static Name</mat-label>
+          <input matInput type="text" [ngModel]="contentType.StaticName" name="StaticName" disabled>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="contentType.SharedDefId" class="edit-input">
+        <h3>Shared Content Type (Ghost)</h3>
+        <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
+        <p>Uses Type Definition of: {{ contentType.SharedDefId }}</p>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <div class="form-actions-box">
+    <button mat-icon-button type="submit" [disabled]="!ngForm.form.valid">
+      <mat-icon>done</mat-icon>
+    </button>
   </div>
-
-  <div class="edit-input">
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Scope</mat-label>
-      <mat-select [ngModel]="contentType.Scope" name="Scope" (selectionChange)="changeScope($event)"
-        [disabled]="lockScope">
-        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
-        </mat-option>
-        <mat-option value="Other">Other...</mat-option>
-      </mat-select>
-      <button mat-icon-button type="button" matSuffix>
-        <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
-        <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-hint>
-      The scope should almost never be changed -
-      <a href="http://2sxc.org/help?tag=scope" _target="_blank">see help</a>
-    </mat-hint>
-  </div>
-
-  <div class="edit-input">
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Static Name</mat-label>
-      <input matInput type="text" [ngModel]="contentType.StaticName" name="StaticName" disabled>
-    </mat-form-field>
-  </div>
-
-  <div *ngIf="contentType.SharedDefId" class="edit-input">
-    <h3>Shared Content Type (Ghost)</h3>
-    <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
-    <p>Uses Type Definition of: {{ contentType.SharedDefId }}</p>
-  </div>
-
-  <button mat-icon-button type="submit" [disabled]="!ngForm.form.valid">
-    <mat-icon>done</mat-icon>
-  </button>
 </form>

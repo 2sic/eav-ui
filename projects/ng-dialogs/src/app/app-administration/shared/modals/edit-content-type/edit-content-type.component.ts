@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
@@ -12,7 +12,7 @@ import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/c
   templateUrl: './edit-content-type.component.html',
   styleUrls: ['./edit-content-type.component.scss']
 })
-export class EditContentTypeComponent implements OnInit {
+export class EditContentTypeComponent implements OnInit, AfterViewInit {
   scope: string;
   id: number;
   contentType: ContentTypeEdit;
@@ -27,6 +27,13 @@ export class EditContentTypeComponent implements OnInit {
     this.scope = this.route.snapshot.paramMap.get('scope');
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
     this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
+  }
+
+  // Workaround for angular component issue #13870
+  disableAnimation = true;
+  ngAfterViewInit() {
+    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
+    setTimeout(() => this.disableAnimation = false);
   }
 
   ngOnInit() {
