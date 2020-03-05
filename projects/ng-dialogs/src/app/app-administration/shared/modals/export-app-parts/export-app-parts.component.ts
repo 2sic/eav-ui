@@ -62,6 +62,7 @@ export class ExportAppPartsComponent implements OnInit {
     this.lockScope = !this.lockScope;
     if (this.lockScope) {
       this.exportScope = eavConstants.scopes.default.value;
+      this.fetchContentInfo();
     }
   }
 
