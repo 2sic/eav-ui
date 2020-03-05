@@ -5,5 +5,5 @@ export class ManageFeaturesMessageData {
 
 export class ManageFeaturesMessageDataMsg {
   features: string;
-  signature: any; // spm find out the type and whether it is used at all
+  signature: any; // spm TODO: find out the type and whether it is used at all
 }

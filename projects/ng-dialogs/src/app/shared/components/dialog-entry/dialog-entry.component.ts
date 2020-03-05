@@ -64,7 +64,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       viewContainerRef: this.viewContainerRef,
       autoFocus: false,
       closeOnNavigation: false,
-      // spm used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
       // Real top margin is overwritten in css e.g. dialog-panel-large
       position: { top: '0' }
     });

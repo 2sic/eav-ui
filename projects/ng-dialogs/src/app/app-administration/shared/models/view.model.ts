@@ -11,7 +11,7 @@ export class View {
   ViewNameInUrl: string;
 }
 
-// spm figure out what this type is
+// spm TODO: figure out what this type is
 export class ViewEntity {
   DemoId: number;
   DemoTitle: string;

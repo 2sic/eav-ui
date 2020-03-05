@@ -27,8 +27,8 @@ export class ExportAppPartsComponent implements OnInit {
 
   exportAppParts() {
     this.isExporting = true;
-    // spm maybe optimize these functions to not loop content types and entities multiple times for no reason
-    // spm Figure out how to capture window loading to disable export button
+    // spm TODO: maybe optimize these functions to not loop content types and entities multiple times for no reason
+    // spm TODO: figure out how to capture window loading to disable export button
     const contentTypeIds = this.selectedContentTypes().map(contentType => contentType.Id);
     const templateIds = this.selectedTemplates().map(template => template.Id);
     let entityIds = this.selectedEntities().map(entity => entity.Id);

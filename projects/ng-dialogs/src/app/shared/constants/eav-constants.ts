@@ -52,5 +52,9 @@ export const eavConstants = {
     settings: 'App-Settings',
     /** Content type containing app resources */
     resources: 'App-Resources',
-  }
+  },
+
+  pipelineDesigner: {
+    testParameters: '[Demo:Demo]=true',
+  },
 };

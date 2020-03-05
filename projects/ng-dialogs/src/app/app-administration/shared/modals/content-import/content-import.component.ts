@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
 import { ContentImportService } from '../../services/content-import.service';
+import { keyLangPri } from '../../../../shared/constants/sessions-keys';
 
 @Component({
   selector: 'app-content-import',
@@ -41,7 +42,7 @@ export class ContentImportComponent implements OnInit {
   ) {
     this.viewStateSelected = this.viewStates.default;
     this.formValues = {
-      defaultLanguage: 'en-US', // spm Figure out what the default language is
+      defaultLanguage: sessionStorage.getItem(keyLangPri),
       contentType: this.route.snapshot.paramMap.get('contentTypeStaticName'),
       file: null,
       resourcesReferences: 'Keep',

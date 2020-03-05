@@ -148,19 +148,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       return alert('Key type number and key don\'t match. Cancelled');
     }
 
-    // spm Implement title functionality in edit form
-    // const items = [
-    //   {
-    //     ContentTypeName: contentType, // otherwise the content type for new-assegnment
-    //     Metadata: {
-    //       Key: key,
-    //       KeyType: keyType,
-    //       TargetType: targetType
-    //     },
-    //     Title: "Add Metadata for '" + key + "' (" + keyType + ') of type #' + targetType
-    //   }
-    // ];
-
     let target: string;
     for (const metaKey of metadataKeys) {
       if (targetType !== eavConstants.metadata[metaKey].type) { continue; }
@@ -175,7 +162,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           ...(keyType === eavConstants.keyTypes.guid && { Guid: key }),
           ...(keyType === eavConstants.keyTypes.number && { Number: parseInt(key, 10) }),
           ...(keyType === eavConstants.keyTypes.string && { String: key }),
-        }
+        },
+        Title: `Add Metadata for '${key}' (${keyType}) of type #${targetType}`,
       }],
       persistedData: null,
     };
@@ -249,12 +237,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
     switch (action) {
       case 'clone':
-        // spm Implement duplicate entity in the form
+        // spm TODO: implement duplicate entity in the form
         // var items = [{
         //   ContentTypeName: contentType,
         //   DuplicateEntity: item.Id
         // }];
-        // eavAdminDialogs.openEditItems(items, svc.liveListReload);
         const form: EditForm = {
           items: [{ ContentTypeName: this.contentTypeStaticName }],
           persistedData: null,

@@ -10,7 +10,7 @@ import { DataActionsParams } from '../../models/data-actions-params';
   styleUrls: ['./data-actions.component.scss']
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
-  enableAppFeatures = true; // spm figure out what this is
+  enableAppFeatures = true; // spm TODO: this is fa from url (or session storage). Does it have to change for sub dialogs?
   params: DataActionsParams;
   contentType: ContentType;
   showPermissions: boolean;

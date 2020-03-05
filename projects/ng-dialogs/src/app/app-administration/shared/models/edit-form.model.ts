@@ -13,6 +13,10 @@ export class EditItem {
 export class AddItem {
   /** Content type */
   ContentTypeName: string;
+  /** Form title */
+  Title?: string;
   /** Add item as metadata to another item */
   For?: EavFor;
+  /** Prefill form with data */
+  Prefill?: { [key: string]: string };
 }

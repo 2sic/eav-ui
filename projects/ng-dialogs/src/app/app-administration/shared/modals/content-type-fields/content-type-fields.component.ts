@@ -179,8 +179,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           Target: eavConstants.metadata.attribute.target,
           Number: field.Id
         },
-        // spm Implement prefill
-        // Prefill: { Name: field.StaticName }
+        Prefill: { Name: field.StaticName },
       };
   }
 

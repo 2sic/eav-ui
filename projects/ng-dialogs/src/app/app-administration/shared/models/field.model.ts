@@ -31,7 +31,7 @@ export class FieldMetadataKey {
   [key: string]: any;
 }
 
-export class FieldInputTypeConfig { // spm See whether this type exists in edit form project
+export class FieldInputTypeConfig { // spm TODO: see whether this type exists in edit form project
   Type: string;
   Label: string;
   Description: string;

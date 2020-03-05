@@ -25,7 +25,7 @@ export class ExportAppComponent implements OnInit {
   }
 
   exportApp() {
-    // spm Figure out how to capture window loading to disable export button
+    // spm TODO: figure out how to capture window loading to disable export button
     this.isExporting = true;
     this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
     this.isExporting = false;

@@ -64,7 +64,7 @@ export class Context {
     console.log('Context.constructor');
     this.parent = parentContext;
 
-    // spm I've given id to every context to make it easier to follow how things work
+    // spm NOTE: I've given id to every context to make it easier to follow how things work
     const globalWindow = <any>window;
     if (!globalWindow.contextId) { globalWindow.contextId = 0; }
     this.id = globalWindow.contextId++;

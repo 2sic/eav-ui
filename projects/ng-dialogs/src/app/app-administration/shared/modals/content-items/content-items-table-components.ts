@@ -24,7 +24,7 @@ export function valueGetterStatus(params: ValueGetterParams) {
 
 export function cellRendererStatus(params: ICellRendererParams) {
   const item: ContentItem = params.data;
-  // spm something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
+  // spm TODO: something about data.DraftEntity and data.PublishedEntity is missing. Search in eav-ui project
   return `
     <div class="icon-container">
       <i class="material-icons help" title="${item.IsPublished ? 'Published' : 'Not published'}">
@@ -85,8 +85,7 @@ export function valueGetterDateTime(params: ValueGetterParams) {
   if (!rawValue) { return null; }
 
   // remove 'Z' and replace 'T'
-  // spm Replace substr with substring (https://stackoverflow.com/questions/3745515/what-is-the-difference-between-substr-and-substring)
-  return (<ExtendedColDef>params.colDef).useTimePicker ? rawValue.substr(0, 19).replace('T', ' ') : rawValue.substr(0, 10);
+  return (<ExtendedColDef>params.colDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
 }
 
 export function valueGetterBoolean(params: ValueGetterParams) {

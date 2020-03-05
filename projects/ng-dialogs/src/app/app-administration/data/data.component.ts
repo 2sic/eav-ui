@@ -159,19 +159,6 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    /*
-      // spm fix prefill
-      {
-        ContentTypeName: 'ContentType',
-        Metadata: {
-          Key: item.StaticName,
-          KeyType: "string",
-          TargetType: eavConfig.metadataOfContentType
-        },
-        Title: title,
-        Prefill: { Label: item.Name, Description: item.Description }
-      }
-    */
     const form: EditForm = {
       items: !contentType.Metadata
         ? [{
@@ -180,6 +167,7 @@ export class DataComponent implements OnInit, OnDestroy {
             Target: eavConstants.metadata.contentType.target,
             String: contentType.StaticName,
           },
+          Prefill: { Label: contentType.Name, Description: contentType.Description },
         }]
         : [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
       persistedData: null,
