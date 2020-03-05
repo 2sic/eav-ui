@@ -24,7 +24,7 @@
   <form #ngForm="ngForm" *ngSwitchCase="1">
     <div>
       <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
-        <span>Choose file * </span>
+        <span>Select file * </span>
         <mat-icon>cloud_upload</mat-icon>
       </button>
       <span *ngIf="formValues.file" class="file-name">{{ formValues.file.name }}</span>

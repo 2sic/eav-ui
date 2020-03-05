@@ -37,10 +37,10 @@
     The import failed. See the messages below for more information.
   </div>
   <div *ngFor="let message of importResult.Messages" class="sxc-message" [ngClass]="{
-          'sxc-message-warning': message.MessageType == 0,
-          'sxc-message-success': message.MessageType == 1,
-          'sxc-message-error': message.MessageType == 2
-        }">
+    'sxc-message-warning': message.MessageType == 0,
+    'sxc-message-success': message.MessageType == 1,
+    'sxc-message-error': message.MessageType == 2
+  }">
     {{ message.Text }}
   </div>
 </div>

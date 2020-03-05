@@ -59,6 +59,7 @@ import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';
 import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
+import { ImportAppPartsService } from './shared/services/import-app-parts.service';
 
 @NgModule({
   declarations: [
@@ -146,6 +147,7 @@ import { ExportAppPartsService } from './shared/services/export-app-parts.servic
     ContentItemsService,
     ExportAppService,
     ExportAppPartsService,
+    ImportAppPartsService,
   ]
 })
 export class AppAdministrationModule { }
