@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { PipelinesService } from '../../services/pipelines.service';
@@ -8,7 +9,7 @@ import { PipelinesService } from '../../services/pipelines.service';
   templateUrl: './import-query.component.html',
   styleUrls: ['./import-query.component.scss']
 })
-export class ImportQueryComponent implements OnInit, OnDestroy {
+export class ImportQueryComponent implements OnInit {
   private viewStates = {
     Default: 1,
     Waiting: 2,
@@ -22,14 +23,15 @@ export class ImportQueryComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  ngOnDestroy() {
-    this.closeDialog();
-  }
-
   async importQuery() {
     this.viewState = this.viewStates.Waiting;
-    (await this.pipelinesService.importQuery(this.importFile)).subscribe(res => {
-      this.viewState = this.viewStates.Imported;
+    (await this.pipelinesService.importQuery(this.importFile)).subscribe({
+      next: res => {
+        this.viewState = this.viewStates.Imported;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.viewState = this.viewStates.Default;
+      },
     });
   }
 
@@ -38,9 +40,6 @@ export class ImportQueryComponent implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-      this.dialogRef = null;
-    }
+    this.dialogRef.close();
   }
 }

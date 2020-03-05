@@ -10,9 +10,7 @@ export class GettingStartedComponent implements OnInit {
   @Input() gettingStartedUrl: string;
   gettingStartedSafe: SafeUrl;
 
-  constructor(
-    private sanitizer: DomSanitizer,
-  ) { }
+  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.gettingStartedSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.gettingStartedUrl);

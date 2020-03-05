@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -10,21 +10,14 @@ import { ImportAppResult } from '../../models/import-app-result.model';
   templateUrl: './import-app.component.html',
   styleUrls: ['./import-app.component.scss']
 })
-export class ImportAppComponent implements OnInit, OnDestroy {
+export class ImportAppComponent implements OnInit {
   isImporting = false;
   importFile: File;
   importResult: ImportAppResult;
 
-  constructor(
-    private dialogRef: MatDialogRef<ImportAppComponent>,
-    private importAppService: ImportAppService,
-  ) { }
+  constructor(private dialogRef: MatDialogRef<ImportAppComponent>, private importAppService: ImportAppService) { }
 
   ngOnInit() {
-  }
-
-  ngOnDestroy() {
-    this.closeDialog();
   }
 
   importApp(changedName?: string) {
@@ -55,10 +48,6 @@ export class ImportAppComponent implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    this.importFile = null;
-    if (this.dialogRef) {
-      this.dialogRef.close();
-      this.dialogRef = null;
-    }
+    this.dialogRef.close();
   }
 }

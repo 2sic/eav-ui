@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { ContentItemsService } from '../../services/content-items.service';
@@ -8,7 +8,7 @@ import { ContentItemsService } from '../../services/content-items.service';
   templateUrl: './content-item-import.component.html',
   styleUrls: ['./content-item-import.component.scss']
 })
-export class ContentItemImportComponent implements OnInit, OnDestroy {
+export class ContentItemImportComponent implements OnInit {
   private viewStates = {
     Default: 1,
     Waiting: 2,
@@ -20,10 +20,6 @@ export class ContentItemImportComponent implements OnInit, OnDestroy {
   constructor(private dialogRef: MatDialogRef<ContentItemImportComponent>, private contentItemsService: ContentItemsService) { }
 
   ngOnInit() {
-  }
-
-  ngOnDestroy() {
-    this.closeDialog();
   }
 
   async importContentItem() {
@@ -38,10 +34,7 @@ export class ContentItemImportComponent implements OnInit, OnDestroy {
   }
 
   closeDialog() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-      this.dialogRef = null;
-    }
+    this.dialogRef.close();
   }
 
 }

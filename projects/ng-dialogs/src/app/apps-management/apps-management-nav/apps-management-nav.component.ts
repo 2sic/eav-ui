@@ -16,11 +16,7 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
 
-  constructor(
-    private dialogRef: MatDialogRef<AppsManagementNavComponent>,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) { }
+  constructor(private dialogRef: MatDialogRef<AppsManagementNavComponent>, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     // set tab initially

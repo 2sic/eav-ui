@@ -27,3 +27,19 @@
 .progress-message {
   font-size: 18px;
 }
+
+.evaluation {
+  &__title {
+    font-size: 18px;
+    margin: 24px 0 0;
+    font-weight: bold;
+  }
+
+  &__content {
+    font-size: 14px;
+
+    li {
+      padding: 2px 0;
+    }
+  }
+}

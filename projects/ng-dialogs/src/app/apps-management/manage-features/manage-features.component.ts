@@ -50,10 +50,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    private featuresConfigService: FeaturesConfigService,
-  ) { }
+  constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();

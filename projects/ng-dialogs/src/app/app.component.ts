@@ -13,11 +13,7 @@ import { keyModuleId, keyContentBlockId } from './shared/constants/sessions-keys
 export class AppComponent extends DnnAppComponent {
   production: boolean;
 
-  constructor(
-    el: ElementRef,
-    dnnContext: DnnContext,
-    private context: Context,
-  ) {
+  constructor(el: ElementRef, dnnContext: DnnContext, private context: Context) {
     super(
       el,
       dnnContext.preConfigure({
@@ -28,5 +24,4 @@ export class AppComponent extends DnnAppComponent {
     this.production = environment.production;
     this.context.initRoot();
   }
-
 }
