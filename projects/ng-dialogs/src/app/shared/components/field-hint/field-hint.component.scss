@@ -1,0 +1,11 @@
+.mat-hint {
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+
+  &__short {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
