@@ -1,14 +1,15 @@
 .row-container {
   display: flex;
   justify-content: space-between;
-
-  .mat-form-field {
-    width: 30%;
-  }
 }
 
 .edit-input {
   padding-bottom: 8px;
+  width: 30%;
+}
+
+.mat-hint {
+  font-size: 12px;
 }
 
 .form-actions-box {

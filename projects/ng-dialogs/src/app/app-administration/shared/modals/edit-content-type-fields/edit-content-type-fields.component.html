@@ -12,25 +12,33 @@
 <!-- Add fields -->
 <div *ngIf="newFields">
   <div class="row-container" *ngFor="let newField of newFields">
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Static Name</mat-label>
-      <input matInput [(ngModel)]="newField.StaticName" name="StaticName">
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Static Name</mat-label>
+        <input matInput [(ngModel)]="newField.StaticName" name="StaticName">
+      </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Data Type</mat-label>
-      <mat-select (selectionChange)="resetSubTypes(newField)" [(ngModel)]="newField.Type" name="Type">
-        <mat-option *ngFor="let type of dataTypes" [value]="type">{{ type }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Data Type</mat-label>
+        <mat-select (selectionChange)="resetSubTypes(newField)" [(ngModel)]="newField.Type" name="Type">
+          <mat-option *ngFor="let type of dataTypes" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-hint>Data Type hint</mat-hint>
+    </div>
 
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Input Type</mat-label>
-      <mat-select [(ngModel)]="newField.InputType" name="InputType">
-        <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
-          {{ option.inputType }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Input Type</mat-label>
+        <mat-select [(ngModel)]="newField.InputType" name="InputType">
+          <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
+            {{ option.inputType }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-hint>Input Type hint</mat-hint>
+    </div>
   </div>
 
   <div class="form-actions-box">
@@ -43,25 +51,33 @@
 <!-- Edit field-->
 <div *ngIf="editField">
   <div class="row-container">
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Static Name</mat-label>
-      <input matInput [ngModel]="editField.StaticName" name="StaticName" disabled>
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Static Name</mat-label>
+        <input matInput [ngModel]="editField.StaticName" name="StaticName" disabled>
+      </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Data Type</mat-label>
-      <mat-select [ngModel]="editField.Type" name="Type" disabled>
-        <mat-option [value]="editField.Type">{{ editField.Type }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Data Type</mat-label>
+        <mat-select [ngModel]="editField.Type" name="Type" disabled>
+          <mat-option [value]="editField.Type">{{ editField.Type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-hint>Data Type hint</mat-hint>
+    </div>
 
-    <mat-form-field appearance="standard" color="accent" class="edit-input">
-      <mat-label>Input Type</mat-label>
-      <mat-select [(ngModel)]="editField.InputType" name="InputType">
-        <mat-option *ngFor="let option of filteredInputTypeOptions[editField.SortOrder]" [value]="option.inputType">
-          {{ option.inputType }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Input Type</mat-label>
+        <mat-select [(ngModel)]="editField.InputType" name="InputType">
+          <mat-option *ngFor="let option of filteredInputTypeOptions[editField.SortOrder]" [value]="option.inputType">
+            {{ option.inputType }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-hint>Input Type hint</mat-hint>
+    </div>
   </div>
 
   <div class="form-actions-box">
