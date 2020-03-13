@@ -51,7 +51,6 @@ import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
 import { OrderByPipe } from '../shared/pipes/orderby.pipe';
-import { ClickStopPropagationDirective } from '../shared/directives/click-stop-propagination.directive';
 import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
@@ -111,7 +110,6 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     OrderByPipe,
     FileEndingFilterPipe,
     SafeHtmlPipe,
-    ClickStopPropagationDirective,
     PasteClipboardImageDirective,
     HiddenWrapperComponent,
     HyperlinkDefaultPagepickerComponent,

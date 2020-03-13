@@ -7,12 +7,14 @@ import { EmptyRouteComponent } from './empty-route/empty-route.component';
 import { DialogEntryComponent } from './dialog-entry/dialog-entry.component';
 import { DialogService } from './dialog-service/dialog.service';
 import { FieldHintComponent } from './field-hint/field-hint.component';
+import { ClickStopPropagationDirective } from './directives/click-stop-propagination.directive';
 
 @NgModule({
   declarations: [
     EmptyRouteComponent,
     DialogEntryComponent,
     FieldHintComponent,
+    ClickStopPropagationDirective,
   ],
   entryComponents: [
   ],
@@ -27,6 +29,7 @@ import { FieldHintComponent } from './field-hint/field-hint.component';
     EmptyRouteComponent,
     DialogEntryComponent,
     FieldHintComponent,
+    ClickStopPropagationDirective,
   ]
 })
 export class SharedComponentsModule {

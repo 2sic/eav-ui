@@ -27,10 +27,10 @@
       <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
     </button>
   </mat-form-field>
-  <mat-hint>
+  <app-field-hint>
     The scope should almost never be changed -
-    <a href="http://2sxc.org/help?tag=scope" _target="_blank">see help</a>
-  </mat-hint>
+    <a href="http://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+  </app-field-hint>
 </div>
 
 <div *ngIf="contentInfo">
