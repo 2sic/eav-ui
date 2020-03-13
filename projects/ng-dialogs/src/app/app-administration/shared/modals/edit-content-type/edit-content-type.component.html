@@ -12,8 +12,13 @@
   <div class="edit-input">
     <mat-form-field appearance="standard" color="accent">
       <mat-label>Name</mat-label>
-      <input matInput type="text" [(ngModel)]="contentType.Name" name="Name">
+      <input matInput type="text" [pattern]="contentTypeNamePattern" [(ngModel)]="contentType.Name" name="Name" required
+        #name='ngModel'>
     </mat-form-field>
+    <ng-container *ngIf="name.touched && name.errors">
+      <app-field-hint *ngIf="name.errors.required" [isError]="true">This field is required</app-field-hint>
+      <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
+    </ng-container>
   </div>
   <mat-accordion [@.disabled]="disableAnimation">
     <mat-expansion-panel expanded="false">

@@ -16,10 +16,12 @@
     <div class="edit-input">
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Static Name</mat-label>
-        <input matInput [pattern]="fieldNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
+        <input matInput [pattern]="contentTypeNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
           [disabled]="editMode" #staticName='ngModel'>
       </mat-form-field>
-      <app-field-hint *ngIf="staticName.invalid" [isError]="true">{{ fieldNameError }}</app-field-hint>
+      <ng-container *ngIf="staticName.touched && staticName.errors">
+        <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
+      </ng-container>
     </div>
 
     <div class="edit-input">

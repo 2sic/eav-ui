@@ -6,6 +6,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/constants/eav-constants';
+import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type';
 
 @Component({
   selector: 'app-edit-content-type',
@@ -18,6 +19,8 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
   contentType: ContentTypeEdit;
   lockScope = true;
   scopeOptions: EavScopeOption[];
+  contentTypeNamePattern = contentTypeNamePattern;
+  contentTypeNameError = contentTypeNameError;
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,

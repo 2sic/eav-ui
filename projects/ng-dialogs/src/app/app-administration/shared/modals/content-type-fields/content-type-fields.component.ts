@@ -13,7 +13,7 @@ import { DialogService } from '../../../../shared/components/dialog-service/dial
 import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
 import { eavConstants } from '../../../../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
-import { fieldNamePattern, fieldNameError } from '../../constants/content-type';
+import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -200,13 +200,13 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       case 'rename':
         let newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`, field.StaticName);
         if (!newName || newName === field.StaticName) { break; }
-        if (!newName.match(fieldNamePattern)) {
+        if (!newName.match(contentTypeNamePattern)) {
           while (1) {
             newName = prompt(
-              `What new name would you like for '${field.StaticName}' (${field.Id})?` + `\n${fieldNameError}`,
+              `What new name would you like for '${field.StaticName}' (${field.Id})?` + `\n${contentTypeNameError}`,
               newName
             );
-            if (!newName || newName.match(fieldNamePattern)) { break; }
+            if (!newName || newName.match(contentTypeNamePattern)) { break; }
           }
         }
         if (!newName || newName === field.StaticName) { break; }
