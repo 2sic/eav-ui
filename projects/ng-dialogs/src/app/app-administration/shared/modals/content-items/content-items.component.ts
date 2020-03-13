@@ -237,13 +237,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
     switch (action) {
       case 'clone':
-        // spm TODO: implement duplicate entity in the form
-        // var items = [{
-        //   ContentTypeName: contentType,
-        //   DuplicateEntity: item.Id
-        // }];
         const form: EditForm = {
-          items: [{ ContentTypeName: this.contentTypeStaticName }],
+          items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
           persistedData: null,
         };
         this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

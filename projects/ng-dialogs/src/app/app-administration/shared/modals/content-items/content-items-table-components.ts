@@ -48,7 +48,7 @@ export function cellRendererStatus(params: ICellRendererParams) {
 
 export const actionsTemplate = `
   <div class="icon-container">
-    <i class="material-icons pointer almost-implemented" action="clone" title="Clone">file_copy</i>
+    <i class="material-icons pointer" action="clone" title="Clone">file_copy</i>
     &nbsp;
     <i class="material-icons pointer" action="export" title="Export">cloud_download</i>
     &nbsp;

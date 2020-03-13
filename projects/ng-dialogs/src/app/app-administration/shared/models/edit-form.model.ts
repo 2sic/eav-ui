@@ -19,4 +19,6 @@ export class AddItem {
   For?: EavFor;
   /** Prefill form with data */
   Prefill?: { [key: string]: string };
+  /** Prefill form with data from another entity */
+  DuplicateEntity?: number;
 }
