@@ -1,88 +1,50 @@
 <div mat-dialog-title>
   <div class="dialog-title-box">
-    <div *ngIf="!newFields && !editField">Fields</div>
-    <div *ngIf="newFields">Add Fields</div>
-    <div *ngIf="editField">Edit Field</div>
+    <div [ngSwitch]="editMode">
+      <span *ngSwitchCase="undefined">Fields</span>
+      <span *ngSwitchCase="true">Edit Field</span>
+      <span *ngSwitchCase="false">Add Fields</span>
+    </div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>
 
-<!-- Add fields -->
-<div *ngIf="newFields">
-  <div class="row-container" *ngFor="let newField of newFields">
+<div *ngIf="fields">
+  <div class="row-container" *ngFor="let field of fields; index as i">
     <div class="edit-input">
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Static Name</mat-label>
-        <input matInput [(ngModel)]="newField.StaticName" name="StaticName">
+        <input matInput [(ngModel)]="field.StaticName" name="StaticName" [disabled]="editMode">
       </mat-form-field>
     </div>
 
     <div class="edit-input">
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Data Type</mat-label>
-        <mat-select (selectionChange)="resetSubTypes(newField); calculateHints([newField])" [(ngModel)]="newField.Type"
-          name="Type">
+        <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
+          [(ngModel)]="field.Type" name="Type" [disabled]="editMode">
           <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">{{ dataType.label }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <app-field-hint [text]="newField.dataTypeHint"></app-field-hint>
+      <app-field-hint [text]="dataTypeHints[i]"></app-field-hint>
     </div>
 
     <div class="edit-input">
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Input Type</mat-label>
-        <mat-select (selectionChange)="calculateHints([newField])" [(ngModel)]="newField.InputType" name="InputType">
-          <mat-option *ngFor="let option of filteredInputTypeOptions[newField.SortOrder]" [value]="option.inputType">
+        <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" name="InputType">
+          <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType">
             {{ option.label }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <app-field-hint [text]="newField.inputTypeHint"></app-field-hint>
+      <app-field-hint [text]="inputTypeHints[i]"></app-field-hint>
     </div>
   </div>
 
   <div class="form-actions-box">
-    <button mat-icon-button (click)="addFieldsSubmit()">
-      <mat-icon>done</mat-icon>
-    </button>
-  </div>
-</div>
-
-<!-- Edit field-->
-<div *ngIf="editField">
-  <div class="row-container">
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Static Name</mat-label>
-        <input matInput [ngModel]="editField.StaticName" name="StaticName" disabled>
-      </mat-form-field>
-    </div>
-
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Data Type</mat-label>
-        <mat-select (selectionChange)="calculateHints([editField])" [ngModel]="editField.Type" name="Type" disabled>
-          <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">{{ dataType.label }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <app-field-hint [text]="editField.dataTypeHint"></app-field-hint>
-    </div>
-
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Input Type</mat-label>
-        <mat-select (selectionChange)="calculateHints([editField])" [(ngModel)]="editField.InputType" name="InputType">
-          <mat-option *ngFor="let option of filteredInputTypeOptions[editField.SortOrder]" [value]="option.inputType">
-            {{ option.label }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <app-field-hint [text]="editField.inputTypeHint"></app-field-hint>
-    </div>
-  </div>
-
-  <div class="form-actions-box">
-    <button mat-icon-button (click)="editFieldSubmit()">
+    <button mat-icon-button (click)="submit()">
       <mat-icon>done</mat-icon>
     </button>
   </div>

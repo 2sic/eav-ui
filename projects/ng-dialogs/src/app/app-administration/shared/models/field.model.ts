@@ -11,15 +11,6 @@ export class Field {
   I18nKey: string;
 }
 
-export class NewField {
-  Id = 0;
-  Type = 'String';
-  InputType = 'string-default';
-  StaticName = '';
-
-  constructor(public AppId: number, public ContentTypeId: number, public IsTitle: boolean, public SortOrder: number) { }
-}
-
 export class FieldMetadata {
   All: FieldMetadataKey;
   [key: string]: FieldMetadataKey;

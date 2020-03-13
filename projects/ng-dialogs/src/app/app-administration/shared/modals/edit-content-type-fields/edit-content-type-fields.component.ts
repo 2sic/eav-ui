@@ -5,9 +5,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
 import { ContentType } from '../../models/content-type.model';
-import { NewField, FieldInputTypeOption } from '../../models/field.model';
-import { Context } from '../../../../shared/context/context';
-import { calculateDataTypes, DataType, FieldWithHint, NewFieldWithHint } from './edit-content-type-fields.helpers';
+import { Field, FieldInputTypeOption } from '../../models/field.model';
+import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -15,11 +14,13 @@ import { calculateDataTypes, DataType, FieldWithHint, NewFieldWithHint } from '.
   styleUrls: ['./edit-content-type-fields.component.scss']
 })
 export class EditContentTypeFieldsComponent implements OnInit {
-  editField: FieldWithHint;
-  newFields: NewFieldWithHint[];
+  fields: Partial<Field>[];
+  editMode: boolean;
   dataTypes: DataType[];
   inputTypeOptions: FieldInputTypeOption[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
+  dataTypeHints: string[] = [];
+  inputTypeHints: string[] = [];
 
   private contentTypeStaticName: string;
   private contentType: ContentType;
@@ -29,7 +30,6 @@ export class EditContentTypeFieldsComponent implements OnInit {
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
-    private context: Context,
   ) {
     this.contentTypeStaticName = this.route.parent.snapshot.paramMap.get('contentTypeStaticName');
   }
@@ -38,28 +38,31 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
     const allFields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
     const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
+    this.editMode = (editFieldId !== null);
     const rawDataTypes = await this.contentTypesFieldsService.typeListRetrieve().toPromise();
     this.dataTypes = calculateDataTypes(rawDataTypes);
     this.inputTypeOptions = await this.contentTypesFieldsService.getInputTypesList().toPromise();
 
-    if (!editFieldId) {
-      this.newFields = [];
-      for (let i = 1; i <= 8; i++) {
-        const newField = new NewField(
-          this.context.appId,
-          this.contentType.Id,
-          allFields.length === 0,
-          allFields.length + i,
-        );
-        this.newFields.push({ ...newField, dataTypeHint: '', inputTypeHint: '' });
-      }
-      this.calculateInputTypeOptions(this.newFields);
-      this.calculateHints(this.newFields);
-    } else {
+    if (this.editMode) {
       const editField = allFields.find(field => field.Id === editFieldId);
-      this.editField = { ...editField, dataTypeHint: '', inputTypeHint: '' };
-      this.calculateInputTypeOptions([this.editField]);
-      this.calculateHints([this.editField]);
+      this.fields = [editField];
+    } else {
+      this.fields = [];
+      for (let i = 1; i <= 8; i++) {
+        this.fields.push({
+          Id: 0,
+          Type: 'String',
+          InputType: 'string-default',
+          StaticName: '',
+          IsTitle: allFields.length === 0,
+          SortOrder: allFields.length + i,
+        });
+      }
+    }
+
+    for (let i = 0; i < this.fields.length; i++) {
+      this.calculateInputTypeOptions(i);
+      this.calculateHints(i);
     }
   }
 
@@ -67,43 +70,33 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  resetSubTypes(newField: NewFieldWithHint) {
-    newField.InputType = newField.Type.toLowerCase() + '-default';
-    this.calculateInputTypeOptions([newField]);
+  resetInputType(index: number) {
+    this.fields[index].InputType = this.fields[index].Type.toLowerCase() + '-default';
   }
 
-  calculateHints(fields: NewFieldWithHint[] | FieldWithHint[]) {
-    for (const field of fields) {
-      const selectedDataType = this.dataTypes.find(dataType => dataType.name === field.Type);
-      const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === field.InputType);
-      field.dataTypeHint = selectedDataType ? selectedDataType.description : '';
-      field.inputTypeHint = selectedInputType ? selectedInputType.description : '';
-    }
+  calculateInputTypeOptions(index: number) {
+    this.filteredInputTypeOptions[index] = this.inputTypeOptions
+      .filter(option => option.dataType === this.fields[index].Type.toLowerCase());
   }
 
-  async addFieldsSubmit() {
-    const rowsWithValue = this.newFields.filter(field => field.StaticName);
-    for (let i = 0; i < rowsWithValue.length; i++) {
-      const newField = { ...rowsWithValue[i] };
-      delete newField.dataTypeHint;
-      delete newField.inputTypeHint;
-      await this.contentTypesFieldsService.add(newField).toPromise();
+  calculateHints(index: number) {
+    const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
+    const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
+    this.dataTypeHints[index] = selectedDataType ? selectedDataType.description : '';
+    this.inputTypeHints[index] = selectedInputType ? selectedInputType.description : '';
+  }
+
+  async submit() {
+    if (this.editMode) {
+      const res = await this.contentTypesFieldsService
+        .updateInputType(this.fields[0].Id, this.fields[0].StaticName, this.fields[0].InputType)
+        .toPromise();
+    } else {
+      const rowsWithValue = this.fields.filter(field => field.StaticName);
+      for (let i = 0; i < rowsWithValue.length; i++) {
+        await this.contentTypesFieldsService.add(rowsWithValue[i], this.contentType.Id).toPromise();
+      }
     }
     this.closeDialog();
-  }
-
-  editFieldSubmit() {
-    this.contentTypesFieldsService
-      .updateInputType(this.editField.Id, this.editField.StaticName, this.editField.InputType)
-      .subscribe(res => {
-        this.closeDialog();
-      });
-  }
-
-  private calculateInputTypeOptions(fields: NewFieldWithHint[] | FieldWithHint[]) {
-    for (const field of fields) {
-      this.filteredInputTypeOptions[field.SortOrder] = this.inputTypeOptions.filter(option =>
-        option.dataType === field.Type.toLowerCase());
-    }
   }
 }

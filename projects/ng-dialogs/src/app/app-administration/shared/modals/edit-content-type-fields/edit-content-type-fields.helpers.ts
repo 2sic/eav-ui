@@ -1,15 +1,3 @@
-import { Field, NewField } from '../../models/field.model';
-
-export class FieldWithHint extends Field {
-  dataTypeHint: string;
-  inputTypeHint: string;
-}
-
-export class NewFieldWithHint extends NewField {
-  dataTypeHint: string;
-  inputTypeHint: string;
-}
-
 // tslint:disable:max-line-length
 const dataTypeLabels: { [key: string]: { label: string, description: string } } = {
   Boolean: { label: 'Boolean (yes/no)', description: 'Yes/no or true/false values' },

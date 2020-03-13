@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentType } from '../models/content-type.model';
-import { Field, FieldInputTypeConfig, FieldInputTypeOption, NewField } from '../models/field.model';
+import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../models/field.model';
 import { Context } from '../../../shared/context/context';
 
 @Injectable()
@@ -106,8 +106,19 @@ export class ContentTypesFieldsService {
     });
   }
 
-  add(item: NewField) {
-    return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield'), { params: <any>item });
+  add(newField: Partial<Field>, contentTypeId: number) {
+    return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield'), {
+      params: {
+        AppId: this.context.appId.toString(),
+        ContentTypeId: contentTypeId.toString(),
+        Id: newField.Id.toString(),
+        Type: newField.Type,
+        InputType: newField.InputType,
+        StaticName: newField.StaticName,
+        IsTitle: newField.IsTitle.toString(),
+        SortOrder: newField.SortOrder.toString(),
+      }
+    });
   }
 
   updateInputType(id: number, staticName: string, inputType: string) {
