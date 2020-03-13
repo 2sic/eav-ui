@@ -7,6 +7,7 @@ import { ContentTypesFieldsService } from '../../services/content-types-fields.s
 import { ContentType } from '../../models/content-type.model';
 import { Field, FieldInputTypeOption } from '../../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
+import { fieldNamePattern, fieldNameError } from '../../constants/content-type';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -21,6 +22,8 @@ export class EditContentTypeFieldsComponent implements OnInit {
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
   inputTypeHints: string[] = [];
+  fieldNamePattern = fieldNamePattern;
+  fieldNameError = fieldNameError;
 
   private contentTypeStaticName: string;
   private contentType: ContentType;
@@ -86,7 +89,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.inputTypeHints[index] = selectedInputType ? selectedInputType.description : '';
   }
 
-  async submit() {
+  async onSubmit() {
     if (this.editMode) {
       const res = await this.contentTypesFieldsService
         .updateInputType(this.fields[0].Id, this.fields[0].StaticName, this.fields[0].InputType)

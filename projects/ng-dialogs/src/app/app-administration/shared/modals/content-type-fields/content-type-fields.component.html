@@ -13,6 +13,9 @@
   <button mat-icon-button matTooltip="Add fields" (click)="add()">
     <mat-icon>add</mat-icon>
   </button>
+  <button mat-icon-button matTooltip="Refresh" (click)="fetchFields()">
+    <mat-icon>refresh</mat-icon>
+  </button>
 </div>
 
 <ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
