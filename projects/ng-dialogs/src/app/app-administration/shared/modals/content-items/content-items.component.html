@@ -1,4 +1,3 @@
-<!-- HEADER -->
 <div mat-dialog-title>
   <div class="dialog-title-box">
     <div>
@@ -9,11 +8,9 @@
     </button>
   </div>
 </div>
-<!-- END HEADER -->
 
 <router-outlet></router-outlet>
 
-<!-- ACTIONS -->
 <div>
   <button mat-icon-button matTooltip="Add item" (click)="editItem(null)">
     <mat-icon>add</mat-icon>
@@ -34,11 +31,8 @@
     <mat-icon>filter_list</mat-icon>
   </button>
 </div>
-<!-- END ACTIONS -->
 
-<!-- TABLE -->
 <ag-grid-angular class="ag-theme-material" [rowData]="items" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
   (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
 </ag-grid-angular>
-<!-- END TABLE -->
