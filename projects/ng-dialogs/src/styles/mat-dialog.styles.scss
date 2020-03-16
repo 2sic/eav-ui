@@ -9,6 +9,10 @@ $dialog-width-small: 40vw;
   height: auto !important;
   max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom}) !important;
   @extend .hide-scrollbar;
+
+  @media (max-width: 600px) {
+    max-height: 100vh !important;
+  }
 }
 
 @mixin dialog-panel-fullscreen() {
