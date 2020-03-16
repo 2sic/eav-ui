@@ -1,29 +1,27 @@
-.config-box {
-  margin: 16px 0;
+.configs-wrapper {
   display: flex;
-
-  &__buttons-box {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #f0f0f0;
-  }
-
-  &__text-box {
-    padding-left: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+  flex-wrap: wrap;
 }
 
-.text-box {
-  &__title {
-    margin: 0;
-    padding-bottom: 8px;
+.config-box.mat-card {
+  width: 400px;
+  margin: 8px;
+
+  .mat-card-header {
+    align-items: center;
+    justify-content: space-between;
   }
 
-  &__description {
-    margin: 0;
+  .mat-card-title {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .actions-box {
+    display: flex;
+  }
+
+  .mat-card-content {
     font-size: 14px;
   }
 }
