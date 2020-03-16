@@ -56,7 +56,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="config-box mat-elevation-z2">
+  <mat-card *ngIf="showPermissions" class="config-box mat-elevation-z2">
     <mat-card-header>
       <mat-card-title>App Permissions</mat-card-title>
       <div class="actions-box">

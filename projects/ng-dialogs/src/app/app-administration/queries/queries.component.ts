@@ -85,7 +85,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   editQuery(query: Query) {
-    // spm TODO: &user[canDesign]=true&user[canDevelop]=true
     const form: EditForm = {
       items: (query === null)
         ? [{ ContentTypeName: eavConstants.contentTypes.query, Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters } }]

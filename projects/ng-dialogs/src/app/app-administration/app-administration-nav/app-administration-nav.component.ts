@@ -43,7 +43,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
       this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
         if (dialogSettings.IsContent) {
           this.tabs = this.tabs.filter(tab => {
-            return !(tab === 'queries' || tab === 'web-api' || tab === 'app');
+            return !(tab === 'queries' || tab === 'web-api');
           });
         }
         this.dialogSettings = dialogSettings; // needed to filter tabs

@@ -5,6 +5,7 @@ import { eavConstants } from '../../shared/constants/eav-constants';
 import { ContentItemsService } from '../shared/services/content-items.service';
 import { EditForm } from '../shared/models/edit-form.model';
 import { Context } from '../../shared/context/context';
+import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-app-configuration',
@@ -13,15 +14,20 @@ import { Context } from '../../shared/context/context';
 })
 export class AppConfigurationComponent implements OnInit {
   eavConstants = eavConstants;
+  showPermissions = false;
 
   constructor(
     private contentItemsService: ContentItemsService,
     private router: Router,
     private route: ActivatedRoute,
-    private context: Context
+    private context: Context,
+    private appDialogConfigService: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      this.showPermissions = !dialogSettings.IsContent;
+    });
   }
 
   edit(staticName: string) {
