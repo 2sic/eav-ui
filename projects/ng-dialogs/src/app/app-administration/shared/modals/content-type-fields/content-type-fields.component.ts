@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, ICellRendererParams, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
@@ -14,6 +14,14 @@ import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../
 import { eavConstants } from '../../../../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type';
+import { ContentTypeFieldsTitleComponent } from '../../ag-grid-components/content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleParams } from '../../models/content-type-fields-title-params';
+import { ContentTypeFieldsInputTypeParams } from '../../models/content-type-fields-input-type-params';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsInputTypeComponent } from '../../ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsActionsComponent } from '../../ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsActionsParams } from '../../models/content-type-fields-actions-params';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -26,52 +34,36 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
+    { rowDrag: true, width: 60, suppressSizeToFit: true },
     {
-      headerName: 'Title', field: 'IsTitle', rowDrag: true, cellClass: 'no-padding no-outline no-select',
-      cellRenderer: (params: ICellRendererParams) => {
-        return `
-          <div class="icon-container">
-            <i class="material-icons pointer" action="set-title" title="Use as title field">
-              ${params.value ? 'star' : 'star_border'}
-            </i>
-          </div>
-        `;
-      }, onCellClicked: this.activateAction.bind(this),
+      headerName: 'Title', field: 'IsTitle', width: 80, suppressSizeToFit: true, cellClass: 'no-padding no-outline',
+      cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: <ContentTypeFieldsTitleParams>{
+        onSetTitle: this.setTitle.bind(this),
+      }
     },
     { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     { headerName: 'Data Type', field: 'Type', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     {
-      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button no-outline no-select',
-      cellRenderer: (params: ICellRendererParams) => {
-        return `
-          <div class="icon-container">
-            <i class="material-icons pointer" action="change-input-type" title="Change Input Type">edit</i>
-            &nbsp;
-            <span class="text" action="change-input-type" title="Change Input Type">${params.value}</span>
-          </div>
-        `;
-      }, onCellClicked: this.activateAction.bind(this),
+      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button no-outline',
+      cellRenderer: 'contentTypeFieldsInputTypeComponent', cellRendererParams: <ContentTypeFieldsInputTypeParams>{
+        onChangeInputType: this.changeInputType.bind(this),
+      }
     },
     { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     {
-      headerName: '', cellClass: 'no-padding no-outline no-select', cellRenderer: (params: ICellRendererParams) => {
-        const field = <Field>params.data;
-        const showPermissions = field.InputType === 'string-wysiwyg' || field.Type === 'Hyperlink';
-        return `
-          <div class="icon-container">
-            <i class="material-icons pointer" action="rename" title="Rename">settings</i>
-            &nbsp;
-            <i class="material-icons pointer" action="delete" title="Delete">delete</i>
-            ${showPermissions
-            ? '&nbsp;<i class="material-icons pointer" action="permissions" title="Permissions">person</i>'
-            : ''}
-          </div>
-        `;
-      }, onCellClicked: this.activateAction.bind(this),
+      headerName: 'Actions', cellClass: 'no-outline', cellRenderer: 'contentTypeFieldsActionsComponent',
+      cellRendererParams: <ContentTypeFieldsActionsParams>{
+        onRename: this.rename.bind(this),
+        onDelete: this.delete.bind(this),
+        onOpenPermissions: this.openPermissions.bind(this),
+      }
     },
   ];
   frameworkComponents = {
+    contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
+    contentTypeFieldsInputTypeComponent: ContentTypeFieldsInputTypeComponent,
+    contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
   };
   modules = AllCommunityModules;
 
@@ -184,52 +176,46 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       };
   }
 
-  private activateAction(params: CellClickedEvent) {
-    const field = <Field>params.data;
-    const action = (<HTMLElement>(<MouseEvent>params.event).target).getAttribute('action');
+  private setTitle(field: Field) {
+    this.contentTypesFieldsService.setTitle(field, this.contentType).subscribe(() => {
+      this.fetchFields();
+    });
+  }
 
-    switch (action) {
-      case 'set-title':
-        this.contentTypesFieldsService.setTitle(<Field>params.data, this.contentType).subscribe(() => {
-          this.fetchFields();
-        });
-        break;
-      case 'change-input-type':
-        this.router.navigate([`update/${field.Id}`], { relativeTo: this.route });
-        break;
-      case 'rename':
-        let newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`, field.StaticName);
-        if (!newName || newName === field.StaticName) { break; }
-        if (!newName.match(contentTypeNamePattern)) {
-          while (1) {
-            newName = prompt(
-              `What new name would you like for '${field.StaticName}' (${field.Id})?` + `\n${contentTypeNameError}`,
-              newName
-            );
-            if (!newName || newName.match(contentTypeNamePattern)) { break; }
-          }
-        }
-        if (!newName || newName === field.StaticName) { break; }
-        this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
-          this.fetchFields();
-        });
-        break;
-      case 'delete':
-        if (field.IsTitle) { alert('Can\'t delete title'); break; }
-        if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { break; }
-        this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
-          this.fetchFields();
-        });
-        break;
-      case 'permissions':
-        this.router.navigate(
-          [`${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}/permissions`],
-          { relativeTo: this.route }
+  private changeInputType(field: Field) {
+    this.router.navigate([`update/${field.Id}`], { relativeTo: this.route });
+  }
+
+  private rename(field: Field) {
+    let newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`, field.StaticName);
+    if (!newName || newName === field.StaticName) { return; }
+    if (!newName.match(contentTypeNamePattern)) {
+      while (1) {
+        newName = prompt(
+          `What new name would you like for '${field.StaticName}' (${field.Id})?` + `\n${contentTypeNameError}`,
+          newName
         );
-        break;
-      default:
-        return;
+        if (!newName || newName.match(contentTypeNamePattern)) { break; }
+      }
     }
+    if (!newName || newName === field.StaticName) { return; }
+    this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
+      this.fetchFields();
+    });
+  }
+
+  private delete(field: Field) {
+    if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { return; }
+    this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
+      this.fetchFields();
+    });
+  }
+
+  private openPermissions(field: Field) {
+    this.router.navigate(
+      [`${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}/permissions`],
+      { relativeTo: this.route }
+    );
   }
 
   private refreshOnClosedChildDialogs() {

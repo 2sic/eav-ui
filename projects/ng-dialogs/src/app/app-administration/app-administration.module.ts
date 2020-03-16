@@ -61,6 +61,11 @@ import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import
 import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 import { ImportAppPartsService } from './shared/services/import-app-parts.service';
+import { ContentTypeFieldsTitleComponent } from './shared/ag-grid-components/content-type-fields-title/content-type-fields-title.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsInputTypeComponent } from './shared/ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsActionsComponent } from './shared/ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +96,9 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
+    ContentTypeFieldsTitleComponent,
+    ContentTypeFieldsInputTypeComponent,
+    ContentTypeFieldsActionsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -114,6 +122,9 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
+    ContentTypeFieldsTitleComponent,
+    ContentTypeFieldsInputTypeComponent,
+    ContentTypeFieldsActionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
