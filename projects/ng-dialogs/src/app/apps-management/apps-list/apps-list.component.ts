@@ -20,13 +20,23 @@ export class AppsListComponent implements OnInit, OnDestroy {
   apps: App[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.openApp.bind(this) },
-    { headerName: 'Folder', field: 'Folder', cellClass: 'clickable', onCellClicked: this.openApp.bind(this) },
-    { headerName: 'Show', field: 'IsHidden', cellRenderer: 'appsListShowComponent', width: 100 },
     {
-      headerName: 'Actions', cellRenderer: 'appsListActionsComponent', width: 100, cellRendererParams: <AppsListActionsParams>{
+      headerName: 'Name', field: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
+    },
+    {
+      headerName: 'Folder', field: 'Folder', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
+    },
+    {
+      headerName: 'Hidden', field: 'IsHidden', minWidth: 170, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      cellRenderer: 'appsListShowComponent',
+    },
+    {
+      headerName: 'Actions', minWidth: 100, width: 100, cellRenderer: 'appsListActionsComponent',
+      cellRendererParams: <AppsListActionsParams>{
         onDelete: this.deleteApp.bind(this),
-      }
+      },
     },
   ];
   frameworkComponents = {

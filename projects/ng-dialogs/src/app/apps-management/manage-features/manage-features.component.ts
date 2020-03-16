@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams } from '@ag-grid-community/all-modules';
+// tslint:disable-next-line:max-line-length
+import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../shared/models/feature.model';
 import { FeaturesListEnabledComponent } from '../shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
@@ -24,23 +25,30 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   managementListener: ElementEventListener;
 
   columnDefs: ColDef[] = [
-    { headerName: 'Enabled', field: 'enabled', cellRenderer: 'featuresListEnabledComponent', width: 100 },
     {
-      headerName: 'Name', field: 'id', cellRenderer: (params: ICellRendererParams) => {
-        const feature: Feature = params.data;
-        return `<a href="https://2sxc.org/r/f/${feature.id}" target="_blank">details</a> (name lookup still WIP)`;
-      }
+      headerName: 'Enabled', field: 'enabled', minWidth: 170, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      cellRenderer: 'featuresListEnabledComponent',
     },
-    { headerName: 'Feature GUID', field: 'id' },
     {
-      headerName: 'Expires', field: 'expires', width: 100, cellRenderer: (params: ICellRendererParams) => {
-        const feature: Feature = params.data;
-        return (<Date>feature.expires).toLocaleDateString();
-      }
+      headerName: 'Name', field: 'id', minWidth: 250, width: 200, sortable: true, filter: 'agTextColumnFilter',
+      cellRenderer: (params: ICellRendererParams) => {
+        return `<a href="https://2sxc.org/r/f/${params.value}" target="_blank">details</a> (name lookup still WIP)`;
+      },
     },
-    { headerName: 'UI', field: 'ui', width: 100, cellRenderer: 'featuresListUiComponent' },
-    { headerName: 'Public', field: 'public', width: 100, cellRenderer: 'featuresListPublicComponent' },
-    { headerName: 'Security', width: 100, cellRenderer: 'featuresListSecurityComponent' },
+    { headerName: 'Feature GUID', field: 'id', minWidth: 300, width: 200, sortable: true, filter: 'agTextColumnFilter' },
+    {
+      headerName: 'Expires', field: 'expires', minWidth: 200, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      valueGetter: this.valueGetterDateTime,
+    },
+    {
+      headerName: 'UI', field: 'ui', minWidth: 140, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      cellRenderer: 'featuresListUiComponent',
+    },
+    {
+      headerName: 'Public', field: 'public', minWidth: 160, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      cellRenderer: 'featuresListPublicComponent'
+    },
+    { headerName: 'Security', minWidth: 100, width: 100, cellRenderer: 'featuresListSecurityComponent' },
   ];
   frameworkComponents = {
     featuresListEnabledComponent: FeaturesListEnabledComponent,
@@ -57,10 +65,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.managementListener) {
-      this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);
-      this.managementListener = null;
-    }
+    this.destroyManagementListener();
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -77,6 +82,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   toggleManagement() {
     this.showManagement = !this.showManagement;
+    this.destroyManagementListener();
     if (this.showManagement) {
       this.openManagement();
     }
@@ -84,9 +90,6 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   private fetchFeatures() {
     this.featuresConfigService.getAll().subscribe(features => {
-      features.forEach(feature => {
-        feature.expires = new Date(feature.expires);
-      });
       this.features = features;
     });
   }
@@ -113,6 +116,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   /** This should await callbacks from the iframe and if it gets a valid callback containing a json, it should send it to the server */
   private managementCallback(event: MessageEvent) {
+    this.destroyManagementListener();
     if (typeof (event.data) === 'undefined') { return; }
     if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
 
@@ -122,10 +126,22 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       this.featuresConfigService.saveFeatures(featuresString).subscribe(result => {
         this.showManagement = false;
         this.fetchFeatures();
-        this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);
-        this.managementListener = null;
       });
     } catch (e) { }
   }
 
+  private destroyManagementListener() {
+    if (this.managementListener) {
+      this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);
+      this.managementListener = null;
+    }
+  }
+
+  private valueGetterDateTime(params: ValueGetterParams) {
+    const rawValue: string = params.data[params.colDef.field];
+    if (!rawValue) { return null; }
+
+    // remove 'Z' and replace 'T'
+    return rawValue.substring(0, 19).replace('T', ' ');
+  }
 }

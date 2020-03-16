@@ -10,12 +10,12 @@ import { EnableLanguagesStatusParams } from '../../models/enable-languages-statu
   styleUrls: ['./enable-languages-status.component.scss']
 })
 export class EnableLanguagesStatusComponent implements ICellRendererAngularComp {
-  params: EnableLanguagesStatusParams;
-  language: EnableLanguage;
+  private params: EnableLanguagesStatusParams;
+  value: boolean;
 
   agInit(params: EnableLanguagesStatusParams) {
     this.params = params;
-    this.language = params.data;
+    this.value = params.value;
   }
 
   refresh(params?: any): boolean {
@@ -23,6 +23,7 @@ export class EnableLanguagesStatusComponent implements ICellRendererAngularComp 
   }
 
   toggleLanguage() {
-    this.params.onEnabledToggle(this.language);
+    const language: EnableLanguage = this.params.data;
+    this.params.onEnabledToggle(language);
   }
 }

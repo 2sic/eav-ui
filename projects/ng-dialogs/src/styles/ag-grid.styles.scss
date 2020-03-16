@@ -11,11 +11,6 @@
   }
 }
 
-.ag-header-cell-menu-button {
-  opacity: 1 !important;
-  transition: none !important;
-}
-
 .ag-cell {
   &.no-padding {
     padding-left: 0 !important;
@@ -28,6 +23,32 @@
 
   &.no-select {
     user-select: none !important;
+  }
+
+  &.clickable-single:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    color: blue; // spm TODO: make this 2sxc blue color
+  }
+
+  &.clickable-single-with-button:hover .text {
+    text-decoration: underline;
+    cursor: pointer;
+    color: blue; // spm TODO: make this 2sxc blue color
+  }
+
+  .icon-container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  .actions-container {
+    transform: translateX(-24px);
+  }
+
+  .mat-icon {
+    user-select: none;
   }
 }
 
@@ -53,30 +74,4 @@
       color: blue; // spm TODO: make this 2sxc blue color
     }
   }
-}
-
-.clickable-single:hover {
-  text-decoration: underline;
-  cursor: pointer;
-  color: blue; // spm TODO: make this 2sxc blue color
-}
-
-.clickable-single-with-button:hover .text {
-  text-decoration: underline;
-  cursor: pointer;
-  color: blue; // spm TODO: make this 2sxc blue color
-}
-
-.icon-container {
-  display: flex;
-  height: 100%;
-  align-items: center;
-}
-
-.material-icons.pointer {
-  cursor: pointer;
-}
-
-.material-icons.help {
-  cursor: help;
 }

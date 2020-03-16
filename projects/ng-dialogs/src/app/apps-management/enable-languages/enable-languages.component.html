@@ -2,5 +2,6 @@
 
 <ag-grid-angular class="ag-theme-material" [rowData]="languages" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-  (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
+  [animateRows]="true" [accentedSort]="true" (gridSizeChanged)="onGridSizeChanged($event)"
+  (gridReady)="onGridReady($event)">
 </ag-grid-angular>

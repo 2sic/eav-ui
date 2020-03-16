@@ -15,17 +15,23 @@ export class EnableLanguagesComponent implements OnInit {
   languages: EnableLanguage[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Code', field: 'Code', cellClass: 'clickable', onCellClicked: this.handleNameClicked.bind(this), width: 100 },
-    { headerName: 'Culture', field: 'Culture', cellClass: 'clickable', onCellClicked: this.handleNameClicked.bind(this) },
     {
-      headerName: 'Status', field: 'IsEnabled', width: 100, cellRenderer: 'enableLanguagesStatusComponent',
-      cellRendererParams: <EnableLanguagesStatusParams>{
+      headerName: 'Code', field: 'Code', minWidth: 160, width: 100, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this)
+    },
+    {
+      headerName: 'Culture', field: 'Culture', minWidth: 250, width: 150, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this)
+    },
+    {
+      headerName: 'Status', field: 'IsEnabled', minWidth: 160, width: 100, cellRenderer: 'enableLanguagesStatusComponent',
+      sortable: true, filter: 'agTextColumnFilter', cellRendererParams: <EnableLanguagesStatusParams>{
         onEnabledToggle: this.toggleLanguage.bind(this),
-      }
+      },
     },
   ];
   frameworkComponents = {
-    enableLanguagesStatusComponent: EnableLanguagesStatusComponent
+    enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
   };
   modules = AllCommunityModules;
 

@@ -10,7 +10,7 @@ import { AppsListActionsParams } from '../../models/apps-list-actions-params.mod
   styleUrls: ['./apps-list-actions.component.scss']
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
-  params: AppsListActionsParams;
+  private params: AppsListActionsParams;
   app: App;
 
   agInit(params: AppsListActionsParams) {

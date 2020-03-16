@@ -1,6 +1,6 @@
 export class Feature {
   enabled: boolean;
-  expires: string | Date;
+  expires: string;
   id: string;
   public: boolean;
   ui: boolean;
