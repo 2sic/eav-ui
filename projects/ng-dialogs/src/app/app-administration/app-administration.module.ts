@@ -67,6 +67,10 @@ import { ContentTypeFieldsTitleComponent } from './shared/ag-grid-components/con
 import { ContentTypeFieldsInputTypeComponent } from './shared/ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeFieldsActionsComponent } from './shared/ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
+import { ContentItemsIdComponent } from './shared/ag-grid-components/content-items-id/content-items-id.component';
+import { ContentItemsStatusComponent } from './shared/ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsActionsComponent } from './shared/ag-grid-components/content-items-actions/content-items-actions.component';
+import { ContentItemsEntityComponent } from './shared/ag-grid-components/content-items-entity/content-items-entity.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +104,10 @@ import { ContentTypeFieldsActionsComponent } from './shared/ag-grid-components/c
     ContentTypeFieldsTitleComponent,
     ContentTypeFieldsInputTypeComponent,
     ContentTypeFieldsActionsComponent,
+    ContentItemsIdComponent,
+    ContentItemsStatusComponent,
+    ContentItemsActionsComponent,
+    ContentItemsEntityComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -126,6 +134,10 @@ import { ContentTypeFieldsActionsComponent } from './shared/ag-grid-components/c
     ContentTypeFieldsTitleComponent,
     ContentTypeFieldsInputTypeComponent,
     ContentTypeFieldsActionsComponent,
+    ContentItemsIdComponent,
+    ContentItemsStatusComponent,
+    ContentItemsActionsComponent,
+    ContentItemsEntityComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

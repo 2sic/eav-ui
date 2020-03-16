@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 // tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
@@ -16,9 +16,13 @@ import { EntitiesService } from '../../services/entities.service';
 import { ContentExportService } from '../../services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/constants/eav-constants';
 import { PubMetaFilterComponent } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.component';
-// tslint:disable-next-line:max-line-length
-import { cellRendererId, valueGetterStatus, cellRendererStatus, actionsTemplate, valueGetterEntityField, valueGetterDateTime, valueGetterBoolean, cellRendererEntity } from './content-items-table-components';
 import { ExtendedColDef } from '../../models/extended-col-def.model';
+import { ContentItemsIdComponent } from '../../ag-grid-components/content-items-id/content-items-id.component';
+import { ContentItemsStatusComponent } from '../../ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsActionsComponent } from '../../ag-grid-components/content-items-actions/content-items-actions.component';
+import { ContentItemsActionsParams } from '../../models/content-items-actions-params';
+import { ContentItemsEntityComponent } from '../../ag-grid-components/content-items-entity/content-items-entity.component';
+import { PubMeta } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.model';
 
 @Component({
   selector: 'app-content-items',
@@ -32,6 +36,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[];
   frameworkComponents = {
     pubMetaFilterComponent: PubMetaFilterComponent,
+    contentItemsIdComponent: ContentItemsIdComponent,
+    contentItemsStatusComponent: ContentItemsStatusComponent,
+    contentItemsActionsComponent: ContentItemsActionsComponent,
+    contentItemsEntityComponent: ContentItemsEntityComponent,
   };
   modules = AllCommunityModules;
 
@@ -183,19 +191,23 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 110, suppressSizeToFit: true, cellClass: 'clickable',
-        onCellClicked: this.editItem.bind(this), filter: 'agNumberColumnFilter', cellRenderer: cellRendererId,
+        onCellClicked: this.editItem.bind(this), filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent',
       },
       {
-        headerName: 'Status', field: 'IsPublished', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
-        valueGetter: valueGetterStatus, filter: 'pubMetaFilterComponent', cellRenderer: cellRendererStatus,
+        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
+        valueGetter: this.valueGetterStatus, filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
       },
       {
         headerName: 'Title', field: '_Title', cellClass: 'clickable', width: 200, suppressSizeToFit: true,
         filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
-        headerName: '', cellClass: 'no-padding no-outline no-select', width: 80, suppressSizeToFit: true,
-        filter: false, sortable: false, onCellClicked: this.activateAction.bind(this), template: actionsTemplate,
+        cellClass: 'no-padding no-outline no-select', width: 140, suppressSizeToFit: true, cellRenderer: 'contentItemsActionsComponent',
+        cellRendererParams: <ContentItemsActionsParams>{
+          onClone: this.clone.bind(this),
+          onExport: this.export.bind(this),
+          onDelete: this.delete.bind(this),
+        }
       },
     ];
     for (const column of columns) {
@@ -208,8 +220,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           } catch (e) {
             colDef.allowMultiValue = true;
           }
-          colDef.cellRenderer = cellRendererEntity;
-          colDef.valueGetter = valueGetterEntityField;
+          colDef.cellRenderer = 'contentItemsEntityComponent';
+          colDef.valueGetter = this.valueGetterEntityField;
           break;
         case 'DateTime':
           try {
@@ -217,10 +229,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           } catch (e) {
             colDef.useTimePicker = false;
           }
-          colDef.valueGetter = valueGetterDateTime;
+          colDef.valueGetter = this.valueGetterDateTime;
           break;
         case 'Boolean':
-          colDef.valueGetter = valueGetterBoolean;
+          colDef.valueGetter = this.valueGetterBoolean;
           break;
         case 'Number':
           colDef.filter = 'number';
@@ -231,39 +243,61 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.columnDefs = columnDefs;
   }
 
-  private activateAction(params: CellClickedEvent) {
-    const item = <ContentItem>params.data;
-    const action = (<HTMLElement>(<MouseEvent>params.event).target).getAttribute('action');
+  private clone(item: ContentItem) {
+    const form: EditForm = {
+      items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
+      persistedData: null,
+    };
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+  }
 
-    switch (action) {
-      case 'clone':
-        const form: EditForm = {
-          items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
-          persistedData: null,
-        };
-        this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
-        break;
-      case 'export':
-        this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
-        break;
-      case 'delete':
-        if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { break; }
-        this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
-          next: () => {
-            this.fetchItems();
-          },
-          error: (err: HttpErrorResponse) => {
-            if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item._RepositoryId})?`)) {
-              return;
-            }
-            this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
-              this.fetchItems();
-            });
-          }
+  private export(item: ContentItem) {
+    this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
+  }
+
+  private delete(item: ContentItem) {
+    if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { return; }
+    this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
+      next: () => {
+        this.fetchItems();
+      },
+      error: (err: HttpErrorResponse) => {
+        if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item._RepositoryId})?`)) {
+          return;
+        }
+        this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
+          this.fetchItems();
         });
-        break;
-      default:
-        return;
-    }
+      }
+    });
+  }
+
+  private valueGetterStatus(params: ValueGetterParams) {
+    const item: ContentItem = params.data;
+    const published: PubMeta = {
+      published: item.IsPublished,
+      metadata: !!item.Metadata,
+    };
+    return published;
+  }
+
+  private valueGetterEntityField(params: ValueGetterParams) {
+    const rawValue: ContentItem[] = params.data[params.colDef.field];
+    if (rawValue.length === 0) { return null; }
+    return rawValue.map(item => item.Title);
+  }
+
+  private valueGetterDateTime(params: ValueGetterParams) {
+    const rawValue: string = params.data[params.colDef.field];
+    if (!rawValue) { return null; }
+
+    // remove 'Z' and replace 'T'
+    return (<ExtendedColDef>params.colDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
+  }
+
+  private valueGetterBoolean(params: ValueGetterParams) {
+    const rawValue = params.data[params.colDef.field];
+    if (typeof rawValue !== 'boolean') { return null; }
+    return rawValue.toString();
   }
 }
