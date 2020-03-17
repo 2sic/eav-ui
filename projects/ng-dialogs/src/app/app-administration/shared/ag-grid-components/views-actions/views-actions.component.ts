@@ -10,25 +10,23 @@ import { ViewActionsParams } from '../../models/view-actions-params';
   styleUrls: ['./views-actions.component.scss']
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
-  params: ViewActionsParams;
-  view: View;
+  private params: ViewActionsParams;
 
   agInit(params: ViewActionsParams) {
     this.params = params;
-    this.view = params.data;
   }
 
   refresh(params?: any): boolean {
     return true;
   }
 
-  openPermissions(event: MouseEvent) {
-    event.stopPropagation();
-    this.params.onOpenPermissions(this.view);
+  openPermissions() {
+    const view: View = this.params.data;
+    this.params.onOpenPermissions(view);
   }
 
-  deleteView(event: MouseEvent) {
-    event.stopPropagation();
-    this.params.onDelete(this.view);
+  deleteView() {
+    const view: View = this.params.data;
+    this.params.onDelete(view);
   }
 }

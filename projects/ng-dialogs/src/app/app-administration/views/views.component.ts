@@ -22,14 +22,32 @@ export class ViewsComponent implements OnInit, OnDestroy {
   views: View[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Template Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
-    { headerName: 'Path', field: 'TemplatePath', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
-    { headerName: 'Content Type', field: 'ContentType.Name', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
-    { headerName: 'Demo Item', field: 'ContentType.DemoId', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
-    { headerName: 'Show', field: 'IsHidden', width: 100, cellRenderer: 'viewsShowComponent', onCellClicked: this.editView.bind(this) },
-    { headerName: 'Url Key', field: 'ViewNameInUrl', cellClass: 'clickable', onCellClicked: this.editView.bind(this) },
     {
-      headerName: 'Actions', width: 100, cellRenderer: 'viewsActionsComponent',
+      headerName: 'Template Name', field: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Path', field: 'TemplatePath', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Content Type', field: 'ContentType.Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Demo Item', field: 'ContentType.DemoId', width: 184, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+      filter: 'agNumberColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Hidden', field: 'IsHidden', width: 168, suppressSizeToFit: true, cellRenderer: 'viewsShowComponent', sortable: true,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Url Key', field: 'ViewNameInUrl', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Actions', width: 160, suppressSizeToFit: true, cellRenderer: 'viewsActionsComponent',
       cellRendererParams: <ViewActionsParams>{
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteView.bind(this),
