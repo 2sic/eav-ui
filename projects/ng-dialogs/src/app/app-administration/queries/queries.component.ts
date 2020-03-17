@@ -4,7 +4,7 @@ import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } fro
 import { Subscription } from 'rxjs';
 
 import { Query } from '../shared/models/query.model';
-import { QueriesDescriptionComponent } from '../shared/ag-grid-components/queries-description/queries-description.component';
+import { QueriesActionsComponent } from '../shared/ag-grid-components/queries-actions/queries-actions.component';
 import { PipelinesService } from '../shared/services/pipelines.service';
 import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
@@ -22,22 +22,31 @@ export class QueriesComponent implements OnInit, OnDestroy {
   queries: Query[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'ID', field: 'Id', cellClass: 'clickable', width: 50, onCellClicked: this.openVisualQueryDesigner.bind(this) },
-    { headerName: 'Name', field: 'Name', cellClass: 'clickable', onCellClicked: this.openVisualQueryDesigner.bind(this) },
     {
-      headerName: 'Description', field: 'Description', cellClass: 'clickable-with-button',
-      onCellClicked: this.openVisualQueryDesigner.bind(this), cellRenderer: 'queriesDescriptionComponent',
+      headerName: 'ID', field: 'Id', width: 136, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+      filter: 'agNumberColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+    },
+    {
+      headerName: 'Name', field: 'Name', minWidth: 250, width: 120, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+    },
+    {
+      headerName: 'Description', field: 'Description', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+    },
+    {
+      headerName: 'Actions', width: 392, suppressSizeToFit: true, cellRenderer: 'queriesActionsComponent',
       cellRendererParams: <PipelinesActionsParams>{
         onEditQuery: this.editQuery.bind(this),
         onCloneQuery: this.cloneQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onExportQuery: this.exportQuery.bind(this),
         onDelete: this.deleteQuery.bind(this),
-      }
-    },
+      },
+    }
   ];
   frameworkComponents = {
-    queriesDescriptionComponent: QueriesDescriptionComponent
+    queriesActionsComponent: QueriesActionsComponent,
   };
   modules = AllCommunityModules;
 

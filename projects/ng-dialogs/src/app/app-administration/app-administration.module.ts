@@ -29,7 +29,7 @@ import { SharedComponentsModule } from '../shared/components/shared-components.m
 import { DataItemsComponent } from './shared/ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
-import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries-description/queries-description.component';
+import { QueriesActionsComponent } from './shared/ag-grid-components/queries-actions/queries-actions.component';
 import { ViewsShowComponent } from './shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions/views-actions.component';
 import { AppDialogConfigService } from './shared/services/app-dialog-config.service';
@@ -84,7 +84,7 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
-    QueriesDescriptionComponent,
+    QueriesActionsComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
@@ -114,7 +114,7 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
-    QueriesDescriptionComponent,
+    QueriesActionsComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,

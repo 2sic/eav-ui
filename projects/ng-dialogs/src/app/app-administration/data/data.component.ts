@@ -34,7 +34,7 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Name', minWidth: 250, width: 140, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
@@ -54,7 +54,8 @@ export class DataComponent implements OnInit, OnDestroy {
       },
     },
     {
-      headerName: 'Actions', minWidth: 400, width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
+      headerName: 'Actions', width: 456, suppressSizeToFit: true, cellRenderer: 'dataActionsComponent',
+      cellRendererParams: <DataActionsParams>{
         enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
