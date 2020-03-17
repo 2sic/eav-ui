@@ -6,8 +6,8 @@ import { GridReadyEvent, GridSizeChangedEvent, ColDef, AllCommunityModules, Cell
 
 import { PermissionsService } from '../../services/permissions.service';
 import { Permission } from '../../models/permission.model';
-import { PermissionsGrantComponent } from '../../ag-grid-components/permissions-grant/permissions-grant.component';
-import { PermissionsGrantParams } from '../../models/permissions-grant-params';
+import { PermissionsActionsComponent } from '../../ag-grid-components/permissions-actions/permissions-actions.component';
+import { PermissionsActionsParams } from '../../models/permissions-actions-params';
 import { EditForm } from '../../models/edit-form.model';
 import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
@@ -22,17 +22,31 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   permissions: Permission[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Name', field: 'Title', cellClass: 'clickable', onCellClicked: this.editPermission.bind(this), },
-    { headerName: 'Condition', field: 'Identity', cellClass: 'clickable', onCellClicked: this.editPermission.bind(this), },
     {
-      headerName: 'Grant', cellClass: 'clickable-with-button', onCellClicked: this.editPermission.bind(this),
-      cellRenderer: 'permissionsGrantComponent', cellRendererParams: <PermissionsGrantParams>{
+      headerName: 'Name', field: 'Title', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+    },
+    {
+      headerName: 'Identity', field: 'Identity', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+    },
+    {
+      headerName: 'Condition', field: 'Condition', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+    },
+    {
+      headerName: 'Grant', field: 'Grant', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+    },
+    {
+      headerName: 'Actions', width: 160, suppressSizeToFit: true, cellRenderer: 'permissionsActionsComponent',
+      cellRendererParams: <PermissionsActionsParams>{
         onDelete: this.deletePermission.bind(this),
       },
     },
   ];
   frameworkComponents = {
-    permissionsGrantComponent: PermissionsGrantComponent,
+    permissionsActionsComponent: PermissionsActionsComponent,
   };
   modules = AllCommunityModules;
 
