@@ -10,15 +10,15 @@ import { DataActionsParams } from '../../models/data-actions-params';
   styleUrls: ['./data-actions.component.scss']
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
-  enableAppFeatures = true; // spm TODO: this is fa from url (or session storage). Does it have to change for sub dialogs?
-  params: DataActionsParams;
+  private params: DataActionsParams;
   contentType: ContentType;
   showPermissions: boolean;
 
   agInit(params: DataActionsParams) {
     this.params = params;
-    this.contentType = params.data;
-    this.showPermissions = this.enableAppFeatures && this.isGuid(this.contentType.StaticName);
+    this.contentType = this.params.data;
+    const enableAppFeatures = this.params.enableAppFeaturesGetter();
+    this.showPermissions = enableAppFeatures && this.isGuid(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {

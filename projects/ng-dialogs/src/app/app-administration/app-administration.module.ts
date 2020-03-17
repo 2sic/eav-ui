@@ -26,7 +26,7 @@ import { AppConfigurationComponent } from './app-configuration/app-configuration
 import { Context } from '../shared/context/context';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
-import { DataNameComponent } from './shared/ag-grid-components/data-name/data-name.component';
+import { DataItemsComponent } from './shared/ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
 import { QueriesDescriptionComponent } from './shared/ag-grid-components/queries-description/queries-description.component';
@@ -81,7 +81,7 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ViewsComponent,
     WebApiComponent,
     AppConfigurationComponent,
-    DataNameComponent,
+    DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
     QueriesDescriptionComponent,
@@ -111,7 +111,7 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
   ],
   entryComponents: [
     AppAdministrationNavComponent,
-    DataNameComponent,
+    DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
     QueriesDescriptionComponent,

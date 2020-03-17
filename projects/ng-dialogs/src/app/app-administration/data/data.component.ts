@@ -1,23 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+// tslint:disable-next-line:max-line-length
+import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
 import { ContentType } from '../shared/models/content-type.model';
 import { ContentTypesService } from '../shared/services/content-types.service';
-import { DataNameComponent } from '../shared/ag-grid-components/data-name/data-name.component';
+import { DataItemsComponent } from '../shared/ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav-constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
-import { DataNameParams } from '../shared/models/data-name-params';
+import { DataItemsParams } from '../shared/models/data-items-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 // tslint:disable-next-line:max-line-length
 import { EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
+import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-data',
@@ -30,38 +32,47 @@ export class DataComponent implements OnInit, OnDestroy {
   defaultScope: string;
   scopeOptions: EavScopeOption[];
   debugEnabled = false;
-
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', cellClass: 'clickable-with-button', cellRenderer: 'dataNameComponent',
-      onCellClicked: this.showContentItems.bind(this), cellRendererParams: <DataNameParams>{
+      headerName: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
+      onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
+    },
+    {
+      headerName: 'Items', field: 'Items', width: 160, suppressSizeToFit: true, sortable: true, filter: 'agNumberColumnFilter',
+      cellRenderer: 'dataItemsComponent', cellRendererParams: <DataItemsParams>{
         onAddItem: this.addItem.bind(this),
-      }
+      },
     },
-    { headerName: 'Description', field: 'Description', cellClass: 'clickable', onCellClicked: this.showContentItems.bind(this) },
     {
-      headerName: 'Fields', width: 100, field: 'Items', cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
+      headerName: 'Description', field: 'Description', minWidth: 250, width: 200, cellClass: 'clickable',
+      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+    },
+    {
+      headerName: 'Fields', field: 'Fields', width: 160, suppressSizeToFit: true, sortable: true, filter: 'agNumberColumnFilter',
+      cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
         onEditFields: this.editFields.bind(this),
-      }
+      },
     },
     {
-      headerName: 'Actions', width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
+      headerName: 'Actions', minWidth: 400, width: 200, cellRenderer: 'dataActionsComponent', cellRendererParams: <DataActionsParams>{
+        enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
         onOpenExport: this.openExport.bind(this),
         onOpenImport: this.openImport.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteContentType.bind(this),
-      }
+      },
     },
   ];
   frameworkComponents = {
-    dataNameComponent: DataNameComponent,
+    dataItemsComponent: DataItemsComponent,
     dataFieldsComponent: DataFieldsComponent,
     dataActionsComponent: DataActionsComponent,
   };
   modules = AllCommunityModules;
 
+  private enableAppFeatures = false;
   private subscription = new Subscription();
 
   constructor(
@@ -70,13 +81,16 @@ export class DataComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
     private globalConfigurationService: GlobalConfigurationService,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
     this.scope = eavConstants.scopes.default.value;
     this.defaultScope = eavConstants.scopes.default.value;
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
+    this.enableAppFeatures = !dialogSettings.IsContent;
     this.fetchContentTypes();
     this.refreshOnClosedChildDialogs();
     this.subscription.add(
@@ -144,6 +158,19 @@ export class DataComponent implements OnInit, OnDestroy {
     }
     this.scope = newScope;
     this.fetchContentTypes();
+  }
+
+  private nameValueGetter(params: ValueGetterParams) {
+    const contentType: ContentType = params.data;
+    if (contentType.Name !== contentType.Label) {
+      return `${contentType.Label} (${contentType.Name})`;
+    } else {
+      return contentType.Name;
+    }
+  }
+
+  private enableAppFeaturesGetter() {
+    return this.enableAppFeatures;
   }
 
   private addItem(contentType: ContentType) {

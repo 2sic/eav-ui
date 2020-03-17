@@ -10,12 +10,14 @@ import { DataFieldsParams } from '../../models/data-fields-params';
   styleUrls: ['./data-fields.component.scss']
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
-  params: DataFieldsParams;
+  private params: DataFieldsParams;
   contentType: ContentType;
+  value: number;
 
   agInit(params: DataFieldsParams) {
     this.params = params;
     this.contentType = params.data;
+    this.value = params.value;
   }
 
   refresh(params?: any): boolean {
