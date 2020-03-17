@@ -13,7 +13,7 @@ export class WebApiComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name', minWidth: 440,
+      headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name', minWidth: 456,
       sortable: true, filter: 'agTextColumnFilter',
     },
   ];
