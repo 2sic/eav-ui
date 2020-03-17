@@ -190,29 +190,29 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildTable(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 110, suppressSizeToFit: true, cellClass: 'clickable',
-        onCellClicked: this.editItem.bind(this), filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent',
+        headerName: 'ID', field: 'Id', width: 136, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+        filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent', onCellClicked: this.editItem.bind(this),
       },
       {
-        headerName: 'Status', cellClass: 'no-outline no-select', width: 130, suppressSizeToFit: true, sortable: false,
-        valueGetter: this.valueGetterStatus, filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
+        headerName: 'Status', width: 132, suppressSizeToFit: true, valueGetter: this.valueGetterStatus,
+        filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
       },
       {
-        headerName: 'Title', field: '_Title', cellClass: 'clickable', width: 200, suppressSizeToFit: true,
+        headerName: 'Title', field: '_Title', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
         filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
-        cellClass: 'no-padding no-outline no-select', width: 140, suppressSizeToFit: true, cellRenderer: 'contentItemsActionsComponent',
+        cellClass: 'no-padding', width: 124, suppressSizeToFit: true, cellRenderer: 'contentItemsActionsComponent',
         cellRendererParams: <ContentItemsActionsParams>{
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
-        }
+        },
       },
     ];
     for (const column of columns) {
       if (column.IsTitle) { continue; }
-      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250, filter: true };
+      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250, width: 200, sortable: true };
       switch (column.Type) {
         case 'Entity':
           try {
@@ -222,6 +222,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           }
           colDef.cellRenderer = 'contentItemsEntityComponent';
           colDef.valueGetter = this.valueGetterEntityField;
+          colDef.filter = 'agTextColumnFilter';
           break;
         case 'DateTime':
           try {
@@ -230,12 +231,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
             colDef.useTimePicker = false;
           }
           colDef.valueGetter = this.valueGetterDateTime;
+          colDef.filter = 'agTextColumnFilter';
           break;
         case 'Boolean':
           colDef.valueGetter = this.valueGetterBoolean;
+          colDef.filter = 'agTextColumnFilter';
           break;
         case 'Number':
-          colDef.filter = 'number';
+          colDef.filter = 'agNumberColumnFilter';
+          break;
+        default:
+          colDef.filter = 'agTextColumnFilter';
           break;
       }
       columnDefs.push(colDef);

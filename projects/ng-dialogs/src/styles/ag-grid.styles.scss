@@ -17,14 +17,6 @@
     padding-right: 0 !important;
   }
 
-  &.no-outline {
-    border-color: transparent !important;
-  }
-
-  &.no-select {
-    user-select: none !important;
-  }
-
   &.clickable-single:hover {
     text-decoration: underline;
     cursor: pointer;

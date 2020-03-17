@@ -2,7 +2,6 @@
   <mat-icon *ngIf="value.published" matTooltip="Published">visibility</mat-icon>
   <mat-icon *ngIf="!value.published" matTooltip="Not published">visibility_off</mat-icon>
   <ng-container *ngIf="value.metadata">
-    &nbsp;
-    <mat-icon [matTooltip]="metadataTooltip">local_offer</mat-icon>
+    <mat-icon class="meta-icon" [matTooltip]="metadataTooltip">local_offer</mat-icon>
   </ng-container>
 </div>
