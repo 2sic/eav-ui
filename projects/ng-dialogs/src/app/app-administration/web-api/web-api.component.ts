@@ -12,7 +12,10 @@ export class WebApiComponent implements OnInit {
   webApis: { name: string }[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name' },
+    {
+      headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name', minWidth: 440,
+      sortable: true, filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
   };
@@ -34,9 +37,7 @@ export class WebApiComponent implements OnInit {
 
   fetchWebApis() {
     this.webApisService.getAll().subscribe(paths => {
-      this.webApis = paths.map(path => {
-        return { name: path };
-      });
+      this.webApis = paths.map(path => ({ name: path }));
     });
   }
 }
