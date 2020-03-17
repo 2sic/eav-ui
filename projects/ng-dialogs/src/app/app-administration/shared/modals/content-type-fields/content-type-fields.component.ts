@@ -34,25 +34,38 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
-    { rowDrag: true, width: 60, suppressSizeToFit: true },
+    { rowDrag: true, width: 56, suppressSizeToFit: true },
     {
-      headerName: 'Title', field: 'IsTitle', width: 80, suppressSizeToFit: true, cellClass: 'no-padding no-outline',
+      headerName: 'Title', field: 'IsTitle', width: 72, suppressSizeToFit: true, cellClass: 'no-padding',
       cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: <ContentTypeFieldsTitleParams>{
         onSetTitle: this.setTitle.bind(this),
-      }
+      },
     },
-    { headerName: 'Static Name', field: 'StaticName', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
-    { headerName: 'Data Type', field: 'Type', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     {
-      headerName: 'Input Type', field: 'InputType', cellClass: 'clickable-single-with-button no-outline',
-      cellRenderer: 'contentTypeFieldsInputTypeComponent', cellRendererParams: <ContentTypeFieldsInputTypeParams>{
+      headerName: 'Static Name', field: 'StaticName', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+    },
+    {
+      headerName: 'Data Type', field: 'Type', minWidth: 184, width: 100, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+    },
+    {
+      headerName: 'Input Type', field: 'InputType', minWidth: 184, width: 100, cellClass: 'clickable-single-with-button',
+      sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
+      cellRendererParams: <ContentTypeFieldsInputTypeParams>{
         onChangeInputType: this.changeInputType.bind(this),
-      }
+      },
     },
-    { headerName: 'Label', field: 'Metadata.All.Name', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
-    { headerName: 'Notes', field: 'Metadata.All.Notes', cellClass: 'clickable', onCellClicked: this.editFieldMetadata.bind(this) },
     {
-      headerName: 'Actions', cellClass: 'no-outline', cellRenderer: 'contentTypeFieldsActionsComponent',
+      headerName: 'Label', field: 'Metadata.All.Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+    },
+    {
+      headerName: 'Notes', field: 'Metadata.All.Notes', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+    },
+    {
+      headerName: 'Actions', width: 200, suppressSizeToFit: true, cellRenderer: 'contentTypeFieldsActionsComponent',
       cellRendererParams: <ContentTypeFieldsActionsParams>{
         onRename: this.rename.bind(this),
         onDelete: this.delete.bind(this),

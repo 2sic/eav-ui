@@ -10,12 +10,12 @@ import { Field } from '../../models/field.model';
   styleUrls: ['./content-type-fields-title.component.scss']
 })
 export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp {
-  params: ContentTypeFieldsTitleParams;
-  field: Field;
+  private params: ContentTypeFieldsTitleParams;
+  value: boolean;
 
   agInit(params: ContentTypeFieldsTitleParams) {
     this.params = params;
-    this.field = params.data;
+    this.value = params.value;
   }
 
   refresh(params?: any): boolean {
@@ -23,6 +23,7 @@ export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp
   }
 
   setTitle() {
-    this.params.onSetTitle(this.field);
+    const field: Field = this.params.data;
+    this.params.onSetTitle(field);
   }
 }

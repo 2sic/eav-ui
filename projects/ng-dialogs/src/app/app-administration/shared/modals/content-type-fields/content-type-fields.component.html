@@ -20,7 +20,7 @@
 
 <ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="enableTextSelection"
-  [suppressScrollOnNewData]="true" [animateRows]="true" (rowDragEnter)="onRowDragEnter($event)"
-  (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
+  [suppressScrollOnNewData]="true" [animateRows]="true" [animateRows]="true" [accentedSort]="true"
+  (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
   (gridSizeChanged)="onGridSizeChanged($event)" (gridReady)="onGridReady($event)">
 </ag-grid-angular>

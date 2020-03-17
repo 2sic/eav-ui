@@ -10,7 +10,7 @@ import { Field } from '../../models/field.model';
   styleUrls: ['./content-type-fields-actions.component.scss']
 })
 export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
-  params: ContentTypeFieldsActionsParams;
+  private params: ContentTypeFieldsActionsParams;
   field: Field;
   showPermissions: boolean;
 

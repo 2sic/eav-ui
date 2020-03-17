@@ -10,14 +10,14 @@ import { Field } from '../../models/field.model';
   styleUrls: ['./content-type-fields-input-type.component.scss']
 })
 export class ContentTypeFieldsInputTypeComponent implements ICellRendererAngularComp {
-  params: ContentTypeFieldsInputTypeParams;
-  field: Field;
+  private params: ContentTypeFieldsInputTypeParams;
+  value: string;
   inputType: string;
 
   agInit(params: ContentTypeFieldsInputTypeParams) {
     this.params = params;
-    this.field = params.data;
-    this.inputType = this.field.InputType.substring(this.field.InputType.indexOf('-') + 1);
+    this.value = params.value;
+    this.inputType = this.value.substring(this.value.indexOf('-') + 1);
   }
 
   refresh(params?: any): boolean {
@@ -25,6 +25,7 @@ export class ContentTypeFieldsInputTypeComponent implements ICellRendererAngular
   }
 
   changeInputType() {
-    this.params.onChangeInputType(this.field);
+    const field: Field = this.params.data;
+    this.params.onChangeInputType(field);
   }
 }
