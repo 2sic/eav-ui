@@ -1,8 +1,8 @@
 /**
-    Overrides TinyMCE 5 oxide skin colors.
-    Values are copied from skin css and overriden with !important.
-    Default values are left in the comments
-    and custom selectors and properties are pointed out.
+  Overrides TinyMCE 5 oxide skin colors.
+  Values are copied from skin css and overriden with !important.
+  Default values are left in the comments
+  and custom selectors and properties are pointed out.
 */
 
 @import "../../../edit/assets/styles/theme/material-colors.scss";
@@ -26,6 +26,21 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 .tox-tinymce {
   // border: 1px solid #ccc;
   border: $tmce-border;
+}
+
+.tox-tinymce-inline .tox-editor-header {
+  border: none;
+  // border: 1px solid #ccc;
+  // border-bottom: 0;
+  // border-radius: 0;
+  box-shadow: none;
+}
+
+// custom
+.tox-tiered-menu .tox-menu.tox-collection {
+  width: max-content;
+  white-space: nowrap;
+  visibility: hidden;
 }
 
 .tox .accessibility-issue__description {
@@ -851,7 +866,6 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
   background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23cccccc'/%3E%3C/svg%3E") left 0 top 0 #fff;
   // background-color: #fff;
   background-color: $tmce-menubar-toolbar-color;
-  border-top: 1px solid #ccc;
   // border-top: $tmce-toolbar-border-top;
 }
 
@@ -859,6 +873,9 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
   background-color: #fff;
   border: 1px solid #ccc;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+  top: 0 !important;
+  right: 0 !important;
+  max-height: none !important;
 }
 
 .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {

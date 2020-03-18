@@ -10,6 +10,7 @@ import { attachDnnBridgeService } from './tinymce-dnnbridge-service';
 import { attachAdam } from './tinymce-adam-service';
 import * as skinOverrides from './oxide-skin-overrides.scss';
 import * as contentStyle from './tinymce-content.css';
+import { fixMenuPositions } from './fix-menu-positions-helper';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
@@ -20,8 +21,9 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
   private firstInit: boolean;
-  private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16';
+  private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
   private dialogIsOpen: boolean;
+  private observer: MutationObserver;
 
   constructor() {
     super();
@@ -99,6 +101,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
       addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);
+      this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
@@ -131,6 +134,8 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
       this.subscriptions = [];
       this.editorContent = null;
+      this.observer.disconnect();
+      this.observer = null;
     });
 
     editor.on('focus', (event: any) => {

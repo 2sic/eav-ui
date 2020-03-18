@@ -253,7 +253,7 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   */
   const isGerman = editor.settings.language === 'de';
   [['pre', 'Preformatted', 'Preformatted'],
-  ['cp', 'p', 'Paragraph', 'Paragraph', 'paragraph'],
+  ['cp', 'p', 'Paragraph', 'Paragraph', 'custom-paragraph'],
   // ['code', 'Code', 'Code'],
   ['ch1', 'h1', 'Heading 1', 'H1', isGerman ? 'custom-image-u1' : 'custom-image-h1'],
   ['ch2', 'h2', 'Heading 2', 'H2', isGerman ? 'custom-image-u2' : 'custom-image-h2'],
