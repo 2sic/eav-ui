@@ -55,7 +55,7 @@ import { WebApisService } from './shared/services/web-apis.service';
 import { ContentItemsComponent } from './shared/modals/content-items/content-items.component';
 import { ContentItemsService } from './shared/services/content-items.service';
 import { ContentItemImportComponent } from './shared/modals/content-item-import/content-item-import.component';
-import { PubMetaFilterComponent } from '../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.component';
+import { PubMetaFilterComponent } from './shared/ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExportAppComponent } from './shared/modals/export-app/export-app.component';
 import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';

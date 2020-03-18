@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
-import { PubMeta } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.model';
+import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
 import { ContentItem } from '../../models/content-item.model';
 
 @Component({
