@@ -30,5 +30,7 @@
 <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [columnDefs]="columnDefs" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
   [animateRows]="true" [accentedSort]="true" (gridSizeChanged)="onGridSizeChanged($event)"
-  (gridReady)="onGridReady($event)">
+  (gridReady)="onGridReady($event)" [ngClass]="{
+    'scope-height': scope !== defaultScope
+  }">
 </ag-grid-angular>
