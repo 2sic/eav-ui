@@ -10,6 +10,7 @@ import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
 import { IMPORT_APP_DIALOG } from '../../shared/constants/dialog-names';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
+import { appNamePattern, appNameError } from '../shared/constants/app';
 
 @Component({
   selector: 'app-apps-list',
@@ -83,8 +84,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   createApp() {
-    const name = prompt('Enter App Name (will also be used for folder)');
-    if (!name) { return; }
+    let name = prompt('Enter App Name (will also be used for folder)');
+    if (name === null) { return; }
+    name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
+    while (!name.match(appNamePattern)) {
+      name = prompt(`Enter App Name (will also be used for folder)\n${appNameError}`, name);
+      if (name === null) { return; }
+      name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
+    }
     this.appsListService.create(name).subscribe(() => {
       this.fetchAppsList();
     });
@@ -102,7 +109,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private deleteApp(app: App) {
     // tslint:disable-next-line:max-line-length
-    const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here: sure you want to delete '${app.Name}' (${app.Id})?`);
+    const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
     if (result === null) {
       return;
     } else if (result === app.Name || result === 'yes!') {
@@ -110,7 +117,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         this.fetchAppsList();
       });
     } else {
-      alert('input did not match - will not delete');
+      alert('Input did not match - will not delete');
     }
   }
 
