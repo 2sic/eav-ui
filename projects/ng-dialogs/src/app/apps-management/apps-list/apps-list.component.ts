@@ -11,6 +11,7 @@ import { AppsListActionsParams } from '../shared/models/apps-list-actions-params
 import { IMPORT_APP_DIALOG } from '../../shared/constants/dialog-names';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { appNamePattern, appNameError } from '../shared/constants/app';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-apps-list',
@@ -30,7 +31,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
       filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
     },
     {
-      headerName: 'Hidden', field: 'IsHidden', minWidth: 170, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Hidden', field: 'IsHidden', minWidth: 170, width: 100, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'appsListShowComponent',
     },
     {
@@ -41,6 +42,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     },
   ];
   frameworkComponents = {
+    booleanFilterComponent: BooleanFilterComponent,
     appsListShowComponent: AppsListShowComponent,
     appsListActionsComponent: AppsListActionsComponent,
   };

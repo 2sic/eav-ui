@@ -11,6 +11,7 @@ import { FeaturesListSecurityComponent } from '../shared/ag-grid-components/feat
 import { FeaturesConfigService } from '../shared/services/features-config.service';
 import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
 import { ManageFeaturesMessageData } from '../shared/models/manage-features-message-data.model';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-manage-features',
@@ -26,7 +27,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Enabled', field: 'enabled', minWidth: 170, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Enabled', field: 'enabled', minWidth: 170, width: 100, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListEnabledComponent',
     },
     {
@@ -41,16 +42,17 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       valueGetter: this.valueGetterDateTime,
     },
     {
-      headerName: 'UI', field: 'ui', minWidth: 140, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'UI', field: 'ui', minWidth: 140, width: 100, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListUiComponent',
     },
     {
-      headerName: 'Public', field: 'public', minWidth: 160, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Public', field: 'public', minWidth: 160, width: 100, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListPublicComponent'
     },
     { headerName: 'Security', minWidth: 100, width: 100, cellRenderer: 'featuresListSecurityComponent' },
   ];
   frameworkComponents = {
+    booleanFilterComponent: BooleanFilterComponent,
     featuresListEnabledComponent: FeaturesListEnabledComponent,
     featuresListUiComponent: FeaturesListUiComponent,
     featuresListPublicComponent: FeaturesListPublicComponent,

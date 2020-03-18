@@ -23,6 +23,7 @@ import { ContentItemsActionsComponent } from '../../ag-grid-components/content-i
 import { ContentItemsActionsParams } from '../../models/content-items-actions-params';
 import { ContentItemsEntityComponent } from '../../ag-grid-components/content-items-entity/content-items-entity.component';
 import { PubMeta } from '../../../../shared/ag-grid-filters/pub-meta-filter/pub-meta-filter.model';
+import { BooleanFilterComponent } from '../../../../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-content-items',
@@ -36,6 +37,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[];
   frameworkComponents = {
     pubMetaFilterComponent: PubMetaFilterComponent,
+    booleanFilterComponent: BooleanFilterComponent,
     contentItemsIdComponent: ContentItemsIdComponent,
     contentItemsStatusComponent: ContentItemsStatusComponent,
     contentItemsActionsComponent: ContentItemsActionsComponent,
@@ -235,7 +237,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           break;
         case 'Boolean':
           colDef.valueGetter = this.valueGetterBoolean;
-          colDef.filter = 'agTextColumnFilter';
+          colDef.filter = 'booleanFilterComponent';
           break;
         case 'Number':
           colDef.filter = 'agNumberColumnFilter';

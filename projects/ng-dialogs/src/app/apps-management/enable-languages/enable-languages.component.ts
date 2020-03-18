@@ -5,6 +5,7 @@ import { EnableLanguagesService } from '../shared/services/enable-languages.serv
 import { EnableLanguage } from '../shared/models/enable-language.model';
 import { EnableLanguagesStatusComponent } from '../shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { EnableLanguagesStatusParams } from '../shared/models/enable-languages-status-params.model';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-enable-languages',
@@ -25,12 +26,13 @@ export class EnableLanguagesComponent implements OnInit {
     },
     {
       headerName: 'Status', field: 'IsEnabled', minWidth: 160, width: 100, cellRenderer: 'enableLanguagesStatusComponent',
-      sortable: true, filter: 'agTextColumnFilter', cellRendererParams: <EnableLanguagesStatusParams>{
+      sortable: true, filter: 'booleanFilterComponent', cellRendererParams: <EnableLanguagesStatusParams>{
         onEnabledToggle: this.toggleLanguage.bind(this),
       },
     },
   ];
   frameworkComponents = {
+    booleanFilterComponent: BooleanFilterComponent,
     enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
   };
   modules = AllCommunityModules;

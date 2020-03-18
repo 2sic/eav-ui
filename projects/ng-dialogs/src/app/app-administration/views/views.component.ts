@@ -12,6 +12,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { eavConstants } from '../../shared/constants/eav-constants';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-views',
@@ -40,7 +41,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Hidden', field: 'IsHidden', width: 168, suppressSizeToFit: true, cellRenderer: 'viewsShowComponent', sortable: true,
-      filter: 'agTextColumnFilter',
+      filter: 'booleanFilterComponent',
     },
     {
       headerName: 'Url Key', field: 'ViewNameInUrl', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
@@ -55,6 +56,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     },
   ];
   frameworkComponents = {
+    booleanFilterComponent: BooleanFilterComponent,
     viewsShowComponent: ViewsShowComponent,
     viewsActionsComponent: ViewsActionsComponent,
   };
