@@ -24,6 +24,7 @@ export class BooleanFilterComponent implements IFilterAngularComp {
 
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     const value: boolean = this.params.valueGetter(params.node);
+    if (value === null || value === undefined) { return false; }
     return value.toString() === this.filter;
   }
 
