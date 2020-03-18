@@ -1,20 +1,7 @@
-.filter-container {
-  margin: 8px;
+.label {
+  margin: 8px 0 0 8px;
 }
 
-.title {
-  margin-bottom: 8px;
-
-  &:not(:first-of-type) {
-    margin-top: 8px;
-  }
-}
-
-.mat-radio-group {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  overflow: hidden;
-  width: 160px;
-  height: 80px;
+.ag-filter-select {
+  width: 145px;
 }
