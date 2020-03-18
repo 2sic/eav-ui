@@ -201,17 +201,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private rename(field: Field) {
     let newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`, field.StaticName);
-    if (!newName || newName === field.StaticName) { return; }
-    if (!newName.match(contentTypeNamePattern)) {
-      while (1) {
-        newName = prompt(
-          `What new name would you like for '${field.StaticName}' (${field.Id})?` + `\n${contentTypeNameError}`,
-          newName
-        );
-        if (!newName || newName.match(contentTypeNamePattern)) { break; }
-      }
+    if (newName === null) { return; }
+    newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
+    if (newName === field.StaticName) { return; }
+    while (!newName.match(contentTypeNamePattern)) {
+      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${contentTypeNameError}`, newName);
+      if (newName === null) { return; }
+      newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
+      if (newName === field.StaticName) { return; }
     }
-    if (!newName || newName === field.StaticName) { return; }
     this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
       this.fetchFields();
     });
