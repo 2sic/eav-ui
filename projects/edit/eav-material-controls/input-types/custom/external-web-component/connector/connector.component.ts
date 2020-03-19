@@ -18,7 +18,7 @@ import { ExpandableFieldService } from '../../../../../shared/services/expandabl
   styleUrls: ['./connector.component.scss']
 })
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('customElContainer', { static: false }) customElContainer: ElementRef;
+  @ViewChild('customElContainer') customElContainer: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   customElConnector: ConnectorService;

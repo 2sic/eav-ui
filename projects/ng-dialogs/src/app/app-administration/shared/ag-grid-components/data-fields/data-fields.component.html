@@ -1,11 +1,10 @@
-<div class="data-fields-container">
-  <button mat-button *ngIf="!contentType.UsesSharedDef" (click)="editFields()" matTooltip="Edit fields">
-    <mat-icon>storage</mat-icon>
-    <span>{{ value }}</span>
-  </button>
-  <button mat-button *ngIf="contentType.UsesSharedDef"
-    matTooltip="This content-type shares the definition of #{{contentType.SharedDefId}} so you can't edit it here - read 2sxc.org/help?tag=shared-types">
-    <mat-icon>adb</mat-icon>
-    <span>{{ value }}</span>
-  </button>
-</div>
+<button class="fields-button" mat-button *ngIf="!contentType.UsesSharedDef" (click)="editFields()"
+  matTooltip="Edit fields">
+  <mat-icon>storage</mat-icon>
+  <span>{{ value }}</span>
+</button>
+<button class="fields-button" mat-button *ngIf="contentType.UsesSharedDef"
+  matTooltip="This content-type shares the definition of #{{contentType.SharedDefId}} so you can't edit it here - read 2sxc.org/help?tag=shared-types">
+  <mat-icon>adb</mat-icon>
+  <span>{{ value }}</span>
+</button>

@@ -16,7 +16,7 @@ import { EavService } from '../../../shared/services/eav.service';
 })
 export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(DropzoneDirective, { static: false }) dropzoneRef?: DropzoneDirective;
+  @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

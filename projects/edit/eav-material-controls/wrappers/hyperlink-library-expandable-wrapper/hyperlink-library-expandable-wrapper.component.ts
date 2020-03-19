@@ -18,8 +18,8 @@ import { ExpandableFieldService } from '../../../shared/services/expandable-fiel
 })
 export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
-  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
+  @ViewChild('backdrop') backdropRef: ElementRef;
+  @ViewChild('dialog') dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 

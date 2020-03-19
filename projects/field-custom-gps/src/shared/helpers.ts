@@ -2,7 +2,7 @@
 import * as mapMarker from '../../../edit/assets/icons/font-awesome/map-marker-alt-solid.svg';
 
 export const customGpsIcons = {
-  mapMarker: mapMarker,
+  mapMarker: mapMarker.default,
 };
 
 export function buildTemplate(template: string, styles: string): string {

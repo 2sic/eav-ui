@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { EnableLanguagesService } from '../shared/services/enable-languages.service';
 import { EnableLanguage } from '../shared/models/enable-language.model';
@@ -17,16 +17,17 @@ export class EnableLanguagesComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Code', field: 'Code', minWidth: 160, width: 100, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this)
+      headerName: 'Code', field: 'Code', flex: 1, minWidth: 160, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
     },
     {
-      headerName: 'Culture', field: 'Culture', minWidth: 250, width: 150, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this)
+      headerName: 'Culture', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
     },
     {
-      headerName: 'Status', field: 'IsEnabled', minWidth: 160, width: 100, cellRenderer: 'enableLanguagesStatusComponent',
-      sortable: true, filter: 'booleanFilterComponent', cellRendererParams: <EnableLanguagesStatusParams>{
+      headerName: 'Status', field: 'IsEnabled', flex: 1, minWidth: 160, cellClass: 'no-padding',
+      cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+      cellRendererParams: <EnableLanguagesStatusParams>{
         onEnabledToggle: this.toggleLanguage.bind(this),
       },
     },
@@ -41,14 +42,6 @@ export class EnableLanguagesComponent implements OnInit {
 
   ngOnInit() {
     this.fetchLanguages();
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   private handleNameClicked(params: CellClickedEvent) {

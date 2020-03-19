@@ -1,6 +1,4 @@
-<div class="content-type-fields-input-type-container">
-  <button mat-icon-button matTooltip="Change input type" (click)="changeInputType()">
-    <mat-icon>settings</mat-icon>
-  </button>
-  <div class="text" [matTooltip]="value" (click)="changeInputType()">{{ inputType }}</div>
-</div>
+<button mat-button class="input-button" [matTooltip]="value" (click)="changeInputType()">
+  <mat-icon>settings</mat-icon>
+  <span class="text">{{ inputType }}</span>
+</button>

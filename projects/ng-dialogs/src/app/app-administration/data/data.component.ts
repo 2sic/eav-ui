@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
-// tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
 import { ContentType } from '../shared/models/content-type.model';
@@ -34,27 +33,27 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', minWidth: 250, width: 140, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
-      headerName: 'Items', field: 'Items', width: 160, suppressSizeToFit: true, sortable: true, filter: 'agNumberColumnFilter',
-      cellRenderer: 'dataItemsComponent', cellRendererParams: <DataItemsParams>{
+      headerName: 'Items', field: 'Items', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', cellRendererParams: <DataItemsParams>{
         onAddItem: this.addItem.bind(this),
       },
     },
     {
-      headerName: 'Description', field: 'Description', minWidth: 250, width: 200, cellClass: 'clickable',
+      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'clickable',
       sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
     },
     {
-      headerName: 'Fields', field: 'Fields', width: 160, suppressSizeToFit: true, sortable: true, filter: 'agNumberColumnFilter',
-      cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
+      headerName: 'Fields', field: 'Fields', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
         onEditFields: this.editFields.bind(this),
       },
     },
     {
-      headerName: 'Actions', width: 456, suppressSizeToFit: true, cellRenderer: 'dataActionsComponent',
+      headerName: 'Actions', flex: 1, minWidth: 410, cellClass: 'no-padding', cellRenderer: 'dataActionsComponent',
       cellRendererParams: <DataActionsParams>{
         enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),
@@ -104,14 +103,6 @@ export class DataComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   showContentItems(params: CellClickedEvent) {

@@ -45,7 +45,7 @@ import { ExpandableFieldService } from '../../shared/services/expandable-field.s
 })
 export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
-  @ViewChild('slideable', { static: false }) slideableRef: ElementRef;
+  @ViewChild('slideable') slideableRef: ElementRef;
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;

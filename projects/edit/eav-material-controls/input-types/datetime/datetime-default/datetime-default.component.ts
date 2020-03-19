@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
-import { DateTimeAdapter } from 'ng-pick-datetime';
+import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';

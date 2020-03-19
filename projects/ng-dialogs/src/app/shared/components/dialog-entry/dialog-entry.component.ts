@@ -60,7 +60,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     this.dialogRef = this.dialog.open(this.component, {
       backdropClass: 'dialog-backdrop',
-      panelClass: ['dialog-panel', `dialog-panel-${this.panelSize}`, ...this.panelClass],
+      panelClass: ['dialog-panel', `dialog-panel-${this.panelSize}`, 'no-scrollbar', ...this.panelClass],
       viewContainerRef: this.viewContainerRef,
       autoFocus: false,
       closeOnNavigation: false,
@@ -164,6 +164,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       case EXPORT_APP_PARTS:
         this.component = ExportAppPartsComponent;
         this.panelSize = 'medium';
+        this.panelClass = ['show-scrollbar'];
         break;
       case IMPORT_APP_PARTS:
         this.component = ImportAppPartsComponent;

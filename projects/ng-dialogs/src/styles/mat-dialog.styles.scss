@@ -8,10 +8,15 @@ $dialog-width-small: 40vw;
   // background: transparent !important;
   height: auto !important;
   max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom}) !important;
-  @extend .hide-scrollbar;
+}
 
-  @media (max-width: 600px) {
-    max-height: 100vh !important;
+.no-scrollbar:not(.show-scrollbar) {
+  .mat-dialog-container {
+    @extend .hide-scrollbar;
+
+    @media (max-width: 600px) {
+      max-height: 100vh !important;
+    }
   }
 }
 

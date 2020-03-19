@@ -14,7 +14,7 @@ import { InputTypesConstants } from '../../../shared/constants/input-types-const
 })
 export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('invisibleClickable', { static: false }) invisibleClickableReference: ElementRef;
+  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
   @ViewChild(AdamBrowserComponent, { static: true }) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfigSet;

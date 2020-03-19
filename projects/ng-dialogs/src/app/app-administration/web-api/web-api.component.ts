@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 
 import { WebApisService } from '../shared/services/web-apis.service';
 
@@ -13,7 +13,7 @@ export class WebApiComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name', minWidth: 456,
+      headerName: 'The following list shows the .cs files in the App-API folder:', field: 'name', flex: 1, minWidth: 456,
       sortable: true, filter: 'agTextColumnFilter',
     },
   ];
@@ -25,14 +25,6 @@ export class WebApiComponent implements OnInit {
 
   ngOnInit() {
     this.fetchWebApis();
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   fetchWebApis() {

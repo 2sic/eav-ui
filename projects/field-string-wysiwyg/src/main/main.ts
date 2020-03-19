@@ -35,7 +35,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
   connectedCallback() {
     console.log('FieldStringWysiwyg connectedCallback called');
-    this.innerHTML = buildTemplate(template, styles + skinOverrides);
+    this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     if (this.experimental.wysiwygSettings.inlineMode) {
@@ -76,7 +76,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     const tinyOptions = getTinyOptions({
       containerClass: this.containerClass,
       fixedToolbarClass: this.toolbarContainerClass,
-      contentStyle: contentStyle,
+      contentStyle: contentStyle.default,
       setup: this.tinyMceSetup.bind(this),
       currentLang: this.experimental.translateService.currentLang,
       contentBlocksEnabled: contentBlocksEnabled,

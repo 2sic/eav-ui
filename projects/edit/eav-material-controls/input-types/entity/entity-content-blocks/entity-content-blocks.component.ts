@@ -16,7 +16,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 })
 @InputType({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;

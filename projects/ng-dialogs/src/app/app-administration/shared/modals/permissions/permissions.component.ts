@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { GridReadyEvent, GridSizeChangedEvent, ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { PermissionsService } from '../../services/permissions.service';
 import { Permission } from '../../models/permission.model';
@@ -23,23 +23,23 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Title', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
     },
     {
-      headerName: 'Identity', field: 'Identity', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
     },
     {
-      headerName: 'Condition', field: 'Condition', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
     },
     {
-      headerName: 'Grant', field: 'Grant', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Grant', field: 'Grant', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
     },
     {
-      headerName: 'Actions', width: 160, suppressSizeToFit: true, cellRenderer: 'permissionsActionsComponent',
+      headerName: 'Actions', flex: 1, minWidth: 92, cellClass: 'no-padding', cellRenderer: 'permissionsActionsComponent',
       cellRendererParams: <PermissionsActionsParams>{
         onDelete: this.deletePermission.bind(this),
       },
@@ -79,14 +79,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   fetchPermissions() {

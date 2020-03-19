@@ -13,7 +13,7 @@ import { EavService } from '../../../shared/services/eav.service';
   styleUrls: ['./eav-form.component.scss']
 })
 export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
-  @ViewChild('dynamicForm', { static: false }) dynamicForm: FormGroupDirective;
+  @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
 
   @Input()
   config: FieldConfigSet[] = [];

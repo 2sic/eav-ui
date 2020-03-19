@@ -1,9 +1,8 @@
-
-@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 @import "../variables";
 
 .date-picker-wide-suffix-right .mat-form-field-suffix {
-	position: absolute;
+  position: absolute;
   right: 0;
   top: 0;
 }
@@ -34,9 +33,11 @@ owl-date-time-container {
     .owl-dt-calendar-control {
       padding: $header-padding;
 
-      .owl-dt-control-arrow-button svg, .owl-dt-control-button-arrow svg {
+      .owl-dt-control-arrow-button svg,
+      .owl-dt-control-button-arrow svg {
         fill: $arrows-color;
       }
+
       .owl-dt-control-period-button {
         color: $editUI-foreground-color;
         text-transform: uppercase;
@@ -51,11 +52,13 @@ owl-date-time-container {
         font-size: $weekday-font-size !important;
         padding: $weekday-padding !important;
       }
+
       .owl-dt-calendar-cell-content {
         font-size: $calendar-main-font-size;
         line-height: $calendar-main-font-size;
         color: $editUI-foreground-color;
       }
+
       .owl-dt-calendar-cell-selected {
         color: white;
         background-color: $owl-calendar-date-selected-color;
@@ -68,9 +71,11 @@ owl-date-time-container {
     .owl-dt-timer-input {
       color: $editUI-foreground-color;
     }
+
     .owl-dt-timer-divider {
       color: $editUI-foreground-color;
     }
+
     .owl-dt-control-arrow-button svg {
       fill: $arrows-color;
     }

@@ -22,8 +22,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { OwlDateTimeModule, OwlDateTimeIntl } from 'ng-pick-datetime';
-import { OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from 'ng-pick-datetime-moment';
+// tslint:disable-next-line:max-line-length
+import { OwlDateTimeModule, OwlDateTimeIntl, OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from '@danielmoncada/angular-datetime-picker';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { CollapsibleWrapperComponent } from './wrappers';

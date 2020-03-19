@@ -14,7 +14,7 @@ class FieldStringWysiwygPreview extends EavCustomInputFieldObservable<string> {
 
   connectedCallback() {
     console.log('FieldStringWysiwygPreview connectedCallback called');
-    this.innerHTML = buildTemplate(template, styles);
+    this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer = this.querySelector('.wysiwyg-preview');
     this.connector.data.value$.subscribe(value => {
       previewContainer.innerHTML = !value ? '' : value

@@ -41,7 +41,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
 
-    this.innerHTML = buildTemplate(template, styles);
+    this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector('#lat');
     this.lngInput = this.querySelector('#lng');
     const addressMaskContainer = <HTMLDivElement>this.querySelector('#address-mask-container');

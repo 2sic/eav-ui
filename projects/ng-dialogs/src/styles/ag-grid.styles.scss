@@ -1,5 +1,14 @@
-.ag-theme-material {
+ag-grid-angular.ag-theme-material {
   width: 100%;
+
+  button {
+    background-color: inherit;
+    color: inherit;
+
+    &:focus {
+      box-shadow: inherit;
+    }
+  }
 }
 
 .ag-cell {
@@ -26,12 +35,12 @@
     align-items: center;
   }
 
-  .actions-container {
-    transform: translateX(-24px);
-  }
-
   .mat-icon {
     user-select: none;
+  }
+
+  .delete-button {
+    margin-left: 24px;
   }
 }
 

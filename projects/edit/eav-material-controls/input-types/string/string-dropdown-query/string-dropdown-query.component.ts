@@ -15,7 +15,7 @@ import { EntityQueryComponent } from '../../entity/entity-query/entity-query.com
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent, { static: false }) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
 
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;

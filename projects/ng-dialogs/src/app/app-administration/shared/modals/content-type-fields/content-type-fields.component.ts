@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-// tslint:disable-next-line:max-line-length
-import { GridReadyEvent, GridSizeChangedEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../../services/content-types.service';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
@@ -34,38 +33,38 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
-    { rowDrag: true, width: 56, suppressSizeToFit: true },
+    { rowDrag: true, width: 18, cellClass: 'no-padding' },
     {
-      headerName: 'Title', field: 'IsTitle', width: 80, suppressSizeToFit: true, cellClass: 'no-padding',
+      headerName: 'Title', field: 'IsTitle', width: 80, cellClass: 'no-padding',
       cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: <ContentTypeFieldsTitleParams>{
         onSetTitle: this.setTitle.bind(this),
       },
     },
     {
-      headerName: 'Static Name', field: 'StaticName', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Static Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
     },
     {
-      headerName: 'Data Type', field: 'Type', minWidth: 184, width: 100, cellClass: 'clickable', sortable: true,
+      headerName: 'Data Type', field: 'Type', flex: 1, minWidth: 184, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
     },
     {
-      headerName: 'Input Type', field: 'InputType', minWidth: 184, width: 100, cellClass: 'clickable-single-with-button',
+      headerName: 'Input Type', field: 'InputType', flex: 1, minWidth: 184, cellClass: 'no-padding',
       sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
       cellRendererParams: <ContentTypeFieldsInputTypeParams>{
         onChangeInputType: this.changeInputType.bind(this),
       },
     },
     {
-      headerName: 'Label', field: 'Metadata.All.Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
     },
     {
-      headerName: 'Notes', field: 'Metadata.All.Notes', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
     },
     {
-      headerName: 'Actions', width: 200, suppressSizeToFit: true, cellRenderer: 'contentTypeFieldsActionsComponent',
+      headerName: 'Actions', flex: 1, minWidth: 194, cellClass: 'no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
       cellRendererParams: <ContentTypeFieldsActionsParams>{
         onRename: this.rename.bind(this),
         onDelete: this.delete.bind(this),
@@ -107,12 +106,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
     this.gridApi = params.api;
-    params.api.sizeColumnsToFit();
   }
 
   onRowDragEnter(event: RowDragEvent) {

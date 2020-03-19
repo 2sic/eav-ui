@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
 import { Query } from '../shared/models/query.model';
@@ -23,20 +23,20 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'ID', field: 'Id', width: 136, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+      headerName: 'ID', field: 'Id', width: 136, cellClass: 'clickable', sortable: true,
       filter: 'agNumberColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
     },
     {
-      headerName: 'Name', field: 'Name', minWidth: 250, width: 120, cellClass: 'clickable', sortable: true,
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
     },
     {
-      headerName: 'Description', field: 'Description', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Description', field: 'Description', flex: 3, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
     },
     {
-      headerName: 'Actions', width: 392, suppressSizeToFit: true, cellRenderer: 'queriesActionsComponent',
-      cellRendererParams: <PipelinesActionsParams>{
+      headerName: 'Actions', flex: 1, minWidth: 346, cellClass: 'no-padding',
+      cellRenderer: 'queriesActionsComponent', cellRendererParams: <PipelinesActionsParams>{
         onEditQuery: this.editQuery.bind(this),
         onCloneQuery: this.cloneQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
@@ -73,14 +73,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   fetchQueries() {

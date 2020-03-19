@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-// tslint:disable-next-line:max-line-length
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../shared/models/feature.model';
 import { FeaturesListEnabledComponent } from '../shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
@@ -27,29 +26,29 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Enabled', field: 'enabled', minWidth: 170, width: 100, sortable: true, filter: 'booleanFilterComponent',
+      headerName: 'Enabled', field: 'enabled', flex: 1, minWidth: 170, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListEnabledComponent',
     },
     {
-      headerName: 'Name', field: 'id', minWidth: 250, width: 200, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Name', field: 'id', flex: 2, minWidth: 250, sortable: true, filter: 'agTextColumnFilter',
       cellRenderer: (params: ICellRendererParams) => {
         return `<a href="https://2sxc.org/r/f/${params.value}" target="_blank">details</a> (name lookup still WIP)`;
       },
     },
-    { headerName: 'Feature GUID', field: 'id', minWidth: 300, width: 200, sortable: true, filter: 'agTextColumnFilter' },
+    { headerName: 'Feature GUID', field: 'id', flex: 2, minWidth: 300, sortable: true, filter: 'agTextColumnFilter' },
     {
-      headerName: 'Expires', field: 'expires', minWidth: 200, width: 100, sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, sortable: true, filter: 'agTextColumnFilter',
       valueGetter: this.valueGetterDateTime,
     },
     {
-      headerName: 'UI', field: 'ui', minWidth: 140, width: 100, sortable: true, filter: 'booleanFilterComponent',
+      headerName: 'UI', field: 'ui', flex: 1, minWidth: 140, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListUiComponent',
     },
     {
-      headerName: 'Public', field: 'public', minWidth: 160, width: 100, sortable: true, filter: 'booleanFilterComponent',
+      headerName: 'Public', field: 'public', flex: 1, minWidth: 160, sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'featuresListPublicComponent'
     },
-    { headerName: 'Security', minWidth: 100, width: 100, cellRenderer: 'featuresListSecurityComponent' },
+    { headerName: 'Security', flex: 1, minWidth: 94, cellRenderer: 'featuresListSecurityComponent' },
   ];
   frameworkComponents = {
     booleanFilterComponent: BooleanFilterComponent,
@@ -68,14 +67,6 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroyManagementListener();
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   reloadFeatures() {

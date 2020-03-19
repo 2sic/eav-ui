@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
 import { AppsListService } from '../shared/services/apps-list.service';
@@ -23,19 +23,19 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
     },
     {
-      headerName: 'Folder', field: 'Folder', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
     },
     {
-      headerName: 'Hidden', field: 'IsHidden', minWidth: 170, width: 100, sortable: true, filter: 'booleanFilterComponent',
+      headerName: 'Hidden', field: 'IsHidden', flex: 1, minWidth: 170, cellClass: 'icons', sortable: true, filter: 'booleanFilterComponent',
       cellRenderer: 'appsListShowComponent',
     },
     {
-      headerName: 'Actions', minWidth: 100, width: 100, cellRenderer: 'appsListActionsComponent',
+      headerName: 'Actions', flex: 1, minWidth: 100, cellClass: 'no-padding', cellRenderer: 'appsListActionsComponent',
       cellRendererParams: <AppsListActionsParams>{
         onDelete: this.deleteApp.bind(this),
       },
@@ -71,14 +71,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   browseCatalog() {

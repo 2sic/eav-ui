@@ -1,21 +1,29 @@
 @import "../theme/_material-colors.scss";
 
 .eav-dragging .dropzone:not(.dropzone-disabled) {
-    .c-ew__preview {
-        background-color: $dropzone-background !important;
-    }
-    .c-ew__preview-suffix-text {
-        color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
-    .c-ew__dialog {
-        box-shadow: 0 0 5px 5px $dropzone-active-background !important;
-    }
+  .c-ew__preview {
+    background-color: $dropzone-background !important;
+  }
+
+  .c-ew__preview-suffix-text {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+
+  .c-ew__dialog {
+    box-shadow: 0 0 5px 5px $dropzone-active-background !important;
+  }
 }
+
 .eav-dragging.dropzone:not(.dropzone-disabled) {
-    .c-ew__preview {
-        background-color: $dropzone-active-background !important;
-    }
-    .c-ew__preview-suffix-text {
-        color: map_get($mat-eav-item-dialog-secondary, 500);
-    }
+  .c-ew__preview {
+    background-color: $dropzone-active-background !important;
+  }
+
+  .c-ew__preview-suffix-text {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+}
+
+.dropzone .dz-default {
+  display: none;
 }

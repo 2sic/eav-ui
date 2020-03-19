@@ -15,9 +15,9 @@ import { LanguageButton, calculateLanguageButtons } from './eav-language-switche
   styleUrls: ['./eav-language-switcher.component.scss']
 })
 export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('scrollable', { static: false }) headerRef: ElementRef;
-  @ViewChild('leftShadow', { static: false }) leftShadowRef: ElementRef;
-  @ViewChild('rightShadow', { static: false }) rightShadowRef: ElementRef;
+  @ViewChild('scrollable') headerRef: ElementRef;
+  @ViewChild('leftShadow') leftShadowRef: ElementRef;
+  @ViewChild('rightShadow') rightShadowRef: ElementRef;
   @Input() formId: number;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;

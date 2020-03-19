@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AllCommunityModules, ColDef, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
 
 import { View } from '../shared/models/view.model';
@@ -24,31 +24,31 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Template Name', field: 'Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Template Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Path', field: 'TemplatePath', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Path', field: 'TemplatePath', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Content Type', field: 'ContentType.Name', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Content Type', field: 'ContentType.Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Demo Item', field: 'ContentType.DemoId', width: 184, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+      headerName: 'Demo Item', field: 'ContentType.DemoId', flex: 1, minWidth: 184, cellClass: 'clickable', sortable: true,
       filter: 'agNumberColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Hidden', field: 'IsHidden', width: 168, suppressSizeToFit: true, cellRenderer: 'viewsShowComponent', sortable: true,
+      headerName: 'Hidden', field: 'IsHidden', flex: 1, minWidth: 168, cellRenderer: 'viewsShowComponent', sortable: true,
       filter: 'booleanFilterComponent',
     },
     {
-      headerName: 'Url Key', field: 'ViewNameInUrl', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
+      headerName: 'Url Key', field: 'ViewNameInUrl', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Actions', width: 160, suppressSizeToFit: true, cellRenderer: 'viewsActionsComponent',
+      headerName: 'Actions', flex: 1, minWidth: 154, cellClass: 'no-padding', cellRenderer: 'viewsActionsComponent',
       cellRendererParams: <ViewActionsParams>{
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteView.bind(this),
@@ -84,14 +84,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
-  }
-
-  onGridReady(params: GridReadyEvent) {
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   fetchTemplates() {

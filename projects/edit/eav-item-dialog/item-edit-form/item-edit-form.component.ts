@@ -24,7 +24,7 @@ import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-i
   styleUrls: ['./item-edit-form.component.scss']
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy {
-  @ViewChild(EavFormComponent, { static: false }) form: EavFormComponent;
+  @ViewChild(EavFormComponent) form: EavFormComponent;
   @Input() formId: number;
   @Input()
   set item(value: Item) {

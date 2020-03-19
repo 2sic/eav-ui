@@ -26,9 +26,9 @@ import { ExpandableFieldService } from '../../../shared/services/expandable-fiel
 })
 export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer', { static: false }) previewContainer: ElementRef;
-  @ViewChild('backdrop', { static: false }) backdropRef: ElementRef;
-  @ViewChild('dialog', { static: false }) dialogRef: ElementRef;
+  @ViewChild('previewContainer') previewContainer: ElementRef;
+  @ViewChild('backdrop') backdropRef: ElementRef;
+  @ViewChild('dialog') dialogRef: ElementRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;

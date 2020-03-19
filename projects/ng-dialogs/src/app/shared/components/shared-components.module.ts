@@ -10,6 +10,7 @@ import { FieldHintComponent } from './field-hint/field-hint.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagination.directive';
 import { BooleanFilterComponent } from './boolean-filter/boolean-filter.component';
 import { FormsModule } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     MatFormFieldModule,
     FormsModule,
+    MatRadioModule,
   ],
   providers: [
   ],
@@ -39,7 +41,7 @@ import { FormsModule } from '@angular/forms';
   ]
 })
 export class SharedComponentsModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedComponentsModule> {
     return {
       ngModule: SharedComponentsModule,
       providers: [DialogService]

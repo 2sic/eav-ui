@@ -22,7 +22,7 @@ import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/s
   styleUrls: ['./entity-default-main-search.component.scss']
 })
 export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
-  @ViewChild('autoCompleteInput', { static: false }) autoCompleteInputControl: ElementRef;
+  @ViewChild('autoCompleteInput') autoCompleteInputControl: ElementRef;
   @ViewChild(EntityDefaultListComponent, { static: true }) entityDefaultListComponent: EntityDefaultListComponent;
 
   @Input() config: EntityFieldConfigSet;

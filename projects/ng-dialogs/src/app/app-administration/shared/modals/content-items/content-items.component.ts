@@ -3,8 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-// tslint:disable-next-line:max-line-length
-import { ColDef, AllCommunityModules, GridReadyEvent, GridSizeChangedEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from '../../services/content-items.service';
 import { ContentItem } from '../../models/content-item.model';
@@ -80,11 +79,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    params.api.sizeColumnsToFit();
-  }
-
-  onGridSizeChanged(params: GridSizeChangedEvent) {
-    params.api.sizeColumnsToFit();
   }
 
   fetchItems() {
@@ -192,29 +186,29 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildTable(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 136, suppressSizeToFit: true, cellClass: 'clickable', sortable: true,
+        headerName: 'ID', field: 'Id', width: 136, cellClass: 'clickable', sortable: true,
         filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent', onCellClicked: this.editItem.bind(this),
       },
       {
-        headerName: 'Status', width: 132, suppressSizeToFit: true, valueGetter: this.valueGetterStatus,
+        headerName: 'Status', width: 132, valueGetter: this.valueGetterStatus,
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
       },
       {
-        headerName: 'Title', field: '_Title', minWidth: 250, width: 200, cellClass: 'clickable', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
-      },
-      {
-        cellClass: 'no-padding', width: 124, suppressSizeToFit: true, cellRenderer: 'contentItemsActionsComponent',
+        headerName: 'Actions', cellClass: 'no-padding', width: 194, cellRenderer: 'contentItemsActionsComponent',
         cellRendererParams: <ContentItemsActionsParams>{
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
         },
       },
+      {
+        headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
+      },
     ];
     for (const column of columns) {
       if (column.IsTitle) { continue; }
-      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, minWidth: 250, width: 200, sortable: true };
+      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, sortable: true };
       switch (column.Type) {
         case 'Entity':
           try {
