@@ -18,6 +18,7 @@
 <button mat-button matTooltip="Permissions" *ngIf="showPermissions" (click)="openPermissions()">
   <mat-icon>person</mat-icon>
 </button>
+<button mat-button *ngIf="!showPermissions"></button>
 
 <button class="delete-button" mat-button matTooltip="Delete" (click)="deleteContentType()">
   <mat-icon>delete</mat-icon>
