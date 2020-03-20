@@ -26,23 +26,6 @@ field-string-wysiwyg {
   padding: 0 8px 1px 8px;
   /* min-height 1px less because of padding pixel bottom */
   min-height: 119px;
-  /* Probably not needed */
-  /*
-  position: relative;
-  border-style: solid;
-  border-width: 1px;
-  border-color: rgb(170,178,189);
-  border-radius: 4px;
-  padding-left: 0;
-  overflow: auto;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  color:rgb(69, 79, 99);
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400; 
-  */
   font-size: medium;
   /* IE 10+ */
   -ms-overflow-style: none;

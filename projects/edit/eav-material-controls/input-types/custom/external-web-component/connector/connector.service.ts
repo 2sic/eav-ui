@@ -1,5 +1,4 @@
 import { NgZone, ElementRef } from '@angular/core';
-import { NgElement, WithProperties } from '@angular/elements';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +22,7 @@ import { ExpandableFieldService } from '../../../../../shared/services/expandabl
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
   private subjects: BehaviorSubject<any>[] = [];
-  private customEl: NgElement & WithProperties<CustomElementProperties<any>>;
+  private customEl: HTMLElement & CustomElementProperties<any>;
   private eavConfig: EavConfiguration;
   private value$: BehaviorSubject<any>;
   private previousValue: any;
@@ -133,8 +132,6 @@ export class ConnectorService {
 
     this.customEl = document.createElement(customElName) as any;
     this.customEl.host = this.externalInputTypeHost;
-    // spm pass language service secretly as well
-    this.customEl.translateService = this.translateService;
 
     this.customEl.experimental = this.calculateExperimentalProps(inlineMode);
     this.customEl.connector = this.buildConnector();

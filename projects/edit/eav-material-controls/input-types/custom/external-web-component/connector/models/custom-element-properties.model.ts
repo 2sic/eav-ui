@@ -11,7 +11,6 @@ export class CustomElementProperties<T> {
   connector: ConnectorObservable<T>;
   experimental: ExperimentalProps;
   host: any;
-  translateService: TranslateService; // for Angular WYSIWYG. Should remove sometime in the future
 
   adamSetValueCallback: any;
   adamAfterUploadCallback: any;
