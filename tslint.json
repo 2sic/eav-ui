@@ -86,6 +86,7 @@
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "// custom": "Added rules",
+    "eofline": true,
     "semicolon": [
       true,
       "always"
@@ -98,8 +99,7 @@
     "only-arrow-functions": false,
     "object-literal-key-quotes": false,
     "ban-types": false,
-    "no-string-literal": false,
-    "no-output-native": false
+    "no-string-literal": false
   },
   "rulesDirectory": [
     "codelyzer"

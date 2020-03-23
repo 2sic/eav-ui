@@ -1,28 +1,21 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
-import { Subscription } from 'rxjs';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
-import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
-  exportAs: 'appEavForm',
   templateUrl: './eav-form.component.html',
   selector: 'app-eav-form',
   styleUrls: ['./eav-form.component.scss']
 })
-export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
+export class EavFormComponent implements OnInit, OnDestroy {
   @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
 
-  @Input()
-  config: FieldConfigSet[] = [];
-
-  @Output()
-  submit: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  formValueChange: EventEmitter<any> = new EventEmitter<any>();
+  @Input() config: FieldConfigSet[] = [];
+  @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() formValueChange: EventEmitter<any> = new EventEmitter<any>();
 
   form: FormGroup = new FormGroup({});
   showDebugItems = false;
@@ -33,41 +26,27 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   get valid() { return !this.form.invalid; }
   get value() { return this.form.value; }
   get dirty() { return this.form.dirty; }
-  get debugEnviroment() {
-    return !environment.production;
-  }
+  get debugEnviroment() { return !environment.production; }
 
-  constructor(private formBuilder: FormBuilder, private eavService: EavService) { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    // let group = this.formBuilder.group({});
     this.createControlsInFormGroup(this.config);
 
     this.subscriptions.push(
       this.form.valueChanges.subscribe(val => {
-        // if (this.form.valid) {
-        // this.formErrors = this.FormService.validateForm(this.form, this.formErrors, true);
-
         this.formValueChange.emit(val);
-        // }
-      }));
-  }
-
-  ngOnChanges() {
-    // console.log('ngOnChanges EavFormComponent');
+      })
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
-  /**
-   * Create form from configuration
-   * @param fieldConfigArray
-   */
+  /** Create form from configuration */
   private createControlsInFormGroup(fieldConfigArray: FieldConfigSet[]) {
     try {
-      // const group = this.formBuilder.group({});
       fieldConfigArray.forEach(fieldConfig => {
         const field = fieldConfig.field as FieldConfigGroup;
         if (field.fieldGroup) {
@@ -75,29 +54,21 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
         } else {
           this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
         }
-      }
-      );
-
+      });
       return this.form;
     } catch (error) {
-      console.error(`Error creating form controls: ${error}
-      FieldConfig: ${fieldConfigArray}`);
+      console.error(`Error creating form controls: ${error}\nFieldConfig: ${fieldConfigArray}`);
       throw error;
     }
   }
 
-  /**
-   *  Create form control
-   * @param config
-   */
+  /** Create form control */
   private createControl(config: FieldConfigSet) {
     try {
-      // tslint:disable-next-line:prefer-const
-      let { disabled, validation, initialValue } = config.field;
+      const { disabled, validation, initialValue } = config.field;
       return this.formBuilder.control({ disabled, value: initialValue }, validation);
     } catch (error) {
-      console.error(`Error creating form control: ${error}
-      Config: ${config}`);
+      console.error(`Error creating form control: ${error}\nConfig: ${config}`);
       throw error;
     }
   }
@@ -105,7 +76,7 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
   save(event: { [key: string]: any }) {
     console.log('form save', event);
     // Use this to emit value out
-    this.submit.emit(this.value);
+    this.formSubmit.emit(this.value);
   }
 
   submitOutside() {
@@ -144,16 +115,10 @@ export class EavFormComponent implements OnChanges, OnInit, OnDestroy {
    * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
    */
   patchValue(values: { [key: string]: any }, emitEvent: boolean) {
-    // if (this.valueIsChanged(values)) {
-    // console.log('value patchValue');
     this.form.patchValue(values, { emitEvent: emitEvent });
-    // }
   }
 
-  /**
-   * Check is value in form changed
-   *
-  */
+  /** Check if value in form changed */
   public valueIsChanged = (values: { [key: string]: any }) => {
     let valueIsChanged = false;
     console.log('[Test Disabled] VALUECHANGED values', values);
