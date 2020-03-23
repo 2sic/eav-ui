@@ -1,9 +1,9 @@
 export function fixMenuPositions(fieldStringWysiwyg: HTMLElement) {
   const observer = new MutationObserver((mutations: MutationRecord[]) => {
-    for (let i = 0; i < mutations.length; i++) {
-      const mutation = mutations[i];
-      for (let j = 0; j < mutation.addedNodes.length; j++) {
-        const addedNode = <HTMLElement>mutation.addedNodes[j];
+    for (const mutation of mutations) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < mutation.addedNodes.length; i++) {
+        const addedNode = mutation.addedNodes[i] as HTMLElement;
         if (!addedNode.classList) { continue; }
         if (!addedNode.classList.contains('tox-menu')) { continue; }
 

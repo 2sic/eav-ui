@@ -25,7 +25,7 @@ export function attachAdam(fieldStringWysiwyg: any, editor: any) {
     fieldStringWysiwyg.adam.adamModeImage = imagesOnly;
     fieldStringWysiwyg.adam.toggleAdam({
       showImagesOnly: imagesOnly,
-      usePortalRoot: usePortalRoot
+      usePortalRoot,
     });
   };
 

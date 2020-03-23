@@ -127,7 +127,7 @@ function getModesOptions(contentBlocksEnabled: boolean, inlineMode: boolean, but
     },
   };
   return {
-    modes: modes, // for later switch to another mode
+    modes, // for later switch to another mode
     menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar, // basic menu (none)
     toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar, // basic toolbar
     contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu, // 'link image | charmap hr adamimage',
@@ -168,17 +168,15 @@ function getPasteFormattedTextOptions() {
     paste_convert_headers_to_strong: false,
     paste_remove_spans: true,
     paste_remove_styles: true,
-
-    paste_preprocess: function (e: any, args: any) {
+    paste_preprocess(e: any, args: any) {
       console.log('paste preprocess', e, args);
     },
-
-    paste_postprocess: function (plugin: any, args: any) {
+    paste_postprocess(plugin: any, args: any) {
       try {
         const anchors = args.node.getElementsByTagName('a');
-        for (let i = 0; i < anchors.length; i++) {
-          if (anchors[i].hasAttribute('target') === false) {
-            anchors[i].setAttribute('target', '_blank');
+        for (const anchor of anchors) {
+          if (anchor.hasAttribute('target') === false) {
+            anchor.setAttribute('target', '_blank');
           }
         }
       } catch (e) {
@@ -229,7 +227,10 @@ function imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, f
 /** Add translations to TinyMCE. Call after TinyMCE is initialized */
 export function addTranslations(language: string, translateService: any, editorManager: any) {
   const primaryLan = 'en';
-  const keys = [], mceTranslations: any = {}, prefix = 'Extension.TinyMce', prefixDot = 'Extension.TinyMce.'; //  pLen = prefix.length;
+  const keys = [];
+  const mceTranslations: any = {};
+  const prefix = 'Extension.TinyMce';
+  const prefixDot = 'Extension.TinyMce.';
 
   // find all relevant keys by querying the primary language
   // var all = translateService.getTranslationTable(primaryLan);
@@ -242,8 +243,8 @@ export function addTranslations(language: string, translateService: any, editorM
 
   const translations = translateService.instant(keys);
 
-  for (let k = 0; k < keys.length; k++) {
-    mceTranslations[keys[k].replace(prefixDot, '')] = translations[keys[k]];
+  for (const key of keys) {
+    mceTranslations[key.replace(prefixDot, '')] = translations[key];
   }
 
   editorManager.addI18n(language, translations[keys[0]]);

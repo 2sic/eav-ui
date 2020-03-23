@@ -367,18 +367,18 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
   });
 
   const imgMenuArray: any = [];
-  for (let imgs = 0; imgs < imgSizes.length; imgs++) {
+  for (const imgSize of imgSizes) {
     const config = {
       icon: 'resize',
-      tooltip: `${imgSizes[imgs]}%`,
-      text: `${imgSizes[imgs]}%`,
-      value: (api: any) => { editor.formatter.apply(`imgwidth${imgSizes[imgs]}`); },
+      tooltip: `${imgSize}%`,
+      text: `${imgSize}%`,
+      value: (api: any) => { editor.formatter.apply(`imgwidth${imgSize}`); },
       onAction: (_: any) => {
-        editor.formatter.apply(`imgwidth${imgSizes[imgs]}`);
+        editor.formatter.apply(`imgwidth${imgSize}`);
       },
-      onPostRender: initOnPostRender(`imgwidth${imgSizes[imgs]}`, editor),
+      onPostRender: initOnPostRender(`imgwidth${imgSize}`, editor),
     };
-    editor.ui.registry.addButton(`imgresize${imgSizes[imgs]}`, config);
+    editor.ui.registry.addButton(`imgresize${imgSize}`, config);
     imgMenuArray.push(config);
   }
   editor.ui.registry.addButton('resizeimg100', {
@@ -429,13 +429,13 @@ export function addTinyMceToolbarButtons(fieldStringWysiwyg: any, editor: any, e
  * https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
  */
 function initOnPostRender(name: any, editor: any) {
-  return function (buttonApi: any) {
+  return (buttonApi: any) => {
     function watchChange() {
-      editor.formatter.formatChanged(name, function (state: any) {
+      editor.formatter.formatChanged(name, (state: any) => {
         try {
           buttonApi.setActive(state);
         } catch (error) {
-          // cannot be set active when not visible on toolbar and is behing More... button
+          // cannot be set active when not visible on toolbar and is behind More... button
           // console.error('button set active error:', error);
         }
       });
@@ -452,8 +452,8 @@ function initOnPostRender(name: any, editor: any) {
 /** Register all formats - like img-sizes */
 function registerTinyMceFormats(editor: any, imgSizes: number[]) {
   const imgformats: any = {};
-  for (let imgs = 0; imgs < imgSizes.length; imgs++) {
-    imgformats[`imgwidth${imgSizes[imgs]}`] = [{ selector: 'img', collapsed: false, styles: { 'width': `${imgSizes[imgs]}%` } }];
+  for (const imgSize of imgSizes) {
+    imgformats[`imgwidth${imgSize}`] = [{ selector: 'img', collapsed: false, styles: { width: `${imgSize}%` } }];
   }
   editor.formatter.register(imgformats);
 }

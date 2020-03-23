@@ -46,11 +46,11 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
 
     const tinyMceSrc = `${this.tinyMceBaseUrl}/tinymce.min.js`;
 
-    const scriptLoaded = !!(<any>window).tinymce;
+    const scriptLoaded = !!(window as any).tinymce;
     if (scriptLoaded) {
       this.tinyMceScriptLoaded();
     } else {
-      const scriptElement = <HTMLScriptElement>document.querySelector('script[src="' + tinyMceSrc + '"]');
+      const scriptElement = document.querySelector('script[src="' + tinyMceSrc + '"]') as HTMLScriptElement;
       if (scriptElement) {
         scriptElement.addEventListener('load', this.tinyMceScriptLoaded.bind(this), { once: true });
       } else {
@@ -79,8 +79,8 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
       contentStyle: contentStyle.default,
       setup: this.tinyMceSetup.bind(this),
       currentLang: this.experimental.translateService.currentLang,
-      contentBlocksEnabled: contentBlocksEnabled,
-      pasteFormattedTextEnabled: pasteFormattedTextEnabled,
+      contentBlocksEnabled,
+      pasteFormattedTextEnabled,
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
@@ -131,11 +131,7 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     // called after tinymce editor is removed
     editor.on('remove', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE removed', event);
-      this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-      this.subscriptions = [];
-      this.editorContent = null;
-      this.observer.disconnect();
-      this.observer = null;
+      this.clearData();
     });
 
     editor.on('focus', (event: any) => {
@@ -179,9 +175,26 @@ class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
     this.connector.data.update(this.editorContent);
   }
 
+  private clearData() {
+    if (this.editor) {
+      this.editor.remove();
+    }
+    if (this.subscriptions.length > 0) {
+      this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+      this.subscriptions = [];
+    }
+    if (this.editorContent !== null) {
+      this.editorContent = null;
+    }
+    if (this.observer !== null) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+  }
+
   disconnectedCallback() {
     console.log('FieldStringWysiwyg disconnectedCallback called');
-    this.editor.remove();
+    this.clearData();
   }
 }
 

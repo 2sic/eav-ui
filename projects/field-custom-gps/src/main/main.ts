@@ -44,9 +44,9 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector('#lat');
     this.lngInput = this.querySelector('#lng');
-    const addressMaskContainer = <HTMLDivElement>this.querySelector('#address-mask-container');
+    const addressMaskContainer = this.querySelector('#address-mask-container') as HTMLDivElement;
     this.iconSearch = this.querySelector('#icon-search');
-    const formattedAddressContainer = <HTMLSpanElement>this.querySelector('#formatted-address-container');
+    const formattedAddressContainer = this.querySelector('#formatted-address-container') as HTMLSpanElement;
     this.mapContainer = this.querySelector('#map');
 
     const allInputNames = this.experimental.allInputTypeNames.map(inputType => inputType.name);
@@ -65,11 +65,11 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
     }
 
-    const scriptLoaded = !!(<any>window).google;
+    const scriptLoaded = !!(window as any).google;
     if (scriptLoaded) {
       this.mapScriptLoaded();
     } else {
-      const scriptElement = <HTMLScriptElement>document.querySelector('script[src="' + this.mapApiUrl + '"]');
+      const scriptElement = document.querySelector('script[src="' + this.mapApiUrl + '"]') as HTMLScriptElement;
       if (scriptElement) {
         scriptElement.addEventListener('load', this.mapScriptLoaded.bind(this), { once: true });
       } else {
@@ -110,7 +110,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
 
     this.marker.addListener('dragend', this.onMarkerDragend.bind(this));
     this.subscription.add(
-      (<ConnectorDataObservable<string>>this.connector.data).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
+      (this.connector.data as ConnectorDataObservable<string>).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
     );
   }
 
@@ -145,7 +145,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
     console.log('FieldCustomGps geocoder called');
     const address = this.addressMaskService.resolve();
     this.geocoder.geocode({
-      address: address
+      address,
     }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
         const result = results[0].geometry.location;
