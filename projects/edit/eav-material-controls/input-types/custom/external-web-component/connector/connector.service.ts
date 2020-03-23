@@ -18,6 +18,7 @@ import { ContentTypeService } from '../../../../../shared/store/ngrx-data/conten
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
+import { AdamSetValue, AdamAfterUpload } from '../../../../../../shared/adam.model';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -49,7 +50,7 @@ export class ConnectorService {
    */
   // spm 2019.04.08. move to experimentalProps
   private externalInputTypeHost = {
-    attachAdam: (adamSetValue: Function, adamAfterUpload: Function) => this.attachAdam(adamSetValue, adamAfterUpload),
+    attachAdam: (adamSetValue: AdamSetValue, adamAfterUpload: AdamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
     openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
       this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
     },
@@ -85,7 +86,7 @@ export class ConnectorService {
     }
   }
 
-  private attachAdam(adamSetValue: Function, adamAfterUpload: Function) {
+  private attachAdam(adamSetValue: AdamSetValue, adamAfterUpload: AdamAfterUpload) {
     // spm check if adam is enabled
     if (!this.config.adam) { return; }
 

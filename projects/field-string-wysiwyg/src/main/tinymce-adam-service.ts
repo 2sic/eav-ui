@@ -1,5 +1,7 @@
+import { AdamSetValue, AdamAfterUpload } from '../../../shared/adam.model';
+
 export function attachAdam(fieldStringWysiwyg: any, editor: any) {
-  const adamSetValue = (fileItem: any, modeImage: any) => {
+  const adamSetValue: AdamSetValue = (fileItem: any, modeImage: any) => {
     if (modeImage === undefined) {  // if not supplied, use the setting in the adam
       modeImage = fieldStringWysiwyg.adam.adamModeImage;
     }
@@ -13,7 +15,7 @@ export function attachAdam(fieldStringWysiwyg: any, editor: any) {
     editor.insertContent(content);
   };
 
-  const adamAfterUpload = (fileItem: any) => {
+  const adamAfterUpload: AdamAfterUpload = (fileItem: any) => {
     adamSetValue(fileItem, fileItem.Type === 'image');
   };
 

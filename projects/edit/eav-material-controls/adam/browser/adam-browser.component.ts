@@ -63,9 +63,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   showFolders: boolean;
 
   // callback is set in attachAdam
-  updateCallback: Function;
-  afterUploadCallback: Function;
-  getValueCallback: Function;
+  updateCallback: (value: any) => void;
+  afterUploadCallback: (value: any) => void;
+  getValueCallback: () => any;
 
   allowedFileTypes: string[] = [];
   clipboardPasteImageFunctionalityDisabled = true;

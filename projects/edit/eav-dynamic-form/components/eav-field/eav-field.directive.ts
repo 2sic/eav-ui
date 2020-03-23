@@ -62,7 +62,7 @@ export class EavFieldDirective implements OnInit {
    * @param container
    * @param fieldConfig
    */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet, callback?: Function): ComponentRef<any> {
+  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet): ComponentRef<any> {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
