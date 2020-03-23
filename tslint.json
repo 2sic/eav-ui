@@ -83,7 +83,19 @@
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true
+    "use-pipe-transform-interface": true,
+    "// custom": "custom rules",
+    "no-angle-bracket-type-assertion": false,
+    "object-literal-shorthand": false,
+    "no-redundant-jsdoc": false,
+    "jsdoc-format": false,
+    "only-arrow-functions": false,
+    "object-literal-key-quotes": false,
+    "ban-types": false,
+    "no-string-literal": false,
+    "no-output-native": false,
+    "prefer-for-of": false,
+    "new-parens": false
   },
   "rulesDirectory": [
     "codelyzer"
