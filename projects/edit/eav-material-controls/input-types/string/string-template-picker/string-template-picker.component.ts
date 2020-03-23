@@ -66,7 +66,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   private setFileConfig(type: string) {
     const specs: { [key: string]: StringTemplatePickerFile } = {
       // tslint:disable-next-line:max-line-length
-      'Token': { ext: '.html', prefix: '', suggestion: 'yourfile.html', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
+      Token: { ext: '.html', prefix: '', suggestion: 'yourfile.html', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
       // tslint:disable-next-line:max-line-length
       'C# Razor': { ext: '.cshtml', prefix: '_', suggestion: '_yourfile.cshtml', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' }
     };

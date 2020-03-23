@@ -244,7 +244,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     if (!entityList) {
       return [];
     }
-    return entityList.map(v => ({ 'name': v, 'type': this.config.field.name }));
+    return entityList.map(v => ({ name: v, type: this.config.field.name }));
   }
 
   private mapFromNameListToEntityList = (nameList: any[]): string[] => {

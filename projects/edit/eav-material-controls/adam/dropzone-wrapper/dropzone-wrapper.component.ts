@@ -72,7 +72,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     });
     this.config.saveImage = (image) => {
       const dropzone = this.dropzoneRef.dropzone();
-      (image as any).upload = { 'chunked': dropzone.defaultOptions.chunking };
+      (image as any).upload = { chunked: dropzone.defaultOptions.chunking };
       dropzone.processFile(image);
     };
   }

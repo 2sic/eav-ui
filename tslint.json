@@ -96,8 +96,7 @@
     "object-literal-shorthand": false,
     "no-redundant-jsdoc": false,
     "jsdoc-format": false,
-    "only-arrow-functions": false,
-    "object-literal-key-quotes": false
+    "only-arrow-functions": false
   },
   "rulesDirectory": [
     "codelyzer"
