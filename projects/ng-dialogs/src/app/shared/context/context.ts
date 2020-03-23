@@ -2,12 +2,7 @@ import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken } from '../constants/sessions-keys';
 
-/**
- * The context provides information
- *
- * @export
- * @class Context
- */
+/** The context provides information */
 @Injectable()
 export class Context {
 
@@ -36,9 +31,9 @@ export class Context {
 
 
   /**
-   * The request verification token for http requests
+   * The request verification token for http requests.
    * It's only loaded from the root, never from sub-contexts
-  */
+   */
   get requestToken(): string { return this._rvt || (this._rvt = this.parent.requestToken); }
   private _rvt: string;
 
@@ -72,11 +67,8 @@ export class Context {
 
 
   /**
-   * This is the initializer at entry-componets of modules
+   * This is the initializer at entry-componets of modules.
    * It ensures that within that module, the context has the values given by the route
-   *
-   * @param {ActivatedRoute} route
-   * @memberof Context
    */
   init(route: ActivatedRoute) {
     console.log('Context.init', route);
@@ -116,9 +108,7 @@ export class Context {
 
   /**
    * Get a number from the route, or optionally its parents.
-   * @param {string} name
-   * @returns {number} value in route or null
-   * @memberof Context
+   * Returns value in route or null
    */
   private routeNum(name: string): number {
     // catch case where state is null, like when the recursive parent is in use

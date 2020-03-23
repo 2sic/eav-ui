@@ -9,12 +9,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 export class EntityService {
   constructor(private httpClient: HttpClient, private translate: TranslateService, private dnnContext: DnnContext) { }
 
-  /**
-   * get availableEntities - (used in entity-default input type)
-   * @param apiId
-   * @param body
-   * @param ctName
-   */
+  /** (used in entity-default input type) */
   getAvailableEntities(apiId: string, body: string, ctName: string) {
     return <Observable<any>>this.httpClient
       .post(this.dnnContext.$2sxc.http.apiUrl('eav/EntityPicker/getavailableentities'), body, {

@@ -21,35 +21,20 @@ import { StringFontIconPickerIcon } from '../../../../shared/models/input-types/
 })
 export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-  group: FormGroup;
+  @Input() group: FormGroup;
 
   icons: StringFontIconPickerIcon[] = [];
   filteredIcons: Observable<StringFontIconPickerIcon[]>;
+
   private subscriptions: Subscription[] = [];
 
-  get files(): string {
-    return this.config.field.settings.Files ? this.config.field.settings.Files : '';
-  }
+  get files(): string { return this.config.field.settings.Files ? this.config.field.settings.Files : ''; }
+  get prefix(): string { return this.config.field.settings.CssPrefix ? this.config.field.settings.CssPrefix : ''; }
+  get previewCss(): string { return this.config.field.settings.PreviewCss ? this.config.field.settings.PreviewCss : ''; }
+  get value() { return this.group.controls[this.config.field.name].value; }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
 
-  get prefix(): string {
-    return this.config.field.settings.CssPrefix ? this.config.field.settings.CssPrefix : '';
-  }
-
-  get previewCss(): string {
-    return this.config.field.settings.PreviewCss ? this.config.field.settings.PreviewCss : '';
-  }
-
-  get value() {
-    return this.group.controls[this.config.field.name].value;
-  }
-
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
-  }
-
-  constructor(
-    private scriptsLoaderService: ScriptsLoaderService,
-  ) { }
+  constructor(private scriptsLoaderService: ScriptsLoaderService) { }
 
   ngOnInit() {
     this.loadAdditionalResources(this.files);
@@ -57,7 +42,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
   getIconClasses(className: string) {
@@ -111,9 +96,7 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
     this.group.patchValue({ [formControlName]: iconClass });
   }
 
-  /**
-  *  with update on click trigger value change to open autocomplete
-  */
+  /** With update on click trigger value change to open autocomplete */
   update() {
     this.group.controls[this.config.field.name].patchValue(this.value);
   }

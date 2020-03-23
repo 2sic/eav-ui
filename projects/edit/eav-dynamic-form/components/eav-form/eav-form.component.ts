@@ -94,11 +94,9 @@ export class EavFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Set form control value
-   * @param name
-   * @param value
-   * @param emitEvent If emitEvent is true, this change will cause a valueChanges event on the FormControl
-   * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
+   * Set form control value.
+   * If emitEvent is true, this change will cause a valueChanges event on the FormControl to be emitted.
+   * This defaults to true (as it falls through to updateValueAndValidity)
    */
   setValue(name: string, value: any, emitEvent: boolean) {
     if (value !== this.form.controls[name].value) {
@@ -108,11 +106,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Patch values to formGroup. It accepts an object with control names as keys, and will do it's best to
+   * Patch values to formGroup. It accepts an object with control names as keys and will do it's best to
    * match the values to the correct controls in the group.
-   * @param values
-   * @param emitEvent If emitEvent is true, this change will cause a valueChanges event on the FormGroup
-   * to be emitted. This defaults to true (as it falls through to updateValueAndValidity).
+   * If emitEvent is true, this change will cause a valueChanges event on the FormGroup to be emitted.
+   * This defaults to true (as it falls through to updateValueAndValidity)
    */
   patchValue(values: { [key: string]: any }, emitEvent: boolean) {
     this.form.patchValue(values, { emitEvent: emitEvent });

@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, AfterContentInit, AfterViewChecked, } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Helper } from '../../../../shared/helpers/helper';
 import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { Subscription } from 'rxjs';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 
@@ -20,24 +19,18 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
-
-  config: FieldConfigSet;
-  group: FormGroup;
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
   private enableSlashes = true;
   private lastAutoCopy = '';
   private subscriptions: Subscription[] = [];
   private fieldMaskService: FieldMaskService;
 
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
-  }
+  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
+  get autoGenerateMask(): string { return this.config.field.settings.AutoGenerateMask || null; }
 
-  get autoGenerateMask(): string {
-    return this.config.field.settings.AutoGenerateMask || null;
-  }
-
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor() { }
 
   ngOnInit() {
     const sourceMask = this.autoGenerateMask;
@@ -65,22 +58,16 @@ export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
-  /**
-   * Field-Mask handling
-   * @param fieldMaskService
-   */
+  /** Field-Mask handling */
   private sourcesChangedTryToUpdate(fieldMaskService: FieldMaskService) {
     const formControlValue = this.group.controls[this.config.field.name].value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
-    if (formControlValue && formControlValue !== this.lastAutoCopy) {
-      return;
-    }
+    if (formControlValue && formControlValue !== this.lastAutoCopy) { return; }
 
     const orig = fieldMaskService.resolve();
-
     const cleaned = Helper.stripNonUrlCharacters(orig, this.enableSlashes, true);
     if (cleaned) {
       this.lastAutoCopy = cleaned;

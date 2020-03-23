@@ -95,11 +95,7 @@ export class Helper {
     return input.replace(/[^A-Za-z0-9\[\] ]/g, (a) => (latinMap[a] || a));
   }
 
-  /**
-   * convert string value in string array if a value is type string
-   * @param value
-   * @param separator
-   */
+  /** convert string value in string array if a value is type string */
   static convertValueToArray(value: any, separator: string): string[] {
     if (!value) { return []; }
 
@@ -110,11 +106,7 @@ export class Helper {
     }
   }
 
-  /**
-  * convert string array value in string value if a value is type array
-  * @param value
-  * @param separator
-  */
+  /** convert string array value in string value if a value is type array */
   static convertArrayToString(value: any, separator: string): string {
     if (!value) { return ''; }
 

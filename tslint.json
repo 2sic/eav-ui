@@ -93,9 +93,7 @@
     ],
     "// fix": "Fix these rules",
     "no-angle-bracket-type-assertion": false,
-    "object-literal-shorthand": false,
-    "no-redundant-jsdoc": false,
-    "jsdoc-format": false
+    "object-literal-shorthand": false
   },
   "rulesDirectory": [
     "codelyzer"

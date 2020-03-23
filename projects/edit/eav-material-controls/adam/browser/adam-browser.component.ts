@@ -43,7 +43,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   // New Configuration
   @Input() url: string;
 
-  // basic functionality
+  // Basic functionality
   @Input() disabled = false;
   @Input() show = false;
 
@@ -59,7 +59,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   metadataContentTypes: string;
   showImagesOnly: boolean;
   subFolder = '';
-
   showFolders: boolean;
 
   // callback is set in attachAdam
@@ -75,9 +74,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   svc: any;
 
   private subscription = new Subscription();
-  get folders() {
-    return this.svc ? this.svc.folders : [];
-  }
+  get folders() { return this.svc ? this.svc.folders : []; }
 
   constructor(
     private adamService: AdamService,
@@ -111,7 +108,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder),
     });
     this.initConfig();
-    // console.log('adam ngOnInit config:', this.config);
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
 
     console.log('adam ngOnInit url:', this.url);
@@ -313,10 +309,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (this.show) { this.refresh(); }
   }
 
-  /**
-   * set configuration (called from input type)
-   * @param adamConfig
-   */
+  /** Set configuration (called from input type) */
   setConfig(adamConfig: AdamConfig) {
     this.allowAssetsInRoot = adamConfig.allowAssetsInRoot;
     this.autoLoad = adamConfig.autoLoad;

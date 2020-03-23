@@ -4,12 +4,9 @@ import { EavValues } from '../models/eav/eav-values';
 
 export class LocalizationHelper {
   /**
-   * get translated value for currentLanguage,
+   * Get translated value for currentLanguage,
    * if not exist return default language translation,
    * if default language also not exist return first value
-   * @param currentLanguage
-   * @param defaultLanguage
-   * @param attributeValues
    */
   public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
     if (attributeValues) {
@@ -35,44 +32,42 @@ export class LocalizationHelper {
     }
   }
 
-  public static getAttributeValueTranslation = (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string):
-    EavValue<any> => {
+  public static getAttributeValueTranslation(allAttributesValues: EavValues<any>, languageKey: string,
+    defaultLanguage: string): EavValue<any> {
     return allAttributesValues.values.find(eavValue =>
       eavValue.dimensions.find(d => d.value === languageKey
         || d.value === `~${languageKey}`
         || (languageKey === defaultLanguage && d.value === '*')) !== undefined);
   }
 
-  public static isEditableOrReadonlyTranslationExist =
-    (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean => {
-      return allAttributesValues ? allAttributesValues.values.filter(c =>
-        c.dimensions.find(d =>
-          d.value === languageKey
-          || d.value === `~${languageKey}`
-          || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
-    }
-  /**
-   * Language is editable if langageKey exist or on default language * exist
-   */
-  public static isEditableTranslationExist =
-    (allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean => {
-      return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
-        eavValue.dimensions.find(d => (d.value === languageKey)
-          || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
-    }
+  public static isEditableOrReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string,
+    defaultLanguage: string): boolean {
+    return allAttributesValues ? allAttributesValues.values.filter(c =>
+      c.dimensions.find(d =>
+        d.value === languageKey
+        || d.value === `~${languageKey}`
+        || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
+  }
 
-  public static isReadonlyTranslationExist = (allAttributesValues: EavValues<any>, languageKey: string): boolean => {
+  /** Language is editable if langageKey exist or on default language * exist */
+  public static isEditableTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
+    return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
+      eavValue.dimensions.find(d => (d.value === languageKey)
+        || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
+  }
+
+  public static isReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string): boolean {
     return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
       eavValue.dimensions.find(d => d.value === `~${languageKey}`)).length > 0 : false;
   }
 
-  public static translationExistsInDefault = (allAttributesValues: EavValues<any>, defaultLanguage: string): boolean => {
+  public static translationExistsInDefault(allAttributesValues: EavValues<any>, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
       eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
   }
 
-  public static translationExistsInDefaultStrict = (allAttributesValues: EavValues<any>, defaultLanguage: string,
-    disableI18n: boolean): boolean => {
+  public static translationExistsInDefaultStrict(allAttributesValues: EavValues<any>, defaultLanguage: string,
+    disableI18n: boolean): boolean {
     if (disableI18n) {
       return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
         eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
@@ -83,7 +78,6 @@ export class LocalizationHelper {
   }
 
   public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
-
     // copy attributes from item
     const eavAttributes: EavAttributes = new EavAttributes();
     if (Object.keys(allAttributes).length > 0) {
@@ -101,18 +95,12 @@ export class LocalizationHelper {
     } else {
       eavAttributes[attributeKey] = { ...attribute };
     }
-
     return eavAttributes;
   }
 
-  /**
-   * Update value for languageKey
-   * @param allAttributes
-   * @param updateValues
-   * @param languageKey
-   */
-  public static updateAttributesValues(
-    allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string, defaultLanguage: string): EavAttributes {
+  /** Update value for languageKey */
+  public static updateAttributesValues(allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string,
+    defaultLanguage: string): EavAttributes {
     // copy attributes from item
     const eavAttributes: EavAttributes = new EavAttributes();
     Object.keys(allAttributes).forEach(attributeKey => {
@@ -153,14 +141,7 @@ export class LocalizationHelper {
     return eavAttributes;
   }
 
-  /**
-   * update attribute value, and change language readonly state if needed
-   * @param allAttributes
-   * @param attributeKey
-   * @param newValue
-   * @param existingLanguageKey
-   * @param isReadOnly
-   */
+  /** update attribute value, and change language readonly state if needed */
   public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, newValue: any, existingLanguageKey: string,
     defaultLanguage: string, isReadOnly: boolean): EavAttributes {
     // copy attributes from item
@@ -194,14 +175,12 @@ export class LocalizationHelper {
           : eavValue;
       })
     };
-
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
-
     return eavAttributes;
   }
 
-  public static addAttributeValue(allAttributes: EavAttributes,
-    attributeValue: EavValue<any>, attributeKey: string, attributeType: string): EavAttributes {
+  public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string,
+    attributeType: string): EavAttributes {
     // copy attributes from item
     let eavAttributes: EavAttributes = new EavAttributes();
     const attribute: EavValues<any> =
@@ -216,18 +195,10 @@ export class LocalizationHelper {
           ...allAttributes[attributeKey], values: [...allAttributes[attributeKey].values, attributeValue], type: attributeType
         };
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
-
     return eavAttributes;
   }
 
-  /**
-   * Add dimension to value with existing dimension.
-   * @param allAttributes
-   * @param attributeKey
-   * @param newValue
-   * @param existingLanguageKey
-   * @param isReadOnly
-   */
+  /** Add dimension to value with existing dimension */
   public static addAttributeDimension(allAttributes: EavAttributes, attributeKey: string, newDimensionValue: any,
     existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean): EavAttributes {
     // copy attributes from item
@@ -251,19 +222,11 @@ export class LocalizationHelper {
           : eavValue;
       })
     };
-
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
-
     return eavAttributes;
   }
 
-  /**
-   * Remove language
-   * if more dimension (languages) exist delete only dimension, else delete value and dimension
-   * @param allAttributesValues
-   * @param attributeKey
-   * @param languageKey
-   */
+  /** Remove language. If more dimensions (languages) exist, delete only dimension, else delete value and dimension */
   public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
     console.log('removeAttributeDimension: ', allAttributes);
     // copy attributes from item
@@ -277,7 +240,7 @@ export class LocalizationHelper {
       return { ...allAttributes };
     }
 
-    // if more dimension exist delete only dimension
+    // if more dimensions exist delete only dimension
     if (value.dimensions.length > 1) {
       attribute = {
         ...allAttributes[attributeKey], values: allAttributes[attributeKey].values.map(eavValue => {
@@ -293,7 +256,7 @@ export class LocalizationHelper {
         })
       };
     }
-    // if only one dimension exist delete value and dimension
+    // if only one dimension exists delete value and dimension
     if (value.dimensions.length === 1) {
       attribute = {
         // delete dimension and value
@@ -302,9 +265,7 @@ export class LocalizationHelper {
         })
       };
     }
-
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
-
     return eavAttributes;
   }
 
@@ -314,7 +275,6 @@ export class LocalizationHelper {
       settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
         defaultLanguage, settings[attributesKey], false);
     });
-
     return settingsTranslated;
   }
 }

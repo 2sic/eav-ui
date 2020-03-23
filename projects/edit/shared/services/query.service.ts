@@ -8,12 +8,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 export class QueryService {
   constructor(private httpClient: HttpClient, private dnnContext: DnnContext) { }
 
-  /**
-   * get availableEntities - (used in entity-query and string-dropdown-query input type)
-   * @param apiId
-   * @param body
-   * @param ctName
-   */
+  /** (used in entity-query and string-dropdown-query input type) */
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, ignoreErrors: boolean) {
     return <Observable<any>>(
       this.httpClient

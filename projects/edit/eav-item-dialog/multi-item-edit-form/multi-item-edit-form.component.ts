@@ -175,14 +175,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.debugInfoIsOpen = opened;
   }
 
-  /** observe formValue changes from all child forms */
+  /** Observe formValue changes from all child forms */
   formValueChange(event: Event) {
     this.checkFormsState();
     // reset form errors
     this.formErrors = [];
   }
 
-  /** close form dialog or if close is disabled show a message */
+  /** Close form dialog or if close is disabled show a message */
   closeDialog(saveResult?: any) {
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
@@ -228,10 +228,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     return item.entity.id === 0 ? item.entity.guid : item.entity.id;
   }
 
-  /**
-   * after a data load is finished load all that data to form
-   * @param data
-   */
+  /** After a data load is finished load all that data to form */
   private afterLoadItemsData(data: any) {
     this.itemService.loadItems(data.Items);
     // we assume that input type and content type data won't change between loading parent and child forms
@@ -393,11 +390,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }, 100);
   }
 
-  /**
-   * Set translate language of all forms
-   * @param language
-   *
-   */
+  /** Set translate language of all forms */
   private setTranslateLanguage(language: string) {
     if (language) {
       // TODO: find better solution
@@ -407,9 +400,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   * Attach all save form observables from child itemEditFormComponent
-   * and subscribe to all observables with one subscribe (observable zip function).
-   * It also initially checks the status of the form (invalid, dirty ...).
+   * Attach all save form observables from child itemEditFormComponent and
+   * subscribe to all observables with one subscribe (observable zip function).
+   * It also initially checks the status of the form (invalid, dirty ...)
    */
   private attachAllSaveFormObservables() {
     if (this.formSaveAllObservables$.length === 0) {
@@ -427,9 +420,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  /**
-   * With zip function look all forms submit observables and when all finish save all data (call savemany service)
-   */
+  /** With zip function look all forms submit observables and when all finish save all data (call savemany service) */
   private saveFormSubscribe() {
     // important - only subscribe once
     this.subscriptions.push(zip(...this.formSaveAllObservables$)
@@ -457,9 +448,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   }
 
   /**
-   * display form messages on form success or form error
-   *  imortant: this is subscribed to an all open dialogs, a forms are distinguished by this.formIsSaved variable
-   *  TODO :need to distinguished form by forms data
+   * Display form messages on form success or form error.
+   * Imortant: this is subscribed to an all open dialogs, a forms are distinguished by this.formIsSaved variable.
+   * TODO: need to distinguished form by forms data
    */
   private saveFormMessagesSubscribe() {
     this.subscriptions.push(this.actions$
@@ -482,9 +473,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       }));
   }
 
-  /**
-   * First set form state then read state in get method
-   */
+  /** First set form state, then read state in get method */
   private checkFormsState() {
     this.setFormState();
     this.getFormState();
@@ -532,20 +521,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     }
   }
 
-  /**
-   * Open snackbar with message and after closed call function close
-   * @param message
-   * @param callClose
-   */
+  /** Open snackbar with message and after closed call function close */
   private snackBarOpen(message: string, duration: number = 3000) {
     const snackBarRef = this.snackBar.open(message, '', {
       duration: duration
     });
   }
 
-  /**
-  Open snackbar when snack bar not saved
-  */
+  /** Open snackbar when snack bar not saved */
   public snackBarYouHaveUnsavedChanges() {
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
       data: { save: false },

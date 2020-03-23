@@ -32,10 +32,8 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     this.filterSelectionList();
   }
   @Input() error = '';
-
-  // by default data is in array format, but can be stringformat
+  /** By default data is in array format, but can be string format */
   @Input() isStringFormat = false;
-
   @Output() callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
 
   freeTextMode = false;
@@ -113,9 +111,9 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   }
 
   freeTextModeChange(event: Event) {
-    this.freeTextMode = !this.freeTextMode;
     // Stops dropdown from opening
     event.stopPropagation();
+    this.freeTextMode = !this.freeTextMode;
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent) {
@@ -126,17 +124,12 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   /** Determine is entityID in chosenEntities */
   isInChosenEntities = (value: string): boolean => {
     if (this.chosenEntities.find((e: any) => e.name === value)) { return true; }
-
     return false;
   }
 
-  /**
-   * add entity to form
-   * @param value
-   */
+  /** Add entity to form */
   addEntity(value: string) {
     if (value) {
-      // this.selectedValue = null;
       const entityValues: string[] = [...this.controlValue];
       entityValues.push(value);
       this.patchValue(entityValues);
@@ -168,9 +161,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     this.setAvailableEntities();
   }
 
-  /**
-   * TODO: select all entities from app
-   */
+  /** TODO: select all entities from app */
   setAvailableEntities() {
     this.callAvailableEntities.emit();
   }

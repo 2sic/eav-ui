@@ -20,16 +20,13 @@ import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/cons
   styleUrls: ['./entity-default-list.component.scss']
 })
 export class EntityDefaultListComponent implements OnInit, OnDestroy {
-
   @Input() config: EntityFieldConfigSet;
   @Input() group: FormGroup;
   @Input() autoCompleteInputControl: any;
-  // by default data is in array format, but can be stringformat
+  /** By default data is in array format, but can be string format */
   @Input() isStringFormat = false;
   @Input() freeTextMode = false;
-
-  @Output()
-  callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
+  @Output() callAvailableEntities: EventEmitter<any> = new EventEmitter<any>();
 
   chosenEntities: any[];
 
@@ -51,9 +48,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   get dndListConfig() { return { allowedTypes: [this.config.field.name] }; }
   get separator() { return this.config.field.settings.Separator || ','; }
   get controlValue() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
-  isFreeTextOrNotFound(entityValue: string) {
-    return this.availableEntities.find(f => f.Value === entityValue) ? false : true;
-  }
+  isFreeTextOrNotFound(entityValue: string) { return this.availableEntities.find(f => f.Value === entityValue) ? false : true; }
 
   constructor(
     private entityService: EntityService,
@@ -106,10 +101,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     return entity ? entity.Id : value;
   }
 
-  /**
-   *  open edit eav item dialog for item
-   * @param value
-   */
+  /** Open edit eav item dialog for item */
   edit(value: string) {
     const entityId = this.getEntityId(value);
     const form: EditForm = {
@@ -124,10 +116,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
-  /**
-   * remove entity value from form
-   * @param value
-   */
+  /** Remove entity value from form */
   removeSlot(item: string, index: number) {
     const entityValues: string[] = [...this.controlValue];
     entityValues.splice(index, 1);
@@ -135,18 +124,14 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.patchValue(entityValues);
     if (entityValues.length === 0) {
       // focus if list dont have any alement more
-      setTimeout(() => {
-        this.autoCompleteInputControl.nativeElement.focus();
-      });
+      setTimeout(() => { this.autoCompleteInputControl.nativeElement.focus(); });
     }
   }
 
-  /** delete entity */
+  /** Delete entity */
   deleteItemInSlot(item: string, index: number) {
-    if (this.entityType === '') {
-      alert('delete not possible - no type specified in entity field configuration');
-      return;
-    }
+    if (this.entityType === '') { alert('Delete not possible - no type specified in entity field configuration'); return; }
+
     const entity: EntityInfo = this.availableEntities.find(f => f.Value === item);
     const id = entity.Id;
     const title = entity.Text;
@@ -154,6 +139,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
 
     let entityDelete$ = this.entityService.delete(this.eavConfig.appId, contentType, id, title, false);
     if (!entityDelete$) { return; }
+
     entityDelete$.subscribe(result => {
       if (result === null || result.status >= 200 && result.status < 300) {
         this.removeSlot(item, index);
@@ -162,6 +148,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
       } else {
         entityDelete$ = this.entityService.delete(this.eavConfig.appId, contentType, id, title, true);
         if (!entityDelete$) { return; }
+
         entityDelete$.subscribe(items => {
           this.removeSlot(item, index);
           this.setData();
@@ -209,10 +196,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.callAvailableEntities.emit();
   }
 
-  /**
-   * set chosen entities list and if change return true
-   * @param values
-   */
+  /** Set chosen entities list and if change return true */
   setChosenEntities(values: string[]): boolean {
     const updatedValues = this.mapFromEntityListToNameList(values);
     if (this.chosenEntities !== updatedValues) {
@@ -226,7 +210,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.group.controls[this.config.field.name].markAsDirty();
   }
 
-  /** subscribe to form value changes */
+  /** Subscribe to form value changes */
   private chosenEntitiesSubscribeToChanges() {
     this.subscription.add(this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
       this.setChosenEntities(Helper.convertValueToArray(item, this.separator));
@@ -241,16 +225,12 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   }
 
   private mapFromEntityListToNameList = (entityList: string[]): any[] => {
-    if (!entityList) {
-      return [];
-    }
+    if (!entityList) { return []; }
     return entityList.map(v => ({ name: v, type: this.config.field.name }));
   }
 
   private mapFromNameListToEntityList = (nameList: any[]): string[] => {
-    if (!nameList) {
-      return [];
-    }
+    if (!nameList) { return []; }
     return nameList.map(v => v.name);
   }
 

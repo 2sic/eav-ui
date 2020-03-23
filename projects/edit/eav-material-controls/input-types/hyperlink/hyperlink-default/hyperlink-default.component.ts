@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -8,8 +10,6 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
@@ -40,29 +40,16 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     usePortalRoot: false
   };
 
-  get value() {
-    return this.group.controls[this.config.field.name].value;
-  }
-
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled;
-  }
-
-  // ensureDefaultConfig();
-  get showAdam() {
-    // this.config.currentFieldConfig.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0]
-    // then the wrapper will enable/disable the field, depending on the dimension state\
-    // so if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
-    return this.config.field.settings.ShowAdam ? this.config.field.settings.ShowAdam : true;
-  }
-
-  get fileFilter() {
-    return this.config.field.settings.FileFilter || '';
-  }
-
-  get buttons(): string {
-    return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more';
-  }
+  get value() { return this.group.controls[this.config.field.name].value; }
+  get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  /**
+   * this.config.currentFieldConfig.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0],
+   * then the wrapper will enable/disable the field, depending on the dimension state.
+   * So if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
+   */
+  get showAdam() { return this.config.field.settings.ShowAdam ? this.config.field.settings.ShowAdam : true; }
+  get fileFilter() { return this.config.field.settings.FileFilter || ''; }
+  get buttons(): string { return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more'; }
 
   constructor(
     private fileTypeService: FileTypeService,
@@ -113,15 +100,14 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     return str.replace(/\//g, '/&#8203;');
   }
 
-  //#region dnn-page picker dialog
-
-  // the callback when something was selected
+  // #region dnn-page picker dialog
+  /** Callback when something was selected */
   private processResultOfPagePicker(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
   }
 
-  // open the dialog
+  /** Open the dialog */
   openPageDialog() {
     this.dnnBridgeService.open(
       this.value,
@@ -132,10 +118,9 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       this.processResultOfPagePicker.bind(this),
       this.dialog);
   }
-  //#endregion dnn page picker
+  // #endregion
 
-  //#region new adam: callbacks only
-
+  // #region new adam: callbacks only
   setValue(fileItem: any) {
     this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
   }
@@ -164,10 +149,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     this.subscriptions.push(formSetSub);
   }
 
-  /**
-   * Update test-link if necessary - both when typing or if link was set by dialogs
-   * @param value
-   */
+  /** Update test-link if necessary - both when typing or if link was set by dialogs */
   private setLink(value: string): void {
     if (!value) { return null; }
 
@@ -209,6 +191,5 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       }));
     }
   }
-
   //#endregion
 }

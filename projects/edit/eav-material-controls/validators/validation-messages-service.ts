@@ -61,10 +61,7 @@ export class ValidationMessagesService {
     return formErrors;
   }
 
-  /**
-   * get validation error for control
-   * @param control
-   */
+  /** get validation error for control */
   public getErrorMessage(control: AbstractControl, config: FieldConfigSet, touched?: boolean): string {
     let formError = '';
     if (control) {

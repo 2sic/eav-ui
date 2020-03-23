@@ -6,10 +6,7 @@ import { EavEntity } from './eav-entity';
 export class EavAttributes {
   [key: string]: EavValues<any>;
 
-  /**
-   * Create Eav Attributes from json typed Attributes1
-   * @param attributes1
-   */
+  /** Create Eav Attributes from json typed Attributes1 */
   public static create<T>(attributes1: Attributes1<T>): EavAttributes {
     const newEavAtribute: EavAttributes = new EavAttributes();
 
@@ -31,9 +28,8 @@ export class EavAttributes {
   }
 
   /**
-   * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array)
+   * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array).
    * Example: Settings from metadata array
-   * @param entity1Array
    */
   public static getFromEavEntityArray(metadataArray: EavEntity[]): EavAttributes {
     const mergedSettings: EavAttributes = new EavAttributes();
@@ -68,12 +64,9 @@ export class EavAttributes {
   /** Create EavAtributes from dictionary */
   public static createFromDictionary = (value: { [key: string]: any }): EavAttributes => {
     const eavAttributes: EavAttributes = new EavAttributes();
-
     Object.keys(value).forEach(valueKey => {
       eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])], 'String');
     });
-
     return eavAttributes;
   }
-
 }

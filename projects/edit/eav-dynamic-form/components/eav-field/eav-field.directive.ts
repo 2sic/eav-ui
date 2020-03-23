@@ -12,10 +12,7 @@ export class EavFieldDirective implements OnInit {
   @Input() config: FieldConfigSet[];
   @Input() group: FormGroup;
 
-  constructor(
-    private resolver: ComponentFactoryResolver,
-    private container: ViewContainerRef,
-  ) { }
+  constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
 
   ngOnInit() {
     // Clear container
@@ -27,11 +24,7 @@ export class EavFieldDirective implements OnInit {
     });
   }
 
-  /**
-   * create all child fields and groups from fieldConfig in container
-   * @param container
-   * @param fieldConfig
-   */
+  /** Create all child fields and groups from fieldConfig in container */
   private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     const field = fieldConfig.field as FieldConfigGroup;
     if (field.fieldGroup) {
@@ -42,11 +35,7 @@ export class EavFieldDirective implements OnInit {
     }
   }
 
-  /**
-   * Create group components with group wrappers in container
-   * @param container
-   * @param fieldConfig
-   */
+  /** Create group components with group wrappers in container */
   private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
@@ -57,11 +46,7 @@ export class EavFieldDirective implements OnInit {
     });
   }
 
-  /**
-   * Create component and component wrappers if component exist
-   * @param container
-   * @param fieldConfig
-   */
+  /** Create component and component wrappers if component exist */
   private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet): ComponentRef<any> {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
@@ -74,10 +59,8 @@ export class EavFieldDirective implements OnInit {
       componentType = this.readComponentType(fieldConfig.field.inputType);
     }
 
-    const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
-    // console.log('reading wrapper:', inputTypeAnnotations);
-
     // if inputTypeAnnotations of componentType exist then create component
+    const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
     if (inputTypeAnnotations) {
       if (inputTypeAnnotations.wrapper) {
         container = this.createComponentWrappers(container, fieldConfig, inputTypeAnnotations.wrapper);
@@ -97,10 +80,7 @@ export class EavFieldDirective implements OnInit {
     return null;
   }
 
-  /**
-   * Read component type by selector with ComponentFactoryResolver
-   * @param selector
-   */
+  /** Read component type by selector with ComponentFactoryResolver */
   private readComponentType(selector: string): Type<any> {
     const factories = Array.from((this.resolver as any)._factories.values());
     const componentType = (factories.find((x: any) => x.selector === selector) as any).componentType;
@@ -108,27 +88,15 @@ export class EavFieldDirective implements OnInit {
     return componentType;
   }
 
-  /**
-   * Create wrappers in container
-   * @param container
-   * @param fieldConfig
-   * @param wrappers
-   */
+  /** Create wrappers in container */
   private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrappers: string[]): ViewContainerRef {
-
     wrappers.forEach(wrapperName => {
       container = this.createWrapper(container, fieldConfig, wrapperName);
     });
-
     return container;
   }
 
-  /**
-   * Create wrapper in container
-   * @param container
-   * @param fieldConfig
-   * @param wrapper
-   */
+  /** Create wrapper in container */
   private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrapper: string): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
 
