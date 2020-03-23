@@ -98,8 +98,7 @@
     "jsdoc-format": false,
     "only-arrow-functions": false,
     "object-literal-key-quotes": false,
-    "ban-types": false,
-    "no-string-literal": false
+    "ban-types": false
   },
   "rulesDirectory": [
     "codelyzer"
