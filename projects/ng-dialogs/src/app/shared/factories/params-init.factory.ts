@@ -8,7 +8,7 @@ import { EditForm, EditItem } from '../../app-administration/shared/models/edit-
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
-  return function () {
+  return () => {
     console.log('Setting parameters config and clearing route');
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {

@@ -58,17 +58,17 @@ export class WebFormBridgeDirective implements OnInit {
       // if (this.bridgeSyncHeight === 'true') { // TODO: see why this string?
       if (this.bridgeSyncHeight) {
 
-        const resize = function () {
+        const resize = () => {
           elem.css('height', '');
           elem.css('height', w.document.body.scrollHeight + 'px');
         };
 
         // w.$(w).resize(resize); // Performance issues when uncommenting this line...
         resize();
-        w.$(w.document).ready(function () {
+        w.$(w.document).ready(() => {
           resize();
         });
-        w.$(w.document).on('triggerbridgeresize', function () {
+        w.$(w.document).on('triggerbridgeresize', () => {
           window.setTimeout(resize, 0);
         });
       }

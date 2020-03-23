@@ -95,8 +95,7 @@
     "no-angle-bracket-type-assertion": false,
     "object-literal-shorthand": false,
     "no-redundant-jsdoc": false,
-    "jsdoc-format": false,
-    "only-arrow-functions": false
+    "jsdoc-format": false
   },
   "rulesDirectory": [
     "codelyzer"

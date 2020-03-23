@@ -25,7 +25,7 @@ export class SanitizeService {
     return sanitized;
   }
 
-  private cleanBadPath = function (sanitized: string) {
+  private cleanBadPath = (sanitized: string) => {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -41,7 +41,7 @@ export class SanitizeService {
       .replace(reservedRe, goodChar)
       .replace(windowsReservedRe, goodChar)
       .replace(windowsTrailingRe, goodChar);
-  };
+  }
 
   // sanitize path
   public sanitizePath(sanitized: string) {

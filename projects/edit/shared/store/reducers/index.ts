@@ -9,7 +9,7 @@ export interface EavState {
 
 /** Console log all actions */
 export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState> {
-  return function (state: EavState, action: any): EavState {
+  return (state: EavState, action: any): EavState => {
     console.log('[STORE] state', state);
     console.log('[STORE] action', action);
     return reducer(state, action);

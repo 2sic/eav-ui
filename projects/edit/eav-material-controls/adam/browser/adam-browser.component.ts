@@ -341,9 +341,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private setAllowedFileTypes() {
     if (this.fileFilter) {
-      this.allowedFileTypes = this.fileFilter.split(',').map(function (i) {
-        return i.replace('*', '').trim();
-      });
+      this.allowedFileTypes = this.fileFilter.split(',').map(i => i.replace('*', '').trim());
     }
   }
 
