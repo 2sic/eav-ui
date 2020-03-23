@@ -9,13 +9,13 @@ export class AppAssetsService {
 
   createSvc(appId: string, global: boolean): AssetsSvc {
     const params = {
-      appId: appId,
+      appId,
       global: global || false,
     };
 
     const getAll = () => {
       return this.httpClient.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
-        params: Object.assign({}, params, { withSubfolders: 'true' }),
+        params: Object.assign({}, params as any, { withSubfolders: 'true' }),
       });
     };
 
@@ -23,7 +23,7 @@ export class AppAssetsService {
       return this.httpClient.post(
         this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'),
         { content: content || '' },
-        { params: Object.assign({}, params, { path: path }) },
+        { params: Object.assign({}, params as any, { path }) },
       );
     };
 

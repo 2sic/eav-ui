@@ -127,8 +127,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
   toggleAdam(usePortalRoot?: boolean, showImagesOnly?: boolean) {
     this.config.adam.toggle({
-      showImagesOnly: showImagesOnly,
-      usePortalRoot: usePortalRoot
+      showImagesOnly,
+      usePortalRoot,
     });
   }
 

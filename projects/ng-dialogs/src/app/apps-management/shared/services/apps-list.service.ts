@@ -18,7 +18,7 @@ export class AppsListService {
 
   create(name: string) {
     return <Observable<null>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/app'), {}, {
-      params: { zoneId: this.context.zoneId.toString(), name: name }
+      params: { zoneId: this.context.zoneId.toString(), name }
     });
   }
 

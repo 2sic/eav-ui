@@ -12,7 +12,7 @@ export class ExportAppPartsService {
 
   getContentInfo(scope: string) {
     return <Observable<ContentInfo>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/GetContentInfo'), {
-      params: { appid: this.context.appId.toString(), zoneId: this.context.zoneId.toString(), scope: scope },
+      params: { appid: this.context.appId.toString(), zoneId: this.context.zoneId.toString(), scope },
     });
   }
 

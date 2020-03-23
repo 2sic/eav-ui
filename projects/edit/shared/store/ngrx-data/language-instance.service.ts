@@ -52,7 +52,7 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
   public updateHideHeader(formId: number, hideHeader: boolean) {
-    const languageInstance: Partial<LanguageInstance> = { formId, hideHeader: hideHeader };
+    const languageInstance: Partial<LanguageInstance> = { formId, hideHeader };
     this.updateOneInCache(languageInstance);
   }
 

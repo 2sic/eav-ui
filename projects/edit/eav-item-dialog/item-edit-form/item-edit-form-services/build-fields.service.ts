@@ -147,16 +147,16 @@ export class BuildFieldsService {
 
     if (isEmptyInputType) {
       fieldConfig = {
-        isParentGroup: isParentGroup, // empty specific
+        isParentGroup, // empty specific
         fieldGroup: [], // empty specific
         settings: settingsTranslated,
-        fullSettings: fullSettings,
-        wrappers: wrappers,
+        fullSettings,
+        wrappers,
         isExternal: calculatedInputType.isExternal,
-        disableI18n: disableI18n,
-        isLastInGroup: isLastInGroup,
-        name: name,
-        label: label,
+        disableI18n,
+        isLastInGroup,
+        name,
+        label,
         inputType: calculatedInputType.inputType,
       } as FieldConfigGroup;
     } else {
@@ -178,23 +178,23 @@ export class BuildFieldsService {
       const disabled: boolean = settingsTranslated.Disabled;
 
       fieldConfig = {
-        initialValue: initialValue, // other fields specific
+        initialValue, // other fields specific
         validation: validationList, // other fields specific
         settings: settingsTranslated,
-        fullSettings: fullSettings,
-        wrappers: wrappers,
+        fullSettings,
+        wrappers,
         focused: false,
         isExternal: calculatedInputType.isExternal,
-        disableI18n: disableI18n,
-        isLastInGroup: isLastInGroup,
-        name: name,
-        index: index, // other fields specific
-        label: label,
+        disableI18n,
+        isLastInGroup,
+        name,
+        index, // other fields specific
+        label,
         placeholder: `Enter ${name}`,  // other fields specific
         inputType: calculatedInputType.inputType,
         type: attribute.type, // other fields specific
-        required: required, // other fields specific
-        disabled: disabled, // other fields specific
+        required, // other fields specific
+        disabled, // other fields specific
       };
     }
     return fieldConfig;

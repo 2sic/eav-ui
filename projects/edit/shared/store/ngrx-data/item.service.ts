@@ -39,7 +39,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       header: {
         ...oldItem.header,
-        entityId: entityId
+        entityId
       },
       entity: {
         ...oldItem.entity,
@@ -261,7 +261,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
             });
             attributesValues.push({
               values: item.entity.attributes[key],
-              disableI18n: disableI18n
+              disableI18n,
             });
           }
         });

@@ -87,13 +87,9 @@
     "use-pipe-transform-interface": true,
     "// custom": "Added rules",
     "eofline": true,
-    "semicolon": [
-      true,
-      "always"
-    ],
+    "semicolon": true,
     "// fix": "Fix these rules",
-    "no-angle-bracket-type-assertion": false,
-    "object-literal-shorthand": false
+    "no-angle-bracket-type-assertion": false
   },
   "rulesDirectory": [
     "codelyzer"

@@ -13,7 +13,7 @@ export class PipelinesService {
 
   getAll(contentType: string) {
     return <Observable<Query[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/Entities/GetEntities'), {
-      params: { appId: this.context.appId.toString(), contentType: contentType }
+      params: { appId: this.context.appId.toString(), contentType }
     });
   }
 

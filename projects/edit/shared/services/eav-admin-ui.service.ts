@@ -11,8 +11,8 @@ export class EavAdminUiService {
     return <MatDialogRef<any, any>>dialog.open(component, {
       width: '650px',
       data: <DnnBridgeDialogData>{
-        type: type,
-        connector: connector,
+        type,
+        connector,
       }
     });
   }

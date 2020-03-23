@@ -18,7 +18,7 @@ export class ContentTypesService {
 
   retrieveContentTypes(scope: string) {
     return <Observable<ContentType[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
-      params: { appId: this.context.appId.toString(), scope: scope }
+      params: { appId: this.context.appId.toString(), scope }
     });
   }
 
@@ -36,7 +36,7 @@ export class ContentTypesService {
 
   createGhost(sourceStaticName: string) {
     return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/createghost'), {
-      params: { appid: this.context.appId.toString(), sourceStaticName: sourceStaticName },
+      params: { appid: this.context.appId.toString(), sourceStaticName },
     });
   }
 }

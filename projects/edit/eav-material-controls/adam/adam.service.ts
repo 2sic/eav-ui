@@ -59,7 +59,7 @@ export class AdamService {
         {},
         {
           params: {
-            subfolder: subfolder,
+            subfolder,
             newFolder: this.sanitizeSvc.sanitizeName(newfolder),
             usePortalRoot: serviceConfig.usePortalRoot,
             appId: this.eavConfig.appId
@@ -115,7 +115,7 @@ export class AdamService {
       return this.httpClient.get(url + '/items',
         {
           params: {
-            subfolder: subfolder,
+            subfolder,
             usePortalRoot: serviceConfig.usePortalRoot,
             appId: this.eavConfig.appId
           }
@@ -140,7 +140,7 @@ export class AdamService {
       return this.httpClient.get(url + '/delete',
         {
           params: {
-            subfolder: subfolder,
+            subfolder,
             isFolder: item.IsFolder.toString(),
             id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,
@@ -162,7 +162,7 @@ export class AdamService {
       return this.httpClient.get(url + '/rename',
         {
           params: {
-            subfolder: subfolder,
+            subfolder,
             isFolder: item.IsFolder.toString(),
             id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,

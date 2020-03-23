@@ -166,7 +166,7 @@ export class ConnectorService {
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entity.entityGuid,
-      allInputTypeNames: allInputTypeNames,
+      allInputTypeNames,
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
       },
@@ -190,7 +190,7 @@ export class ConnectorService {
     }
     if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
       experimentalProps.wysiwygSettings = {
-        inlineMode: inlineMode,
+        inlineMode,
         buttonSource: this.config.field.settings.ButtonSource,
         buttonAdvanced: this.config.field.settings.ButtonAdvanced,
       };

@@ -20,8 +20,8 @@ export class MetadataService {
       params: {
         appId: this.context.appId.toString(),
         targetType: typeId.toString(),
-        keyType: keyType,
-        key: key,
+        keyType,
+        key,
         contentType: contentTypeName,
       },
     });

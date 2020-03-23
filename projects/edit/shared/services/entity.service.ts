@@ -22,15 +22,14 @@ export class EntityService {
   }
 
   delete(appId: string, type: string, id: string, title: string, tryForce: boolean) {
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title: title, id: id }))) {
-      return;
-    }
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+
     return <Observable<any>>this.httpClient
       .get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
         params: {
           contentType: type,
-          id: id,
-          appId: appId,
+          id,
+          appId,
           force: tryForce.toString(),
         },
       })

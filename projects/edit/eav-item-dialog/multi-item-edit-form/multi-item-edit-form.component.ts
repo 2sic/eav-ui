@@ -217,8 +217,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           });
         });
         this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-          data: { fieldErrors: fieldErrors },
-          duration: 5000
+          data: { fieldErrors },
+          duration: 5000,
         });
       }
     }, 100);
@@ -524,7 +524,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   /** Open snackbar with message and after closed call function close */
   private snackBarOpen(message: string, duration: number = 3000) {
     const snackBarRef = this.snackBar.open(message, '', {
-      duration: duration
+      duration,
     });
   }
 

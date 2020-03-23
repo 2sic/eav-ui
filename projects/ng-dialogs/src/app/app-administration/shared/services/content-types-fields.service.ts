@@ -86,7 +86,7 @@ export class ContentTypesFieldsService {
         appid: this.context.appId.toString(),
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
-        newName: newName,
+        newName,
       },
     });
   }
@@ -122,7 +122,7 @@ export class ContentTypesFieldsService {
 
   updateInputType(id: number, staticName: string, inputType: string) {
     return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'), {
-      params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType: inputType }
+      params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType }
     });
   }
 }

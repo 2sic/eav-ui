@@ -86,9 +86,9 @@ export class EavFormComponent implements OnInit, OnDestroy {
   setDisabled(name: string, disable: boolean, emitEvent: boolean) {
     if (this.form.controls[name]) {
       if (disable) {
-        this.form.controls[name].disable({ emitEvent: emitEvent });
+        this.form.controls[name].disable({ emitEvent });
       } else {
-        this.form.controls[name].enable({ emitEvent: emitEvent });
+        this.form.controls[name].enable({ emitEvent });
       }
     }
   }
@@ -101,7 +101,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
   setValue(name: string, value: any, emitEvent: boolean) {
     if (value !== this.form.controls[name].value) {
       console.log('CHANGE' + name + ' from value: ' + this.form.controls[name].value + ' to ' + value);
-      this.form.controls[name].setValue(value, { emitEvent: emitEvent });
+      this.form.controls[name].setValue(value, { emitEvent });
     }
   }
 
@@ -112,7 +112,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
    * This defaults to true (as it falls through to updateValueAndValidity)
    */
   patchValue(values: { [key: string]: any }, emitEvent: boolean) {
-    this.form.patchValue(values, { emitEvent: emitEvent });
+    this.form.patchValue(values, { emitEvent });
   }
 
   /** Check if value in form changed */

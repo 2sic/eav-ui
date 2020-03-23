@@ -29,8 +29,8 @@ export class DialogService {
 
   fireClosed(dialogName: string, data: ClosedDialogData) {
     const closedDialog: ClosedDialog = {
-      dialogName: dialogName,
-      data: data,
+      dialogName,
+      data,
     };
     console.log('Dialog was closed:', closedDialog);
     this.closedDialog.next(closedDialog);

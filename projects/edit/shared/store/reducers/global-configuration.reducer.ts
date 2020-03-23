@@ -13,7 +13,7 @@ export const initialState: GlobalConfigurationState = {
 
 const globalConfigurationReducer = createReducer(
   initialState,
-  on(GlobalConfigurationActions.loadDebugEnabled, (state, { debugEnabled }) => ({ ...state, debugEnabled: debugEnabled })),
+  on(GlobalConfigurationActions.loadDebugEnabled, (state, { debugEnabled }) => ({ ...state, debugEnabled })),
   on(GlobalConfigurationActions.toggleDebugEnabled, (state) => ({ ...state, debugEnabled: !state.debugEnabled })),
 );
 
