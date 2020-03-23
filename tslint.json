@@ -94,8 +94,7 @@
     "ban-types": false,
     "no-string-literal": false,
     "no-output-native": false,
-    "prefer-for-of": false,
-    "new-parens": false
+    "prefer-for-of": false
   },
   "rulesDirectory": [
     "codelyzer"

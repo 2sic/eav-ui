@@ -309,7 +309,7 @@ export class LocalizationHelper {
   }
 
   public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
-    const settingsTranslated: FieldSettings = new FieldSettings;
+    const settingsTranslated: FieldSettings = new FieldSettings();
     Object.keys(settings).forEach(attributesKey => {
       settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
         defaultLanguage, settings[attributesKey], false);
