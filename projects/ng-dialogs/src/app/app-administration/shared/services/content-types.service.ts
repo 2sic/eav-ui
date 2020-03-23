@@ -11,32 +11,32 @@ export class ContentTypesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   retrieveContentType(staticName: string) {
-    return <Observable<ContentType>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
       params: { appId: this.context.appId.toString(), contentTypeId: staticName }
-    });
+    }) as Observable<ContentType>;
   }
 
   retrieveContentTypes(scope: string) {
-    return <Observable<ContentType[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/get'), {
       params: { appId: this.context.appId.toString(), scope }
-    });
+    }) as Observable<ContentType[]>;
   }
 
   save(contentType: ContentTypeEdit) {
-    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save'), contentType, {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save'), contentType, {
       params: { appid: this.context.appId.toString() },
-    });
+    }) as Observable<boolean>;
   }
 
   delete(contentType: ContentType) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/delete'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/delete'), {
       params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
-    });
+    }) as Observable<boolean>;
   }
 
   createGhost(sourceStaticName: string) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/createghost'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/createghost'), {
       params: { appid: this.context.appId.toString(), sourceStaticName },
-    });
+    }) as Observable<boolean>;
   }
 }

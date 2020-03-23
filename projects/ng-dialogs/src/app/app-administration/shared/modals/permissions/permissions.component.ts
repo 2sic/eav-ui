@@ -40,9 +40,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 92, cellClass: 'no-padding', cellRenderer: 'permissionsActionsComponent',
-      cellRendererParams: <PermissionsActionsParams>{
+      cellRendererParams: {
         onDelete: this.deletePermission.bind(this),
-      },
+      } as PermissionsActionsParams,
     },
   ];
   frameworkComponents = {
@@ -91,7 +91,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     let form: EditForm;
     if (params === null) {
       let target: string;
-      const keys = <EavMetadataKey[]>Object.keys(eavConstants.metadata);
+      const keys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
       for (const key of keys) {
         if (eavConstants.metadata[key].type !== this.targetType) { continue; }
         target = eavConstants.metadata[key].target;
@@ -110,7 +110,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         persistedData: null,
       };
     } else {
-      const permission = <Permission>params.data;
+      const permission: Permission = params.data;
       form = {
         items: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
         persistedData: null,

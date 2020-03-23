@@ -10,8 +10,8 @@ export class WebApisService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
-    return <Observable<string[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
       params: { appId: this.context.appId.toString(), path: 'api', mask: '*.cs' },
-    });
+    }) as Observable<string[]>;
   }
 }

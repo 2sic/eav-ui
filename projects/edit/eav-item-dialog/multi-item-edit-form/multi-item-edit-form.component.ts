@@ -517,7 +517,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       : isPublished ? 'show' : 'hide';
     // if publish mode is prohibited, revert to default
     if (!this.eavConfig.versioningOptions[this.publishMode]) {
-      this.publishMode = <'branch' | 'show' | 'hide'>Object.keys(this.eavConfig.versioningOptions)[0];
+      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0] as 'branch' | 'show' | 'hide';
     }
   }
 

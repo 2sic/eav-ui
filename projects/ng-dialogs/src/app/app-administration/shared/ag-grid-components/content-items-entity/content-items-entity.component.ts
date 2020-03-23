@@ -19,7 +19,7 @@ export class ContentItemsEntityComponent implements ICellRendererAngularComp {
     if (!Array.isArray(params.value)) { return; }
 
     this.encodedValue = this.htmlEncode(params.value.join(', '));
-    if ((<ExtendedColDef>params.colDef).allowMultiValue) {
+    if ((params.colDef as ExtendedColDef).allowMultiValue) {
       this.entities = params.value.length;
     }
   }

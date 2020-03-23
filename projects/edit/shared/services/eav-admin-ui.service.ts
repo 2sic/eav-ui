@@ -8,12 +8,9 @@ export class EavAdminUiService {
   constructor() { }
 
   public openPagePickerModal(dialog: MatDialog, component: any, type: string, connector: any) {
-    return <MatDialogRef<any, any>>dialog.open(component, {
+    return dialog.open(component, {
       width: '650px',
-      data: <DnnBridgeDialogData>{
-        type,
-        connector,
-      }
-    });
+      data: { type, connector } as DnnBridgeDialogData,
+    }) as MatDialogRef<any, any>;
   }
 }

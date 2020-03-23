@@ -11,9 +11,9 @@ export class ExportAppPartsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getContentInfo(scope: string) {
-    return <Observable<ContentInfo>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/GetContentInfo'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/GetContentInfo'), {
       params: { appid: this.context.appId.toString(), zoneId: this.context.zoneId.toString(), scope },
-    });
+    }) as Observable<ContentInfo>;
   }
 
   exportParts(contentTypeIds: number[], entityIds: number[], templateIds: number[]) {

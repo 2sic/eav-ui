@@ -11,9 +11,9 @@ export class ExportAppService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAppInfo() {
-    return <Observable<AppInfo>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/GetAppInfo'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/GetAppInfo'), {
       params: { appid: this.context.appId.toString(), zoneId: this.context.zoneId.toString() },
-    });
+    }) as Observable<AppInfo>;
   }
 
   exportApp(includeContentGroups: boolean, resetAppGuid: boolean) {
@@ -27,13 +27,13 @@ export class ExportAppService {
   }
 
   exportForVersionControl(includeContentGroups: boolean, resetAppGuid: boolean) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ExportForVersionControl'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ExportForVersionControl'), {
       params: {
         appid: this.context.appId.toString(),
         zoneId: this.context.zoneId.toString(),
         includeContentGroups: includeContentGroups.toString(),
         resetAppGuid: resetAppGuid.toString(),
       },
-    });
+    }) as Observable<boolean>;
   }
 }

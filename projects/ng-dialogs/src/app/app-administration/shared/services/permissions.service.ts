@@ -11,10 +11,10 @@ export class PermissionsService {
   constructor(private metadataService: MetadataService, private entitiesService: EntitiesService) { }
 
   getAll(targetType: number, keyType: string, key: string) {
-    return <Observable<Permission[]>>this.metadataService.getMetadata(targetType, keyType, key, eavConstants.contentTypes.permissions);
+    return this.metadataService.getMetadata(targetType, keyType, key, eavConstants.contentTypes.permissions) as Observable<Permission[]>;
   }
 
   delete(id: number) {
-    return <Observable<null>>this.entitiesService.delete(eavConstants.contentTypes.permissions, id, false);
+    return this.entitiesService.delete(eavConstants.contentTypes.permissions, id, false) as Observable<null>;
   }
 }

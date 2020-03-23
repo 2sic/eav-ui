@@ -29,22 +29,16 @@ export class EavService {
 
   private eavConfig: EavConfiguration;
 
-  constructor(
-    private httpClient: HttpClient,
-    private store: Store<fromStore.EavState>,
-    private dnnContext: DnnContext,
-  ) { }
+  constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
 
   getEavConfiguration(): EavConfiguration {
     return this.eavConfig;
   }
 
   loadAllDataForForm(appId: string, items: string | any) {
-    return <Observable<any>>(
-      this.httpClient
-        .post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items)
-        .pipe(catchError(error => this.handleError(error)))
-    );
+    return this.httpClient
+      .post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items)
+      .pipe(catchError(error => this.handleError(error))) as Observable<any>;
   }
 
   saveItem(item: Item) {
@@ -61,16 +55,14 @@ export class EavService {
 
   savemany(appId: string, partOfPage: string, body: string) {
     console.log('start submit');
-    return <Observable<any>>(
-      this.httpClient.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`), body).pipe(
-        map((data: any) => {
-          console.log('return data');
-          return data;
-        }),
-        tap(data => console.log('submit: ', data)),
-        catchError(error => this.handleError(error)),
-      )
-    );
+    return this.httpClient.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`), body).pipe(
+      map((data: any) => {
+        console.log('return data');
+        return data;
+      }),
+      tap(data => console.log('submit: ', data)),
+      catchError(error => this.handleError(error)),
+    ) as Observable<any>;
   }
 
   /** Trigger on form change - this is used in external components */

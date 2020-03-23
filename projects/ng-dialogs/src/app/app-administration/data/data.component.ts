@@ -38,9 +38,9 @@ export class DataComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Items', field: 'Items', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
-      filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', cellRendererParams: <DataItemsParams>{
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', cellRendererParams: {
         onAddItem: this.addItem.bind(this),
-      },
+      } as DataItemsParams,
     },
     {
       headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'clickable',
@@ -48,13 +48,13 @@ export class DataComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Fields', field: 'Fields', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
-      filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', cellRendererParams: <DataFieldsParams>{
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', cellRendererParams: {
         onEditFields: this.editFields.bind(this),
-      },
+      } as DataFieldsParams,
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 410, cellClass: 'no-padding', cellRenderer: 'dataActionsComponent',
-      cellRendererParams: <DataActionsParams>{
+      cellRendererParams: {
         enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),
         onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
@@ -62,7 +62,7 @@ export class DataComponent implements OnInit, OnDestroy {
         onOpenImport: this.openImport.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteContentType.bind(this),
-      },
+      } as DataActionsParams,
     },
   ];
   frameworkComponents = {
@@ -106,7 +106,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   showContentItems(params: CellClickedEvent) {
-    const contentType = <ContentType>params.data;
+    const contentType = params.data as ContentType;
     this.router.navigate([`${contentType.StaticName}/items`], { relativeTo: this.route.firstChild });
   }
 

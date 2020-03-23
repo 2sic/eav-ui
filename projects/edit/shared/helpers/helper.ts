@@ -102,7 +102,7 @@ export class Helper {
     if (value instanceof Array) {
       return value;
     } else {
-      return (<string>value).split(separator);
+      return (value as string).split(separator);
     }
   }
 
@@ -113,7 +113,7 @@ export class Helper {
     if (value instanceof Array) {
       return value.join(separator);
     } else {
-      return <string>value;
+      return value as string;
     }
   }
 }

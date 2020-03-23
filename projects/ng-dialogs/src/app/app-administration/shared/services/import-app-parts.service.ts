@@ -15,8 +15,8 @@ export class ImportAppPartsService {
     formData.append('AppId', this.context.appId.toString());
     formData.append('ZoneId', this.context.zoneId.toString());
     formData.append('File', file);
-    return <Observable<ImportAppPartsResult>>(
+    return (
       this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportContent'), formData)
-    );
+    ) as Observable<ImportAppPartsResult>;
   }
 }

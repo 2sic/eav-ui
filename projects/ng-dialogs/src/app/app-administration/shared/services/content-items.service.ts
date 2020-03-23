@@ -13,21 +13,21 @@ export class ContentItemsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentTypeStaticName: string) {
-    return <Observable<ContentItem[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/GetAllOfTypeForAdmin'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/GetAllOfTypeForAdmin'), {
       params: { appId: this.context.appId.toString(), contentType: contentTypeStaticName }
-    });
+    }) as Observable<ContentItem[]>;
   }
 
   getColumns(contentTypeStaticName: string) {
-    return <Observable<Field[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
       params: { appId: this.context.appId.toString(), staticName: contentTypeStaticName }
-    });
+    }) as Observable<Field[]>;
   }
 
   async importItem(file: File) {
-    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contentimport/import'), {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contentimport/import'), {
       AppId: this.context.appId.toString(),
       ContentBase64: await toBase64(file),
-    });
+    }) as Observable<boolean>;
   }
 }

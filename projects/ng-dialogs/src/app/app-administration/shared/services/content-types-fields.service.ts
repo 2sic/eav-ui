@@ -13,33 +13,32 @@ export class ContentTypesFieldsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   typeListRetrieve() {
-    return <Observable<string[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/datatypes'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/datatypes'), {
       params: { appid: this.context.appId.toString() }
-    });
+    }) as Observable<string[]>;
   }
 
   getInputTypesList() {
-    return <Observable<FieldInputTypeOption[]>>(
-      this.http
-        .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/inputtypes'), { params: { appid: this.context.appId.toString() } })
-        .pipe(
-          map((inputConfigs: FieldInputTypeConfig[]) => {
-            const inputTypeOptions = inputConfigs.map(config => {
-              return <FieldInputTypeOption>{
-                dataType: config.Type.substring(0, config.Type.indexOf('-')),
-                inputType: config.Type,
-                label: config.Label,
-                description: config.Description,
-              };
-            });
-            return inputTypeOptions;
-          }),
-        )
-    );
+    return this.http
+      .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/inputtypes'), { params: { appid: this.context.appId.toString() } })
+      .pipe(
+        map((inputConfigs: FieldInputTypeConfig[]) => {
+          const inputTypeOptions = inputConfigs.map(config => {
+            const option: FieldInputTypeOption = {
+              dataType: config.Type.substring(0, config.Type.indexOf('-')),
+              inputType: config.Type,
+              label: config.Label,
+              description: config.Description,
+            };
+            return option;
+          });
+          return inputTypeOptions;
+        }),
+      ) as Observable<FieldInputTypeOption[]>;
   }
 
   getFields(contentType: ContentType): Observable<Field[]> {
-    return <Observable<Field[]>>this.http
+    return this.http
       .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
         params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
       })
@@ -57,38 +56,38 @@ export class ContentTypesFieldsService {
           }
           return fields;
         }),
-      );
+      ) as Observable<Field[]>;
   }
 
   reOrder(idArray: number[], contentType: ContentType) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/reorder'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/reorder'), {
       params: {
         appid: this.context.appId.toString(),
         contentTypeId: contentType.Id.toString(),
         newSortOrder: JSON.stringify(idArray),
       },
-    });
+    }) as Observable<boolean>;
   }
 
   setTitle(item: Field, contentType: ContentType) {
-    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/setTitle'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/setTitle'), {
       params: {
         appid: this.context.appId.toString(),
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
       },
-    });
+    }) as Observable<null>;
   }
 
   rename(item: Field, contentType: ContentType, newName: string) {
-    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/rename'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/rename'), {
       params: {
         appid: this.context.appId.toString(),
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
         newName,
       },
-    });
+    }) as Observable<null>;
   }
 
   delete(item: Field, contentType: ContentType) {
@@ -96,17 +95,17 @@ export class ContentTypesFieldsService {
       throw new Error('Can\'t delete Title');
     }
 
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/deletefield'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/deletefield'), {
       params: {
         appid: this.context.appId.toString(),
         contentTypeId: contentType.Id.toString(),
         attributeId: item.Id.toString(),
       },
-    });
+    }) as Observable<boolean>;
   }
 
   add(newField: Partial<Field>, contentTypeId: number) {
-    return <Observable<number>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/addfield'), {
       params: {
         AppId: this.context.appId.toString(),
         ContentTypeId: contentTypeId.toString(),
@@ -117,12 +116,12 @@ export class ContentTypesFieldsService {
         IsTitle: newField.IsTitle.toString(),
         SortOrder: newField.SortOrder.toString(),
       }
-    });
+    }) as Observable<number>;
   }
 
   updateInputType(id: number, staticName: string, inputType: string) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/updateinputtype'), {
       params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType }
-    });
+    }) as Observable<boolean>;
   }
 }

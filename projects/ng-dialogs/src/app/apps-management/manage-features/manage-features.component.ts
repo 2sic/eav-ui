@@ -114,7 +114,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
 
     try {
-      const features = <ManageFeaturesMessageData>event.data;
+      const features: ManageFeaturesMessageData = event.data;
       const featuresString = JSON.stringify(features);
       this.featuresConfigService.saveFeatures(featuresString).subscribe(result => {
         this.showManagement = false;

@@ -10,14 +10,14 @@ export class FeaturesConfigService {
   constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
   getAll() {
-    return <Observable<Feature[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/features'));
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/features')) as Observable<Feature[]>;
   }
 
   getManageFeaturesUrl() {
-    return <Observable<string>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/managefeaturesurl'));
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/managefeaturesurl')) as Observable<string>;
   }
 
   saveFeatures(featuresString: string) {
-    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/SaveFeatures'), featuresString);
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/SaveFeatures'), featuresString) as Observable<boolean>;
   }
 }

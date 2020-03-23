@@ -95,7 +95,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         persistedData: null,
       };
     } else {
-      const item = <ContentItem>params.data;
+      const item: ContentItem = params.data;
       form = {
         items: [{ EntityId: item.Id.toString(), Title: item.Title }],
         persistedData: null,
@@ -110,7 +110,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const ids: number[] = [];
     if (hasFilters) {
       this.gridApi.forEachNodeAfterFilterAndSort(rowNode => {
-        ids.push((<ContentItem>rowNode.data).Id);
+        ids.push((rowNode.data as ContentItem).Id);
       });
     }
     this.router.navigate([`${this.contentTypeStaticName}/export${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
@@ -126,7 +126,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       + ' If you didn\'t understand that, this is not for you :). Continue?'
     )) { return; }
 
-    const metadataKeys = <EavMetadataKey[]>Object.keys(eavConstants.metadata);
+    const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
     const validTargetTypes = metadataKeys.map(metaKey => eavConstants.metadata[metaKey].type);
     const targetType = parseInt(prompt(
       'What kind of assignment do you want?'
@@ -139,7 +139,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const key = prompt('What key do you want?');
     if (!key) { return alert('No key entered. Cancelled'); }
 
-    const keyTypeKeys = <EavKeyTypeKey[]>Object.keys(eavConstants.keyTypes);
+    const keyTypeKeys = Object.keys(eavConstants.keyTypes) as EavKeyTypeKey[];
     const validKeyTypes = keyTypeKeys.map(keyTypeKey => eavConstants.keyTypes[keyTypeKey]);
     const keyType = prompt(
       'What key type do you want?'
@@ -195,11 +195,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Actions', cellClass: 'no-padding', width: 194, cellRenderer: 'contentItemsActionsComponent',
-        cellRendererParams: <ContentItemsActionsParams>{
+        cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
-        },
+        } as ContentItemsActionsParams,
       },
       {
         headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
@@ -294,7 +294,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     if (!rawValue) { return null; }
 
     // remove 'Z' and replace 'T'
-    return (<ExtendedColDef>params.colDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
+    return (params.colDef as ExtendedColDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
   }
 
   private valueGetterBoolean(params: ValueGetterParams) {

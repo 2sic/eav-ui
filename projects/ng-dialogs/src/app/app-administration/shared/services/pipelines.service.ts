@@ -12,27 +12,27 @@ export class PipelinesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentType: string) {
-    return <Observable<Query[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/Entities/GetEntities'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/Entities/GetEntities'), {
       params: { appId: this.context.appId.toString(), contentType }
-    });
+    }) as Observable<Query[]>;
   }
 
   async importQuery(file: File) {
-    return <Observable<boolean>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/pipelinedesigner/importquery'), {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/pipelinedesigner/importquery'), {
       AppId: this.context.appId.toString(),
       ContentBase64: await toBase64(file),
-    });
+    }) as Observable<boolean>;
   }
 
   clonePipeline(id: number) {
-    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/ClonePipeline'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/ClonePipeline'), {
       params: { Id: id.toString(), appId: this.context.appId.toString() }
-    });
+    }) as Observable<null>;
   }
 
   delete(id: number) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/DeletePipeline'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/DeletePipeline'), {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
-    });
+    }) as Observable<boolean>;
   }
 }

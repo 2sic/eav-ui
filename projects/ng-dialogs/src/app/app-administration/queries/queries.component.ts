@@ -36,13 +36,13 @@ export class QueriesComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 346, cellClass: 'no-padding',
-      cellRenderer: 'queriesActionsComponent', cellRendererParams: <PipelinesActionsParams>{
+      cellRenderer: 'queriesActionsComponent', cellRendererParams: {
         onEditQuery: this.editQuery.bind(this),
         onCloneQuery: this.cloneQuery.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
         onExportQuery: this.exportQuery.bind(this),
         onDelete: this.deleteQuery.bind(this),
-      },
+      } as PipelinesActionsParams,
     }
   ];
   frameworkComponents = {

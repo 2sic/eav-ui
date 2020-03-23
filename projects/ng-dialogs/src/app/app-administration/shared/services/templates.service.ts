@@ -11,14 +11,14 @@ export class TemplatesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
-    return <Observable<View[]>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/getall'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/getall'), {
       params: { appId: this.context.appId.toString() }
-    });
+    }) as Observable<View[]>;
   }
 
   delete(id: number) {
-    return <Observable<boolean>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/delete'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/delete'), {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
-    });
+    }) as Observable<boolean>;
   }
 }

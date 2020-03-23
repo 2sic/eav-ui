@@ -36,9 +36,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 100, cellClass: 'no-padding', cellRenderer: 'appsListActionsComponent',
-      cellRendererParams: <AppsListActionsParams>{
+      cellRendererParams: {
         onDelete: this.deleteApp.bind(this),
-      },
+      } as AppsListActionsParams,
     },
   ];
   frameworkComponents = {
@@ -116,7 +116,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   private openApp(params: CellClickedEvent) {
-    const appId = (<App>params.data).Id;
+    const appId = (params.data as App).Id;
     this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
   }
 

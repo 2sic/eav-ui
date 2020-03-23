@@ -1,5 +1,3 @@
-
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -36,15 +34,16 @@ export class DnnBridgeService {
     const linkLowered = idCode.toLowerCase();
     if (!(linkLowered.indexOf('file:') !== -1 || linkLowered.indexOf('page:') !== -1)) { return; }
 
-    return <Observable<any>>(
-      this.httpClient.get(this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink?hyperlink=')
+    return this.httpClient
+      .get(
+        this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink?hyperlink=')
         + encodeURIComponent(idCode)
         + (guid ? '&guid=' + guid : '')
         + (contentType ? '&contentType=' + contentType : '')
         + (field ? '&field=' + field : '')
-        + '&appId=' + appId)
-        .pipe(catchError(error => this.handleError(error)))
-    );
+        + '&appId=' + appId
+      )
+      .pipe(catchError(error => this.handleError(error))) as Observable<any>;
   }
 
   private handleError(error: Error) {

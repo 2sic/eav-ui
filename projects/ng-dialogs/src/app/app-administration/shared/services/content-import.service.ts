@@ -20,9 +20,9 @@ export class ContentImportService {
       ResourcesReferences: formValues.resourcesReferences,
       ClearEntities: formValues.clearEntities,
     };
-    return <Observable<EvaluateContentResult>>(
+    return (
       this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/EvaluateContent'), requestData)
-    );
+    ) as Observable<EvaluateContentResult>;
   }
 
   async importContent(formValues: ContentImport) {
@@ -34,8 +34,8 @@ export class ContentImportService {
       ResourcesReferences: formValues.resourcesReferences,
       ClearEntities: formValues.clearEntities,
     };
-    return <Observable<ImportContentResult>>(
+    return (
       this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/ImportContent'), requestData)
-    );
+    ) as Observable<ImportContentResult>;
   }
 }

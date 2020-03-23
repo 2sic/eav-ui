@@ -10,11 +10,9 @@ export class QueryService {
 
   /** (used in entity-query and string-dropdown-query input type) */
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, ignoreErrors: boolean) {
-    return <Observable<any>>(
-      this.httpClient
-        .get(this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`))
-        .pipe(catchError(error => this.handleError(error)))
-    );
+    return this.httpClient
+      .get(this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`))
+      .pipe(catchError(error => this.handleError(error))) as Observable<any>;
   }
 
   private handleError(error: Error) {

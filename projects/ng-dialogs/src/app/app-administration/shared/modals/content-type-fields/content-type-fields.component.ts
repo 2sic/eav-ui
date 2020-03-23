@@ -36,9 +36,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     { rowDrag: true, width: 18, cellClass: 'no-padding' },
     {
       headerName: 'Title', field: 'IsTitle', width: 80, cellClass: 'no-padding',
-      cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: <ContentTypeFieldsTitleParams>{
+      cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: {
         onSetTitle: this.setTitle.bind(this),
-      },
+      } as ContentTypeFieldsTitleParams,
     },
     {
       headerName: 'Static Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
@@ -51,9 +51,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     {
       headerName: 'Input Type', field: 'InputType', flex: 1, minWidth: 184, cellClass: 'no-padding',
       sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
-      cellRendererParams: <ContentTypeFieldsInputTypeParams>{
+      cellRendererParams: {
         onChangeInputType: this.changeInputType.bind(this),
-      },
+      } as ContentTypeFieldsInputTypeParams,
     },
     {
       headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
@@ -65,11 +65,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 194, cellClass: 'no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
-      cellRendererParams: <ContentTypeFieldsActionsParams>{
+      cellRendererParams: {
         onRename: this.rename.bind(this),
         onDelete: this.delete.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
-      }
+      } as ContentTypeFieldsActionsParams,
     },
   ];
   frameworkComponents = {
@@ -126,8 +126,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     const overNode = event.overNode;
     const rowNeedsToMove = movingNode !== overNode;
     if (rowNeedsToMove) {
-      const movingData = <Field>movingNode.data;
-      const overData = <Field>overNode.data;
+      const movingData: Field = movingNode.data;
+      const overData: Field = overNode.data;
       const fromIndex = this.fields.indexOf(movingData);
       const toIndex = this.fields.indexOf(overData);
       const newStore = this.fields.slice();
@@ -157,7 +157,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private editFieldMetadata(params: CellClickedEvent) {
-    const field = <Field>params.data;
+    const field: Field = params.data;
     const form: EditForm = {
       items: [
         this.createItemDefinition(field, 'All'),

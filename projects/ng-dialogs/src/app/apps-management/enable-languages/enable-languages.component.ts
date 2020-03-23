@@ -27,9 +27,9 @@ export class EnableLanguagesComponent implements OnInit {
     {
       headerName: 'Status', field: 'IsEnabled', flex: 1, minWidth: 160, cellClass: 'no-padding',
       cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
-      cellRendererParams: <EnableLanguagesStatusParams>{
+      cellRendererParams: {
         onEnabledToggle: this.toggleLanguage.bind(this),
-      },
+      } as EnableLanguagesStatusParams,
     },
   ];
   frameworkComponents = {
@@ -45,7 +45,7 @@ export class EnableLanguagesComponent implements OnInit {
   }
 
   private handleNameClicked(params: CellClickedEvent) {
-    const language = <EnableLanguage>params.data;
+    const language: EnableLanguage = params.data;
     this.toggleLanguage(language);
   }
 

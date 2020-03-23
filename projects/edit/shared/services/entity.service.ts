@@ -11,20 +11,20 @@ export class EntityService {
 
   /** (used in entity-default input type) */
   getAvailableEntities(apiId: string, body: string, ctName: string) {
-    return <Observable<any>>this.httpClient
+    return this.httpClient
       .post(this.dnnContext.$2sxc.http.apiUrl('eav/EntityPicker/getavailableentities'), body, {
         params: {
           contentTypeName: ctName,
           appId: apiId,
         },
       })
-      .pipe(catchError(error => this.handleError(error)));
+      .pipe(catchError(error => this.handleError(error))) as Observable<any>;
   }
 
   delete(appId: string, type: string, id: string, title: string, tryForce: boolean) {
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
 
-    return <Observable<any>>this.httpClient
+    return this.httpClient
       .get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
         params: {
           contentType: type,
@@ -33,7 +33,7 @@ export class EntityService {
           force: tryForce.toString(),
         },
       })
-      .pipe(catchError(error => of(error)));
+      .pipe(catchError(error => of(error))) as Observable<any>;
   }
 
   private handleError(error: Error) {

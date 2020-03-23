@@ -66,7 +66,7 @@ export class EavFieldDirective implements OnInit {
         container = this.createComponentWrappers(container, fieldConfig, inputTypeAnnotations.wrapper);
       }
 
-      const factory = this.resolver.resolveComponentFactory(<Type<any>>componentType);
+      const factory = this.resolver.resolveComponentFactory(componentType);
       const ref = container.createComponent(factory);
 
       Object.assign(ref.instance, {
@@ -102,7 +102,7 @@ export class EavFieldDirective implements OnInit {
 
     // create component from component type
     const componentFactory = this.resolver.resolveComponentFactory(componentType);
-    const ref = <ComponentRef<FieldWrapper>>container.createComponent(componentFactory);
+    const ref: ComponentRef<FieldWrapper> = container.createComponent(componentFactory);
 
     Object.assign(ref.instance, {
       group: this.group, // this only need if we have form groups

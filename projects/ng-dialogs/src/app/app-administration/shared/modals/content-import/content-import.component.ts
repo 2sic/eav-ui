@@ -79,6 +79,6 @@ export class ContentImportComponent implements OnInit {
   }
 
   fileChange(event: Event) {
-    this.formValues.file = (<HTMLInputElement>event.target).files[0];
+    this.formValues.file = (event.target as HTMLInputElement).files[0];
   }
 }

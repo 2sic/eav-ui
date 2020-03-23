@@ -70,7 +70,7 @@ export class CenterSelectedHelper {
   private doMove(event: MouseEvent) {
     if (this.stopClick) { return; }
 
-    const button = <HTMLButtonElement>event.target;
+    const button = event.target as HTMLButtonElement;
     const buttonOffset = button.getBoundingClientRect().left;
     const buttonWidth = button.getBoundingClientRect().width;
     const headerOffset = this.header.getBoundingClientRect().left;

@@ -36,7 +36,7 @@ export class ImportQueryComponent implements OnInit {
   }
 
   fileChange(event: Event) {
-    this.importFile = (<HTMLInputElement>event.target).files[0];
+    this.importFile = (event.target as HTMLInputElement).files[0];
   }
 
   closeDialog() {

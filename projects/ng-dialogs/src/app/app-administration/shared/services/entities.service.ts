@@ -10,8 +10,8 @@ export class EntitiesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   delete(type: string, id: number, tryForce: boolean) {
-    return <Observable<null>>this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
       params: { contentType: type, id: id.toString(), appId: this.context.appId.toString(), force: tryForce.toString() },
-    });
+    }) as Observable<null>;
   }
 }

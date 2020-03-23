@@ -16,6 +16,6 @@ export class ImportAppService {
     formData.append('ZoneId', this.context.zoneId.toString());
     formData.append('File', file);
     formData.append('Name', changedName ? changedName : '');
-    return <Observable<ImportAppResult>>this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportApp'), formData);
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportApp'), formData) as Observable<ImportAppResult>;
   }
 }

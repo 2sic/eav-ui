@@ -49,10 +49,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 154, cellClass: 'no-padding', cellRenderer: 'viewsActionsComponent',
-      cellRendererParams: <ViewActionsParams>{
+      cellRendererParams: {
         onOpenPermissions: this.openPermissions.bind(this),
         onDelete: this.deleteView.bind(this),
-      }
+      } as ViewActionsParams,
     },
   ];
   frameworkComponents = {
@@ -100,7 +100,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         persistedData: null,
       };
     } else {
-      const view = <View>params.data;
+      const view: View = params.data;
       form = {
         items: [{ EntityId: view.Id.toString(), Title: view.Name }],
         persistedData: null,

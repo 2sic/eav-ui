@@ -10,7 +10,7 @@ export class DialogService {
   constructor() { }
 
   subToClosed(dialogs: string[], toNotify?: ClosedDialogNotify) {
-    return <Observable<ClosedDialog>>this.closedDialog.pipe(
+    return this.closedDialog.pipe(
       filter(closedDialog => {
         if (!toNotify) {
           return dialogs.includes(closedDialog.dialogName);
@@ -24,7 +24,7 @@ export class DialogService {
           );
         }
       }),
-    );
+    ) as Observable<ClosedDialog>;
   }
 
   fireClosed(dialogName: string, data: ClosedDialogData) {
