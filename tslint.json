@@ -1,6 +1,7 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "// angular": "Angular default rules",
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {
@@ -84,7 +85,12 @@
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
-    "// custom": "custom rules",
+    "// custom": "Added rules",
+    "semicolon": [
+      true,
+      "always"
+    ],
+    "// fix": "Fix these rules",
     "no-angle-bracket-type-assertion": false,
     "object-literal-shorthand": false,
     "no-redundant-jsdoc": false,
@@ -93,8 +99,7 @@
     "object-literal-key-quotes": false,
     "ban-types": false,
     "no-string-literal": false,
-    "no-output-native": false,
-    "prefer-for-of": false
+    "no-output-native": false
   },
   "rulesDirectory": [
     "codelyzer"

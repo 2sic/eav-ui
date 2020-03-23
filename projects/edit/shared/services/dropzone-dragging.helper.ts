@@ -27,8 +27,8 @@ export class DropzoneDraggingHelper {
         document.body.classList.remove(draggingClass);
       }
       function clearTimeouts(timeoutsArray: number[]) {
-        for (let i = 0; i < timeoutsArray.length; i++) {
-          clearTimeout(timeoutsArray[i]);
+        for (const timeout of timeoutsArray) {
+          clearTimeout(timeout);
         }
         timeoutsArray.splice(0, timeoutsArray.length);
       }

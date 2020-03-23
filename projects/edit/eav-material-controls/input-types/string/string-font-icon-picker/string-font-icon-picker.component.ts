@@ -61,38 +61,38 @@ export class StringFontIconPickerComponent implements Field, OnInit, OnDestroy {
   }
 
   getIconClasses(className: string) {
-    const charcount = className.length
-    const foundList: { rule: CSSRule; class: string; }[] = []
+    const foundList: { rule: CSSRule; class: string; }[] = [];
     const duplicateDetector: { [key: string]: boolean } = {};
 
     if (!className) { return foundList; }
 
-    for (let ssSet = 0; ssSet < document.styleSheets.length; ssSet++) {
-      const documentStylesSet = <CSSStyleSheet>document.styleSheets[ssSet];
-      if (documentStylesSet) {
-        let classes: CSSRuleList;
-        // errors happen if browser denies access to css rules
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < document.styleSheets.length; i++) {
+      const sheet = document.styleSheets[i] as CSSStyleSheet;
+      if (!sheet) { continue; }
+
+      let rules: CSSRuleList;
+      try {
+        rules = sheet.rules;
+      } catch (error) { /* errors happens if browser denies access to css rules */ }
+      if (!rules) {
         try {
-          classes = documentStylesSet.rules;
-        } catch (error) { }
-        if (!classes) {
-          try {
-            classes = documentStylesSet.cssRules;
-          } catch (error) { }
-        }
-        if (classes) {
-          for (let x = 0; x < classes.length; x++) {
-            if ((<CSSStyleRule>classes[x]).selectorText && (<CSSStyleRule>classes[x]).selectorText.substring(0, charcount) === className) {
-              // prevent duplicate-add...
-              const txt = (<CSSStyleRule>classes[x]).selectorText;
-              const icnClass = txt.substring(0, txt.indexOf(':')).replace('.', '');
-              if (!duplicateDetector[icnClass]) {
-                foundList.push({ rule: classes[x], class: icnClass });
-                duplicateDetector[icnClass] = true;
-              }
-            }
-          }
-        }
+          rules = sheet.cssRules;
+        } catch (error) { /* errors happens if browser denies access to css rules */ }
+      }
+      if (!rules) { continue; }
+
+      // tslint:disable-next-line:prefer-for-of
+      for (let j = 0; j < rules.length; j++) {
+        const rule = rules[j] as CSSStyleRule;
+        if (!(rule.selectorText && rule.selectorText.startsWith(className))) { continue; }
+
+        const selector = rule.selectorText;
+        const iconClass = selector.substring(0, selector.indexOf(':')).replace('.', '');
+        if (duplicateDetector[iconClass]) { continue; }
+
+        foundList.push({ rule, class: iconClass });
+        duplicateDetector[iconClass] = true;
       }
     }
 

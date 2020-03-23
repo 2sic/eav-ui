@@ -20,8 +20,7 @@ export function sortLanguages(primaryLangKey: string, languages: Language[]): La
   let primaryLang: Language;
   const sameLangs: Language[] = [];
   const otherLangs: Language[] = [];
-  for (let i = 0; i < languages.length; i++) {
-    const language = languages[i];
+  for (const language of languages) {
     if (language.key === primaryLangKey) {
       primaryLang = language;
     } else if (language.key.startsWith(primaryLangKey.split('-')[0])) {

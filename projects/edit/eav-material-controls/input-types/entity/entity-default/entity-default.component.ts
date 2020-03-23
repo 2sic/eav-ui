@@ -54,7 +54,7 @@ export class EntityDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
   callAvailableEntities(event: Event) {

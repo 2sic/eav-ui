@@ -108,6 +108,6 @@ export class StringDropdownComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(sub => { sub.unsubscribe() });
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 }

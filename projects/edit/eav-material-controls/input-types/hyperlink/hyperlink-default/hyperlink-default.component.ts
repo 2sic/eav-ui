@@ -81,7 +81,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => { subscriber.unsubscribe() });
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
   private setFormValue(formControlName: string, value: any) {

@@ -96,8 +96,8 @@ export class EditContentTypeFieldsComponent implements OnInit {
         .toPromise();
     } else {
       const rowsWithValue = this.fields.filter(field => field.StaticName);
-      for (let i = 0; i < rowsWithValue.length; i++) {
-        await this.contentTypesFieldsService.add(rowsWithValue[i], this.contentType.Id).toPromise();
+      for (const rowWithValue of rowsWithValue) {
+        await this.contentTypesFieldsService.add(rowWithValue, this.contentType.Id).toPromise();
       }
     }
     this.closeDialog();

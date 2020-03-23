@@ -46,8 +46,7 @@ export class ContentTypesFieldsService {
       .pipe(
         map((fields: Field[]) => {
           if (fields) {
-            for (let i = 0; i < fields.length; i++) {
-              const fld = fields[i];
+            for (const fld of fields) {
               if (!fld.Metadata) { continue; }
               const md = fld.Metadata;
               const allMd = md.All;
