@@ -36,15 +36,15 @@ export function paramsInitFactory(injector: Injector) {
           // spm TODO: I get EntityId: 5843 in items and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
           // const contentTypeStaticName = 'unknown';
           // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/fields`]);
-          alert('Feature not yet implemented. Opening app administration');
-          router.navigate([`${zoneId}/${appId}/app`]);
+          alert('Feature not yet implemented. Opening content types list');
+          router.navigate([`${zoneId}/${appId}/app/data`]);
           break;
         case 'contentitems':
           // spm TODO: I get EntityId: 5843 and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
           // const contentTypeStaticName = 'unknown';
           // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/items`]);
-          alert('Feature not yet implemented. Opening app administration');
-          router.navigate([`${zoneId}/${appId}/app`]);
+          alert('Feature not yet implemented. Opening content types list');
+          router.navigate([`${zoneId}/${appId}/app/data`]);
           break;
         case 'edit':
           const parsedItems: EditItem[] = JSON.parse(items);
