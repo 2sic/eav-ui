@@ -41,7 +41,6 @@ window.addEventListener('drop', function (event) {
     clearAllDropzonesAndListeners();
   });
   window.addEventListener('dragleave', function () {
-    console.log('window dragleave');
     let timeout = setTimeout(function () { document.body.classList.remove(draggingClass); }, 50);
     windowBodyTimeouts.push(timeout);
     timeout = setTimeout(clearAllDropzonesAndListeners, 50);
