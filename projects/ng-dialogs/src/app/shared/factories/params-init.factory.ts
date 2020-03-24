@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems } from '../constants/sessions-keys';
+// tslint:disable-next-line:max-line-length
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentTypeName } from '../constants/sessions-keys';
 import { EditForm, EditItem } from '../../app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
@@ -24,6 +25,7 @@ export function paramsInitFactory(injector: Injector) {
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
       const dialog = sessionStorage.getItem(keyDialog);
+      const contentTypeName = sessionStorage.getItem(keyContentTypeName);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
         case 'zone':
@@ -33,18 +35,13 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/app`]);
           break;
         case 'contenttype':
-          // spm TODO: I get EntityId: 5843 in items and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
-          // const contentTypeStaticName = 'unknown';
-          // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/fields`]);
-          alert('Feature not yet implemented. Opening content types list');
-          router.navigate([`${zoneId}/${appId}/app/data`]);
+          // spm TODO: implement direct path to this dialog
+          router.navigate([`${zoneId}/${appId}/app/data/${contentTypeName}/fields`]);
           break;
         case 'contentitems':
-          // spm TODO: I get EntityId: 5843 and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
-          // const contentTypeStaticName = 'unknown';
-          // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/items`]);
-          alert('Feature not yet implemented. Opening content types list');
-          router.navigate([`${zoneId}/${appId}/app/data`]);
+          // spm TODO: implement direct path to this dialog
+          // spm TODO: can also have filters for the grid in the url/sessionStorage
+          router.navigate([`${zoneId}/${appId}/app/data/${contentTypeName}/items`]);
           break;
         case 'edit':
           const parsedItems: EditItem[] = JSON.parse(items);
