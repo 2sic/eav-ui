@@ -26,10 +26,37 @@ export function paramsInitFactory(injector: Injector) {
       const dialog = sessionStorage.getItem(keyDialog);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
+        case 'zone':
+          router.navigate([`${zoneId}/apps`]);
+          break;
+        case 'app':
+          router.navigate([`${zoneId}/${appId}/app`]);
+          break;
+        case 'contenttype':
+          // spm TODO: I get EntityId: 5843 in items and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
+          // const contentTypeStaticName = 'unknown';
+          // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/fields`]);
+          alert('Feature not yet implemented. Opening app administration');
+          router.navigate([`${zoneId}/${appId}/app`]);
+          break;
+        case 'contentitems':
+          // spm TODO: I get EntityId: 5843 and have to fetch ContentTypeName: "ea6bd8cc-ef6b-491f-87d5-5a7d473707b6"
+          // const contentTypeStaticName = 'unknown';
+          // router.navigate([`${zoneId}/${appId}/app/data/${contentTypeStaticName}/items`]);
+          alert('Feature not yet implemented. Opening app administration');
+          router.navigate([`${zoneId}/${appId}/app`]);
+          break;
         case 'edit':
           const parsedItems: EditItem[] = JSON.parse(items);
           const form: EditForm = { items: parsedItems, persistedData: null };
           router.navigate([`${zoneId}/${appId}/edit/${JSON.stringify(form)}`]);
+          break;
+        case 'develop':
+          router.navigate([`${zoneId}/${appId}/code`]);
+          break;
+        case 'pipeline-designer':
+          alert('Feature not yet implemented. Opening queries list');
+          router.navigate([`${zoneId}/${appId}/app/queries`]);
           break;
         default:
           router.navigate([`${zoneId}/apps`]);
