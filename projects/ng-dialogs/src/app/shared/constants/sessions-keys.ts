@@ -7,6 +7,7 @@ export const keyAppId = 'appId';
 export const keyAppRoot = 'approot';
 export const keyDebug = 'debug';
 export const keyDialog = 'dialog';
+export const keyContentTypeName = 'contentTypeName';
 export const keyFa = 'fa';
 export const keyItems = 'items';
 export const keyLang = 'lang';
