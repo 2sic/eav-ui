@@ -5,12 +5,61 @@ import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
 
+// components
+import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
+import { CollapsibleFieldWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
+import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
+import { DropzoneWrapperComponent } from '../../../eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
+import { EavLocalizationComponent } from '../../../eav-material-controls/wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
+import { EntityExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
+import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
+import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
+import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
+import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+// tslint:disable-next-line:max-line-length
+import { BooleanDefaultComponent, DatetimeDefaultComponent, EmptyDefaultComponent, EntityDefaultComponent, HyperlinkDefaultComponent, NumberDefaultComponent, StringDefaultComponent, StringDropdownComponent, StringDropdownQueryComponent, StringFontIconPickerComponent, StringTemplatePickerComponent, StringUrlPathComponent } from '../../../eav-material-controls/input-types';
+import { CustomDefaultComponent } from '../../../eav-material-controls/input-types/custom/custom-default/custom-default.component';
+import { EntityContentBlockComponent } from '../../../eav-material-controls/input-types/entity/entity-content-blocks/entity-content-blocks.component';
+import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
+import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
+import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
+
 @Directive({
   selector: '[appEavField]'
 })
 export class EavFieldDirective implements OnInit {
   @Input() config: FieldConfigSet[];
   @Input() group: FormGroup;
+
+  private components: { [key: string]: Type<any> } = {
+    'app-adam-attach-wrapper': AdamAttachWrapperComponent,
+    'app-collapsible-field-wrapper': CollapsibleFieldWrapperComponent,
+    'app-collapsible-wrapper': CollapsibleWrapperComponent,
+    'app-dropzone-wrapper': DropzoneWrapperComponent,
+    'app-eav-localization-wrapper': EavLocalizationComponent,
+    'app-entity-expandable-wrapper': EntityExpandableWrapperComponent,
+    'app-expandable-wrapper': ExpandableWrapperComponent,
+    'app-hidden-wrapper': HiddenWrapperComponent,
+    'app-hyperlink-default-expandable-wrapper': HyperlinkDefaultExpandableWrapperComponent,
+    'app-hyperlink-library-expandable-wrapper': HyperlinkLibraryExpandableWrapperComponent,
+    'boolean-default': BooleanDefaultComponent,
+    'custom-default': CustomDefaultComponent,
+    'datetime-default': DatetimeDefaultComponent,
+    'empty-default': EmptyDefaultComponent,
+    'entity-content-blocks': EntityContentBlockComponent,
+    'entity-default': EntityDefaultComponent,
+    'entity-query': EntityQueryComponent,
+    'external-web-component': ExternalWebComponentComponent,
+    'hyperlink-default': HyperlinkDefaultComponent,
+    'hyperlink-library': HyperlinkLibraryComponent,
+    'number-default': NumberDefaultComponent,
+    'string-default': StringDefaultComponent,
+    'string-dropdown': StringDropdownComponent,
+    'string-dropdown-query': StringDropdownQueryComponent,
+    'string-font-icon-picker': StringFontIconPickerComponent,
+    'string-template-picker': StringTemplatePickerComponent,
+    'string-url-path': StringUrlPathComponent,
+  };
 
   constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
 
@@ -82,9 +131,13 @@ export class EavFieldDirective implements OnInit {
 
   /** Read component type by selector with ComponentFactoryResolver */
   private readComponentType(selector: string): Type<any> {
-    const factories = Array.from((this.resolver as any)._factories.values());
-    const componentType = (factories.find((x: any) => x.selector === selector) as any).componentType;
-
+    // const factories = Array.from((this.resolver as any)._factories.values());
+    // const componentType = (factories.find((x: any) => x.selector === selector) as any).componentType;
+    const componentType = this.components[selector];
+    if (componentType === undefined) {
+      console.error(`Missing component class for: ${selector}`);
+      return CustomDefaultComponent;
+    }
     return componentType;
   }
 
