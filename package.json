@@ -77,7 +77,6 @@
     "lodash-es": "^4.17.15",
     "moment": "^2.24.0",
     "ngx-build-plus": "^9.0.6",
-    "ngx-drag-and-drop-lists": "^1.2.5",
     "ngx-dropzone-wrapper": "^9.0.0",
     "rxjs": "^6.5.4",
     "rxjs-compat": "^6.5.4",

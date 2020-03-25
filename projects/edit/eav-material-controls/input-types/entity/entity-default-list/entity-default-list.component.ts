@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
@@ -101,6 +102,10 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     return entity ? entity.Id : value;
   }
 
+  stopDnD(event: MouseEvent) {
+    event.stopPropagation();
+  }
+
   /** Open edit eav item dialog for item */
   edit(value: string) {
     const entityId = this.getEntityId(value);
@@ -172,19 +177,9 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     this.patchValue(entityValues);
   }
 
-
-  removeItem(item: any, list: any[]): void {
-    const oldIndex = list.indexOf(item);
-    const newIndex = list.findIndex(i => i.name === item.name);
-    list.splice(list.indexOf(item), 1);
-    // TEMP FIX Sorting list by moving an item up in the list
-    // https://github.com/misha130/ngx-drag-and-drop-lists/issues/30
-    if (newIndex < oldIndex) {
-      list.splice(newIndex - 1, 0, item);
-      list.splice(newIndex + 1, 1);
-    }
-
-    const entityList = this.mapFromNameListToEntityList(list);
+  drop(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.chosenEntities, event.previousIndex, event.currentIndex);
+    const entityList = this.mapFromNameListToEntityList(this.chosenEntities);
     this.patchValue(entityList);
   }
 

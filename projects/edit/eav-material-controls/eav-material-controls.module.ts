@@ -55,7 +55,7 @@ import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
-import { DndListModule } from 'ngx-drag-and-drop-lists';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
@@ -137,7 +137,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
   imports: [
     SharedComponentsModule,
     CommonModule,
-    DndListModule,
+    DragDropModule,
     DropzoneModule,
     FlexLayoutModule,
     MatAutocompleteModule,
