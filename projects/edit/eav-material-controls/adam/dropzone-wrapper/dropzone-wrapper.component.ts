@@ -34,8 +34,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngOnInit() {
-    const contentType = this.config.entity.header.contentTypeName;
-    const entityGuid = this.config.entity.header.guid;
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
 

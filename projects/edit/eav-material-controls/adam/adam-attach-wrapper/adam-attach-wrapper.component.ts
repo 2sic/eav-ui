@@ -29,8 +29,8 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
   ngOnInit() {
     this.fullScreenAdamBrowser = this.config.field.inputType === InputTypesConstants.hyperlinkLibrary;
     this.config.adam = this.adamRef;
-    const contentType = this.config.entity.header.contentTypeName; // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
-    const entityGuid = this.config.entity.header.guid; // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
+    const contentType = this.config.entity.header.ContentTypeName; // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
+    const entityGuid = this.config.entity.header.Guid; // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
     const field = this.config.field.name; // const field = 'HyperLinkStaticName';
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
   }

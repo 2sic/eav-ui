@@ -156,8 +156,8 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
       value,
-      this.config.entity.header.contentTypeName,
-      this.config.entity.header.guid,
+      this.config.entity.header.ContentTypeName,
+      this.config.entity.header.Guid,
       this.config.field.name);
 
     if (urlFromId$) {

@@ -364,11 +364,11 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToEntityHeaderFromStore() {
-    if (this.config.entity.header.group && this.config.entity.header.group.slotCanBeEmpty) {
+    if (this.config.entity.header.Group && this.config.entity.header.Group.SlotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          if (header.group && !this.fieldConfig.isParentGroup) {
-            this.headerGroupSlotIsEmpty = header.group.slotIsEmpty;
+          if (header.Group && !this.fieldConfig.isParentGroup) {
+            this.headerGroupSlotIsEmpty = header.Group.SlotIsEmpty;
             this.setControlDisable(this.attributes[this.config.field.name], this.config.field.name,
               this.currentLanguage, this.defaultLanguage);
           }
@@ -389,7 +389,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   /** Fetch contentType of current item */
   private subscribeToContentTypeFromStore() {
     const contentTypeId = this.item.entity.type === null
-      ? this.item.header.contentTypeName
+      ? this.item.header.ContentTypeName
       : this.item.entity.type.id;
     this.subscriptions.push(
       this.contentTypeService.getContentTypeById(contentTypeId).subscribe(contentType => {

@@ -41,7 +41,7 @@ export class InputFieldHelper {
   }
 
   static getContentTypeId(item: Item): string {
-    return item.entity.type ? item.entity.type.id : item.header.contentTypeName;
+    return item.entity.type ? item.entity.type.id : item.header.ContentTypeName;
   }
 
   static getFieldLabel(attribute: AttributeDef, settingsTranslated: FieldSettings): string {
@@ -129,8 +129,8 @@ export class InputFieldHelper {
   static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
     let defaultValue = settings.DefaultValue;
 
-    if (header.prefill && header.prefill[attributeKey]) {
-      defaultValue = header.prefill[attributeKey];
+    if (header.Prefill && header.Prefill[attributeKey]) {
+      defaultValue = header.Prefill[attributeKey];
     }
 
     switch (inputType) {

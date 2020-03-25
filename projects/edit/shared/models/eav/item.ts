@@ -15,7 +15,8 @@ export class Item {
   public static create(item: JsonItem1): Item {
     console.log('create item.Entity:', item.Entity);
     return new Item(
-      EavHeader.create(item.Header),
+      // EavHeader.create(item.Header),
+      item.Header,
       EavEntity.create(item.Entity)
     );
   }

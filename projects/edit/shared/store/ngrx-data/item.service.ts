@@ -33,7 +33,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       // spm 2019-09-23 maybe change to work with guid only as guid is primary identificator in the store
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
     });
-    if (!oldItem || (oldItem.header.entityId !== 0 && oldItem.entity.id !== 0)) { return; }
+    if (!oldItem || (oldItem.header.EntityId !== 0 && oldItem.entity.id !== 0)) { return; }
 
     const newItem = {
       ...oldItem,

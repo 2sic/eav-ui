@@ -35,7 +35,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   itemTitle: string;
 
   get slotCanBeEmpty() {
-    return this.config.entity.header.group ? this.config.entity.header.group.slotCanBeEmpty || false : false;
+    return this.config.entity.header.Group ? this.config.entity.header.Group.SlotCanBeEmpty || false : false;
   }
 
   constructor(
@@ -63,7 +63,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     if (this.slotCanBeEmpty) {
       this.subscriptions.push(
         this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
-          if (header.group) { this.slotIsUsedChecked = !header.group.slotIsEmpty; }
+          if (header.Group) { this.slotIsUsedChecked = !header.Group.SlotIsEmpty; }
           this.header = { ...header };
         }),
       );
@@ -103,12 +103,12 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   /// toggle / change if a section (slot) is in use or not (like an unused presentation)
   toggleSlotIsEmpty() {
-    if (this.header.group) {
-      const updateHeader = { ...this.header, group: { ...this.header.group, slotIsEmpty: this.slotIsUsedChecked } };
+    if (this.header.Group) {
+      const updateHeader: EavHeader = { ...this.header, Group: { ...this.header.Group, SlotIsEmpty: this.slotIsUsedChecked } };
       this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, updateHeader);
     } else { // if header group undefined create empty group object
       this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid,
-        { ...this.header, group: new EavGroupAssignment() });
+        { ...this.header, Group: new EavGroupAssignment() });
     }
   }
 
