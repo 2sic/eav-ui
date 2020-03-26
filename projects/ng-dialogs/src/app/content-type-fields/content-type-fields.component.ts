@@ -4,23 +4,21 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { ContentTypesService } from '../../services/content-types.service';
-import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
-import { ContentType } from '../../models/content-type.model';
-import { Field } from '../../models/field.model';
-import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
-import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConstants } from '../../../../shared/constants/eav-constants';
-import { EditForm, AddItem, EditItem } from '../../models/edit-form.model';
-import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type';
-import { ContentTypeFieldsTitleComponent } from '../../ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-import { ContentTypeFieldsTitleParams } from '../../models/content-type-fields-title-params';
-import { ContentTypeFieldsInputTypeParams } from '../../models/content-type-fields-input-type-params';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsInputTypeComponent } from '../../ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsActionsComponent } from '../../ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
-import { ContentTypeFieldsActionsParams } from '../../models/content-type-fields-actions-params';
+import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
+import { ContentTypesFieldsService } from '../app-administration/shared/services/content-types-fields.service';
+import { ContentType } from '../app-administration/shared/models/content-type.model';
+import { Field } from '../app-administration/shared/models/field.model';
+import { DialogService } from '../shared/components/dialog-service/dialog.service';
+import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
+import { eavConstants } from '../shared/constants/eav-constants';
+import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
+import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
+import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleParams } from '../app-administration/shared/models/content-type-fields-title-params';
+import { ContentTypeFieldsInputTypeParams } from '../app-administration/shared/models/content-type-fields-input-type-params';
+import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
+import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsActionsParams } from '../app-administration/shared/models/content-type-fields-actions-params';
 
 @Component({
   selector: 'app-content-type-fields',
