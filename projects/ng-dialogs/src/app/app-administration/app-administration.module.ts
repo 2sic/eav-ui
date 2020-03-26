@@ -46,7 +46,6 @@ import { PermissionsService } from './shared/services/permissions.service';
 import { MetadataService } from './shared/services/metadata.service';
 import { PermissionsActionsComponent } from './shared/ag-grid-components/permissions-actions/permissions-actions.component';
 import { EntitiesService } from './shared/services/entities.service';
-import { ContentTypeFieldsComponent } from './shared/modals/content-type-fields/content-type-fields.component';
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { EditContentTypeFieldsComponent } from './shared/modals/edit-content-type-fields/edit-content-type-fields.component';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
@@ -62,11 +61,6 @@ import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import
 import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 import { ImportAppPartsService } from './shared/services/import-app-parts.service';
-import { ContentTypeFieldsTitleComponent } from './shared/ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsInputTypeComponent } from './shared/ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsActionsComponent } from './shared/ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentItemsIdComponent } from './shared/ag-grid-components/content-items-id/content-items-id.component';
 import { ContentItemsStatusComponent } from './shared/ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './shared/ag-grid-components/content-items-actions/content-items-actions.component';
@@ -92,7 +86,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ContentImportComponent,
     PermissionsComponent,
     PermissionsActionsComponent,
-    ContentTypeFieldsComponent,
     EditContentTypeFieldsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
@@ -101,9 +94,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
-    ContentTypeFieldsTitleComponent,
-    ContentTypeFieldsInputTypeComponent,
-    ContentTypeFieldsActionsComponent,
     ContentItemsIdComponent,
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
@@ -122,7 +112,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ContentImportComponent,
     PermissionsComponent,
     PermissionsActionsComponent,
-    ContentTypeFieldsComponent,
     EditContentTypeFieldsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
@@ -131,9 +120,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
-    ContentTypeFieldsTitleComponent,
-    ContentTypeFieldsInputTypeComponent,
-    ContentTypeFieldsActionsComponent,
     ContentItemsIdComponent,
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,

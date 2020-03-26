@@ -12,7 +12,7 @@ import { contentItemsDialogConfig } from './shared/modals/content-items/content-
 import { contentItemImportDialogConfig } from './shared/modals/content-item-import/content-item-import-dialog.config';
 import { editContentTypeDialogConfig } from './shared/modals/edit-content-type/edit-content-type-dialog.config';
 import { editContentTypeFieldsDialogConfig } from './shared/modals/edit-content-type-fields/edit-content-type-fields-dialog.config';
-import { contentTypeFieldsDialogConfig } from './shared/modals/content-type-fields/content-type-fields-dialog.config';
+import { contentTypeFieldsDialogConfig } from '../content-type-fields/content-type-fields-dialog.config';
 import { contentExportDialogConfig } from './shared/modals/content-export/content-export-dialog.config';
 import { contentImportDialogConfig } from './shared/modals/content-import/content-import-dialog.config';
 import { importQueryDialogConfig } from './shared/modals/import-query/import-query-dialog.config';
