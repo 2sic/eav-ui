@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { CONTENT_TYPE_FIELDS_DIALOG, EDIT_CONTENT_TYPE_FIELDS_DIALOG } from '../shared/constants/dialog-names';
+import { CONTENT_TYPE_FIELDS_DIALOG } from '../shared/constants/dialog-names';
 import { contentTypeFieldsDialogConfig } from './content-type-fields-dialog.config';
-import { editContentTypeFieldsDialogConfig } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
 import { edit } from '../../../../edit/edit.matcher';
 
 const routes: Routes = [
@@ -13,14 +12,12 @@ const routes: Routes = [
       dialogName: CONTENT_TYPE_FIELDS_DIALOG, dialogConfig: contentTypeFieldsDialogConfig
     }, children: [
       {
-        path: 'add', component: DialogEntryComponent, data: {
-          dialogName: EDIT_CONTENT_TYPE_FIELDS_DIALOG, dialogConfig: editContentTypeFieldsDialogConfig
-        }
+        path: 'add/:contentTypeStaticName',
+        loadChildren: () => import('../edit-content-type-fields/edit-content-type-fields.module').then(m => m.EditContentTypeFieldsModule)
       },
       {
-        path: 'update/:id', component: DialogEntryComponent, data: {
-          dialogName: EDIT_CONTENT_TYPE_FIELDS_DIALOG, dialogConfig: editContentTypeFieldsDialogConfig
-        }
+        path: 'update/:contentTypeStaticName/:id',
+        loadChildren: () => import('../edit-content-type-fields/edit-content-type-fields.module').then(m => m.EditContentTypeFieldsModule)
       },
       {
         path: 'permissions/:type/:keyType/:key',

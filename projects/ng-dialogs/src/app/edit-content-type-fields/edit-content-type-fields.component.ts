@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { ContentTypesService } from '../../app-administration/shared/services/content-types.service';
-import { ContentTypesFieldsService } from '../../app-administration/shared/services/content-types-fields.service';
-import { ContentType } from '../../app-administration/shared/models/content-type.model';
-import { Field, FieldInputTypeOption } from '../../app-administration/shared/models/field.model';
+import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
+import { ContentTypesFieldsService } from '../app-administration/shared/services/content-types-fields.service';
+import { ContentType } from '../app-administration/shared/models/content-type.model';
+import { Field, FieldInputTypeOption } from '../app-administration/shared/models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
+import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -34,7 +34,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
   ) {
-    this.contentTypeStaticName = this.route.parent.snapshot.paramMap.get('contentTypeStaticName');
+    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
   async ngOnInit() {

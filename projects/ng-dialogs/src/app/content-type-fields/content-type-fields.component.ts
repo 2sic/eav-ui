@@ -147,7 +147,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   add() {
-    this.router.navigate(['add'], { relativeTo: this.route });
+    this.router.navigate([`add/${this.contentTypeStaticName}`], { relativeTo: this.route });
   }
 
   async fetchFields() {
@@ -188,7 +188,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private changeInputType(field: Field) {
-    this.router.navigate([`update/${field.Id}`], { relativeTo: this.route });
+    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}`], { relativeTo: this.route });
   }
 
   private rename(field: Field) {
