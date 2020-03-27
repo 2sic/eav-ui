@@ -3,9 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { APPS_MANAGEMENT_DIALOG, IMPORT_APP_DIALOG } from '../shared/constants/dialog-names';
+import { APPS_MANAGEMENT_DIALOG } from '../shared/constants/dialog-names';
 import { appsManagementDialogConfig } from './apps-management-nav/apps-management-dialog.config';
-import { importAppDialogConfig } from './shared/modals/import-app/import-app-dialog.config';
 
 const appsManagementRoutes: Routes = [
   {
@@ -16,9 +15,8 @@ const appsManagementRoutes: Routes = [
       {
         path: 'list', component: EmptyRouteComponent, children: [
           {
-            path: 'import', component: DialogEntryComponent, data: {
-              dialogName: IMPORT_APP_DIALOG, dialogConfig: importAppDialogConfig
-            }
+            path: 'import',
+            loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
           },
         ]
       },

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { ImportAppService } from '../../services/import-app.service';
-import { ImportAppResult } from '../../models/import-app-result.model';
+import { ImportAppService } from '../apps-management/shared/services/import-app.service';
+import { ImportAppResult } from '../apps-management/shared/models/import-app-result.model';
 
 @Component({
   selector: 'app-import-app',

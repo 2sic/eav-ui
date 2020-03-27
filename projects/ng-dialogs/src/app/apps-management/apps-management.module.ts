@@ -25,7 +25,6 @@ import { FeaturesListEnabledComponent } from './shared/ag-grid-components/featur
 import { FeaturesListUiComponent } from './shared/ag-grid-components/features-list-ui/features-list-ui.component';
 import { FeaturesListPublicComponent } from './shared/ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
-import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ImportAppService } from './shared/services/import-app.service';
 import { EnableLanguagesComponent } from './enable-languages/enable-languages.component';
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
@@ -44,7 +43,6 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
-    ImportAppComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
   ],
@@ -56,7 +54,6 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
-    ImportAppComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
   ],
