@@ -37,7 +37,6 @@ import { ContentTypesService } from './shared/services/content-types.service';
 import { PipelinesService } from './shared/services/pipelines.service';
 import { TemplatesService } from './shared/services/templates.service';
 import { EditContentTypeComponent } from './shared/modals/edit-content-type/edit-content-type.component';
-import { ContentExportComponent } from './shared/modals/content-export/content-export.component';
 import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
 import { ContentImportService } from './shared/services/content-import.service';
@@ -48,20 +47,13 @@ import { ContentTypesFieldsService } from './shared/services/content-types-field
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WebApisService } from './shared/services/web-apis.service';
-import { ContentItemsComponent } from './shared/modals/content-items/content-items.component';
 import { ContentItemsService } from './shared/services/content-items.service';
-import { ContentItemImportComponent } from './shared/modals/content-item-import/content-item-import.component';
-import { PubMetaFilterComponent } from './shared/ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExportAppComponent } from './shared/modals/export-app/export-app.component';
 import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';
 import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 import { ImportAppPartsService } from './shared/services/import-app-parts.service';
-import { ContentItemsIdComponent } from './shared/ag-grid-components/content-items-id/content-items-id.component';
-import { ContentItemsStatusComponent } from './shared/ag-grid-components/content-items-status/content-items-status.component';
-import { ContentItemsActionsComponent } from './shared/ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsEntityComponent } from './shared/ag-grid-components/content-items-entity/content-items-entity.component';
 
 @NgModule({
   declarations: [
@@ -79,19 +71,11 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
-    ContentExportComponent,
     ContentImportComponent,
     ImportQueryComponent,
-    ContentItemsComponent,
-    ContentItemImportComponent,
-    PubMetaFilterComponent,
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
-    ContentItemsIdComponent,
-    ContentItemsStatusComponent,
-    ContentItemsActionsComponent,
-    ContentItemsEntityComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -102,19 +86,11 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
-    ContentExportComponent,
     ContentImportComponent,
     ImportQueryComponent,
-    ContentItemsComponent,
-    ContentItemImportComponent,
-    PubMetaFilterComponent,
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
-    ContentItemsIdComponent,
-    ContentItemsStatusComponent,
-    ContentItemsActionsComponent,
-    ContentItemsEntityComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

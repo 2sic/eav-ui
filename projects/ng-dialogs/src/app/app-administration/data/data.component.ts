@@ -107,7 +107,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   showContentItems(params: CellClickedEvent) {
     const contentType = params.data as ContentType;
-    this.router.navigate([`${contentType.StaticName}/items`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`items/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
   editContentType(contentType: ContentType) {

@@ -4,13 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 // tslint:disable-next-line:max-line-length
-import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, IMPORT_QUERY_DIALOG, CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG, EXPORT_APP, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../shared/constants/dialog-names';
+import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, IMPORT_QUERY_DIALOG, EXPORT_APP, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../shared/constants/dialog-names';
 import { edit } from '../../../../edit/edit.matcher';
 import { appAdministrationDialogConfig } from './app-administration-nav/app-administration-dialog.config';
-import { contentItemsDialogConfig } from './shared/modals/content-items/content-items-dialog.config';
-import { contentItemImportDialogConfig } from './shared/modals/content-item-import/content-item-import-dialog.config';
 import { editContentTypeDialogConfig } from './shared/modals/edit-content-type/edit-content-type-dialog.config';
-import { contentExportDialogConfig } from './shared/modals/content-export/content-export-dialog.config';
+import { contentExportDialogConfig } from '../content-items/content-export/content-export-dialog.config';
 import { contentImportDialogConfig } from './shared/modals/content-import/content-import-dialog.config';
 import { importQueryDialogConfig } from './shared/modals/import-query/import-query-dialog.config';
 import { exportAppDialogConfig } from './shared/modals/export-app/export-app-dialog.config';
@@ -27,29 +25,8 @@ const appAdministrationRoutes: Routes = [
       {
         path: 'data', component: EmptyRouteComponent, children: [
           {
-            path: ':contentTypeStaticName/items', component: DialogEntryComponent, data: {
-              dialogName: CONTENT_ITEMS_DIALOG, dialogConfig: contentItemsDialogConfig
-            }, children: [
-              {
-                matcher: edit,
-                loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
-              },
-              {
-                path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: {
-                  dialogName: EXPORT_CONTENT_TYPE_DIALOG, dialogConfig: contentExportDialogConfig
-                }
-              },
-              {
-                path: ':contentTypeStaticName/export/:selectedIds', component: DialogEntryComponent, data: {
-                  dialogName: EXPORT_CONTENT_TYPE_DIALOG, dialogConfig: contentExportDialogConfig
-                }
-              },
-              {
-                path: 'import', component: DialogEntryComponent, data: {
-                  dialogName: IMPORT_CONTENT_ITEM_DIALOG, dialogConfig: contentItemImportDialogConfig
-                }
-              },
-            ]
+            path: 'items/:contentTypeStaticName',
+            loadChildren: () => import('../content-items/content-items.module').then(m => m.ContentItemsModule)
           },
           {
             matcher: edit,

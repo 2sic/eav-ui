@@ -5,24 +5,24 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
-import { ContentItemsService } from '../../services/content-items.service';
-import { ContentItem } from '../../models/content-item.model';
-import { Field } from '../../models/field.model';
-import { EditForm } from '../../models/edit-form.model';
-import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
-import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { EntitiesService } from '../../services/entities.service';
-import { ContentExportService } from '../../services/content-export.service';
-import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../../../../shared/constants/eav-constants';
-import { PubMetaFilterComponent } from '../../ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { ExtendedColDef } from '../../models/extended-col-def.model';
-import { ContentItemsIdComponent } from '../../ag-grid-components/content-items-id/content-items-id.component';
-import { ContentItemsStatusComponent } from '../../ag-grid-components/content-items-status/content-items-status.component';
-import { ContentItemsActionsComponent } from '../../ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsActionsParams } from '../../models/content-items-actions-params';
-import { ContentItemsEntityComponent } from '../../ag-grid-components/content-items-entity/content-items-entity.component';
-import { PubMeta } from '../../ag-grid-components/pub-meta-filter/pub-meta-filter.model';
-import { BooleanFilterComponent } from '../../../../shared/components/boolean-filter/boolean-filter.component';
+import { ContentItemsService } from '../app-administration/shared/services/content-items.service';
+import { ContentItem } from '../app-administration/shared/models/content-item.model';
+import { Field } from '../app-administration/shared/models/field.model';
+import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { DialogService } from '../shared/components/dialog-service/dialog.service';
+import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
+import { EntitiesService } from '../app-administration/shared/services/entities.service';
+import { ContentExportService } from '../app-administration/shared/services/content-export.service';
+import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
+import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
+import { ExtendedColDef } from '../app-administration/shared/models/extended-col-def.model';
+import { ContentItemsIdComponent } from './content-items-id/content-items-id.component';
+import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
+import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
+import { ContentItemsActionsParams } from '../app-administration/shared/models/content-items-actions-params';
+import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
+import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
+import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({
   selector: 'app-content-items',

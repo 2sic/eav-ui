@@ -74,9 +74,9 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     MatTabsModule,
   ],
   providers: [
+    Context,
     AppsListService,
     EnableLanguagesService,
-    Context,
     ImportAppService,
     FeaturesConfigService,
   ]

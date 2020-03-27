@@ -17,16 +17,22 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
+    path: ':zoneId/:appId/items/:contentTypeStaticName',
+    loadChildren: () => import('./content-items/content-items.module').then(m => m.ContentItemsModule)
+  },
+  {
     path: ':zoneId/:appId/fields/:contentTypeStaticName',
     loadChildren: () => import('./content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule)
   },
   {
-    path: ':zoneId/:appId/permissions/:type/:keyType/:key',
-    loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule)
-  },
-  {
     matcher: editRoot,
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule)
+  },
+  // routes below are not linked directly from the initializer and are used for testing
+  // to make sure each module contains enough data to be self sustainable
+  {
+    path: ':zoneId/:appId/permissions/:type/:keyType/:key',
+    loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule)
   },
 ];
 

@@ -41,6 +41,7 @@ export function createTranslateLoader(http: HttpClient) {
     })
   ],
   providers: [
+    Context,
     DnnInterceptor,
     EavService,
     AdamService,
@@ -49,7 +50,6 @@ export function createTranslateLoader(http: HttpClient) {
     EntityService,
     EavAdminUiService,
     QueryService,
-    Context,
     SanitizeService,
     ExpandableFieldService,
   ],
