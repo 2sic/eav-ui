@@ -11,7 +11,7 @@ import { appAdministrationDialogConfig } from './app-administration-nav/app-admi
 import { contentItemsDialogConfig } from './shared/modals/content-items/content-items-dialog.config';
 import { contentItemImportDialogConfig } from './shared/modals/content-item-import/content-item-import-dialog.config';
 import { editContentTypeDialogConfig } from './shared/modals/edit-content-type/edit-content-type-dialog.config';
-import { editContentTypeFieldsDialogConfig } from './shared/modals/edit-content-type-fields/edit-content-type-fields-dialog.config';
+import { editContentTypeFieldsDialogConfig } from '../content-type-fields/edit-content-type-fields/edit-content-type-fields-dialog.config';
 import { contentTypeFieldsDialogConfig } from '../content-type-fields/content-type-fields-dialog.config';
 import { contentExportDialogConfig } from './shared/modals/content-export/content-export-dialog.config';
 import { contentImportDialogConfig } from './shared/modals/content-import/content-import-dialog.config';

@@ -47,7 +47,6 @@ import { MetadataService } from './shared/services/metadata.service';
 import { PermissionsActionsComponent } from './shared/ag-grid-components/permissions-actions/permissions-actions.component';
 import { EntitiesService } from './shared/services/entities.service';
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
-import { EditContentTypeFieldsComponent } from './shared/modals/edit-content-type-fields/edit-content-type-fields.component';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WebApisService } from './shared/services/web-apis.service';
@@ -86,7 +85,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ContentImportComponent,
     PermissionsComponent,
     PermissionsActionsComponent,
-    EditContentTypeFieldsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,
@@ -112,7 +110,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     ContentImportComponent,
     PermissionsComponent,
     PermissionsActionsComponent,
-    EditContentTypeFieldsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,
