@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AgGridModule } from '@ag-grid-community/angular';
 
-import { ContentItemsRoutingModule } from './content-type-fields-routing.module';
+import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
 import { Context } from '../shared/context/context';
 import { ContentTypeFieldsComponent } from './content-type-fields.component';
 import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
@@ -37,7 +37,7 @@ import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-
   ],
   imports: [
     CommonModule,
-    ContentItemsRoutingModule,
+    ContentTypeFieldsRoutingModule,
     SharedComponentsModule,
     MatDialogModule,
     MatButtonModule,

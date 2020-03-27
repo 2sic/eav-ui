@@ -43,12 +43,12 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   config(staticName: string) {
-    this.router.navigate([`${staticName}/fields`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.firstChild });
   }
 
   openPermissions() {
     this.router.navigate(
-      [`${eavConstants.metadata.app.type}/${eavConstants.keyTypes.number}/${this.context.appId}/permissions`],
+      [`permissions/${eavConstants.metadata.app.type}/${eavConstants.keyTypes.number}/${this.context.appId}`],
       { relativeTo: this.route.firstChild }
     );
   }

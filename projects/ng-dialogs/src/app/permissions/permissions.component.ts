@@ -4,14 +4,14 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { PermissionsService } from '../../services/permissions.service';
-import { Permission } from '../../models/permission.model';
-import { PermissionsActionsComponent } from '../../ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from '../../models/permissions-actions-params';
-import { EditForm } from '../../models/edit-form.model';
-import { DialogService } from '../../../../shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../../../shared/constants/dialog-names';
-import { eavConstants, EavMetadataKey } from '../../../../shared/constants/eav-constants';
+import { PermissionsService } from '../app-administration/shared/services/permissions.service';
+import { Permission } from '../app-administration/shared/models/permission.model';
+import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
+import { PermissionsActionsParams } from '../app-administration/shared/models/permissions-actions-params';
+import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { DialogService } from '../shared/components/dialog-service/dialog.service';
+import { ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
+import { eavConstants, EavMetadataKey } from '../shared/constants/eav-constants';
 
 @Component({
   selector: 'app-permissions',

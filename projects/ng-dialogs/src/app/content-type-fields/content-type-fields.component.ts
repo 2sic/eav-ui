@@ -216,7 +216,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private openPermissions(field: Field) {
     this.router.navigate(
-      [`${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}/permissions`],
+      [`permissions/${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}`],
       { relativeTo: this.route }
     );
   }

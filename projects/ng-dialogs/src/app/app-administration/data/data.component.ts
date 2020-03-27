@@ -174,7 +174,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private editFields(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/fields`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
   private createOrEditMetadata(contentType: ContentType) {
@@ -204,7 +204,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private openPermissions(contentType: ContentType) {
     this.router.navigate(
-      [`${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${contentType.StaticName}/permissions`],
+      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${contentType.StaticName}`],
       { relativeTo: this.route.firstChild }
     );
   }

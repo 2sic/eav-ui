@@ -41,10 +41,8 @@ import { ContentExportComponent } from './shared/modals/content-export/content-e
 import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
 import { ContentImportService } from './shared/services/content-import.service';
-import { PermissionsComponent } from './shared/modals/permissions/permissions.component';
 import { PermissionsService } from './shared/services/permissions.service';
 import { MetadataService } from './shared/services/metadata.service';
-import { PermissionsActionsComponent } from './shared/ag-grid-components/permissions-actions/permissions-actions.component';
 import { EntitiesService } from './shared/services/entities.service';
 import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
@@ -83,8 +81,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     EditContentTypeComponent,
     ContentExportComponent,
     ContentImportComponent,
-    PermissionsComponent,
-    PermissionsActionsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,
@@ -108,8 +104,6 @@ import { ContentItemsEntityComponent } from './shared/ag-grid-components/content
     EditContentTypeComponent,
     ContentExportComponent,
     ContentImportComponent,
-    PermissionsComponent,
-    PermissionsActionsComponent,
     ImportQueryComponent,
     ContentItemsComponent,
     ContentItemImportComponent,

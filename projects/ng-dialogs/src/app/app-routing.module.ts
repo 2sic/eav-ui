@@ -17,11 +17,15 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    path: ':zoneId/:appId/fields',
+    path: ':zoneId/:appId/fields/:contentTypeStaticName',
     loadChildren: () => import('./content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule)
   },
   {
-    matcher: editRoot, // ':zoneId/:appId/edit/:items' or ':zoneId/:appId/edit/:items/details/:expandedFieldId'
+    path: ':zoneId/:appId/permissions/:type/:keyType/:key',
+    loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule)
+  },
+  {
+    matcher: editRoot,
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule)
   },
 ];
