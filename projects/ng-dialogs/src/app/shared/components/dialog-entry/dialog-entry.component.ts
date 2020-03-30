@@ -19,7 +19,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
   private dialogRef: MatDialogRef<any, any>;
-  private dialogName: string;
+  private dialogConfig: DialogConfig;
   private component: Type<any>;
   private panelSize: string;
   private panelClass: string[] = [];
@@ -37,7 +37,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.configureDialog();
-    console.log('Open dialog:', this.dialogName, 'Context id:', this.context.id, 'Context:', this.context);
+    console.log('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
     this.dialogRef = this.dialog.open(this.component, {
       backdropClass: 'dialog-backdrop',
@@ -52,7 +52,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dialogRef.afterClosed().subscribe((data: ClosedDialogData) => {
-        this.dialogService.fireClosed(this.dialogName, data);
+        this.dialogService.fireClosed(this.dialogConfig.name, data);
 
         if (this.route.pathFromRoot.length <= 3) {
           try {
@@ -73,27 +73,24 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
+    this.dialogConfig = null;
     this.component = null;
     this.dialogRef.close();
     this.dialogRef = null;
   }
 
   private async configureDialog() {
-    this.dialogName = this.route.snapshot.data.dialogName;
-    if (!this.dialogName) {
-      throw new Error(`Could not find dialog type: ${this.dialogName}. Did you forget to add dialogName to route data?`);
+    this.dialogConfig = this.route.snapshot.data.dialog;
+    if (!this.dialogConfig) {
+      throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
     }
-    const dialogConfig: DialogConfig = this.route.snapshot.data.dialogConfig;
-    if (!dialogConfig) {
-      throw new Error(`Could not find config for dialog: ${this.dialogName}. Did you forget to add dialogConfig to route data?`);
-    }
-    this.component = await dialogConfig.getComponent();
-    this.panelSize = dialogConfig.panelSize;
-    if (dialogConfig.initContext) {
+    this.component = await this.dialogConfig.getComponent();
+    this.panelSize = this.dialogConfig.panelSize;
+    if (this.dialogConfig.initContext) {
       this.context.init(this.route);
     }
-    if (dialogConfig.panelClass) {
-      this.panelClass = dialogConfig.panelClass;
+    if (this.dialogConfig.panelClass) {
+      this.panelClass = this.dialogConfig.panelClass;
     }
   }
 

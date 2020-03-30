@@ -1,6 +1,7 @@
 import { DialogConfig } from '../../../../shared/models/dialog-config.model';
 
-export const importAppDialogConfig: DialogConfig = {
+export const importAppDialog: DialogConfig = {
+  name: 'IMPORT_APP_DIALOG',
   initContext: false,
   panelSize: 'medium',
   panelClass: null,

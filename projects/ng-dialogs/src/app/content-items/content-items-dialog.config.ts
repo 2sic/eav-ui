@@ -1,6 +1,7 @@
 import { DialogConfig } from '../shared/models/dialog-config.model';
 
-export const contentItemsDialogConfig: DialogConfig = {
+export const contentItemsDialog: DialogConfig = {
+  name: 'CONTENT_ITEMS_DIALOG',
   initContext: false,
   panelSize: 'large',
   panelClass: null,

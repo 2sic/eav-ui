@@ -1,6 +1,7 @@
 import { DialogConfig } from '../shared/models/dialog-config.model';
 
-export const contentTypeFieldsDialogConfig: DialogConfig = {
+export const contentTypeFieldsDialog: DialogConfig = {
+  name: 'CONTENT_TYPE_FIELDS_DIALOG',
   initContext: false,
   panelSize: 'large',
   panelClass: null,

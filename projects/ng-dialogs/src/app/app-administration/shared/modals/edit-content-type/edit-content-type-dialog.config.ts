@@ -1,6 +1,7 @@
 import { DialogConfig } from '../../../../shared/models/dialog-config.model';
 
-export const editContentTypeDialogConfig: DialogConfig = {
+export const editContentTypeDialog: DialogConfig = {
+  name: 'EDIT_CONTENT_TYPE_DIALOG',
   initContext: false,
   panelSize: 'small',
   panelClass: null,

@@ -1,7 +1,7 @@
 import { DialogConfig } from '../../shared/models/dialog-config.model';
 
-export const appsManagementDialogConfig: DialogConfig = {
-  // this is module root dialog and has to init context
+export const appsManagementDialog: DialogConfig = {
+  name: 'APPS_MANAGEMENT_DIALOG',
   initContext: true,
   panelSize: 'large',
   panelClass: null,
