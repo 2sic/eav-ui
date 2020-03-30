@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { MetadataService } from './metadata.service';
-import { EntitiesService } from './entities.service';
-import { Permission } from '../models/permission.model';
-import { eavConstants } from '../../../shared/constants/eav-constants';
+import { EntitiesService } from '../../content-items/services/entities.service';
+import { Permission } from '../../app-administration/shared/models/permission.model';
+import { eavConstants } from '../../shared/constants/eav-constants';
 
 @Injectable()
 export class PermissionsService {

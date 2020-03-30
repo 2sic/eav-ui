@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { PermissionsService } from '../app-administration/shared/services/permissions.service';
+import { PermissionsService } from './services/permissions.service';
 import { Permission } from '../app-administration/shared/models/permission.model';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from '../app-administration/shared/models/permissions-actions-params';

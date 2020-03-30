@@ -21,8 +21,8 @@ import { ContentItemsEntityComponent } from './content-items-entity/content-item
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
-import { ContentItemsService } from '../app-administration/shared/services/content-items.service';
-import { EntitiesService } from '../app-administration/shared/services/entities.service';
+import { ContentItemsService } from './services/content-items.service';
+import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
 
 @NgModule({

@@ -5,13 +5,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
-import { ContentItemsService } from '../app-administration/shared/services/content-items.service';
+import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from '../app-administration/shared/models/content-item.model';
 import { Field } from '../app-administration/shared/models/field.model';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { DialogService } from '../shared/components/dialog-service/dialog.service';
 import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
-import { EntitiesService } from '../app-administration/shared/services/entities.service';
+import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
 import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
-import { ContentTypesFieldsService } from '../app-administration/shared/services/content-types-fields.service';
+import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { ContentType } from '../app-administration/shared/models/content-type.model';
 import { Field } from '../app-administration/shared/models/field.model';
 import { DialogService } from '../shared/components/dialog-service/dialog.service';

@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { FormsModule } from '@angular/forms';
-
-// material components
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -40,14 +38,10 @@ import { EditContentTypeComponent } from './shared/modals/edit-content-type/edit
 import { ContentExportService } from './shared/services/content-export.service';
 import { ContentImportComponent } from './shared/modals/content-import/content-import.component';
 import { ContentImportService } from './shared/services/content-import.service';
-import { PermissionsService } from './shared/services/permissions.service';
-import { MetadataService } from './shared/services/metadata.service';
-import { EntitiesService } from './shared/services/entities.service';
-import { ContentTypesFieldsService } from './shared/services/content-types-fields.service';
 import { ImportQueryComponent } from './shared/modals/import-query/import-query.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { WebApisService } from './shared/services/web-apis.service';
-import { ContentItemsService } from './shared/services/content-items.service';
+import { ContentItemsService } from '../content-items/services/content-items.service';
 import { ExportAppComponent } from './shared/modals/export-app/export-app.component';
 import { ExportAppPartsComponent } from './shared/modals/export-app-parts/export-app-parts.component';
 import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import-app-parts.component';
@@ -119,10 +113,6 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     TemplatesService,
     ContentExportService,
     ContentImportService,
-    PermissionsService,
-    MetadataService,
-    EntitiesService,
-    ContentTypesFieldsService,
     WebApisService,
     ContentItemsService,
     ExportAppService,

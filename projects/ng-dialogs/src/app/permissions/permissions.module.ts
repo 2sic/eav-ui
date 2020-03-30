@@ -11,9 +11,9 @@ import { PermissionsComponent } from './permissions.component';
 import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
-import { PermissionsService } from '../app-administration/shared/services/permissions.service';
-import { MetadataService } from '../app-administration/shared/services/metadata.service';
-import { EntitiesService } from '../app-administration/shared/services/entities.service';
+import { PermissionsService } from './services/permissions.service';
+import { MetadataService } from './services/metadata.service';
+import { EntitiesService } from '../content-items/services/entities.service';
 
 @NgModule({
   declarations: [

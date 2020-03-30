@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from '@ag-grid-community/angular';
-
-// material components
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -57,7 +55,6 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
     FeaturesListSecurityComponent,
-    EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
   ],
   imports: [

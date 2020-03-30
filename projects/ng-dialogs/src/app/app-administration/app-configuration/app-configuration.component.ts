@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { eavConstants } from '../../shared/constants/eav-constants';
-import { ContentItemsService } from '../shared/services/content-items.service';
+import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { EditForm } from '../shared/models/edit-form.model';
 import { Context } from '../../shared/context/context';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';

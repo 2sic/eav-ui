@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { ContentItemsService } from '../../app-administration/shared/services/content-items.service';
+import { ContentItemsService } from '../services/content-items.service';
 
 @Component({
   selector: 'app-content-item-import',

@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context } from '../../../shared/context/context';
-import { ContentItem } from '../models/content-item.model';
-import { Field } from '../models/field.model';
-import { toBase64 } from '../../../shared/helpers/fileToBase64.helper';
+import { Context } from '../../shared/context/context';
+import { ContentItem } from '../../app-administration/shared/models/content-item.model';
+import { Field } from '../../app-administration/shared/models/field.model';
+import { toBase64 } from '../../shared/helpers/fileToBase64.helper';
 
 @Injectable()
 export class ContentItemsService {

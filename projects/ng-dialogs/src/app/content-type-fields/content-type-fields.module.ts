@@ -16,7 +16,7 @@ import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/con
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
-import { ContentTypesFieldsService } from '../app-administration/shared/services/content-types-fields.service';
+import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-content-type-fields.component';
 
