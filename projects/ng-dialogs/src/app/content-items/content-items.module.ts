@@ -18,7 +18,6 @@ import { ContentItemsIdComponent } from './content-items-id/content-items-id.com
 import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
-import { ContentExportComponent } from './content-export/content-export.component';
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
@@ -34,7 +33,6 @@ import { ContentExportService } from '../app-administration/shared/services/cont
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
-    ContentExportComponent,
     ContentItemImportComponent,
   ],
   entryComponents: [
@@ -44,7 +42,6 @@ import { ContentExportService } from '../app-administration/shared/services/cont
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
-    ContentExportComponent,
     ContentItemImportComponent,
   ],
   imports: [

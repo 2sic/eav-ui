@@ -195,7 +195,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openExport(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/export`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
   private openImport(contentType: ContentType) {

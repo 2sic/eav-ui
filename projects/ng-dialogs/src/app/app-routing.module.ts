@@ -43,6 +43,14 @@ const appRoutes: Routes = [
     loadChildren: () => import('./edit-content-type-fields/edit-content-type-fields.module').then(m => m.EditContentTypeFieldsModule)
   },
   {
+    path: ':zoneId/:appId/export/:contentTypeStaticName',
+    loadChildren: () => import('./content-export/content-export.module').then(m => m.ContentExportModule)
+  },
+  {
+    path: ':zoneId/:appId/export/:contentTypeStaticName/:selectedIds',
+    loadChildren: () => import('./content-export/content-export.module').then(m => m.ContentExportModule)
+  },
+  {
     path: ':zoneId/:appId/permissions/:type/:keyType/:key',
     loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule)
   },

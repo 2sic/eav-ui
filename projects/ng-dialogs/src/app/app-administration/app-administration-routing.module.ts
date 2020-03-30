@@ -4,11 +4,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 // tslint:disable-next-line:max-line-length
-import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, IMPORT_QUERY_DIALOG, EXPORT_APP, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../shared/constants/dialog-names';
+import { APP_ADMINISTRATION_DIALOG, EDIT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, IMPORT_QUERY_DIALOG, EXPORT_APP, EXPORT_APP_PARTS, IMPORT_APP_PARTS } from '../shared/constants/dialog-names';
 import { edit } from '../../../../edit/edit.matcher';
 import { appAdministrationDialogConfig } from './app-administration-nav/app-administration-dialog.config';
 import { editContentTypeDialogConfig } from './shared/modals/edit-content-type/edit-content-type-dialog.config';
-import { contentExportDialogConfig } from '../content-items/content-export/content-export-dialog.config';
 import { contentImportDialogConfig } from './shared/modals/content-import/content-import-dialog.config';
 import { importQueryDialogConfig } from './shared/modals/import-query/import-query-dialog.config';
 import { exportAppDialogConfig } from './shared/modals/export-app/export-app-dialog.config';
@@ -47,9 +46,8 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule)
           },
           {
-            path: ':contentTypeStaticName/export', component: DialogEntryComponent, data: {
-              dialogName: EXPORT_CONTENT_TYPE_DIALOG, dialogConfig: contentExportDialogConfig
-            }
+            path: 'export/:contentTypeStaticName',
+            loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
           },
           {
             path: ':contentTypeStaticName/import', component: DialogEntryComponent, data: {
