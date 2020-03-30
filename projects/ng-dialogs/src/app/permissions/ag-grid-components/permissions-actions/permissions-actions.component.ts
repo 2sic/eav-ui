@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { PermissionsActionsParams } from '../models/permissions-actions-params';
-import { Permission } from '../models/permission.model';
+import { PermissionsActionsParams } from '../../models/permissions-actions-params';
+import { Permission } from '../../models/permission.model';
 
 @Component({
   selector: 'app-permissions-actions',

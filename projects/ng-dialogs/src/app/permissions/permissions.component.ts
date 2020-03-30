@@ -6,7 +6,7 @@ import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-communit
 
 import { PermissionsService } from './services/permissions.service';
 import { Permission } from './models/permission.model';
-import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
+import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './models/permissions-actions-params';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { DialogService } from '../shared/components/dialog-service/dialog.service';
