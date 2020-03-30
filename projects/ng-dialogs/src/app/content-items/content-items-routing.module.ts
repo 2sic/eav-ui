@@ -5,7 +5,7 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { CONTENT_ITEMS_DIALOG, IMPORT_CONTENT_ITEM_DIALOG } from '../shared/constants/dialog-names';
 import { contentItemsDialogConfig } from './content-items-dialog.config';
 import { edit } from '../../../../edit/edit.matcher';
-import { contentItemImportDialogConfig } from './content-item-import/content-item-import-dialog.config';
+import { contentItemImportDialogConfig } from './ag-grid-components/content-item-import/content-item-import-dialog.config';
 
 const routes: Routes = [
   {

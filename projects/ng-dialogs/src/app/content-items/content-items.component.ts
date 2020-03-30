@@ -14,14 +14,14 @@ import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constan
 import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
-import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
+import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExtendedColDef } from './models/extended-col-def.model';
-import { ContentItemsIdComponent } from './content-items-id/content-items-id.component';
-import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
-import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
+import { ContentItemsIdComponent } from './ag-grid-components/content-items-id/content-items-id.component';
+import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './models/content-items-actions-params';
-import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
-import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
+import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
+import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 
 @Component({

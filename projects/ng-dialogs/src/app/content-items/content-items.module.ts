@@ -13,12 +13,12 @@ import { AgGridModule } from '@ag-grid-community/angular';
 
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
-import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
-import { ContentItemsIdComponent } from './content-items-id/content-items-id.component';
-import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
-import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
-import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
-import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
+import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
+import { ContentItemsIdComponent } from './ag-grid-components/content-items-id/content-items-id.component';
+import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
+import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
+import { ContentItemImportComponent } from './ag-grid-components/content-item-import/content-item-import.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
 import { ContentItemsService } from './services/content-items.service';
