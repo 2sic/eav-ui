@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentType } from '../../app-administration/shared/models/content-type.model';
-import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../../app-administration/shared/models/field.model';
+import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../models/field.model';
 import { Context } from '../../shared/context/context';
 
 @Injectable()

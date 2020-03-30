@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentTypeFieldsTitleParams } from '../../app-administration/shared/models/content-type-fields-title-params';
-import { Field } from '../../app-administration/shared/models/field.model';
+import { ContentTypeFieldsTitleParams } from '../models/content-type-fields-title-params';
+import { Field } from '../models/field.model';
 
 @Component({
   selector: 'app-content-type-fields-title',

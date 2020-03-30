@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/context/context';
-import { ContentItem } from '../../app-administration/shared/models/content-item.model';
-import { Field } from '../../app-administration/shared/models/field.model';
+import { ContentItem } from '../models/content-item.model';
+import { Field } from '../../content-type-fields/models/field.model';
 import { toBase64 } from '../../shared/helpers/fileToBase64.helper';
 
 @Injectable()
