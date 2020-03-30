@@ -31,10 +31,6 @@ const appRoutes: Routes = [
   // routes below are not linked directly from the initializer and are used for testing
   // to make sure each module contains enough data to be self sustainable
   {
-    path: ':zoneId/import',
-    loadChildren: () => import('./import-app/import-app.module').then(m => m.ImportAppModule)
-  },
-  {
     path: ':zoneId/:appId/add/:contentTypeStaticName',
     loadChildren: () => import('./edit-content-type-fields/edit-content-type-fields.module').then(m => m.EditContentTypeFieldsModule)
   },

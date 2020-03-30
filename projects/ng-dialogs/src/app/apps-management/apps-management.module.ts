@@ -15,6 +15,7 @@ import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
+import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 import { Context } from '../shared/context/context';
@@ -35,6 +36,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
   declarations: [
     AppsManagementNavComponent,
     AppsListComponent,
+    ImportAppComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
     AppsListShowComponent,
@@ -48,6 +50,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
   ],
   entryComponents: [
     AppsManagementNavComponent,
+    ImportAppComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
     FeaturesListEnabledComponent,
