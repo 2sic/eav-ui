@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 
 import { Query } from '../shared/models/query.model';
 import { QueriesActionsComponent } from '../shared/ag-grid-components/queries-actions/queries-actions.component';
@@ -10,8 +11,6 @@ import { ContentExportService } from '../shared/services/content-export.service'
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav-constants';
-import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-import { IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 
 @Component({
   selector: 'app-queries',
@@ -51,23 +50,20 @@ export class QueriesComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
     private contentExportService: ContentExportService,
-    private dialogService: DialogService,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+  }
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(
-      this.dialogService.subToClosed([IMPORT_QUERY_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchQueries();
-      })
-    );
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -122,4 +118,17 @@ export class QueriesComponent implements OnInit, OnDestroy {
       this.fetchQueries();
     });
   }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchQueries();
+        }
+      })
+    );
+  }
+
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
@@ -9,8 +10,6 @@ import { ViewsActionsComponent } from '../shared/ag-grid-components/views-action
 import { TemplatesService } from '../shared/services/templates.service';
 import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { eavConstants } from '../../shared/constants/eav-constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
@@ -63,22 +62,19 @@ export class ViewsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private templatesService: TemplatesService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+  }
 
   ngOnInit() {
     this.fetchTemplates();
-    this.subscription.add(
-      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchTemplates();
-      })
-    );
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -121,6 +117,18 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.templatesService.delete(view.Id).subscribe(res => {
       this.fetchTemplates();
     });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchTemplates();
+        }
+      })
+    );
   }
 
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { PermissionsService } from './services/permissions.service';
@@ -9,8 +10,6 @@ import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './models/permissions-actions-params';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
-import { DialogService } from '../shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav-constants';
 
 @Component({
@@ -51,6 +50,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
   private targetType: number;
   private keyType: string;
   private key: string;
@@ -59,26 +59,26 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<PermissionsComponent>,
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService,
     private permissionsService: PermissionsService,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
+  }
 
   ngOnInit() {
     this.targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
     this.keyType = this.route.snapshot.paramMap.get('keyType');
     this.key = this.route.snapshot.paramMap.get('key');
     this.fetchPermissions();
-    this.subscription.add(
-      this.dialogService.subToClosed([ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchPermissions();
-      })
-    );
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.subscription = null;
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 
   fetchPermissions() {
@@ -127,7 +127,16 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeDialog() {
-    this.dialogRef.close();
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchPermissions();
+        }
+      })
+    );
   }
+
 }

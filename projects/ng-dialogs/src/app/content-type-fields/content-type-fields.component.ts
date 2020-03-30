@@ -1,15 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { ContentType } from '../app-administration/shared/models/content-type.model';
 import { Field } from './models/field.model';
-import { DialogService } from '../shared/components/dialog-service/dialog.service';
-import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
 import { eavConstants } from '../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
@@ -80,6 +79,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private contentTypeStaticName: string;
   private contentType: ContentType;
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
@@ -87,15 +87,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private router: Router,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
-    private dialogService: DialogService,
   ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
   async ngOnInit() {
     this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
     await this.fetchFields();
-    this.refreshOnClosedChildDialogs();
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -221,12 +221,16 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private refreshOnClosedChildDialogs() {
+  private refreshOnChildClosed() {
     this.subscription.add(
-      this.dialogService.subToClosed([EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchFields();
-      }),
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchFields();
+        }
+      })
     );
   }
+
 }

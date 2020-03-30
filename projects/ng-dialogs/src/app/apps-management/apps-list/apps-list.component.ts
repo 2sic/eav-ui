@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
@@ -8,8 +9,6 @@ import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { IMPORT_APP_DIALOG } from '../../shared/constants/dialog-names';
-import { DialogService } from '../../shared/components/dialog-service/dialog.service';
 import { appNamePattern, appNameError } from '../shared/constants/app';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 
@@ -49,23 +48,19 @@ export class AppsListComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
-    private dialogService: DialogService,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+  }
 
   ngOnInit() {
     this.fetchAppsList();
-
-    this.subscription.add(
-      this.dialogService.subToClosed([IMPORT_APP_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchAppsList();
-      })
-    );
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -118,6 +113,18 @@ export class AppsListComponent implements OnInit, OnDestroy {
   private openApp(params: CellClickedEvent) {
     const appId = (params.data as App).Id;
     this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchAppsList();
+        }
+      })
+    );
   }
 
 }

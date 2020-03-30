@@ -1,16 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
 import { Field } from '../content-type-fields/models/field.model';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
-import { DialogService } from '../shared/components/dialog-service/dialog.service';
-import { IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/constants/dialog-names';
 import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
@@ -46,30 +45,26 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private contentTypeStaticName: string;
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private router: Router,
     private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
-    private dialogService: DialogService,
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
   ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
   ngOnInit() {
     this.fetchItems();
+    this.refreshOnChildClosed();
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
       this.buildTable(columns);
     });
-    this.subscription.add(
-      this.dialogService.subToClosed([IMPORT_CONTENT_ITEM_DIALOG, ITEMS_EDIT_DIALOG]).subscribe(closedDialog => {
-        console.log('Dialog closed event captured:', closedDialog);
-        this.fetchItems();
-      })
-    );
   }
 
   ngOnDestroy() {
@@ -181,6 +176,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.fetchItems();
+        }
+      })
+    );
   }
 
   private buildTable(columns: Field[]) {

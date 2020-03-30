@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
-import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../shared/models/content-type.model';
 import { ContentTypesService } from '../shared/services/content-types.service';
@@ -13,9 +14,6 @@ import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constan
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { DataItemsParams } from '../shared/models/data-items-params';
 import { DataFieldsParams } from '../shared/models/data-fields-params';
-import { DialogService } from '../../shared/components/dialog-service/dialog.service';
-// tslint:disable-next-line:max-line-length
-import { EDIT_CONTENT_TYPE_DIALOG, CONTENT_TYPE_FIELDS_DIALOG, EXPORT_CONTENT_TYPE_DIALOG, IMPORT_CONTENT_TYPE_DIALOG, SET_PERMISSIONS_DIALOG, ITEMS_EDIT_DIALOG } from '../../shared/constants/dialog-names';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
@@ -74,15 +72,16 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private enableAppFeatures = false;
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService,
     private contentTypesService: ContentTypesService,
     private globalConfigurationService: GlobalConfigurationService,
     private appDialogConfigService: AppDialogConfigService,
   ) {
+    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
     this.scope = eavConstants.scopes.default.value;
     this.defaultScope = eavConstants.scopes.default.value;
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
@@ -92,7 +91,7 @@ export class DataComponent implements OnInit, OnDestroy {
     const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
     this.enableAppFeatures = !dialogSettings.IsContent;
     this.fetchContentTypes();
-    this.refreshOnClosedChildDialogs();
+    this.refreshOnChildClosed();
     this.subscription.add(
       this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
         this.debugEnabled = debugEnabled;
@@ -217,21 +216,15 @@ export class DataComponent implements OnInit, OnDestroy {
     });
   }
 
-  private refreshOnClosedChildDialogs() {
+  private refreshOnChildClosed() {
     this.subscription.add(
-      this.dialogService
-        .subToClosed([
-          EDIT_CONTENT_TYPE_DIALOG,
-          CONTENT_TYPE_FIELDS_DIALOG,
-          EXPORT_CONTENT_TYPE_DIALOG,
-          IMPORT_CONTENT_TYPE_DIALOG,
-          SET_PERMISSIONS_DIALOG,
-          ITEMS_EDIT_DIALOG,
-        ])
-        .subscribe(closedDialog => {
-          console.log('Dialog closed event captured:', closedDialog);
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
+        if (!this.hasChild && hadChild) {
           this.fetchContentTypes();
-        })
+        }
+      })
     );
   }
 
