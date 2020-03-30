@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentTypeFieldsInputTypeParams } from '../models/content-type-fields-input-type-params';
-import { Field } from '../models/field.model';
+import { ContentTypeFieldsInputTypeParams } from '../../models/content-type-fields-input-type-params';
+import { Field } from '../../models/field.model';
 
 @Component({
   selector: 'app-content-type-fields-input-type',

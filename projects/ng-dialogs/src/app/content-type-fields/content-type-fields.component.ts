@@ -13,11 +13,11 @@ import { EDIT_CONTENT_TYPE_FIELDS_DIALOG, ITEMS_EDIT_DIALOG } from '../shared/co
 import { eavConstants } from '../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
-import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTitleParams } from './models/content-type-fields-title-params';
 import { ContentTypeFieldsInputTypeParams } from './models/content-type-fields-input-type-params';
-import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
-import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './models/content-type-fields-actions-params';
 
 @Component({

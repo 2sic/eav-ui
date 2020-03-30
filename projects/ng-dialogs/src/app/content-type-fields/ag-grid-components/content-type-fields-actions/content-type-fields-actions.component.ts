@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentTypeFieldsActionsParams } from '../models/content-type-fields-actions-params';
-import { Field } from '../models/field.model';
+import { ContentTypeFieldsActionsParams } from '../../models/content-type-fields-actions-params';
+import { Field } from '../../models/field.model';
 
 @Component({
   selector: 'app-content-type-fields-actions',
