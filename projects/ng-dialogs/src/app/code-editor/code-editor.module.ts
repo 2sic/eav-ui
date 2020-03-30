@@ -7,7 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
-import { CodeEditorComponent } from './code-editor/code-editor.component';
+import { CodeEditorComponent } from './code-editor.component';
 import { Context } from '../shared/context/context';
 
 @NgModule({

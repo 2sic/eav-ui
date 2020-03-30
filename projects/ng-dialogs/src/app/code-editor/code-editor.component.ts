@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { Context } from '../../shared/context/context';
+import { Context } from '../shared/context/context';
 
 @Component({
   selector: 'app-code-editor',
