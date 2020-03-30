@@ -10,13 +10,13 @@ export class LocalizationHelper {
    */
   public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
     if (attributeValues) {
-      const translation: EavValue<any> = this.getAttributeValueTranslation(attributeValues, currentLanguage, defaultValue);
+      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultValue);
       // if translation exist then return translation
       if (translation) {
         return translation.value;
         // return translations[0].value;
       } else {
-        const translationDefault: EavValue<any> = this.getAttributeValueTranslation(attributeValues,
+        const translationDefault: EavValue<any> = this.getValueTranslation(attributeValues,
           defaultLanguage, defaultLanguage);
         // if default language translation exist then return translation
         if (translationDefault) {
@@ -32,7 +32,16 @@ export class LocalizationHelper {
     }
   }
 
-  public static getAttributeValueTranslation(allAttributesValues: EavValues<any>, languageKey: string,
+  public static getValueOrDefault(allAttributesValues: EavValues<any>, languageKey: string,
+    defaultLanguage: string): EavValue<any> {
+    let translation = LocalizationHelper.getValueTranslation(allAttributesValues, languageKey, defaultLanguage);
+    if (translation === null || translation === undefined) {
+      translation = LocalizationHelper.getValueTranslation(allAttributesValues, defaultLanguage, defaultLanguage);
+    }
+    return translation;
+  }
+
+  public static getValueTranslation(allAttributesValues: EavValues<any>, languageKey: string,
     defaultLanguage: string): EavValue<any> {
     return allAttributesValues.values.find(eavValue =>
       eavValue.dimensions.find(d => d.value === languageKey

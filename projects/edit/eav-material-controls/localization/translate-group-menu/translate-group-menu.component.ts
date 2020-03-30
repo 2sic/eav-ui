@@ -117,7 +117,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
-    const defaultValue: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(this.attributes[attributeKey],
+    const defaultValue: EavValue<any> = LocalizationHelper.getValueTranslation(this.attributes[attributeKey],
       this.defaultLanguage, this.defaultLanguage);
     if (defaultValue) {
       const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
@@ -170,7 +170,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   copyFrom(copyFromLanguageKey: string, attributeKey: string) {
     if (!this.isTranslateEnabled(attributeKey)) { return; }
 
-    const attributeValueTranslation: EavValue<any> = LocalizationHelper.getAttributeValueTranslation(this.attributes[attributeKey],
+    const attributeValueTranslation: EavValue<any> = LocalizationHelper.getValueTranslation(this.attributes[attributeKey],
       copyFromLanguageKey, this.defaultLanguage);
 
     if (attributeValueTranslation) {
@@ -418,7 +418,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
       this.setTranslationState(TranslationLinkTypeConstants.missingDefaultLangValue, '');
     } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-      const editableElements: EavDimensions<string>[] = LocalizationHelper.getAttributeValueTranslation(attributes,
+      const editableElements: EavDimensions<string>[] = LocalizationHelper.getValueTranslation(attributes,
         currentLanguage, defaultLanguage)
         .dimensions.filter(f => f.value !== currentLanguage);
       if (editableElements.length > 0) {
@@ -427,7 +427,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         this.setTranslationState(TranslationLinkTypeConstants.translate, '');
       }
     } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-      const readOnlyElements: EavDimensions<string>[] = LocalizationHelper.getAttributeValueTranslation(attributes,
+      const readOnlyElements: EavDimensions<string>[] = LocalizationHelper.getValueTranslation(attributes,
         currentLanguage, defaultLanguage)
         .dimensions.filter(f => f.value !== currentLanguage);
       this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, readOnlyElements[0].value);
@@ -471,7 +471,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     const isReadonlyTranslationExist: boolean = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
 
     if (isEditableTranslationExist || isReadonlyTranslationExist) {
-      let dimensions: string[] = LocalizationHelper.getAttributeValueTranslation(attributes, currentLanguage, defaultLanguage)
+      let dimensions: string[] = LocalizationHelper.getValueTranslation(attributes, currentLanguage, defaultLanguage)
         .dimensions.map(d => d.value);
 
       dimensions = dimensions.filter(d => !d.includes(currentLanguage));

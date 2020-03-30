@@ -82,8 +82,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
           // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
           .find(metadata => metadata.type.name === 'ContentType' || metadata.type.name === 'xx ContentType');
         if (!!type) {
-          label = type.attributes.Label.values.find(value => !!value.dimensions.find(dimension =>
-            dimension.value === '*' || dimension.value === this.currentLanguage || dimension.value === `~${this.currentLanguage}`)).value;
+          label = LocalizationHelper.getValueOrDefault(type.attributes.Label, this.currentLanguage, this.defaultLanguage)?.value;
         }
         label = label || contentType.contentType.name;
       } catch (error) {
