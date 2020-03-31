@@ -93,13 +93,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
     if (params === null) {
       form = {
         items: [{ ContentTypeName: eavConstants.contentTypes.template }],
-        persistedData: null,
       };
     } else {
       const view: View = params.data;
       form = {
         items: [{ EntityId: view.Id.toString(), Title: view.Name }],
-        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });

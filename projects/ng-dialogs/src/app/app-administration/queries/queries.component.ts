@@ -86,7 +86,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
       items: (query === null)
         ? [{ ContentTypeName: eavConstants.contentTypes.query, Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters } }]
         : [{ EntityId: query.Id.toString(), Title: query.Name }],
-      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }

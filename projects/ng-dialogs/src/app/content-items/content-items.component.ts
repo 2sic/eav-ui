@@ -87,13 +87,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     if (params === null) {
       form = {
         items: [{ ContentTypeName: this.contentTypeStaticName }],
-        persistedData: null,
       };
     } else {
       const item: ContentItem = params.data;
       form = {
         items: [{ EntityId: item.Id.toString(), Title: item.Title }],
-        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
@@ -164,7 +162,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         },
         Title: `Add Metadata for '${key}' (${keyType}) of type #${targetType}`,
       }],
-      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -255,7 +252,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private clone(item: ContentItem) {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
-      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }

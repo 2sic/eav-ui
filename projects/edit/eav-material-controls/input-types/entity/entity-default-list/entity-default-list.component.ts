@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -12,8 +13,6 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { DialogService } from '../../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
 @Component({
   selector: 'app-entity-default-list',
@@ -34,6 +33,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   // private contentType: FieldMaskService;
   private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
   private subscription = new Subscription();
+  private hasChild: boolean;
   private eavConfig: EavConfiguration;
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
@@ -57,25 +57,15 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService,
   ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
     this.setChosenEntities(this.controlValue);
     this.chosenEntitiesSubscribeToChanges();
-    this.subscription.add(
-      this.dialogService
-        .subToClosed([ITEMS_EDIT_DIALOG], {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        })
-        .subscribe(closedDialog => {
-          console.log('Dialog closed event captured:', closedDialog);
-          this.setData();
-        }),
-    );
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -111,12 +101,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     const entityId = this.getEntityId(value);
     const form: EditForm = {
       items: [{ EntityId: entityId, Title: null }],
-      persistedData: {
-        toNotify: {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        },
-      },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -238,4 +222,17 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     }
     this.setDirty();
   }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.setData();
+        }
+      })
+    );
+  }
+
 }

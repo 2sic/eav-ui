@@ -5,8 +5,6 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 import { Context } from '../../context/context';
-import { DialogService } from '../dialog-service/dialog.service';
-import { ClosedDialogData } from '../../models/closed-dialog.model';
 import { DialogConfig } from '../../models/dialog-config.model';
 
 @Component({
@@ -30,7 +28,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-    private dialogService: DialogService,
   ) {
     this.production = environment.production;
   }
@@ -51,8 +48,8 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     });
 
     this.subscription.add(
-      this.dialogRef.afterClosed().subscribe((data: ClosedDialogData) => {
-        this.dialogService.fireClosed(this.dialogConfig.name, data);
+      this.dialogRef.afterClosed().subscribe((data: any) => {
+        console.log('Dialog was closed:', this.dialogConfig.name, 'Data:', data);
 
         if (this.route.pathFromRoot.length <= 3) {
           try {

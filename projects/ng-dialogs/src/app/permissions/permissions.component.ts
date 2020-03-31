@@ -107,13 +107,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
           }
         }],
-        persistedData: null,
       };
     } else {
       const permission: Permission = params.data;
       form = {
         items: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
-        persistedData: null,
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

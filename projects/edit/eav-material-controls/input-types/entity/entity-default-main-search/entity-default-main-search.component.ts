@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -12,8 +13,6 @@ import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { DialogService } from '../../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 
 @Component({
@@ -45,6 +44,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
   debugEnabled = false;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
 
   get availableEntities(): EntityInfo[] { return this.config.cache || []; }
   get allowMultiValue(): boolean { return this.config.field.settings.AllowMultiValue || false; }
@@ -69,15 +69,16 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     private validationMessagesService: ValidationMessagesService,
     private translate: TranslateService,
     private globalConfigurationService: GlobalConfigurationService,
-    private dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
+  }
 
   ngOnInit() {
     this.setAvailableEntities();
     this.contentTypeMask = new FieldMaskService(this.entityType, this.group.controls, this.onContentTypeMaskChange.bind(this), null);
-    this.disableAddNew = !!!this.contentTypeMask.resolve();
+    this.disableAddNew = !this.contentTypeMask.resolve();
     // subscribe to debug enabled changes
     this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
     this.subscription.add(
@@ -85,19 +86,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
         this.debugEnabled = debugEnabled;
       })
     );
-    this.subscription.add(
-      this.dialogService
-        .subToClosed([ITEMS_EDIT_DIALOG], {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        })
-        .subscribe(closedDialog => {
-          console.log('Dialog closed event captured:', closedDialog);
-          if (!closedDialog.data.result) { return; }
-          this.addEntity(Object.keys(closedDialog.data.result)[0]);
-          this.setData();
-        }),
-    );
+    this.refreshOnChildClosed();
   }
 
   onContentTypeMaskChange(value: any) {
@@ -146,12 +135,6 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     const contentTypeName = this.contentTypeMask ? this.contentTypeMask.resolve() : this.entityType;
     const form: EditForm = {
       items: [{ ContentTypeName: contentTypeName }],
-      persistedData: {
-        toNotify: {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        },
-      },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -209,4 +192,20 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
       this.translate.instant('Fields.EntityQuery.QueryNoItems');
     }
   }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          // spm TODO:
+          // if (!closedDialog.data.result) { return; }
+          // this.addEntity(Object.keys(closedDialog.data.result)[0]);
+          this.setData();
+        }
+      })
+    );
+  }
+
 }

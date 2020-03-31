@@ -18,7 +18,6 @@ import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers, reducers } from '../../../edit/shared/store';
 import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
-import { SharedComponentsModule } from './shared/components/shared-components.module';
 import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
 
 @NgModule({
@@ -29,7 +28,6 @@ import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.int
   ],
   imports: [
     AppRoutingModule,
-    SharedComponentsModule.forRoot(),
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,

@@ -162,7 +162,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.createItemDefinition(field, field.Type),
         this.createItemDefinition(field, field.InputType)
       ],
-      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }

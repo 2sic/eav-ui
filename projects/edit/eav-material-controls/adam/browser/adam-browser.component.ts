@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { AdamService } from '../adam.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
@@ -13,8 +14,6 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { DialogService } from '../../../../ng-dialogs/src/app/shared/components/dialog-service/dialog.service';
-import { ITEMS_EDIT_DIALOG } from '../../../../ng-dialogs/src/app/shared/constants/dialog-names';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -74,6 +73,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   svc: any;
 
   private subscription = new Subscription();
+  private hasChild: boolean;
   get folders() { return this.svc ? this.svc.folders : []; }
 
   constructor(
@@ -82,21 +82,12 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private featureService: FeatureService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialogService: DialogService,
-  ) { }
+  ) {
+    this.hasChild = !!this.route.snapshot.firstChild;
+  }
 
   ngOnInit() {
-    this.subscription.add(
-      this.dialogService
-        .subToClosed([ITEMS_EDIT_DIALOG], {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        })
-        .subscribe(closedDialog => {
-          console.log('Dialog closed event captured:', closedDialog);
-          this.refresh();
-        }),
-    );
+    this.refreshOnChildClosed();
     this.subFolder = this.config.field.settings.Paths || '';
     // fixed leading "/"
     if (this.subFolder.startsWith('/') || this.subFolder.startsWith('\\')) {
@@ -180,12 +171,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           String: (adamItem.Type === 'folder' ? 'folder' : 'file') + ':' + adamItem.Id,
         }
       }],
-      persistedData: {
-        toNotify: {
-          entityId: this.config.entity.entityId,
-          fieldName: this.config.field.name,
-        },
-      },
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -193,7 +178,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   editItemMetadata(metadataId: string) {
     const form: EditForm = {
       items: [{ EntityId: metadataId.toString(), Title: null }],
-      persistedData: null,
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
@@ -339,4 +323,17 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private loadFileList = () => this.svc.liveListLoad();
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+        const hadChild = this.hasChild;
+        this.hasChild = !!this.route.snapshot.firstChild;
+        if (!this.hasChild && hadChild) {
+          this.refresh();
+        }
+      })
+    );
+  }
+
 }

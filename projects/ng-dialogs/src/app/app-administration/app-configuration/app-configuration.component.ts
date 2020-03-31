@@ -36,7 +36,6 @@ export class AppConfigurationComponent implements OnInit {
       const item = contentItems[0];
       const form: EditForm = {
         items: [{ EntityId: item.Id.toString(), Title: item.Title }],
-        persistedData: null,
       };
       this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
     });

@@ -34,7 +34,6 @@ import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.h
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { ClosedDialogData } from '../../../ng-dialogs/src/app/shared/models/closed-dialog.model';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
 
@@ -187,11 +186,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      const closedDialogData: ClosedDialogData = {
-        result: saveResult,
-        toNotify: this.editFormData.persistedData ? this.editFormData.persistedData.toNotify : null,
-      };
-      this.dialogRef.close(closedDialogData);
+      this.dialogRef.close(saveResult);
     }
   }
 
