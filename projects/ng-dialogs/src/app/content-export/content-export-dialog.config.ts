@@ -2,7 +2,7 @@ import { DialogConfig } from '../shared/models/dialog-config.model';
 
 export const contentExportDialog: DialogConfig = {
   name: 'EXPORT_CONTENT_TYPE_DIALOG',
-  initContext: false,
+  initContext: true,
   panelSize: 'medium',
   panelClass: null,
 
