@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, Injector } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -21,7 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 // tslint:disable-next-line:max-line-length
 import { OwlDateTimeModule, OwlDateTimeIntl, OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from '@danielmoncada/angular-datetime-picker';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -207,7 +207,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     ValidationMessagesService,
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride, deps: [Injector] },
+    { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride, deps: [TranslateService] },
     AppAssetsService,
     ScriptsLoaderService,
   ],
