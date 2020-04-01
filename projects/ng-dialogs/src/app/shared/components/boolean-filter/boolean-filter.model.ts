@@ -1,4 +1,4 @@
-export interface BooleanFilter {
-  filterType: string;
+export interface BooleanFilterModel {
+  filterType: 'boolean';
   filter: string;
 }

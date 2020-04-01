@@ -1,5 +1,5 @@
-export interface PubMetaFilter {
-  filterType: string;
+export interface PubMetaFilterModel {
+  filterType: 'pub-meta';
   published: string;
   metadata: string;
 }

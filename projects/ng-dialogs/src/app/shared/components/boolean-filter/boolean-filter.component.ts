@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 
-import { BooleanFilter } from './boolean-filter.model';
+import { BooleanFilterModel } from './boolean-filter.model';
 
 @Component({
   selector: 'app-boolean-filter',
@@ -28,7 +28,7 @@ export class BooleanFilterComponent implements IFilterAngularComp {
     return value.toString() === this.filter;
   }
 
-  getModel(): BooleanFilter {
+  getModel(): BooleanFilterModel {
     if (!this.isFilterActive()) { return; }
     return {
       filterType: 'boolean',
@@ -36,7 +36,7 @@ export class BooleanFilterComponent implements IFilterAngularComp {
     };
   }
 
-  setModel(model: BooleanFilter) {
+  setModel(model: BooleanFilterModel) {
     this.filter = model ? model.filter : '';
   }
 

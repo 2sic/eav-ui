@@ -22,6 +22,8 @@ import { ContentItemsActionsParams } from './models/content-items-actions-params
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
+import { keyFilters } from '../shared/constants/sessions-keys';
+import { buildFilterModel } from './content-items.helpers';
 
 @Component({
   selector: 'app-content-items',
@@ -32,7 +34,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   items: ContentItem[];
 
   private gridApi: GridApi;
-  columnDefs: ColDef[];
   frameworkComponents = {
     pubMetaFilterComponent: PubMetaFilterComponent,
     booleanFilterComponent: BooleanFilterComponent,
@@ -63,7 +64,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.fetchItems();
     this.refreshOnChildClosed();
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      this.buildTable(columns);
+      const columnDefs = this.buildColumnDefs(columns);
+      this.gridApi.setColumnDefs(columnDefs);
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
+      if (filterModel) {
+        console.log('Will try to apply filter:', filterModel);
+        this.gridApi.setFilterModel(filterModel);
+      }
     });
   }
 
@@ -167,7 +174,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    console.warn('Current filter: ', this.gridApi.getFilterModel());
+    console.warn('Current filter:', this.gridApi.getFilterModel());
     alert('Check console for filter information');
   }
 
@@ -187,14 +194,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private buildTable(columns: Field[]) {
+  private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 136, cellClass: 'clickable', sortable: true,
         filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent', onCellClicked: this.editItem.bind(this),
       },
       {
-        headerName: 'Status', width: 132, valueGetter: this.valueGetterStatus,
+        headerName: 'Status', field: 'Status', width: 132, valueGetter: this.valueGetterStatus,
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
       },
       {
@@ -246,7 +253,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       }
       columnDefs.push(colDef);
     }
-    this.columnDefs = columnDefs;
+    return columnDefs;
   }
 
   private clone(item: ContentItem) {

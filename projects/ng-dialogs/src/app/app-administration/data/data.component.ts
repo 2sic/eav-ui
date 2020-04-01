@@ -31,7 +31,7 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {

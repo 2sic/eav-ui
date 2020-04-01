@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 
-import { PubMetaFilter, PubMeta } from './pub-meta-filter.model';
+import { PubMetaFilterModel, PubMeta } from './pub-meta-filter.model';
 
 @Component({
   selector: 'app-pub-meta-filter',
@@ -48,7 +48,7 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
     return publishedPassed && metadataPassed;
   }
 
-  getModel(): PubMetaFilter {
+  getModel(): PubMetaFilterModel {
     if (!this.isFilterActive()) { return; }
     return {
       filterType: 'pub-meta',
@@ -57,7 +57,7 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
     };
   }
 
-  setModel(model: PubMetaFilter) {
+  setModel(model: PubMetaFilterModel) {
     this.published = model ? model.published : '';
     this.metadata = model ? model.metadata : '';
   }

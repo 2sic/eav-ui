@@ -18,3 +18,4 @@ export const keyPartOfPage = 'partOfPage';
 export const keyPortalRoot = 'portalroot';
 export const keyPublishing = 'publishing';
 export const keyWebsiteRoot = 'websiteroot';
+export const keyFilters = 'filters';
