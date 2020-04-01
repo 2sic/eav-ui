@@ -196,7 +196,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
       if (this.formsAreValid || this.allControlsAreDisabled) {
-        console.log('TINYMCE SAVE saveAll');
         this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
           itemEditFormComponent.form.submitOutside();
         });
@@ -432,7 +431,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           IsPublished: this.publishMode === 'show',
           DraftShouldBranch: this.publishMode === 'branch'
         };
-        console.log('TINYMCE SAVE savemany body:', body.Items[0].Entity.Attributes.String.TinyMCE);
         return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
           .pipe(map(data => {
             this.enableDraft = true; // after saving, we can re-save as draft
