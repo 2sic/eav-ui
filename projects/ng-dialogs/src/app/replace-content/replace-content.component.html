@@ -12,3 +12,21 @@
 <p class="dialog-description">
   By replacing a content-item you can make a other content appear in the slot of the original content.
 </p>
+
+<div class="options-box">
+  <mat-form-field class="options-box__field" appearance="standard" color="accent">
+    <mat-label>Choose item</mat-label>
+    <mat-select [(ngModel)]="item.id" name="Language">
+      <mat-option *ngFor="let option of options" [value]="option.value">{{ option.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-icon-button class="options-box__copy" matTooltip="Copy" (click)="copySelected()">
+    <mat-icon>file_copy</mat-icon>
+  </button>
+</div>
+
+<div class="form-actions-box">
+  <button mat-icon-button (click)="save()">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>

@@ -1,0 +1,16 @@
+.options-box {
+  display: flex;
+  align-items: flex-end;
+
+  &__field {
+    width: 240px;
+  }
+
+  &__copy {
+    margin-left: 8px;
+  }
+}
+
+.form-actions-box {
+  padding-top: 8px;
+}
