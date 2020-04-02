@@ -13,14 +13,20 @@ export function paramsInitFactory(injector: Injector) {
     console.log('Setting parameters config and clearing route');
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
-      // if params route save params and redirect
+      sessionStorage.clear();
+      sessionStorage.setItem(keyDialog, 'edit'); // set edit dialog as the default
+
+      // save params
       const urlHash = window.location.hash.substring(1); // substring removes first # char
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
-      Object.keys(queryParametersFromUrl).forEach(key => {
-        const value = queryParametersFromUrl[key];
-        if (value === undefined || value === null) { return; }
-        sessionStorage.setItem(key, value);
-      });
+      const paramKeys = Object.keys(queryParametersFromUrl);
+      for (const paramKey of paramKeys) {
+        const value = queryParametersFromUrl[paramKey];
+        if (value === undefined || value === null) { continue; }
+        sessionStorage.setItem(paramKey, value);
+      }
+
+      // redirect
       const router = injector.get(Router);
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
@@ -38,7 +44,6 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
           break;
         case 'contentitems':
-          // spm TODO: can also have filters for the grid in the url/sessionStorage
           router.navigate([`${zoneId}/${appId}/items/${contentType}`]);
           break;
         case 'edit':
@@ -55,6 +60,9 @@ export function paramsInitFactory(injector: Injector) {
           break;
         case 'replace':
           router.navigate([`${zoneId}/${appId}/replace`]);
+          break;
+        case 'instance-list':
+          router.navigate([`${zoneId}/${appId}/reorder`]);
           break;
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);

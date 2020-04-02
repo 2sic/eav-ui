@@ -59,9 +59,9 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         }
 
         if (this.route.snapshot.url.length > 0) {
-          this.router.navigate(['./'], { relativeTo: this.route.parent });
+          this.router.navigate(['./'], { relativeTo: this.route.parent, state: data });
         } else {
-          this.router.navigate(['./'], { relativeTo: this.route.parent.parent });
+          this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
         }
       })
     );

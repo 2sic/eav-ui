@@ -21,6 +21,10 @@ const appRoutes: Routes = [
     loadChildren: () => import('./replace-content/replace-content.module').then(m => m.ReplaceContentModule)
   },
   {
+    path: ':zoneId/:appId/reorder',
+    loadChildren: () => import('./manage-content-list/manage-content-list.module').then(m => m.ManageContentListModule)
+  },
+  {
     path: ':zoneId/:appId/items/:contentTypeStaticName',
     loadChildren: () => import('./content-items/content-items.module').then(m => m.ContentItemsModule)
   },

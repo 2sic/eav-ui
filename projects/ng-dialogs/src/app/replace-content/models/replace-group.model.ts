@@ -1,9 +1,9 @@
-export class ReplaceGroup {
+export class ReplaceConfig {
   SelectedId: number;
-  Items: ReplaceGroupItems;
+  Items: ReplaceConfigItems;
   ContentTypeName: string;
 }
 
-export class ReplaceGroupItems {
+export class ReplaceConfigItems {
   [key: number]: string;
 }

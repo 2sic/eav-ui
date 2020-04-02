@@ -41,7 +41,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getItems();
+    this.getConfig();
     this.refreshOnChildClosed();
   }
 
@@ -67,17 +67,21 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  private getItems() {
-    this.contentGroupService.getItems(this.item).subscribe(res => {
-      const optionKeys = Object.keys(res.Items);
+  private getConfig() {
+    this.contentGroupService.getItems(this.item).subscribe(replaceConfig => {
+      const itemKeys = Object.keys(replaceConfig.Items);
       this.options = [];
-      for (const key of optionKeys) {
+      for (const key of itemKeys) {
         const nKey = parseInt(key, 10);
-        const itemName = res.Items[nKey];
-        this.options.push({ label: `${itemName} (${key})`, value: nKey });
+        const itemName = replaceConfig.Items[nKey];
+        this.options.push({ label: `${itemName} (${nKey})`, value: nKey });
       }
-      this.item.id = res.SelectedId;
-      this.contentTypeName = res.ContentTypeName;
+      if (!this.item.id) {
+        this.item.id = replaceConfig.SelectedId;
+      }
+      if (!this.contentTypeName) {
+        this.contentTypeName = replaceConfig.ContentTypeName;
+      }
     });
   }
 
@@ -87,8 +91,12 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
-          // spm TODO: select new item
-          this.getItems();
+          this.getConfig();
+          const navigation = this.router.getCurrentNavigation();
+          const editResult = navigation.extras?.state;
+          if (editResult) {
+            this.item.id = editResult[Object.keys(editResult)[0]];
+          }
         }
       })
     );
