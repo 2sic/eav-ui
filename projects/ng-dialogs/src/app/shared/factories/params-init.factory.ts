@@ -57,7 +57,10 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/replace`]);
           break;
         default:
-          router.navigate([`${zoneId}/apps`]);
+          alert(`Cannot open unknown dialog "${dialog}"`);
+          try {
+            (window.parent as any).$2sxc.totalPopup.close();
+          } catch (error) { }
       }
     } else if (sessionStorage.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
