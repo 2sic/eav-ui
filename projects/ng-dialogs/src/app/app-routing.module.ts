@@ -17,6 +17,10 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
+    path: ':zoneId/:appId/replace',
+    loadChildren: () => import('./replace-content/replace-content.module').then(m => m.ReplaceContentModule)
+  },
+  {
     path: ':zoneId/:appId/items/:contentTypeStaticName',
     loadChildren: () => import('./content-items/content-items.module').then(m => m.ContentItemsModule)
   },

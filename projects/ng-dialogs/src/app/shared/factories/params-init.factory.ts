@@ -53,6 +53,9 @@ export function paramsInitFactory(injector: Injector) {
           alert('Feature not yet implemented. Opening queries list');
           router.navigate([`${zoneId}/${appId}/app/queries`]);
           break;
+        case 'replace':
+          router.navigate([`${zoneId}/${appId}/replace`]);
+          break;
         default:
           router.navigate([`${zoneId}/apps`]);
       }
