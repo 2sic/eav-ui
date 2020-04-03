@@ -4,7 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl } from '../constants/sessions-keys';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix } from '../constants/sessions-keys';
 import { EditForm, EditItem } from '../../app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
@@ -13,7 +13,12 @@ export function paramsInitFactory(injector: Injector) {
     console.log('Setting parameters config and clearing route');
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
-      sessionStorage.clear();
+      // clear our part of the session
+      const sessionKeys = Object.keys(sessionStorage);
+      for (const key of sessionKeys) {
+        if (!key.startsWith(prefix)) { continue; }
+        sessionStorage.removeItem(key);
+      }
       sessionStorage.setItem(keyUrl, window.location.href); // save url which opened the dialog
       sessionStorage.setItem(keyDialog, 'edit'); // set edit dialog as the default
 
@@ -21,10 +26,10 @@ export function paramsInitFactory(injector: Injector) {
       const urlHash = window.location.hash.substring(1); // substring removes first # char
       const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
       const paramKeys = Object.keys(queryParametersFromUrl);
-      for (const paramKey of paramKeys) {
-        const value = queryParametersFromUrl[paramKey];
+      for (const key of paramKeys) {
+        const value = queryParametersFromUrl[key];
         if (value === undefined || value === null) { continue; }
-        sessionStorage.setItem(paramKey, value);
+        sessionStorage.setItem(prefix + key, value);
       }
 
       // redirect

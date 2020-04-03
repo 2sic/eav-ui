@@ -33,8 +33,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     const itemsString = sessionStorage.getItem(keyItems);
     const items: GroupItem[] = JSON.parse(itemsString);
     this.item = {
-      // spm TODO: Id might be some leftover code as it's always undefined
-      id: items[0].Group.Id,
+      id: null,
       guid: items[0].Group.Guid,
       part: items[0].Group.Part,
       index: items[0].Group.Index,

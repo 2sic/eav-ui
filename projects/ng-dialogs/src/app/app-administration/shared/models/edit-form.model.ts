@@ -25,8 +25,6 @@ export class AddItem {
 export class GroupItem {
   Group: GroupItemGroup;
   Title: string;
-  /** Might be a leftover in 2sxc 9 and might not exist */
-  EntityId?: number;
 }
 
 export class GroupItemGroup {
@@ -34,6 +32,4 @@ export class GroupItemGroup {
   Index: number;
   Part: string;
   Add: boolean;
-  /** Might be a leftover in 2sxc 9 and might not exist */
-  Id?: number;
 }

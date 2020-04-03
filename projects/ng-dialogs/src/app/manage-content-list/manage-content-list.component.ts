@@ -31,18 +31,17 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
-  }
-
-  ngOnInit() {
     const itemsString = sessionStorage.getItem(keyItems);
     const items: GroupItem[] = JSON.parse(itemsString);
     this.contentGroup = {
-      // spm TODO: EntityId might be some leftover code as it's always undefined
-      id: items[0].EntityId,
+      id: null,
       guid: items[0].Group.Guid,
       part: items[0].Group.Part,
       index: items[0].Group.Index,
     };
+  }
+
+  ngOnInit() {
     this.fetchList();
     this.fetchHeader();
     this.refreshOnChildClosed();
@@ -68,7 +67,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listcontent',
-            Add: (this.header.Id as any) === '0' // spm TODO: this is always false in 2sxc 9 because id is a number
+            Add: this.header.Id === 0,
           },
           Title: 'List Content',
         },
@@ -77,7 +76,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listpresentation',
-            Add: (this.header.Id as any) === '0' // spm TODO: this is always false in 2sxc 9 because id is a number
+            Add: this.header.Id === 0,
           },
           Title: 'List Presentation',
         },
