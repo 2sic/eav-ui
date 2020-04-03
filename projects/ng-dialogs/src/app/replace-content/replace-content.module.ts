@@ -12,7 +12,7 @@ import { ReplaceContentRoutingModule } from './replace-content-routing.module';
 import { ReplaceContentComponent } from './replace-content.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
-import { ContentGroupService } from './services/content-group.service';
+import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 
 @NgModule({
   declarations: [

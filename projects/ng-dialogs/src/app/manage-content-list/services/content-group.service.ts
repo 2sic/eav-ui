@@ -5,8 +5,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/context/context';
 import { ContentGroup } from '../models/content-group.model';
-import { ReplaceConfig } from '../models/replace-config.model';
-import { GroupHeader } from '../../manage-content-list/models/group-header.model';
+import { ReplaceConfig } from '../../replace-content/models/replace-config.model';
+import { GroupHeader } from '../models/group-header.model';
 
 @Injectable()
 export class ContentGroupService {

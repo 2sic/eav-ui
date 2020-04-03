@@ -10,7 +10,7 @@ import { ManageContentListRoutingModule } from './manage-content-list-routing.mo
 import { ManageContentListComponent } from './manage-content-list.component';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { Context } from '../shared/context/context';
-import { ContentGroupService } from '../replace-content/services/content-group.service';
+import { ContentGroupService } from './services/content-group.service';
 
 @NgModule({
   declarations: [

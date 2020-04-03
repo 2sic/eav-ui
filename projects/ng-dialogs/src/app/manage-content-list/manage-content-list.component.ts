@@ -5,10 +5,10 @@ import { filter } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
-import { ContentGroupService } from '../replace-content/services/content-group.service';
+import { ContentGroupService } from './services/content-group.service';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
-import { ContentGroup } from '../replace-content/models/content-group.model';
+import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 
 @Component({
