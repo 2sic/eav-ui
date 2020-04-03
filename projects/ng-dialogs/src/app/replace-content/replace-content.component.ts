@@ -7,8 +7,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { ContentGroupService } from './services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
-import { ReplaceItem, UrlReplaceItem } from './models/replace-item.model';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { ContentGroup } from './models/replace-item.model';
+import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
 
 @Component({
   selector: 'app-replace-content',
@@ -17,7 +17,7 @@ import { EditForm } from '../app-administration/shared/models/edit-form.model';
 })
 export class ReplaceContentComponent implements OnInit, OnDestroy {
   options: ReplaceOption[];
-  item: ReplaceItem;
+  item: ContentGroup;
   contentTypeName: string;
 
   private subscription = new Subscription();
@@ -31,9 +31,9 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     const itemsString = sessionStorage.getItem(keyItems);
-    const items: UrlReplaceItem[] = JSON.parse(itemsString);
+    const items: GroupItem[] = JSON.parse(itemsString);
     this.item = {
-      id: null,
+      id: items[0].Group.Id,
       guid: items[0].Group.Guid,
       part: items[0].Group.Part,
       index: items[0].Group.Index,

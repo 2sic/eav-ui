@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,6 +27,7 @@ import { ContentGroupService } from '../replace-content/services/content-group.s
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    DragDropModule,
   ],
   providers: [
     Context,

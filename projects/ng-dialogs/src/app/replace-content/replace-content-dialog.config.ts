@@ -3,7 +3,7 @@ import { DialogConfig } from '../shared/models/dialog-config.model';
 export const replaceContentDialog: DialogConfig = {
   name: 'REPLACE_CONTENT_DIALOG',
   initContext: true,
-  panelSize: 'medium',
+  panelSize: 'small',
   panelClass: null,
 
   async getComponent() {
