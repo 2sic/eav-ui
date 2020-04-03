@@ -37,6 +37,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     const itemsString = sessionStorage.getItem(keyItems);
     const items: GroupItem[] = JSON.parse(itemsString);
     this.contentGroup = {
+      // spm TODO: EntityId might be some leftover code as it's always undefined
       id: items[0].EntityId,
       guid: items[0].Group.Guid,
       part: items[0].Group.Part,
@@ -114,6 +115,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private fetchHeader() {
     this.contentGroupService.getHeader(this.contentGroup).subscribe(res => {
+      // spm TODO: Header title seems to always be an empty string
       this.header = res;
     });
   }
