@@ -51,7 +51,6 @@ export class EnableLanguagesComponent implements OnInit {
 
   private toggleLanguage(language: EnableLanguage) {
     this.languagesService.save(language.Code, !language.IsEnabled).subscribe(() => {
-      console.log(`${language.Code} is ${!language.IsEnabled}`);
       this.fetchLanguages();
     });
   }
