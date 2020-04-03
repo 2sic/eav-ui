@@ -4,7 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType } from '../constants/sessions-keys';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl } from '../constants/sessions-keys';
 import { EditForm, EditItem } from '../../app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
@@ -14,6 +14,7 @@ export function paramsInitFactory(injector: Injector) {
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
       sessionStorage.clear();
+      sessionStorage.setItem(keyUrl, window.location.href); // save url which opened the dialog
       sessionStorage.setItem(keyDialog, 'edit'); // set edit dialog as the default
 
       // save params

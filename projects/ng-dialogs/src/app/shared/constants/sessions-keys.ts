@@ -19,3 +19,5 @@ export const keyPortalRoot = 'portalroot';
 export const keyPublishing = 'publishing';
 export const keyWebsiteRoot = 'websiteroot';
 export const keyFilters = 'filters';
+/** Url which opened the dialog. Used for debugging */
+export const keyUrl = 'url';
