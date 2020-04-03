@@ -8,7 +8,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContentGroupService } from '../replace-content/services/content-group.service';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
-import { ContentGroup } from '../replace-content/models/replace-item.model';
+import { ContentGroup } from '../replace-content/models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 
 @Component({

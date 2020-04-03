@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/context/context';
-import { ContentGroup } from '../models/replace-item.model';
-import { ReplaceConfig } from '../models/replace-group.model';
+import { ContentGroup } from '../models/content-group.model';
+import { ReplaceConfig } from '../models/replace-config.model';
 import { GroupHeader } from '../../manage-content-list/models/group-header.model';
 
 @Injectable()

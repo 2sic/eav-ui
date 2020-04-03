@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { ContentGroupService } from './services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
-import { ContentGroup } from './models/replace-item.model';
+import { ContentGroup } from './models/content-group.model';
 import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
 
 @Component({
