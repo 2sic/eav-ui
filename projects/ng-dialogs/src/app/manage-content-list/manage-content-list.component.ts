@@ -6,8 +6,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { ContentGroupService } from './services/content-group.service';
-import { keyItems } from '../shared/constants/sessions-keys';
-import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 
@@ -31,13 +30,11 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private router: Router,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
-    const itemsString = sessionStorage.getItem(keyItems);
-    const items: GroupItem[] = JSON.parse(itemsString);
     this.contentGroup = {
       id: null,
-      guid: items[0].Group.Guid,
-      part: items[0].Group.Part,
-      index: items[0].Group.Index,
+      guid: this.route.snapshot.paramMap.get('guid'),
+      part: this.route.snapshot.paramMap.get('part'),
+      index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
     };
   }
 

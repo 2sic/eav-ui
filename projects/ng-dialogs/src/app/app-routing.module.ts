@@ -17,11 +17,11 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    path: ':zoneId/:appId/replace',
+    path: ':zoneId/:appId/:guid/:part/:index/replace',
     loadChildren: () => import('./replace-content/replace-content.module').then(m => m.ReplaceContentModule)
   },
   {
-    path: ':zoneId/:appId/reorder',
+    path: ':zoneId/:appId/:guid/:part/:index/reorder',
     loadChildren: () => import('./manage-content-list/manage-content-list.module').then(m => m.ManageContentListModule)
   },
   {

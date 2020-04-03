@@ -5,7 +5,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { UrlHelper } from '../../../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
 import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix } from '../constants/sessions-keys';
-import { EditForm, EditItem } from '../../app-administration/shared/models/edit-form.model';
+import { EditForm, EditItem, GroupItem } from '../../app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -53,8 +53,8 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/items/${contentType}`]);
           break;
         case 'edit':
-          const parsedItems: EditItem[] = JSON.parse(items);
-          const form: EditForm = { items: parsedItems };
+          const editItems: EditItem[] = JSON.parse(items);
+          const form: EditForm = { items: editItems };
           router.navigate([`${zoneId}/${appId}/edit/${JSON.stringify(form)}`]);
           break;
         case 'develop':
@@ -65,10 +65,18 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/app/queries`]);
           break;
         case 'replace':
-          router.navigate([`${zoneId}/${appId}/replace`]);
+          const replaceItems: GroupItem[] = JSON.parse(items);
+          const rGuid = replaceItems[0].Group.Guid;
+          const rPart = replaceItems[0].Group.Part;
+          const rIndex = replaceItems[0].Group.Index;
+          router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`]);
           break;
         case 'instance-list':
-          router.navigate([`${zoneId}/${appId}/reorder`]);
+          const groupItems: GroupItem[] = JSON.parse(items);
+          const gGuid = groupItems[0].Group.Guid;
+          const gPart = groupItems[0].Group.Part;
+          const gIndex = groupItems[0].Group.Index;
+          router.navigate([`${zoneId}/${appId}/${gGuid}/${gPart}/${gIndex}/reorder`]);
           break;
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);

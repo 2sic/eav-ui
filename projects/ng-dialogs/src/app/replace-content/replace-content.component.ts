@@ -4,11 +4,10 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { keyItems } from '../shared/constants/sessions-keys';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
 import { ContentGroup } from '../manage-content-list/models/content-group.model';
-import { EditForm, GroupItem } from '../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../app-administration/shared/models/edit-form.model';
 
 @Component({
   selector: 'app-replace-content',
@@ -30,13 +29,11 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
-    const itemsString = sessionStorage.getItem(keyItems);
-    const items: GroupItem[] = JSON.parse(itemsString);
     this.item = {
       id: null,
-      guid: items[0].Group.Guid,
-      part: items[0].Group.Part,
-      index: items[0].Group.Index,
+      guid: this.route.snapshot.paramMap.get('guid'),
+      part: this.route.snapshot.paramMap.get('part'),
+      index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
     };
   }
 
