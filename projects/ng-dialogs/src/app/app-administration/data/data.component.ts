@@ -186,7 +186,7 @@ export class DataComponent implements OnInit, OnDestroy {
           },
           Prefill: { Label: contentType.Name, Description: contentType.Description },
         }]
-        : [{ EntityId: contentType.Metadata.Id.toString(), Title: contentType.Metadata.Title }],
+        : [{ EntityId: contentType.Metadata.Id.toString() }],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }

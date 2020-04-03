@@ -35,7 +35,7 @@ export class AppConfigurationComponent implements OnInit {
       if (contentItems.length !== 1) { throw new Error(`Found too many settings for the type ${staticName}`); }
       const item = contentItems[0];
       const form: EditForm = {
-        items: [{ EntityId: item.Id.toString(), Title: item.Title }],
+        items: [{ EntityId: item.Id.toString() }],
       };
       this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
     });

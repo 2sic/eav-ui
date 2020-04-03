@@ -98,7 +98,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     } else {
       const item: ContentItem = params.data;
       form = {
-        items: [{ EntityId: item.Id.toString(), Title: item.Title }],
+        items: [{ EntityId: item.Id.toString() }],
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
@@ -167,7 +167,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           ...(keyType === eavConstants.keyTypes.number && { Number: parseInt(key, 10) }),
           ...(keyType === eavConstants.keyTypes.string && { String: key }),
         },
-        Title: `Add Metadata for '${key}' (${keyType}) of type #${targetType}`,
       }],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

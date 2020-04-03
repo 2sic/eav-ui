@@ -177,7 +177,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   editItemMetadata(metadataId: string) {
     const form: EditForm = {
-      items: [{ EntityId: metadataId.toString(), Title: null }],
+      items: [{ EntityId: metadataId.toString() }],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }

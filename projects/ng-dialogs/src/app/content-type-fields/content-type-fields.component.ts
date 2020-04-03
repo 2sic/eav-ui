@@ -167,11 +167,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {
-    const title = metadataType === 'All' ? 'General Settings' : metadataType;
     return field.Metadata[metadataType] !== undefined
-      ? { EntityId: field.Metadata[metadataType].Id, Title: title } // if defined, return the entity-number to edit
+      ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
       : {
-        ContentTypeName: '@' + metadataType, // otherwise the content type for new-assegnment
+        ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
           Number: field.Id

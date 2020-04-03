@@ -111,7 +111,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     } else {
       const permission: Permission = params.data;
       form = {
-        items: [{ EntityId: permission.Id.toString(), Title: permission.Title }],
+        items: [{ EntityId: permission.Id.toString() }],
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });

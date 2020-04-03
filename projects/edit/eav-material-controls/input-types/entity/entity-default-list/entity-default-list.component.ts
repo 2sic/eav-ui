@@ -100,7 +100,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
   edit(value: string) {
     const entityId = this.getEntityId(value);
     const form: EditForm = {
-      items: [{ EntityId: entityId, Title: null }],
+      items: [{ EntityId: entityId }],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }

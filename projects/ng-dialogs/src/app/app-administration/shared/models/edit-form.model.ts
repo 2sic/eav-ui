@@ -6,14 +6,12 @@ export class EditForm {
 }
 
 export class EditItem {
-  constructor(public EntityId: string, public Title: string) { }
+  constructor(public EntityId: string) { }
 }
 
 export class AddItem {
   /** Content type */
   ContentTypeName: string;
-  /** Form title */
-  Title?: string;
   /** Add item as metadata to another item */
   For?: EavFor;
   /** Prefill form with data */
@@ -24,7 +22,6 @@ export class AddItem {
 
 export class GroupItem {
   Group: GroupItemGroup;
-  Title: string;
 }
 
 export class GroupItemGroup {

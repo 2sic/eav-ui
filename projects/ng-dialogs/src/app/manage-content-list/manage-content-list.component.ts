@@ -69,7 +69,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Part: 'listcontent',
             Add: this.header.Id === 0,
           },
-          Title: 'List Content',
         },
         {
           Group: {
@@ -78,7 +77,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Part: 'listpresentation',
             Add: this.header.Id === 0,
           },
-          Title: 'List Presentation',
         },
       ],
     };
@@ -88,7 +86,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   editItem(id: number) {
     const form: EditForm = {
       items: [
-        { EntityId: id.toString(), Title: null },
+        { EntityId: id.toString() },
       ],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
