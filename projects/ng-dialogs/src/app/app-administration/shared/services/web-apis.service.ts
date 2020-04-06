@@ -11,7 +11,7 @@ export class WebApisService {
 
   getAll() {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
-      params: { appId: this.context.appId.toString(), path: 'api', mask: '*.cs' },
+      params: { appId: this.context.appId.toString(), path: '', mask: '*Controller.cs', withSubfolders: 'true' },
     }) as Observable<string[]>;
   }
 }
