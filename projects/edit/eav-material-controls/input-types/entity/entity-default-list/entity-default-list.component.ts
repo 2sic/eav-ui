@@ -229,6 +229,8 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
+          const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
+          if (expandedFieldId !== this.config.field.index.toString()) { return; }
           this.setData();
         }
       })
