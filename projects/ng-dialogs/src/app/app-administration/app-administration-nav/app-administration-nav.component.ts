@@ -15,7 +15,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
   styleUrls: ['./app-administration-nav.component.scss']
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
-  tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs has to match template and filter below
+  tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs have to match template and filter below
   tabIndex: number;
   dialogSettings: DialogSettings;
 
@@ -30,23 +30,19 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // set tab initially
-    this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
-
+    this.subscription.add(
+      this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+        if (dialogSettings.IsContent) {
+          this.tabs = this.tabs.filter(tab => !(tab === 'queries' || tab === 'web-api'));
+        }
+        this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
+        this.dialogSettings = dialogSettings; // needed to filter tabs
+      })
+    );
     this.subscription.add(
       // change tab when route changed
       this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
         this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
-      })
-    );
-    this.subscription.add(
-      this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-        if (dialogSettings.IsContent) {
-          this.tabs = this.tabs.filter(tab => {
-            return !(tab === 'queries' || tab === 'web-api');
-          });
-        }
-        this.dialogSettings = dialogSettings; // needed to filter tabs
       })
     );
   }

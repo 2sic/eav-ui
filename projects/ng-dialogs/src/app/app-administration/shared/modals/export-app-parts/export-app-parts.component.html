@@ -22,7 +22,7 @@
       </mat-option>
       <mat-option value="Other">Other...</mat-option>
     </mat-select>
-    <button mat-icon-button type="button" matSuffix>
+    <button mat-icon-button type="button" matSuffix [matTooltip]="lockScope ? 'Unlock' : 'Lock'">
       <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
       <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
     </button>
