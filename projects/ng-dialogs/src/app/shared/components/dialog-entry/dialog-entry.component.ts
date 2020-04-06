@@ -19,8 +19,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   private dialogRef: MatDialogRef<any, any>;
   private dialogConfig: DialogConfig;
   private component: Type<any>;
-  private panelSize: string;
-  private panelClass: string[] = [];
 
   constructor(
     private dialog: MatDialog,
@@ -30,15 +28,27 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private context: Context,
   ) {
     this.production = environment.production;
+    this.dialogConfig = this.route.snapshot.data.dialog;
+    if (!this.dialogConfig) {
+      throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
+    }
   }
 
   async ngOnInit() {
-    await this.configureDialog();
     console.log('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    this.component = await this.dialogConfig.getComponent();
+    if (this.dialogConfig.initContext) {
+      this.context.init(this.route);
+    }
 
     this.dialogRef = this.dialog.open(this.component, {
       backdropClass: 'dialog-backdrop',
-      panelClass: ['dialog-panel', `dialog-panel-${this.panelSize}`, 'no-scrollbar', ...this.panelClass],
+      panelClass: [
+        'dialog-panel',
+        `dialog-panel-${this.dialogConfig.panelSize}`,
+        this.dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
+        ...(this.dialogConfig.panelClass ? this.dialogConfig.panelClass : []),
+      ],
       viewContainerRef: this.viewContainerRef,
       autoFocus: false,
       closeOnNavigation: false,
@@ -74,21 +84,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     this.component = null;
     this.dialogRef.close();
     this.dialogRef = null;
-  }
-
-  private async configureDialog() {
-    this.dialogConfig = this.route.snapshot.data.dialog;
-    if (!this.dialogConfig) {
-      throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
-    }
-    this.component = await this.dialogConfig.getComponent();
-    this.panelSize = this.dialogConfig.panelSize;
-    if (this.dialogConfig.initContext) {
-      this.context.init(this.route);
-    }
-    if (this.dialogConfig.panelClass) {
-      this.panelClass = this.dialogConfig.panelClass;
-    }
   }
 
 }

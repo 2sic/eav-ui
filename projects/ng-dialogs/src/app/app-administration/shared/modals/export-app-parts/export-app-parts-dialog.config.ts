@@ -4,7 +4,8 @@ export const exportAppPartsDialog: DialogConfig = {
   name: 'EXPORT_APP_PARTS',
   initContext: false,
   panelSize: 'medium',
-  panelClass: ['show-scrollbar'],
+  panelClass: null,
+  showScrollbar: true,
 
   async getComponent() {
     const { ExportAppPartsComponent } = await import('./export-app-parts.component');
