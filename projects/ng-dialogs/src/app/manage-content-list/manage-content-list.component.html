@@ -14,7 +14,7 @@
 <p class="dialog-description" *ngIf="header">
   <ng-container *ngIf="header.Type">
     {{ header.Title }}
-    <button mat-icon-button (click)="editHeader()">
+    <button mat-icon-button matTooltip="Edit header" (click)="editHeader()">
       <mat-icon>edit</mat-icon>
     </button>
   </ng-container>
