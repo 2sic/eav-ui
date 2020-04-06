@@ -11,12 +11,11 @@ declare const $2sxc: SxcRoot;
 export function paramsInitFactory(injector: Injector) {
   return () => {
     console.log('Setting parameters config and clearing route');
+    const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
       // clear our part of the session
-      const sessionKeys = Object.keys(sessionStorage);
-      for (const key of sessionKeys) {
-        if (!key.startsWith(prefix)) { continue; }
+      for (const key of eavKeys) {
         sessionStorage.removeItem(key);
       }
       sessionStorage.setItem(keyUrl, window.location.href); // save url which opened the dialog
@@ -84,7 +83,7 @@ export function paramsInitFactory(injector: Injector) {
             (window.parent as any).$2sxc.totalPopup.close();
           } catch (error) { }
       }
-    } else if (sessionStorage.length === 0) {
+    } else if (eavKeys.length === 0) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
       alert('Missing required url parameters. Please reopen dialog.');
       throw new Error('Missing required url parameters. Please reopen dialog.');
