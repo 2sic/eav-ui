@@ -11,8 +11,8 @@ export class DropzoneDraggingHelper {
   /** Starts listening for dragover and drop events on a given element */
   attach(htmlEl: HTMLElement) {
     this.zone.runOutsideAngular(() => {
-      htmlEl.addEventListener('dragover', dragoverListener);
-      htmlEl.addEventListener('drop', dropListener);
+      htmlEl.addEventListener('dragover', dragoverListener, { passive: true });
+      htmlEl.addEventListener('drop', dropListener, { passive: true });
 
       this.eventListeners.push(
         { element: htmlEl, type: 'dragover', listener: dragoverListener },

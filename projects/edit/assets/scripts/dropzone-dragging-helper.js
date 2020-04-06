@@ -1,18 +1,17 @@
-const dropzoneId = 'dropzone';
 const dropzoneClass = 'dropzone';
 const dropzoneDisabledClass = 'dropzone-disabled';
 const draggingClass = 'eav-dragging';
 
-/**
- * prevent drop on page - can only drop on dropzone
- */
+/** Prevent drop on page - can only drop on dropzone */
 window.addEventListener('dragover', function (event) {
-  if (event.target.id !== dropzoneId) {
+  const dropzone = event.target.closest('.' + dropzoneClass);
+  if (dropzone === null) {
     event.preventDefault();
   }
 });
 window.addEventListener('drop', function (event) {
-  if (event.target.id !== dropzoneId) {
+  const dropzone = event.target.closest('.' + dropzoneClass);
+  if (dropzone === null) {
     event.preventDefault();
   }
 });
@@ -22,7 +21,7 @@ window.addEventListener('drop', function (event) {
  * add draggingClass to dropzone over which something is dragged
  */
 (function addDraggingClass() {
-  windowBodyTimeouts = []; // spm rename it to be understandable in other components as well
+  windowBodyTimeouts = [];
   let dropzones;
   let dropzoneTimeouts = [];
   let windowDropzonesTimeouts = [];
@@ -36,19 +35,19 @@ window.addEventListener('drop', function (event) {
     document.body.classList.add(draggingClass);
     clearTimeouts(windowDropzonesTimeouts);
     initDropzones();
-  });
+  }, { passive: true });
   window.addEventListener('drop', function () {
     clearAllDropzonesAndListeners();
-  });
+  }, { passive: true });
   window.addEventListener('dragleave', function () {
     let timeout = setTimeout(function () { document.body.classList.remove(draggingClass); }, 50);
     windowBodyTimeouts.push(timeout);
     timeout = setTimeout(clearAllDropzonesAndListeners, 50);
     windowDropzonesTimeouts.push(timeout);
-  });
+  }, { passive: true });
 
   function initDropzones() {
-    if (dropzones) return;
+    if (dropzones) { return; }
     const dropzonesSelector = '.' + dropzoneClass + ':not(.' + dropzoneDisabledClass + ')';
     dropzones = document.querySelectorAll(dropzonesSelector);
 
@@ -57,9 +56,9 @@ window.addEventListener('drop', function (event) {
       const addClassBind = addClass.bind(null, dropzone, i);
 
       // listeners on dropzones
-      dropzone.addEventListener('dragover', addClassBind);
-      dropzone.addEventListener('drop', clearAllDropzonesAndListeners);
-      dropzone.addEventListener('dragleave', addClearClassesTimeout);
+      dropzone.addEventListener('dragover', addClassBind, { passive: true });
+      dropzone.addEventListener('drop', clearAllDropzonesAndListeners, { passive: true });
+      dropzone.addEventListener('dragleave', addClearClassesTimeout, { passive: true });
       dropzonesListeners.push({ el: dropzone, type: 'dragover', func: addClassBind });
       dropzonesListeners.push({ el: dropzone, type: 'drop', func: clearAllDropzonesAndListeners });
       dropzonesListeners.push({ el: dropzone, type: 'dragleave', func: addClearClassesTimeout });
@@ -86,7 +85,7 @@ window.addEventListener('drop', function (event) {
   }
 
   function clearAllDropzonesAndListeners() {
-    if (!dropzones) return;
+    if (!dropzones) { return; }
     document.body.classList.remove(draggingClass);
     clearListeners(dropzonesListeners);
     clearClassFromElements(draggingClass, dropzones);
