@@ -14,6 +14,6 @@ export function attachDnnBridgeService(fieldStringWysiwyg: any, editor: any) {
 
   fieldStringWysiwyg.urlCallback = (data: any) => {
     const previouslySelected = editor.selection.getContent();
-    editor.insertContent('<a href=\"' + data + '\" target=\"_blank\">' + (previouslySelected || result.name) + '</a>');
+    editor.insertContent('<a href=\"' + data + '\">' + (previouslySelected || result.name) + '</a>');
   };
 }
