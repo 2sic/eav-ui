@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewContainerRef, Type } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -13,8 +12,6 @@ import { DialogConfig } from '../../models/dialog-config.model';
   styleUrls: ['./dialog-entry.component.scss']
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  production: boolean;
-
   private subscription = new Subscription();
   private dialogRef: MatDialogRef<any, any>;
   private dialogConfig: DialogConfig;
@@ -27,7 +24,6 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private context: Context,
   ) {
-    this.production = environment.production;
     this.dialogConfig = this.route.snapshot.data.dialog;
     if (!this.dialogConfig) {
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
