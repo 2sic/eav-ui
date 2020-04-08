@@ -1,6 +1,8 @@
-<div class="actions-container">
-  <button mat-button matTooltip="Add item" (click)="addItem()" class="hover-pair">
-    <span class="hover-default">{{ value }}</span>
-    <mat-icon class="hover-hover">add</mat-icon>
-  </button>
+<div matRipple class="chip-component">
+  <div class="chip-box">
+    <span class="chip">{{ value }}</span>
+  </div>
+  <div class="like-button" matTooltip="Add item">
+    <mat-icon>add</mat-icon>
+  </div>
 </div>

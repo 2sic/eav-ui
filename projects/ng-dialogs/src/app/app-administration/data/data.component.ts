@@ -12,8 +12,6 @@ import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/da
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav-constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
-import { DataItemsParams } from '../shared/models/data-items-params';
-import { DataFieldsParams } from '../shared/models/data-fields-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
@@ -31,27 +29,23 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
-      headerName: 'Items', field: 'Items', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
-      filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', cellRendererParams: {
-        onAddItem: this.addItem.bind(this),
-      } as DataItemsParams,
+      headerName: 'Items', field: 'Items', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
     },
     {
-      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'clickable',
-      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250,
+      sortable: true, filter: 'agTextColumnFilter',
     },
     {
-      headerName: 'Fields', field: 'Fields', flex: 1, minWidth: 160, cellClass: 'no-padding', sortable: true,
-      filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', cellRendererParams: {
-        onEditFields: this.editFields.bind(this),
-      } as DataFieldsParams,
+      headerName: 'Fields', field: 'Fields', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
+      filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
     },
     {
-      headerName: 'Actions', flex: 1, minWidth: 410, cellClass: 'no-padding', cellRenderer: 'dataActionsComponent',
+      width: 242, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
       cellRendererParams: {
         enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),
@@ -164,14 +158,17 @@ export class DataComponent implements OnInit, OnDestroy {
     return this.enableAppFeatures;
   }
 
-  private addItem(contentType: ContentType) {
+  private addItem(params: CellClickedEvent) {
+    const contentType = params.data as ContentType;
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
-  private editFields(contentType: ContentType) {
+  private editFields(params: CellClickedEvent) {
+    const contentType = params.data as ContentType;
+    if (contentType.UsesSharedDef) { return; }
     this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 

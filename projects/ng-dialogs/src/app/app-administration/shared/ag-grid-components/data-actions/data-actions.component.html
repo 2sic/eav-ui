@@ -1,25 +1,39 @@
-<button mat-button *ngIf="!contentType.UsesSharedDef" (click)="editContentType()"
-  matTooltip="Rename - this is an own content-type, it does not use the definition of another content-type - read 2sxc.org/help?tag=shared-types">
-  <mat-icon>edit</mat-icon>
-</button>
-<button mat-button *ngIf="contentType.UsesSharedDef" [disabled]="contentType.Id === 0" (click)="editContentType()"
-  matTooltip="Rename - this content-type inherits the definition of #{{contentType.SharedDefId}} - read 2sxc.org/help?tag=shared-types">
-  <mat-icon>share</mat-icon>
-</button>
-<button mat-button matTooltip="Metadata" (click)="createOrEditMetadata()">
-  <mat-icon>local_offer</mat-icon>
-</button>
-<button mat-button matTooltip="Export" (click)="openExport()">
-  <mat-icon>cloud_download</mat-icon>
-</button>
-<button mat-button matTooltip="Import" (click)="openImport()">
-  <mat-icon>cloud_upload</mat-icon>
-</button>
-<button mat-button matTooltip="Permissions" *ngIf="showPermissions" (click)="openPermissions()">
-  <mat-icon>person</mat-icon>
-</button>
-<button mat-button *ngIf="!showPermissions"></button>
+<div class="actions-component">
+  <div class="like-button" matRipple *ngIf="!contentType.UsesSharedDef" (click)="editContentType()" matTooltip="Edit">
+    <mat-icon>edit</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
+    <mat-icon>edit</mat-icon>
+  </div>
 
-<button class="delete-button" mat-button matTooltip="Delete" (click)="deleteContentType()">
-  <mat-icon>delete</mat-icon>
-</button>
+  <div class="like-button" matRipple *ngIf="!contentType.UsesSharedDef" matTooltip="Metadata"
+    (click)="createOrEditMetadata()">
+    <mat-icon>local_offer</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
+    <mat-icon>local_offer</mat-icon>
+  </div>
+
+  <div class="like-button" matRipple matTooltip="Export" (click)="openExport()">
+    <mat-icon>cloud_download</mat-icon>
+  </div>
+
+  <div class="like-button" matRipple matTooltip="Import" (click)="openImport()">
+    <mat-icon>cloud_upload</mat-icon>
+  </div>
+
+  <div class="like-button" matRipple *ngIf="showPermissions" matTooltip="Permissions" (click)="openPermissions()">
+    <mat-icon>person</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="!showPermissions">
+    <mat-icon>person</mat-icon>
+  </div>
+
+  <div class="like-button" matRipple *ngIf="!contentType.UsesSharedDef" matTooltip="Delete"
+    (click)="deleteContentType()">
+    <mat-icon>delete</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
+    <mat-icon>delete</mat-icon>
+  </div>
+</div>

@@ -1,17 +1,31 @@
-.actions-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.scope-dropdown {
-  width: 200px;
-  margin-top: -24px;
-}
-
 ag-grid-angular.ag-theme-material {
-  height: calc(100vh - 305px);
+  margin-top: 24px;
+  height: calc(100vh - 292px);
+}
 
-  &.scope-height {
-    height: calc(100vh - 356px);
+.scope-box {
+  margin-right: 66px;
+  margin-left: 23px;
+
+  &__dropdown {
+    width: 200px;
+    margin-right: 24px;
+  }
+
+  &__warning {
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 16px;
+  }
+}
+
+.fab {
+  position: absolute;
+  bottom: 16px;
+  right: 32px;
+
+  @media (max-width: 600px) {
+    bottom: 8px;
+    right: 8px;
   }
 }

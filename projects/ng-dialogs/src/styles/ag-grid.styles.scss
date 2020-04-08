@@ -1,3 +1,5 @@
+$grid-color-disabled: rgba(29, 39, 61, 0.26);
+
 ag-grid-angular.ag-theme-material {
   width: 100%;
 
@@ -7,6 +9,31 @@ ag-grid-angular.ag-theme-material {
 
     &:focus {
       box-shadow: inherit;
+    }
+  }
+
+  .ag-has-focus .ag-cell-focus:not(.ag-cell-range-selected) {
+    border-color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+  }
+}
+
+.ag-row-hover {
+  .primary-action {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    &.ag-column-hover {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
+    }
+  }
+
+  .secondary-action {
+    .mat-icon {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
     }
   }
 }
@@ -20,14 +47,20 @@ ag-grid-angular.ag-theme-material {
   &.clickable-single:hover {
     text-decoration: underline;
     cursor: pointer;
-    color: blue; // spm TODO: make this 2sxc blue color
+    color: map_get($mat-eav-item-dialog-secondary, 500);
   }
 
   &.clickable-single-with-button:hover .text {
     text-decoration: underline;
     cursor: pointer;
-    color: blue; // spm TODO: make this 2sxc blue color
+    color: map_get($mat-eav-item-dialog-secondary, 500);
   }
+}
+
+.ag-cell-value {
+  display: block;
+  width: 100%;
+  height: 100%;
 
   .icon-container {
     display: flex;
@@ -35,35 +68,22 @@ ag-grid-angular.ag-theme-material {
     align-items: center;
   }
 
-  .mat-icon {
+  .like-button {
     user-select: none;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 40px;
 
-  .delete-button {
-    margin-left: 24px;
-  }
-}
+    &:not(.disabled) {
+      cursor: pointer;
+    }
 
-.ag-row:hover .clickable {
-  text-decoration: underline;
-  cursor: pointer;
-
-  &.ag-column-hover {
-    color: blue; // spm TODO: make this 2sxc blue color
-  }
-}
-
-// only highlight text with underline and color
-.ag-row:hover .clickable-with-button {
-  cursor: pointer;
-
-  .text {
-    text-decoration: underline;
-  }
-
-  &.ag-column-hover {
-    .text {
-      color: blue; // spm TODO: make this 2sxc blue color
+    &.disabled {
+      .mat-icon {
+        color: $grid-color-disabled !important;
+      }
     }
   }
 }

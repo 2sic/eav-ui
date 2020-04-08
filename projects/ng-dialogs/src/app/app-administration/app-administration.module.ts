@@ -13,6 +13,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
+import { MatRippleModule } from '@angular/material/core';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -104,6 +105,7 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     MatCheckboxModule,
     MatExpansionModule,
     MatCardModule,
+    MatRippleModule,
   ],
   providers: [
     Context,

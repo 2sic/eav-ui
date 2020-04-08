@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
-import { ContentType } from '../../models/content-type.model';
-import { DataItemsParams } from '../../models/data-items-params';
+import { ICellRendererParams } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'app-data-items',
@@ -10,20 +8,13 @@ import { DataItemsParams } from '../../models/data-items-params';
   styleUrls: ['./data-items.component.scss']
 })
 export class DataItemsComponent implements ICellRendererAngularComp {
-  private params: DataItemsParams;
   value: number;
 
-  agInit(params: DataItemsParams) {
-    this.params = params;
+  agInit(params: ICellRendererParams) {
     this.value = params.value;
   }
 
   refresh(params?: any): boolean {
     return true;
-  }
-
-  addItem() {
-    const contentType: ContentType = this.params.data;
-    this.params.onAddItem(contentType);
   }
 }
