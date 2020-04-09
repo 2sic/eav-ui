@@ -48,7 +48,7 @@
         <button mat-icon-button *ngIf="enableDelete && !isFreeTextOrNotFound(item.name)" type="button"
           class="dndButtons" (click)="deleteItemInSlot(item.name, i)"
           matTooltip="{{ 'Fields.Entity.Delete' | translate }}" [disabled]="disabled" (mousedown)="stopDnD($event)">
-          <mat-icon>delete_outline</mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
         <button mat-icon-button *ngIf="enableRemove" type="button" class="dndButtons" (click)="removeSlot(item.name, i)"
           matTooltip="{{ 'Fields.Entity.Remove' | translate }}" [disabled]="disabled" (mousedown)="stopDnD($event)">

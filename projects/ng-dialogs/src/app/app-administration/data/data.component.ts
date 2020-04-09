@@ -4,6 +4,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentType } from '../shared/models/content-type.model';
 import { ContentTypesService } from '../shared/services/content-types.service';
@@ -30,7 +31,7 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'ID', field: 'Id', width: 136, cellClass: 'primary-action no-padding no-outline', cellRenderer: 'idFieldComponent',
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline', cellRenderer: 'idFieldComponent',
       sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
@@ -38,11 +39,11 @@ export class DataComponent implements OnInit, OnDestroy {
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
-      headerName: 'Items', field: 'Items', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
+      headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding', sortable: true,
       filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
     },
     {
-      headerName: 'Fields', field: 'Fields', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
+      headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding', sortable: true,
       filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
     },
     {
@@ -80,6 +81,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private globalConfigurationService: GlobalConfigurationService,
     private appDialogConfigService: AppDialogConfigService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
     this.scope = eavConstants.scopes.default.value;
@@ -149,6 +151,13 @@ export class DataComponent implements OnInit, OnDestroy {
     }
     this.scope = newScope;
     this.fetchContentTypes();
+    if (this.scope !== this.defaultScope) {
+      this.snackBar.open(
+        'Warning! You are in a special scope. Changing things here could easily break functionality',
+        null,
+        { duration: 2000 }
+      );
+    }
   }
 
   private idValueGetter(params: ValueGetterParams) {

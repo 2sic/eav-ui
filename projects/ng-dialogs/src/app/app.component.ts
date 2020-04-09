@@ -1,4 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from './shared/context/context';
@@ -10,7 +11,7 @@ import { keyModuleId, keyContentBlockId } from './shared/constants/sessions-keys
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends DnnAppComponent {
-  constructor(el: ElementRef, dnnContext: DnnContext, private context: Context) {
+  constructor(el: ElementRef, dnnContext: DnnContext, private context: Context, private matIconRegistry: MatIconRegistry) {
     super(
       el,
       dnnContext.preConfigure({
@@ -19,5 +20,6 @@ export class AppComponent extends DnnAppComponent {
       }),
     );
     this.context.initRoot();
+    this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
   }
 }

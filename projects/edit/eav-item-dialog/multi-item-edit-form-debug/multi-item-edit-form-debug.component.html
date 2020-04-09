@@ -4,13 +4,13 @@
   <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="space-between center">
     <button type="button" mat-icon-button (click)="toggleDebugInfo()"
       matTooltip="{{ 'General.Buttons.Debug' | translate }}">
-      <mat-icon>flash_on</mat-icon>
+      <mat-icon>offline_bolt</mat-icon>
     </button>
     <div>2sxc {{ sxcVer }}</div>
     <!-- copy button to keep 2sxc version text in the middle -->
     <button type="button" mat-icon-button (click)="toggleDebugInfo()"
       matTooltip="{{ 'General.Buttons.Debug' | translate }}" class="debug-button-copy">
-      <mat-icon>flash_on</mat-icon>
+      <mat-icon>offline_bolt</mat-icon>
     </button>
   </div>
   <div *ngIf="showDebugInfo" class="debug-info-container">

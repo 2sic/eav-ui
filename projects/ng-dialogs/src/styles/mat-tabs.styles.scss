@@ -1,3 +1,9 @@
+.mat-tab-body-wrapper,
+.mat-tab-body,
+.mat-tab-body-content {
+  overflow: visible !important;
+}
+
 .mat-tab-body-content {
   @extend .hide-scrollbar;
 }

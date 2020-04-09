@@ -22,13 +22,17 @@ ag-grid-angular.ag-theme-material {
 }
 
 .ag-row-hover {
+  .id-action {
+    cursor: pointer;
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+
   .primary-action {
+    cursor: pointer;
     color: map_get($mat-eav-item-dialog-secondary, 500);
 
     &.ag-column-hover {
-      cursor: pointer;
       text-decoration: underline;
-      color: map_get($mat-eav-item-dialog-secondary, 500);
     }
   }
 
@@ -39,7 +43,22 @@ ag-grid-angular.ag-theme-material {
   }
 }
 
+.ag-header-cell {
+  padding: 0 8px !important;
+
+  &.dense {
+    .ag-header-label-icon {
+      margin-left: 0 !important;
+    }
+  }
+}
+
 .ag-cell {
+  &:not(.no-padding) {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
   &.no-padding {
     padding-left: 0 !important;
     padding-right: 0 !important;

@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 
 import { EmptyRouteComponent } from './empty-route/empty-route.component';
 import { DialogEntryComponent } from './dialog-entry/dialog-entry.component';
@@ -35,6 +36,7 @@ import { IdFieldComponent } from './id-field/id-field.component';
     MatRadioModule,
     MatTooltipModule,
     MatRippleModule,
+    MatIconModule,
   ],
   providers: [
   ],

@@ -1,31 +1,27 @@
 ag-grid-angular.ag-theme-material {
-  margin-top: 24px;
-  height: calc(100vh - 292px);
+  margin-top: 40px;
+  height: calc(100vh - 284px);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 236px);
+  }
 }
 
 .scope-box {
   margin-right: 66px;
-  margin-left: 23px;
+  margin-left: 8px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
 
   &__dropdown {
     width: 200px;
-    margin-right: 24px;
-  }
-
-  &__warning {
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 16px;
+    margin-top: -24px;
   }
 }
 
 .fab {
   position: absolute;
-  bottom: 16px;
-  right: 32px;
-
-  @media (max-width: 600px) {
-    bottom: 8px;
-    right: 8px;
-  }
+  bottom: -8px;
+  right: 0;
 }
