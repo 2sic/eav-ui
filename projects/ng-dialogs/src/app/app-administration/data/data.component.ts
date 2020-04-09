@@ -35,7 +35,7 @@ export class DataComponent implements OnInit, OnDestroy {
       sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
-      headerName: 'Content-Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'Content Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
