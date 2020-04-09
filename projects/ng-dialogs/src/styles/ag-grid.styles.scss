@@ -14,6 +14,10 @@ ag-grid-angular.ag-theme-material {
 
   .ag-has-focus .ag-cell-focus:not(.ag-cell-range-selected) {
     border-color: map_get($mat-eav-item-dialog-secondary, 500) !important;
+
+    &.no-outline {
+      border-color: transparent !important;
+    }
   }
 }
 
@@ -21,12 +25,9 @@ ag-grid-angular.ag-theme-material {
   .primary-action {
     color: map_get($mat-eav-item-dialog-secondary, 500);
 
-    &:hover {
+    &.ag-column-hover {
       cursor: pointer;
       text-decoration: underline;
-    }
-
-    &.ag-column-hover {
       color: map_get($mat-eav-item-dialog-secondary, 500);
     }
   }

@@ -15,6 +15,7 @@ import { DataActionsParams } from '../shared/models/data-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-data',
@@ -29,16 +30,16 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action', sortable: true, filter: 'agTextColumnFilter',
+      headerName: 'ID', field: 'Id', width: 136, cellClass: 'primary-action no-padding no-outline', cellRenderer: 'idFieldComponent',
+      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+    },
+    {
+      headerName: 'Content-Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action', sortable: true, filter: 'agTextColumnFilter',
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
       headerName: 'Items', field: 'Items', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
       filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
-    },
-    {
-      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250,
-      sortable: true, filter: 'agTextColumnFilter',
     },
     {
       headerName: 'Fields', field: 'Fields', width: 160, cellClass: 'secondary-action no-padding', sortable: true,
@@ -56,8 +57,13 @@ export class DataComponent implements OnInit, OnDestroy {
         onDelete: this.deleteContentType.bind(this),
       } as DataActionsParams,
     },
+    {
+      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline',
+      sortable: true, filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
+    idFieldComponent: IdFieldComponent,
     dataItemsComponent: DataItemsComponent,
     dataFieldsComponent: DataFieldsComponent,
     dataActionsComponent: DataActionsComponent,
@@ -98,7 +104,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.subscription = null;
   }
 
-  showContentItems(params: CellClickedEvent) {
+  private showContentItems(params: CellClickedEvent) {
     const contentType = params.data as ContentType;
     this.router.navigate([`items/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
@@ -111,7 +117,7 @@ export class DataComponent implements OnInit, OnDestroy {
     }
   }
 
-  fetchContentTypes() {
+  private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       this.contentTypes = contentTypes;
     });
@@ -143,6 +149,11 @@ export class DataComponent implements OnInit, OnDestroy {
     }
     this.scope = newScope;
     this.fetchContentTypes();
+  }
+
+  private idValueGetter(params: ValueGetterParams) {
+    const contentType: ContentType = params.data;
+    return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
   private nameValueGetter(params: ValueGetterParams) {
