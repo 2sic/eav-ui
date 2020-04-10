@@ -31,7 +31,7 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action highlight no-padding no-outline', cellRenderer: 'idFieldComponent',
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline', cellRenderer: 'idFieldComponent',
       sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
@@ -39,11 +39,11 @@ export class DataComponent implements OnInit, OnDestroy {
       onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
     },
     {
-      headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action highlight no-padding',
+      headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
       sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
     },
     {
-      headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action highlight no-padding',
+      headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
       sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
     },
     {
