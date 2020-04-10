@@ -64,6 +64,13 @@ ag-grid-angular.ag-theme-material {
     padding-right: 0 !important;
   }
 
+  &.highlight:hover .ag-cell-value,
+  .highlight:hover {
+    text-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+    // transform: translate(-1px, -1px);
+    margin: -1px 1px 1px -1px;
+  }
+
   &.clickable-single:hover {
     text-decoration: underline;
     cursor: pointer;
