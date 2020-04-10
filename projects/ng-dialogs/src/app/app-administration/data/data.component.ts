@@ -31,8 +31,8 @@ export class DataComponent implements OnInit, OnDestroy {
   debugEnabled = false;
   columnDefs: ColDef[] = [
     {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline', cellRenderer: 'idFieldComponent',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
       headerName: 'Content Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true, filter: 'agTextColumnFilter',
@@ -47,7 +47,7 @@ export class DataComponent implements OnInit, OnDestroy {
       sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
     },
     {
-      width: 242, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
+      width: 240, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
       cellRendererParams: {
         enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
         onEdit: this.editContentType.bind(this),

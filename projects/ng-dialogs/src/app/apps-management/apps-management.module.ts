@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatRippleModule } from '@angular/material/core';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
@@ -69,6 +70,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     MatTooltipModule,
     MatSlideToggleModule,
     MatTabsModule,
+    MatRippleModule,
   ],
   providers: [
     Context,

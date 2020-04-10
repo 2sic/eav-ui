@@ -11,6 +11,7 @@ import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list
 import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
 import { appNamePattern, appNameError } from '../shared/constants/app';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-apps-list',
@@ -22,26 +23,31 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+    },
+    {
+      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
+      filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
+    },
+    {
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
     },
     {
-      headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
-    },
-    {
-      headerName: 'Show', field: 'IsHidden', flex: 1, minWidth: 170, cellClass: 'icons', sortable: true, filter: 'booleanFilterComponent',
-      cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
-    },
-    {
-      headerName: 'Actions', flex: 1, minWidth: 100, cellClass: 'no-padding', cellRenderer: 'appsListActionsComponent',
+      width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
       cellRendererParams: {
         onDelete: this.deleteApp.bind(this),
       } as AppsListActionsParams,
     },
+    {
+      headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+      filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
     booleanFilterComponent: BooleanFilterComponent,
+    idFieldComponent: IdFieldComponent,
     appsListShowComponent: AppsListShowComponent,
     appsListActionsComponent: AppsListActionsComponent,
   };
@@ -90,10 +96,15 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
-  fetchAppsList() {
+  private fetchAppsList() {
     this.appsListService.getAll().subscribe(apps => {
       this.apps = apps;
     });
+  }
+
+  private idValueGetter(params: ValueGetterParams) {
+    const app: App = params.data;
+    return `ID: ${app.Id}\nGUID: ${app.Guid}`;
   }
 
   private showValueGetter(params: ValueGetterParams) {
