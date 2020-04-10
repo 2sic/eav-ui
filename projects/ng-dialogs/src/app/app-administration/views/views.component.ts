@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { View } from '../shared/models/view.model';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
@@ -39,8 +39,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
       filter: 'agNumberColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Hidden', field: 'IsHidden', flex: 1, minWidth: 168, cellRenderer: 'viewsShowComponent', sortable: true,
-      filter: 'booleanFilterComponent',
+      headerName: 'Show', field: 'IsHidden', flex: 1, minWidth: 168, cellRenderer: 'viewsShowComponent', sortable: true,
+      filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
     },
     {
       headerName: 'Url Key', field: 'ViewNameInUrl', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
@@ -101,6 +101,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
       };
     }
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+  }
+
+  private showValueGetter(params: ValueGetterParams) {
+    const view: View = params.data;
+    return !view.IsHidden;
   }
 
   private openPermissions(view: View) {

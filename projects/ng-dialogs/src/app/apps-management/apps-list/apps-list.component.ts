@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { App } from '../../shared/models/app.model';
 import { AppsListService } from '../shared/services/apps-list.service';
@@ -30,8 +30,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
       filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
     },
     {
-      headerName: 'Hidden', field: 'IsHidden', flex: 1, minWidth: 170, cellClass: 'icons', sortable: true, filter: 'booleanFilterComponent',
-      cellRenderer: 'appsListShowComponent',
+      headerName: 'Show', field: 'IsHidden', flex: 1, minWidth: 170, cellClass: 'icons', sortable: true, filter: 'booleanFilterComponent',
+      cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
     },
     {
       headerName: 'Actions', flex: 1, minWidth: 100, cellClass: 'no-padding', cellRenderer: 'appsListActionsComponent',
@@ -94,6 +94,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.appsListService.getAll().subscribe(apps => {
       this.apps = apps;
     });
+  }
+
+  private showValueGetter(params: ValueGetterParams) {
+    const app: App = params.data;
+    return !app.IsHidden;
   }
 
   private deleteApp(app: App) {
