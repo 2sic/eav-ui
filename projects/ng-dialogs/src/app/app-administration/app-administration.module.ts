@@ -49,6 +49,7 @@ import { ImportAppPartsComponent } from './shared/modals/import-app-parts/import
 import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 import { ImportAppPartsService } from './shared/services/import-app-parts.service';
+import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-actions/web-api-actions.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
+    WebApiActionsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -86,6 +88,7 @@ import { ImportAppPartsService } from './shared/services/import-app-parts.servic
     ExportAppComponent,
     ExportAppPartsComponent,
     ImportAppPartsComponent,
+    WebApiActionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
