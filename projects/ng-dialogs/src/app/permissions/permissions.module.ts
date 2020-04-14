@@ -4,6 +4,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgGridModule } from '@ag-grid-community/angular';
 
 import { PermissionsRoutingModule } from './permissions-routing.module';
@@ -33,6 +35,8 @@ import { EntitiesService } from '../content-items/services/entities.service';
     MatIconModule,
     MatTooltipModule,
     AgGridModule.withComponents([]),
+    MatRippleModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,

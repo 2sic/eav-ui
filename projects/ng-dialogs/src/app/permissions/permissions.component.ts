@@ -3,7 +3,8 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PermissionsService } from './services/permissions.service';
 import { Permission } from './models/permission.model';
@@ -11,6 +12,7 @@ import { PermissionsActionsComponent } from './ag-grid-components/permissions-ac
 import { PermissionsActionsParams } from './models/permissions-actions-params';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav-constants';
+import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-permissions',
@@ -22,29 +24,34 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
-      headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+      headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
     },
     {
-      headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
-    },
-    {
-      headerName: 'Grant', field: 'Grant', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
-    },
-    {
-      headerName: 'Actions', flex: 1, minWidth: 92, cellClass: 'no-padding', cellRenderer: 'permissionsActionsComponent',
+      width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent',
       cellRendererParams: {
         onDelete: this.deletePermission.bind(this),
       } as PermissionsActionsParams,
     },
+    {
+      headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+      filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+      sortable: true, filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
+    idFieldComponent: IdFieldComponent,
     permissionsActionsComponent: PermissionsActionsComponent,
   };
   modules = AllCommunityModules;
@@ -60,6 +67,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private permissionsService: PermissionsService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
   }
@@ -81,7 +89,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  fetchPermissions() {
+  private idValueGetter(params: ValueGetterParams) {
+    const permission: Permission = params.data;
+    return `ID: ${permission.Id}\nGUID: ${permission.Guid}`;
+  }
+
+  private fetchPermissions() {
     this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
       this.permissions = permissions;
     });
@@ -119,8 +132,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   private deletePermission(permission: Permission) {
     if (!confirm(`Delete '${permission.Title}' (${permission.Id})?`)) { return; }
-
+    this.snackBar.open('Deleting...');
     this.permissionsService.delete(permission.Id).subscribe(() => {
+      this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchPermissions();
     });
   }
