@@ -20,6 +20,11 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
+  openCode() {
+    const view: View = this.params.data;
+    this.params.onOpenCode(view);
+  }
+
   openPermissions() {
     const view: View = this.params.data;
     this.params.onOpenPermissions(view);
