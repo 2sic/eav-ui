@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AllCommunityModules, ColDef, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { EnableLanguagesService } from '../shared/services/enable-languages.service';
 import { EnableLanguage } from '../shared/models/enable-language.model';
 import { EnableLanguagesStatusComponent } from '../shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { EnableLanguagesStatusParams } from '../shared/models/enable-languages-status-params.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-enable-languages',
@@ -17,15 +18,15 @@ export class EnableLanguagesComponent implements OnInit {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Code', field: 'Code', flex: 1, minWidth: 160, cellClass: 'clickable', sortable: true,
+      headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+    },
+    {
+      headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
     },
     {
-      headerName: 'Culture', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
-    },
-    {
-      headerName: 'Status', field: 'IsEnabled', flex: 1, minWidth: 160, cellClass: 'no-padding',
+      headerName: 'Status', field: 'IsEnabled', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline',
       cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
       cellRendererParams: {
         onEnabledToggle: this.toggleLanguage.bind(this),
@@ -33,6 +34,7 @@ export class EnableLanguagesComponent implements OnInit {
     },
   ];
   frameworkComponents = {
+    idFieldComponent: IdFieldComponent,
     booleanFilterComponent: BooleanFilterComponent,
     enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
   };
@@ -42,6 +44,11 @@ export class EnableLanguagesComponent implements OnInit {
 
   ngOnInit() {
     this.fetchLanguages();
+  }
+
+  private idValueGetter(params: ValueGetterParams) {
+    const language: EnableLanguage = params.data;
+    return `ID: ${language.Code}`;
   }
 
   private handleNameClicked(params: CellClickedEvent) {

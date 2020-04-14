@@ -20,10 +20,13 @@ export class IdFieldComponent implements ICellRendererAngularComp {
   agInit(params: ICellRendererParams) {
     this.params = params;
     this.tooltip = this.params.value;
-    if (this.params.data.Id !== undefined && this.params.data.Id !== null) {
-      this.id = this.params.data.Id;
-    } else if (this.params.data.id !== undefined && this.params.data.id !== null) {
-      this.id = this.params.data.id;
+    const data: any = this.params.data;
+    if (data.Id !== undefined && data.Id !== null) {
+      this.id = data.Id;
+    } else if (data.id !== undefined && data.id !== null) {
+      this.id = data.id;
+    } else if (data.Code !== undefined && data.Code !== null) {
+      this.id = data.Code;
     }
   }
 
