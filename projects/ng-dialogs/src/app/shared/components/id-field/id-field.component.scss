@@ -6,6 +6,12 @@
   align-items: center;
   justify-content: flex-end;
 
+  .id {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   &:hover {
     text-decoration: none;
 

@@ -1,16 +1,11 @@
-<p class="mat-tab-description">These are the system features - they apply to all zones / apps.</p>
-
-<button mat-button matTooltip="Manage features" (click)="toggleManagement()">
+<button mat-button class="icon" matTooltip="Manage features" (click)="toggleManagement()">
   <mat-icon>tune</mat-icon>
   <span>manage features</span>
-</button>
-<button mat-icon-button matTooltip="Refresh" (click)="reloadFeatures()">
-  <mat-icon>refresh</mat-icon>
 </button>
 
 <ag-grid-angular class="ag-theme-material" *ngIf="!showManagement" [rowData]="features" [columnDefs]="columnDefs"
   [modules]="modules" [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true"
-  [suppressScrollOnNewData]="true" [animateRows]="true" [accentedSort]="true">
+  [suppressScrollOnNewData]="true" [animateRows]="true" [accentedSort]="true" [headerHeight]="32">
 </ag-grid-angular>
 
 <mat-spinner *ngIf="showSpinner" mode="indeterminate" diameter="20" color="accent"></mat-spinner>

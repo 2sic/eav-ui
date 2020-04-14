@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import { AllCommunityModules, ColDef, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../shared/models/feature.model';
 import { FeaturesListEnabledComponent } from '../shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
@@ -11,6 +11,7 @@ import { FeaturesConfigService } from '../shared/services/features-config.servic
 import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
 import { ManageFeaturesMessageData } from '../shared/models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-manage-features',
@@ -26,32 +27,35 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'Enabled', field: 'enabled', flex: 1, minWidth: 170, sortable: true, filter: 'booleanFilterComponent',
-      cellRenderer: 'featuresListEnabledComponent',
+      headerName: 'ID', field: 'id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
-      headerName: 'Name', field: 'id', flex: 2, minWidth: 250, sortable: true, filter: 'agTextColumnFilter',
-      cellRenderer: (params: ICellRendererParams) => {
-        return `<a href="https://2sxc.org/r/f/${params.value}" target="_blank">details</a> (name lookup still WIP)`;
-      },
-    },
-    { headerName: 'Feature GUID', field: 'id', flex: 2, minWidth: 300, sortable: true, filter: 'agTextColumnFilter' },
-    {
-      headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, sortable: true, filter: 'agTextColumnFilter',
-      valueGetter: this.valueGetterDateTime,
+      headerName: 'Enabled', field: 'enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
     },
     {
-      headerName: 'UI', field: 'ui', flex: 1, minWidth: 140, sortable: true, filter: 'booleanFilterComponent',
-      cellRenderer: 'featuresListUiComponent',
+      headerName: 'UI', field: 'ui', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
     },
     {
-      headerName: 'Public', field: 'public', flex: 1, minWidth: 160, sortable: true, filter: 'booleanFilterComponent',
-      cellRenderer: 'featuresListPublicComponent'
+      headerName: 'Public', field: 'public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent'
     },
-    { headerName: 'Security', flex: 1, minWidth: 94, cellRenderer: 'featuresListSecurityComponent' },
+    {
+      headerName: 'Name', field: 'id', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+      filter: 'agTextColumnFilter', onCellClicked: this.openFeature,
+      cellRenderer: (params: ICellRendererParams) => `details (name lookup still WIP)`,
+    },
+    {
+      headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
+      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterDateTime,
+    },
+    { headerName: 'Security', width: 70, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent' },
   ];
   frameworkComponents = {
     booleanFilterComponent: BooleanFilterComponent,
+    idFieldComponent: IdFieldComponent,
     featuresListEnabledComponent: FeaturesListEnabledComponent,
     featuresListUiComponent: FeaturesListUiComponent,
     featuresListPublicComponent: FeaturesListPublicComponent,
@@ -69,16 +73,21 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     this.destroyManagementListener();
   }
 
-  reloadFeatures() {
-    this.fetchFeatures();
-  }
-
   toggleManagement() {
     this.showManagement = !this.showManagement;
     this.destroyManagementListener();
     if (this.showManagement) {
       this.openManagement();
     }
+  }
+
+  private idValueGetter(params: ValueGetterParams) {
+    const feature: Feature = params.data;
+    return `GUID: ${feature.id}`;
+  }
+
+  private openFeature(params: CellClickedEvent) {
+    window.open(`https://2sxc.org/r/f/${params.value}`, '_blank');
   }
 
   private fetchFeatures() {
