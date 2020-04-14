@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
@@ -15,7 +16,6 @@ import { ContentExportService } from '../app-administration/shared/services/cont
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExtendedColDef } from './models/extended-col-def.model';
-import { ContentItemsIdComponent } from './ag-grid-components/content-items-id/content-items-id.component';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './models/content-items-actions-params';
@@ -24,6 +24,7 @@ import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.mo
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { keyFilters } from '../shared/constants/sessions-keys';
 import { buildFilterModel } from './content-items.helpers';
+import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-content-items',
@@ -37,7 +38,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   frameworkComponents = {
     pubMetaFilterComponent: PubMetaFilterComponent,
     booleanFilterComponent: BooleanFilterComponent,
-    contentItemsIdComponent: ContentItemsIdComponent,
+    idFieldComponent: IdFieldComponent,
     contentItemsStatusComponent: ContentItemsStatusComponent,
     contentItemsActionsComponent: ContentItemsActionsComponent,
     contentItemsEntityComponent: ContentItemsEntityComponent,
@@ -55,6 +56,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private contentItemsService: ContentItemsService,
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -83,7 +85,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.gridApi = params.api;
   }
 
-  fetchItems() {
+  private fetchItems() {
     this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
       this.items = items;
     });
@@ -196,29 +198,32 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 136, cellClass: 'clickable', sortable: true,
-        filter: 'agNumberColumnFilter', cellRenderer: 'contentItemsIdComponent', onCellClicked: this.editItem.bind(this),
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
       },
       {
-        headerName: 'Status', field: 'Status', width: 132, valueGetter: this.valueGetterStatus,
-        filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent',
+        headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
       },
       {
-        headerName: 'Actions', cellClass: 'no-padding', width: 194, cellRenderer: 'contentItemsActionsComponent',
+        headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
+      },
+      {
+        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent',
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
       },
-      {
-        headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
-      },
     ];
     for (const column of columns) {
       if (column.IsTitle) { continue; }
-      const colDef: ExtendedColDef = { headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, sortable: true };
+      const colDef: ExtendedColDef = {
+        headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true,
+      };
       switch (column.Type) {
         case 'Entity':
           try {
@@ -268,19 +273,29 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private delete(item: ContentItem) {
     if (!confirm(`Delete '${item._Title}' (${item._RepositoryId})?`)) { return; }
+    this.snackBar.open('Deleting...');
     this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, false).subscribe({
       next: () => {
+        this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchItems();
       },
       error: (err: HttpErrorResponse) => {
+        this.snackBar.dismiss();
         if (!confirm(`${err.error.ExceptionMessage}\n\nDo you want to force delete '${item._Title}' (${item._RepositoryId})?`)) {
           return;
         }
+        this.snackBar.open('Deleting...');
         this.entitiesService.delete(this.contentTypeStaticName, item._RepositoryId, true).subscribe(() => {
+          this.snackBar.open('Deleted', null, { duration: 2000 });
           this.fetchItems();
         });
       }
     });
+  }
+
+  private idValueGetter(params: ValueGetterParams) {
+    const item: ContentItem = params.data;
+    return `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`;
   }
 
   private valueGetterStatus(params: ValueGetterParams) {

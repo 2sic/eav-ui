@@ -22,9 +22,6 @@
   <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
     <mat-icon>local_offer</mat-icon>
   </button>
-  <button mat-icon-button matTooltip="Refresh" (click)="fetchItems()">
-    <mat-icon>refresh</mat-icon>
-  </button>
   <button mat-icon-button matTooltip="Debug filter" (click)="debugFilter()">
     <mat-icon>filter_list</mat-icon>
   </button>
@@ -32,5 +29,5 @@
 
 <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules"
   [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-  [animateRows]="true" [accentedSort]="true" [valueCache]="true" (gridReady)="onGridReady($event)">
+  [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32" (gridReady)="onGridReady($event)">
 </ag-grid-angular>

@@ -9,12 +9,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRippleModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgGridModule } from '@ag-grid-community/angular';
 
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { ContentItemsIdComponent } from './ag-grid-components/content-items-id/content-items-id.component';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
@@ -29,7 +30,6 @@ import { ContentExportService } from '../app-administration/shared/services/cont
   declarations: [
     ContentItemsComponent,
     PubMetaFilterComponent,
-    ContentItemsIdComponent,
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
@@ -38,7 +38,6 @@ import { ContentExportService } from '../app-administration/shared/services/cont
   entryComponents: [
     ContentItemsComponent,
     PubMetaFilterComponent,
-    ContentItemsIdComponent,
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
@@ -58,6 +57,8 @@ import { ContentExportService } from '../app-administration/shared/services/cont
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatRippleModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,
