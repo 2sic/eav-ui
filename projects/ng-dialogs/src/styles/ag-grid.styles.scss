@@ -74,18 +74,6 @@ ag-grid-angular.ag-theme-material {
       box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
     }
   }
-
-  &.clickable-single:hover {
-    text-decoration: underline;
-    cursor: pointer;
-    color: map_get($mat-eav-item-dialog-secondary, 500);
-  }
-
-  &.clickable-single-with-button:hover .text {
-    text-decoration: underline;
-    cursor: pointer;
-    color: map_get($mat-eav-item-dialog-secondary, 500);
-  }
 }
 
 .ag-cell-value {

@@ -225,8 +225,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private deleteContentType(contentType: ContentType) {
     if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) { return; }
-
+    this.snackBar.open(`Deleting...`);
     this.contentTypesService.delete(contentType).subscribe(result => {
+      this.snackBar.open(`Deleted`, null, { duration: 2000 });
       this.fetchContentTypes();
     });
   }

@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Query } from '../shared/models/query.model';
 import { QueriesActionsComponent } from '../shared/ag-grid-components/queries-actions/queries-actions.component';
@@ -11,6 +12,7 @@ import { ContentExportService } from '../shared/services/content-export.service'
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav-constants';
+import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({
   selector: 'app-queries',
@@ -22,19 +24,15 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   columnDefs: ColDef[] = [
     {
-      headerName: 'ID', field: 'Id', width: 136, cellClass: 'clickable', sortable: true,
-      filter: 'agNumberColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
       filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
     },
     {
-      headerName: 'Description', field: 'Description', flex: 3, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
-    },
-    {
-      headerName: 'Actions', flex: 1, minWidth: 346, cellClass: 'no-padding',
+      width: 200, cellClass: 'secondary-action no-padding',
       cellRenderer: 'queriesActionsComponent', cellRendererParams: {
         onEditQuery: this.editQuery.bind(this),
         onCloneQuery: this.cloneQuery.bind(this),
@@ -42,9 +40,14 @@ export class QueriesComponent implements OnInit, OnDestroy {
         onExportQuery: this.exportQuery.bind(this),
         onDelete: this.deleteQuery.bind(this),
       } as PipelinesActionsParams,
-    }
+    },
+    {
+      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+      filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
+    idFieldComponent: IdFieldComponent,
     queriesActionsComponent: QueriesActionsComponent,
   };
   modules = AllCommunityModules;
@@ -57,6 +60,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
     private contentExportService: ContentExportService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
   }
@@ -71,7 +75,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.subscription = null;
   }
 
-  fetchQueries() {
+  private fetchQueries() {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
       this.queries = queries;
     });
@@ -90,12 +94,19 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
+  private idValueGetter(params: ValueGetterParams) {
+    const query: Query = params.data;
+    return `ID: ${query.Id}\nGUID: ${query.Guid}`;
+  }
+
   private openVisualQueryDesigner() {
     alert('Open visual query designer');
   }
 
   private cloneQuery(query: Query) {
+    this.snackBar.open(`Copying...`);
     this.pipelinesService.clonePipeline(query.Id).subscribe(() => {
+      this.snackBar.open(`Copied`, null, { duration: 2000 });
       this.fetchQueries();
     });
   }
@@ -113,7 +124,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private deleteQuery(query: Query) {
     if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
+    this.snackBar.open(`Deleting...`);
     this.pipelinesService.delete(query.Id).subscribe(res => {
+      this.snackBar.open(`Deleted`, null, { duration: 2000 });
       this.fetchQueries();
     });
   }

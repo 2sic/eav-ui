@@ -1,16 +1,17 @@
-<button mat-button matTooltip="Edit" (click)="editQuery()">
-  <mat-icon>edit</mat-icon>
-</button>
-<button mat-button matTooltip="Clone" (click)="cloneQuery()">
-  <mat-icon>file_copy</mat-icon>
-</button>
-<button mat-button matTooltip="Export" (click)="exportQuery()">
-  <mat-icon>cloud_download</mat-icon>
-</button>
-<button mat-button matTooltip="Permissions" (click)="openPermissions()">
-  <mat-icon>person</mat-icon>
-</button>
-
-<button class="delete-button" mat-button matTooltip="Delete" (click)="deleteQuery()">
-  <mat-icon>delete</mat-icon>
-</button>
+<div class="actions-component">
+  <div class="like-button highlight" matRipple matTooltip="Edit" (click)="editQuery()">
+    <mat-icon>edit</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Copy" (click)="cloneQuery()">
+    <mat-icon>file_copy</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Export" (click)="exportQuery()">
+    <mat-icon>cloud_download</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Permissions" (click)="openPermissions()">
+    <mat-icon>person</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Delete" (click)="deleteQuery()">
+    <mat-icon>delete</mat-icon>
+  </div>
+</div>

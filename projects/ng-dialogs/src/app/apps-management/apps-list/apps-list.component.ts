@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { App } from '../../shared/models/app.model';
 import { AppsListService } from '../shared/services/apps-list.service';
@@ -60,6 +61,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
   }
@@ -118,7 +120,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
     if (result === null) {
       return;
     } else if (result === app.Name || result === 'yes!') {
+      this.snackBar.open(`Deleting...`);
       this.appsListService.delete(app.Id).subscribe(() => {
+        this.snackBar.open(`Deleted`, null, { duration: 2000 });
         this.fetchAppsList();
       });
     } else {
