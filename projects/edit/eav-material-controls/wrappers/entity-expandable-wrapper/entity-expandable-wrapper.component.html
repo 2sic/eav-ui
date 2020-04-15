@@ -48,7 +48,7 @@
       <div fxLayout="row" fxLayoutAlign="start center">
         <mat-list *ngIf="value && availableEntities" fxLayout="row">
           <mat-list-item role="listitem" *ngFor="let item of value">
-            <span mat-line matTooltip="{{ getEntityText(item) + ' (' + item + ')' }}">{{getEntityText(item)}}</span>
+            <span mat-line>{{getEntityText(item)}}</span>
           </mat-list-item>
         </mat-list>
         <span *ngIf="value?.length > 5" class="more-entities mat-body-1">
