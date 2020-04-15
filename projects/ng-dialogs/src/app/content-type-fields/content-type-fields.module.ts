@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatRippleModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgGridModule } from '@ag-grid-community/angular';
 
 import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
@@ -19,6 +21,7 @@ import { ContentTypesService } from '../app-administration/shared/services/conte
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
 import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-content-type-fields.component';
+import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,7 @@ import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-
     ContentTypeFieldsInputTypeComponent,
     ContentTypeFieldsActionsComponent,
     EditContentTypeFieldsComponent,
+    ContentTypeFieldsTypeComponent,
   ],
   entryComponents: [
     ContentTypeFieldsComponent,
@@ -34,6 +38,7 @@ import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-
     ContentTypeFieldsInputTypeComponent,
     ContentTypeFieldsActionsComponent,
     EditContentTypeFieldsComponent,
+    ContentTypeFieldsTypeComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +52,8 @@ import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-
     FormsModule,
     MatInputModule,
     MatSelectModule,
+    MatRippleModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,

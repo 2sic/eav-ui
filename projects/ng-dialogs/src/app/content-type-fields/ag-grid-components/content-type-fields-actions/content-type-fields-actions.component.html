@@ -1,9 +1,15 @@
-<button mat-button matTooltip="Rename" (click)="rename()">
-  <mat-icon>edit</mat-icon>
-</button>
-<button mat-button matTooltip="Delete" (click)="delete()" [disabled]="field.IsTitle">
-  <mat-icon>delete</mat-icon>
-</button>
-<button mat-button matTooltip="Permissions" *ngIf="showPermissions" (click)="openPermissions()">
-  <mat-icon>person</mat-icon>
-</button>
+<div class="actions-component">
+  <div class="like-button highlight" matRipple matTooltip="Rename" (click)="rename()">
+    <mat-icon>settings</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Delete" *ngIf="!field.IsTitle" (click)="delete()">
+    <mat-icon>delete</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="field.IsTitle">
+    <mat-icon>delete</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="showPermissions"
+    (click)="openPermissions()">
+    <mat-icon>person</mat-icon>
+  </div>
+</div>

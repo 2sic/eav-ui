@@ -28,3 +28,13 @@
     user-select: none;
   }
 }
+
+.input-component {
+  display: flex;
+  padding: 0 8px;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  user-select: none;
+  cursor: pointer;
+}

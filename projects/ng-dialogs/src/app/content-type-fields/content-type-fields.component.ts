@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent } from '@ag-grid-community/all-modules';
+// tslint:disable-next-line:max-line-length
+import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
@@ -13,11 +15,10 @@ import { eavConstants } from '../shared/constants/eav-constants';
 import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-import { ContentTypeFieldsTitleParams } from './models/content-type-fields-title-params';
-import { ContentTypeFieldsInputTypeParams } from './models/content-type-fields-input-type-params';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './models/content-type-fields-actions-params';
+import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -32,50 +33,50 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[] = [
     { rowDrag: true, width: 18, cellClass: 'no-padding' },
     {
-      headerName: 'Title', field: 'IsTitle', width: 80, cellClass: 'no-padding',
-      cellRenderer: 'contentTypeFieldsTitleComponent', cellRendererParams: {
-        onSetTitle: this.setTitle.bind(this),
-      } as ContentTypeFieldsTitleParams,
+      headerName: 'Title', field: 'IsTitle', width: 40, cellClass: 'secondary-action no-padding no-outline',
+      cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
     },
     {
-      headerName: 'Static Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+      headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
     },
     {
-      headerName: 'Data Type', field: 'Type', flex: 1, minWidth: 184, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
+      filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsTypeComponent',
     },
     {
-      headerName: 'Input Type', field: 'InputType', flex: 1, minWidth: 184, cellClass: 'no-padding',
+      headerName: 'Input', field: 'InputType', width: 160, cellClass: 'secondary-action no-padding',
       sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
-      cellRendererParams: {
-        onChangeInputType: this.changeInputType.bind(this),
-      } as ContentTypeFieldsInputTypeParams,
+      onCellClicked: this.changeInputType.bind(this), valueGetter: this.inputTypeValueGetter,
     },
     {
-      headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
-    },
-    {
-      headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'clickable', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
-    },
-    {
-      headerName: 'Actions', flex: 1, minWidth: 194, cellClass: 'no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
+      width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
       cellRendererParams: {
         onRename: this.rename.bind(this),
         onDelete: this.delete.bind(this),
         onOpenPermissions: this.openPermissions.bind(this),
       } as ContentTypeFieldsActionsParams,
     },
+    {
+      headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+      sortable: true, filter: 'agTextColumnFilter',
+    },
+    {
+      headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
+      sortable: true, filter: 'agTextColumnFilter',
+    },
   ];
   frameworkComponents = {
     contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
+    contentTypeFieldsTypeComponent: ContentTypeFieldsTypeComponent,
     contentTypeFieldsInputTypeComponent: ContentTypeFieldsInputTypeComponent,
     contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
   };
   modules = AllCommunityModules;
 
+  private sortApplied = false;
+  private filterApplied = false;
+  private rowDragSuppressed = false;
   private contentTypeStaticName: string;
   private contentType: ContentType;
   private subscription = new Subscription();
@@ -87,6 +88,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private router: Router,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -142,6 +144,30 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     arr.splice(toIndex, 0, element);
   }
 
+  onSortChanged(params: SortChangedEvent) {
+    const sortModel = this.gridApi.getSortModel();
+    this.sortApplied = sortModel.length > 0;
+    this.suppressRowDrag();
+  }
+
+  onFilterChanged(params: FilterChangedEvent) {
+    const filterModel = this.gridApi.getFilterModel();
+    const fieldsFiltered = Object.keys(filterModel);
+    this.filterApplied = fieldsFiltered.length > 0;
+    this.suppressRowDrag();
+  }
+
+  private suppressRowDrag() {
+    const shouldSuppress = this.sortApplied || this.filterApplied;
+    if (shouldSuppress && !this.rowDragSuppressed) {
+      this.rowDragSuppressed = true;
+      this.gridApi.setSuppressRowDrag(true);
+    } else if (!shouldSuppress && this.rowDragSuppressed) {
+      this.rowDragSuppressed = false;
+      this.gridApi.setSuppressRowDrag(false);
+    }
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }
@@ -150,7 +176,13 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.router.navigate([`add/${this.contentTypeStaticName}`], { relativeTo: this.route });
   }
 
-  async fetchFields() {
+  private inputTypeValueGetter(params: ValueGetterParams) {
+    const field: Field = params.data;
+    const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
+    return inputType;
+  }
+
+  private async fetchFields() {
     this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
   }
 
@@ -179,13 +211,17 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       };
   }
 
-  private setTitle(field: Field) {
+  private setTitle(params: CellClickedEvent) {
+    const field: Field = params.data;
+    this.snackBar.open('Setting title...');
     this.contentTypesFieldsService.setTitle(field, this.contentType).subscribe(() => {
+      this.snackBar.open('Title set', null, { duration: 2000 });
       this.fetchFields();
     });
   }
 
-  private changeInputType(field: Field) {
+  private changeInputType(params: CellClickedEvent) {
+    const field: Field = params.data;
     this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}`], { relativeTo: this.route });
   }
 
@@ -207,7 +243,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private delete(field: Field) {
     if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { return; }
+    this.snackBar.open('Deleting...');
     this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
+      this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchFields();
     });
   }
