@@ -30,7 +30,7 @@ export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp 
         this.icon = 'extension';
         break;
       case 'DateTime':
-        this.icon = 'calendar_today';
+        this.icon = 'today';
         break;
       case 'Hyperlink':
         this.icon = 'link';
