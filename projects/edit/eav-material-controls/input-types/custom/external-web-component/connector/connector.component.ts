@@ -36,8 +36,8 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit() {
-    console.log('Connector created');
     const customElName = `field-${this.config.field.inputType}`;
+    console.log(`Connector created for ${customElName}`);
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.customElContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);

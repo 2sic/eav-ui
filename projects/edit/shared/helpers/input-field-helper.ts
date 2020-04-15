@@ -105,14 +105,10 @@ export class InputFieldHelper {
           WrappersConstants.expandableWrapper,
           WrappersConstants.adamAttachWrapper,
         );
-      } else if (inputType === InputTypesConstants.customGPS) {
-        wrappers.push(
-          WrappersConstants.eavLocalizationWrapper,
-          WrappersConstants.expandableWrapper,
-        );
       } else {
         wrappers.push(
           WrappersConstants.eavLocalizationWrapper,
+          WrappersConstants.expandableWrapper,
         );
       }
     }
