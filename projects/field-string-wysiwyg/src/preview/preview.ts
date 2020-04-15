@@ -1,10 +1,11 @@
 import { Subscription } from 'rxjs';
-import { EavCustomInputFieldObservable } from '../../../shared/eav-custom-input-field';
+import { EavCustomInputFieldObservable, ConnectorObservable } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
 
-class FieldStringWysiwygPreview extends EavCustomInputFieldObservable<string> {
+class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputFieldObservable<string> {
+  connector: ConnectorObservable<string>;
   private subscriptions: Subscription[] = [];
 
   constructor() {

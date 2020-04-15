@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 
-import { Item, EavValue, EavDimensions, FieldSettings, Language, EavHeader, EavValues, ContentType } from '../../models/eav';
+import { Item, EavValue, EavDimensions, Language, EavHeader, EavValues, ContentType } from '../../models/eav';
+import { FieldSettings } from '../../../../edit-types';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { take, map, delay, distinctUntilChanged } from 'rxjs/operators';
 import { LocalizationHelper } from '../../helpers/localization-helper';

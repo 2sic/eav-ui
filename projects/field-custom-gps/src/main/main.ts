@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { } from 'google-maps';
 
 import { EavExperimentalInputField } from '../shared/models';
-import { ConnectorDataObservable } from '../../../shared/connector';
+import { ConnectorDataObservable } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import { defaultCoordinates, mapsParameters } from '../shared/constants';

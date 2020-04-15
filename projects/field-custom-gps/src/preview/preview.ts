@@ -1,10 +1,11 @@
-import { EavCustomInputField } from '../../../shared/eav-custom-input-field';
+import { EavCustomInputField, Connector } from '../../../edit-types';
 import { customGpsIcons, buildTemplate, parseLatLng } from '../shared/helpers';
 import { defaultCoordinates } from '../shared/constants';
 import * as template from './preview.html';
 import * as styles from './preview.css';
 
-class FieldCustomGpsPreview extends EavCustomInputField<string> {
+class FieldCustomGpsPreview extends HTMLElement implements EavCustomInputField<string> {
+  connector: Connector<string>;
   latContainer: HTMLSpanElement;
   lngContainer: HTMLSpanElement;
 

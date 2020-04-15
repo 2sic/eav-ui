@@ -1,5 +1,6 @@
 
-import { EavValue, EavAttributes, FieldSettings, EavDimensions } from '../models/eav';
+import { EavValue, EavAttributes, EavDimensions } from '../models/eav';
+import { FieldSettings } from '../../../edit-types';
 import { EavValues } from '../models/eav/eav-values';
 
 export class LocalizationHelper {
@@ -279,7 +280,7 @@ export class LocalizationHelper {
   }
 
   public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
-    const settingsTranslated: FieldSettings = new FieldSettings();
+    const settingsTranslated: FieldSettings = {};
     Object.keys(settings).forEach(attributesKey => {
       settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
         defaultLanguage, settings[attributesKey], false);

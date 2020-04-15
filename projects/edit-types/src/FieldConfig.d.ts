@@ -1,7 +1,7 @@
-import { FieldSettings } from './field-settings';
+import { FieldSettings } from './FieldSettings';
 
-// spm remove comments
 export interface FieldConfig {
+
   /** Static name of the field */
   name: string;
 
@@ -26,6 +26,5 @@ export interface FieldConfig {
   /** Tells whether the field is disabled. This is the initial value that was set in settings for this field */
   disabled: boolean;
 
-  /** spm write JSDoc */
   settings: FieldSettings;
 }

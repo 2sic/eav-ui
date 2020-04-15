@@ -1,6 +1,6 @@
 import { ValidatorFn, Validators } from '@angular/forms';
 
-import { FieldSettings } from '../../shared/models/eav';
+import { FieldSettings } from '../../../edit-types';
 import { CustomValidators } from './custom-validators';
 import { InputTypesConstants } from '../../shared/constants/input-types-constants';
 

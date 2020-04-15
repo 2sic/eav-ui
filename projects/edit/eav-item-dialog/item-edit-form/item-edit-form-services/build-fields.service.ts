@@ -6,7 +6,8 @@ import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash-es/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, FieldSettings, ContentType, Item, Language } from '../../../shared/models/eav';
+import { EavAttributes, ContentType, Item, Language } from '../../../shared/models/eav';
+import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
