@@ -68,7 +68,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     this.isWysiwyg = InputFieldHelper.isWysiwygInputType(this.config.field.inputType);
     this.changeDetector.detectChanges();
     const previewElName = !this.inlineMode ? `field-${this.config.field.inputType}-preview` : `field-${this.config.field.inputType}`;
-    console.log(`ExpandableWrapper created for ${previewElName}. Inline: ${this.inlineMode}`, this.config.field);
+    console.log('ExpandableWrapper created for:', previewElName, 'Inline:', this.inlineMode, 'Config:', this.config.field);
     this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);
