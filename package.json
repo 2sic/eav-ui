@@ -63,6 +63,7 @@
     "@angular/platform-browser-dynamic": "^9.1.0",
     "@angular/router": "^9.1.0",
     "@danielmoncada/angular-datetime-picker": "^9.3.0",
+    "@ecodev/fab-speed-dial": "^5.0.3",
     "@material/layout-grid": "^5.1.0",
     "@ngrx/data": "^9.0.0",
     "@ngrx/effects": "^9.0.0",

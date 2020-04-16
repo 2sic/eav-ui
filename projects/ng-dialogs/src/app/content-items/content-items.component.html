@@ -9,25 +9,36 @@
 
 <router-outlet></router-outlet>
 
-<div>
-  <button mat-icon-button matTooltip="Add item" (click)="editItem(null)">
-    <mat-icon>add</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="Export" (click)="exportContent()">
-    <mat-icon>cloud_download</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="Import" (click)="importItem()">
-    <mat-icon>cloud_upload</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
-    <mat-icon>local_offer</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="Debug filter" (click)="debugFilter()">
-    <mat-icon>filter_list</mat-icon>
-  </button>
-</div>
+<div class="grid-wrapper">
+  <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
+    [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
 
-<ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules"
-  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-  [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32" (gridReady)="onGridReady($event)">
-</ag-grid-angular>
+  <eco-fab-speed-dial class="grid-fab">
+    <eco-fab-speed-dial-trigger spin="true">
+      <button mat-fab>
+        <mat-icon class="spin180">menu</mat-icon>
+      </button>
+    </eco-fab-speed-dial-trigger>
+
+    <eco-fab-speed-dial-actions>
+      <button mat-mini-fab matTooltip="Debug filter" (click)="debugFilter()">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <button mat-mini-fab matTooltip="Add metadata" (click)="addMetadata()">
+        <mat-icon>local_offer</mat-icon>
+      </button>
+      <button mat-mini-fab matTooltip="Import" (click)="importItem()">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <button mat-mini-fab matTooltip="Export" (click)="exportContent()">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-mini-fab matTooltip="Add item" (click)="editItem(null)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </eco-fab-speed-dial-actions>
+  </eco-fab-speed-dial>
+</div>

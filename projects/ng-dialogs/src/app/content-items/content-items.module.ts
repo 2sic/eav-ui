@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgGridModule } from '@ag-grid-community/angular';
+import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
@@ -59,6 +60,7 @@ import { ContentExportService } from '../app-administration/shared/services/cont
     MatProgressSpinnerModule,
     MatRippleModule,
     MatSnackBarModule,
+    EcoFabSpeedDialModule,
   ],
   providers: [
     Context,

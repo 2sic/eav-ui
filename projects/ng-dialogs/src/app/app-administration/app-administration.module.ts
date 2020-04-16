@@ -14,6 +14,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
+import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
@@ -109,6 +110,7 @@ import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-acti
     MatExpansionModule,
     MatCardModule,
     MatRippleModule,
+    EcoFabSpeedDialModule,
   ],
   providers: [
     Context,

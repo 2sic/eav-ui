@@ -1,13 +1,23 @@
-<div>
-  <button mat-icon-button matTooltip="Create a new query" (click)="editQuery(null)">
-    <mat-icon>add</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="Import query" (click)="importQuery()">
-    <mat-icon>cloud_upload</mat-icon>
-  </button>
-</div>
+<div class="grid-wrapper-nav">
+  <ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
+    [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32">
+  </ag-grid-angular>
 
-<ag-grid-angular class="ag-theme-material" [rowData]="queries" [columnDefs]="columnDefs" [modules]="modules"
-  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
-  [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32">
-</ag-grid-angular>
+  <eco-fab-speed-dial class="grid-fab">
+    <eco-fab-speed-dial-trigger spin="true">
+      <button mat-fab>
+        <mat-icon class="spin180">menu</mat-icon>
+      </button>
+    </eco-fab-speed-dial-trigger>
+
+    <eco-fab-speed-dial-actions>
+      <button mat-mini-fab matTooltip="Import query" (click)="importQuery()">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <button mat-mini-fab matTooltip="Create a new query" (click)="editQuery(null)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </eco-fab-speed-dial-actions>
+  </eco-fab-speed-dial>
+</div>

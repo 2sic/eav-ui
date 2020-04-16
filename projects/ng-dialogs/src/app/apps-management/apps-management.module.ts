@@ -9,6 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRippleModule } from '@angular/material/core';
+import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { SharedComponentsModule } from '../shared/components/shared-components.module';
@@ -71,6 +72,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     MatSlideToggleModule,
     MatTabsModule,
     MatRippleModule,
+    EcoFabSpeedDialModule,
   ],
   providers: [
     Context,
