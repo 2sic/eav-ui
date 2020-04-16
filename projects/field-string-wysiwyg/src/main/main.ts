@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { EavExperimentalInputFieldObservable } from '../shared/models';
+import { EavExperimentalInputField } from '../shared/models';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
@@ -13,7 +13,7 @@ import * as contentStyle from './tinymce-content.css';
 import { fixMenuPositions } from './fix-menu-positions-helper';
 declare const tinymce: any;
 
-class FieldStringWysiwyg extends EavExperimentalInputFieldObservable<string> {
+class FieldStringWysiwyg extends EavExperimentalInputField<string> {
   private containerClass: string;
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];

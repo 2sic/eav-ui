@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { } from 'google-maps';
 
 import { EavExperimentalInputField } from '../shared/models';
-import { ConnectorDataObservable } from '../../../edit-types';
+import { ConnectorData } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import { defaultCoordinates, mapsParameters } from '../shared/constants';
@@ -110,7 +110,7 @@ class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
 
     this.marker.addListener('dragend', this.onMarkerDragend.bind(this));
     this.subscription.add(
-      (this.connector.data as ConnectorDataObservable<string>).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
+      (this.connector.data as ConnectorData<string>).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
     );
   }
 

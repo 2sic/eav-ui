@@ -3,12 +3,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { ConnectorObservable } from '../../../../../../../edit-types';
+import { Connector } from '../../../../../../../edit-types';
 import { InputTypeName } from '../../../../../../shared/models/input-field-models';
 import { FormSet } from '../../../../../../shared/models/eav/form-set';
 
 export class CustomElementProperties<T> {
-  connector: ConnectorObservable<T>;
+  connector: Connector<T>;
   experimental: ExperimentalProps;
   host: any;
 

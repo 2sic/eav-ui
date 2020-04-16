@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 export interface ConnectorData<T> {
 
   /** Current value of the field */
@@ -14,4 +16,10 @@ export interface ConnectorData<T> {
    * @param callback - Function to be executed every time value changes in the host
    */
   onValueChange: (callback: (newValue: T) => void) => void;
+
+  /** Observable on field value */
+  value$: Observable<T>;
+
+  /** Fired before form is saved */
+  forceConnectorSave$: Observable<T>;
 }

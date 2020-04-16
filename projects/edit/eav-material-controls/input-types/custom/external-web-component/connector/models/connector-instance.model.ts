@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
-import { ConnectorObservable, ConnectorDataObservable, FieldConfig } from '../../../../../../../edit-types';
+import { Connector, ConnectorData, FieldConfig } from '../../../../../../../edit-types';
 
-export class ConnectorInstance<T> implements ConnectorObservable<T> {
+export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
   field: FieldConfig;
-  data: ConnectorDataObservable<T>;
+  data: ConnectorData<T>;
 
   constructor(
     private connectorHost: ConnectorHost<T>,
@@ -20,7 +20,7 @@ export class ConnectorInstance<T> implements ConnectorObservable<T> {
   }
 }
 
-export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
+export class ConnectorDataInstance<T> implements ConnectorData<T> {
   value$: Observable<T>;
   forceConnectorSave$: Observable<null>;
   value: T;
