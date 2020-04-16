@@ -32,11 +32,11 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   dialogIsOpen = false;
-  private subscriptions: Subscription[] = [];
-  previewElConnector: ConnectorService;
-  private dropzoneDraggingHelper: DropzoneDraggingHelper;
-  inlineMode = false;
+  inlineMode = true;
   isWysiwyg = false;
+  private subscription = new Subscription();
+  private elConnector: ConnectorService;
+  private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   get value() {
     return this.group.controls[this.config.field.name].value ? this.group.controls[this.config.field.name].value
@@ -54,27 +54,25 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private translateService: TranslateService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
-    private _ngZone: NgZone,
+    private zone: NgZone,
     private contentTypeService: ContentTypeService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
-    private zone: NgZone,
     private changeDetector: ChangeDetectorRef,
     private expandableFieldService: ExpandableFieldService,
   ) { }
 
   ngOnInit() {
-    this.inlineMode = this.config.field.settings.Dialog === 'inline';
     this.isWysiwyg = InputFieldHelper.isWysiwygInputType(this.config.field.inputType);
     this.changeDetector.detectChanges();
-    const previewElName = !this.inlineMode ? `field-${this.config.field.inputType}-preview` : `field-${this.config.field.inputType}`;
-    console.log('ExpandableWrapper created for:', previewElName, 'Inline:', this.inlineMode, 'Config:', this.config.field);
-    this.previewElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
+    const elName = `field-${this.config.field.inputType}`;
+    console.log('ExpandableWrapper created for:', elName, 'Config:', this.config.field);
+    this.elConnector = new ConnectorService(this.zone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);
-    this.previewElConnector.createElementWebComponent(this.config, this.group, this.previewContainer, previewElName, this.inlineMode);
+    this.elConnector.createElementWebComponent(this.config, this.group, this.previewContainer, elName, this.inlineMode);
 
-    this.subscriptions.push(
+    this.subscription.add(
       this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
         const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
         if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
@@ -104,8 +102,9 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   ngOnDestroy() {
     console.log('ExpandableWrapper destroyed');
-    this.previewElConnector.destroy();
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.elConnector.destroy();
+    this.subscription.unsubscribe();
+    this.subscription = null;
     this.dropzoneDraggingHelper.detach();
   }
 }

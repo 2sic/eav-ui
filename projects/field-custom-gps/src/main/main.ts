@@ -10,7 +10,7 @@ import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 
-class FieldCustomGps extends EavExperimentalInputField<string> {
+class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
   eventListeners: ElementEventListener[];
   fieldInitialized: boolean;
   addressMaskService: FieldMaskService;
@@ -28,14 +28,14 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
 
   constructor() {
     super();
-    console.log('FieldCustomGps constructor called');
+    console.log('FieldCustomGpsDialog constructor called');
     this.fieldInitialized = false;
     this.eventListeners = [];
     this.subscription = new Subscription();
   }
 
   connectedCallback() {
-    console.log('FieldCustomGps connectedCallback called');
+    console.log('FieldCustomGpsDialog connectedCallback called');
     // spm prevents connectedCallback from being called more than once. Don't know if it's necessary
     // https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance
     if (this.fieldInitialized) { return; }
@@ -59,7 +59,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
     this.addressMaskService = new FieldMaskService(addressMask, this.experimental.formGroup.controls, null, null);
-    console.log('FieldCustomGps addressMask:', addressMask);
+    console.log('FieldCustomGpsDialog addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
@@ -82,7 +82,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private mapScriptLoaded() {
-    console.log('FieldCustomGps mapScriptLoaded called');
+    console.log('FieldCustomGpsDialog mapScriptLoaded called');
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
@@ -132,7 +132,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private onLatLngInputChange() {
-    console.log('FieldCustomGps input changed');
+    console.log('FieldCustomGpsDialog input changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
       lng: this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null,
@@ -142,7 +142,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private autoSelect() {
-    console.log('FieldCustomGps geocoder called');
+    console.log('FieldCustomGpsDialog geocoder called');
     const address = this.addressMaskService.resolve();
     this.geocoder.geocode({
       address,
@@ -162,7 +162,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   private onMarkerDragend(event: google.maps.MouseEvent) {
-    console.log('FieldCustomGps marker changed');
+    console.log('FieldCustomGpsDialog marker changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -172,7 +172,7 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 
   disconnectedCallback() {
-    console.log('FieldCustomGps disconnectedCallback called');
+    console.log('FieldCustomGpsDialog disconnectedCallback called');
     if (!!(window as any).google) {
       google.maps.event.clearInstanceListeners(this.marker);
       google.maps.event.clearInstanceListeners(this.map);
@@ -189,4 +189,4 @@ class FieldCustomGps extends EavExperimentalInputField<string> {
   }
 }
 
-customElements.define('field-custom-gps', FieldCustomGps);
+customElements.define('field-custom-gps-dialog', FieldCustomGpsDialog);

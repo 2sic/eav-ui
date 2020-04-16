@@ -8,4 +8,7 @@ export interface Connector<T> {
 
   /** Current field data, read/write or get other languages */
   data: ConnectorData<T>;
+
+  /** Opens component in dialog mode */
+  expand(expand: boolean): void;
 }

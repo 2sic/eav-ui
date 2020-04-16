@@ -7,12 +7,16 @@ export class ConnectorInstance<T> implements ConnectorObservable<T> {
   data: ConnectorDataObservable<T>;
 
   constructor(
-    connectorHost: ConnectorHost<T>,
+    private connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
     field: FieldConfig,
   ) {
     this.field = field;
     this.data = new ConnectorDataInstance<T>(connectorHost, value$);
+  }
+
+  expand(expand: boolean) {
+    this.connectorHost.expand(expand);
   }
 }
 
@@ -47,5 +51,6 @@ export class ConnectorDataInstance<T> implements ConnectorDataObservable<T> {
 /** Props and methods available to the connector to communicate with the host */
 export class ConnectorHost<T> {
   update: (value: T) => void;
+  expand: (expand: boolean) => void;
   forceConnectorSave$: Observable<null>;
 }
