@@ -9,16 +9,16 @@
 
 <router-outlet></router-outlet>
 
-<div>
-  <button mat-icon-button matTooltip="Add fields" (click)="add()">
+<div class="grid-wrapper">
+  <ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="enableTextSelection"
+    [suppressScrollOnNewData]="true" [animateRows]="true" [animateRows]="true" [accentedSort]="true" [valueCache]="true"
+    [headerHeight]="32" (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)"
+    (rowDragMove)="onRowDragMove($event)" (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)"
+    (filterChanged)="onFilterChanged($event)">
+  </ag-grid-angular>
+
+  <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Add fields" (click)="add()">
     <mat-icon>add</mat-icon>
   </button>
 </div>
-
-<ag-grid-angular class="ag-theme-material" [rowData]="fields" [columnDefs]="columnDefs" [modules]="modules"
-  [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="enableTextSelection"
-  [suppressScrollOnNewData]="true" [animateRows]="true" [animateRows]="true" [accentedSort]="true" [valueCache]="true"
-  [headerHeight]="32" (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)"
-  (rowDragMove)="onRowDragMove($event)" (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)"
-  (filterChanged)="onFilterChanged($event)">
-</ag-grid-angular>

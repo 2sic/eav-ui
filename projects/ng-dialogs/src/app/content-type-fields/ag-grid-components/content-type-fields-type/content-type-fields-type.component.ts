@@ -36,7 +36,7 @@ export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp 
         this.icon = 'link';
         break;
       case 'Empty':
-        this.icon = '';
+        this.icon = 'crop_free';
         break;
       default:
         this.icon = 'device_unknown';

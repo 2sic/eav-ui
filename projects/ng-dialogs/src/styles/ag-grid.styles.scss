@@ -1,5 +1,27 @@
 $grid-color-disabled: rgba(29, 39, 61, 0.26);
 
+.grid-wrapper-nav {
+  padding-top: 40px;
+  position: relative;
+
+  .grid-fab {
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+  }
+}
+
+.grid-wrapper {
+  padding-top: 20px;
+  position: relative;
+
+  .grid-fab {
+    position: absolute;
+    bottom: -8px;
+    right: 0;
+  }
+}
+
 ag-grid-angular.ag-theme-material {
   width: 100%;
 

@@ -1,3 +1,27 @@
+.iframe-wrapper {
+  padding-top: 20px;
+}
+
 ag-grid-angular.ag-theme-material {
-  height: calc(100vh - 290px);
+  height: calc(100vh - 245px);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 215px);
+  }
+}
+
+.spinner {
+  position: absolute;
+  top: 40px;
+  left: 20px;
+}
+
+.iframe {
+  border: none;
+  width: 100%;
+  height: calc(100vh - 229px);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 199px);
+  }
 }

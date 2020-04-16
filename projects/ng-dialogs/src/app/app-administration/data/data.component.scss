@@ -1,9 +1,8 @@
 ag-grid-angular.ag-theme-material {
-  margin-top: 40px;
-  height: calc(100vh - 284px);
+  height: calc(100vh - 286px);
 
   @media (max-width: 600px) {
-    height: calc(100vh - 236px);
+    height: calc(100vh - 238px);
   }
 }
 
@@ -20,10 +19,4 @@ ag-grid-angular.ag-theme-material {
     font-size: 14px;
     height: auto;
   }
-}
-
-.fab {
-  position: absolute;
-  bottom: -8px;
-  right: 0;
 }
