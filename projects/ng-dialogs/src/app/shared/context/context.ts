@@ -1,6 +1,6 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken } from '../constants/sessions-keys';
+import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix } from '../constants/sessions-keys';
 
 /** The context provides information */
 @Injectable()
@@ -114,7 +114,8 @@ export class Context {
     // catch case where state is null, like when the recursive parent is in use
     if (this.routeSnapshot == null) { return null; }
 
-    const result = this.routeSnapshot.paramMap.get(name);
+    const paramName = name.substring(prefix.length);
+    const result = this.routeSnapshot.paramMap.get(paramName);
     if (result !== null) {
       const num = parseInt(result, 10);
       return isNaN(num) ? null : num;
