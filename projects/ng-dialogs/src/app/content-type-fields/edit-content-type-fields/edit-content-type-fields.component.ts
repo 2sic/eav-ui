@@ -8,6 +8,7 @@ import { ContentType } from '../../app-administration/shared/models/content-type
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
+import { ContentTypeFieldHelpers } from '../content-type-fields-helpers';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -102,4 +103,6 @@ export class EditContentTypeFieldsComponent implements OnInit {
     }
     this.closeDialog();
   }
+
+  findIcon = (typeName: string) => ContentTypeFieldHelpers.typeIcon(typeName);
 }
