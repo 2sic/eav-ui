@@ -15,7 +15,7 @@
   <div class="row-container" *ngFor="let field of fields; index as i">
     <div class="edit-input">
       <mat-form-field appearance="standard" color="accent">
-        <mat-label>Static Name</mat-label>
+        <mat-label>Name</mat-label>
         <input matInput [pattern]="contentTypeNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
           [disabled]="editMode" #staticName='ngModel'>
       </mat-form-field>
@@ -29,7 +29,12 @@
         <mat-label>Data Type</mat-label>
         <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
           [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
-          <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">{{ dataType.label }}</mat-option>
+          <mat-select-trigger>
+            <mat-icon style="width: 20px; height: 20px; font-size: 16px">{{ findIcon(field.Type) }}</mat-icon> {{ field.Type }}
+          </mat-select-trigger>
+          <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
+            <mat-icon>{{ findIcon(dataType.name) }}</mat-icon> {{ dataType.label }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
@@ -52,4 +57,7 @@
       <mat-icon>done</mat-icon>
     </button>
   </div>
+  TODO: 1. button to the right, add label "Save", make button with primary color
+  2. pls move the styles in the Data Type icon to the right place :)
+  3. Make dialog much wider - as it can really use the space
 </form>
