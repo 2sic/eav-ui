@@ -1,8 +1,7 @@
 import { Subscription } from 'rxjs';
 import { } from 'google-maps';
 
-import { EavExperimentalInputField } from '../shared/models';
-import { ConnectorData } from '../../../edit-types';
+import { ConnectorData, EavCustomInputField, Connector } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import { defaultCoordinates, mapsParameters } from '../shared/constants';
@@ -10,7 +9,8 @@ import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 
-class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
+class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
+  connector: Connector<string>;
   eventListeners: ElementEventListener[];
   fieldInitialized: boolean;
   addressMaskService: FieldMaskService;
@@ -49,7 +49,7 @@ class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
     const formattedAddressContainer = this.querySelector('#formatted-address-container') as HTMLSpanElement;
     this.mapContainer = this.querySelector('#map');
 
-    const allInputNames = this.experimental.allInputTypeNames.map(inputType => inputType.name);
+    const allInputNames = this.connector._experimental.allInputTypeNames.map(inputType => inputType.name);
     if (allInputNames.indexOf(this.connector.field.settings.LatField) !== -1) {
       this.latFieldName = this.connector.field.settings.LatField;
     }
@@ -58,7 +58,7 @@ class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
     }
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMaskService = new FieldMaskService(addressMask, this.experimental.formGroup.controls, null, null);
+    this.addressMaskService = new FieldMaskService(addressMask, this.connector._experimental.formGroup.controls, null, null);
     console.log('FieldCustomGpsDialog addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
@@ -124,10 +124,10 @@ class FieldCustomGpsDialog extends EavExperimentalInputField<string> {
   private updateForm(latLng: google.maps.LatLngLiteral) {
     this.connector.data.update(stringifyLatLng(latLng));
     if (this.latFieldName) {
-      this.experimental.updateField(this.latFieldName, latLng.lat);
+      this.connector._experimental.updateField(this.latFieldName, latLng.lat);
     }
     if (this.lngFieldName) {
-      this.experimental.updateField(this.lngFieldName, latLng.lng);
+      this.connector._experimental.updateField(this.lngFieldName, latLng.lng);
     }
   }
 

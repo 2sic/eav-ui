@@ -11,7 +11,7 @@ import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
-import { FormSet } from '../models/eav/form-set';
+import { FormSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { EavExperimentalInputField } from '../shared/models';
+import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
@@ -13,7 +13,8 @@ import * as contentStyle from './tinymce-content.css';
 import { fixMenuPositions } from './fix-menu-positions-helper';
 declare const tinymce: any;
 
-class FieldStringWysiwyg extends EavExperimentalInputField<string> {
+class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+  connector: Connector<string>;
   private containerClass: string;
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];
@@ -38,7 +39,7 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    if (this.experimental.wysiwygSettings.inlineMode) {
+    if (this.connector._experimental.wysiwygSettings.inlineMode) {
       this.classList.add('inline-wysiwyg');
     } else {
       this.classList.add('full-wysiwyg');
@@ -65,28 +66,28 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
   private tinyMceScriptLoaded() {
     console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const contentBlocksEnabled = (this.experimental.allInputTypeNames.length > this.connector.field.index + 1)
-      ? this.experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
+    const contentBlocksEnabled = (this.connector._experimental.allInputTypeNames.length > this.connector.field.index + 1)
+      ? this.connector._experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
       : false;
 
-    const pasteFormattedTextEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
-    this.pasteImageFromClipboardEnabled = this.experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const dropzoneConfig = this.experimental.dropzoneConfig$.value;
+    const pasteFormattedTextEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
+    this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    const dropzoneConfig = this.connector._experimental.dropzoneConfig$.value;
 
     const tinyOptions = getTinyOptions({
       containerClass: this.containerClass,
       fixedToolbarClass: this.toolbarContainerClass,
       contentStyle: contentStyle.default,
       setup: this.tinyMceSetup.bind(this),
-      currentLang: this.experimental.translateService.currentLang,
+      currentLang: this.connector._experimental.translateService.currentLang,
       contentBlocksEnabled,
       pasteFormattedTextEnabled,
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
-      inlineMode: this.experimental.wysiwygSettings.inlineMode,
-      buttonSource: this.experimental.wysiwygSettings.buttonSource,
-      buttonAdvanced: this.experimental.wysiwygSettings.buttonAdvanced,
+      inlineMode: this.connector._experimental.wysiwygSettings.inlineMode,
+      buttonSource: this.connector._experimental.wysiwygSettings.buttonSource,
+      buttonAdvanced: this.connector._experimental.wysiwygSettings.buttonAdvanced,
     });
     this.firstInit = true;
     if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
@@ -97,10 +98,10 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
     this.editor = editor;
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
-      addTinyMceToolbarButtons(this, editor, this.experimental.expand);
+      addTinyMceToolbarButtons(this, editor, this.expand.bind(this));
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
-      addTranslations(editor.settings.language, this.experimental.translateService, editor.editorManager);
+      addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
@@ -110,13 +111,13 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
           editor.setContent(this.editorContent);
         }),
       );
-      if (!this.experimental.wysiwygSettings.inlineMode) {
+      if (!this.connector._experimental.wysiwygSettings.inlineMode) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
         // Inline only subscriptions
         this.subscriptions.push(
-          this.experimental.expandedField$.subscribe(expandedFieldId => {
+          this.connector._experimental.expandedField$.subscribe(expandedFieldId => {
             const dialogShouldBeOpen = (this.connector.field.index === expandedFieldId);
             if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
             this.dialogIsOpen = dialogShouldBeOpen;
@@ -141,13 +142,13 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
-        const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+        const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
         // tslint:disable-next-line:max-line-length
         dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
-        this.experimental.dropzoneConfig$.next(dzConfig);
+        this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.experimental.wysiwygSettings.inlineMode) {
-        this.experimental.setFocused(true);
+      if (this.connector._experimental.wysiwygSettings.inlineMode) {
+        this.connector._experimental.setFocused(true);
       }
     });
 
@@ -155,12 +156,12 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
       console.log('FieldStringWysiwyg TinyMCE blurred', event);
       if (!this.pasteImageFromClipboardEnabled) {
         // Dropzone will handle image uploads again
-        const dzConfig = { ...this.experimental.dropzoneConfig$.value };
+        const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
         delete dzConfig.acceptedFiles;
-        this.experimental.dropzoneConfig$.next(dzConfig);
+        this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.experimental.wysiwygSettings.inlineMode) {
-        this.experimental.setFocused(false);
+      if (this.connector._experimental.wysiwygSettings.inlineMode) {
+        this.connector._experimental.setFocused(false);
       }
     });
 
@@ -168,6 +169,10 @@ class FieldStringWysiwyg extends EavExperimentalInputField<string> {
     editor.on('undo', this.saveValue.bind(this));
     editor.on('redo', this.saveValue.bind(this));
     this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
+  }
+
+  private expand(expand: boolean) {
+    this.connector.expand(expand);
   }
 
   private saveValue(event: any) {

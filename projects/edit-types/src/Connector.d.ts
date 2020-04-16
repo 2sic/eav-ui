@@ -1,6 +1,8 @@
+import { Observable } from 'rxjs';
+
 import { ConnectorData } from './ConnectorData';
 import { FieldConfig } from './FieldConfig';
-import { Observable } from 'rxjs';
+import { ExperimentalProps } from './ExperimentalProps';
 
 export interface Connector<T> {
 
@@ -15,4 +17,7 @@ export interface Connector<T> {
 
   /** Opens component in dialog mode */
   expand(expand: boolean): void;
+
+  /** Data not yet standardized */
+  _experimental: ExperimentalProps;
 }

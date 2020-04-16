@@ -3,9 +3,9 @@ import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/f
 import { InputTypesConstants } from '../constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavHeader, Item, InputType } from '../models/eav';
-import { FieldSettings } from '../../../edit-types';
+import { FieldSettings, InputTypeName } from '../../../edit-types';
 import { WrappersConstants } from '../constants/wrappers-constants';
-import { InputTypeName, CalculatedInputType } from '../models/input-field-models';
+import { CalculatedInputType } from '../models/input-field-models';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {

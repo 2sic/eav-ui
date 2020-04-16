@@ -70,7 +70,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     this.elConnector = new ConnectorService(this.zone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);
-    this.elConnector.createElementWebComponent(this.config, this.group, this.previewContainer, elName, this.inlineMode);
+    this.elConnector.createElementWebComponent(this.config, this.group, this.previewContainer, elName);
 
     this.subscription.add(
       this.expandableFieldService.getObservable().subscribe(expandedFieldId => {

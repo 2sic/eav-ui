@@ -6,19 +6,19 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { CustomElementProperties, ExperimentalProps } from './models/custom-element-properties.model';
+import { CustomElementProperties } from './models/custom-element-properties.model';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../../shared/models/eav-configuration';
 import { AdamConfig } from '../../../../../shared/models/adam/adam-config';
 import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
-import { InputTypeName } from '../../../../../shared/models/input-field-models';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 import { AdamSetValue, AdamAfterUpload } from '../../../../../../shared/adam.model';
+import { ExperimentalProps, InputTypeName } from '../../../../../../edit-types';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -124,17 +124,13 @@ export class ConnectorService {
     };
   }
 
-  public createElementWebComponent(
-    config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string, inlineMode: boolean
-  ) {
+  public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {
     this.customElContainer = customElContainer;
     this.config = config;
     this.group = group;
 
     this.customEl = document.createElement(customElName) as any;
     this.customEl.host = this.externalInputTypeHost;
-
-    this.customEl.experimental = this.calculateExperimentalProps(inlineMode);
     this.customEl.connector = this.buildConnector();
     console.log('Petar order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
@@ -155,12 +151,13 @@ export class ConnectorService {
     this.previousValue = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
     this.subjects.push(this.value$);
-    const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field);
+    const experimental = this.calculateExperimentalProps();
+    const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field, experimental);
 
     return connector;
   }
 
-  private calculateExperimentalProps(inlineMode: boolean): ExperimentalProps {
+  private calculateExperimentalProps(): ExperimentalProps {
     let allInputTypeNames: InputTypeName[];
     const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
     contentType$.pipe(take(1)).subscribe(data => {
@@ -177,11 +174,6 @@ export class ConnectorService {
       formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
-      expand: (expand) => {
-        this._ngZone.run(() => {
-          this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId);
-        });
-      },
       setFocused: (focused) => {
         this._ngZone.run(() => { this.config.field.focused = focused; });
       },
@@ -193,7 +185,7 @@ export class ConnectorService {
     }
     if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
       experimentalProps.wysiwygSettings = {
-        inlineMode,
+        inlineMode: this.config.field.settings.Dialog === 'inline',
         buttonSource: this.config.field.settings.ButtonSource,
         buttonAdvanced: this.config.field.settings.ButtonAdvanced,
       };

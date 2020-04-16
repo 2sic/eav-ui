@@ -29,7 +29,7 @@ import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dia
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
-import { FormSet } from '../../shared/models/eav/form-set';
+import { FormSet } from '../../../edit-types';
 import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';

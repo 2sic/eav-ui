@@ -1,22 +1,21 @@
 import { Observable } from 'rxjs';
-import { Connector, ConnectorData, FieldConfig } from '../../../../../../../edit-types';
+import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../../../../../../edit-types';
 
 export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
-  field: FieldConfig;
   data: ConnectorData<T>;
 
   constructor(
-    private connectorHost: ConnectorHost<T>,
+    private _connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
-    field: FieldConfig,
+    public field: FieldConfig,
+    public _experimental: ExperimentalProps,
   ) {
-    this.field = field;
-    this.data = new ConnectorDataInstance<T>(connectorHost, value$);
+    this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
   }
 
   expand(expand: boolean) {
-    this.connectorHost.expand(expand);
+    this._connectorHost.expand(expand);
   }
 }
 
@@ -27,11 +26,11 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
   constructor(
-    private connectorHost: ConnectorHost<T>,
+    private _connectorHost: ConnectorHost<T>,
     value$: Observable<T>
   ) {
     this.value$ = value$;
-    this.forceConnectorSave$ = connectorHost.forceConnectorSave$;
+    this.forceConnectorSave$ = _connectorHost.forceConnectorSave$;
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;
@@ -40,7 +39,7 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 
   update(newValue: T) {
-    this.connectorHost.update(newValue);
+    this._connectorHost.update(newValue);
   }
 
   onValueChange(callback: (newValue: T) => void) {

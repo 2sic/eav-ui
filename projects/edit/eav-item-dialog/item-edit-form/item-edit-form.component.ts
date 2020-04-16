@@ -15,7 +15,7 @@ import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
-import { FormSet } from '../../shared/models/eav/form-set';
+import { FormSet } from '../../../edit-types';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
