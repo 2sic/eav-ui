@@ -86,8 +86,8 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
       console.log('FieldStringWysiwyg TinyMCE initialized', editor);
       TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
       // tslint:disable: curly
-      if (!this.reconfigure.disablePagePicker) attachDnnBridgeService(this, editor);
-      if (!this.reconfigure.disableAdam) attachAdam(this, editor);
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
       this.configurator.addTranslations();
       // addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
@@ -125,8 +125,8 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
 
     editor.on('focus', (_event: any) => {
       console.log('FieldStringWysiwyg TinyMCE focused', _event);
-      if (!this.reconfigure.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
-      if (!this.reconfigure.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
+      if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
