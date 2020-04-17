@@ -30,6 +30,7 @@ import { DataItemsComponent } from './shared/ag-grid-components/data-items/data-
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
 import { QueriesActionsComponent } from './shared/ag-grid-components/queries-actions/queries-actions.component';
+import { ViewsTypeComponent } from './shared/ag-grid-components/views-type/views-type.component';
 import { ViewsShowComponent } from './shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from './shared/ag-grid-components/views-actions/views-actions.component';
 import { AppDialogConfigService } from './shared/services/app-dialog-config.service';
@@ -65,6 +66,7 @@ import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-acti
     DataFieldsComponent,
     DataActionsComponent,
     QueriesActionsComponent,
+    ViewsTypeComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
@@ -81,6 +83,7 @@ import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-acti
     DataFieldsComponent,
     DataActionsComponent,
     QueriesActionsComponent,
+    ViewsTypeComponent,
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,

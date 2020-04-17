@@ -6,6 +6,8 @@ import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { View } from '../shared/models/view.model';
+import { calculateViewType } from './views.helpers';
+import { ViewsTypeComponent } from '../shared/ag-grid-components/views-type/views-type.component';
 import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../shared/services/templates.service';
@@ -33,8 +35,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
       sortable: true, filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
     },
     {
-      headerName: 'Template Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
       sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+    },
+    {
+      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-padding',
+      sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
     },
     {
       width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
@@ -88,6 +94,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   frameworkComponents = {
     idFieldComponent: IdFieldComponent,
     booleanFilterComponent: BooleanFilterComponent,
+    viewsTypeComponent: ViewsTypeComponent,
     viewsShowComponent: ViewsShowComponent,
     viewsActionsComponent: ViewsActionsComponent,
   };
@@ -144,6 +151,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
   private showValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return !view.IsHidden;
+  }
+
+  private typeValueGetter(params: ValueGetterParams) {
+    const view: View = params.data;
+    const type = calculateViewType(view);
+    return type.value;
   }
 
   private contentDemoValueGetter(params: ValueGetterParams) {

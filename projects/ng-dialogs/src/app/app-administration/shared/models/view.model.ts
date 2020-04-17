@@ -1,8 +1,10 @@
 export class View {
   ContentType: ViewEntity;
   Guid: string;
+  HasQuery: boolean;
   Id: number;
   IsHidden: boolean;
+  List: boolean;
   ListContentType: ViewEntity;
   ListPresentationType: ViewEntity;
   Name: string;
