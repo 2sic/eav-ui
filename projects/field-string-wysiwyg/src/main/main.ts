@@ -4,13 +4,15 @@ import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
 import * as styles from './main.css';
-import { getTinyOptions, addTranslations } from './tinymce-options';
-import { addTinyMceToolbarButtons } from './tinymce-toolbar';
-import { attachDnnBridgeService } from './tinymce-dnnbridge-service';
-import { attachAdam } from './tinymce-adam-service';
+import { getTinyOptions } from './tinymce-options';
+import { TinyMceButtons } from '../config/tinymce-toolbar';
+import { attachDnnBridgeService } from '../connector/dnn-page-picker';
+import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
 import * as contentStyle from './tinymce-content.css';
 import { fixMenuPositions } from './fix-menu-positions-helper';
+import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { InitialConfig } from '../config/initial-config';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
@@ -25,6 +27,9 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
   private dialogIsOpen: boolean;
   private observer: MutationObserver;
+
+  /** The external object that's responsible for configuring tinymce */
+  private configurator: TinyMceConfigurator;
 
   constructor() {
     super();
@@ -65,30 +70,34 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   private tinyMceScriptLoaded() {
     console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
+    const connector = this.connector;
+    const exp = this.connector._experimental;
+    this.configurator = new TinyMceConfigurator(tinymce, connector);
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const contentBlocksEnabled = (this.connector._experimental.allInputTypeNames.length > this.connector.field.index + 1)
-      ? this.connector._experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
+    const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
+      ? exp.allInputTypeNames[connector.field.index + 1].inputType === 'entity-content-blocks'
       : false;
 
-    const pasteFormattedTextEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
-    this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const dropzoneConfig = this.connector._experimental.dropzoneConfig$.value;
+    const pasteFormattedTextEnabled = exp.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
+    this.pasteImageFromClipboardEnabled = exp.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    const dropzoneConfig = exp.dropzoneConfig$.value;
 
-    const tinyOptions = getTinyOptions({
+    const initialConfig: InitialConfig = {
       containerClass: this.containerClass,
       fixedToolbarClass: this.toolbarContainerClass,
       contentStyle: contentStyle.default,
       setup: this.tinyMceSetup.bind(this),
-      currentLang: this.connector._experimental.translateService.currentLang,
+      currentLang: exp.translateService.currentLang,
       contentBlocksEnabled,
       pasteFormattedTextEnabled,
       pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
       imagesUploadUrl: dropzoneConfig.url as string,
       uploadHeaders: dropzoneConfig.headers,
-      inlineMode: this.connector._experimental.wysiwygSettings.inlineMode,
-      buttonSource: this.connector._experimental.wysiwygSettings.buttonSource,
-      buttonAdvanced: this.connector._experimental.wysiwygSettings.buttonAdvanced,
-    });
+      inlineMode: exp.wysiwygSettings.inlineMode,
+      buttonSource: exp.wysiwygSettings.buttonSource,
+      buttonAdvanced: exp.wysiwygSettings.buttonAdvanced,
+    };
+    const tinyOptions = getTinyOptions(initialConfig);
     this.firstInit = true;
     if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
@@ -98,10 +107,11 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.editor = editor;
     editor.on('init', (event: any) => {
       console.log('FieldStringWysiwyg TinyMCE initialized', event);
-      addTinyMceToolbarButtons(this, editor, this.expand.bind(this));
+      TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
       attachDnnBridgeService(this, editor);
       attachAdam(this, editor);
-      addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
+      this.configurator.addTranslations();
+      // addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
