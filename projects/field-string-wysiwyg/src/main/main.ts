@@ -1,22 +1,22 @@
 import { Subscription } from 'rxjs';
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
-import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
 import * as styles from './main.css';
-import { getTinyOptions } from './tinymce-options';
-import { TinyMceButtons } from '../config/tinymce-toolbar';
+import { TinyMceButtons } from '../config/buttons';
 import { attachDnnBridgeService } from '../connector/dnn-page-picker';
 import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
-import * as contentStyle from './tinymce-content.css';
 import { fixMenuPositions } from './fix-menu-positions-helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { InitialConfig } from '../config/initial-config';
+import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 declare const tinymce: any;
 
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
+  reconfigure?: WysiwygReconfigure;
+  private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];
@@ -34,9 +34,9 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   constructor() {
     super();
     console.log('FieldStringWysiwyg constructor called');
-    const instanceId = `${randomIntFromInterval(1, 1000000)}`;
-    this.containerClass = `tinymce-container-${instanceId}`;
-    this.toolbarContainerClass = `tinymce-toolbar-container-${instanceId}`;
+    this.instanceId = `${randomIntFromInterval(1, 1000000)}`;
+    this.containerClass = `tinymce-container-${this.instanceId}`;
+    this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
@@ -44,14 +44,13 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    if (this.connector._experimental.wysiwygSettings.inlineMode) {
-      this.classList.add('inline-wysiwyg');
-    } else {
-      this.classList.add('full-wysiwyg');
-    }
+    this.classList.add(this.connector._experimental.wysiwygSettings.inlineMode
+      ? 'inline-wysiwyg'
+      : 'full-wysiwyg');
 
     const tinyMceSrc = `${this.tinyMceBaseUrl}/tinymce.min.js`;
 
+    // TODO: SPM create method to take care of this on connector.system...
     const scriptLoaded = !!(window as any).tinymce;
     if (scriptLoaded) {
       this.tinyMceScriptLoaded();
@@ -71,33 +70,13 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private tinyMceScriptLoaded() {
     console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
     const connector = this.connector;
-    const exp = this.connector._experimental;
-    this.configurator = new TinyMceConfigurator(tinymce, connector);
+    this.configurator = new TinyMceConfigurator(tinymce, connector, this.reconfigure);
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
-      ? exp.allInputTypeNames[connector.field.index + 1].inputType === 'entity-content-blocks'
-      : false;
-
-    const pasteFormattedTextEnabled = exp.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
-    this.pasteImageFromClipboardEnabled = exp.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const dropzoneConfig = exp.dropzoneConfig$.value;
-
-    const initialConfig: InitialConfig = {
-      containerClass: this.containerClass,
-      fixedToolbarClass: this.toolbarContainerClass,
-      contentStyle: contentStyle.default,
-      setup: this.tinyMceSetup.bind(this),
-      currentLang: exp.translateService.currentLang,
-      contentBlocksEnabled,
-      pasteFormattedTextEnabled,
-      pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
-      imagesUploadUrl: dropzoneConfig.url as string,
-      uploadHeaders: dropzoneConfig.headers,
-      inlineMode: exp.wysiwygSettings.inlineMode,
-      buttonSource: exp.wysiwygSettings.buttonSource,
-      buttonAdvanced: exp.wysiwygSettings.buttonAdvanced,
-    };
-    const tinyOptions = getTinyOptions(initialConfig);
+    const initialConfig: InitialConfig = this.configurator.initialConfig(this.containerClass,
+      this.toolbarContainerClass, this.tinyMceSetup.bind(this));
+    // after creating initial config, pick up the value for later use
+    this.pasteImageFromClipboardEnabled = initialConfig.pasteImageFromClipboardEnabled;
+    const tinyOptions = this.configurator.tinyMceOptions(initialConfig);
     this.firstInit = true;
     if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
@@ -185,7 +164,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.connector.expand(expand);
   }
 
-  private saveValue(event: any) {
+  private saveValue() {
     this.editorContent = this.editor.getContent();
     this.connector.data.update(this.editorContent);
   }

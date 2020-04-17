@@ -14,7 +14,8 @@ export const DefaultOptions = {
   automatic_uploads: false, // we're using our own upload mechanism
   autosave_ask_before_unload: false,
   paste_as_text: true,
-  plugins: DefaultPlugins,
+  // 2020-04-17 2dm - plugins now added later
+  // plugins: DefaultPlugins,
   extended_valid_elements: '@[class]' // allow classes on all elements,
     + ',i' // allow i elements (allows icon-font tags like <i class='fa fa-...'>),
     + ',hr[sxc|guid]', // allow inline content-blocks
