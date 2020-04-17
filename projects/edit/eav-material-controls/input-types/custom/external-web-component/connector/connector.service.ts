@@ -171,7 +171,7 @@ export class ConnectorService {
         this._ngZone.run(() => this.updateField(name, value));
       },
       formGroup: this.group,
-      formSetValueChange$: this.eavService.formSetValueChange$,
+      // formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
       setFocused: (focused) => {

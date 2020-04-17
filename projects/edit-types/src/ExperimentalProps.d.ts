@@ -11,7 +11,8 @@ export interface ExperimentalProps {
   entityGuid: string;
   allInputTypeNames: InputTypeName[];
   formGroup: FormGroup;
-  formSetValueChange$: Observable<FormSet>;
+  // TODO: SPM - this seems unused, can we remove it
+  // formSetValueChange$: Observable<FormSet>;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   translateService: TranslateService; // for WYSIWYG
   wysiwygSettings?: WysiwygSettings; // only if field is of WYSIWYG input type
