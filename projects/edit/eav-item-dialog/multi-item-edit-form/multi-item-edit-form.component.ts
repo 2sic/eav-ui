@@ -33,7 +33,6 @@ import { FormSet } from '../../../edit-types';
 import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
-import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
 import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
 
@@ -48,7 +47,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
-  private editFormData: EditForm;
   slide = 'initial';
   slideListenersAdded = false;
 
@@ -106,7 +104,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     this.expandableFieldService.init(this.route);
-    this.editFormData = JSON.parse(decodeURIComponent(this.route.snapshot.params.items));
     this.isParentDialog = calculateIsParentDialog(this.route);
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));

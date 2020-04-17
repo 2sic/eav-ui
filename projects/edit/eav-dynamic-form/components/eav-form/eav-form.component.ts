@@ -1,18 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, FormGroupDirective } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 
 @Component({
-  templateUrl: './eav-form.component.html',
   selector: 'app-eav-form',
+  templateUrl: './eav-form.component.html',
   styleUrls: ['./eav-form.component.scss']
 })
 export class EavFormComponent implements OnInit, OnDestroy {
-  @ViewChild('dynamicForm') dynamicForm: FormGroupDirective;
-
   @Input() config: FieldConfigSet[] = [];
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() formValueChange: EventEmitter<any> = new EventEmitter<any>();
@@ -73,14 +71,14 @@ export class EavFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  save(event: { [key: string]: any }) {
+  save() {
     console.log('form save', event);
     // Use this to emit value out
     this.formSubmit.emit(this.value);
   }
 
   submitOutside() {
-    this.dynamicForm.ngSubmit.emit(this.value);
+    this.save();
   }
 
   setDisabled(name: string, disable: boolean, emitEvent: boolean) {
