@@ -68,7 +68,7 @@ export class InputFieldHelper {
     };
   }
 
-  static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings) {
+  static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings, inputTypeSettings: InputType) {
     // empty inputtype wrappers
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
@@ -98,7 +98,7 @@ export class InputFieldHelper {
     }
 
     if (isExternal) {
-      if (this.isWysiwygInputType(inputType)) {
+      if (inputTypeSettings?.UseAdam) {
         wrappers.push(
           WrappersConstants.dropzoneWrapper,
           WrappersConstants.eavLocalizationWrapper,

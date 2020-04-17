@@ -6,7 +6,7 @@ import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash-es/isEmpty';
 
 import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, ContentType, Item, Language } from '../../../shared/models/eav';
+import { EavAttributes, ContentType, Item, Language, InputType } from '../../../shared/models/eav';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
@@ -139,11 +139,15 @@ export class BuildFieldsService {
     // these settings are recalculated in translate-group-menu translateAllConfiguration
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
-    const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated);
+    let inputTypeSettings: InputType;
     let disableI18n = false;
     this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      if (type) { disableI18n = type.DisableI18n; }
+      if (type) {
+        inputTypeSettings = type;
+        disableI18n = type.DisableI18n;
+      }
     });
+    const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 
     if (isEmptyInputType) {
