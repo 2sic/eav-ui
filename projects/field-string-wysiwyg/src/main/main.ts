@@ -9,11 +9,14 @@ import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
 import { fixMenuPositions } from './fix-menu-positions-helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
-import { InitialConfig } from '../config/initial-config';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 declare const tinymce: any;
 
-class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
+
+export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
   reconfigure?: WysiwygReconfigure;
   private instanceId: string;
@@ -24,11 +27,10 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
   private firstInit: boolean;
-  private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
   private dialogIsOpen: boolean;
   private observer: MutationObserver;
 
-  /** The external object that's responsible for configuring tinymce */
+  /** The object that's responsible for configuring tinymce */
   private configurator: TinyMceConfigurator;
 
   constructor() {
@@ -48,7 +50,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
       ? 'inline-wysiwyg'
       : 'full-wysiwyg');
 
-    const tinyMceSrc = `${this.tinyMceBaseUrl}/tinymce.min.js`;
+    const tinyMceSrc = `${tinyMceBaseUrl}/tinymce.min.js`;
 
     // TODO: SPM create method to take care of this on connector.system...
     const scriptLoaded = !!(window as any).tinymce;
@@ -69,26 +71,23 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   private tinyMceScriptLoaded() {
     console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
-    const connector = this.connector;
-    this.configurator = new TinyMceConfigurator(tinymce, connector, this.reconfigure);
-    // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const initialConfig: InitialConfig = this.configurator.initialConfig(this.containerClass,
-      this.toolbarContainerClass, this.tinyMceSetup.bind(this));
-    // after creating initial config, pick up the value for later use
-    this.pasteImageFromClipboardEnabled = initialConfig.pasteImageFromClipboardEnabled;
-    const tinyOptions = this.configurator.tinyMceOptions(initialConfig);
+    this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
+    this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
     this.firstInit = true;
-    if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
+    if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
   }
 
   private tinyMceSetup(editor: any) {
     this.editor = editor;
-    editor.on('init', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE initialized', event);
+    this.reconfigure?.editorInit?.(editor);
+    editor.on('init', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE initialized', editor);
       TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
-      attachDnnBridgeService(this, editor);
-      attachAdam(this, editor);
+      // tslint:disable: curly
+      if (!this.reconfigure.disablePagePicker) attachDnnBridgeService(this, editor);
+      if (!this.reconfigure.disableAdam) attachAdam(this, editor);
       this.configurator.addTranslations();
       // addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
@@ -119,21 +118,20 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     });
 
     // called after tinymce editor is removed
-    editor.on('remove', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE removed', event);
+    editor.on('remove', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE removed', _event);
       this.clearData();
     });
 
-    editor.on('focus', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE focused', event);
-      attachDnnBridgeService(this, editor); // spm 2019-09-23 just a workaround. Fix asap
-      attachAdam(this, editor); // spm 2019-09-23 just a workaround. Fix asap
+    editor.on('focus', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE focused', _event);
+      if (!this.reconfigure.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
+      if (!this.reconfigure.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
-        // tslint:disable-next-line:max-line-length
-        dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+        dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
       if (this.connector._experimental.wysiwygSettings.inlineMode) {
@@ -141,8 +139,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
       }
     });
 
-    editor.on('blur', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE blurred', event);
+    editor.on('blur', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE blurred', _event);
       if (!this.pasteImageFromClipboardEnabled) {
         // Dropzone will handle image uploads again
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
@@ -157,6 +155,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     editor.on('change', this.saveValue.bind(this));
     editor.on('undo', this.saveValue.bind(this));
     editor.on('redo', this.saveValue.bind(this));
+    this.reconfigure?.editorReady?.(editor);
     this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
   }
 

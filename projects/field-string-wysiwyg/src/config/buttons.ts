@@ -1,12 +1,13 @@
 import { loadCustomIcons } from '../main/load-icons-helper';
 import { Guid } from '../shared/guid';
+import { FieldStringWysiwyg } from '../main/main';
 
 const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: any, editor: any, expand: (expand: boolean) => void) {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwyg, editor: any, expand: (expand: boolean) => void) {
     registerTinyMceFormats(editor, imgSizes);
     loadCustomIcons(editor);
 
@@ -38,6 +39,7 @@ export class TinyMceButtons {
 
 
   /** Group with adam-link, dnn-link */
+  // TODO: SPM this should be typed, and then it should be .adam.toggle
   static linkFiles(editor: any, fieldStringWysiwyg: any) {
     editor.ui.registry.addSplitButton('linkfiles', {
       icon: 'custom-file-pdf',
@@ -73,6 +75,7 @@ export class TinyMceButtons {
   }
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
+  // TODO: SPM this should be typed, and then it should be .adam.toggle
   static linksGroups(editor: any, fieldStringWysiwyg: any) {
     const linkButton = editor.ui.registry.getAll().buttons.link;
     const linkgroupItems = [

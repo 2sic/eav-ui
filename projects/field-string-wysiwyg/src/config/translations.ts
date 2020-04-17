@@ -34,7 +34,6 @@ export class TinyMceTranslations {
 
   /** Add translations to TinyMCE. Call after TinyMCE is initialized */
   static addTranslations(language: string, translateService: TranslateService, editorManager: any) {
-    // const defaultLanguage = 'en';
     const keys = [];
     const mceTranslations: any = {};
 
