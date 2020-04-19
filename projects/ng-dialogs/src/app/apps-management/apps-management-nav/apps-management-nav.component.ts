@@ -4,6 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { Context } from '../../shared/context/context';
 
 @Component({
   selector: 'app-apps-management-nav',
@@ -11,12 +12,20 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./apps-management-nav.component.scss']
 })
 export class AppsManagementNavComponent implements OnInit, OnDestroy {
+  zoneId: number;
   tabs = ['list', 'languages', 'features', 'sxc-insights']; // tabs order has to match template
   tabIndex: number;
 
   private subscription = new Subscription();
 
-  constructor(private dialogRef: MatDialogRef<AppsManagementNavComponent>, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private dialogRef: MatDialogRef<AppsManagementNavComponent>,
+    private router: Router,
+    private route: ActivatedRoute,
+    private context: Context,
+  ) {
+    this.zoneId = this.context.zoneId;
+  }
 
   ngOnInit() {
     // set tab initially
