@@ -1,3 +1,5 @@
+import { calculateTypeIcon } from '../content-type-fields.helpers';
+
 // tslint:disable:max-line-length
 const dataTypeLabels: { [key: string]: { label: string, description: string } } = {
   Boolean: { label: 'Boolean (yes/no)', description: 'Yes/no or true/false values' },
@@ -14,6 +16,7 @@ const dataTypeLabels: { [key: string]: { label: string, description: string } } 
 export class DataType {
   name: string;
   label: string;
+  icon: string;
   description: string;
 }
 
@@ -23,6 +26,7 @@ export function calculateDataTypes(rawDataTypes: string[]): DataType[] {
     dataTypes.push({
       name: rawDataType,
       label: dataTypeLabels[rawDataType].label,
+      icon: calculateTypeIcon(rawDataType),
       description: dataTypeLabels[rawDataType].description,
     });
   }

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentGroupService } from './services/content-group.service';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
@@ -28,6 +29,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private contentGroupService: ContentGroupService,
     private route: ActivatedRoute,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentGroup = {
@@ -50,7 +52,9 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   saveList() {
+    this.snackBar.open('Saving...');
     this.contentGroupService.saveList(this.contentGroup, this.items).subscribe(res => {
+      this.snackBar.open('Saved');
       this.closeDialog();
     });
   }

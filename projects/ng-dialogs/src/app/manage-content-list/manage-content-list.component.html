@@ -1,10 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Manage content-item lists</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">Manage content-item lists</div>
 </div>
 
 <router-outlet></router-outlet>
@@ -13,7 +8,7 @@
 
 <p class="dialog-description" *ngIf="header">
   <ng-container *ngIf="header.Type">
-    {{ header.Title }}
+    <span>{{ header.Title }}</span>
     <button mat-icon-button matTooltip="Edit header" (click)="editHeader()">
       <mat-icon>edit</mat-icon>
     </button>
@@ -37,8 +32,7 @@
   </div>
 </div>
 
-<div class="form-actions-box">
-  <button mat-icon-button matTooltip="Save" (click)="saveList()">
-    <mat-icon>done</mat-icon>
-  </button>
+<div class="dialog-actions-box">
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button color="accent" (click)="saveList()">Save</button>
 </div>

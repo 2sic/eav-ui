@@ -74,3 +74,13 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
 .dialog-description {
   font-size: 14px;
 }
+
+.dialog-actions-box {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+
+  button:not(:last-of-type) {
+    margin-right: 8px;
+  }
+}

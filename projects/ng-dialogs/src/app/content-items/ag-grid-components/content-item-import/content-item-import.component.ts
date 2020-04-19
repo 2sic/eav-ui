@@ -24,8 +24,13 @@ export class ContentItemImportComponent implements OnInit {
 
   async importContentItem() {
     this.viewState = this.viewStates.Waiting;
-    (await this.contentItemsService.importItem(this.importFile)).subscribe(res => {
-      this.viewState = this.viewStates.Imported;
+    (await this.contentItemsService.importItem(this.importFile)).subscribe({
+      next: res => {
+        this.viewState = this.viewStates.Imported;
+      },
+      error: () => {
+        this.viewState = this.viewStates.Default;
+      }
     });
   }
 

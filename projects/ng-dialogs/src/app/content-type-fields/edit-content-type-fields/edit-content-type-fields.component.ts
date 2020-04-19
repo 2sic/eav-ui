@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentTypesService } from '../../app-administration/shared/services/content-types.service';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
@@ -8,7 +9,7 @@ import { ContentType } from '../../app-administration/shared/models/content-type
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
-import { ContentTypeFieldHelpers } from '../content-type-fields-helpers';
+import { calculateTypeIcon } from '../content-type-fields.helpers';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -34,6 +35,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    private snackBar: MatSnackBar,
   ) {
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
@@ -91,6 +93,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
   }
 
   async onSubmit() {
+    this.snackBar.open('Saving...');
     if (this.editMode) {
       const res = await this.contentTypesFieldsService
         .updateInputType(this.fields[0].Id, this.fields[0].StaticName, this.fields[0].InputType)
@@ -101,8 +104,11 @@ export class EditContentTypeFieldsComponent implements OnInit {
         await this.contentTypesFieldsService.add(rowWithValue, this.contentType.Id).toPromise();
       }
     }
+    this.snackBar.open('Saved', null, { duration: 2000 });
     this.closeDialog();
   }
 
-  findIcon = (typeName: string) => ContentTypeFieldHelpers.typeIcon(typeName);
+  findIcon(typeName: string) {
+    return calculateTypeIcon(typeName);
+  }
 }

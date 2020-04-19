@@ -1,13 +1,8 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div [ngSwitch]="editMode">
-      <span *ngSwitchCase="undefined">Fields</span>
-      <span *ngSwitchCase="true">Edit Field</span>
-      <span *ngSwitchCase="false">Add Fields</span>
-    </div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
+  <div class="dialog-title-box" [ngSwitch]="editMode">
+    <ng-container *ngSwitchCase="undefined">Fields</ng-container>
+    <ng-container *ngSwitchCase="true">Edit Field</ng-container>
+    <ng-container *ngSwitchCase="false">Add Fields</ng-container>
   </div>
 </div>
 
@@ -30,10 +25,12 @@
         <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
           [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
           <mat-select-trigger>
-            <mat-icon style="width: 20px; height: 20px; font-size: 16px">{{ findIcon(field.Type) }}</mat-icon> {{ field.Type }}
+            <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
+            <span>{{ field.Type }}</span>
           </mat-select-trigger>
           <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
-            <mat-icon>{{ findIcon(dataType.name) }}</mat-icon> {{ dataType.label }}
+            <mat-icon>{{ dataType.icon }}</mat-icon>
+            <span>{{ dataType.label }}</span>
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -52,12 +49,8 @@
     </div>
   </div>
 
-  <div class="form-actions-box">
-    <button mat-icon-button type="submit" matTooltip="Save" [disabled]="!ngForm.form.valid">
-      <mat-icon>done</mat-icon>
-    </button>
+  <div class="dialog-actions-box">
+    <button mat-raised-button type="button">Cancel</button>
+    <button mat-raised-button color="accent" type="submit" [disabled]="!ngForm.form.valid">Save</button>
   </div>
-  TODO: 1. button to the right, add label "Save", make button with primary color
-  2. pls move the styles in the Data Type icon to the right place :)
-  3. Make dialog much wider - as it can really use the space
 </form>

@@ -1,11 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div *ngIf="!id">New Content Type</div>
-    <div *ngIf="id">Edit Content Type</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">{{ id ? 'Edit Content Type' : 'New Content Type' }}</div>
 </div>
 
 <form *ngIf="contentType" (ngSubmit)="onSubmit()" #ngForm="ngForm">
@@ -69,9 +63,8 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <div class="form-actions-box">
-    <button mat-icon-button type="submit" matTooltip="Save" [disabled]="!ngForm.form.valid">
-      <mat-icon>done</mat-icon>
-    </button>
+  <div class="dialog-actions-box">
+    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid">Save</button>
   </div>
 </form>

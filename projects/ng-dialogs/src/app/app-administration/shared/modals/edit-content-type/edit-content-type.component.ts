@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -26,6 +27,7 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
+    private snackBar: MatSnackBar,
   ) {
     this.scope = this.route.snapshot.paramMap.get('scope');
     this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
@@ -82,7 +84,9 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
+    this.snackBar.open('Saving...');
     this.contentTypesService.save(this.contentType).subscribe(result => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }

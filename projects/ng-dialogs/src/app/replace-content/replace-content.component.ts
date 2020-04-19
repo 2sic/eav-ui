@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
@@ -27,6 +28,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     private contentGroupService: ContentGroupService,
     private router: Router,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.item = {
@@ -48,7 +50,9 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.snackBar.open('Saving...');
     this.contentGroupService.saveItem(this.item).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }

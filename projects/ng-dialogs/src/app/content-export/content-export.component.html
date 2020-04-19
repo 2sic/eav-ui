@@ -1,10 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Export Content / Data</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">Export Content / Data</div>
 </div>
 
 <p class="dialog-description">
@@ -57,13 +52,13 @@
     </mat-radio-group>
   </div>
 
-  <div class="form-actions-box">
-    <button mat-button type="button" [disabled]="!ngForm.form.valid" (click)="exportContent()">
-      Export
-    </button>
-
-    <button mat-button type="button" [disabled]="!ngForm.form.valid" (click)="exportJson()">
+  <div class="dialog-actions-box">
+    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="button" [disabled]="!ngForm.form.valid" (click)="exportJson()">
       Export Type Definition as Json (for developers)
+    </button>
+    <button mat-raised-button type="button" color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
+      Export
     </button>
   </div>
 </form>

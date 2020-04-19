@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ReplaceContentRoutingModule } from './replace-content-routing.module';
 import { ReplaceContentComponent } from './replace-content.component';
@@ -32,6 +33,7 @@ import { ContentGroupService } from '../manage-content-list/services/content-gro
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,

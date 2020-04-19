@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ManageContentListRoutingModule } from './manage-content-list-routing.module';
 import { ManageContentListComponent } from './manage-content-list.component';
@@ -28,6 +29,7 @@ import { ContentGroupService } from './services/content-group.service';
     MatIconModule,
     MatTooltipModule,
     DragDropModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,

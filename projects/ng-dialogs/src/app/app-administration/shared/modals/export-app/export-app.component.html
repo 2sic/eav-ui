@@ -1,10 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Export app</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">Export app</div>
 </div>
 
 <p class="dialog-description">
@@ -50,8 +45,9 @@
     </div>
   </div>
 
-  <div>
-    <button mat-button (click)="exportApp()" [disabled]="isExporting">Export App</button>
-    <button mat-button (click)="exportGit()" [disabled]="isExporting">Export Data for Github versioning</button>
+  <div class="dialog-actions-box">
+    <button mat-raised-button [disabled]="isExporting" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button [disabled]="isExporting" (click)="exportGit()">Export Data for Github versioning</button>
+    <button mat-raised-button color="accent" [disabled]="isExporting" (click)="exportApp()">Export App</button>
   </div>
 </div>

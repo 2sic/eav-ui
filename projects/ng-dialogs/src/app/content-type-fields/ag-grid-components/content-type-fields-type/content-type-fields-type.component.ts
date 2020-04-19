@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
-import { ContentTypeFieldHelpers } from '../../content-type-fields-helpers';
+
+import { calculateTypeIcon } from '../../content-type-fields.helpers';
 
 @Component({
   selector: 'app-content-type-fields-type',
@@ -14,36 +15,7 @@ export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp 
 
   agInit(params: ICellRendererParams) {
     this.value = params.value;
-    this.icon = ContentTypeFieldHelpers.typeIcon(this.value);
-    // switch (this.value) {
-    //   case 'String':
-    //     this.icon = 'text_fields';
-    //     break;
-    //   case 'Entity':
-    //     this.icon = 'share';
-    //     break;
-    //   case 'Boolean':
-    //     this.icon = 'toggle_on';
-    //     break;
-    //   case 'Number':
-    //     this.icon = 'dialpad';
-    //     break;
-    //   case 'Custom':
-    //     this.icon = 'extension';
-    //     break;
-    //   case 'DateTime':
-    //     this.icon = 'today';
-    //     break;
-    //   case 'Hyperlink':
-    //     this.icon = 'link';
-    //     break;
-    //   case 'Empty':
-    //     this.icon = 'crop_free';
-    //     break;
-    //   default:
-    //     this.icon = 'device_unknown';
-    //     break;
-    // }
+    this.icon = calculateTypeIcon(this.value);
   }
 
   refresh(params?: any): boolean {

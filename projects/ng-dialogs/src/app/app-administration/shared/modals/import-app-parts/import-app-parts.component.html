@@ -1,10 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Import Content and Templates into this App</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">Import Content and Templates into this App</div>
 </div>
 
 <mat-spinner *ngIf="isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
@@ -18,15 +13,17 @@
   </p>
 
   <div>
-    <button mat-button matTooltip="Open file browser" (click)="fileInput.click()">
+    <button mat-raised-button matTooltip="Open file browser" (click)="fileInput.click()">
       <span *ngIf="!importFile">Select file</span>
       <span *ngIf="importFile">{{ importFile.name }}</span>
     </button>
     <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
   </div>
 
-  <div>
-    <button mat-button [disabled]="!importFile || isImporting" (click)="importAppParts()">Import</button>
+  <div class="dialog-actions-box">
+    <button mat-raised-button [disabled]="isImporting" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" [disabled]="!importFile || isImporting"
+      (click)="importAppParts()">Import</button>
   </div>
 </div>
 
@@ -43,5 +40,8 @@
     'sxc-message-error': message.MessageType == 2
   }">
     {{ message.Text }}
+  </div>
+  <div class="dialog-actions-box">
+    <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
   </div>
 </div>

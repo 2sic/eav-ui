@@ -1,10 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Replace Content Item</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
+  <div class="dialog-title-box">Replace Content Item</div>
 </div>
 
 <router-outlet></router-outlet>
@@ -25,8 +20,7 @@
   </button>
 </div>
 
-<div class="form-actions-box">
-  <button mat-icon-button matTooltip="Save" (click)="save()">
-    <mat-icon>done</mat-icon>
-  </button>
+<div class="dialog-actions-box">
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button color="accent" (click)="save()">Save</button>
 </div>
