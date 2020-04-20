@@ -14,4 +14,10 @@ export class WebApisService {
       params: { appId: this.context.appId.toString(), path: '', mask: '*Controller.cs', withSubfolders: 'true' },
     }) as Observable<string[]>;
   }
+
+  create(name: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'), {}, {
+      params: { appId: this.context.appId.toString(), global: 'false', path: `api/${name}` },
+    }) as Observable<boolean>;
+  }
 }

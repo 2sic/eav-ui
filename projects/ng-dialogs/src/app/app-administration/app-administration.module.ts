@@ -52,6 +52,7 @@ import { ExportAppService } from './shared/services/export-app.service';
 import { ExportAppPartsService } from './shared/services/export-app-parts.service';
 import { ImportAppPartsService } from './shared/services/import-app-parts.service';
 import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-actions/web-api-actions.component';
+import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { WebApiActionsComponent } from './shared/ag-grid-components/web-api-acti
     ExportAppService,
     ExportAppPartsService,
     ImportAppPartsService,
+    SanitizeService,
   ]
 })
 export class AppAdministrationModule { }
