@@ -1,0 +1,35 @@
+.cards-box {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 40px;
+
+  .mat-card {
+    max-width: 400px;
+    margin: 8px;
+    padding-top: 8px;
+  }
+
+  .mat-card-header {
+    align-items: center;
+    justify-content: space-between;
+
+    .mat-card-header-text {
+      margin: 0;
+    }
+
+    .mat-card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .actions-box {
+    display: flex;
+    height: 40px;
+  }
+
+  .mat-card-content {
+    font-size: 14px;
+  }
+}

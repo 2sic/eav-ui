@@ -1,11 +1,28 @@
-<h4>2sxc Insights for Super Users</h4>
+<div class="cards-box">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>2sxc Insights for Super Users</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Open 2sxc Insights" (click)="openInsights()">
+          <mat-icon>speed</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      This is to access a special section to see what is really in the server memory. It's intended for extensive
+      debugging
+      - see also <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
+    </mat-card-content>
+  </mat-card>
 
-<p class="mat-tab-description">
-  This is to access a special section to see what is really in the server memory. It's intended for extensive debugging
-  - see also <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
-</p>
-
-<button mat-button class="icon" matTooltip="Open 2sxc Insights" (click)="openInsights()">
-  <mat-icon>speed</mat-icon>
-  <span>Open 2sxc Insights</span>
-</button>
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title class="not-implemented">Activate Page Level Logging</mat-card-title>
+      <div class="actions-box"></div>
+    </mat-card-header>
+    <mat-card-content>
+      This will place insights-logs in the HTML of the user output for users with ?debug=true in the url. It can only be
+      activated for short periods of time.
+    </mat-card-content>
+  </mat-card>
+</div>
