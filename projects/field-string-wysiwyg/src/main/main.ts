@@ -1,20 +1,25 @@
 import { Subscription } from 'rxjs';
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
-import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import * as template from './main.html';
 import * as styles from './main.css';
-import { getTinyOptions, addTranslations } from './tinymce-options';
-import { addTinyMceToolbarButtons } from './tinymce-toolbar';
-import { attachDnnBridgeService } from './tinymce-dnnbridge-service';
-import { attachAdam } from './tinymce-adam-service';
+import { TinyMceButtons } from '../config/buttons';
+import { attachDnnBridgeService } from '../connector/dnn-page-picker';
+import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
-import * as contentStyle from './tinymce-content.css';
 import { fixMenuPositions } from './fix-menu-positions-helper';
+import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 declare const tinymce: any;
 
-class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
+
+export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
+  reconfigure?: WysiwygReconfigure;
+  private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];
@@ -22,16 +27,18 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private pasteImageFromClipboardEnabled: boolean;
   private editor: any;
   private firstInit: boolean;
-  private tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
   private dialogIsOpen: boolean;
   private observer: MutationObserver;
+
+  /** The object that's responsible for configuring tinymce */
+  private configurator: TinyMceConfigurator;
 
   constructor() {
     super();
     console.log('FieldStringWysiwyg constructor called');
-    const instanceId = `${randomIntFromInterval(1, 1000000)}`;
-    this.containerClass = `tinymce-container-${instanceId}`;
-    this.toolbarContainerClass = `tinymce-toolbar-container-${instanceId}`;
+    this.instanceId = `${randomIntFromInterval(1, 1000000)}`;
+    this.containerClass = `tinymce-container-${this.instanceId}`;
+    this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
@@ -39,14 +46,13 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    if (this.connector._experimental.wysiwygSettings.inlineMode) {
-      this.classList.add('inline-wysiwyg');
-    } else {
-      this.classList.add('full-wysiwyg');
-    }
+    this.classList.add(this.connector._experimental.wysiwygSettings.inlineMode
+      ? 'inline-wysiwyg'
+      : 'full-wysiwyg');
 
-    const tinyMceSrc = `${this.tinyMceBaseUrl}/tinymce.min.js`;
+    const tinyMceSrc = `${tinyMceBaseUrl}/tinymce.min.js`;
 
+    // TODO: SPM create method to take care of this on connector.system...
     const scriptLoaded = !!(window as any).tinymce;
     if (scriptLoaded) {
       this.tinyMceScriptLoaded();
@@ -65,43 +71,25 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   private tinyMceScriptLoaded() {
     console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
-    // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const contentBlocksEnabled = (this.connector._experimental.allInputTypeNames.length > this.connector.field.index + 1)
-      ? this.connector._experimental.allInputTypeNames[this.connector.field.index + 1].inputType === 'entity-content-blocks'
-      : false;
-
-    const pasteFormattedTextEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting);
+    this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const dropzoneConfig = this.connector._experimental.dropzoneConfig$.value;
-
-    const tinyOptions = getTinyOptions({
-      containerClass: this.containerClass,
-      fixedToolbarClass: this.toolbarContainerClass,
-      contentStyle: contentStyle.default,
-      setup: this.tinyMceSetup.bind(this),
-      currentLang: this.connector._experimental.translateService.currentLang,
-      contentBlocksEnabled,
-      pasteFormattedTextEnabled,
-      pasteImageFromClipboardEnabled: this.pasteImageFromClipboardEnabled,
-      imagesUploadUrl: dropzoneConfig.url as string,
-      uploadHeaders: dropzoneConfig.headers,
-      inlineMode: this.connector._experimental.wysiwygSettings.inlineMode,
-      buttonSource: this.connector._experimental.wysiwygSettings.buttonSource,
-      buttonAdvanced: this.connector._experimental.wysiwygSettings.buttonAdvanced,
-    });
+    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
     this.firstInit = true;
-    if (tinymce.baseURL !== this.tinyMceBaseUrl) { tinymce.baseURL = this.tinyMceBaseUrl; }
+    if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
   }
 
   private tinyMceSetup(editor: any) {
     this.editor = editor;
-    editor.on('init', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE initialized', event);
-      addTinyMceToolbarButtons(this, editor, this.expand.bind(this));
-      attachDnnBridgeService(this, editor);
-      attachAdam(this, editor);
-      addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
+    this.reconfigure?.editorInit?.(editor);
+    editor.on('init', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE initialized', editor);
+      TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
+      // tslint:disable: curly
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
+      this.configurator.addTranslations();
+      // addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
@@ -130,21 +118,20 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     });
 
     // called after tinymce editor is removed
-    editor.on('remove', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE removed', event);
+    editor.on('remove', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE removed', _event);
       this.clearData();
     });
 
-    editor.on('focus', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE focused', event);
-      attachDnnBridgeService(this, editor); // spm 2019-09-23 just a workaround. Fix asap
-      attachAdam(this, editor); // spm 2019-09-23 just a workaround. Fix asap
+    editor.on('focus', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE focused', _event);
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
+      if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
-        // tslint:disable-next-line:max-line-length
-        dzConfig.acceptedFiles = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+        dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
       if (this.connector._experimental.wysiwygSettings.inlineMode) {
@@ -152,8 +139,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
       }
     });
 
-    editor.on('blur', (event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE blurred', event);
+    editor.on('blur', (_event: any) => {
+      console.log('FieldStringWysiwyg TinyMCE blurred', _event);
       if (!this.pasteImageFromClipboardEnabled) {
         // Dropzone will handle image uploads again
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
@@ -168,6 +155,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     editor.on('change', this.saveValue.bind(this));
     editor.on('undo', this.saveValue.bind(this));
     editor.on('redo', this.saveValue.bind(this));
+    this.reconfigure?.editorReady?.(editor);
     this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
   }
 
@@ -175,7 +163,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.connector.expand(expand);
   }
 
-  private saveValue(event: any) {
+  private saveValue() {
     this.editorContent = this.editor.getContent();
     this.connector.data.update(this.editorContent);
   }

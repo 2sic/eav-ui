@@ -30,13 +30,13 @@ Dual licensed under the MIT and GPL licenses.
  *   >>> Math.uuid(8, 16) // 8 character ID (base=16)
  *   "098F4D35"
  */
-export class MathHelper {
+export class Guid {
   // Private array of chars to use
   private static CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
   public static uuid(len?: any, radix?: any) {
     // tslint:disable
-    var chars = MathHelper.CHARS, uuid = [], i;
+    var chars = Guid.CHARS, uuid = [], i;
     radix = radix || chars.length;
 
     if (len) {
@@ -68,7 +68,7 @@ export class MathHelper {
   // by minimizing calls to random()
   public static uuidFast() {
     // tslint:disable
-    var chars = MathHelper.CHARS, uuid = new Array(36), rnd = 0, r;
+    var chars = Guid.CHARS, uuid = new Array(36), rnd = 0, r;
     for (var i = 0; i < 36; i++) {
       if (i == 8 || i == 13 || i == 18 || i == 23) {
         uuid[i] = '-';
