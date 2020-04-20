@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AgGridModule } from '@ag-grid-community/angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRippleModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
@@ -32,6 +34,7 @@ import { EnableLanguagesComponent } from './enable-languages/enable-languages.co
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { FeaturesConfigService } from './shared/services/features-config.service';
+import { SxcInsightsService } from './shared/services/sxc-insights.service';
 
 @NgModule({
   declarations: [
@@ -75,6 +78,8 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     MatRippleModule,
     EcoFabSpeedDialModule,
     MatCardModule,
+    FormsModule,
+    MatInputModule,
   ],
   providers: [
     Context,
@@ -82,6 +87,7 @@ import { FeaturesConfigService } from './shared/services/features-config.service
     EnableLanguagesService,
     ImportAppService,
     FeaturesConfigService,
+    SxcInsightsService,
   ]
 })
 export class AppsManagementModule { }
