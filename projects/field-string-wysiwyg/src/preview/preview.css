@@ -11,8 +11,7 @@
 }
 
 .wysiwyg-preview:not(.disabled):hover {
-  border: 2px solid rgba(0, 0, 0, 0.4);
-  border-bottom: none;
+  border-width: 2px;
   padding: 0 7px 0;
 }
 

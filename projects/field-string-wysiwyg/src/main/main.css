@@ -1,4 +1,12 @@
-field-string-wysiwyg {
+.full-wysiwyg {
+  height: inherit;
+  min-height: inherit;
+  max-height: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.inline-wysiwyg {
   height: inherit;
   min-height: inherit;
   max-height: inherit;
@@ -8,6 +16,11 @@ field-string-wysiwyg {
 
 .tinymce-toolbar-container {
   flex-shrink: 0;
+}
+
+.inline-wysiwyg .tinymce-toolbar-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  min-height: 39px;
 }
 
 .tinymce-container {
@@ -45,27 +58,20 @@ field-string-wysiwyg {
   display: flex !important;
 }
 
-.inline-wysiwyg:not(.disabled) .tinymce-toolbar-container {
-  background-color: rgba(0, 0, 0, 0.2);
-  min-height: 39px;
-}
-
-.inline-wysiwyg:not(.disabled):hover .tinymce-toolbar-container {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.inline-wysiwyg:not(.disabled) .tinymce-container {
+.inline-wysiwyg:not(.disabled) {
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-top: none;
   border-bottom: none;
-  padding: 0 8px 1px;
+  padding: 1px 1px 0;
 }
 
-.inline-wysiwyg:not(.disabled):hover .tinymce-container {
-  border: 2px solid rgba(0, 0, 0, 0.4);
-  border-top: none;
-  border-bottom: none;
-  padding: 0 7px 1px;
+.inline-wysiwyg:not(.disabled):hover {
+  border-width: 2px;
+  padding: 0;
+}
+
+.inline-wysiwyg.focused {
+  border-width: 2px;
+  padding: 0;
 }
 
 .inline-wysiwyg.disabled .tinymce-container {

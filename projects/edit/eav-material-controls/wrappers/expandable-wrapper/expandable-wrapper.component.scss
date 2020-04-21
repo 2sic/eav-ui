@@ -12,6 +12,12 @@
   transition: none;
 }
 
+%field-border--focused {
+  margin-bottom: 0;
+  border-bottom: 2px solid $field-border-color--focus !important;
+  transition: none;
+}
+
 %field-border--invalid {
   margin-bottom: 0;
   border-bottom: 2px solid $field-border-color--invalid;
@@ -89,7 +95,7 @@
     }
 
     &--focused:not(.c-ew__preview--invalid) {
-      border-bottom-color: $field-border-color--focus !important;
+      @extend %field-border--focused;
     }
 
     &--invalid {
