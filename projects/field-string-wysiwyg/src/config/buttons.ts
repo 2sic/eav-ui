@@ -1,13 +1,13 @@
 import { loadCustomIcons } from '../main/load-icons-helper';
 import { Guid } from '../shared/guid';
-import { FieldStringWysiwyg } from '../main/main';
+import { FieldStringWysiwygDialog } from '../main/main';
 
 const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwyg, editor: any, expand: (expand: boolean) => void) {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwygDialog, editor: any, expand: (expand: boolean) => void) {
     registerTinyMceFormats(editor, imgSizes);
     loadCustomIcons(editor);
 
@@ -308,7 +308,7 @@ export class TinyMceButtons {
       custom p, H1-H6 only for the toolbar listpreview menu
       [name, buttonCommand, tooltip, text, icon]
     */
-   const isGerman = editor.settings.language === 'de';
+    const isGerman = editor.settings.language === 'de';
     [['pre', 'Preformatted', 'Preformatted'],
     ['cp', 'p', 'Paragraph', 'Paragraph', 'custom-paragraph'],
     // ['code', 'Code', 'Code'],
@@ -492,31 +492,31 @@ export class TinyMceButtons {
 
 
 
-  /**
-   * Helper function to add activate/deactivate to buttons like alignleft, alignright etc.
-   * copied/modified from
-   * https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
-   */
-  function initOnPostRender(name: any, editor: any) {
-    return (buttonApi: any) => {
-      function watchChange() {
-        editor.formatter.formatChanged(name, (state: any) => {
-          try {
-            buttonApi.setActive(state);
-          } catch (error) {
-            // cannot be set active when not visible on toolbar and is behind More... button
-            // console.error('button set active error:', error);
-          }
-        });
-      }
+/**
+ * Helper function to add activate/deactivate to buttons like alignleft, alignright etc.
+ * copied/modified from
+ * https://github.com/tinymce/tinymce/blob/ddfa0366fc700334f67b2c57f8c6e290abf0b222/js/tinymce/classes/ui/FormatControls.js#L232-L249
+ */
+function initOnPostRender(name: any, editor: any) {
+  return (buttonApi: any) => {
+    function watchChange() {
+      editor.formatter.formatChanged(name, (state: any) => {
+        try {
+          buttonApi.setActive(state);
+        } catch (error) {
+          // cannot be set active when not visible on toolbar and is behind More... button
+          // console.error('button set active error:', error);
+        }
+      });
+    }
 
-      if (editor.formatter) {
-        watchChange();
-      } else {
-        editor.on('init', watchChange);
-      }
-    };
-  }
+    if (editor.formatter) {
+      watchChange();
+    } else {
+      editor.on('init', watchChange);
+    }
+  };
+}
 
 
 /** Register all formats - like img-sizes */

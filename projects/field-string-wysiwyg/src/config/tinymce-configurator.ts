@@ -1,5 +1,5 @@
 import { TinyMceTranslations } from './translations';
-import { Connector } from '../../../edit-types';
+import { Connector, WysiwygSettings } from '../../../edit-types';
 import { DefaultPlugins, DefaultOptions, DefaultPaste } from './defaults';
 import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
 import * as contentStyle from '../main/tinymce-content.css';
@@ -21,7 +21,7 @@ export class TinyMceConfigurator {
     private connector: Connector<any>,
     /** Reconfiguration object - which can optionally change/extend/enhance stuff */
     private reconfigure: WysiwygReconfigure,
-    ) {
+  ) {
     this.language = connector._experimental.translateService.currentLang;
 
     // call optional reconfiguration
@@ -34,7 +34,7 @@ export class TinyMceConfigurator {
   }
 
   /** options to be used - can be modified before it's applied */
-  options = {...DefaultOptions};  // copy the object, so changes don't affect original
+  options = { ...DefaultOptions };  // copy the object, so changes don't affect original
 
   /** tinyMce plugins - can be modified before they are applied */
   plugins = [...DefaultPlugins];  // copy the array, so changes don't affect original
@@ -42,10 +42,14 @@ export class TinyMceConfigurator {
   /**
    * Construct TinyMce options
    */
-  buildOptions(containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
+  buildOptions(inline: boolean, containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
     const connector = this.connector;
     const exp = connector._experimental;
-    const wys = exp.wysiwygSettings;
+    const wys: WysiwygSettings = {
+      inlineMode: inline,
+      buttonSource: this.connector.field.settings.ButtonSource,
+      buttonAdvanced: this.connector.field.settings.ButtonAdvanced,
+    };
     const dropzoneConfig = exp.dropzoneConfig$.value;
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)

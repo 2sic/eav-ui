@@ -10,11 +10,6 @@ field-string-wysiwyg {
   flex-shrink: 0;
 }
 
-.inline-wysiwyg .tinymce-toolbar-container {
-  background-color: rgba(0, 0, 0, 0.2);
-  min-height: 39px;
-}
-
 .tinymce-container {
   position: relative;
   height: 100%;
@@ -48,4 +43,27 @@ field-string-wysiwyg {
 
 .full-wysiwyg .tox.tox-tinymce.tox-tinymce-inline {
   display: flex !important;
+}
+
+.inline-wysiwyg .tinymce-toolbar-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  min-height: 39px;
+}
+
+.inline-wysiwyg:hover .tinymce-toolbar-container {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.inline-wysiwyg .tinymce-container {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: none;
+  border-bottom: none;
+  padding: 0 8px 1px;
+}
+
+.inline-wysiwyg:hover .tinymce-container {
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-top: none;
+  border-bottom: none;
+  padding: 0 7px 1px;
 }

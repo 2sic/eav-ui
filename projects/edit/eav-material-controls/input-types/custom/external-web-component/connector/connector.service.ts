@@ -171,7 +171,6 @@ export class ConnectorService {
         this._ngZone.run(() => this.updateField(name, value));
       },
       formGroup: this.group,
-      // formSetValueChange$: this.eavService.formSetValueChange$,
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
       setFocused: (focused) => {
@@ -182,13 +181,6 @@ export class ConnectorService {
     // optional props
     if (this.config.dropzoneConfig$) {
       experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
-    }
-    if (InputFieldHelper.isWysiwygInputType(this.config.field.inputType)) {
-      experimentalProps.wysiwygSettings = {
-        inlineMode: this.config.field.settings.Dialog === 'inline',
-        buttonSource: this.config.field.settings.ButtonSource,
-        buttonAdvanced: this.config.field.settings.ButtonAdvanced,
-      };
     }
 
     return experimentalProps;

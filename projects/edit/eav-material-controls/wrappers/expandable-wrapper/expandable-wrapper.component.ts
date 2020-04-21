@@ -64,6 +64,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   ngOnInit() {
     this.isWysiwyg = InputFieldHelper.isWysiwygInputType(this.config.field.inputType);
+    this.isWysiwyg = false;
     this.changeDetector.detectChanges();
     const elName = `field-${this.config.field.inputType}`;
     console.log('ExpandableWrapper created for:', elName, 'Config:', this.config.field);
@@ -71,6 +72,13 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
       this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);
     this.elConnector.createElementWebComponent(this.config, this.group, this.previewContainer, elName);
+
+    this.group.controls[this.config.field.name].statusChanges.subscribe(status => {
+      console.log('ExpandableWrapperComponent statusChanges:', this.config.field.name, status);
+    });
+    this.group.controls[this.config.field.name].valueChanges.subscribe(value => {
+      console.log('ExpandableWrapperComponent valueChanges:', this.config.field.name, value);
+    });
 
     this.subscription.add(
       this.expandableFieldService.getObservable().subscribe(expandedFieldId => {

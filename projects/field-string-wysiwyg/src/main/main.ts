@@ -16,9 +16,10 @@ declare const tinymce: any;
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
 
-export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
   reconfigure?: WysiwygReconfigure;
+  inline?: boolean;
   private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
@@ -35,20 +36,18 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
 
   constructor() {
     super();
-    console.log('FieldStringWysiwyg constructor called');
+    console.log('FieldStringWysiwygDialog constructor called');
     this.instanceId = `${randomIntFromInterval(1, 1000000)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
-    console.log('FieldStringWysiwyg connectedCallback called');
+    console.log('FieldStringWysiwygDialog connectedCallback called');
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    this.classList.add(this.connector._experimental.wysiwygSettings.inlineMode
-      ? 'inline-wysiwyg'
-      : 'full-wysiwyg');
+    this.classList.add(this.inline ? 'inline-wysiwyg' : 'full-wysiwyg');
 
     const tinyMceSrc = `${tinyMceBaseUrl}/tinymce.min.js`;
 
@@ -70,10 +69,12 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
   }
 
   private tinyMceScriptLoaded() {
-    console.log('FieldStringWysiwyg tinyMceScriptLoaded called');
+    console.log('FieldStringWysiwygDialog tinyMceScriptLoaded called');
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
+    const tinyOptions = this.configurator.buildOptions(
+      this.inline, this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this)
+    );
     this.firstInit = true;
     if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
@@ -83,7 +84,7 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
     this.editor = editor;
     this.reconfigure?.editorInit?.(editor);
     editor.on('init', (_event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE initialized', editor);
+      console.log('FieldStringWysiwygDialog TinyMCE initialized', editor);
       TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
       // tslint:disable: curly
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
@@ -99,7 +100,7 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
           editor.setContent(this.editorContent);
         }),
       );
-      if (!this.connector._experimental.wysiwygSettings.inlineMode) {
+      if (!this.inline) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -119,12 +120,13 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
 
     // called after tinymce editor is removed
     editor.on('remove', (_event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE removed', _event);
+      console.log('FieldStringWysiwygDialog TinyMCE removed', _event);
       this.clearData();
     });
 
     editor.on('focus', (_event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE focused', _event);
+      this.classList.add('focused');
+      console.log('FieldStringWysiwygDialog TinyMCE focused', _event);
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
@@ -134,20 +136,21 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
         dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.wysiwygSettings.inlineMode) {
+      if (this.inline) {
         this.connector._experimental.setFocused(true);
       }
     });
 
     editor.on('blur', (_event: any) => {
-      console.log('FieldStringWysiwyg TinyMCE blurred', _event);
+      this.classList.remove('focused');
+      console.log('FieldStringWysiwygDialog TinyMCE blurred', _event);
       if (!this.pasteImageFromClipboardEnabled) {
         // Dropzone will handle image uploads again
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
         delete dzConfig.acceptedFiles;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.wysiwygSettings.inlineMode) {
+      if (this.inline) {
         this.connector._experimental.setFocused(false);
       }
     });
@@ -186,9 +189,9 @@ export class FieldStringWysiwyg extends HTMLElement implements EavCustomInputFie
   }
 
   disconnectedCallback() {
-    console.log('FieldStringWysiwyg disconnectedCallback called');
+    console.log('FieldStringWysiwygDialog disconnectedCallback called');
     this.clearData();
   }
 }
 
-customElements.define('field-string-wysiwyg', FieldStringWysiwyg);
+customElements.define('field-string-wysiwyg-dialog', FieldStringWysiwygDialog);

@@ -1,34 +1,70 @@
 import { Subscription } from 'rxjs';
+
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
+import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { FieldStringWysiwygDialog } from '../main/main';
 
-class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
+class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
+  private eventListeners: ElementEventListener[] = [];
 
   constructor() {
     super();
-    console.log('FieldStringWysiwygPreview constructor called');
+    console.log('FieldStringWysiwyg constructor called');
   }
 
   connectedCallback() {
-    console.log('FieldStringWysiwygPreview connectedCallback called');
+    console.log('FieldStringWysiwyg connectedCallback called');
+    const inline = this.connector.field.settings.Dialog === 'inline';
+    if (!inline) {
+      this.runPreviewMode();
+    } else {
+      this.runInlineMode();
+    }
+  }
+
+  private runPreviewMode() {
     this.innerHTML = buildTemplate(template.default, styles.default);
-    const previewContainer = this.querySelector('.wysiwyg-preview');
-    this.connector.data.value$.subscribe(value => {
-      previewContainer.innerHTML = !value ? '' : value
-        .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') // content block
-        .replace(/<a[^>]*>(.*?)<\/a>/g, '$1'); // remove href from A tag
-    });
+    const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
+    if (this.connector.field.disabled) {
+      previewContainer.classList.add('disabled');
+    } else {
+      previewContainer.classList.add('enabled');
+      const expand = () => { this.connector.expand(true); };
+      previewContainer.addEventListener('click', expand);
+      this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
+    }
+    this.subscription.add(
+      this.connector.data.value$.subscribe(value => {
+        previewContainer.innerHTML = !value ? '' : value
+          .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') // content block
+          .replace(/<a[^>]*>(.*?)<\/a>/g, '$1'); // remove href from A tag
+      })
+    );
+  }
+
+  private runInlineMode() {
+    const dialogName = 'field-string-wysiwyg-dialog';
+    const dialogEl = document.createElement(dialogName) as FieldStringWysiwygDialog;
+    (dialogEl as any).host = (this as any).host;
+    dialogEl.connector = this.connector;
+    dialogEl.inline = true;
+    this.appendChild(dialogEl);
   }
 
   disconnectedCallback() {
-    console.log('FieldStringWysiwygPreview disconnectedCallback called');
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subscriptions = null;
+    console.log('FieldStringWysiwyg disconnectedCallback called');
+    this.eventListeners.forEach(listener => {
+      listener.element.removeEventListener(listener.type, listener.listener);
+    });
+    this.eventListeners = null;
+    this.subscription.unsubscribe();
+    this.subscription = null;
   }
 }
 
-customElements.define('field-string-wysiwyg-preview', FieldStringWysiwygPreview);
+customElements.define('field-string-wysiwyg', FieldStringWysiwyg);

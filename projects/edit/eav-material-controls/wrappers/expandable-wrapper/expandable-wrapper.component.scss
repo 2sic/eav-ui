@@ -2,18 +2,18 @@
 @import "../../../assets/styles/theme/material-colors.scss";
 
 %field-border {
-  padding: 0 0 1px 0;
+  margin-bottom: 1px;
   border-bottom: 1px solid $field-border-color--initial;
 }
 
 %field-border--hover {
-  padding: 0;
+  margin-bottom: 0;
   border-bottom: 2px solid $field-border-color--hover;
   transition: none;
 }
 
 %field-border--invalid {
-  padding: 0;
+  margin-bottom: 0;
   border-bottom: 2px solid $field-border-color--invalid;
   transition: none;
 }
@@ -21,7 +21,7 @@
 %field-border--disabled {
   border: none;
   cursor: default;
-  padding: 0 0 2px 0;
+  // padding: 0 0 2px 0;
   background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
   background-position: bottom;
   background-size: 4px 1px;

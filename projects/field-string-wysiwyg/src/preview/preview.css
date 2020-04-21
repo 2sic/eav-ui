@@ -1,4 +1,26 @@
 .wysiwyg-preview {
-  padding: 0 8px;
   height: 96px;
+}
+
+.wysiwyg-preview.enabled {
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: none;
+  padding: 1px 8px 0;
+}
+
+.wysiwyg-preview.enabled:hover {
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-bottom: none;
+  padding: 0 7px 0;
+}
+
+.wysiwyg-preview.disabled {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+  background-position: top, right, bottom, left;
+  background-repeat: repeat-x, repeat-y;
+  background-size: 4px 1px, 1px 4px;
 }
