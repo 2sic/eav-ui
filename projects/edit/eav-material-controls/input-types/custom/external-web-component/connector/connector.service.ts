@@ -17,8 +17,7 @@ import { ContentTypeService } from '../../../../../shared/store/ngrx-data/conten
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
-import { AdamSetValue, AdamAfterUpload } from '../../../../../../shared/adam.model';
-import { ExperimentalProps, InputTypeName } from '../../../../../../edit-types';
+import { ExperimentalProps, InputTypeName, AdamSetValue, AdamAfterUpload } from '../../../../../../edit-types';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -45,27 +44,9 @@ export class ConnectorService {
     this.eavConfig = eavService.getEavConfiguration();
   }
 
-  /**
-   * This is host methods which the external control see
-   */
   // spm 2019.04.08. move to experimentalProps
-  private externalInputTypeHost = {
-    attachAdam: (adamSetValue: AdamSetValue, adamAfterUpload: AdamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
-    openDnnDialog: (oldValue: any, params: any, callback: any, dialog: MatDialog) => {
-      this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback, dialog));
-    },
-    getUrlOfIdDnnDialog: (value: string, callback: any) => {
-      this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
-    },
-  };
-
-  // spm 2019.04.08. move to experimentalProps
-  private openDnnDialog(oldValue: any, params: any, callback: any, dialog1: MatDialog) {
-    this.dnnBridgeService.open(
-      oldValue,
-      params,
-      callback,
-      this.dialog);
+  private openDnnDialog(oldValue: any, params: any, callback: any) {
+    this.dnnBridgeService.open(oldValue, params, callback, this.dialog);
   }
 
   // spm 2019.04.08. move to experimentalProps
@@ -130,7 +111,6 @@ export class ConnectorService {
     this.group = group;
 
     this.customEl = document.createElement(customElName) as any;
-    this.customEl.host = this.externalInputTypeHost;
     this.customEl.connector = this.buildConnector();
     console.log('Petar order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
@@ -175,6 +155,13 @@ export class ConnectorService {
       translateService: this.translateService,
       setFocused: (focused) => {
         this._ngZone.run(() => { this.config.field.focused = focused; });
+      },
+      attachAdam: (adamSetValue, adamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
+      openDnnDialog: (oldValue, params, callback) => {
+        this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback));
+      },
+      getUrlOfIdDnnDialog: (value, callback) => {
+        this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
       },
       expandedField$: this.expandableFieldService.getObservable(),
     };

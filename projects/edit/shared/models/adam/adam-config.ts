@@ -1,4 +1,6 @@
-export class AdamConfig {
+import { IAdamConfig, IAdamModeConfig } from '../../../../edit-types';
+
+export class AdamConfig implements IAdamConfig {
   constructor(
     public adamModeConfig: AdamModeConfig = { usePortalRoot: false },
     public allowAssetsInRoot: boolean = true,
@@ -22,7 +24,7 @@ export class AdamConfig {
   }
 }
 
-export class AdamModeConfig {
+export class AdamModeConfig implements IAdamModeConfig {
   constructor(
     public usePortalRoot: boolean,
   ) {

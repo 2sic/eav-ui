@@ -19,7 +19,6 @@ const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
 export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
   reconfigure?: WysiwygReconfigure;
-  inline?: boolean;
   private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
@@ -47,7 +46,10 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    this.classList.add(this.inline ? 'inline-wysiwyg' : 'full-wysiwyg');
+    this.classList.add(this.connector._experimental.inlineMode ? 'inline-wysiwyg' : 'full-wysiwyg');
+    if (this.connector.field.disabled) {
+      this.classList.add('disabled');
+    }
 
     const tinyMceSrc = `${tinyMceBaseUrl}/tinymce.min.js`;
 
@@ -72,9 +74,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
     console.log('FieldStringWysiwygDialog tinyMceScriptLoaded called');
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const tinyOptions = this.configurator.buildOptions(
-      this.inline, this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this)
-    );
+    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
     this.firstInit = true;
     if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     tinymce.init(tinyOptions);
@@ -100,7 +100,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
           editor.setContent(this.editorContent);
         }),
       );
-      if (!this.inline) {
+      if (!this.connector._experimental.inlineMode) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -136,7 +136,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
         dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.inline) {
+      if (this.connector._experimental.inlineMode) {
         this.connector._experimental.setFocused(true);
       }
     });
@@ -150,7 +150,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
         delete dzConfig.acceptedFiles;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.inline) {
+      if (this.connector._experimental.inlineMode) {
         this.connector._experimental.setFocused(false);
       }
     });

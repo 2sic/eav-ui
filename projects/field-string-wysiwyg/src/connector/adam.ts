@@ -1,8 +1,8 @@
-import { AdamSetValue, AdamAfterUpload } from '../../../shared/adam.model';
+import { AdamSetValue, AdamAfterUpload } from '../../../edit-types';
 import { FieldStringWysiwygDialog } from '../main/main';
 
 // TODO: SPM this must really become a normal class, which then becomes .adam on the field
-export function attachAdam(fieldStringWysiwyg: any /* FieldStringWysiwyg */, editor: any) {
+export function attachAdam(fieldStringWysiwyg: any /* FieldStringWysiwygDialog */, editor: any) {
   const adamSetValue: AdamSetValue = (fileItem: any, modeImage: any) => {
     if (modeImage === undefined) {  // if not supplied, use the setting in the adam
       modeImage = fieldStringWysiwyg.adam.adamModeImage;
@@ -21,7 +21,7 @@ export function attachAdam(fieldStringWysiwyg: any /* FieldStringWysiwyg */, edi
     adamSetValue(fileItem, fileItem.Type === 'image');
   };
 
-  fieldStringWysiwyg.adam = fieldStringWysiwyg.host.attachAdam(adamSetValue, adamAfterUpload);
+  fieldStringWysiwyg.adam = fieldStringWysiwyg.connector._experimental.attachAdam(adamSetValue, adamAfterUpload);
 
   fieldStringWysiwyg.toggleAdam = (imagesOnly: any, usePortalRoot: boolean) => {
     fieldStringWysiwyg.adam.adamModeImage = imagesOnly;

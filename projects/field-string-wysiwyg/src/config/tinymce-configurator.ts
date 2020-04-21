@@ -1,5 +1,5 @@
 import { TinyMceTranslations } from './translations';
-import { Connector, WysiwygSettings } from '../../../edit-types';
+import { Connector } from '../../../edit-types';
 import { DefaultPlugins, DefaultOptions, DefaultPaste } from './defaults';
 import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
 import * as contentStyle from '../main/tinymce-content.css';
@@ -42,14 +42,12 @@ export class TinyMceConfigurator {
   /**
    * Construct TinyMce options
    */
-  buildOptions(inline: boolean, containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
+  buildOptions(containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
     const connector = this.connector;
     const exp = connector._experimental;
-    const wys: WysiwygSettings = {
-      inlineMode: inline,
-      buttonSource: this.connector.field.settings.ButtonSource,
-      buttonAdvanced: this.connector.field.settings.ButtonAdvanced,
-    };
+    const inlineMode = exp.inlineMode;
+    const buttonSource = connector.field.settings.ButtonSource;
+    const buttonAdvanced = connector.field.settings.ButtonAdvanced;
     const dropzoneConfig = exp.dropzoneConfig$.value;
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
@@ -66,7 +64,7 @@ export class TinyMceConfigurator {
       setup, // callback function during setup
     };
 
-    const modesOptions = TinyMceToolbars.build(contentBlocksEnabled, wys.inlineMode, wys.buttonSource, wys.buttonAdvanced);
+    const modesOptions = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced);
     options = { ...options, ...modesOptions };
 
     // TODO: SPM - unsure if this actually does anything, as we already add all i18n?

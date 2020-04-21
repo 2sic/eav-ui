@@ -1,15 +1,16 @@
 .wysiwyg-preview {
   height: 96px;
+  user-select: none;
 }
 
-.wysiwyg-preview.enabled {
+.wysiwyg-preview:not(.disabled) {
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-bottom: none;
   padding: 1px 8px 0;
 }
 
-.wysiwyg-preview.enabled:hover {
+.wysiwyg-preview:not(.disabled):hover {
   border: 2px solid rgba(0, 0, 0, 0.4);
   border-bottom: none;
   padding: 0 7px 0;

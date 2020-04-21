@@ -21,7 +21,8 @@
 %field-border--disabled {
   border: none;
   cursor: default;
-  // padding: 0 0 2px 0;
+  padding: 0 0 2px 0;
+  margin-bottom: 0;
   background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
   background-position: bottom;
   background-size: 4px 1px;

@@ -33,7 +33,6 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     if (this.connector.field.disabled) {
       previewContainer.classList.add('disabled');
     } else {
-      previewContainer.classList.add('enabled');
       const expand = () => { this.connector.expand(true); };
       previewContainer.addEventListener('click', expand);
       this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
@@ -50,9 +49,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private runInlineMode() {
     const dialogName = 'field-string-wysiwyg-dialog';
     const dialogEl = document.createElement(dialogName) as FieldStringWysiwygDialog;
-    (dialogEl as any).host = (this as any).host;
     dialogEl.connector = this.connector;
-    dialogEl.inline = true;
+    dialogEl.connector._experimental.inlineMode = true;
     this.appendChild(dialogEl);
   }
 

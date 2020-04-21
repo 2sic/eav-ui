@@ -45,25 +45,35 @@ field-string-wysiwyg {
   display: flex !important;
 }
 
-.inline-wysiwyg .tinymce-toolbar-container {
+.inline-wysiwyg:not(.disabled) .tinymce-toolbar-container {
   background-color: rgba(0, 0, 0, 0.2);
   min-height: 39px;
 }
 
-.inline-wysiwyg:hover .tinymce-toolbar-container {
+.inline-wysiwyg:not(.disabled):hover .tinymce-toolbar-container {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.inline-wysiwyg .tinymce-container {
+.inline-wysiwyg:not(.disabled) .tinymce-container {
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-top: none;
   border-bottom: none;
   padding: 0 8px 1px;
 }
 
-.inline-wysiwyg:hover .tinymce-container {
+.inline-wysiwyg:not(.disabled):hover .tinymce-container {
   border: 2px solid rgba(0, 0, 0, 0.4);
   border-top: none;
   border-bottom: none;
   padding: 0 7px 1px;
+}
+
+.inline-wysiwyg.disabled .tinymce-container {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+  background-position: top, right, bottom, left;
+  background-repeat: repeat-x, repeat-y;
+  background-size: 4px 1px, 1px 4px;
 }
