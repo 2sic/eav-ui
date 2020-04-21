@@ -65,20 +65,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
     }
 
-    const scriptLoaded = !!(window as any).google;
-    if (scriptLoaded) {
-      this.mapScriptLoaded();
-    } else {
-      const scriptElement = document.querySelector('script[src="' + this.mapApiUrl + '"]') as HTMLScriptElement;
-      if (scriptElement) {
-        scriptElement.addEventListener('load', this.mapScriptLoaded.bind(this), { once: true });
-      } else {
-        const script = document.createElement('script');
-        script.src = this.mapApiUrl;
-        script.addEventListener('load', this.mapScriptLoaded.bind(this), { once: true });
-        this.appendChild(script);
-      }
-    }
+    this.connector.loadScript('google', this.mapApiUrl, () => { this.mapScriptLoaded(); });
   }
 
   private mapScriptLoaded() {

@@ -18,6 +18,9 @@ export interface Connector<T> {
   /** Opens component in dialog mode */
   expand(expand: boolean): void;
 
+  /** Makes sure that script with the same source is loaded only once and executes callback */
+  loadScript(globalObject: string, src: string, callback: (...args: any[]) => any): void;
+
   /** Data not yet standardized */
   _experimental: ExperimentalProps;
 }

@@ -50,24 +50,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
-
-    const tinyMceSrc = `${tinyMceBaseUrl}/tinymce.min.js`;
-
-    // TODO: SPM create method to take care of this on connector.system...
-    const scriptLoaded = !!(window as any).tinymce;
-    if (scriptLoaded) {
-      this.tinyMceScriptLoaded();
-    } else {
-      const scriptElement = document.querySelector('script[src="' + tinyMceSrc + '"]') as HTMLScriptElement;
-      if (scriptElement) {
-        scriptElement.addEventListener('load', this.tinyMceScriptLoaded.bind(this), { once: true });
-      } else {
-        const script = document.createElement('script');
-        script.src = tinyMceSrc;
-        script.addEventListener('load', this.tinyMceScriptLoaded.bind(this), { once: true });
-        this.appendChild(script);
-      }
-    }
+    this.connector.loadScript('tinymce', `${tinyMceBaseUrl}/tinymce.min.js`, () => { this.tinyMceScriptLoaded(); });
   }
 
   private tinyMceScriptLoaded() {

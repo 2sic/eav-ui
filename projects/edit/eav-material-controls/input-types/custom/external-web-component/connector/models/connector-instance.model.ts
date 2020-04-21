@@ -17,6 +17,24 @@ export class ConnectorInstance<T> implements Connector<T> {
   expand(expand: boolean) {
     this._connectorHost.expand(expand);
   }
+
+  loadScript(globalObject: string, src: string, callback: (...args: any[]) => any) {
+    if (!!(window as any)[globalObject]) {
+      callback();
+      return;
+    }
+
+    const scriptElement: HTMLScriptElement = document.querySelector('script[src="' + src + '"]');
+    if (scriptElement) {
+      scriptElement.addEventListener('load', callback, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.addEventListener('load', callback, { once: true });
+    document.head.appendChild(script);
+  }
 }
 
 export class ConnectorDataInstance<T> implements ConnectorData<T> {
