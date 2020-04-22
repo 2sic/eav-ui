@@ -12,6 +12,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { CodeEditorComponent } from './code-editor.component';
 import { Context } from '../shared/services/context';
 import { SourceService } from './services/source.service';
+import { DialogService } from '../shared/services/dialog.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SourceService } from './services/source.service';
   providers: [
     Context,
     SourceService,
+    DialogService,
   ]
 })
 export class CodeEditorModule { }

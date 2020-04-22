@@ -10,6 +10,7 @@ export class WebApisService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
+    // spm TODO: similar function exists in edit-ui
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
       params: { appId: this.context.appId.toString(), path: '', mask: '*Controller.cs', withSubfolders: 'true' },
     }) as Observable<string[]>;

@@ -14,10 +14,11 @@ import 'brace/snippets/razor';
 import { Context } from '../shared/services/context';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { SourceService } from './services/source.service';
-import { EditItem, SourceItem } from '../app-administration/shared/models/edit-form.model';
+import { EditItem, SourceItem, EditForm } from '../app-administration/shared/models/edit-form.model';
 import { SourceView } from './models/source-view';
 import { aceConfig } from './ace-config';
 import { ElementEventListener } from '../../../../shared/element-event-listener-model';
+import { DialogService } from '../shared/services/dialog.service';
 
 @Component({
   selector: 'app-code-editor',
@@ -27,6 +28,8 @@ import { ElementEventListener } from '../../../../shared/element-event-listener-
 export class CodeEditorComponent implements OnInit, OnDestroy {
   view: SourceView;
   aceConfig = aceConfig;
+  showTemplates = false;
+  templates: string[];
 
   private viewKey: number | string; // templateId or path
   private eventListeners: ElementEventListener[] = [];
@@ -37,6 +40,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private sourceService: SourceService,
+    private dialogService: DialogService,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -49,6 +53,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.view = view;
       this.savedCode = view.Code;
     });
+    this.sourceService.getTemplates().subscribe(templates => {
+      this.templates = templates;
+    });
   }
 
   ngOnDestroy() {
@@ -56,6 +63,19 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       listener.element.removeEventListener(listener.type, listener.listener);
     });
     this.eventListeners = null;
+  }
+
+  toggleTemplates() {
+    this.showTemplates = !this.showTemplates;
+  }
+
+  openTemplate(path: string) {
+    const form: EditForm = {
+      items: [
+        { Path: path }
+      ]
+    };
+    this.dialogService.openCode(form);
   }
 
   save() {

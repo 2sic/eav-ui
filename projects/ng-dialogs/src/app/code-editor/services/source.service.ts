@@ -4,11 +4,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
+import { Context } from '../../shared/services/context';
 import { SourceView } from '../models/source-view';
 
 @Injectable()
 export class SourceService {
-  constructor(private http: HttpClient, private dnnContext: DnnContext) { }
+  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   /** Key is templateId or path */
   get(key: number | string) {
@@ -51,6 +52,13 @@ export class SourceService {
       default:
         return 'text';
     }
+  }
+
+  getTemplates() {
+    // spm TODO: similar function exists in edit-ui
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
+      params: { appId: this.context.appId.toString(), global: 'false', withSubfolders: 'true' },
+    }) as Observable<string[]>;
   }
 
   private calcParams(key: number | string) {
