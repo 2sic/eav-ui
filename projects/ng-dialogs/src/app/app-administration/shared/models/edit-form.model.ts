@@ -2,7 +2,7 @@ import { EavFor } from '../../../../../../edit/shared/models/eav';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export class EditForm {
-  constructor(public items: (AddItem | EditItem | GroupItem)[]) { }
+  constructor(public items: (AddItem | EditItem | GroupItem | SourceItem)[]) { }
 }
 
 export class EditItem {
@@ -29,4 +29,8 @@ export class GroupItemGroup {
   Index: number;
   Part: string;
   Add: boolean;
+}
+
+export class SourceItem {
+  constructor(public Path: string) { }
 }

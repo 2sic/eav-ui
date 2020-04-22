@@ -1,10 +1,15 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Code Editor</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
+<div class="code-editor-root">
+  <div class="mat-dialog-title">
+    <div class="dialog-title-box">Code Editor</div>
   </div>
-</div>
 
-<div>Content</div>
+  <ng-container *ngIf="view">
+    <div class="view-picker">{{ view.FileName }} ({{ view.Type }})</div>
+
+    <ace class="code-editor" [(value)]="view.Code" [config]="aceConfig"></ace>
+
+    <div class="dialog-actions-box">
+      <button mat-raised-button color="accent" (click)="save()">Save</button>
+    </div>
+  </ng-container>
+</div>
