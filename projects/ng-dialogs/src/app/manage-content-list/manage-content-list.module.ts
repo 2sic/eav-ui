@@ -9,7 +9,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ManageContentListRoutingModule } from './manage-content-list-routing.module';
 import { ManageContentListComponent } from './manage-content-list.component';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { Context } from '../shared/context/context';
 import { ContentGroupService } from './services/content-group.service';
 

@@ -14,7 +14,7 @@ import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { EditRoutingModule } from './edit-routing.module';
-import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/components/shared-components.module';
+import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { Context } from '../ng-dialogs/src/app/shared/context/context';
 import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
 import { ExpandableFieldService } from './shared/services/expandable-field.service';

@@ -81,7 +81,7 @@ import { CustomDefaultComponent } from './input-types/custom/custom-default/cust
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
-import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/components/shared-components.module';
+import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AppAssetsService } from '../shared/services/app-assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
 

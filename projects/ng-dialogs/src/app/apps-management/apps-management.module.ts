@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { ImportAppComponent } from './shared/modals/import-app/import-app.component';

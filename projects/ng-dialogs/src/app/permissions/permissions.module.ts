@@ -11,7 +11,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { PermissionsRoutingModule } from './permissions-routing.module';
 import { PermissionsComponent } from './permissions.component';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { Context } from '../shared/context/context';
 import { PermissionsService } from './services/permissions.service';
 import { MetadataService } from './services/metadata.service';

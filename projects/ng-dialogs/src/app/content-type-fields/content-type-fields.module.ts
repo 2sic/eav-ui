@@ -19,7 +19,7 @@ import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/conten
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-content-type-fields.component';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 

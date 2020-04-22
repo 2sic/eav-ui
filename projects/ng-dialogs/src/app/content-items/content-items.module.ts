@@ -21,7 +21,7 @@ import { ContentItemsStatusComponent } from './ag-grid-components/content-items-
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { ContentItemImportComponent } from './ag-grid-components/content-item-import/content-item-import.component';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { Context } from '../shared/context/context';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';

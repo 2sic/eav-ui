@@ -25,7 +25,7 @@ import { WebApiComponent } from './web-api/web-api.component';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
 import { Context } from '../shared/context/context';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
-import { SharedComponentsModule } from '../shared/components/shared-components.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DataItemsComponent } from './shared/ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from './shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from './shared/ag-grid-components/data-actions/data-actions.component';
