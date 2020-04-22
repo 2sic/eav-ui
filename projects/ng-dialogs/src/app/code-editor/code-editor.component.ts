@@ -2,9 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import 'brace';
+import 'brace/mode/text';
+import 'brace/mode/csharp';
 import 'brace/mode/razor';
 import 'brace/theme/sqlserver';
 import 'brace/ext/language_tools';
+import 'brace/snippets/text';
+import 'brace/snippets/csharp';
 import 'brace/snippets/razor';
 
 import { Context } from '../shared/services/context';
@@ -41,6 +45,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sourceService.get(this.viewKey).subscribe(view => {
+      this.aceConfig.mode = this.sourceService.calculateAceMode(view.Extension);
       this.view = view;
       this.savedCode = view.Code;
     });

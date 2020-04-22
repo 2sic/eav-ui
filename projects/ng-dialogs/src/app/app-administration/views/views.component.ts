@@ -16,6 +16,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav-constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { DialogService } from '../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-views',
@@ -108,6 +109,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private dialogService: DialogService,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
   }
@@ -180,7 +182,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openCode(view: View) {
-    alert('Open code editor');
+    const form: EditForm = {
+      items: [
+        { Path: view.TemplatePath }
+      ]
+    };
+    this.dialogService.openCode(form);
   }
 
   private openPermissions(view: View) {

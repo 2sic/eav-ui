@@ -7,6 +7,8 @@ import { WebApi } from '../shared/models/web-api.model';
 import { WebApiActionsComponent } from '../shared/ag-grid-components/web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from '../shared/models/web-api-actions-params';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
+import { DialogService } from '../../shared/services/dialog.service';
+import { EditForm } from '../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-web-api',
@@ -27,8 +29,8 @@ export class WebApiComponent implements OnInit {
     },
     {
       width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
-        onOpenCode: this.openCode,
-        onDelete: this.deleteApi,
+        onOpenCode: this.openCode.bind(this),
+        onDelete: this.deleteApi.bind(this),
       } as WebApiActionsParams,
     },
   ];
@@ -37,7 +39,12 @@ export class WebApiComponent implements OnInit {
   };
   modules = AllCommunityModules;
 
-  constructor(private webApisService: WebApisService, private sanitizeService: SanitizeService, private snackBar: MatSnackBar) { }
+  constructor(
+    private webApisService: WebApisService,
+    private sanitizeService: SanitizeService,
+    private snackBar: MatSnackBar,
+    private dialogService: DialogService,
+  ) { }
 
   ngOnInit() {
     this.fetchWebApis();
@@ -85,7 +92,12 @@ export class WebApiComponent implements OnInit {
   }
 
   private openCode(api: WebApi) {
-    alert('Open code editor');
+    const form: EditForm = {
+      items: [
+        { Path: `${api.folder}/${api.name}.cs` }
+      ]
+    };
+    this.dialogService.openCode(form);
   }
 
   private deleteApi(api: WebApi) {

@@ -41,6 +41,18 @@ export class SourceService {
     }) as Observable<boolean>;
   }
 
+  calculateAceMode(extension: string) {
+    const lower = extension.toLocaleLowerCase();
+    switch (lower) {
+      case '.cs':
+        return 'csharp';
+      case '.cshtml':
+        return 'razor';
+      default:
+        return 'text';
+    }
+  }
+
   private calcParams(key: number | string) {
     if (typeof key === typeof 0) {
       return { templateId: key.toString() };

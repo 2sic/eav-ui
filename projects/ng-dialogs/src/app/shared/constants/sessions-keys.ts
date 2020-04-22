@@ -20,5 +20,7 @@ export const keyPortalRoot = prefix + 'portalroot';
 export const keyPublishing = prefix + 'publishing';
 export const keyWebsiteRoot = prefix + 'websiteroot';
 export const keyFilters = prefix + 'filters';
+export const keyUserCanDesign = prefix + 'user%5BcanDesign%5D';
+export const keyUserCanDevelop = prefix + 'user%5BcanDevelop%5D';
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
