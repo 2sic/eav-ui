@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
 import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
 import { FieldHintComponent } from './components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from './components/directives/click-stop-propagination.directive';
+import { ClickStopPropagationDirective } from './directives/click-stop-propagination.directive';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
 
