@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context } from '../../../shared/context/context';
+import { Context } from '../../../shared/services/context';
 import { ContentInfo } from '../models/content-info.model';
 
 @Injectable()

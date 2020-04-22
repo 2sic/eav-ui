@@ -15,6 +15,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagina
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
 
+/** Stuff that is shared and only has to be initialized once */
 @NgModule({
   declarations: [
     EmptyRouteComponent,

@@ -2,7 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context } from './shared/context/context';
+import { Context } from './shared/services/context';
 import { keyModuleId, keyContentBlockId } from './shared/constants/sessions-keys';
 
 @Component({

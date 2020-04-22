@@ -15,7 +15,7 @@ import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { EditRoutingModule } from './edit-routing.module';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
-import { Context } from '../ng-dialogs/src/app/shared/context/context';
+import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
 import { ExpandableFieldService } from './shared/services/expandable-field.service';
 declare const sxcVersion: string;

@@ -22,7 +22,7 @@ import { ContentItemsActionsComponent } from './ag-grid-components/content-items
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { ContentItemImportComponent } from './ag-grid-components/content-item-import/content-item-import.component';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { Context } from '../shared/context/context';
+import { Context } from '../shared/services/context';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';

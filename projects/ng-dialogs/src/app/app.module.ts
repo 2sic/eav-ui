@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { Context } from './shared/context/context';
+import { Context } from './shared/services/context';
 import { paramsInitFactory } from './shared/factories/params-init.factory';
 import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { metaReducers, reducers } from '../../../edit/shared/store';

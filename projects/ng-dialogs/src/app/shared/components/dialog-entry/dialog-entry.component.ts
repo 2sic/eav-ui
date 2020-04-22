@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
-import { Context } from '../../context/context';
+import { Context } from '../../services/context';
 import { DialogConfig } from '../../models/dialog-config.model';
 
 @Component({

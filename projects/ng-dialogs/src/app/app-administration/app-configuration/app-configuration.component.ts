@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { eavConstants } from '../../shared/constants/eav-constants';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { EditForm } from '../shared/models/edit-form.model';
-import { Context } from '../../shared/context/context';
+import { Context } from '../../shared/services/context';
 import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
 
 @Component({

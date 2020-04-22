@@ -4,7 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { Context } from '../../shared/context/context';
+import { Context } from '../../shared/services/context';
 
 @Component({
   selector: 'app-apps-management-nav',

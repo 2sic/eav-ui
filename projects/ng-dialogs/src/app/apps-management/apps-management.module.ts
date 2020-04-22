@@ -21,7 +21,7 @@ import { AppsListComponent } from './apps-list/apps-list.component';
 import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
-import { Context } from '../shared/context/context';
+import { Context } from '../shared/services/context';
 import { AppsListShowComponent } from './shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from './shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListService } from './shared/services/apps-list.service';

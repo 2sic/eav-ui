@@ -12,7 +12,7 @@ import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { FormSet } from '../../../edit-types';
-import { Context } from '../../../ng-dialogs/src/app/shared/context/context';
+import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
 export class EavService {

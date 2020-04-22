@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
-import { Context } from '../../../shared/context/context';
+import { Context } from '../../../shared/services/context';
 
 @Injectable()
 export class ContentTypesService {

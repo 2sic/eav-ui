@@ -10,7 +10,7 @@ import { AceModule } from 'ngx-ace-wrapper';
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { CodeEditorComponent } from './code-editor.component';
-import { Context } from '../shared/context/context';
+import { Context } from '../shared/services/context';
 import { SourceService } from './services/source.service';
 
 @NgModule({

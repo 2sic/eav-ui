@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context } from '../../shared/context/context';
+import { Context } from '../../shared/services/context';
 
 @Injectable()
 export class MetadataService {

@@ -7,7 +7,7 @@ import 'brace/theme/sqlserver';
 import 'brace/ext/language_tools';
 import 'brace/snippets/razor';
 
-import { Context } from '../shared/context/context';
+import { Context } from '../shared/services/context';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { SourceService } from './services/source.service';
 import { EditItem, SourceItem } from '../app-administration/shared/models/edit-form.model';

@@ -12,7 +12,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AgGridModule } from '@ag-grid-community/angular';
 
 import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
-import { Context } from '../shared/context/context';
+import { Context } from '../shared/services/context';
 import { ContentTypeFieldsComponent } from './content-type-fields.component';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
