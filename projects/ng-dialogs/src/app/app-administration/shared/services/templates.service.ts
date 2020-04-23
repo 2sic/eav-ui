@@ -5,6 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../../shared/services/context';
 import { View } from '../models/view.model';
+import { Polymorphism } from '../models/polymorphism';
 
 @Injectable()
 export class TemplatesService {
@@ -21,4 +22,11 @@ export class TemplatesService {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
     }) as Observable<boolean>;
   }
+
+  polymorphism() {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/polymorphism'), {
+      params: { appId: this.context.appId.toString() }
+    }) as Observable<Polymorphism>;
+  }
+
 }

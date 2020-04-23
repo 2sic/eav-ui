@@ -17,6 +17,7 @@ import { eavConstants } from '../../shared/constants/eav-constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
+import { Polymorphism } from '../shared/models/polymorphism';
 
 @Component({
   selector: 'app-views',
@@ -104,6 +105,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   private hasChild: boolean;
 
+  polymorphism: Polymorphism;
+
   constructor(
     private templatesService: TemplatesService,
     private router: Router,
@@ -116,6 +119,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchTemplates();
+    this.fetchPolymorph();
     this.refreshOnChildClosed();
   }
 
@@ -130,6 +134,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private fetchPolymorph() {
+    // TODO: SPM - do we need to keep a reference to this subscription?
+    this.templatesService.polymorphism().subscribe(pl => this.polymorphism = pl);
+  }
+
   editView(params: CellClickedEvent) {
     let form: EditForm;
     if (params === null) {
@@ -142,6 +151,20 @@ export class ViewsComponent implements OnInit, OnDestroy {
         items: [{ EntityId: view.Id.toString() }],
       };
     }
+    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+  }
+
+  editPolymorphisms() {
+    // this must already be loaded - cheap check
+    if (!this.polymorphism) { return; }
+
+    const form: EditForm = {
+      items: [
+        this.polymorphism.Id
+        ? { EntityId: this.polymorphism.Id.toString() }
+        : { ContentTypeName: this.polymorphism.TypeName }
+      ]
+    };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
@@ -213,6 +236,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         this.hasChild = !!this.route.snapshot.firstChild.firstChild;
         if (!this.hasChild && hadChild) {
           this.fetchTemplates();
+          this.fetchPolymorph();
         }
       })
     );
