@@ -28,8 +28,9 @@ export const aceConfig: AceConfigInterface = {
   // minLines?: number;
   // maxLines?: number;
   // fontSize?: number | string;
-  fontSize: 16,
+  fontSize: 14,
   // fontFamily?: string;
+  fontFamily: 'Consolas, Courier New, monospace',
   // showGutter?: boolean;
   showGutter: true,
   // printMargin?: number;

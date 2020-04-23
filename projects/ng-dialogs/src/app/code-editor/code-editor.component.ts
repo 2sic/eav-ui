@@ -27,9 +27,13 @@ import { DialogService } from '../shared/services/dialog.service';
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
   view: SourceView;
-  aceConfig = aceConfig;
-  showTemplates = false;
   templates: string[];
+  aceConfig = aceConfig;
+  explorer = {
+    templates: 'templates',
+    snippets: 'snippets'
+  };
+  activeExplorer: string;
 
   private viewKey: number | string; // templateId or path
   private eventListeners: ElementEventListener[] = [];
@@ -65,8 +69,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.eventListeners = null;
   }
 
-  toggleTemplates() {
-    this.showTemplates = !this.showTemplates;
+  toggleExplorer(explorer: string) {
+    if (this.activeExplorer === explorer) {
+      this.activeExplorer = null;
+    } else {
+      this.activeExplorer = explorer;
+    }
   }
 
   openTemplate(path: string) {

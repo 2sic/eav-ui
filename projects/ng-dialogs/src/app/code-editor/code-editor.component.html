@@ -1,27 +1,29 @@
-<div class="code-editor-root">
-  <div class="mat-dialog-title">
-    <div class="dialog-title-box">Code Editor</div>
+<div class="editor-root" *ngIf="view">
+  <div class="toolbar">
+    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.templates}" title="Templates"
+      (click)="toggleExplorer(explorer.templates)">
+      <mat-icon>file_copy</mat-icon>
+    </div>
+    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.snippets}" title="Snippets"
+      (click)="toggleExplorer(explorer.snippets)">
+      <mat-icon>code</mat-icon>
+    </div>
   </div>
 
-  <ng-container *ngIf="view">
-    <div class="view-picker">
-      <div>
-        <button mat-raised-button (click)="toggleTemplates()">{{ view.FileName }} ({{ view.Type }})</button>
-      </div>
-      <div class="view-picker-options" *ngIf="showTemplates">
-        <div class="view-picker-option" *ngFor="let template of templates" (click)="openTemplate(template)">
-          {{ template }}
-        </div>
+  <div class="explorer fancy-scrollbar">
+    <div class="view-picker" *ngIf="activeExplorer === explorer.templates">
+      <div class="view-picker-option" [ngClass]="{'active': template === view.FileName}" title="{{ template }}"
+        *ngFor="let template of templates" (click)="openTemplate(template)">
+        {{ template }}
       </div>
     </div>
 
-    <div class="code-editor-wrapper">
-      <ace class="editor" [(value)]="view.Code" [config]="aceConfig"></ace>
-      <app-code-snippets class="snippets"></app-code-snippets>
-    </div>
+    <app-code-snippets *ngIf="activeExplorer === explorer.snippets"></app-code-snippets>
+  </div>
 
-    <button mat-fab mat-elevation-z24 (click)="save()">
-      <mat-icon>done</mat-icon>
-    </button>
-  </ng-container>
+  <ace [(value)]="view.Code" [config]="aceConfig"></ace>
+
+  <button mat-fab mat-elevation-z24 title="Click to save or CTRL + S" (click)="save()">
+    <mat-icon>done</mat-icon>
+  </button>
 </div>
