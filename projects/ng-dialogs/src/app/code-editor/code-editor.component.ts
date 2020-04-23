@@ -15,7 +15,7 @@ import { Context } from '../shared/services/context';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { SourceService } from './services/source.service';
 import { EditItem, SourceItem, EditForm } from '../app-administration/shared/models/edit-form.model';
-import { SourceView } from './models/source-view';
+import { SourceView } from './models/source-view.model';
 import { aceConfig } from './ace-config';
 import { ElementEventListener } from '../../../../shared/element-event-listener-model';
 import { DialogService } from '../shared/services/dialog.service';

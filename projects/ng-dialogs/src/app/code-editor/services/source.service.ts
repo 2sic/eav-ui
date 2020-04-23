@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
-import { SourceView } from '../models/source-view';
+import { SourceView } from '../models/source-view.model';
 
 @Injectable()
 export class SourceService {
