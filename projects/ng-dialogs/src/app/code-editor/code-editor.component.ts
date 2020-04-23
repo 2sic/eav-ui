@@ -19,6 +19,8 @@ import { SourceView } from './models/source-view.model';
 import { aceConfig } from './ace-config';
 import { ElementEventListener } from '../../../../shared/element-event-listener-model';
 import { DialogService } from '../shared/services/dialog.service';
+import { SnippetsService } from './services/snippets.service';
+declare const ace: any;
 
 @Component({
   selector: 'app-code-editor',
@@ -34,6 +36,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     snippets: 'snippets'
   };
   activeExplorer: string;
+  /** Snippets for explorer */
+  snippets: any;
+  /** Snippets for the editor */
+  list: any;
 
   private viewKey: number | string; // templateId or path
   private eventListeners: ElementEventListener[] = [];
@@ -45,6 +51,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private sourceService: SourceService,
     private dialogService: DialogService,
+    private snippetsService: SnippetsService,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -56,6 +63,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.aceConfig.mode = this.sourceService.calculateAceMode(view.Extension);
       this.view = view;
       this.savedCode = view.Code;
+      this.snippetsService.getSnippets(this.view).then((res: any) => {
+        this.snippets = res.sets;
+        this.list = res.list;
+        this.registerSnippets();
+      });
     });
     this.sourceService.getTemplates().subscribe(templates => {
       this.templates = templates;
@@ -133,6 +145,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     if (!CTRL_S) { return; }
     e.preventDefault();
     this.save();
+  }
+
+  private registerSnippets() {
+    const snippetManager = ace.acequire('ace/snippets').snippetManager;
+    snippetManager.register(this.list);
   }
 
 }

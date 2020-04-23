@@ -1,8 +1,12 @@
 <div class="edit-input">
   <mat-form-field appearance="standard" color="accent" class="set-dropdown">
-    <mat-select [ngModel]="snippetSet" name="snippetSet">
-      <mat-option value="Content">Content</mat-option>
-      <mat-option *ngFor="let snippet of snippets" [value]="snippet">{{ snippet }}</mat-option>
+    <mat-select [ngModel]="snippetSet" name="snippetSet" (selectionChange)="onSetChange($event)">
+      <mat-option *ngFor="let key of setsKeys" [value]="key">{{ key }}</mat-option>
     </mat-select>
   </mat-form-field>
+</div>
+
+<div *ngFor="let item of activeSnips | keyvalue">
+  <div>{{ item.key }}</div>
+  <div>{{ item.value | json}}</div>
 </div>

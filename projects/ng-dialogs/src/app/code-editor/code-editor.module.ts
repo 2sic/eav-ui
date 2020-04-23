@@ -16,6 +16,7 @@ import { Context } from '../shared/services/context';
 import { SourceService } from './services/source.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
+import { SnippetsService } from './services/snippets.service';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
     Context,
     SourceService,
     DialogService,
+    SnippetsService,
   ]
 })
 export class CodeEditorModule { }
