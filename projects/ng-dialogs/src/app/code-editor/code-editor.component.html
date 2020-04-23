@@ -5,15 +5,20 @@
 
   <ng-container *ngIf="view">
     <div class="view-picker">
-      <button mat-raised-button (click)="toggleTemplates()">{{ view.FileName }} ({{ view.Type }})</button>
-      <ng-container *ngIf="showTemplates">
+      <div>
+        <button mat-raised-button (click)="toggleTemplates()">{{ view.FileName }} ({{ view.Type }})</button>
+      </div>
+      <div class="view-picker-options" *ngIf="showTemplates">
         <div class="view-picker-option" *ngFor="let template of templates" (click)="openTemplate(template)">
           {{ template }}
         </div>
-      </ng-container>
+      </div>
     </div>
 
-    <ace class="editor" [(value)]="view.Code" [config]="aceConfig"></ace>
+    <div class="code-editor-wrapper">
+      <ace class="editor" [(value)]="view.Code" [config]="aceConfig"></ace>
+      <app-code-snippets class="snippets"></app-code-snippets>
+    </div>
 
     <button mat-fab mat-elevation-z24 (click)="save()">
       <mat-icon>done</mat-icon>

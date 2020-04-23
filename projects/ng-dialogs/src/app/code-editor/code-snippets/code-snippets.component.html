@@ -1,0 +1,7 @@
+<div class="snippets-title">Snippets</div>
+
+<mat-form-field appearance="standard" color="accent" class="set-dropdown">
+  <mat-select [ngModel]="snippetSet" name="snippetSet">
+    <mat-option *ngFor="let snippet of snippets" [value]="snippet">{{ snippet }}</mat-option>
+  </mat-select>
+</mat-form-field>

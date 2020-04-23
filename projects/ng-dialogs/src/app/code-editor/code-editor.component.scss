@@ -5,6 +5,7 @@
   height: 100vh;
   box-sizing: border-box;
   padding: 24px;
+  overflow: hidden;
 }
 
 .mat-dialog-title {
@@ -16,15 +17,29 @@
   font-size: 14px;
   margin: 8px 0;
 
+  &-options {
+    margin: 8px 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
   &-option:hover {
     cursor: pointer;
     text-decoration: underline;
   }
 }
 
+.code-editor-wrapper {
+  flex-grow: 1;
+  display: flex;
+}
+
 .editor {
-  flex-shrink: 1;
-  overflow: auto;
+  width: 66%;
+}
+
+.snippets {
+  width: 33%;
 }
 
 .mat-fab {
