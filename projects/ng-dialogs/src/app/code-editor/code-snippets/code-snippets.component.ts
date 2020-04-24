@@ -13,6 +13,7 @@ export class CodeSnippetsComponent implements OnInit {
   snippetSet = 'Content';
   setsKeys: string[];
   activeSnipps: any;
+  openSnipps: string[] = [];
 
   constructor() { }
 
@@ -24,11 +25,21 @@ export class CodeSnippetsComponent implements OnInit {
   onSetChange(event: MatSelectChange) {
     this.snippetSet = event.value;
     this.activeSnipps = this.snippets[this.snippetSet];
+    this.openSnipps = [];
   }
 
   addSnippet(snippet: string) {
     const snippetManager = ace.acequire('ace/snippets').snippetManager;
     snippetManager.insertSnippet(this.editor, snippet);
     this.editor.focus();
+  }
+
+  toggleItem(item: any) {
+    const index = this.openSnipps.indexOf(item);
+    if (index === -1) {
+      this.openSnipps.push(item);
+    } else {
+      this.openSnipps.splice(index, 1);
+    }
   }
 }

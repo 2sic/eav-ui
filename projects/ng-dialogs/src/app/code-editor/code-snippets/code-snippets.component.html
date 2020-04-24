@@ -7,16 +7,15 @@
 </div>
 
 <ng-container *ngFor="let item of activeSnipps | keyvalue">
-  <ng-container *ngTemplateOutlet="collapsible; context: {item: item, show: false}"></ng-container>
+  <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
 </ng-container>
 
-<ng-template #collapsible let-item="item" let-show="show">
-  <div class="collapsible" (click)="show = !show">
-    <mat-icon *ngIf="show">keyboard_arrow_down</mat-icon>
-    <mat-icon *ngIf="!show">keyboard_arrow_right</mat-icon>
+<ng-template #collapsible let-item="item">
+  <div class="collapsible" (click)="toggleItem(item)">
+    <mat-icon>{{ openSnipps.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
     <span title="{{ item.key }}">{{ item.key }}</span>
   </div>
-  <ul class="list" *ngIf="show">
+  <ul class="list" *ngIf="openSnipps.includes(item)">
     <li matRipple class="list-item" *ngFor="let value of (item.value | toarray)" title="{{ value.snip }}"
       (click)="addSnippet(value.snip)">
       <span class="list-item__label">{{ value.label }}</span>
