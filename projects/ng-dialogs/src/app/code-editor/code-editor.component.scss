@@ -8,8 +8,8 @@
   background-color: rgb(51, 51, 51);
 
   &-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -34,14 +34,16 @@
   font-size: 13px;
   background-color: rgb(37, 37, 38);
   color: #ccc;
+  width: 300px;
 }
 
 .view-picker {
   &-option {
     cursor: pointer;
-    padding: 3px 0 3px 8px;
+    padding: 4px 0 4px 8px;
     overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
 
     &:hover {
       background-color: rgb(42, 45, 46);

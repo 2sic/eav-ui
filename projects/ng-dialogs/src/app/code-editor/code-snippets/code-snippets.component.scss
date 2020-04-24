@@ -9,3 +9,57 @@
   font-size: 14px;
   height: auto;
 }
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  padding: 3px 0;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.list {
+  list-style-type: none;
+  margin: 0;
+  user-select: none;
+  padding: 0;
+
+  .list-item {
+    cursor: pointer;
+    padding: 3px 8px 3px 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+      background-color: rgb(42, 45, 46);
+    }
+
+    &__label {
+      max-width: calc(100% - 18px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+    }
+  }
+}

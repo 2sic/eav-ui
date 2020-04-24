@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import 'brace';
@@ -28,6 +28,7 @@ declare const ace: any;
   styleUrls: ['./code-editor.component.scss']
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
+  @ViewChild('editor') editor: any;
   view: SourceView;
   templates: string[];
   aceConfig = aceConfig;
@@ -36,10 +37,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     snippets: 'snippets'
   };
   activeExplorer: string;
-  /** Snippets for explorer */
-  snippets: any;
-  /** Snippets for the editor */
-  list: any;
+  explorerSnipps: any;
+  editorSnipps: any;
 
   private viewKey: number | string; // templateId or path
   private eventListeners: ElementEventListener[] = [];
@@ -64,8 +63,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.view = view;
       this.savedCode = view.Code;
       this.snippetsService.getSnippets(this.view).then((res: any) => {
-        this.snippets = res.sets;
-        this.list = res.list;
+        this.explorerSnipps = res.sets;
+        this.editorSnipps = res.list;
         this.registerSnippets();
       });
     });
@@ -149,7 +148,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   private registerSnippets() {
     const snippetManager = ace.acequire('ace/snippets').snippetManager;
-    snippetManager.register(this.list);
+    snippetManager.register(this.editorSnipps);
   }
 
 }

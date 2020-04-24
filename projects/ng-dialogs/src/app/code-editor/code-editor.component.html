@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <div class="explorer fancy-scrollbar">
+  <div class="explorer fancy-scrollbar" *ngIf="activeExplorer">
     <div class="view-picker" *ngIf="activeExplorer === explorer.templates">
       <div class="view-picker-option" [ngClass]="{'active': template === view.FileName}" title="{{ template }}"
         *ngFor="let template of templates" (click)="openTemplate(template)">
@@ -18,10 +18,11 @@
       </div>
     </div>
 
-    <app-code-snippets *ngIf="activeExplorer === explorer.snippets" [snippets]="snippets"></app-code-snippets>
+    <app-code-snippets *ngIf="activeExplorer === explorer.snippets" [snippets]="explorerSnipps" [editor]="editor">
+    </app-code-snippets>
   </div>
 
-  <ace [(value)]="view.Code" [config]="aceConfig"></ace>
+  <ace [(value)]="view.Code" [config]="aceConfig" #editor></ace>
 
   <button mat-fab mat-elevation-z24 title="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>

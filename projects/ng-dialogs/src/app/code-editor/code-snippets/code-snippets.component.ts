@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+declare const ace: any;
 
 @Component({
   selector: 'app-code-snippets',
@@ -8,22 +9,26 @@ import { MatSelectChange } from '@angular/material/select';
 })
 export class CodeSnippetsComponent implements OnInit {
   @Input() snippets: any;
+  @Input() editor: any;
   snippetSet = 'Content';
   setsKeys: string[];
-  activeSnips: any[];
+  activeSnipps: any;
 
   constructor() { }
 
   ngOnInit() {
-    this.activeSnips = this.snippets[this.snippetSet];
+    this.activeSnipps = this.snippets[this.snippetSet];
     this.setsKeys = Object.keys(this.snippets);
-    console.log('Snippets', this.activeSnips);
   }
 
   onSetChange(event: MatSelectChange) {
     this.snippetSet = event.value;
-    this.activeSnips = this.snippets[this.snippetSet];
-    console.log('Snippets', this.activeSnips);
+    this.activeSnipps = this.snippets[this.snippetSet];
   }
 
+  addSnippet(snippet: string) {
+    const snippetManager = ace.acequire('ace/snippets').snippetManager;
+    snippetManager.insertSnippet(this.editor, snippet);
+    this.editor.focus();
+  }
 }
