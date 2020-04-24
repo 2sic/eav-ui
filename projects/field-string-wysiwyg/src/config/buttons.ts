@@ -2,13 +2,16 @@ import { loadCustomIcons } from '../main/load-icons-helper';
 import { Guid } from '../shared/guid';
 import { FieldStringWysiwygDialog } from '../main/main';
 
-const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
+// const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
   static registerAll(fieldStringWysiwyg: FieldStringWysiwygDialog, editor: any, expand: (expand: boolean) => void) {
-    registerTinyMceFormats(editor, imgSizes);
+    const instSettings = fieldStringWysiwyg.configurator.instance;
+
+    registerTinyMceFormats(editor, instSettings.imgSizes);
+
     loadCustomIcons(editor);
 
     TinyMceButtons.linkFiles(editor, fieldStringWysiwyg);
@@ -32,7 +35,7 @@ export class TinyMceButtons {
 
     TinyMceButtons.contentBlock(editor);
 
-    TinyMceButtons.imageContextMenu(editor);
+    TinyMceButtons.imageContextMenu(editor, instSettings.imgSizes);
 
     TinyMceButtons.contextMenus(editor);
   }
@@ -405,7 +408,7 @@ export class TinyMceButtons {
 
 
   /** Image alignment / size buttons in context menu */
-  static imageContextMenu(editor: any) {
+  static imageContextMenu(editor: any, imgSizes: number[]) {
     editor.ui.registry.addButton('alignimgleft', {
       icon: 'align-left',
       tooltip: 'Align left',

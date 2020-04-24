@@ -47,6 +47,7 @@ export class TinyMceTranslations {
 
     const translations = translateService.instant(keys);
 
+    // TODO: SPM - this looks unused
     for (const key of keys) {
       mceTranslations[key.replace(prefixDot, '')] = translations[key];
     }

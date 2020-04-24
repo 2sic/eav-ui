@@ -31,7 +31,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   private observer: MutationObserver;
 
   /** The object that's responsible for configuring tinymce */
-  private configurator: TinyMceConfigurator;
+  public configurator: TinyMceConfigurator;
 
   constructor() {
     super();
@@ -63,20 +63,25 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
     const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
     this.firstInit = true;
     if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
+    // FYI: SPM - moved this here from Setup as it's actually global
+    this.configurator.addTranslations();
     tinymce.init(tinyOptions);
   }
 
+  /**
+   * This will initialized an instance of an editor.
+   * Everything else is kind of global.
+   */
   private tinyMceSetup(editor: any) {
     this.editor = editor;
-    this.reconfigure?.editorInit?.(editor);
     editor.on('init', (_event: any) => {
       console.log('FieldStringWysiwygDialog TinyMCE initialized', editor);
-      TinyMceButtons.registerAll(this, editor, this.expand.bind(this));
+      this.reconfigure?.editorInit?.(editor);
+      // FYI: SPM - anything against using the more () => syntax?
+      TinyMceButtons.registerAll(this, editor, (exp) => this.expand(exp)); //.bind(this));
       // tslint:disable: curly
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
-      this.configurator.addTranslations();
-      // addTranslations(editor.settings.language, this.connector._experimental.translateService, editor.editorManager);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(

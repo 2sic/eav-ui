@@ -8,13 +8,20 @@ export interface WysiwygReconfigure {
    */
   managerInit?(editorManager: any): void;
 
-  pluginsInit?(plugins: string[]): string[];
+  /**
+   * Add translations to the editor manager - fairly early in the lifecycle
+   */
+  addTranslations?(editorManager: any, currentLanguage: string): void;
 
-  optionsInit?(options: any): any;
+  /**
+   * Init the options - both global and local
+   */
+  optionsInit?(global: any, instance: any): void;
 
+  /**
+   * Review / modify the options after they have been completely initialized and expanded
+   */
   optionsReady?(options: any): any;
-
-  i18nReady?(editorManager: any, currentLanguage: string): void;
 
   /** called when the editor was created, but before we added events etc. */
   editorInit?(editor: any): void;
