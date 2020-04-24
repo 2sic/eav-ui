@@ -66,3 +66,9 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 }
 
 customElements.define('field-string-wysiwyg', FieldStringWysiwyg);
+
+// export class FieldStringWysiwygInline extends FieldStringWysiwyg {
+//   inline = true;
+// }
+
+// customElements.define('field-string-wysiwyg-inline', FieldStringWysiwyg);
