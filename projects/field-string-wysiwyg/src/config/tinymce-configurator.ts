@@ -5,6 +5,7 @@ import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-gu
 import * as contentStyle from '../main/tinymce-content.css';
 import { TinyMceToolbars } from './toolbars';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { TinyInstanceOptions } from './defaults/tinyInstance';
 // tslint:disable: curly
 
 /**
@@ -27,17 +28,15 @@ export class TinyMceConfigurator {
     // call optional reconfiguration
     if (reconfigure) {
       reconfigure.managerInit?.(editorManager);
-      if (reconfigure.optionsInit) this.options = reconfigure.optionsInit(this.options);
-      if (reconfigure.pluginsInit) this.plugins = reconfigure.pluginsInit(this.plugins);
+      if (reconfigure.optionsInit) reconfigure.optionsInit(this.options, this.instance);
     }
 
   }
 
   /** options to be used - can be modified before it's applied */
-  options = { ...DefaultOptions };  // copy the object, so changes don't affect original
+  options = { ...DefaultOptions, ...{ plugins: [...DefaultPlugins] } };  // copy the object, so changes don't affect original
 
-  /** tinyMce plugins - can be modified before they are applied */
-  plugins = [...DefaultPlugins];  // copy the array, so changes don't affect original
+  instance = { ...TinyInstanceOptions };
 
   /**
    * Construct TinyMce options
@@ -57,7 +56,7 @@ export class TinyMceConfigurator {
     // build options based on defaults + a few instance specific properties
     let options = {
       ...this.options,
-      plugins: this.plugins,
+      // plugins: this.plugins,
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
@@ -77,7 +76,7 @@ export class TinyMceConfigurator {
       options = { ...options, ...DefaultPaste.images(dropzoneConfig.url as string, dropzoneConfig.headers) };
 
     if (this.reconfigure?.optionsReady)
-      options = this.reconfigure.optionsReady(options);
+      this.reconfigure.optionsReady(options);
     return options;
   }
 
@@ -88,6 +87,6 @@ export class TinyMceConfigurator {
     TinyMceTranslations.addTranslations(this.language,
       this.connector._experimental.translateService,
       this.editorManager);
-    this.reconfigure?.i18nReady?.(this.editorManager, this.language);
+    this.reconfigure?.addTranslations?.(this.editorManager, this.language);
   }
 }
