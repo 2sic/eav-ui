@@ -13,7 +13,8 @@ export class CodeSnippetsComponent implements OnInit, OnChanges {
   selected = 'Content';
   sets: string[];
   activeSet: any;
-  toggled: string[] = [];
+  toggledItems: any[] = [];
+  toggledInfos: any[] = [];
 
   constructor() { }
 
@@ -34,7 +35,8 @@ export class CodeSnippetsComponent implements OnInit, OnChanges {
   onSetChange(event: MatSelectChange) {
     this.selected = event.value;
     this.activeSet = this.snippets[this.selected];
-    this.toggled = [];
+    this.toggledItems = [];
+    this.toggledInfos = [];
   }
 
   addSnippet(snippet: string) {
@@ -42,11 +44,19 @@ export class CodeSnippetsComponent implements OnInit, OnChanges {
   }
 
   toggleItem(item: any) {
-    const index = this.toggled.indexOf(item);
+    this.toggleInArray(item, this.toggledItems);
+  }
+
+  toggleInfo(info: any) {
+    this.toggleInArray(info, this.toggledInfos);
+  }
+
+  private toggleInArray(item: any, array: any[]) {
+    const index = array.indexOf(item);
     if (index === -1) {
-      this.toggled.push(item);
+      array.push(item);
     } else {
-      this.toggled.splice(index, 1);
+      array.splice(index, 1);
     }
   }
 

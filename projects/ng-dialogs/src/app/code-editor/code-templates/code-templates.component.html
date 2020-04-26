@@ -1,7 +1,7 @@
 <div class="active-explorer fancy-scrollbar">
 
-  <div class="template-option" [ngClass]="{'active': view?.FileName === template }" title="{{ template }}"
-    *ngFor="let template of templates" (click)="openTemplate(template)">
+  <div class="template-option" [ngClass]="{'active': view?.FileName === template }" [matTooltip]="template"
+    matTooltipShowDelay="750" *ngFor="let template of templates" (click)="openTemplate(template)">
     {{ template }}
   </div>
 

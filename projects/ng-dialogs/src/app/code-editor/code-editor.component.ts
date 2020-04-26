@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -38,6 +39,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private sourceService: SourceService,
     private snippetsService: SnippetsService,
     private zone: NgZone,
+    private titleService: Title,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -48,6 +50,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.sourceService.get(this.viewKey).subscribe(view => {
       this.view = view;
       this.savedCode = this.view.Code;
+      this.titleService.setTitle(`Code Editor - ${this.view.FileName}`);
 
       this.snippetsService.getSnippets(this.view).then((res: any) => {
         this.explorerSnipps = res.sets;

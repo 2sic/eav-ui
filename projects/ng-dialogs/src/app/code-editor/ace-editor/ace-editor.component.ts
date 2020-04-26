@@ -98,6 +98,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     this.zone.runOutsideAngular(() => {
       ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
       this.editor = ace.edit(this.editorRef.nativeElement, aceOptions);
+      (this.editor as any).$blockScrolling = Infinity;
       this.editor.session.setValue(this.value); // set value and reset undo history
       this.updateValues(this.filename, this.snippets);
       this.editor.on('change', this.onEditorValueChange.bind(this));

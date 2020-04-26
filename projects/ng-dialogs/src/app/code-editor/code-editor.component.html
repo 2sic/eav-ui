@@ -1,10 +1,10 @@
 <div class="editor-root">
   <div class="toolbar">
-    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.templates}" title="Templates"
+    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.templates}" matTooltip="Templates"
       (click)="toggleExplorer(explorer.templates)">
       <mat-icon>file_copy</mat-icon>
     </div>
-    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.snippets}" title="Snippets"
+    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.snippets}" matTooltip="Snippets"
       (click)="toggleExplorer(explorer.snippets)">
       <mat-icon>code</mat-icon>
     </div>
@@ -20,7 +20,7 @@
     [insertSnippet]="insertSnipp" [toggleResize]="!this.activeExplorer">
   </app-ace-editor>
 
-  <button mat-fab mat-elevation-z24 title="Click to save or CTRL + S" (click)="save()">
+  <button mat-fab mat-elevation-z24 matTooltip="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>
   </button>
 </div>

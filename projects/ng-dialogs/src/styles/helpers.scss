@@ -12,6 +12,10 @@
   display: none;
 }
 
+.force-hide {
+  display: none !important;
+}
+
 .not-implemented {
   color: red;
 }

@@ -13,15 +13,27 @@
   </ng-container>
 
   <ng-template #collapsible let-item="item">
-    <div class="collapsible" (click)="toggleItem(item)">
-      <mat-icon>{{ toggled.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-      <span title="{{ item.key }}">{{ item.key }}</span>
+    <div class="collapsible" [matTooltip]="item.key" matTooltipShowDelay="750" (click)="toggleItem(item)">
+      <mat-icon>{{ toggledItems.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
+      <span>{{ item.key }}</span>
     </div>
-    <ul class="list" *ngIf="toggled.includes(item)">
-      <li matRipple class="list-item" *ngFor="let value of (item.value | toarray)" title="{{ value.snip }}"
-        (click)="addSnippet(value.snip)">
-        <span class="list-item__label">{{ value.label }}</span>
-        <mat-icon title="{{ value.help }}">info</mat-icon>
+    <ul class="list" *ngIf="toggledItems.includes(item)">
+      <li class="list-item" *ngFor="let value of (item.value | toarray)">
+        <div class="list-item__label-wrapper">
+          <div matRipple class="label" [matTooltip]="value.snip" matTooltipShowDelay="750"
+            (click)="addSnippet(value.snip)">{{ value.label }}
+          </div>
+          <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
+            (click)="toggleInfo(value)">
+            info
+          </mat-icon>
+        </div>
+        <div class="list-item__help-wrapper" *ngIf="toggledInfos.includes(value)">
+          <div class="text">{{ value.help }}</div>
+          <div *ngFor="let link of value.links">
+            <a href="{{ link.url }}" target="_blank">{{ link.name }}</a>
+          </div>
+        </div>
       </li>
     </ul>
   </ng-template>

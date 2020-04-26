@@ -37,29 +37,62 @@
   padding: 0;
 
   .list-item {
-    cursor: pointer;
-    padding: 3px 8px 3px 24px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding-right: 8px;
 
     &:hover {
       background-color: rgb(42, 45, 46);
     }
 
-    &__label {
-      max-width: calc(100% - 18px);
+    &__label-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .label {
+      cursor: pointer;
+      padding: 3px 0 3px 24px;
+      flex: 1 1 auto;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
     .mat-icon {
+      cursor: pointer;
       width: 18px;
       height: 18px;
       font-size: 18px;
+    }
+
+    &__help-wrapper {
+      padding: 3px 18px 3px 24px;
+      user-select: text;
+
+      .text {
+        font-size: 12px;
+        font-style: oblique;
+      }
+
+      /* unvisited link */
+      a:link {
+        color: white;
+      }
+
+      /* visited link */
+      a:visited {
+        color: white;
+      }
+
+      /* mouse over link */
+      a:hover {
+        color: white;
+      }
+
+      /* selected link */
+      a:active {
+        color: white;
+      }
     }
   }
 }
