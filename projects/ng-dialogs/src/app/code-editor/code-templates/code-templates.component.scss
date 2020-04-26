@@ -1,0 +1,15 @@
+.template-option {
+  cursor: pointer;
+  padding: 4px 0 4px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+
+  &.active {
+    background-color: rgb(55, 55, 61);
+  }
+}

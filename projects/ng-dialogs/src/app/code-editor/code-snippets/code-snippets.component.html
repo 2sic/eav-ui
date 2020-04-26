@@ -1,25 +1,29 @@
-<div class="edit-input">
-  <mat-form-field appearance="standard" color="accent" class="set-dropdown">
-    <mat-select [ngModel]="snippetSet" name="snippetSet" (selectionChange)="onSetChange($event)">
-      <mat-option *ngFor="let key of setsKeys" [value]="key">{{ key }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+<div class="active-explorer fancy-scrollbar">
 
-<ng-container *ngFor="let item of activeSnipps | keyvalue">
-  <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
-</ng-container>
-
-<ng-template #collapsible let-item="item">
-  <div class="collapsible" (click)="toggleItem(item)">
-    <mat-icon>{{ openSnipps.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-    <span title="{{ item.key }}">{{ item.key }}</span>
+  <div class="edit-input">
+    <mat-form-field appearance="standard" color="accent" class="set-dropdown">
+      <mat-select [ngModel]="selected" name="selected" (selectionChange)="onSetChange($event)">
+        <mat-option *ngFor="let set of sets" [value]="set">{{ set }}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-  <ul class="list" *ngIf="openSnipps.includes(item)">
-    <li matRipple class="list-item" *ngFor="let value of (item.value | toarray)" title="{{ value.snip }}"
-      (click)="addSnippet(value.snip)">
-      <span class="list-item__label">{{ value.label }}</span>
-      <mat-icon title="{{ value.help }}">info</mat-icon>
-    </li>
-  </ul>
-</ng-template>
+
+  <ng-container *ngFor="let item of activeSet | keyvalue">
+    <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
+  </ng-container>
+
+  <ng-template #collapsible let-item="item">
+    <div class="collapsible" (click)="toggleItem(item)">
+      <mat-icon>{{ toggled.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
+      <span title="{{ item.key }}">{{ item.key }}</span>
+    </div>
+    <ul class="list" *ngIf="toggled.includes(item)">
+      <li matRipple class="list-item" *ngFor="let value of (item.value | toarray)" title="{{ value.snip }}"
+        (click)="addSnippet(value.snip)">
+        <span class="list-item__label">{{ value.label }}</span>
+        <mat-icon title="{{ value.help }}">info</mat-icon>
+      </li>
+    </ul>
+  </ng-template>
+
+</div>

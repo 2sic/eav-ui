@@ -42,20 +42,7 @@ export class SourceService {
     }) as Observable<boolean>;
   }
 
-  calculateAceMode(extension: string) {
-    const lower = extension.toLocaleLowerCase();
-    switch (lower) {
-      case '.cs':
-        return 'csharp';
-      case '.cshtml':
-        return 'razor';
-      default:
-        return 'text';
-    }
-  }
-
   getTemplates() {
-    // spm TODO: similar function exists in edit-ui
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
       params: { appId: this.context.appId.toString(), global: 'false', withSubfolders: 'true' },
     }) as Observable<string[]>;

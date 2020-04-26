@@ -1,4 +1,4 @@
-<div class="editor-root" *ngIf="view">
+<div class="editor-root">
   <div class="toolbar">
     <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.templates}" title="Templates"
       (click)="toggleExplorer(explorer.templates)">
@@ -10,19 +10,15 @@
     </div>
   </div>
 
-  <div class="explorer fancy-scrollbar" *ngIf="activeExplorer">
-    <div class="view-picker" *ngIf="activeExplorer === explorer.templates">
-      <div class="view-picker-option" [ngClass]="{'active': template === view.FileName}" title="{{ template }}"
-        *ngFor="let template of templates" (click)="openTemplate(template)">
-        {{ template }}
-      </div>
-    </div>
+  <app-code-templates [hidden]="activeExplorer !== explorer.templates" [view]="view" [templates]="templates">
+  </app-code-templates>
+  <app-code-snippets [hidden]="activeExplorer !== explorer.snippets" [snippets]="explorerSnipps"
+    (insertSnippet)="changeInsertSnipp($event)">
+  </app-code-snippets>
 
-    <app-code-snippets *ngIf="activeExplorer === explorer.snippets" [snippets]="explorerSnipps" [editor]="editor">
-    </app-code-snippets>
-  </div>
-
-  <ace [(value)]="view.Code" [config]="aceConfig" #editor></ace>
+  <app-ace-editor *ngIf="view" [filename]="view.FileName" [(ngModel)]="view.Code" [snippets]="editorSnipps"
+    [insertSnippet]="insertSnipp" [toggleResize]="!this.activeExplorer">
+  </app-ace-editor>
 
   <button mat-fab mat-elevation-z24 title="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>

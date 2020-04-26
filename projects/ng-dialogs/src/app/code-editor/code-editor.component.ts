@@ -1,26 +1,14 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import 'brace';
-import 'brace/mode/text';
-import 'brace/mode/csharp';
-import 'brace/mode/razor';
-import 'brace/theme/sqlserver';
-import 'brace/ext/language_tools';
-import 'brace/snippets/text';
-import 'brace/snippets/csharp';
-import 'brace/snippets/razor';
 
 import { Context } from '../shared/services/context';
 import { keyItems } from '../shared/constants/sessions-keys';
 import { SourceService } from './services/source.service';
-import { EditItem, SourceItem, EditForm } from '../app-administration/shared/models/edit-form.model';
+import { EditItem, SourceItem, } from '../app-administration/shared/models/edit-form.model';
 import { SourceView } from './models/source-view.model';
-import { aceConfig } from './ace-config';
 import { ElementEventListener } from '../../../../shared/element-event-listener-model';
-import { DialogService } from '../shared/services/dialog.service';
 import { SnippetsService } from './services/snippets.service';
-declare const ace: any;
 
 @Component({
   selector: 'app-code-editor',
@@ -28,17 +16,16 @@ declare const ace: any;
   styleUrls: ['./code-editor.component.scss']
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
-  @ViewChild('editor') editor: any;
-  view: SourceView;
-  templates: string[];
-  aceConfig = aceConfig;
   explorer = {
     templates: 'templates',
     snippets: 'snippets'
   };
   activeExplorer: string;
+  view: SourceView;
+  templates: string[];
   explorerSnipps: any;
   editorSnipps: any;
+  insertSnipp: any;
 
   private viewKey: number | string; // templateId or path
   private eventListeners: ElementEventListener[] = [];
@@ -49,8 +36,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private sourceService: SourceService,
-    private dialogService: DialogService,
     private snippetsService: SnippetsService,
+    private zone: NgZone,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -59,13 +46,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sourceService.get(this.viewKey).subscribe(view => {
-      this.aceConfig.mode = this.sourceService.calculateAceMode(view.Extension);
       this.view = view;
-      this.savedCode = view.Code;
+      this.savedCode = this.view.Code;
+
       this.snippetsService.getSnippets(this.view).then((res: any) => {
         this.explorerSnipps = res.sets;
         this.editorSnipps = res.list;
-        this.registerSnippets();
       });
     });
     this.sourceService.getTemplates().subscribe(templates => {
@@ -74,10 +60,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.eventListeners.forEach(listener => {
-      listener.element.removeEventListener(listener.type, listener.listener);
-    });
-    this.eventListeners = null;
+    this.detachListeners();
   }
 
   toggleExplorer(explorer: string) {
@@ -88,13 +71,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  openTemplate(path: string) {
-    const form: EditForm = {
-      items: [
-        { Path: path }
-      ]
-    };
-    this.dialogService.openCode(form);
+  changeInsertSnipp(snippet: any) {
+    this.insertSnipp = snippet;
   }
 
   save() {
@@ -124,13 +102,23 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private attachListeners() {
-    const closing = this.stopClose.bind(this);
-    window.addEventListener('beforeunload', closing);
-    this.eventListeners.push({ element: window, type: 'beforeunload', listener: closing });
+    this.zone.runOutsideAngular(() => {
+      const closing = this.stopClose.bind(this);
+      const save = this.keyboardSave.bind(this);
+      window.addEventListener('beforeunload', closing);
+      window.addEventListener('keydown', save);
+      this.eventListeners.push({ element: window, type: 'beforeunload', listener: closing });
+      this.eventListeners.push({ element: window, type: 'keydown', listener: save });
+    });
+  }
 
-    const save = this.keyboardSave.bind(this);
-    window.addEventListener('keydown', save);
-    this.eventListeners.push({ element: window, type: 'keydown', listener: save });
+  private detachListeners() {
+    this.zone.runOutsideAngular(() => {
+      this.eventListeners.forEach(listener => {
+        listener.element.removeEventListener(listener.type, listener.listener);
+      });
+      this.eventListeners = null;
+    });
   }
 
   private stopClose(e: BeforeUnloadEvent) {
@@ -143,12 +131,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
     if (!CTRL_S) { return; }
     e.preventDefault();
-    this.save();
-  }
-
-  private registerSnippets() {
-    const snippetManager = ace.acequire('ace/snippets').snippetManager;
-    snippetManager.register(this.editorSnipps);
+    this.zone.run(() => { this.save(); });
   }
 
 }

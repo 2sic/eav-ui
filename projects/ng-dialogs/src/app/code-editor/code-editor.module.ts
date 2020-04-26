@@ -8,7 +8,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
-import { AceModule } from 'ngx-ace-wrapper';
 
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -19,16 +18,22 @@ import { DialogService } from '../shared/services/dialog.service';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { SnippetsService } from './services/snippets.service';
 import { ToArrayPipe } from './code-snippets/toarray.pipe';
+import { CodeTemplatesComponent } from './code-templates/code-templates.component';
+import { AceEditorComponent } from './ace-editor/ace-editor.component';
 
 @NgModule({
   declarations: [
     CodeEditorComponent,
     CodeSnippetsComponent,
     ToArrayPipe,
+    CodeTemplatesComponent,
+    AceEditorComponent,
   ],
   entryComponents: [
     CodeEditorComponent,
     CodeSnippetsComponent,
+    CodeTemplatesComponent,
+    AceEditorComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
@@ -39,7 +44,6 @@ import { ToArrayPipe } from './code-snippets/toarray.pipe';
     MatIconModule,
     MatTooltipModule,
     MatSnackBarModule,
-    AceModule,
     FormsModule,
     MatSelectModule,
     MatRippleModule,

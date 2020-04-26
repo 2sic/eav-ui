@@ -1,0 +1,8 @@
+<div class="active-explorer fancy-scrollbar">
+
+  <div class="template-option" [ngClass]="{'active': view?.FileName === template }" title="{{ template }}"
+    *ngFor="let template of templates" (click)="openTemplate(template)">
+    {{ template }}
+  </div>
+
+</div>
