@@ -22,5 +22,6 @@ export const keyWebsiteRoot = prefix + 'websiteroot';
 export const keyFilters = prefix + 'filters';
 export const keyUserCanDesign = prefix + 'user%5BcanDesign%5D';
 export const keyUserCanDevelop = prefix + 'user%5BcanDevelop%5D';
+export const keyPipelineId = prefix + 'pipelineId';
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';

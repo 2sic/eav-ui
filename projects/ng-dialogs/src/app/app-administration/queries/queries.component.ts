@@ -13,6 +13,7 @@ import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params
 import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav-constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { DialogService } from '../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-queries',
@@ -61,6 +62,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private pipelinesService: PipelinesService,
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
+    private dialogService: DialogService,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
   }
@@ -99,8 +101,12 @@ export class QueriesComponent implements OnInit, OnDestroy {
     return `ID: ${query.Id}\nGUID: ${query.Guid}`;
   }
 
-  private openVisualQueryDesigner() {
-    alert('Open visual query designer');
+  private openVisualQueryDesigner(params: ValueGetterParams) {
+    const query: Query = params.data;
+    const form: EditForm = {
+      items: [{ EntityId: query.Id.toString() }],
+    };
+    this.dialogService.openQueryDesigner(form, query.Id);
   }
 
   private cloneQuery(query: Query) {

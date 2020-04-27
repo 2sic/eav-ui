@@ -60,8 +60,7 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/code`]);
           break;
         case 'pipeline-designer':
-          alert('Feature not yet implemented. Opening queries list');
-          router.navigate([`${zoneId}/${appId}/app/queries`]);
+          router.navigate([`${zoneId}/${appId}/query`]);
           break;
         case 'replace':
           const replaceItems: GroupItem[] = JSON.parse(items);
