@@ -13,3 +13,27 @@
     background-color: rgb(55, 55, 61);
   }
 }
+
+.list {
+  padding-left: 16px;
+}
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  padding: 3px 0;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
