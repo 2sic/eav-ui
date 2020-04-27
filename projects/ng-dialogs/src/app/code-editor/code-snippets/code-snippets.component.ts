@@ -22,7 +22,7 @@ export class CodeSnippetsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const snippets = changes.snippets.currentValue;
+    const snippets = changes.snippets?.currentValue;
     if (snippets) {
       this.sets = Object.keys(snippets);
       this.activeSet = this.snippets[this.selected];

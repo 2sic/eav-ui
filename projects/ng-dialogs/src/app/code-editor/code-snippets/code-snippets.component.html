@@ -9,16 +9,15 @@
   </div>
 
   <ng-container *ngFor="let item of activeSet | keyvalue">
-    <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
-  </ng-container>
 
-  <ng-template #collapsible let-item="item">
     <div class="collapsible" [matTooltip]="item.key" matTooltipShowDelay="750" (click)="toggleItem(item)">
       <mat-icon>{{ toggledItems.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
       <span>{{ item.key }}</span>
     </div>
+
     <ul class="list" *ngIf="toggledItems.includes(item)">
       <li class="list-item" *ngFor="let value of (item.value | toarray)">
+
         <div class="list-item__label-wrapper">
           <div matRipple class="label" [matTooltip]="value.snip" matTooltipShowDelay="750"
             (click)="addSnippet(value.snip)">{{ value.label }}
@@ -28,14 +27,16 @@
             info
           </mat-icon>
         </div>
+
         <div class="list-item__help-wrapper" *ngIf="toggledInfos.includes(value)">
           <div class="text">{{ value.help }}</div>
           <div *ngFor="let link of value.links">
             <a href="{{ link.url }}" target="_blank">{{ link.name }}</a>
           </div>
         </div>
+
       </li>
     </ul>
-  </ng-template>
 
+  </ng-container>
 </div>
