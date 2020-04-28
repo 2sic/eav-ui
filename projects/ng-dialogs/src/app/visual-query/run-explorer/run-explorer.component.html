@@ -14,7 +14,7 @@
           <button mat-icon-button matTooltip="Edit parameters">
             <mat-icon (click)="editPipelineEntity()">edit</mat-icon>
           </button>
-          <button mat-icon-button matTooltip="Help">
+          <button mat-icon-button matTooltip="Query Params Docs">
             <mat-icon (click)="openParamsHelp()">info</mat-icon>
           </button>
         </div>
@@ -31,7 +31,7 @@
       </ul>
     </div>
 
-    <div class="parameters" *ngIf="warnings.length">
+    <div class="warnings" *ngIf="warnings.length">
       <div class="title">
         <span>Warnings</span>
         <mat-icon style="color: red">warning</mat-icon>
@@ -41,8 +41,8 @@
       </ol>
     </div>
 
-    <div *ngIf="queryDef.data.Pipeline.Description">
-      <div><span>Query Description</span></div>
+    <div class="description" *ngIf="queryDef.data.Pipeline.Description">
+      <div class="title">Query Description</div>
       <div>{{ queryDef.data.Pipeline.Description }}</div>
     </div>
   </div>

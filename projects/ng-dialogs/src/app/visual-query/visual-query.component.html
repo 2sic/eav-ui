@@ -6,15 +6,20 @@
     </div>
     <div class="button" [ngClass]="{'active': activeExplorer === explorer.add}" matTooltip="Add"
       (click)="toggleExplorer(explorer.add)">
-      <mat-icon>build</mat-icon>
+      <mat-icon>add</mat-icon>
+    </div>
+    <div class="spacer"></div>
+    <div class="button" matTooltip="Help" (click)="openHelp()">
+      <mat-icon>help_outline</mat-icon>
     </div>
   </div>
 
-  <app-run-explorer [hidden]="activeExplorer !== explorer.run" [queryDef]="queryDef">
+  <app-run-explorer [hidden]="activeExplorer !== explorer.run" *ngIf="queryDef" [queryDef]="queryDef">
   </app-run-explorer>
 
-  <div class="editor-active-explorer editor-fancy-scrollbar" [hidden]="activeExplorer !== explorer.add">Add Explorer
-  </div>
+  <app-add-explorer [hidden]="activeExplorer !== explorer.add" *ngIf="queryDef"
+    [dataSources]="queryDef.data.InstalledDataSources">
+  </app-add-explorer>
 
   <div>Plumb</div>
 </div>

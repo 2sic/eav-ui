@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 import { SourceView } from '../models/source-view.model';
 import { Snippet } from '../models/snippet.model';
 import { Field } from '../../content-type-fields/models/field.model';
-import cloneDeep from 'lodash-es/cloneDeep';
 
 @Injectable()
 export class SnippetsService {

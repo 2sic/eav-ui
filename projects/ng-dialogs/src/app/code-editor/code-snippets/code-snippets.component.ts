@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 
+import { toggleInArray } from './code-snippets.helpers';
+
 @Component({
   selector: 'app-code-snippets',
   templateUrl: './code-snippets.component.html',
@@ -44,20 +46,11 @@ export class CodeSnippetsComponent implements OnInit, OnChanges {
   }
 
   toggleItem(item: any) {
-    this.toggleInArray(item, this.toggledItems);
+    toggleInArray(item, this.toggledItems);
   }
 
   toggleInfo(info: any) {
-    this.toggleInArray(info, this.toggledInfos);
-  }
-
-  private toggleInArray(item: any, array: any[]) {
-    const index = array.indexOf(item);
-    if (index === -1) {
-      array.push(item);
-    } else {
-      array.splice(index, 1);
-    }
+    toggleInArray(info, this.toggledInfos);
   }
 
 }

@@ -12,7 +12,9 @@
   }
 }
 
-.parameters {
+.parameters,
+.warnings,
+.description {
   margin: 16px 0;
 
   .title {
@@ -26,7 +28,10 @@
       user-select: none;
     }
   }
+}
 
+.parameters,
+.warnings {
   .values {
     margin: 0;
     padding-left: 16px;
