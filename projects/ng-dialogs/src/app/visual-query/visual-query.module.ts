@@ -11,17 +11,20 @@ import { Context } from '../shared/services/context';
 import { QueryDefinitionService } from './services/query-definition.service';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { AddExplorerComponent } from './add-explorer/add-explorer.component';
+import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
 
 @NgModule({
   declarations: [
     VisualQueryComponent,
     RunExplorerComponent,
     AddExplorerComponent,
+    PlumbEditorComponent,
   ],
   entryComponents: [
     VisualQueryComponent,
     RunExplorerComponent,
     AddExplorerComponent,
+    PlumbEditorComponent,
   ],
   imports: [
     CommonModule,
