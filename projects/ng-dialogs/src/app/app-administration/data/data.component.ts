@@ -86,12 +86,13 @@ export class DataComponent implements OnInit, OnDestroy {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
     this.scope = eavConstants.scopes.default.value;
     this.defaultScope = eavConstants.scopes.default.value;
-    this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
+    // this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
   }
 
   async ngOnInit() {
     const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
     this.enableAppFeatures = !dialogSettings.IsContent;
+    this.fetchScopes();
     this.fetchContentTypes();
     this.refreshOnChildClosed();
     this.subscription.add(
@@ -122,6 +123,12 @@ export class DataComponent implements OnInit, OnDestroy {
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       this.contentTypes = contentTypes;
+    });
+  }
+
+  private fetchScopes() {
+    this.contentTypesService.getScopes().subscribe(contentTypes => {
+      this.scopeOptions = contentTypes;
     });
   }
 
