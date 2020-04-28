@@ -10,7 +10,7 @@ export function filterAndSortDataSources(dataSources: DataSource[], maxDifficult
 
   const sorted: SortedDataSources = {};
   for (const dataSource of filtered) {
-    const type = dataSource.PartAssemblyAndType.substring(dataSource.PartAssemblyAndType.lastIndexOf('.') + 1);
+    const type = dataSource.PrimaryType;
     sorted[type] ? sorted[type].push(dataSource) : sorted[type] = [dataSource];
   }
 
