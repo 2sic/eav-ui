@@ -50,7 +50,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.sourceService.get(this.viewKey).subscribe(view => {
       this.view = view;
       this.savedCode = this.view.Code;
-      this.titleService.setTitle(`Code Editor - ${this.view.FileName}`);
+      this.titleService.setTitle(`${this.view.FileName} - Code Editor`);
 
       this.snippetsService.getSnippets(this.view).then((res: any) => {
         this.explorerSnipps = res.sets;

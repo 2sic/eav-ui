@@ -1,10 +1,10 @@
 <div class="editor-root">
-  <div class="toolbar">
-    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.templates}" matTooltip="Templates"
+  <div class="editor-side-toolbar">
+    <div class="button" [ngClass]="{'active': activeExplorer === explorer.templates}" matTooltip="Templates"
       (click)="toggleExplorer(explorer.templates)">
       <mat-icon>file_copy</mat-icon>
     </div>
-    <div class="toolbar-button" [ngClass]="{'active': activeExplorer === explorer.snippets}" matTooltip="Snippets"
+    <div class="button" [ngClass]="{'active': activeExplorer === explorer.snippets}" matTooltip="Snippets"
       (click)="toggleExplorer(explorer.snippets)">
       <mat-icon>code</mat-icon>
     </div>

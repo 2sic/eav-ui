@@ -1,34 +1,3 @@
-.editor-root {
-  position: relative;
-  height: 100vh;
-  display: flex;
-}
-
-.toolbar {
-  background-color: rgb(51, 51, 51);
-
-  &-button {
-    width: 48px;
-    height: 48px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    cursor: pointer;
-    color: rgb(133, 133, 133);
-
-    &:hover {
-      color: white;
-    }
-
-    &.active {
-      border-left: 1px solid white;
-      color: white;
-    }
-  }
-}
-
 .mat-fab {
   position: absolute;
   right: 48px;
