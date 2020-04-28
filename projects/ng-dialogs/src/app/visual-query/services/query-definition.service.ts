@@ -123,7 +123,7 @@ export class QueryDefinitionService {
     queryDef.data.DataSources.push(newDataSource);
   }
 
-  private typeNameFilter(input: any, format: any) {
+  typeNameFilter(input: any, format: any) {
     const globalParts = input.match(/[^,\s]+/g);
 
     switch (format) {
@@ -141,11 +141,64 @@ export class QueryDefinitionService {
 
     return input;
   }
+
   // Get a JSON for a DataSource with Definition-Property
   private getNewDataSource(model: any, dataSourceBase: any) {
     return {
       Definition: () => this.getDataSourceDefinitionProperty(model, dataSourceBase)
     };
+  }
+
+  dsTypeInfo(dataSource: any, queryDef: any) {
+    // maybe we already retrieved it before...
+    const cacheKey = dataSource.EntityGuid;
+    if (!queryDef._typeInfos) { queryDef._typeInfos = {}; }
+    if (queryDef._typeInfos[cacheKey]) { return queryDef._typeInfos[cacheKey]; }
+
+    let typeInfo = null;
+    // try to find the type on the source
+    const found = queryDef.data.InstalledDataSources.find((ids: any) => ids.PartAssemblyAndType === dataSource.PartAssemblyAndType);
+    const guiTypes = this.buildGuiTypes();
+    if (found) {
+      const def = found;
+      const primType = def.PrimaryType;
+      typeInfo = Object.assign({}, primType ? guiTypes[primType] : guiTypes.Unknown);
+      if (def.Icon) { typeInfo.icon = guiTypes.iconPrefix + def.Icon; }
+      if (def.DynamicOut) { typeInfo.dynamicOut = true; }
+      if (def.HelpLink) { typeInfo.helpLink = def.HelpLink; }
+      if (def.EnableConfig) { typeInfo.config = def.EnableConfig; }
+    }
+    if (!typeInfo) { typeInfo = guiTypes.Unknown; }
+
+    queryDef._typeInfos[cacheKey] = typeInfo;
+    return typeInfo;
+  }
+
+  private buildGuiTypes() {
+    const guiTypes: { [key: string]: any } = {
+      iconPrefix: ''
+    };
+
+    function addGuiType(name: any, icon: any, notes: any) {
+      guiTypes[name] = {
+        name,
+        icon: guiTypes.iconPrefix + icon,
+        notes
+      };
+    }
+
+    addGuiType('Unknown', 'fiber_manual_record', 'unknown type');
+    addGuiType('Cache', 'history', 'caching of data');
+    addGuiType('Filter', 'filter_list', 'filter data - usually returning less items than came in');
+    addGuiType('Logic', 'share', 'logic operations - usually choosing between different streams');
+    addGuiType('Lookup', 'search', 'lookup operation - usually looking for other data based on a criteria');
+    addGuiType('Modify', 'star_half', 'modify data - usually changing, adding or removing values'); // todo
+    addGuiType('Security', 'account_circle', 'security - usually limit what the user sees based on his identity');
+    addGuiType('Sort', 'sort', 'sort the items');
+    addGuiType('Source', 'cloud_upload', 'source of new data - usually SQL, CSV or similar');
+    addGuiType('Target', 'adjust', 'target - usually just a destination of data');
+
+    return guiTypes;
   }
 
 }

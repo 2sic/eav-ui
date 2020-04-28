@@ -57,24 +57,34 @@ export const eavConstants = {
   pipelineDesigner: {
     outDataSource: {
       className: 'SexyContentTemplate',
-      in: ['Content', 'Presentation', 'ListContent', 'ListPresentation'],
-      name: '2SexyContent Module',
-      description: 'The module/template which will show this data',
-      visualDesignerData: { Top: 40, Left: 400 }
+      in: ['ListContent', 'Default'],
+      name: '2sxc Target (View or API)',
+      description: 'The template/script which will show this data',
+      visualDesignerData: { Top: 20, Left: 200, Width: 700 }
     },
     defaultPipeline: {
       dataSources: [
         {
           entityGuid: 'unsaved1',
-          partAssemblyAndType: 'ToSic.Eav.DataSources.App, ToSic.Eav.DataSources',
-          visualDesignerData: { Top: 300, Left: 440, Width: 400 }
+          partAssemblyAndType: 'ToSic.Eav.DataSources.Caches.ICache, ToSic.Eav.DataSources',
+          visualDesignerData: { Top: 440, Left: 440 }
+        }, {
+          entityGuid: 'unsaved2',
+          partAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
+          visualDesignerData: { Top: 300, Left: 440 }
+        }, {
+          entityGuid: 'unsaved3',
+          partAssemblyAndType: 'ToSic.SexyContent.DataSources.ModuleDataSource, ToSic.SexyContent',
+          visualDesignerData: { Top: 170, Left: 440 }
         }
       ],
       streamWiring: [
-        { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'Content' },
-        { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'ListContent' },
-        { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'Presentation' },
-        { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'ListPresentation' }
+        { From: 'unsaved1', Out: 'Default', To: 'unsaved2', In: 'Default' },
+        { From: 'unsaved1', Out: 'Drafts', To: 'unsaved2', In: 'Drafts' },
+        { From: 'unsaved1', Out: 'Published', To: 'unsaved2', In: 'Published' },
+        { From: 'unsaved2', Out: 'Default', To: 'unsaved3', In: 'Default' },
+        { From: 'unsaved3', Out: 'ListContent', To: 'Out', In: 'ListContent' },
+        { From: 'unsaved3', Out: 'Default', To: 'Out', In: 'Default' }
       ]
     },
     testParameters: '[Demo:Demo]=true',
