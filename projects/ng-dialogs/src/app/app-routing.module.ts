@@ -17,7 +17,7 @@ const appRoutes: Routes = [
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule)
   },
   {
-    path: ':zoneId/:appId/query',
+    path: ':zoneId/:appId/query/:pipelineId',
     loadChildren: () => import('./visual-query/visual-query.module').then(m => m.VisualQueryModule)
   },
   {

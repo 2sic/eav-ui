@@ -4,7 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix } from './shared/constants/sessions-keys';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/sessions-keys';
 import { EditForm, EditItem, GroupItem } from './app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
@@ -60,7 +60,8 @@ export function paramsInitFactory(injector: Injector) {
           router.navigate([`${zoneId}/${appId}/code`]);
           break;
         case 'pipeline-designer':
-          router.navigate([`${zoneId}/${appId}/query`]);
+          const pipelineId = sessionStorage.getItem(keyPipelineId);
+          router.navigate([`${zoneId}/${appId}/query/${pipelineId}`]);
           break;
         case 'replace':
           const replaceItems: GroupItem[] = JSON.parse(items);

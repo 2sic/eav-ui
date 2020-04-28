@@ -1,3 +1,20 @@
-<p>
-  visual-query works!
-</p>
+<div class="editor-root">
+  <div class="editor-side-toolbar">
+    <div class="button" [ngClass]="{'active': activeExplorer === explorer.run}" matTooltip="Run"
+      (click)="toggleExplorer(explorer.run)">
+      <mat-icon>play_arrow</mat-icon>
+    </div>
+    <div class="button" [ngClass]="{'active': activeExplorer === explorer.add}" matTooltip="Add"
+      (click)="toggleExplorer(explorer.add)">
+      <mat-icon>build</mat-icon>
+    </div>
+  </div>
+
+  <app-run-explorer [hidden]="activeExplorer !== explorer.run" [queryDef]="queryDef">
+  </app-run-explorer>
+
+  <div class="editor-active-explorer editor-fancy-scrollbar" [hidden]="activeExplorer !== explorer.add">Add Explorer
+  </div>
+
+  <div>Plumb</div>
+</div>
