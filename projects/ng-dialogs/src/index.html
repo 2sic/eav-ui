@@ -30,7 +30,7 @@
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
       }
 
-      // Get sxcver from the url. If there is none, load it from the session storage
+      // get sxcver from the url. If there is none, load it from the session storage
       var sxcVersion = getParameterByName('sxcver');
       if (!sxcVersion) sxcVersion = getParameterByName('sxcver', sessionStorage.getItem('eav-url'));
 

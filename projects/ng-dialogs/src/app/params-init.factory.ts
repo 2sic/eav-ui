@@ -14,6 +14,7 @@ export function paramsInitFactory(injector: Injector) {
     const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
     const isParamsRoute = !window.location.hash.startsWith('#/');
     if (isParamsRoute) {
+      console.log('Initial route:', window.location.href);
       // clear our part of the session
       for (const key of eavKeys) {
         sessionStorage.removeItem(key);
