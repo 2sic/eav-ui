@@ -17,14 +17,30 @@
         window.parent.$2sxc.totalPopup.close();
       }
     })();
-    // the version to append to each asset, to ensure reload after an upgrade
-    var sxcVersion = window.location.search.substring(window.location.search.lastIndexOf('=') + 1);
 
-    // create an empty _jsApi so $2sxc can initialize - must fill afterwards!
-    window._jsApi = {};
+    (function init2sxc() {
+      // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+      function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      }
 
-    // first load the main 2sxc because it contains some url-param methods
-    document.write('<script src="../../js/2sxc.api.min.js?sxcver=' + sxcVersion + '"></scr' + 'ipt>');
+      // Get sxcver from the url. If there is none, load it from the session storage
+      var sxcVersion = getParameterByName('sxcver');
+      if (!sxcVersion) sxcVersion = getParameterByName('sxcver', sessionStorage.getItem('eav-url'));
+
+      // the version to append to each asset, to ensure reload after an upgrade
+      window.sxcVersion = sxcVersion;
+      // create an empty _jsApi so $2sxc can initialize - must fill afterwards!
+      window._jsApi = {};
+      // first load the main 2sxc because it contains some url-param methods
+      document.write('<script src="../../js/2sxc.api.min.js?sxcver=' + sxcVersion + '"></scr' + 'ipt>');
+    })();
   </script>
 </head>
 
