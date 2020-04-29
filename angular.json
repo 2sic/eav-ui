@@ -47,10 +47,10 @@
                 }
               ],
               "optimization": true,
-              "outputHashing": "none",
+              "outputHashing": "bundles",
               "sourceMap": true,
               "extractCss": false,
-              "namedChunks": false,
+              "namedChunks": true,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": true,
