@@ -5,6 +5,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { Context } from '../../../shared/services/context';
+import { map } from 'rxjs/operators';
+import { EavScopeOption } from '../../../shared/constants/eav-constants';
 
 @Injectable()
 export class ContentTypesService {
@@ -21,6 +23,14 @@ export class ContentTypesService {
       params: { appId: this.context.appId.toString(), scope }
     }) as Observable<ContentType[]>;
   }
+
+  getScopes() {
+    return (this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/scopes'), {
+      params: { appId: this.context.appId.toString() }
+    }) as Observable<{[key: string]: string}>)
+    .pipe(map(o => Object.keys(o).map((key) => ({ name: o[key], value: key } as EavScopeOption))));
+  }
+
 
   save(contentType: ContentTypeEdit) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save'), contentType, {

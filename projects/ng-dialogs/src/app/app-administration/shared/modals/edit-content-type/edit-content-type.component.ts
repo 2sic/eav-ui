@@ -30,7 +30,10 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar,
   ) {
     this.scope = this.route.snapshot.paramMap.get('scope');
-    this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
+    // this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
+    this.contentTypesService.getScopes().subscribe(contentTypes => {
+      this.scopeOptions = contentTypes;
+    });
     this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
 
