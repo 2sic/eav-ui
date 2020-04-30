@@ -80,8 +80,9 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
       : this.svcApp;
 
     this.svcCurrent.getAll().pipe(take(1)).subscribe(
-      (templates: any) => {
-        this.templates = templates;
+      (templates) => {
+        // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
+        this.templates = templates.filter((t) => t.indexOf('.code.') === -1);
       }
     );
   }
