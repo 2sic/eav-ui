@@ -92,12 +92,12 @@ export class WebApiComponent implements OnInit {
   }
 
   private openCode(api: WebApi) {
-    const form: EditForm = {
-      items: [
-        { Path: `${api.folder}/${api.name}.cs` }
-      ]
-    };
-    this.dialogService.openCode(form);
+    // const form: EditForm = {
+    //   items: [
+    //     { Path: `${api.folder}/${api.name}.cs` }
+    //   ]
+    // };
+    this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
   }
 
   private deleteApi(api: WebApi) {

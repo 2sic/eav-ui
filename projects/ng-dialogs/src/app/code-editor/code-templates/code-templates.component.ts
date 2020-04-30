@@ -34,12 +34,12 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
   }
 
   openTemplate(path: string) {
-    const form: EditForm = {
-      items: [
-        { Path: path }
-      ]
-    };
-    this.dialogService.openCode(form);
+    // const form: EditForm = {
+    //   items: [
+    //     { Path: path }
+    //   ]
+    // };
+    this.dialogService.openCodeFile(path);
   }
 
   toggleItem(item: TreeItem) {

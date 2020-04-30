@@ -9,7 +9,16 @@ import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang,
 export class DialogService {
   constructor(private context: Context) { }
 
-  openCode(form: EditForm) {
+  openCodeFile(path: string) {
+    const form: EditForm = {
+      items: [
+        { Path: path }
+      ]
+    };
+    this.openCode(form);
+  }
+
+  private openCode(form: EditForm) {
     const dialog = 'develop';
     const oldHref = sessionStorage.getItem(keyUrl);
     const oldUrl = new URL(oldHref);
