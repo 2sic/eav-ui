@@ -88,6 +88,8 @@ export function paramsInitFactory(injector: Injector) {
       // if not params route and no params are saved, e.g. browser was reopened, throw error
       alert('Missing required url parameters. Please reopen dialog.');
       throw new Error('Missing required url parameters. Please reopen dialog.');
+    } else {
+      console.log('Initial route:', sessionStorage.getItem(keyUrl));
     }
 
     loadEnvironment();

@@ -33,6 +33,7 @@
       // get sxcver from the url. If there is none, load it from the session storage
       var sxcVersion = getParameterByName('sxcver');
       if (!sxcVersion) sxcVersion = getParameterByName('sxcver', sessionStorage.getItem('eav-url'));
+      if (!sxcVersion) sxcVersion = Math.floor(Math.random() * 99999);
 
       // the version to append to each asset, to ensure reload after an upgrade
       window.sxcVersion = sxcVersion;

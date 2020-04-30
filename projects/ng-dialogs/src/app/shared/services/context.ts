@@ -25,7 +25,7 @@ export class Context {
 
   /** The current App ID */
   get appId(): number {
-    return this._appId || (this._appId = this.routeNum(keyAppId) || this.parent.appId);
+    return (this._appId != null) ? this._appId : (this._appId = this.routeNum(keyAppId) || this.parent.appId);
   }
   private _appId: number;
 
