@@ -35,6 +35,9 @@
               "projects/edit/assets/scripts/clipboard-paste/paste.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
+              },
+              {
+                "input": "node_modules/jsplumb/dist/js/jsPlumb-2.1.7-min.js"
               }
             ]
           },

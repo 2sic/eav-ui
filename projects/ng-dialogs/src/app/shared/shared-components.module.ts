@@ -11,9 +11,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
 import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
 import { FieldHintComponent } from './components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from './directives/click-stop-propagination.directive';
+import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
+import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagination.directive';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
@@ -22,6 +23,7 @@ import { IdFieldComponent } from './components/id-field/id-field.component';
     DialogEntryComponent,
     FieldHintComponent,
     ClickStopPropagationDirective,
+    MousedownStopPropagationDirective,
     BooleanFilterComponent,
     IdFieldComponent,
   ],
@@ -46,6 +48,7 @@ import { IdFieldComponent } from './components/id-field/id-field.component';
     DialogEntryComponent,
     FieldHintComponent,
     ClickStopPropagationDirective,
+    MousedownStopPropagationDirective,
     BooleanFilterComponent,
   ]
 })

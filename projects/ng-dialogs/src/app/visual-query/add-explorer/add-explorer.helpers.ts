@@ -4,7 +4,9 @@ import { DataSource, SortedDataSources } from './data-sources.model';
 export function filterAndSortDataSources(dataSources: DataSource[], maxDifficulty: number): SortedDataSources {
   const cloned = cloneDeep(dataSources);
 
-  const filtered = cloned.filter(dataSource => dataSource.Difficulty <= maxDifficulty);
+  const filtered = cloned.filter(dataSource =>
+    (dataSource.Difficulty <= maxDifficulty) && (dataSource.allowNew == null)
+  );
 
   filtered.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
 

@@ -1,21 +1,23 @@
 <div id="pipelineContainer" *ngIf="queryDef.data.DataSources">
-  <div *ngFor="let dataSource of queryDef.data.DataSources; index as index" datasource
+  <div #dataSourceElement *ngFor="let dataSource of queryDef.data.DataSources; index as index" datasource
     [attr.guid]="dataSource.EntityGuid" id="dataSource_{{dataSource.EntityGuid}}" class="dataSource" [ngStyle]="{
       'top': dataSource.VisualDesignerData.Top + 'px',
       'left': dataSource.VisualDesignerData.Left + 'px',
       'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
     }">
-    <div class="configure" (click)="configureDataSource(dataSource)" title="Configure this DataSource"
-      *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).config">
+    <div class="configure" appMousedownStopPropagation (click)="configureDataSource(dataSource)"
+      title="Configure this DataSource" *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).config">
       <mat-icon class="eav-icon-settings">settings</mat-icon>
     </div>
     <mat-icon class="type-info" title="{{typeInfo(dataSource).notes}}">{{typeInfo(dataSource).icon}}</mat-icon>
-    <div class="name noselect" title="Click to edit the Name" (click)="editName(dataSource)">
+    <div class="name noselect" title="Click to edit the Name" appMousedownStopPropagation
+      (click)="editName(dataSource)">
       {{dataSource.Name || '(no name)'}}<mat-icon class="show-hover-inline eav-icon-pencil">edit
       </mat-icon>
     </div>
     <br />
-    <div class="description noselect" title="Click to edit the Description" (click)="editDescription(dataSource)">
+    <div class="description noselect" title="Click to edit the Description" appMousedownStopPropagation
+      (click)="editDescription(dataSource)">
       {{dataSource.Description}}<mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
     </div>
     <br />
@@ -24,9 +26,10 @@
     </div>
     <div class="add-endpoint" title="Drag a new Out-Connection from here"
       *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).dynamicOut">
-      <mat-icon class="new-connection eav-icon-up-dir">keyboard_arrow_up</mat-icon>
+      <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
     </div>
-    <mat-icon class="delete eav-icon-cancel" title="delete this" (click)="remove(index)" *ngIf="!dataSource.ReadOnly">
+    <mat-icon class="delete eav-icon-cancel" title="delete this" appMousedownStopPropagation (click)="remove(index)"
+      *ngIf="!dataSource.ReadOnly">
       delete
     </mat-icon>
     <a class="help eav-icon-help-circled" title="help for this data source" href="{{typeInfo(dataSource).helpLink}}"

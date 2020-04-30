@@ -2,9 +2,12 @@
 
   <div class="wrapper">
     <div class="actions">
-      <button mat-raised-button class="action" color="accent">Save and run</button>
-      <button mat-raised-button class="action">Run</button>
-      <button mat-raised-button class="action">Save</button>
+      <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
+        Save and run
+      </button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
+      <button mat-raised-button class="action" (click)="doRepaint()">Repaint</button>
     </div>
 
     <div class="parameters">
@@ -12,7 +15,7 @@
         <div>Parameters</div>
         <div>
           <button mat-icon-button matTooltip="Edit parameters">
-            <mat-icon (click)="editPipelineEntity()">edit</mat-icon>
+            <mat-icon (click)="editPipeline()">edit</mat-icon>
           </button>
           <button mat-icon-button matTooltip="Query Params Docs">
             <mat-icon (click)="openParamsHelp()">info</mat-icon>

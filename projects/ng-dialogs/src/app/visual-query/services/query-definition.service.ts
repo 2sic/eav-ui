@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Observable } from 'rxjs';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 import { Context } from '../../shared/services/context';
 import { eavConstants } from '../../shared/constants/eav-constants';
 
 @Injectable()
 export class QueryDefinitionService {
-  constructor(
-    private http: HttpClient,
-    private context: Context,
-    private dnnContext: DnnContext,
-  ) { }
+  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   async loadQuery(pipelineEntityId: number): Promise<any> {
     const model: any = await this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetPipeline'), {
@@ -62,8 +60,16 @@ export class QueryDefinitionService {
     return queryDef;
   }
 
+  // Test wether a DataSource is persisted on the Server
+  dataSourceIsPersisted(dataSource: any) {
+    return dataSource.EntityGuid.indexOf('unsaved') === -1;
+  }
+
   // Extend Pipeline-Model retrieved from the Server
-  private postProcessDataSources(model: any) {
+  postProcessDataSources(model: any) {
+    // stop Post-Process if the model already contains the Out-DataSource
+    if (model.DataSources.find((d: any) => d.EntityGuid === 'Out')) { return; }
+
     const outDs = eavConstants.pipelineDesigner.outDataSource;
     // Append Out-DataSource for the UI
     model.DataSources.push({
@@ -105,7 +111,7 @@ export class QueryDefinitionService {
     queryDef.data.Pipeline.StreamWiring = eavConstants.pipelineDesigner.defaultPipeline.streamWiring;
   }
 
-  private addDataSource(queryDef: any, partAssemblyAndType: any, visualDesignerData: any, entityGuid: any, name: any) {
+  addDataSource(queryDef: any, partAssemblyAndType: any, visualDesignerData: any, entityGuid: any, name: any) {
     if (!visualDesignerData) {
       visualDesignerData = { Top: 100, Left: 100 };
     }
@@ -199,6 +205,30 @@ export class QueryDefinitionService {
     addGuiType('Target', 'adjust', 'target - usually just a destination of data');
 
     return guiTypes;
+  }
+
+  // save the current query and reload entire definition as returned from server
+  save(queryDef: any) {
+    // Remove some Properties from the DataSource before Saving
+    const dataSourcesPrepared: any[] = [];
+    queryDef.data.DataSources.forEach((dataSource: any) => {
+      const dataSourceClone = cloneDeep(dataSource);
+      delete dataSourceClone.ReadOnly;
+      dataSourcesPrepared.push(dataSourceClone);
+    });
+
+    const pipeline = queryDef.data.Pipeline;
+    return this.http.post(
+      this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/SavePipeline'),
+      { pipeline, dataSources: dataSourcesPrepared },
+      { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId } }
+    ) as Observable<any>;
+  }
+
+  queryPipeline(id: number) {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/QueryPipeline'), {
+      params: { appId: this.context.appId.toString(), id: id.toString() }
+    }) as Observable<any>;
   }
 
 }

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 import { DataSource } from './data-sources.model';
 import { SortedDataSources } from './data-sources.model';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-add-explorer',
@@ -12,6 +12,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 })
 export class AddExplorerComponent implements OnInit, OnChanges {
   @Input() dataSources: DataSource[];
+  @Output() addSelectedDataSource: EventEmitter<DataSource> = new EventEmitter();
   difficulty = {
     default: 100,
     advanced: 200,
@@ -27,7 +28,6 @@ export class AddExplorerComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.dataSources?.currentValue) {
-      // spm TODO: something about allow new is missing in the filter
       this.sorted = filterAndSortDataSources(this.dataSources, this.activeDiff);
     }
   }
@@ -38,7 +38,7 @@ export class AddExplorerComponent implements OnInit, OnChanges {
   }
 
   addDataSource(dataSource: DataSource) {
-    alert('Not implemented');
+    this.addSelectedDataSource.emit(dataSource);
   }
 
   toggleItem(item: string) {

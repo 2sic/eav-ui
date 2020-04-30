@@ -27,8 +27,8 @@ export class ContentTypesService {
   getScopes() {
     return (this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/scopes'), {
       params: { appId: this.context.appId.toString() }
-    }) as Observable<{[key: string]: string}>)
-    .pipe(map(o => Object.keys(o).map((key) => ({ name: o[key], value: key } as EavScopeOption))));
+    }) as Observable<{ [key: string]: string }>)
+      .pipe(map(o => Object.keys(o).map((key) => ({ name: o[key], value: key } as EavScopeOption))));
   }
 
 
@@ -49,4 +49,13 @@ export class ContentTypesService {
       params: { appid: this.context.appId.toString(), sourceStaticName },
     }) as Observable<boolean>;
   }
+
+  getDetails(contentTypeName: string, config: any) {
+    return this.http.get(
+      this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/GetSingle'),
+      // spm TODO: this code is faulty because config never gets assigned to params
+      Object.assign({}, config, { params: { appid: this.context.appId, contentTypeStaticName: contentTypeName } })
+    ) as Observable<any>;
+  }
+
 }

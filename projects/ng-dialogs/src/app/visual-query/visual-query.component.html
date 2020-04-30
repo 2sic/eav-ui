@@ -12,14 +12,17 @@
     <div class="button" matTooltip="Help" (click)="openHelp()">
       <mat-icon>help_outline</mat-icon>
     </div>
+    <router-outlet></router-outlet>
   </div>
 
-  <app-run-explorer [hidden]="activeExplorer !== explorer.run" *ngIf="queryDef" [queryDef]="queryDef">
+  <app-run-explorer [hidden]="activeExplorer !== explorer.run" *ngIf="queryDef" [queryDef]="queryDef"
+    (editPipelineEntity)="editPipelineEntity()" (saveAndRun)="saveAndRun($event)" (repaint)="repaint()">
   </app-run-explorer>
 
   <app-add-explorer [hidden]="activeExplorer !== explorer.add" *ngIf="queryDef"
-    [dataSources]="queryDef.data.InstalledDataSources">
+    [dataSources]="queryDef.data.InstalledDataSources" (addSelectedDataSource)="addSelectedDataSource($event)">
   </app-add-explorer>
 
-  <app-plumb-editor *ngIf="queryDef" [queryDef]="queryDef"></app-plumb-editor>
+  <app-plumb-editor *ngIf="queryDef" [queryDef]="queryDef" (save)="savePipeline()"
+    (editDataSourcePart)="editDataSourcePart($event)" (instanceChanged)="instanceChanged($event)"></app-plumb-editor>
 </div>
