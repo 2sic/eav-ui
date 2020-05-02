@@ -194,9 +194,9 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
         this.snackBar.open('Query worked', null, { duration: 2000 });
         // open modal with the results
         this.dialog.open(QueryResultComponent, {
-          data: success,
+          data: { testParameters: this.queryDef.data.Pipeline.TestParameters, result: success },
           backdropClass: 'dialog-backdrop',
-          panelClass: ['dialog-panel', `dialog-panel-medium`, 'show-scrollbar'],
+          panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
           viewContainerRef: this.viewContainerRef,
           autoFocus: false,
           closeOnNavigation: false,

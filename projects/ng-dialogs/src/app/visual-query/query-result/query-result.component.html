@@ -1,3 +1,83 @@
-<pre>
-  {{  data | json  }}
+<div mat-dialog-title>
+  <div class="dialog-title-box">
+    <div>Query Results</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+<p class="dialog-description">
+  The Full result was logged to the Browser Console. Further down you'll find more debug-infos.
+</p>
+
+<br />
+
+<div mat-dialog-title>
+  <div class="dialog-title-box">Parameters & Statistics</div>
+</div>
+<p class="description">
+  Executed in {{ timeUsed }}ms ({{ ticksUsed }} ticks)
+</p>
+<ul class="description">
+  <li *ngFor="let param of testParameters?.split('\n')">{{ param }}</li>
+</ul>
+
+<br />
+
+<div mat-dialog-title>
+  <div class="dialog-title-box">Query Results</div>
+</div>
+<pre class="description">
+  {{  result | json  }}
 </pre>
+
+<br />
+
+<div mat-dialog-title>
+  <div class="dialog-title-box">Sources</div>
+</div>
+<table class="description">
+  <tr>
+    <th>Guid</th>
+    <th>Type</th>
+    <th>Configuration</th>
+    <th>Error</th>
+  </tr>
+  <tr *ngFor="let source of sources | keyvalue">
+    <td>
+      <pre>{{ source.value.Guid }}</pre>
+    </td>
+    <td>{{ source.value.Type }}</td>
+    <td>
+      <ol>
+        <li *ngFor="let config of source.value.Configuration | keyvalue">
+          <b>{{ config.key }}</b>=<em>{{ config.value }}</em></li>
+      </ol>
+    </td>
+    <td>{{ source.value.Error }}</td>
+  </tr>
+</table>
+
+<br />
+
+<div mat-dialog-title>
+  <div class="dialog-title-box">Streams</div>
+</div>
+<table class="description">
+  <tr>
+    <th>Source</th>
+    <th>Target</th>
+    <th>Items</th>
+    <th>Error</th>
+  </tr>
+  <tr *ngFor="let stream of streams">
+    <td>
+      <pre>{{ stream.Source + ":" + stream.SourceOut }}</pre>
+    </td>
+    <td>
+      <pre>{{ stream.Target + ":" + stream.TargetIn }}</pre>
+    </td>
+    <td>{{ stream.Count }}</td>
+    <td>{{ stream.Error }}</td>
+  </tr>
+</table>
