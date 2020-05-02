@@ -50,7 +50,7 @@
   </div>
 
   <div class="dialog-actions-box">
-    <button mat-raised-button type="button">Cancel</button>
+    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
     <button mat-raised-button color="accent" type="submit" [disabled]="!ngForm.form.valid">Save</button>
   </div>
 </form>
