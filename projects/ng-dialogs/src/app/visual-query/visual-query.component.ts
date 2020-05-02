@@ -28,7 +28,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     run: 'run',
     add: 'add'
   };
-  activeExplorer: string;
+  activeExplorer = this.explorer.run;
   queryDef: any;
   instance: any;
 

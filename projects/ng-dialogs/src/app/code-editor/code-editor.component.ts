@@ -21,7 +21,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     templates: 'templates',
     snippets: 'snippets'
   };
-  activeExplorer: string;
+  activeExplorer = this.explorer.templates;
   view: SourceView;
   templates: string[];
   explorerSnipps: any;
