@@ -10,6 +10,10 @@ import { EditItem, SourceItem, } from '../app-administration/shared/models/edit-
 import { SourceView } from './models/source-view.model';
 import { ElementEventListener } from '../../../../shared/element-event-listener-model';
 import { SnippetsService } from './services/snippets.service';
+import { share } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { SnackbarStack } from '../shared/snackbar/snackbar-stack';
+import { DialogService } from '../shared/services/dialog.service';
 
 @Component({
   selector: 'app-code-editor',
@@ -36,10 +40,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private snackBarStack: SnackbarStack,
     private sourceService: SourceService,
     private snippetsService: SnippetsService,
     private zone: NgZone,
     private titleService: Title,
+    private dialogService: DialogService,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -47,7 +53,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sourceService.get(this.viewKey).subscribe(view => {
+    // TODO: spm - pls review if my sharing services is ok like this
+    // if you don't like it, then best put your code iside my combine-latest
+    const getView = this.sourceService.get(this.viewKey).pipe(share());
+    const getFiles = this.sourceService.getTemplates().pipe(share());
+    // this.sourceService.get(this.viewKey)
+    getView.subscribe(view => {
       this.view = view;
       this.savedCode = this.view.Code;
       this.titleService.setTitle(`${this.view.FileName} - Code Editor`);
@@ -57,9 +68,37 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.editorSnipps = res.list;
       });
     });
-    this.sourceService.getTemplates().subscribe(templates => {
-      this.templates = templates;
+    // this.sourceService.getTemplates()
+    getFiles.subscribe(files => {
+      this.templates = files;
     });
+    combineLatest([getView, getFiles]).subscribe(([view, files]) => this.showCodeAndEditionWarnings(view, files));
+  }
+
+  /**
+   * try to show an info about editions if other files with the same name exist
+   */
+  showCodeAndEditionWarnings(view: SourceView, files: string[]) {
+    const pathAndName = view.FileName;
+    const pathSeparator = pathAndName.indexOf('/') > -1 ? pathAndName.lastIndexOf('/') + 1 : 0;
+    const pathWithSlash = pathSeparator === 0 ? '' : pathAndName.substr(0, pathSeparator);
+    const fullName = pathAndName.substr(pathSeparator);
+    const name = fullName.substr(0, fullName.length - view.Extension.length);
+    const nameCode = name + '.code' + view.Extension;
+    // find out if we also have a code file
+    const codeFile = files.find(f => f === pathWithSlash + nameCode);
+    const otherEditions = files.filter(f => f.endsWith(fullName)).length - 1;
+
+    if (codeFile) {
+      this.snackBarStack
+        .add(`This template also has a code-behind file '${codeFile}'.`, 'Open')
+        .subscribe(x => this.dialogService.openCodeFile(codeFile));
+    }
+    if (otherEditions) {
+      this.snackBarStack
+        .add(`There are ${otherEditions} other editions of this. You may be editing an edition which is not the one you see.`, 'Help')
+        .subscribe(x => window.open('https://r.2sxc.org/polymorphism', '_blank'));
+    }
   }
 
   ngOnDestroy() {

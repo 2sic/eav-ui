@@ -58,6 +58,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
     }
 
     const params = this.fieldMaskService.resolve(); // always get the latest definition
+    // TODO: SPM - params.replace('[App:AppId]', ...).replace('[App:ZoneId]', ...); #APPIDandZoneId
     let queryUrl = this.query;
     if (queryUrl.indexOf('/') === -1) { // append stream name if not defined
       queryUrl = queryUrl + '/' + this.streamName;

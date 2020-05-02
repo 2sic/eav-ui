@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 /**
  * This service ensures that multiple SnackBars are shown one after another.
@@ -19,7 +19,7 @@ export class SnackbarStack {
    * Add a message to the stack queue.
    * @returns will fire if the action is triggered
    */
-  add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }): Subject<boolean> {
+  add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }): Observable<boolean> {
     const triggered = new Subject<boolean>();
     this.messageQueue.push({ message, action, config, triggered });
     if (!this.processingMessage) {
@@ -42,7 +42,10 @@ export class SnackbarStack {
     snack.afterDismissed().subscribe(() => {
         this.displaySnackbar();
       });
-    snack.onAction().subscribe(() => next.triggered.next(true));
+    snack.onAction().subscribe(() => {
+      next.triggered.next(true);
+      next.triggered.complete();
+    });
   }
 
   private getNextMessage(): SnackBarData | undefined {
