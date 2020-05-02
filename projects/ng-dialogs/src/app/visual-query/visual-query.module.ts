@@ -5,6 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { VisualQueryRoutingModule } from './visual-query-routing.module';
 import { VisualQueryComponent } from './visual-query.component';
@@ -17,6 +18,7 @@ import { PlumbGuiService } from './services/plumb-gui.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { QueryResultComponent } from './query-result/query-result.component';
 
 @NgModule({
   declarations: [
@@ -24,12 +26,14 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     RunExplorerComponent,
     AddExplorerComponent,
     PlumbEditorComponent,
+    QueryResultComponent,
   ],
   entryComponents: [
     VisualQueryComponent,
     RunExplorerComponent,
     AddExplorerComponent,
     PlumbEditorComponent,
+    QueryResultComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +44,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     MatButtonModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatDialogModule,
   ],
   providers: [
     Context,

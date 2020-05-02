@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import cloneDeep from 'lodash-es/cloneDeep';
@@ -14,6 +15,8 @@ import { eavConstants } from '../shared/constants/eav-constants';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { DataSource } from './add-explorer/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';
+import { ElementEventListener } from '../../../../shared/element-event-listener-model';
+import { QueryResultComponent } from './query-result/query-result.component';
 
 @Component({
   selector: 'app-visual-query',
@@ -27,10 +30,10 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
   };
   activeExplorer: string;
   queryDef: any;
-  stopKeyboardSave = false;
   instance: any;
 
   private pipelineId: number;
+  private eventListeners: ElementEventListener[];
   private subscription = new Subscription();
   private hasChild: boolean;
 
@@ -44,6 +47,9 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
     private plumbGuiService: PlumbGuiService,
+    private zone: NgZone,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) {
     this.context.init(this.route);
     this.hasChild = !!this.route.snapshot.firstChild;
@@ -53,10 +59,12 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadQuery();
+    this.attachListeners();
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
+    this.detachListeners();
     this.subscription.unsubscribe();
     this.subscription = null;
   }
@@ -79,7 +87,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
 
   savePipeline(callback?: () => any) {
     this.snackBar.open('Saving...');
-    this.stopKeyboardSave = true;
+    this.detachListeners();
     this.queryDef.readOnly = true;
     this.plumbGuiService.pushPlumbConfigToQueryDef(this.instance, this.queryDef);
     this.queryDefinitionService.save(this.queryDef).subscribe({
@@ -95,13 +103,13 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
         newQueryDef.data.DataSources = success.DataSources;
         this.queryDefinitionService.postProcessDataSources(newQueryDef.data);
         this.queryDef = newQueryDef;
-        this.stopKeyboardSave = false;
+        this.attachListeners();
         if (callback) { callback(); }
       },
       error: (reason: any) => {
         this.snackBar.open(`Save Pipeline failed`, null, { duration: 2000 });
         this.queryDef.readOnly = false;
-        this.stopKeyboardSave = false;
+        this.attachListeners();
       }
     });
   }
@@ -155,7 +163,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
   editPipelineEntity() {
     // save Pipeline, then open Edit Dialog
     this.savePipeline(() => {
-      this.stopKeyboardSave = true;
+      this.detachListeners();
       const form: EditForm = {
         items: [{ EntityId: this.queryDef.id.toString() }],
       };
@@ -185,6 +193,17 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
       next: (success: any) => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
         // open modal with the results
+        this.dialog.open(QueryResultComponent, {
+          data: success,
+          backdropClass: 'dialog-backdrop',
+          panelClass: ['dialog-panel', `dialog-panel-medium`, 'show-scrollbar'],
+          viewContainerRef: this.viewContainerRef,
+          autoFocus: false,
+          closeOnNavigation: false,
+          // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+          // Real top margin is overwritten in css e.g. dialog-panel-large
+          position: { top: '0' },
+        });
         console.warn(success);
         setTimeout(() => { this.plumbGuiService.putEntityCountOnConnection(success, this.queryDef, this.instance); }, 0);
       },
@@ -199,6 +218,31 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
       this.queryDef = res;
       this.titleService.setTitle(`${this.queryDef.data.Pipeline.Name} - Visual Query`);
     });
+  }
+
+  private attachListeners() {
+    this.zone.runOutsideAngular(() => {
+      const save = this.keyboardSave.bind(this);
+      window.addEventListener('keydown', save);
+      this.eventListeners = [];
+      this.eventListeners.push({ element: window, type: 'keydown', listener: save });
+    });
+  }
+
+  private detachListeners() {
+    this.zone.runOutsideAngular(() => {
+      this.eventListeners.forEach(listener => {
+        listener.element.removeEventListener(listener.type, listener.listener);
+      });
+      this.eventListeners = null;
+    });
+  }
+
+  private keyboardSave(e: KeyboardEvent) {
+    const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
+    if (!CTRL_S) { return; }
+    e.preventDefault();
+    this.zone.run(() => { this.savePipeline(); });
   }
 
   private refreshOnChildClosed() {
