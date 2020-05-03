@@ -43,6 +43,9 @@ export function paramsInitFactory(injector: Injector) {
         case 'zone':
           router.navigate([`${zoneId}/apps`]);
           break;
+        case 'app-import':
+          router.navigate([`${zoneId}/import`]);
+          break;
         case 'app':
           router.navigate([`${zoneId}/${appId}/app`]);
           break;

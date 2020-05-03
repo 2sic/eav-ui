@@ -18,7 +18,6 @@ import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
-import { ImportAppComponent } from './shared/modals/import-app/import-app.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 import { Context } from '../shared/services/context';
@@ -29,7 +28,6 @@ import { FeaturesListEnabledComponent } from './shared/ag-grid-components/featur
 import { FeaturesListUiComponent } from './shared/ag-grid-components/features-list-ui/features-list-ui.component';
 import { FeaturesListPublicComponent } from './shared/ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from './shared/ag-grid-components/features-list-security/features-list-security.component';
-import { ImportAppService } from './shared/services/import-app.service';
 import { EnableLanguagesComponent } from './enable-languages/enable-languages.component';
 import { EnableLanguagesService } from './shared/services/enable-languages.service';
 import { EnableLanguagesStatusComponent } from './shared/ag-grid-components/enable-languages-status/enable-languages-status.component';
@@ -40,7 +38,6 @@ import { SxcInsightsService } from './shared/services/sxc-insights.service';
   declarations: [
     AppsManagementNavComponent,
     AppsListComponent,
-    ImportAppComponent,
     ManageFeaturesComponent,
     SxcInsightsComponent,
     AppsListShowComponent,
@@ -54,7 +51,6 @@ import { SxcInsightsService } from './shared/services/sxc-insights.service';
   ],
   entryComponents: [
     AppsManagementNavComponent,
-    ImportAppComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
     FeaturesListEnabledComponent,
@@ -85,7 +81,6 @@ import { SxcInsightsService } from './shared/services/sxc-insights.service';
     Context,
     AppsListService,
     EnableLanguagesService,
-    ImportAppService,
     FeaturesConfigService,
     SxcInsightsService,
   ]

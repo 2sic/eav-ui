@@ -9,6 +9,10 @@ const appRoutes: Routes = [
     loadChildren: () => import('./apps-management/apps-management.module').then(m => m.AppsManagementModule)
   },
   {
+    path: ':zoneId/import',
+    loadChildren: () => import('./import-app/import-app.module').then(m => m.ImportAppModule)
+  },
+  {
     path: ':zoneId/:appId/app',
     loadChildren: () => import('./app-administration/app-administration.module').then(m => m.AppAdministrationModule)
   },

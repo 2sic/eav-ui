@@ -4,7 +4,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
-import { importAppDialog } from './shared/modals/import-app/import-app-dialog.config';
 
 const appsManagementRoutes: Routes = [
   {
@@ -12,7 +11,10 @@ const appsManagementRoutes: Routes = [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
         path: 'list', component: EmptyRouteComponent, children: [
-          { path: 'import', component: DialogEntryComponent, data: { dialog: importAppDialog } },
+          {
+            path: 'import',
+            loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
+          },
         ]
       },
       { path: 'languages', component: EmptyRouteComponent },
