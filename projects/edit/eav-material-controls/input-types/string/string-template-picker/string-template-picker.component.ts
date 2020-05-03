@@ -10,6 +10,7 @@ import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-ass
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';
 import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -125,7 +126,7 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
     }
 
     const fullPath = path + fileName;
-    console.log(fullPath);
+    angularConsoleLog(fullPath);
 
     // 4. tell service to create it
     this.svcCurrent.create(fullPath, this.file.body).pipe(take(1)).subscribe(

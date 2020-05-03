@@ -9,6 +9,7 @@ import { AdamItem } from '../../shared/models/adam/adam-item';
 import { EavService } from '../../shared/services/eav.service';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { SanitizeService } from './sanitize.service';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Injectable()
 export class AdamService {
@@ -70,7 +71,7 @@ export class AdamService {
             reload();
             return data;
           }),
-          tap(data => console.log('addFolder: ', data)),
+          tap(data => angularConsoleLog('addFolder: ', data)),
           catchError(error => this.handleError(error))
         );
     };
@@ -111,7 +112,7 @@ export class AdamService {
     };
 
     const getAll = (): Observable<AdamItem[]> => {
-      console.log('GET ALL subfolder:', subfolder);
+      angularConsoleLog('GET ALL subfolder:', subfolder);
       return this.httpClient.get(url + '/items',
         {
           params: {
@@ -129,7 +130,7 @@ export class AdamService {
             checkAllowEdit(data);
             return data;
           }),
-          tap(data => console.log('items subfolder: ', subfolder)),
+          tap(data => angularConsoleLog('items subfolder: ', subfolder)),
           catchError(error => this.handleError(error))
         );
     };
@@ -152,7 +153,6 @@ export class AdamService {
             reload();
             return data;
           }),
-          // tap(data => console.log('delete: ', data))),
           catchError(error => this.handleError(error))
         );
     };
@@ -175,7 +175,6 @@ export class AdamService {
             reload();
             return data;
           }),
-          // tap(data => console.log('rename: ', data)),
           catchError(error => this.handleError(error))
         );
     };

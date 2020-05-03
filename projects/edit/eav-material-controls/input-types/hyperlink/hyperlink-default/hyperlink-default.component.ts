@@ -13,6 +13,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -180,7 +181,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
       // return value from form
       this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
 
-      console.log('HyperDefault setConfig : ', Object.assign(new AdamConfig(), {
+      angularConsoleLog('HyperDefault setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         fileFilter: this.fileFilter
       }));

@@ -8,6 +8,7 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { Language } from '../../../shared/models/eav';
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-link-to-other-language',
@@ -37,7 +38,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('this.selectedOption', this.selectedOption);
+    angularConsoleLog('this.selectedOption', this.selectedOption);
     this.loadlanguagesFromStore();
   }
 
@@ -108,7 +109,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   }
 
   linkOtherLanguage() {
-    console.log(this.selectedOption);
+    angularConsoleLog(this.selectedOption);
   }
 
   disableLanguage(languageKey: string): boolean {

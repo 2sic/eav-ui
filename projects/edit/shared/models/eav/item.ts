@@ -1,6 +1,7 @@
 import { EavEntity } from './eav-entity';
 import { EavHeader } from './eav-header';
 import { JsonItem1 } from '../json-format-v1/json-item1';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 export class Item {
   header: EavHeader;
@@ -13,7 +14,7 @@ export class Item {
 
   /** Create new Eav Item from json typed JsonItem1 */
   public static create(item: JsonItem1): Item {
-    console.log('create item.Entity:', item.Entity);
+    angularConsoleLog('create item.Entity:', item.Entity);
     return new Item(
       // EavHeader.create(item.Header),
       item.Header,

@@ -1,12 +1,26 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
+
+/** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
+let isProduction = false;
+const args = process.argv.slice(2);
+args.forEach((val, index) => {
+  // console.log(`${index}: ${val}`);
+  if (val === '--mode=production') {
+    isProduction = true;
+  }
+});
 
 const configuration = {
   mode: 'development',
   entry: ['./projects/field-custom-gps/src/main/main.ts', './projects/field-custom-gps/src/preview/preview.ts'],
   plugins: [
     new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      '__PRODUCTION__': JSON.stringify(isProduction),
+    }),
   ],
   devtool: 'source-map',
   module: {

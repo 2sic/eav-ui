@@ -1,6 +1,7 @@
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Injectable()
 export class ValidationMessagesService {
@@ -48,7 +49,7 @@ export class ValidationMessagesService {
         if (control && control.invalid) {
           if (!checkDirty || (control.dirty || control.touched)) {
             Object.keys(control.errors).forEach(keyError => {
-              console.log('error key', keyError);
+              angularConsoleLog('error key', keyError);
               formErrors[key] = formErrors[key] || messages[keyError](undefined);
             });
           }

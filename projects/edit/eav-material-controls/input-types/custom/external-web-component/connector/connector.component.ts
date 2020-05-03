@@ -11,6 +11,7 @@ import { ConnectorService } from './connector.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
+import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-connector',
@@ -37,7 +38,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     const customElName = `field-${this.config.field.inputType}-dialog`;
-    console.log('Connector created for:', customElName);
+    angularConsoleLog('Connector created for:', customElName);
     this.customElConnector = new ConnectorService(this._ngZone, this.contentTypeService, this.dialog, this.dnnBridgeService,
       this.eavService, this.translateService, this.customElContainer, this.config, this.group, this.featureService,
       this.inputTypeService, this.expandableFieldService);
@@ -45,7 +46,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('Connector destroyed');
+    angularConsoleLog('Connector destroyed');
     this.customElConnector.destroy();
   }
 }

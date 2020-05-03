@@ -18,6 +18,7 @@ import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 
 @Component({
@@ -124,7 +125,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
       this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey, defaultValue.value,
         this.currentLanguage, false, this.config.entity.entityGuid, fieldType);
     } else {
-      console.log(`${this.currentLanguage}: Cant copy value from ${this.defaultLanguage} because that value does not exist.`);
+      angularConsoleLog(`${this.currentLanguage}: Cant copy value from ${this.defaultLanguage} because that value does not exist.`);
     }
 
     this.refreshControlConfig(attributeKey);
@@ -188,7 +189,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
           this.currentLanguage, false, this.config.entity.entityGuid, this.config.field.type);
       }
     } else {
-      console.log(`${this.currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+      angularConsoleLog(`${this.currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
     }
 
     this.refreshControlConfig(attributeKey);

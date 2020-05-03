@@ -14,6 +14,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -95,11 +96,11 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   expandDialog() {
-    console.log('HyperlinkDefaultExpandableWrapperComponent expandDialog');
+    angularConsoleLog('HyperlinkDefaultExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
-    console.log('HyperlinkDefaultExpandableWrapperComponent closeDialog');
+    angularConsoleLog('HyperlinkDefaultExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 

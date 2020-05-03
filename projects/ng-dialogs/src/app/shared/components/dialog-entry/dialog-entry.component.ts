@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { Context } from '../../services/context';
 import { DialogConfig } from '../../models/dialog-config.model';
+import { angularConsoleLog } from '../../helpers/angular-console-log';
 
 @Component({
   selector: 'app-dialog-entry',
@@ -31,7 +32,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    console.log('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    angularConsoleLog('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
     this.component = await this.dialogConfig.getComponent();
     if (this.dialogConfig.initContext) {
       this.context.init(this.route);
@@ -55,7 +56,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dialogRef.afterClosed().subscribe((data: any) => {
-        console.log('Dialog was closed:', this.dialogConfig.name, 'Data:', data);
+        angularConsoleLog('Dialog was closed:', this.dialogConfig.name, 'Data:', data);
 
         if (this.route.pathFromRoot.length <= 3) {
           try {

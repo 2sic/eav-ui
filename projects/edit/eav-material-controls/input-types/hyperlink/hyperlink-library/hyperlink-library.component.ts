@@ -8,6 +8,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { CustomValidators } from '../../../validators/custom-validators';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -61,7 +62,7 @@ export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
       // binding for dropzone
       this.config.adam.afterUploadCallback = (fileItem: any) => { };
 
-      console.log('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
+      angularConsoleLog('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
         adamModeConfig: this.adamModeConfig,
         allowAssetsInRoot: this.allowAssetsInRoot,
         autoLoad: true,

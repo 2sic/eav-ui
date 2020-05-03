@@ -1,35 +1,36 @@
+import { webpackConsoleLog } from '../../../../shared/webpack-console-log';
 
 export class DefaultPaste {
 
   /** Paste formatted text, e.g. text copied from MS Word */
   static formattedText = {
-      paste_as_text: false,
-      paste_enable_default_filters: true,
-      paste_create_paragraphs: true,
-      paste_create_linebreaks: false,
-      paste_force_cleanup_wordpaste: true,
-      paste_use_dialog: true,
-      paste_auto_cleanup_on_paste: true,
-      paste_convert_middot_lists: true,
-      paste_convert_headers_to_strong: false,
-      paste_remove_spans: true,
-      paste_remove_styles: true,
-      paste_preprocess(e: any, args: any) {
-        console.log('paste preprocess', e, args);
-      },
-      paste_postprocess(plugin: any, args: any) {
-        try {
-          const anchors = args.node.getElementsByTagName('a');
-          for (const anchor of anchors) {
-            if (anchor.hasAttribute('target') === false) {
-              anchor.setAttribute('target', '_blank');
-            }
+    paste_as_text: false,
+    paste_enable_default_filters: true,
+    paste_create_paragraphs: true,
+    paste_create_linebreaks: false,
+    paste_force_cleanup_wordpaste: true,
+    paste_use_dialog: true,
+    paste_auto_cleanup_on_paste: true,
+    paste_convert_middot_lists: true,
+    paste_convert_headers_to_strong: false,
+    paste_remove_spans: true,
+    paste_remove_styles: true,
+    paste_preprocess(e: any, args: any) {
+      webpackConsoleLog('paste preprocess', e, args);
+    },
+    paste_postprocess(plugin: any, args: any) {
+      try {
+        const anchors = args.node.getElementsByTagName('a');
+        for (const anchor of anchors) {
+          if (anchor.hasAttribute('target') === false) {
+            anchor.setAttribute('target', '_blank');
           }
-        } catch (e) {
-          console.error('error in paste postprocess - will only log but not throw', e);
         }
+      } catch (e) {
+        console.error('error in paste postprocess - will only log but not throw', e);
       }
-    };
+    }
+  };
 
   /** Paste image */
   static images(uploadUrl: string, headers: any) {
@@ -51,7 +52,7 @@ export class DefaultPaste {
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
     const settings = (window as any).tinymce.activeEditor.settings;
-    console.log('TinyMCE upload settings', settings);
+    webpackConsoleLog('TinyMCE upload settings', settings);
 
     fetch(settings.images_upload_url, {
       method: 'POST',
@@ -61,10 +62,10 @@ export class DefaultPaste {
     }).then(response =>
       response.json()
     ).then(data => {
-      console.log('TinyMCE upload data', data);
+      webpackConsoleLog('TinyMCE upload data', data);
       success(data.Path);
     }).catch(error => {
-      console.log('TinyMCE upload error:', error);
+      webpackConsoleLog('TinyMCE upload error:', error);
     });
 
   }

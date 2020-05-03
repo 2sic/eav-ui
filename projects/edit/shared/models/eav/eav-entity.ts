@@ -2,6 +2,7 @@ import { EavAttributes } from './eav-attributes';
 import { EavType } from './eav-type';
 import { Entity1 } from '../json-format-v1/entity1';
 import { EavFor } from './eav-for';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 export class EavEntity {
   id: number;
@@ -58,7 +59,7 @@ export class EavEntity {
   public static createArray(entity1Array: Entity1[]): EavEntity[] {
     if (!entity1Array) { return null; }
     const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
-    console.log('entity1Array:', entity1Array);
+    angularConsoleLog('entity1Array:', entity1Array);
     try {
       entity1Array.forEach(entity1 => {
         eavMetaDataArray.push(EavEntity.create(entity1));

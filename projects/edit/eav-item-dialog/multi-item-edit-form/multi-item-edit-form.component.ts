@@ -35,6 +35,7 @@ import { ElementEventListener } from '../../../shared/element-event-listener-mod
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -196,7 +197,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
         this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
           itemEditFormComponent.form.submitOutside();
         });
-        console.log('saveAll', close);
+        angularConsoleLog('saveAll', close);
         this.snackBarOpen(this.translate.instant('Message.Saving'));
         if (close) { this.formIsSaved = true; }
       } else {
@@ -416,7 +417,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // important - only subscribe once
     this.subscriptions.push(zip(...this.formSaveAllObservables$)
       .pipe(switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
-        console.log('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
+        angularConsoleLog('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
         const allItems: JsonItem1[] = [];
         actions.forEach(action => {
           const item = JsonItem1.create(action.item);
@@ -432,7 +433,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
           .pipe(map(data => {
             this.enableDraft = true; // after saving, we can re-save as draft
             this.eavService.saveItemSuccess(data);
-          }), tap(data => console.log('working')));
+          }), tap(data => angularConsoleLog('working')));
       }), catchError(err => of(this.eavService.saveItemError(err))))
       .subscribe());
   }
@@ -447,7 +448,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS))
       .subscribe((action: fromItems.SaveItemAttributesValuesSuccessAction) => {
         this.itemService.updateItemId(action.data);
-        console.log('success END: ', action.data);
+        angularConsoleLog('success END: ', action.data);
         this.snackBarOpen(this.translate.instant('Message.Saved'));
         this.dialogRef.disableClose = false;
         if (this.formIsSaved) {
@@ -457,7 +458,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.subscriptions.push(this.actions$
       .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR))
       .subscribe((action: fromItems.SaveItemAttributesValuesErrorAction) => {
-        console.log('error END', action.error);
+        angularConsoleLog('error END', action.error);
         // TODO show error message
         this.snackBarOpen('error');
       }));

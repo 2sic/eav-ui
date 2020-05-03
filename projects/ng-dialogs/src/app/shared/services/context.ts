@@ -1,6 +1,7 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix } from '../constants/sessions-keys';
+import { angularConsoleLog } from '../helpers/angular-console-log';
 
 /** The context provides information */
 @Injectable()
@@ -56,7 +57,7 @@ export class Context {
   private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
-    console.log('Context.constructor');
+    angularConsoleLog('Context.constructor');
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
@@ -71,14 +72,14 @@ export class Context {
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    console.log('Context.init', route);
+    angularConsoleLog('Context.init', route);
     this.routeSnapshot = route && route.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
   }
 
   initRoot() {
-    console.log('Context.initRoot');
+    angularConsoleLog('Context.initRoot');
 
     // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);

@@ -9,6 +9,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
@@ -64,11 +65,11 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   }
 
   expandDialog() {
-    console.log('HyperlinkLibraryExpandableWrapperComponent expandDialog');
+    angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
   closeDialog() {
-    console.log('HyperlinkLibraryExpandableWrapperComponent closeDialog');
+    angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
   }
 

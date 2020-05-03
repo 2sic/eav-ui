@@ -8,6 +8,7 @@ import { defaultCoordinates, mapsParameters } from '../shared/constants';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
@@ -28,14 +29,14 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   constructor() {
     super();
-    console.log('FieldCustomGpsDialog constructor called');
+    webpackConsoleLog('FieldCustomGpsDialog constructor called');
     this.fieldInitialized = false;
     this.eventListeners = [];
     this.subscription = new Subscription();
   }
 
   connectedCallback() {
-    console.log('FieldCustomGpsDialog connectedCallback called');
+    webpackConsoleLog('FieldCustomGpsDialog connectedCallback called');
     // spm prevents connectedCallback from being called more than once. Don't know if it's necessary
     // https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance
     if (this.fieldInitialized) { return; }
@@ -59,7 +60,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
     this.addressMaskService = new FieldMaskService(addressMask, this.connector._experimental.formGroup.controls, null, null);
-    console.log('FieldCustomGpsDialog addressMask:', addressMask);
+    webpackConsoleLog('FieldCustomGpsDialog addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
@@ -69,7 +70,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private mapScriptLoaded() {
-    console.log('FieldCustomGpsDialog mapScriptLoaded called');
+    webpackConsoleLog('FieldCustomGpsDialog mapScriptLoaded called');
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
@@ -119,7 +120,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private onLatLngInputChange() {
-    console.log('FieldCustomGpsDialog input changed');
+    webpackConsoleLog('FieldCustomGpsDialog input changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
       lng: this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null,
@@ -129,7 +130,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private autoSelect() {
-    console.log('FieldCustomGpsDialog geocoder called');
+    webpackConsoleLog('FieldCustomGpsDialog geocoder called');
     const address = this.addressMaskService.resolve();
     this.geocoder.geocode({
       address,
@@ -149,7 +150,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private onMarkerDragend(event: google.maps.MouseEvent) {
-    console.log('FieldCustomGpsDialog marker changed');
+    webpackConsoleLog('FieldCustomGpsDialog marker changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -159,7 +160,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   disconnectedCallback() {
-    console.log('FieldCustomGpsDialog disconnectedCallback called');
+    webpackConsoleLog('FieldCustomGpsDialog disconnectedCallback called');
     if (!!(window as any).google) {
       google.maps.event.clearInstanceListeners(this.marker);
       google.maps.event.clearInstanceListeners(this.map);

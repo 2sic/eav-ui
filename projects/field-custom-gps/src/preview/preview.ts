@@ -4,6 +4,7 @@ import { defaultCoordinates } from '../shared/constants';
 import * as template from './preview.html';
 import * as styles from './preview.css';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
@@ -14,11 +15,11 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
 
   constructor() {
     super();
-    console.log('FieldCustomGps constructor called');
+    webpackConsoleLog('FieldCustomGps constructor called');
   }
 
   connectedCallback() {
-    console.log('FieldCustomGps connectedCallback called');
+    webpackConsoleLog('FieldCustomGps connectedCallback called');
     this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector('#map-icon-container');
     mapIconContainer.innerHTML = customGpsIcons.mapMarker;
@@ -57,7 +58,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   disconnectedCallback() {
-    console.log('FieldCustomGps disconnectedCallback called');
+    webpackConsoleLog('FieldCustomGps disconnectedCallback called');
     this.eventListeners.forEach(evListener => {
       evListener.element.removeEventListener(evListener.type, evListener.listener);
     });

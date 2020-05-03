@@ -18,6 +18,7 @@ import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.se
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 import { ExperimentalProps, InputTypeName, AdamSetValue, AdamAfterUpload } from '../../../../../../edit-types';
+import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
@@ -112,7 +113,7 @@ export class ConnectorService {
 
     this.customEl = document.createElement(customElName) as any;
     this.customEl.connector = this.buildConnector();
-    console.log('Petar order host createElementWebComponent');
+    angularConsoleLog('order host createElementWebComponent');
     this.customElContainer.nativeElement.appendChild(this.customEl);
 
     this.subscribeFormChange();
@@ -198,7 +199,7 @@ export class ConnectorService {
     this.group.controls[this.config.field.name].patchValue(value);
     this.group.controls[this.config.field.name].markAsDirty();
     this.group.controls[this.config.field.name].markAsTouched(); // spm should be marked on first focus. Read JSDoc
-    console.log('Petar wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
+    angularConsoleLog('wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
   }
 
   private updateField(name: string, value: any) {
@@ -209,7 +210,7 @@ export class ConnectorService {
   }
 
   public destroy() {
-    console.log('Connector destroyed');
+    angularConsoleLog('Connector destroyed');
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subjects.forEach(subject => { subject.complete(); });
     this.customEl.parentNode.removeChild(this.customEl);

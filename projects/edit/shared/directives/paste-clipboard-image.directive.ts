@@ -4,6 +4,7 @@ import { FeatureService } from '../store/ngrx-data/feature.service';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
@@ -46,7 +47,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   }
 
   private handleImage(event: CustomEvent) {
-    console.log('PASTE IMAGE', 'event:', event);
+    angularConsoleLog('PASTE IMAGE', 'event:', event);
     // todo: convert png to jpg to reduce file size
     const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
     this.config.saveImage(image);

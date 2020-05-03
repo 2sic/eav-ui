@@ -6,6 +6,7 @@ import * as template from './preview.html';
 import * as styles from './preview.css';
 import { ElementEventListener } from '../../../shared/element-event-listener-model';
 import { FieldStringWysiwygDialog } from '../main/main';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log';
 
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
@@ -14,11 +15,11 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   constructor() {
     super();
-    console.log('FieldStringWysiwyg constructor called');
+    webpackConsoleLog('FieldStringWysiwyg constructor called');
   }
 
   connectedCallback() {
-    console.log('FieldStringWysiwyg connectedCallback called');
+    webpackConsoleLog('FieldStringWysiwyg connectedCallback called');
     const inline = this.connector.field.settings.Dialog === 'inline';
     if (!inline) {
       this.runPreviewMode();
@@ -55,7 +56,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   disconnectedCallback() {
-    console.log('FieldStringWysiwyg disconnectedCallback called');
+    webpackConsoleLog('FieldStringWysiwyg disconnectedCallback called');
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });

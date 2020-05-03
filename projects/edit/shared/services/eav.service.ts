@@ -13,6 +13,7 @@ import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
 import { FormSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Injectable()
 export class EavService {
@@ -54,13 +55,13 @@ export class EavService {
   }
 
   savemany(appId: string, partOfPage: string, body: string) {
-    console.log('start submit');
+    angularConsoleLog('start submit');
     return this.httpClient.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`), body).pipe(
       map((data: any) => {
-        console.log('return data');
+        angularConsoleLog('return data');
         return data;
       }),
-      tap(data => console.log('submit: ', data)),
+      tap(data => angularConsoleLog('submit: ', data)),
       catchError(error => this.handleError(error)),
     ) as Observable<any>;
   }

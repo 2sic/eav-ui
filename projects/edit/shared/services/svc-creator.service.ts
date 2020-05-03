@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Injectable()
 export class SvcCreatorService {
@@ -36,7 +37,7 @@ export class SvcCreatorService {
       liveListCacheBehaviorSubject.next(result);
 
       liveListCacheIsLoaded = true;
-      console.log('liveListCache after:', liveListCacheBehaviorSubject.getValue());
+      angularConsoleLog('liveListCache after:', liveListCacheBehaviorSubject.getValue());
     };
 
     /**

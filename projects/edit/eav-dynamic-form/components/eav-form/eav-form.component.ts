@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-eav-form',
@@ -72,7 +73,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    console.log('form save', event);
+    angularConsoleLog('form save');
     // Use this to emit value out
     this.formSubmit.emit(this.value);
   }
@@ -98,7 +99,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
    */
   setValue(name: string, value: any, emitEvent: boolean) {
     if (value !== this.form.controls[name].value) {
-      console.log('CHANGE' + name + ' from value: ' + this.form.controls[name].value + ' to ' + value);
+      angularConsoleLog('CHANGE' + name + ' from value: ' + this.form.controls[name].value + ' to ' + value);
       this.form.controls[name].setValue(value, { emitEvent });
     }
   }
@@ -116,8 +117,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
   /** Check if value in form changed */
   public valueIsChanged = (values: { [key: string]: any }) => {
     let valueIsChanged = false;
-    console.log('[Test Disabled] VALUECHANGED values', values);
-    console.log('[Test Disabled] VALUECHANGED form values', this.form.value);
+    angularConsoleLog('[Test Disabled] VALUECHANGED values', values);
+    angularConsoleLog('[Test Disabled] VALUECHANGED form values', this.form.value);
 
     Object.keys(values).forEach(valueKey => {
       if (values[valueKey] !== this.form.value[valueKey]) {
@@ -125,7 +126,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    console.log('[Test Disabled] VALUECHANGED', valueIsChanged);
+    angularConsoleLog('[Test Disabled] VALUECHANGED', valueIsChanged);
     return valueIsChanged;
   }
 }

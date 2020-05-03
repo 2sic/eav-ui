@@ -6,6 +6,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-adam-attach-wrapper',
@@ -37,7 +38,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
 
   /** triger click on clickable element for load open */
   openUpload() {
-    console.log('openUpload click');
+    angularConsoleLog('openUpload click');
     this.invisibleClickableReference.nativeElement.click();
   }
 }

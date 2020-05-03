@@ -8,6 +8,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -78,7 +79,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   public onUploadError(args: any): void {
-    console.log('onUploadError:', args);
+    angularConsoleLog('onUploadError:', args);
     // Reset dropzone
     this.dropzoneRef.reset();
   }

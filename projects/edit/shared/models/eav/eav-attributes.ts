@@ -2,6 +2,7 @@ import { EavValues } from './eav-values';
 import { Attributes1 } from '../json-format-v1/attributes1';
 import { EavValue } from './eav-value';
 import { EavEntity } from './eav-entity';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 export class EavAttributes {
   [key: string]: EavValues<any>;
@@ -23,7 +24,7 @@ export class EavAttributes {
         });
       }
     });
-    console.log('created attributes: ', newEavAtribute);
+    angularConsoleLog('created attributes: ', newEavAtribute);
     return newEavAtribute;
   }
 

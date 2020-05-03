@@ -25,6 +25,7 @@ import { BooleanFilterComponent } from '../shared/components/boolean-filter/bool
 import { keyFilters } from '../shared/constants/sessions-keys';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
+import { angularConsoleLog } from '../shared/helpers/angular-console-log';
 
 @Component({
   selector: 'app-content-items',
@@ -70,7 +71,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       this.gridApi.setColumnDefs(columnDefs);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
       if (filterModel) {
-        console.log('Will try to apply filter:', filterModel);
+        angularConsoleLog('Will try to apply filter:', filterModel);
         this.gridApi.setFilterModel(filterModel);
       }
     });

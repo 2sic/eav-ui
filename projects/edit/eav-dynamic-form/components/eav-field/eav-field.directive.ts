@@ -23,6 +23,7 @@ import { EntityContentBlockComponent } from '../../../eav-material-controls/inpu
 import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
 import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
 import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Directive({
   selector: '[appEavField]'
@@ -68,7 +69,7 @@ export class EavFieldDirective implements OnInit {
     this.container.clear();
 
     this.config.forEach(controlConfiguration => {
-      console.log('create controlConfiguration', controlConfiguration);
+      angularConsoleLog('create controlConfiguration', controlConfiguration);
       this.createFieldOrGroup(this.container, controlConfiguration);
     });
   }
@@ -79,7 +80,7 @@ export class EavFieldDirective implements OnInit {
     if (field.fieldGroup) {
       this.createGroupComponents(container, fieldConfig);
     } else {
-      console.log('create createFieldOrGroup:', fieldConfig.field.inputType);
+      angularConsoleLog('create createFieldOrGroup:', fieldConfig.field.inputType);
       this.createComponent(container, fieldConfig);
     }
   }
@@ -100,7 +101,7 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    console.log('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
+    angularConsoleLog('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
     let componentType: Type<any>;
     if (fieldConfig.field.isExternal) {
       componentType = this.readComponentType(InputTypesConstants.externalWebComponent);

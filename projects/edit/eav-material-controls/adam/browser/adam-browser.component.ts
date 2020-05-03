@@ -14,6 +14,7 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -101,7 +102,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.initConfig();
     this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
 
-    console.log('adam ngOnInit url:', this.url);
+    angularConsoleLog('adam ngOnInit url:', this.url);
     this.setAllowedFileTypes();
 
     // TODO: when to load folders??? Before was toggle!!!

@@ -2,6 +2,7 @@
 import { EavValue, EavAttributes, EavDimensions } from '../models/eav';
 import { FieldSettings } from '../../../edit-types';
 import { EavValues } from '../models/eav/eav-values';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
 
 export class LocalizationHelper {
   /**
@@ -137,7 +138,7 @@ export class LocalizationHelper {
             })
           };
         } else { // else add new value with dimension languageKey
-          console.log('saveAttributeValues add values ', newItemValue);
+          angularConsoleLog('saveAttributeValues add values ', newItemValue);
           const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
           eavAttributes[attributeKey] = {
             ...allAttributes[attributeKey],
@@ -238,7 +239,7 @@ export class LocalizationHelper {
 
   /** Remove language. If more dimensions (languages) exist, delete only dimension, else delete value and dimension */
   public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
-    console.log('removeAttributeDimension: ', allAttributes);
+    angularConsoleLog('removeAttributeDimension: ', allAttributes);
     // copy attributes from item
     let eavAttributes: EavAttributes = new EavAttributes();
     const value: EavValue<any> = allAttributes[attributeKey].values.find(eavValue =>
