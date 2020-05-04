@@ -199,9 +199,14 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
-          // spm TODO:
-          // if (!closedDialog.data.result) { return; }
-          // this.addEntity(Object.keys(closedDialog.data.result)[0]);
+          // spm TODO: Add entity for template picker and other not expanded fields
+          const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
+          if (expandedFieldId !== this.config.field.index.toString()) { return; }
+          const navigation = this.router.getCurrentNavigation();
+          const editResult = navigation.extras?.state;
+          if (editResult) {
+            this.addEntity(Object.keys(editResult)[0]);
+          }
           this.setData();
         }
       })
