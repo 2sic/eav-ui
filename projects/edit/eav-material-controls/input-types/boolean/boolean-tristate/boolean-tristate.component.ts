@@ -1,4 +1,4 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../../../eav-dynamic-form/model/field';
@@ -16,30 +16,34 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
 export class BooleanTristateComponent implements Field {
-  config: FieldConfigSet;
-  group: FormGroup;
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
   get disabled() {
     return this.group.controls[this.config.field.name].disabled;
   }
 
-  state: boolean = null;
-  showState = false;
-
-  nextState() {
-    const newState = this.state === null
-      ? false
-      : this.state === false
-        ? true
-        : null;
-    this.showState = newState === true;
-    console.log('before', this.state, 'after', newState, 'show-after', this.showState);
-    this.state = newState;
+  get checked() {
+    const value = this.group.controls[this.config.field.name].value;
+    this.value = (value === '') ? null : value;
+    return this.value;
   }
 
-  toggle($event: EventEmitter<void>) {
-    console.log('toggle from', this.state);
-    // this.nextState();
+  value: boolean;
+
+  toggle() {
+    switch (this.value) {
+      case false:
+        this.value = null;
+        break;
+      case null:
+        this.value = true;
+        break;
+      case true:
+        this.value = false;
+        break;
+    }
+    this.group.controls[this.config.field.name].patchValue(this.value);
   }
 
 }
