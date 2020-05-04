@@ -1,5 +1,5 @@
 <div [formGroup]="group">
-  <mat-slide-toggle [disabled]="disabled" [checked]="checked" (toggleChange)="toggle()" [ngClass]="{
+  <mat-slide-toggle [disabled]="disabled" [checked]="value" (toggleChange)="toggle()" [ngClass]="{
     'toggle-false': value === false,
     'toggle-null': value === null
     }">

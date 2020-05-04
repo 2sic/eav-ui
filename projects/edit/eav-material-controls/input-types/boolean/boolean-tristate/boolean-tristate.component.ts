@@ -23,27 +23,39 @@ export class BooleanTristateComponent implements Field {
     return this.group.controls[this.config.field.name].disabled;
   }
 
-  get checked() {
-    const value = this.group.controls[this.config.field.name].value;
-    this.value = (value === '') ? null : value;
-    return this.value;
+  get value(): boolean {
+    let value: boolean | string = this.group.controls[this.config.field.name].value;
+    if (typeof value === typeof '') {
+      value = (value as string).toLocaleLowerCase();
+      switch (value) {
+        case 'true':
+          value = true;
+          break;
+        case 'false':
+          value = false;
+          break;
+        case '':
+          value = null;
+          break;
+      }
+    }
+    return value as boolean;
   }
 
-  value: boolean;
-
   toggle() {
+    let nextValue: boolean;
     switch (this.value) {
       case false:
-        this.value = null;
+        nextValue = null;
         break;
       case null:
-        this.value = true;
+        nextValue = true;
         break;
       case true:
-        this.value = false;
+        nextValue = false;
         break;
     }
-    this.group.controls[this.config.field.name].patchValue(this.value);
+    this.group.controls[this.config.field.name].patchValue(nextValue);
   }
 
 }
