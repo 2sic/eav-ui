@@ -37,6 +37,8 @@ export class BooleanTristateComponent implements Field {
         case '':
           value = null;
           break;
+        default:
+          value = null;
       }
     }
     return value as boolean;
