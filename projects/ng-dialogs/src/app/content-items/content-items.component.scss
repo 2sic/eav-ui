@@ -1,0 +1,13 @@
+ag-grid-angular.ag-theme-material {
+  height: calc(100vh - 216px);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 186px);
+  }
+}
+
+.actions-box {
+  margin-right: 66px;
+  margin-left: 8px;
+  display: flex;
+}

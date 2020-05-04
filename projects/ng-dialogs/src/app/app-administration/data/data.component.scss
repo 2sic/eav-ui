@@ -1,0 +1,22 @@
+ag-grid-angular.ag-theme-material {
+  height: calc(100vh - 286px);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 238px);
+  }
+}
+
+.scope-box {
+  margin-right: 66px;
+  margin-left: 8px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+
+  &__dropdown {
+    width: 200px;
+    margin-top: -14px;
+    font-size: 14px;
+    height: auto;
+  }
+}

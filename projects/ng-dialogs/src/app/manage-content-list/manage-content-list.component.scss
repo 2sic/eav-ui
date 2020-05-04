@@ -1,0 +1,64 @@
+.sort-title {
+  padding-top: 16px;
+}
+
+.dnd-list {
+  margin: 16px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dnd-item {
+  cursor: move;
+  height: 40px;
+  border-bottom: 1px solid #ccc;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  box-sizing: border-box;
+  font-size: 14px;
+
+  &:last-child {
+    border: none;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__title-icon {
+    margin-right: 8px;
+    opacity: 40%;
+  }
+
+  &__title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dnd-list.cdk-drop-list-dragging .dnd-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

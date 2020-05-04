@@ -1,4 +1,12 @@
-field-string-wysiwyg {
+.full-wysiwyg {
+  height: inherit;
+  min-height: inherit;
+  max-height: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.inline-wysiwyg {
   height: inherit;
   min-height: inherit;
   max-height: inherit;
@@ -26,23 +34,6 @@ field-string-wysiwyg {
   padding: 0 8px 1px 8px;
   /* min-height 1px less because of padding pixel bottom */
   min-height: 119px;
-  /* Probably not needed */
-  /*
-  position: relative;
-  border-style: solid;
-  border-width: 1px;
-  border-color: rgb(170,178,189);
-  border-radius: 4px;
-  padding-left: 0;
-  overflow: auto;
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  color:rgb(69, 79, 99);
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400; 
-  */
   font-size: medium;
   /* IE 10+ */
   -ms-overflow-style: none;
@@ -65,4 +56,30 @@ field-string-wysiwyg {
 
 .full-wysiwyg .tox.tox-tinymce.tox-tinymce-inline {
   display: flex !important;
+}
+
+.inline-wysiwyg:not(.disabled) {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: none;
+  padding: 1px 1px 0;
+}
+
+.inline-wysiwyg:not(.disabled):hover {
+  border-width: 2px;
+  padding: 0;
+}
+
+.inline-wysiwyg.focused {
+  border-width: 2px;
+  padding: 0;
+}
+
+.inline-wysiwyg.disabled .tinymce-container {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%),
+    linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+  background-position: top, right, bottom, left;
+  background-repeat: repeat-x, repeat-y;
+  background-size: 4px 1px, 1px 4px;
 }

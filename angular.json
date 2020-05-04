@@ -3,138 +3,125 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "eav-item-dialog-angular": {
-      "root": "",
-      "sourceRoot": "src",
+    "ng-dialogs": {
       "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/ng-dialogs",
+      "sourceRoot": "projects/ng-dialogs/src",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "outputPath": "./dist/main",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "outputPath": "dist/ng-dialogs",
+            "index": "projects/ng-dialogs/src/index.html",
+            "main": "projects/ng-dialogs/src/main.ts",
+            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
+            "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
             "showCircularDependencies": false,
-            "assets": [],
+            "aot": false,
+            "assets": [
+              "projects/ng-dialogs/src/assets"
+            ],
             "styles": [
-              "src/styles.scss"
+              "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": [
-              "src/scripts/dropzone-dragging-helper.js",
-              "src/scripts/clipboard-paste/paste.js",
+              "projects/edit/assets/scripts/dropzone-dragging-helper.js",
+              "projects/edit/assets/scripts/clipboard-paste/paste.js",
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
+              },
+              {
+                "input": "node_modules/jsplumb/dist/js/jsPlumb-2.1.7-min.js"
               }
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "./"
-              ]
-            }
+            ]
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ng-dialogs/src/environments/environment.ts",
+                  "with": "projects/ng-dialogs/src/environments/environment.prod.ts"
+                }
+              ],
               "optimization": true,
-              "outputHashing": "none",
+              "outputHashing": "bundles",
               "sourceMap": true,
-              "namedChunks": false,
+              "extractCss": false,
+              "namedChunks": true,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": true,
-              "buildOptimizer": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
+              "buildOptimizer": true
             }
           }
         },
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "browserTarget": "eav-item-dialog-angular:build",
+            "browserTarget": "ng-dialogs:build",
             "publicHost": "http://localhost:4200"
           },
           "configurations": {
             "production": {
-              "browserTarget": "eav-item-dialog-angular:build:production"
+              "browserTarget": "ng-dialogs:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "eav-item-dialog-angular:build"
+            "browserTarget": "ng-dialogs:build"
           }
         },
         "test": {
           "builder": "ngx-build-plus:karma",
           "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "main": "projects/ng-dialogs/src/test.ts",
+            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
+            "tsConfig": "projects/ng-dialogs/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-dialogs/karma.conf.js",
             "assets": [
-              "src/assets"
-            ]
+              "projects/ng-dialogs/src/assets"
+            ],
+            "styles": [
+              "projects/ng-dialogs/src/styles.scss"
+            ],
+            "scripts": []
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "projects/ng-dialogs/tsconfig.app.json",
+              "projects/ng-dialogs/tsconfig.spec.json",
+              "projects/ng-dialogs/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
             ]
           }
-        }
-      }
-    },
-    "eav-item-dialog-angular-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
+        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "eav-item-dialog-angular:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "protractorConfig": "projects/ng-dialogs/e2e/protractor.conf.js",
+            "devServerTarget": "ng-dialogs:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ng-dialogs:serve:production"
+            }
           }
         }
       }
     }
   },
-  "defaultProject": "eav-item-dialog-angular",
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "app",
-      "styleext": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "app"
-    }
-  }
+  "defaultProject": "ng-dialogs"
 }

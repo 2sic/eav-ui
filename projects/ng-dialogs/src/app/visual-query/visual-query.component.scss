@@ -1,0 +1,8 @@
+.editor-side-toolbar {
+  display: flex;
+  flex-direction: column;
+
+  .spacer {
+    flex-grow: 1;
+  }
+}

@@ -1,0 +1,20 @@
+.mat-tab-body-wrapper,
+.mat-tab-body-active,
+.mat-tab-body-active .mat-tab-body-content {
+  overflow: visible !important;
+}
+
+.mat-tab-body-content {
+  @extend .hide-scrollbar;
+}
+
+.mat-tab-label-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+
+  .mat-icon {
+    margin-right: 8px;
+  }
+}

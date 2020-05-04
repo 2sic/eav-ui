@@ -1,0 +1,52 @@
+<div class="editor-active-explorer editor-fancy-scrollbar" *ngIf="queryDef">
+
+  <div class="wrapper">
+    <div class="actions">
+      <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
+        Save and run
+      </button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
+      <button mat-raised-button class="action" (click)="doRepaint()">Repaint</button>
+    </div>
+
+    <div class="parameters">
+      <div class="title">
+        <div>Parameters</div>
+        <div>
+          <button mat-icon-button matTooltip="Edit parameters" (click)="editPipeline()">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Query Params Docs" (click)="openParamsHelp()">
+            <mat-icon>info</mat-icon>
+          </button>
+        </div>
+      </div>
+      <ul class="values">
+        <li *ngFor="let param of queryDef.data.Pipeline.Params?.split('\n')">{{ param }}</li>
+      </ul>
+    </div>
+
+    <div class="parameters">
+      <div class="title">Test Parameters</div>
+      <ul class="values">
+        <li *ngFor="let param of queryDef.data.Pipeline.TestParameters?.split('\n')">{{ param }}</li>
+      </ul>
+    </div>
+
+    <div class="warnings" *ngIf="warnings.length">
+      <div class="title">
+        <span>Warnings</span>
+        <mat-icon style="color: red">warning</mat-icon>
+      </div>
+      <ol class="values">
+        <li *ngFor="let warn of warnings">{{ warn }}</li>
+      </ol>
+    </div>
+
+    <div class="description" *ngIf="queryDef.data.Pipeline.Description">
+      <div class="title">Query Description</div>
+      <div>{{ queryDef.data.Pipeline.Description }}</div>
+    </div>
+  </div>
+</div>

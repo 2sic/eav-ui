@@ -1,0 +1,35 @@
+.mat-slide-toggle {
+  margin: 6px;
+}
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  padding: 3px 0;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.list .list-item {
+  cursor: pointer;
+  padding: 4px 0 4px 24px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+}

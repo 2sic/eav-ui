@@ -1,0 +1,28 @@
+.app-info {
+  &__title {
+    font-size: 18px;
+    margin: 24px 0 0;
+    font-weight: bold;
+  }
+
+  &__content {
+    font-size: 14px;
+
+    li {
+      padding: 2px 0;
+    }
+  }
+}
+
+.options-wrapper {
+  margin: 24px 0;
+}
+
+.option-box {
+  margin: 2px 0;
+
+  &__text {
+    white-space: normal;
+    font-size: 14px;
+  }
+}

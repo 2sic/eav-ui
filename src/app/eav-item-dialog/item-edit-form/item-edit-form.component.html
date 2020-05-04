@@ -1,9 +1,0 @@
-<div *ngIf="(contentType$ | async)">
-    <!-- <button mat-icon-button (click)="deleteItem()" class="button-top-right">
-        <mat-icon class="mat-24">close</mat-icon>
-    </button> -->
-
-    <app-eav-form [config]="itemFields$ | async" (submit)="submit($event)" (formValueChange)="formValueChange($event)">
-    </app-eav-form>
-    <!-- <button mat-raised-button type="submit" class="btn btn-default submit-button" (click)="changeThis()">change</button> -->
-</div>

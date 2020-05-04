@@ -1,6 +1,8 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
+import { angularConsoleLog } from '../ng-dialogs/src/app/shared/helpers/angular-console-log';
+
 /**
  * Create a new FieldMaskService instance and access result with resolve
  * @example
@@ -75,7 +77,7 @@ export class FieldMaskService {
 
   /** Change-event - will only fire if it really changes */
   private onChange() {
-    console.log('FieldMaskService onChange called');
+    angularConsoleLog('FieldMaskService onChange called');
     const maybeNew = this.resolve();
     if (this.value !== maybeNew) {
       this.changeEvent(maybeNew);
@@ -85,7 +87,7 @@ export class FieldMaskService {
 
   /** Add watcher and execute onChange */
   private watchAllFields() {
-    console.log('FieldMaskService watchAllFields called');
+    angularConsoleLog('FieldMaskService watchAllFields called');
     // add a watch for each field in the field-mask
     this.fields.forEach(field => {
       if (!this.model[field]) { return; }

@@ -1,0 +1,47 @@
+<router-outlet></router-outlet>
+
+<div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)"
+  style="position: relative">
+  <div mat-dialog-actions class="form-header-container" [ngClass]="{
+    'u-display-none': hideHeader
+  }">
+    <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
+      [formsAreValid]="formsAreValid" [allControlsAreDisabled]="allControlsAreDisabled"
+      [isParentDialog]="isParentDialog">
+    </app-multi-item-edit-form-header>
+  </div>
+  <div style="position: relative">
+    <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+    'debug-enabled': debugEnabled,
+    'debug-info-is-open': debugInfoIsOpen,
+    'hide-header-height-fix': hideHeader
+  }">
+      <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+          <div #slideable class="mdc-layout-grid__cell--span-12">
+            <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
+              <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange($event)">
+              </app-item-edit-form>
+            </div>
+            <!-- ISDIRTY: {{formsAreDirty}} -->
+          </div>
+        </div>
+      </div>
+
+      <div dir="rtl" class="c-multi-item-dialog__save-container">
+        <div class="c-multi-item-dialog__save-button">
+          <button mat-fab class="mat-elevation-z24" dir="ltr" [ngClass]="{
+          'mat-fab--compact' : extendedSaveButtonIsReduced,
+          'mat-fab--extended' : !extendedSaveButtonIsReduced,
+          'mat-fab--disabled' : !formsAreValid && !allControlsAreDisabled
+        }" (click)="saveAll(true)" matTooltip="{{'Form.Buttons.Save.Tip' | translate }}">
+            <mat-icon>done</mat-icon>
+            {{extendedSaveButtonIsReduced ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="debugEnabled" (debugInfoOpened)="debugInfoOpened($event)">
+  </app-multi-item-edit-form-debug>
+</div>

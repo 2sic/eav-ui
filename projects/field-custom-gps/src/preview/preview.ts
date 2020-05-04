@@ -1,25 +1,34 @@
-import { EavCustomInputField } from '../../../shared/eav-custom-input-field';
+import { EavCustomInputField, Connector } from '../../../edit-types';
 import { customGpsIcons, buildTemplate, parseLatLng } from '../shared/helpers';
 import { defaultCoordinates } from '../shared/constants';
 import * as template from './preview.html';
 import * as styles from './preview.css';
+import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log';
 
-class FieldCustomGpsPreview extends EavCustomInputField<string> {
+class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
+  connector: Connector<string>;
   latContainer: HTMLSpanElement;
   lngContainer: HTMLSpanElement;
 
+  private eventListeners: ElementEventListener[];
+
   constructor() {
     super();
-    console.log('FieldCustomGpsPreview constructor called');
+    webpackConsoleLog('FieldCustomGps constructor called');
   }
 
   connectedCallback() {
-    console.log('FieldCustomGpsPreview connectedCallback called');
-    this.innerHTML = buildTemplate(template, styles);
+    webpackConsoleLog('FieldCustomGps connectedCallback called');
+    this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector('#map-icon-container');
     mapIconContainer.innerHTML = customGpsIcons.mapMarker;
     this.latContainer = this.querySelector('#lat-container');
     this.lngContainer = this.querySelector('#lng-container');
+    this.eventListeners = [];
+    const expandBound = this.expand.bind(this);
+    this.addEventListener('click', expandBound);
+    this.eventListeners.push({ element: this, type: 'click', listener: expandBound });
 
     // set initial value
     if (!this.connector.data.value) {
@@ -39,14 +48,22 @@ class FieldCustomGpsPreview extends EavCustomInputField<string> {
     });
   }
 
-  updateHtml(latLng: google.maps.LatLngLiteral) {
+  private updateHtml(latLng: google.maps.LatLngLiteral) {
     this.latContainer.innerText = latLng.lat ? latLng.lat.toString() : '';
     this.lngContainer.innerText = latLng.lng ? latLng.lng.toString() : '';
   }
 
+  private expand() {
+    this.connector.expand(true);
+  }
+
   disconnectedCallback() {
-    console.log('FieldCustomGpsPreview disconnectedCallback called');
+    webpackConsoleLog('FieldCustomGps disconnectedCallback called');
+    this.eventListeners.forEach(evListener => {
+      evListener.element.removeEventListener(evListener.type, evListener.listener);
+    });
+    this.eventListeners = null;
   }
 }
 
-customElements.define('field-custom-gps-preview', FieldCustomGpsPreview);
+customElements.define('field-custom-gps', FieldCustomGps);

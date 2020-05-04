@@ -1,0 +1,6 @@
+.mat-tooltip {
+  // ensures newline when '\n' is in the string
+  white-space: pre-line;
+  // spm NOTE: https://github.com/angular/components/issues/18139
+  background: rgba(97, 97, 97, .9);
+}

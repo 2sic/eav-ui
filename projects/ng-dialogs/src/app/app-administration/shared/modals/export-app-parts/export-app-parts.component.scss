@@ -1,0 +1,42 @@
+.edit-input {
+  padding-bottom: 8px;
+}
+
+.mat-hint {
+  font-size: 12px;
+}
+
+.content-info {
+  &__title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  &__list {
+    font-size: 14px;
+    list-style-type: none;
+  }
+
+  &__base {
+    padding: 0;
+  }
+
+  &__item {
+    border-top: 1px solid #DDD;
+    padding: 2px;
+  }
+}
+
+.option-box {
+  margin: 8px 0;
+
+  &__text {
+    white-space: normal;
+    font-size: 14px;
+  }
+}

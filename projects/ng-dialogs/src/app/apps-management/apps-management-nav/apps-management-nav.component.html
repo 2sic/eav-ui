@@ -1,0 +1,45 @@
+<div mat-dialog-title>
+  <div class="dialog-title-box">
+    <div>Manage Apps in Zone {{ zoneId }}</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
+<mat-tab-group dynamicHeight color="accent" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+  <mat-tab>
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Apps">
+      <mat-icon>star_border</mat-icon>
+      <span>Apps</span>
+    </div>
+    <app-apps-list *matTabContent></app-apps-list>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Languages">
+      <mat-icon>translate</mat-icon>
+      <span>Languages</span>
+    </div>
+    <app-enable-languages *matTabContent></app-enable-languages>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="These settings apply to all zones/portals">
+      <mat-icon>tune</mat-icon>
+      <span>Features</span>
+    </div>
+    <app-manage-features *matTabContent></app-manage-features>
+  </mat-tab>
+
+  <mat-tab>
+    <div *matTabLabel class="mat-tab-label-box" matTooltip="Insights">
+      <mat-icon>speed</mat-icon>
+      <span>2sxc Insights</span>
+    </div>
+    <app-sxc-insights *matTabContent></app-sxc-insights>
+  </mat-tab>
+</mat-tab-group>

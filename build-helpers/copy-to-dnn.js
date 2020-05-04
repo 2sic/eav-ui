@@ -5,15 +5,15 @@ const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
 
-const sourcePath = 'dist';
-const sourcePathMain = 'dist/main';
-const outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+let sourcePath = 'dist';
+let sourcePathMain = 'dist/ng-dialogs';
+let outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
 const excludeDirs = [
   'out-tsc',
 ];
-const args = process.argv.slice(2);
-let watchEnabled = false;
 
+let watchEnabled = false;
+const args = process.argv.slice(2);
 args.forEach((val, index) => {
   // console.log(`${index}: ${val}`);
   if (val === '--watch') {

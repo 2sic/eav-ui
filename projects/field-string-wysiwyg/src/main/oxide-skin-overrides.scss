@@ -5,7 +5,7 @@
   and custom selectors and properties are pointed out.
 */
 
-@import "../../../../src/styles/theme/material-colors.scss";
+@import "../../../edit/assets/styles/theme/material-colors.scss";
 
 $tmce-border: none !important; // removes 1px border from tinymce to better fit into expandable window
 // $tmce-toolbar-border-top: none !important; // removes border between toolbar and menubar
