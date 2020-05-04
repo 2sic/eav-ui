@@ -74,7 +74,12 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
   };
   modules = AllCommunityModules;
-  gridOptions: GridOptions = {};
+  gridOptions: GridOptions = {
+    getRowClass(params: any) {
+      const field: Field = params.data;
+      return field.InputType === InputTypesConstants.emptyDefault ? 'group-row' : '';
+    }
+  };
 
   private sortApplied = false;
   private filterApplied = false;
@@ -94,10 +99,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    this.gridOptions.getRowClass = (params: any) => {
-      const field: Field = params.data;
-      return field.InputType === InputTypesConstants.emptyDefault ? 'group-row' : '';
-    };
   }
 
   async ngOnInit() {
