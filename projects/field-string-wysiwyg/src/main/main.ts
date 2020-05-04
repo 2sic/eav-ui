@@ -171,10 +171,10 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
       this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
       this.subscriptions = [];
     }
-    if (this.editorContent !== null) {
+    if (this.editorContent != null) {
       this.editorContent = null;
     }
-    if (this.observer !== null) {
+    if (this.observer != null) {
       this.observer.disconnect();
       this.observer = null;
     }
