@@ -24,6 +24,7 @@ import { EntityQueryComponent } from '../../../eav-material-controls/input-types
 import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
 import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
 
 @Directive({
   selector: '[appEavField]'
@@ -44,6 +45,7 @@ export class EavFieldDirective implements OnInit {
     'app-hyperlink-default-expandable-wrapper': HyperlinkDefaultExpandableWrapperComponent,
     'app-hyperlink-library-expandable-wrapper': HyperlinkLibraryExpandableWrapperComponent,
     'boolean-default': BooleanDefaultComponent,
+    'boolean-tristate': BooleanTristateComponent,
     'custom-default': CustomDefaultComponent,
     'datetime-default': DatetimeDefaultComponent,
     'empty-default': EmptyDefaultComponent,

@@ -29,6 +29,7 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { CollapsibleWrapperComponent } from './wrappers';
 import {
   BooleanDefaultComponent,
+  BooleanTristateComponent,
   DatetimeDefaultComponent,
   EntityDefaultComponent,
   EmptyDefaultComponent,
@@ -95,6 +96,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     StringFontIconPickerComponent,
     StringTemplatePickerComponent,
     BooleanDefaultComponent,
+    BooleanTristateComponent,
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
@@ -168,6 +170,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
   ],
   entryComponents: [
     BooleanDefaultComponent,
+    BooleanTristateComponent,
     CollapsibleWrapperComponent,
     DatetimeDefaultComponent,
     AdamAttachWrapperComponent,
