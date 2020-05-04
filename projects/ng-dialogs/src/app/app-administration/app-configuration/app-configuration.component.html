@@ -1,0 +1,100 @@
+<div class="cards-box">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>App Settings</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Edit app settings" (click)="edit(eavConstants.contentTypes.settings)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Configure app settings"
+          (click)="config(eavConstants.contentTypes.settings)">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Settings are configurations used by the app - like SQL-connection strings, default "items-to-show" numbers and
+      things like that. They can also be multi-language, so that a setting (like default RSS-Feed) could be different in
+      each language.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>App Resources</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Edit app resources" (click)="edit(eavConstants.contentTypes.resources)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Configure app resources"
+          (click)="config(eavConstants.contentTypes.resources)">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Resources are used for labels and things like that in the App. They are usually needed to create multi-lingual
+      views and such, and should not be used for App-Settings.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>App Package Definition</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Edit app definition" (click)="edit(eavConstants.scopes.app.value)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      The app-package definition is important when exporting/importing this app.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="showPermissions" class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>App Permissions</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Edit permissions" (click)="openPermissions()">
+          <mat-icon>person</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Permissions give access to people to the entire app (all content-types / data), so use with care.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Export this entire App</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Export" (click)="exportApp()">
+          <mat-icon>cloud_download</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Create an app-package (zip) which can be installed in another portal.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Export or Import parts of this App</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Export" (click)="exportParts()">
+          <mat-icon>cloud_download</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Import" (click)="importParts()">
+          <mat-icon>cloud_upload</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Create an xml containing parts of the app, e.g. content and templates.
+      Import parts from such an xml into this app.
+    </mat-card-content>
+  </mat-card>
+</div>

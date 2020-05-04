@@ -1,0 +1,19 @@
+.hint-box {
+  margin-top: 4px;
+
+  .mat-hint,
+  .mat-error {
+    font-size: 12px;
+    display: block;
+  }
+
+  &__short {
+
+    .mat-hint,
+    .mat-error {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

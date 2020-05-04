@@ -1,0 +1,78 @@
+.edit-input {
+  background-color: white;
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.set-dropdown {
+  font-size: 14px;
+  height: auto;
+}
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  padding: 3px 0;
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
+
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.list {
+  list-style-type: none;
+  margin: 0;
+  user-select: none;
+  padding: 0;
+
+  .list-item {
+    padding-right: 8px;
+
+    &:hover {
+      background-color: rgb(42, 45, 46);
+    }
+
+    &__label-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .label {
+      cursor: pointer;
+      padding: 3px 0 3px 24px;
+      flex: 1 1 auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .mat-icon {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+    }
+
+    &__help-wrapper {
+      padding: 3px 18px 3px 24px;
+      user-select: text;
+
+      .text {
+        font-size: 12px;
+        font-style: oblique;
+      }
+    }
+  }
+}

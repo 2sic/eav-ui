@@ -1,0 +1,141 @@
+@import "../../../../assets/styles/variables.scss";
+
+%field-border {
+  padding: 0 0 1px 0;
+  border-bottom: 1px solid $field-border-color--initial;
+}
+
+%field-border--hover {
+  padding: 0;
+  border-bottom: 2px solid $field-border-color--hover;
+  transition: none;
+}
+
+%field-border--disabled {
+  border: none;
+  cursor: default;
+  padding: 0 0 2px 0;
+  background-image: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
+  background-position: bottom;
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+}
+
+$label-top: 12px;
+
+.cursor-move {
+  cursor: move;
+}
+
+.dnd-element {
+  position: relative;
+  height: 30px;
+
+  @extend %field-border;
+
+  &:hover:not(.dnd-element--disabled) {
+    @extend %field-border--hover;
+  }
+
+  &.first {
+    height: 40px;
+    margin-top: calc(#{$label-top} + 12px);
+  }
+
+  .mat-caption {
+    background-color: white;
+    position: absolute;
+    top: -$label-top;
+    z-index: 1;
+    pointer-events: none;
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+
+.dnd-element-multi {
+  position: relative;
+  height: 56px;
+  background: white;
+  border-radius: 32px;
+  border: 1px solid $field-border-color--initial;
+  margin: 4px 0 4px 0;
+  padding: 0 16px 0 16px;
+}
+
+.dnd-element-content {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: -4px;
+}
+
+.dnd-element-content mat-label {
+  color: rgba($editUI-foreground-color, 0.44);
+}
+
+.dnd-element-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.dnd-buttons {
+  display: flex;
+  margin-bottom: -4px;
+
+  .mat-icon-button {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+}
+
+.dnd-element--disabled {
+  @extend %field-border--disabled;
+
+  .dnd-element-text {
+    color: $editUI-label-disabled-color;
+  }
+
+  .dnd-element-content mat-label,
+  .dnd-element-content mat-icon {
+    color: $editUI-label-disabled-color;
+  }
+}
+
+.dnd-space {
+  height: 32px;
+}
+
+.dnd-box {
+  flex-direction: row;
+  box-sizing: border-box;
+  display: flex;
+  place-content: center flex-start;
+  align-items: center;
+}
+
+// drag and drop
+.cdk-drag-preview {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dnd-list.cdk-drop-list-dragging .dnd-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

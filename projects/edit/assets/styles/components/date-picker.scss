@@ -1,0 +1,93 @@
+@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+@import "../variables";
+
+.date-picker-wide-suffix-right .mat-form-field-suffix {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.date-picker-wide-suffix-right .mat-input-element {
+  box-sizing: border-box;
+  padding-right: 30px;
+}
+
+// owl date picker overrides to look more like material date picker
+owl-date-time-container {
+  $font-family: Roboto, "Helvetica Neue", sans-serif;
+  $calendar-height: 21em;
+  $header-font-size: 14px;
+  $header-padding: 1em;
+  $footer-font-size: 14px;
+  $weekday-font-size: 11px;
+  $weekday-padding: 0 0 8px;
+  $calendar-main-font-size: 13px;
+  $arrows-color: rgba(29, 39, 61, 0.54);
+
+  font-family: $font-family !important;
+
+  owl-date-time-calendar {
+    height: $calendar-height !important;
+
+    // header
+    .owl-dt-calendar-control {
+      padding: $header-padding;
+
+      .owl-dt-control-arrow-button svg,
+      .owl-dt-control-button-arrow svg {
+        fill: $arrows-color;
+      }
+
+      .owl-dt-control-period-button {
+        color: $editUI-foreground-color;
+        text-transform: uppercase;
+        font-size: $header-font-size;
+        font-family: $font-family;
+      }
+    }
+
+    // calendar main
+    .owl-dt-calendar-main {
+      .owl-dt-weekday {
+        font-size: $weekday-font-size !important;
+        padding: $weekday-padding !important;
+      }
+
+      .owl-dt-calendar-cell-content {
+        font-size: $calendar-main-font-size;
+        line-height: $calendar-main-font-size;
+        color: $editUI-foreground-color;
+      }
+
+      .owl-dt-calendar-cell-selected {
+        color: white;
+        background-color: $owl-calendar-date-selected-color;
+      }
+    }
+  }
+
+  // timer
+  owl-date-time-timer {
+    .owl-dt-timer-input {
+      color: $editUI-foreground-color;
+    }
+
+    .owl-dt-timer-divider {
+      color: $editUI-foreground-color;
+    }
+
+    .owl-dt-control-arrow-button svg {
+      fill: $arrows-color;
+    }
+  }
+
+  // footer
+  .owl-dt-container-buttons {
+    .owl-dt-control-content {
+      color: $owl-calendar-date-selected-color;
+      text-transform: uppercase;
+      font-size: $footer-font-size;
+      font-family: $font-family;
+    }
+  }
+}

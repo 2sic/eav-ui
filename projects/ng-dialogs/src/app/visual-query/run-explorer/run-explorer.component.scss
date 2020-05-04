@@ -1,0 +1,43 @@
+.wrapper {
+  padding: 24px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
+
+  .action:not(:last-of-type) {
+    margin-bottom: 8px;
+  }
+}
+
+.parameters,
+.warnings,
+.description {
+  margin: 16px 0;
+
+  .title {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+
+    .mat-icon {
+      user-select: none;
+    }
+  }
+}
+
+.parameters,
+.warnings {
+  .values {
+    margin: 0;
+    padding-left: 16px;
+
+    li {
+      padding: 1px 0;
+    }
+  }
+}

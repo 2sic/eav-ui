@@ -3,16 +3,16 @@ const pjson = require('../package.json');
 const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
-async function buildHtml(name) {
-  const htmlSourcePath = './src/' + name + '.html';
-  const htmlOutputPath = './dist/' + name + '.html';
+function buildHtml(name) {
+  let htmlSourcePath = './projects/ng-dialogs/src/' + name + '.html';
+  let htmlOutputPath = './dist/' + name + '.html';
 
-  await fs.remove(htmlOutputPath);
+  fs.removeSync(htmlOutputPath);
 
-  const sourceHtml = await fs.readFile(htmlSourcePath, 'utf8');
+  const sourceHtml = fs.readFileSync(htmlSourcePath, 'utf8');
   const outputHtml = sourceHtml.replace(/SXC_VER/g, `${pjson.version}.${randomIntFromInterval(10000, 99999)}`);
 
-  await fs.writeFile(htmlOutputPath, outputHtml, 'utf8');
+  fs.writeFileSync(htmlOutputPath, outputHtml, 'utf8');
   console.log(chalkSuccess('Build ' + name + '.html success!'));
 }
 buildHtml('ui');

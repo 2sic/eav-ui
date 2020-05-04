@@ -1,0 +1,104 @@
+@import "../../../assets/styles/variables.scss";
+@import "../../../assets/styles/theme/material-colors.scss";
+
+$hyperlink-default-height: 78px;
+
+.c-ew__preview {
+    padding-top: 12px;
+
+    &-field {
+        &--short {
+            // spm width 1% is required. Otherwise field breaks
+            width: 1%;
+            padding: 0;
+            padding-left: 8px;
+            margin-top: -4px;
+        }
+
+        &-hint {
+            color: rgba($editUI-foreground-color, 0.44);
+            font-size: 12px;
+        }
+    }
+
+    &--disabled {
+        .c-ew__preview-field-hint {
+            color: $editUI-label-disabled-color;
+        }
+    }
+
+    .thumbnail-before-input {
+        background-color: rgba($editUI-foreground-color, 0.08);
+        width: $hyperlink-default-height;
+        height: $hyperlink-default-height;
+        border-radius: $edit-ui-input-border-radius;
+        border: 1px solid $field-border-color--disabled;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &.icon-before-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .mat-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 56px;
+                line-height: 56px;
+                color: rgba($editUI-foreground-color, 0.44);
+            }
+        }
+
+        &--disabled {
+            cursor: default;
+
+            .c-ew__preview-field-hint {
+                color: $editUI-label-disabled-color;
+            }
+        }
+    }
+
+    &-suffix-text {
+        font-size: 12px;
+        line-height: 14px;
+        color: map_get($mat-eav-item-dialog-secondary, 300);
+        user-select: none;
+        cursor: text;
+
+        &--disabled {
+            color: $editUI-label-disabled-color;
+        }
+    }
+
+    @media (min-width: 601px) {
+        &-suffix-icon {
+            top: 0 !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        &-suffix-icon {
+            top: 10px !important;
+        }
+    }
+}
+
+.c__helper-wrapper {
+    display: flex;
+    width: 100%;
+
+    &--left {
+        flex: auto;
+        // spm width 1% is required. Otherwise field breaks
+        width: 1%;
+    }
+
+    &--right {
+        flex: 0 0 auto;
+        padding-top: 0.54166667em;
+        padding-left: 12px;
+        line-height: 16px;
+    }
+}

@@ -1,0 +1,87 @@
+// Styles for code editor and visual query
+
+.editor-root {
+  position: relative;
+  height: 100vh;
+  display: flex;
+}
+
+.editor-side-toolbar {
+  background-color: rgb(51, 51, 51);
+
+  .button {
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    color: rgb(133, 133, 133);
+
+    &:hover {
+      color: white;
+    }
+
+    &.active {
+      border-left: 1px solid white;
+      color: white;
+    }
+  }
+}
+
+.editor-active-explorer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden auto;
+  font-size: 13px;
+  background-color: #252526;
+  color: #ccc;
+  width: 300px;
+
+  /* unvisited link */
+  a:link {
+    color: white;
+  }
+
+  /* visited link */
+  a:visited {
+    color: white;
+  }
+
+  /* mouse over link */
+  a:hover {
+    color: white;
+  }
+
+  /* selected link */
+  a:active {
+    color: white;
+  }
+}
+
+.editor-fancy-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(119, 119, 120);
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(119, 119, 120);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgb(32, 32, 37);
+  }
+}

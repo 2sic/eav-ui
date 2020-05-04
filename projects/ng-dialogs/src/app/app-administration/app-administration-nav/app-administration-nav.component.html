@@ -1,0 +1,65 @@
+<div (click)="toggleDebugEnabled($event)">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Administration</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
+  <mat-tab-group dynamicHeight color="accent" *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)"
+    [selectedIndex]="tabIndex">
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Getting Started">
+        <mat-icon>info</mat-icon>
+        <span>Info</span>
+      </div>
+      <app-getting-started [gettingStartedUrl]="dialogSettings.GettingStartedUrl">
+      </app-getting-started>
+    </mat-tab>
+
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Content">
+        <mat-icon>menu</mat-icon>
+        <span>Data</span>
+      </div>
+      <app-data *matTabContent></app-data>
+    </mat-tab>
+
+    <mat-tab *ngIf="!dialogSettings.IsContent">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Query Designer">
+        <mat-icon>filter_list</mat-icon>
+        <span>Queries</span>
+      </div>
+      <app-queries *matTabContent></app-queries>
+    </mat-tab>
+
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Views / Templates">
+        <mat-icon>layers</mat-icon>
+        <span>Views</span>
+      </div>
+      <app-views *matTabContent></app-views>
+    </mat-tab>
+
+    <mat-tab *ngIf="!dialogSettings.IsContent">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="WebApi / Data">
+        <mat-icon>offline_bolt</mat-icon>
+        <span>WebApi</span>
+      </div>
+      <app-web-api *matTabContent></app-web-api>
+    </mat-tab>
+
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="App Settings">
+        <mat-icon>settings_applications</mat-icon>
+        <span>App</span>
+      </div>
+      <app-app-configuration *matTabContent></app-app-configuration>
+    </mat-tab>
+  </mat-tab-group>
+</div>

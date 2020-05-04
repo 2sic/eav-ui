@@ -1,0 +1,22 @@
+<div class="grid-wrapper-nav">
+  <ag-grid-angular class="ag-theme-material" [rowData]="views" [columnDefs]="columnDefs" [modules]="modules"
+    [frameworkComponents]="frameworkComponents" [enableCellTextSelection]="true" [suppressScrollOnNewData]="true"
+    [animateRows]="true" [accentedSort]="true" [valueCache]="true" [headerHeight]="32">
+  </ag-grid-angular>
+
+  <div>
+    <button mat-button matTooltip="Configure Polymorphism" (click)="editPolymorphisms()">
+      <!-- todo: would be nice if we had a raw-loader to include the right logo <img src="polymorph-logo.png"> -->
+      <mat-icon>layers</mat-icon>
+      Polymorphism
+      {{ polymorphism?.Id === null
+        ? "not configured"
+        : ( polymorphism.Resolver === null ? "disabled" : "using " + polymorphism.Resolver )
+      }}
+    </button>
+  </div>
+
+  <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new view" (click)="editView(null)">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

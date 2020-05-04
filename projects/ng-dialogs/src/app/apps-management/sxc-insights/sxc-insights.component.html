@@ -1,0 +1,46 @@
+<div class="cards-box">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>2sxc Insights for Super Users</mat-card-title>
+      <div class="actions-box">
+        <button mat-icon-button matTooltip="Open 2sxc Insights" (click)="openInsights()">
+          <mat-icon>speed</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      This is to access a special section to see what is really in the server memory. It's intended for extensive
+      debugging
+      - see also <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Activate Page Level Logging</mat-card-title>
+      <div class="actions-box"></div>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        This will place insights-logs in the HTML of the user output for users with ?debug=true in the url. It can only
+        be activated for short periods of time.
+      </div>
+      <div class="activate-log-form">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Duration in Minutes</mat-label>
+          <input matInput type="number" min="0" [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
+            name="Duration" #duration='ngModel'>
+        </mat-form-field>
+        <ng-container *ngIf="duration.touched && duration.errors">
+          <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">Only positive whole numbers</app-field-hint>
+        </ng-container>
+        <div class="actions">
+          <button mat-raised-button color="accent" (click)="activatePageLog()"
+            [disabled]="actionsDiabled || !pageLogDuration || pageLogDuration < 0">
+            Activate
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

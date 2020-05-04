@@ -1,0 +1,41 @@
+.field-label {
+  font-size: 18px;
+  margin: 24px 0 0;
+}
+
+.mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0;
+}
+
+.mat-radio-button {
+  margin: 5px;
+  font-size: 14px;
+}
+
+.hint {
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.progress-message {
+  font-size: 18px;
+}
+
+.evaluation {
+  &__title {
+    font-size: 18px;
+    margin: 24px 0 0;
+    font-weight: bold;
+  }
+
+  &__content {
+    font-size: 14px;
+
+    li {
+      padding: 2px 0;
+    }
+  }
+}
