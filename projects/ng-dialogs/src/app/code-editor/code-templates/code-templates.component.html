@@ -1,28 +1,35 @@
-<div class="editor-active-explorer editor-fancy-scrollbar">
+<div class="editor-active-explorer editor-fancy-scrollbar explorer-wrapper">
 
-  <ng-container *ngFor="let item of tree">
-    <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
-  </ng-container>
-
-  <ng-template #collapsible let-item="item">
-
-    <div class="template-option" [ngClass]="{'active': toggledItems.includes(item) }" *ngIf="!item.children"
-      matTooltipShowDelay="750" [matTooltip]="item.name" (click)="openTemplate(item.pathFromRoot)">
-      {{ item.name }}
-    </div>
-
-    <div class="collapsible" *ngIf="item.children" matTooltipShowDelay="750" [matTooltip]="item.name"
-      (click)="toggleItem(item)">
-      <mat-icon>{{ toggledItems.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-      <span>{{ item.name }}</span>
-    </div>
-
-    <ng-container *ngIf="toggledItems.includes(item)">
-      <div class="list" *ngFor="let item1 of item.children">
-        <ng-container *ngTemplateOutlet="collapsible; context: {item: item1}"></ng-container>
-      </div>
+  <div>
+    <ng-container *ngFor="let item of tree">
+      <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
     </ng-container>
 
-  </ng-template>
+    <ng-template #collapsible let-item="item">
 
+      <div class="template-option" [ngClass]="{'active': toggledItems.includes(item) }" *ngIf="!item.children"
+        matTooltipShowDelay="750" [matTooltip]="item.name" (click)="openTemplate(item.pathFromRoot)">
+        {{ item.name }}
+      </div>
+
+      <div class="collapsible" *ngIf="item.children" matTooltipShowDelay="750" [matTooltip]="item.name"
+        (click)="toggleItem(item)">
+        <mat-icon>{{ toggledItems.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
+        <span>{{ item.name }}</span>
+      </div>
+
+      <ng-container *ngIf="toggledItems.includes(item)">
+        <div class="list" *ngFor="let item1 of item.children">
+          <ng-container *ngTemplateOutlet="collapsible; context: {item: item1}"></ng-container>
+        </div>
+      </ng-container>
+
+    </ng-template>
+  </div>
+
+  <div class="create-button-wrapper">
+    <button mat-icon-button matTooltip="Create file" (click)="addFile()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>

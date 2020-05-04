@@ -1,3 +1,14 @@
+.explorer-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.create-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .template-option {
   cursor: pointer;
   padding: 4px 0 4px 8px;

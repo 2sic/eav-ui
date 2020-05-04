@@ -10,7 +10,8 @@
     </div>
   </div>
 
-  <app-code-templates [hidden]="activeExplorer !== explorer.templates" [view]="view" [templates]="templates">
+  <app-code-templates [hidden]="activeExplorer !== explorer.templates" [view]="view" [templates]="templates"
+    (createTemplate)="createTemplate()">
   </app-code-templates>
   <app-code-snippets [hidden]="activeExplorer !== explorer.snippets" [snippets]="explorerSnipps"
     (insertSnippet)="changeInsertSnipp($event)">

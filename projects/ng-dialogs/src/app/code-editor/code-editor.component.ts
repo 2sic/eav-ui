@@ -14,6 +14,7 @@ import { share } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { SnackbarStack } from '../shared/snackbar/snackbar-stack';
 import { DialogService } from '../shared/services/dialog.service';
+import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
 @Component({
   selector: 'app-code-editor',
@@ -46,6 +47,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private titleService: Title,
     private dialogService: DialogService,
+    private sanitizeService: SanitizeService,
   ) {
     this.context.init(this.route);
     this.calculateViewKey();
@@ -111,6 +113,18 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     } else {
       this.activeExplorer = explorer;
     }
+  }
+
+  createTemplate() {
+    let name = prompt('File name:', '_MyFile.cshtml');
+    if (name === null || name.length === 0) { return; }
+
+    name = this.sanitizeService.sanitizeName(name);
+    this.sourceService.createTemplate(name).subscribe(res => {
+      this.sourceService.getTemplates().subscribe(files => {
+        this.templates = files;
+      });
+    });
   }
 
   changeInsertSnipp(snippet: any) {

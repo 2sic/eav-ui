@@ -48,6 +48,12 @@ export class SourceService {
     }) as Observable<string[]>;
   }
 
+  createTemplate(name: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'), {}, {
+      params: { appId: this.context.appId.toString(), global: 'false', path: name },
+    }) as Observable<boolean>;
+  }
+
   private calcParams(key: number | string) {
     if (typeof key === typeof 0) {
       return { templateId: key.toString() };

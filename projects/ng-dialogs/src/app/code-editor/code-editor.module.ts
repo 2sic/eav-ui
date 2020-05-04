@@ -20,6 +20,7 @@ import { SnippetsService } from './services/snippets.service';
 import { ToArrayPipe } from './code-snippets/toarray.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
+import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { AceEditorComponent } from './ace-editor/ace-editor.component';
     SourceService,
     DialogService,
     SnippetsService,
+    SanitizeService,
   ]
 })
 export class CodeEditorModule { }

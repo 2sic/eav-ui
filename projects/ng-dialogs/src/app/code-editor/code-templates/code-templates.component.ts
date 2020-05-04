@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 import { SourceView } from '../models/source-view.model';
 import { EditForm } from '../../app-administration/shared/models/edit-form.model';
@@ -15,6 +15,7 @@ import { TreeItem } from '../models/tree-item.model';
 export class CodeTemplatesComponent implements OnInit, OnChanges {
   @Input() view: SourceView;
   @Input() templates: string[];
+  @Output() createTemplate: EventEmitter<null> = new EventEmitter();
   tree: TreeItem[];
   toggledItems: TreeItem[] = [];
 
@@ -44,6 +45,10 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
 
   toggleItem(item: TreeItem) {
     toggleInArray(item, this.toggledItems);
+  }
+
+  addFile() {
+    this.createTemplate.emit();
   }
 
 }
