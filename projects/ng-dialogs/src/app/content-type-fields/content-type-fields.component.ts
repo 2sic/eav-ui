@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams, GridOptions } from '@ag-grid-community/all-modules';
 
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
@@ -19,6 +19,7 @@ import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/conten
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './models/content-type-fields-actions-params';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
+import { InputTypesConstants } from '../../../../edit/shared/constants/input-types-constants';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -74,6 +75,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   };
   modules = AllCommunityModules;
 
+  gridOptions: GridOptions;
+
   private sortApplied = false;
   private filterApplied = false;
   private rowDragSuppressed = false;
@@ -92,6 +95,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+    this.gridOptions = {
+      context: {
+        componentParent: this,
+      }
+    };
+    this.gridOptions.getRowClass = (params: any) => {
+      const field: Field = params.data;
+      return field.InputType === InputTypesConstants.emptyDefault ? 'group-row' : '';
+    };
   }
 
   async ngOnInit() {
