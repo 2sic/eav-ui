@@ -14,6 +14,7 @@ import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-entity-default-main-search',
@@ -71,6 +72,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     private globalConfigurationService: GlobalConfigurationService,
     private router: Router,
     private route: ActivatedRoute,
+    private expandableFieldService: ExpandableFieldService,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
   }
@@ -136,7 +138,7 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: contentTypeName }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.expandableFieldService.openWithUpdate(this.config.field.index, form);
   }
 
   private setData() {
@@ -199,15 +201,23 @@ export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
-          // spm TODO: Add entity for template picker and other not expanded fields
           const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
-          if (expandedFieldId !== this.config.field.index.toString()) { return; }
+          const updateFieldId = this.route.snapshot.paramMap.get('updateFieldId');
+          const thisId = this.config.field.index.toString();
+
+          if (expandedFieldId != null && expandedFieldId !== thisId) { return; }
+          if (updateFieldId != null && updateFieldId !== thisId) { return; }
+
           const navigation = this.router.getCurrentNavigation();
           const editResult = navigation.extras?.state;
           if (editResult) {
             this.addEntity(Object.keys(editResult)[0]);
           }
           this.setData();
+
+          if (updateFieldId != null && updateFieldId === thisId) {
+            this.expandableFieldService.openWithUpdate(this.config.field.index, null);
+          }
         }
       })
     );
