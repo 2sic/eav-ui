@@ -9,7 +9,7 @@ import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',

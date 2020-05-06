@@ -14,7 +14,7 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

@@ -2,7 +2,7 @@ import { EavValues } from './eav-values';
 import { Attributes1 } from '../json-format-v1/attributes1';
 import { EavValue } from './eav-value';
 import { EavEntity } from './eav-entity';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export class EavAttributes {
   [key: string]: EavValues<any>;

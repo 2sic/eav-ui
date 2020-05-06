@@ -1,7 +1,7 @@
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Injectable()
 export class ValidationMessagesService {

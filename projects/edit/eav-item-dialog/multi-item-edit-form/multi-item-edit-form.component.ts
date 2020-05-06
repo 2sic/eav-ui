@@ -35,7 +35,7 @@ import { ElementEventListener } from '../../../shared/element-event-listener-mod
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-multi-item-edit-form',

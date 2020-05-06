@@ -8,7 +8,7 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { Language } from '../../../shared/models/eav';
 import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-link-to-other-language',

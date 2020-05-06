@@ -8,7 +8,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { CustomValidators } from '../../../validators/custom-validators';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

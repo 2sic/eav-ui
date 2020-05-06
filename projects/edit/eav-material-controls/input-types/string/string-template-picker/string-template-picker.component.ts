@@ -10,7 +10,7 @@ import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-ass
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';
 import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

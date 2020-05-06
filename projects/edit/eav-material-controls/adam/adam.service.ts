@@ -9,7 +9,7 @@ import { AdamItem } from '../../shared/models/adam/adam-item';
 import { EavService } from '../../shared/services/eav.service';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { SanitizeService } from './sanitize.service';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Injectable()
 export class AdamService {

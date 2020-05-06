@@ -8,7 +8,7 @@ import { defaultCoordinates, mapsParameters } from '../shared/constants';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { FieldMaskService } from '../../../shared/field-mask.service';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;

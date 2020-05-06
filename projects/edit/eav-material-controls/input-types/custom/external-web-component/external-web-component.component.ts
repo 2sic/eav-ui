@@ -9,7 +9,7 @@ import { InputType as InputTypeModel } from '../../../../shared/models/eav';
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

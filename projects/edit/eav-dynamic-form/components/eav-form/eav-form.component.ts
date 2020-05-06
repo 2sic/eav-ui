@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-eav-form',

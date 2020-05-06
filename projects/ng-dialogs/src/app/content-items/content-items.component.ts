@@ -25,7 +25,7 @@ import { BooleanFilterComponent } from '../shared/components/boolean-filter/bool
 import { keyFilters } from '../shared/constants/sessions-keys';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-content-items',
