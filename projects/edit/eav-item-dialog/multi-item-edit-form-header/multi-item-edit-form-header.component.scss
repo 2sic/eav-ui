@@ -21,13 +21,13 @@
     height: 30px;
     flex-shrink: 0;
     line-height: 30px;
-  }
 
-  &__exit-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    line-height: 16px !important;
+    .mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px !important;
+    }
   }
 
   &__langs {
