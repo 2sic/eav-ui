@@ -18,7 +18,7 @@ import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub
 import { ExtendedColDef } from './models/extended-col-def.model';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsActionsParams } from './models/content-items-actions-params';
+import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions-params';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';

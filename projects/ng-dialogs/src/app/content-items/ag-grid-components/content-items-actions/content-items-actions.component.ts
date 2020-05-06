@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentItemsActionsParams } from '../../models/content-items-actions-params';
+import { ContentItemsActionsParams } from './content-items-actions-params';
 import { ContentItem } from '../../models/content-item.model';
 
 @Component({
