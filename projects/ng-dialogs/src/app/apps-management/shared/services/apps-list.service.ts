@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../../shared/services/context';
-import { App } from '../../../shared/models/app.model';
+import { App } from '../models/app.model';
 
 @Injectable()
 export class AppsListService {

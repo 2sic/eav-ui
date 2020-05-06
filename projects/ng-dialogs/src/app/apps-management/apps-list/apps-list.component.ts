@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { App } from '../../shared/models/app.model';
+import { App } from '../shared/models/app.model';
 import { AppsListService } from '../shared/services/apps-list.service';
 import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';

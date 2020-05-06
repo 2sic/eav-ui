@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { App } from '../../../../shared/models/app.model';
+import { App } from '../../models/app.model';
 import { AppsListActionsParams } from '../../models/apps-list-actions-params.model';
 
 @Component({
