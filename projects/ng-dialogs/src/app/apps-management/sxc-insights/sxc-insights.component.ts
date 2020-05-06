@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { SxcInsightsService } from '../shared/services/sxc-insights.service';
+import { SxcInsightsService } from '../services/sxc-insights.service';
 
 @Component({
   selector: 'app-sxc-insights',

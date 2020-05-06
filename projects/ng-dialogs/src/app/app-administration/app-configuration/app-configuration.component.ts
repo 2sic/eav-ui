@@ -3,9 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm } from '../models/edit-form.model';
 import { Context } from '../../shared/services/context';
-import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-app-configuration',

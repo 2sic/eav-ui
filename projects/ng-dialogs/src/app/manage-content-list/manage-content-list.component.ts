@@ -7,7 +7,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentGroupService } from './services/content-group.service';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../app-administration/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 

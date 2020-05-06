@@ -4,7 +4,7 @@ import { MatSelectChange } from '@angular/material/select';
 
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
-import { eavConstants, EavScopeOption, EavScopesKey } from '../../../../shared/constants/eav.constants';
+import { eavConstants, EavScopeOption, EavScopesKey } from '../../../shared/constants/eav.constants';
 
 @Component({
   selector: 'app-export-app-parts',

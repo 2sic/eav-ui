@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
 import { ContentImportService } from '../../services/content-import.service';
-import { keyLangPri } from '../../../../shared/constants/session.constants';
+import { keyLangPri } from '../../../shared/constants/session.constants';
 
 @Component({
   selector: 'app-content-import',

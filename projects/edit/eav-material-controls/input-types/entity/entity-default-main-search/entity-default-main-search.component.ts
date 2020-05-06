@@ -13,7 +13,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/models/edit-form.model';
 import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
 
 @Component({

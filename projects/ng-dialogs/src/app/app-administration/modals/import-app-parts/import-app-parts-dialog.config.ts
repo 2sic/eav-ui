@@ -1,4 +1,4 @@
-import { DialogConfig } from '../../../../shared/models/dialog-config.model';
+import { DialogConfig } from '../../../shared/models/dialog-config.model';
 
 export const importAppPartsDialog: DialogConfig = {
   name: 'IMPORT_APP_PARTS',

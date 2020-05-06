@@ -13,7 +13,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
-import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/models/edit-form.model';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({

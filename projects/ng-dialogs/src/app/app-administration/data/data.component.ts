@@ -6,16 +6,16 @@ import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ContentType } from '../shared/models/content-type.model';
-import { ContentTypesService } from '../shared/services/content-types.service';
-import { DataItemsComponent } from '../shared/ag-grid-components/data-items/data-items.component';
-import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
-import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
+import { ContentType } from '../models/content-type.model';
+import { ContentTypesService } from '../services/content-types.service';
+import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
+import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav.constants';
-import { DataActionsParams } from '../shared/models/data-actions-params';
-import { EditForm } from '../shared/models/edit-form.model';
+import { DataActionsParams } from '../models/data-actions-params';
+import { EditForm } from '../models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
-import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 
 @Component({

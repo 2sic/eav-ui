@@ -5,12 +5,12 @@ import { filter } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { App } from '../shared/models/app.model';
-import { AppsListService } from '../shared/services/apps-list.service';
-import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
-import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { appNamePattern, appNameError } from '../shared/constants/app.patterns';
+import { App } from '../models/app.model';
+import { AppsListService } from '../services/apps-list.service';
+import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
+import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListActionsParams } from '../models/apps-list-actions-params.model';
+import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 

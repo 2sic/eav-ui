@@ -2,14 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { AllCommunityModules, ColDef, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { Feature } from '../shared/models/feature.model';
-import { FeaturesListEnabledComponent } from '../shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesListUiComponent } from '../shared/ag-grid-components/features-list-ui/features-list-ui.component';
-import { FeaturesListPublicComponent } from '../shared/ag-grid-components/features-list-public/features-list-public.component';
-import { FeaturesListSecurityComponent } from '../shared/ag-grid-components/features-list-security/features-list-security.component';
-import { FeaturesConfigService } from '../shared/services/features-config.service';
+import { Feature } from '../models/feature.model';
+import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
+import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
+import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
+import { FeaturesConfigService } from '../services/features-config.service';
 import { ElementEventListener } from '../../../../../shared/element-event-listener.model';
-import { ManageFeaturesMessageData } from '../shared/models/manage-features-message-data.model';
+import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 

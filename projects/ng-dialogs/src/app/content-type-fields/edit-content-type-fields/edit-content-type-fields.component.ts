@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ContentTypesService } from '../../app-administration/shared/services/content-types.service';
+import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
-import { ContentType } from '../../app-administration/shared/models/content-type.model';
+import { ContentType } from '../../app-administration/models/content-type.model';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type.patterns';
+import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/constants/content-type.patterns';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { InputTypeConstants } from '../constants/input-type.constants';
 

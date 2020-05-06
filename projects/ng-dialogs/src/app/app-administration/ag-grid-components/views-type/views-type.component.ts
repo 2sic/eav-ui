@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
-import { calculateViewType } from '../../../views/views.helpers';
+import { calculateViewType } from '../../views/views.helpers';
 
 @Component({
   selector: 'app-views-type',

@@ -7,13 +7,13 @@ import { filter } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
 import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams, GridOptions } from '@ag-grid-community/all-modules';
 
-import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
-import { ContentType } from '../app-administration/shared/models/content-type.model';
+import { ContentType } from '../app-administration/models/content-type.model';
 import { Field } from './models/field.model';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
-import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type.patterns';
+import { EditForm, AddItem, EditItem } from '../app-administration/models/edit-form.model';
+import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/constants/content-type.patterns';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';

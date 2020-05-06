@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 
-import { WebApisService } from '../shared/services/web-apis.service';
-import { WebApi } from '../shared/models/web-api.model';
-import { WebApiActionsComponent } from '../shared/ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../shared/models/web-api-actions-params';
+import { WebApisService } from '../services/web-apis.service';
+import { WebApi } from '../models/web-api.model';
+import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from '../models/web-api-actions-params';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm } from '../models/edit-form.model';
 
 @Component({
   selector: 'app-web-api',

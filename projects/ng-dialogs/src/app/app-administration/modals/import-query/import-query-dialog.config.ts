@@ -1,4 +1,4 @@
-import { DialogConfig } from '../../../../shared/models/dialog-config.model';
+import { DialogConfig } from '../../../shared/models/dialog-config.model';
 
 export const importQueryDialog: DialogConfig = {
   name: 'IMPORT_QUERY_DIALOG',

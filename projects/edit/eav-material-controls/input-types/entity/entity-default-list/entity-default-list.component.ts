@@ -12,7 +12,7 @@ import { EavService } from '../../../..//shared/services/eav.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { Helper } from '../../../../shared/helpers/helper';
-import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
+import { EditForm } from '../../../../../ng-dialogs/src/app/app-administration/models/edit-form.model';
 
 @Component({
   selector: 'app-entity-default-list',

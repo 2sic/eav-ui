@@ -10,9 +10,9 @@ import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi,
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
 import { Field } from '../content-type-fields/models/field.model';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../app-administration/models/edit-form.model';
 import { EntitiesService } from './services/entities.service';
-import { ContentExportService } from '../app-administration/shared/services/content-export.service';
+import { ContentExportService } from '../app-administration/services/content-export.service';
 import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav.constants';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExtendedColDef } from './models/extended-col-def.model';

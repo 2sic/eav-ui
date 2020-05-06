@@ -5,12 +5,12 @@ import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Query } from '../shared/models/query.model';
-import { QueriesActionsComponent } from '../shared/ag-grid-components/queries-actions/queries-actions.component';
-import { PipelinesService } from '../shared/services/pipelines.service';
-import { ContentExportService } from '../shared/services/content-export.service';
-import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
-import { EditForm } from '../shared/models/edit-form.model';
+import { Query } from '../models/query.model';
+import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
+import { PipelinesService } from '../services/pipelines.service';
+import { ContentExportService } from '../services/content-export.service';
+import { PipelinesActionsParams } from '../models/pipeline-actions-params';
+import { EditForm } from '../models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';

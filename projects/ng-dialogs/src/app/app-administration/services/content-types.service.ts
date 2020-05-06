@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
-import { Context } from '../../../shared/services/context';
-import { map } from 'rxjs/operators';
-import { EavScopeOption } from '../../../shared/constants/eav.constants';
+import { Context } from '../../shared/services/context';
+import { EavScopeOption } from '../../shared/constants/eav.constants';
 
 @Injectable()
 export class ContentTypesService {

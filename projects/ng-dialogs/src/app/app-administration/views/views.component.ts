@@ -5,19 +5,19 @@ import { filter } from 'rxjs/operators';
 import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { View } from '../shared/models/view.model';
+import { View } from '../models/view.model';
 import { calculateViewType } from './views.helpers';
-import { ViewsTypeComponent } from '../shared/ag-grid-components/views-type/views-type.component';
-import { ViewsShowComponent } from '../shared/ag-grid-components/views-show/views-show.component';
-import { ViewsActionsComponent } from '../shared/ag-grid-components/views-actions/views-actions.component';
-import { TemplatesService } from '../shared/services/templates.service';
-import { ViewActionsParams } from '../shared/models/view-actions-params';
-import { EditForm } from '../shared/models/edit-form.model';
+import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
+import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
+import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
+import { TemplatesService } from '../services/templates.service';
+import { ViewActionsParams } from '../models/view-actions-params';
+import { EditForm } from '../models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
-import { Polymorphism } from '../shared/models/polymorphism';
+import { Polymorphism } from '../models/polymorphism';
 
 @Component({
   selector: 'app-views',

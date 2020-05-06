@@ -5,8 +5,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { DialogSettings } from '../shared/models/dialog-settings.model';
-import { AppDialogConfigService } from '../shared/services/app-dialog-config.service';
+import { DialogSettings } from '../models/dialog-settings.model';
+import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 
 @Component({

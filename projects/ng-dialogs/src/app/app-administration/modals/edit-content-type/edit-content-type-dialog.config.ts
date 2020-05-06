@@ -1,4 +1,4 @@
-import { DialogConfig } from '../../../../shared/models/dialog-config.model';
+import { DialogConfig } from '../../../shared/models/dialog-config.model';
 
 export const editContentTypeDialog: DialogConfig = {
   name: 'EDIT_CONTENT_TYPE_DIALOG',
