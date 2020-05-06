@@ -10,7 +10,7 @@ import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
-import { InputTypesConstants } from '../constants/input-types-constants';
+import { InputTypesConstants } from '../constants/input-type.constants';
 
 @Component({
   selector: 'app-edit-content-type-fields',

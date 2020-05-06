@@ -3,7 +3,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { ContentTypeFieldsActionsParams } from '../../models/content-type-fields-actions-params';
 import { Field } from '../../models/field.model';
-import { InputTypesConstants } from '../../constants/input-types-constants';
+import { InputTypesConstants } from '../../constants/input-type.constants';
 
 @Component({
   selector: 'app-content-type-fields-actions',

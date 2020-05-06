@@ -9,7 +9,7 @@ import { AttributeDef } from '../../../shared/models/eav/attribute-def';
 import { EavAttributes, ContentType, Item, Language, InputType } from '../../../shared/models/eav';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
-import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
+import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';

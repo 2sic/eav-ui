@@ -5,7 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { AdamBrowserComponent } from '../browser/adam-browser.component';
-import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
+import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
