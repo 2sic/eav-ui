@@ -14,7 +14,7 @@ export class SourceService {
   /** Key is templateId or path */
   get(key: number | string) {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/asset'), {
-      params: this.calcParams(key)
+      params: { appId: this.context.appId.toString(), ...this.templateIdOrPath(key) }
     }).pipe(
       map((view: SourceView) => {
         if (view.Type.toLowerCase() === 'auto') {
@@ -38,7 +38,7 @@ export class SourceService {
   /** Key is templateId or path */
   save(key: number | string, view: SourceView) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/asset'), view, {
-      params: this.calcParams(key),
+      params: { appId: this.context.appId.toString(), ...this.templateIdOrPath(key) },
     }) as Observable<boolean>;
   }
 
@@ -54,7 +54,7 @@ export class SourceService {
     }) as Observable<boolean>;
   }
 
-  private calcParams(key: number | string) {
+  private templateIdOrPath(key: number | string) {
     if (typeof key === typeof 0) {
       return { templateId: key.toString() };
     } else {
