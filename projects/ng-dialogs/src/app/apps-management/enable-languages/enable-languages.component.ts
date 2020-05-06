@@ -4,7 +4,7 @@ import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from
 import { EnableLanguagesService } from '../services/enable-languages.service';
 import { EnableLanguage } from '../models/enable-language.model';
 import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { EnableLanguagesStatusParams } from '../models/enable-languages-status-params.model';
+import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 

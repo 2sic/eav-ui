@@ -9,7 +9,7 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
 import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from '../models/apps-list-actions-params.model';
+import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
 import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';

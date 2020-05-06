@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { App } from '../../models/app.model';
-import { AppsListActionsParams } from '../../models/apps-list-actions-params.model';
+import { AppsListActionsParams } from './apps-list-actions.models';
 
 @Component({
   selector: 'app-apps-list-actions',
