@@ -11,7 +11,7 @@ import { ContentTypesService } from '../app-administration/shared/services/conte
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { ContentType } from '../app-administration/shared/models/content-type.model';
 import { Field } from './models/field.model';
-import { eavConstants } from '../shared/constants/eav-constants';
+import { eavConstants } from '../shared/constants/eav.constants';
 import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';

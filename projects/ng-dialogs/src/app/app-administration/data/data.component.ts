@@ -11,7 +11,7 @@ import { ContentTypesService } from '../shared/services/content-types.service';
 import { DataItemsComponent } from '../shared/ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from '../shared/ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../shared/ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav-constants';
+import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav.constants';
 import { DataActionsParams } from '../shared/models/data-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';

@@ -11,7 +11,7 @@ import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
 import { PermissionsActionsParams } from './models/permissions-actions-params';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
-import { eavConstants, EavMetadataKey } from '../shared/constants/eav-constants';
+import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 
 @Component({

@@ -11,7 +11,7 @@ import { PipelinesService } from '../shared/services/pipelines.service';
 import { ContentExportService } from '../shared/services/content-export.service';
 import { PipelinesActionsParams } from '../shared/models/pipeline-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav-constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
 

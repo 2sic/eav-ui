@@ -13,7 +13,7 @@ import { Field } from '../content-type-fields/models/field.model';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
-import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
+import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav.constants';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExtendedColDef } from './models/extended-col-def.model';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';

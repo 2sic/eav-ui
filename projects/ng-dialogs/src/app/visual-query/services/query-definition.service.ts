@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { Context } from '../../shared/services/context';
-import { eavConstants } from '../../shared/constants/eav-constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 
 @Injectable()
 export class QueryDefinitionService {

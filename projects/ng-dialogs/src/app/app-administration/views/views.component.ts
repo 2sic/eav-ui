@@ -13,7 +13,7 @@ import { ViewsActionsComponent } from '../shared/ag-grid-components/views-action
 import { TemplatesService } from '../shared/services/templates.service';
 import { ViewActionsParams } from '../shared/models/view-actions-params';
 import { EditForm } from '../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav-constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';

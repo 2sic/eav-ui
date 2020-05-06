@@ -11,7 +11,7 @@ import { Context } from '../shared/services/context';
 import { QueryDefinitionService } from './services/query-definition.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
-import { eavConstants } from '../shared/constants/eav-constants';
+import { eavConstants } from '../shared/constants/eav.constants';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { DataSource } from './add-explorer/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';

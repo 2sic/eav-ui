@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
-import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/constants/eav-constants';
+import { eavConstants, EavScopesKey, EavScopeOption } from '../../../../shared/constants/eav.constants';
 import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type';
 
 @Component({

@@ -6,7 +6,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 import { Context } from '../../../shared/services/context';
 import { map } from 'rxjs/operators';
-import { EavScopeOption } from '../../../shared/constants/eav-constants';
+import { EavScopeOption } from '../../../shared/constants/eav.constants';
 
 @Injectable()
 export class ContentTypesService {
