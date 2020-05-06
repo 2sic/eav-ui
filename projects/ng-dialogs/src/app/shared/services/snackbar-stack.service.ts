@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Subject, Observable } from 'rxjs';
 
-/**
- * This service ensures that multiple SnackBars are shown one after another.
- */
+/** This service ensures that multiple SnackBars are shown one after another. */
 @Injectable({
   providedIn: 'root',
 })
-export class SnackbarStack {
+export class SnackbarStackService {
   private defaultDuration = 3000;
   private processingMessage = false;
   private messageQueue: SnackBarData[] = [];
@@ -40,8 +38,8 @@ export class SnackbarStack {
 
     const snack = this.snackBar.open(next.message, next.action, next.config);
     snack.afterDismissed().subscribe(() => {
-        this.displaySnackbar();
-      });
+      this.displaySnackbar();
+    });
     snack.onAction().subscribe(() => {
       next.triggered.next(true);
       next.triggered.complete();

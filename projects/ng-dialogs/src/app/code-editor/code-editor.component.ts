@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { share } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 
 import { Context } from '../shared/services/context';
 import { keyItems } from '../shared/constants/sessions-keys';
@@ -10,9 +12,7 @@ import { EditItem, SourceItem, } from '../app-administration/shared/models/edit-
 import { SourceView } from './models/source-view.model';
 import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { SnippetsService } from './services/snippets.service';
-import { share } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import { SnackbarStack } from '../shared/services/snackbar-stack.service';
+import { SnackbarStackService } from '../shared/services/snackbar-stack.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
@@ -41,7 +41,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private snackBarStack: SnackbarStack,
+    private snackBarStack: SnackbarStackService,
     private sourceService: SourceService,
     private snippetsService: SnippetsService,
     private zone: NgZone,
