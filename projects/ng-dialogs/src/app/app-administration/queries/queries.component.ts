@@ -10,7 +10,7 @@ import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/q
 import { PipelinesService } from '../services/pipelines.service';
 import { ContentExportService } from '../services/content-export.service';
 import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
-import { EditForm } from '../models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';

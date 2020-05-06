@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
 import { ContentGroup } from '../manage-content-list/models/content-group.model';
-import { EditForm } from '../app-administration/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-replace-content',

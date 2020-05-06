@@ -12,7 +12,7 @@ import { QueryDefinitionService } from './services/query-definition.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { EditForm } from '../app-administration/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
 import { DataSource } from './models/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';
 import { ElementEventListener } from '../../../../shared/element-event-listener.model';

@@ -12,7 +12,7 @@ import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.
 import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
 import { TemplatesService } from '../services/templates.service';
 import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
-import { EditForm } from '../models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';

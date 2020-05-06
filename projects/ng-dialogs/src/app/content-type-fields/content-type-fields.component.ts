@@ -12,7 +12,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
 import { ContentType } from '../app-administration/models/content-type.model';
 import { Field } from './models/field.model';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { EditForm, AddItem, EditItem } from '../app-administration/models/edit-form.model';
+import { EditForm, AddItem, EditItem } from '../shared/models/edit-form.model';
 import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/constants/content-type.patterns';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';

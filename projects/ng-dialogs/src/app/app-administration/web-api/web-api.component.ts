@@ -8,7 +8,7 @@ import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/we
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { EditForm } from '../models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-web-api',

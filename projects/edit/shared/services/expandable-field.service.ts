@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
-import { EditForm } from '../../../ng-dialogs/src/app/app-administration/models/edit-form.model';
+import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
 
 @Injectable()
 export class ExpandableFieldService {
