@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
-import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
+import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
 
 // components
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';

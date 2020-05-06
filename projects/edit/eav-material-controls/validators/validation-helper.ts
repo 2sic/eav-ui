@@ -2,7 +2,7 @@ import { ValidatorFn, Validators } from '@angular/forms';
 
 import { FieldSettings } from '../../../edit-types';
 import { CustomValidators } from './custom-validators';
-import { InputTypesConstants } from '../../shared/constants/input-types-constants';
+import { InputTypesConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
 
 export class ValidationHelper {
 

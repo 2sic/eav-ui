@@ -1,6 +1,6 @@
 import { take } from 'rxjs/operators';
 import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
-import { InputTypesConstants } from '../constants/input-types-constants';
+import { InputTypesConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavHeader, Item, InputType } from '../models/eav';
 import { FieldSettings, InputTypeName } from '../../../edit-types';

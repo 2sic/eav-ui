@@ -10,7 +10,7 @@ import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { InputTypeService } from './input-type.service';
 import { ContentTypeService } from './content-type.service';
-import { InputTypesConstants } from '../../constants/input-types-constants';
+import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-types-constants';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
