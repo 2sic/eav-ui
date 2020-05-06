@@ -1,20 +1,22 @@
+import { DataTypeConstants } from './constants/data-type.constants';
+
 export function calculateTypeIcon(typeName: string): string {
   switch (typeName) {
-    case 'String':
+    case DataTypeConstants.String:
       return 'text_fields';
-    case 'Entity':
+    case DataTypeConstants.Entity:
       return 'share';
-    case 'Boolean':
+    case DataTypeConstants.Boolean:
       return 'toggle_on';
-    case 'Number':
+    case DataTypeConstants.Number:
       return 'dialpad';
-    case 'Custom':
+    case DataTypeConstants.Custom:
       return 'extension';
-    case 'DateTime':
+    case DataTypeConstants.DateTime:
       return 'today';
-    case 'Hyperlink':
+    case DataTypeConstants.Hyperlink:
       return 'link';
-    case 'Empty':
+    case DataTypeConstants.Empty:
       return 'crop_free';
     default:
       return 'device_unknown';
