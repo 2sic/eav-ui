@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { Query } from '../../models/query.model';
-import { PipelinesActionsParams } from '../../models/pipeline-actions-params';
+import { QueriesActionsParams } from './queries-actions.models';
 
 @Component({
   selector: 'app-queries-actions',
@@ -10,9 +10,9 @@ import { PipelinesActionsParams } from '../../models/pipeline-actions-params';
   styleUrls: ['./queries-actions.component.scss']
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
-  private params: PipelinesActionsParams;
+  private params: QueriesActionsParams;
 
-  agInit(params: PipelinesActionsParams) {
+  agInit(params: QueriesActionsParams) {
     this.params = params;
   }
 

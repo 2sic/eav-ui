@@ -9,7 +9,7 @@ import { Query } from '../models/query.model';
 import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
 import { PipelinesService } from '../services/pipelines.service';
 import { ContentExportService } from '../services/content-export.service';
-import { PipelinesActionsParams } from '../models/pipeline-actions-params';
+import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
 import { EditForm } from '../models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -40,7 +40,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         onOpenPermissions: this.openPermissions.bind(this),
         onExportQuery: this.exportQuery.bind(this),
         onDelete: this.deleteQuery.bind(this),
-      } as PipelinesActionsParams,
+      } as QueriesActionsParams,
     },
     {
       headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { ContentType } from '../../models/content-type.model';
-import { DataActionsParams } from '../../models/data-actions-params';
+import { DataActionsParams } from './data-actions.models';
 
 @Component({
   selector: 'app-data-actions',

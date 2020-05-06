@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { View } from '../../models/view.model';
-import { ViewActionsParams } from '../../models/view-actions-params';
+import { ViewActionsParams } from './views-actions.models';
 
 @Component({
   selector: 'app-views-actions',

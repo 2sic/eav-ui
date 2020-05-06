@@ -12,7 +12,7 @@ import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
 import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav.constants';
-import { DataActionsParams } from '../models/data-actions-params';
+import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { EditForm } from '../models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';

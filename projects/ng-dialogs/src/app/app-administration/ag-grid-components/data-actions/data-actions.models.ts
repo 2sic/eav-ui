@@ -1,6 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
 
-import { ContentType } from './content-type.model';
+import { ContentType } from '../../models/content-type.model';
 
 export interface DataActionsParams extends ICellRendererParams {
   enableAppFeaturesGetter(): boolean;

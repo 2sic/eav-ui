@@ -5,7 +5,7 @@ import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
 import { WebApisService } from '../services/web-apis.service';
 import { WebApi } from '../models/web-api.model';
 import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../models/web-api-actions-params';
+import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
 import { EditForm } from '../models/edit-form.model';

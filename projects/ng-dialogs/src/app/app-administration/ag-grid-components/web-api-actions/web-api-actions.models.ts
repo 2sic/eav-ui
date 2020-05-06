@@ -1,6 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
 
-import { WebApi } from './web-api.model';
+import { WebApi } from '../../models/web-api.model';
 
 export interface WebApiActionsParams extends ICellRendererParams {
   onOpenCode(view: WebApi): void;

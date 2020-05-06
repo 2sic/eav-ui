@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { WebApiActionsParams } from '../../models/web-api-actions-params';
+import { WebApiActionsParams } from './web-api-actions.models';
 import { WebApi } from '../../models/web-api.model';
 
 @Component({
