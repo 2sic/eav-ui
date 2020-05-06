@@ -33,7 +33,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
     },
     {
-      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellRenderer: 'viewsShowComponent',
+      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'viewsShowComponent',
       sortable: true, filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
     },
     {
@@ -41,7 +41,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
     },
     {
-      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-padding',
+      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline',
       sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
     },
     {
@@ -161,8 +161,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         this.polymorphism.Id
-        ? { EntityId: this.polymorphism.Id.toString() }
-        : { ContentTypeName: this.polymorphism.TypeName }
+          ? { EntityId: this.polymorphism.Id.toString() }
+          : { ContentTypeName: this.polymorphism.TypeName }
       ]
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });

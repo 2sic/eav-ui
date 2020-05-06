@@ -34,7 +34,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   columnDefs: ColDef[] = [
     { rowDrag: true, width: 18, cellClass: 'no-padding' },
     {
-      headerName: 'Title', field: 'IsTitle', width: 40, cellClass: 'secondary-action no-padding no-outline',
+      headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
       cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
     },
     {

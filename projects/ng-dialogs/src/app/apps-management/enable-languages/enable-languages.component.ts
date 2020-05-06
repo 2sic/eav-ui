@@ -26,7 +26,7 @@ export class EnableLanguagesComponent implements OnInit {
       filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
     },
     {
-      headerName: 'Status', field: 'IsEnabled', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline',
+      headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
       cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
       cellRendererParams: {
         onEnabledToggle: this.toggleLanguage.bind(this),
