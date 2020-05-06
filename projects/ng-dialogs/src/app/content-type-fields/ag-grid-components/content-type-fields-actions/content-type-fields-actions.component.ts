@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentTypeFieldsActionsParams } from './content-type-fields-actions-params';
+import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 import { Field } from '../../models/field.model';
 import { InputTypeConstants } from '../../constants/input-type.constants';
+import { DataTypeConstants } from '../../constants/data-type.constants';
 
 @Component({
   selector: 'app-content-type-fields-actions',
@@ -18,7 +19,7 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   agInit(params: ContentTypeFieldsActionsParams) {
     this.params = params;
     this.field = params.data;
-    this.showPermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === 'Hyperlink';
+    this.showPermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
   }
 
   refresh(params?: any): boolean {
