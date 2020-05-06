@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash-es/cloneDeep';
-import { DataSource, SortedDataSources } from './data-sources.model';
+import { DataSource, SortedDataSources } from '../models/data-sources.model';
 
 export function filterAndSortDataSources(dataSources: DataSource[], maxDifficulty: number): SortedDataSources {
   const cloned = cloneDeep(dataSources);

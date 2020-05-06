@@ -2,8 +2,8 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitte
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
-import { DataSource } from './data-sources.model';
-import { SortedDataSources } from './data-sources.model';
+import { DataSource } from '../models/data-sources.model';
+import { SortedDataSources } from '../models/data-sources.model';
 
 @Component({
   selector: 'app-add-explorer',
