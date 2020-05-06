@@ -5,7 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../../shared/services/context';
 import { Query } from '../models/query.model';
-import { toBase64 } from '../../../shared/helpers/fileToBase64.helper';
+import { toBase64 } from '../../../shared/helpers/file-to-base64.helper';
 
 @Injectable()
 export class PipelinesService {
