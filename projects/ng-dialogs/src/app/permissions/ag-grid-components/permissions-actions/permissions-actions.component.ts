@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { PermissionsActionsParams } from './permissions-actions-params.model';
+import { PermissionsActionsParams } from './permissions-actions.models';
 import { Permission } from '../../models/permission.model';
 
 @Component({

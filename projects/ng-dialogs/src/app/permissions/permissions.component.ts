@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionsService } from './services/permissions.service';
 import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions-params.model';
+import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
 import { EditForm } from '../app-administration/models/edit-form.model';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
