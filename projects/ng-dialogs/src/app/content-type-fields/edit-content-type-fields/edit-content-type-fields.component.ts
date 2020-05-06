@@ -8,7 +8,7 @@ import { ContentTypesFieldsService } from '../services/content-types-fields.serv
 import { ContentType } from '../../app-administration/shared/models/content-type.model';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
+import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type.patterns';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { InputTypeConstants } from '../constants/input-type.constants';
 
