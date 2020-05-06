@@ -8,7 +8,7 @@ import { keyItems } from '../shared/constants/sessions-keys';
 import { SourceService } from './services/source.service';
 import { EditItem, SourceItem, } from '../app-administration/shared/models/edit-form.model';
 import { SourceView } from './models/source-view.model';
-import { ElementEventListener } from '../../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { SnippetsService } from './services/snippets.service';
 import { share } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';

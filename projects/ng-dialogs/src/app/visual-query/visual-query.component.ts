@@ -15,7 +15,7 @@ import { eavConstants } from '../shared/constants/eav-constants';
 import { EditForm } from '../app-administration/shared/models/edit-form.model';
 import { DataSource } from './add-explorer/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';
-import { ElementEventListener } from '../../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { QueryResultComponent } from './query-result/query-result.component';
 
 @Component({

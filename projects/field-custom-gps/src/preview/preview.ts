@@ -3,7 +3,7 @@ import { customGpsIcons, buildTemplate, parseLatLng } from '../shared/helpers';
 import { defaultCoordinates } from '../shared/constants';
 import * as template from './preview.html';
 import * as styles from './preview.css';
-import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {

@@ -8,7 +8,7 @@ import { FeaturesListUiComponent } from '../shared/ag-grid-components/features-l
 import { FeaturesListPublicComponent } from '../shared/ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../shared/ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesConfigService } from '../shared/services/features-config.service';
-import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../../../shared/element-event-listener.model';
 import { ManageFeaturesMessageData } from '../shared/models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
