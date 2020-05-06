@@ -1,49 +1,38 @@
-export class InputTypesConstants {
-    // string
-    public static readonly stringDefault: string = 'string-default';
-    public static readonly stringUrlPath: string = 'string-url-path';
-    public static readonly stringDropdown: string = 'string-dropdown';
-    public static readonly stringDropdownQuery: string = 'string-dropdown-query';
-    public static readonly stringFontIconPicker: string = 'string-font-icon-picker';
-    public static readonly stringTemplatePicker: string = 'string-template-picker';
-    public static readonly stringWysiwyg: string = 'string-wysiwyg';
-    // boolean
-    public static readonly booleanDefault: string = 'boolean-default';
-    // datetime
-    public static readonly datetimeDefault: string = 'datetime-default';
-    // empty
-    public static readonly emptyDefault: string = 'empty-default';
-    // number
-    public static readonly numberDefault: string = 'number-default';
-    // entity
-    public static readonly entityDefault: string = 'entity-default';
-    public static readonly entityQuery: string = 'entity-query';
-    public static readonly entityContentBlocks: string = 'entity-content-blocks';
-    // hyperlink/files
-    public static readonly hyperlinkDefault: string = 'hyperlink-default';
-    // hyperlink library
-    public static readonly hyperlinkLibrary: string = 'hyperlink-library';
-    // custom/files
-    public static readonly externalWebComponent: string = 'external-web-component';
-    public static readonly customGPS: string = 'custom-gps';
-    public static readonly customDefault: string = 'custom-default';
-    // old types
-    public static readonly oldTypeDropdown: string = 'dropdown';
-    public static readonly oldTypeWysiwyg: string = 'wysiwyg';
-    public static readonly oldTypeDefault: string = 'default';
-    public static readonly stringWysiwygTinymce: string = 'string-wysiwyg-tinymce';
-    public static readonly stringWysiwygAdv: string = 'string-wysiwyg-adv';
-    public static readonly stringWysiwygDnn: string = 'string-wysiwyg-dnn';
-    // default suffix
-    public static readonly defaultSuffix: string = '-default';
-    // spm 2019.04.10. move to different constants file as types. Maybe such file already exists
-    // attribute.type for old types
-    public static readonly string: string = 'String';
-    public static readonly hyperlink: string = 'Hyperlink';
-    public static readonly number: string = 'Number';
-    public static readonly boolean: string = 'Boolean';
-    public static readonly datetime: string = 'DateTime';
-    public static readonly entity: string = 'Entity';
-    public static readonly empty: string = 'Empty';
-    public static readonly custom: string = 'Custom';
+export class InputTypeConstants {
+    // String
+    public static readonly StringDefault = 'string-default';
+    public static readonly StringUrlPath = 'string-url-path';
+    public static readonly StringDropdown = 'string-dropdown';
+    public static readonly StringDropdownQuery = 'string-dropdown-query';
+    public static readonly StringFontIconPicker = 'string-font-icon-picker';
+    public static readonly StringTemplatePicker = 'string-template-picker';
+    public static readonly StringWysiwyg = 'string-wysiwyg';
+    // Boolean
+    public static readonly BooleanDefault = 'boolean-default';
+    // DateTime
+    public static readonly DatetimeDefault = 'datetime-default';
+    // Empty
+    public static readonly EmptyDefault = 'empty-default';
+    // Number
+    public static readonly NumberDefault = 'number-default';
+    // Entity
+    public static readonly EntityDefault = 'entity-default';
+    public static readonly EntityQuery = 'entity-query';
+    public static readonly EntityContentBlocks = 'entity-content-blocks';
+    // Hyperlink
+    public static readonly HyperlinkDefault = 'hyperlink-default';
+    public static readonly HyperlinkLibrary = 'hyperlink-library';
+    // Custom
+    public static readonly ExternalWebComponent = 'external-web-component';
+    public static readonly CustomGPS = 'custom-gps';
+    public static readonly CustomDefault = 'custom-default';
+    // Old
+    public static readonly OldTypeDropdown = 'dropdown';
+    public static readonly OldTypeWysiwyg = 'wysiwyg';
+    public static readonly OldTypeDefault = 'default';
+    public static readonly StringWysiwygTinymce = 'string-wysiwyg-tinymce';
+    public static readonly StringWysiwygAdv = 'string-wysiwyg-adv';
+    public static readonly StringWysiwygDnn = 'string-wysiwyg-dnn';
+    // Default
+    public static readonly DefaultSuffix = '-default';
 }

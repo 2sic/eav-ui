@@ -1,12 +1,13 @@
 import { take } from 'rxjs/operators';
 import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
-import { InputTypesConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavHeader, Item, InputType } from '../models/eav';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
 import { WrappersConstants } from '../constants/wrappers-constants';
 import { CalculatedInputType } from '../models/input-field-models';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
+import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 
 export class InputFieldHelper {
   /** This is attribute type (not attribute inputType) */
@@ -73,26 +74,26 @@ export class InputFieldHelper {
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 
-    const isEmptyInputType = (inputType === InputTypesConstants.emptyDefault)
-      || (inputType === InputTypesConstants.empty);
+    const isEmptyInputType = (inputType === InputTypeConstants.EmptyDefault)
+      || (inputType === DataTypeConstants.Empty);
     if (isEmptyInputType) {
       return [WrappersConstants.collapsibleWrapper];
     }
     // default wrappers
     const wrappers: string[] = [WrappersConstants.hiddenWrapper];
     // entity-default wrappers
-    const isEntityType = (inputType === InputTypesConstants.entityDefault)
-      || (inputType === InputTypesConstants.stringDropdownQuery)
-      || (inputType === InputTypesConstants.entityQuery)
-      || (inputType === InputTypesConstants.entityContentBlocks);
+    const isEntityType = (inputType === InputTypeConstants.EntityDefault)
+      || (inputType === InputTypeConstants.StringDropdownQuery)
+      || (inputType === InputTypeConstants.EntityQuery)
+      || (inputType === InputTypeConstants.EntityContentBlocks);
 
     if (isEntityType) {
       wrappers.push(WrappersConstants.eavLocalizationWrapper);
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
-      if (inputType === InputTypesConstants.entityContentBlocks) {
+      if (inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.collapsibleFieldWrapper);
       }
-      if (allowMultiValue || inputType === InputTypesConstants.entityContentBlocks) {
+      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.entityExpandableWrapper);
       }
     }
@@ -117,10 +118,10 @@ export class InputFieldHelper {
   }
 
   static isWysiwygInputType(inputType: string): boolean {
-    return inputType === InputTypesConstants.stringWysiwyg
-      || inputType === InputTypesConstants.stringWysiwygAdv
-      || inputType === InputTypesConstants.stringWysiwygDnn
-      || inputType === InputTypesConstants.stringWysiwygTinymce;
+    return inputType === InputTypeConstants.StringWysiwyg
+      || inputType === InputTypeConstants.StringWysiwygAdv
+      || inputType === InputTypeConstants.StringWysiwygDnn
+      || inputType === InputTypeConstants.StringWysiwygTinymce;
   }
 
   static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
@@ -131,20 +132,20 @@ export class InputFieldHelper {
     }
 
     switch (inputType) {
-      case InputTypesConstants.booleanDefault:
+      case InputTypeConstants.BooleanDefault:
         return defaultValue !== undefined && defaultValue !== null
           ? defaultValue.toLowerCase() === 'true'
           : false;
-      case InputTypesConstants.datetimeDefault:
+      case InputTypeConstants.DatetimeDefault:
         return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
           ? new Date(defaultValue)
           : null;
-      case InputTypesConstants.numberDefault:
+      case InputTypeConstants.NumberDefault:
         return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
           ? Number(defaultValue)
           : '';
-      case InputTypesConstants.entityDefault:
-      case InputTypesConstants.entityQuery:
+      case InputTypeConstants.EntityDefault:
+      case InputTypeConstants.EntityQuery:
         if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
           return []; // no default value
         }

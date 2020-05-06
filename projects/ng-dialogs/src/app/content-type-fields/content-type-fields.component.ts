@@ -19,7 +19,7 @@ import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/conten
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './models/content-type-fields-actions-params';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
-import { InputTypesConstants } from './constants/input-type.constants';
+import { InputTypeConstants } from './constants/input-type.constants';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -77,7 +77,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   gridOptions: GridOptions = {
     getRowClass(params: any) {
       const field: Field = params.data;
-      return field.InputType === InputTypesConstants.emptyDefault ? 'group-row' : '';
+      return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
     }
   };
 

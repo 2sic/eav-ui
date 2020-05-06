@@ -10,7 +10,7 @@ import { AttributeDef } from '../../models/eav/attribute-def';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { InputTypeService } from './input-type.service';
 import { ContentTypeService } from './content-type.service';
-import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -267,7 +267,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
           }
         });
 
-        if (attributesValues.length < contentType.contentType.attributes.filter(cType => cType.type !== InputTypesConstants.empty).length) {
+        if (attributesValues.length < contentType.contentType.attributes.filter(cType => cType.type !== DataTypeConstants.Empty).length) {
           valuesExistInDefaultLanguage = false;
         }
 

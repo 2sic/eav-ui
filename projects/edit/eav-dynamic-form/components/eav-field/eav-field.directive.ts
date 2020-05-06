@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
-import { InputTypesConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 
 // components
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
@@ -106,7 +106,7 @@ export class EavFieldDirective implements OnInit {
     angularConsoleLog('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
     let componentType: Type<any>;
     if (fieldConfig.field.isExternal) {
-      componentType = this.readComponentType(InputTypesConstants.externalWebComponent);
+      componentType = this.readComponentType(InputTypeConstants.ExternalWebComponent);
     } else {
       componentType = this.readComponentType(fieldConfig.field.inputType);
     }

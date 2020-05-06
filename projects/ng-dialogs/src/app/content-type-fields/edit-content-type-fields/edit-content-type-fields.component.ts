@@ -10,7 +10,7 @@ import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/shared/constants/content-type';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
-import { InputTypesConstants } from '../constants/input-type.constants';
+import { InputTypeConstants } from '../constants/input-type.constants';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -78,7 +78,7 @@ export class EditContentTypeFieldsComponent implements OnInit {
   }
 
   resetInputType(index: number) {
-    this.fields[index].InputType = this.fields[index].Type.toLowerCase() + InputTypesConstants.defaultSuffix;
+    this.fields[index].InputType = this.fields[index].Type.toLowerCase() + InputTypeConstants.DefaultSuffix;
   }
 
   calculateInputTypeOptions(index: number) {
