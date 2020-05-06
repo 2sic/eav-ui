@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ContentExport } from '../app-administration/shared/models/content-export.model';
 import { ContentExportService } from '../app-administration/shared/services/content-export.service';
 import { Language } from '../../../../edit/shared/models/eav/language';
-import { keyLangs, keyLangPri } from '../shared/constants/sessions-keys';
+import { keyLangs, keyLangPri } from '../shared/constants/session.constants';
 
 @Component({
   selector: 'app-content-export',

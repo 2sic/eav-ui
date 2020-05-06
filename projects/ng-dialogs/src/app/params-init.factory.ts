@@ -4,7 +4,7 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/sessions-keys';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
 import { EditForm, EditItem, GroupItem } from './app-administration/shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 

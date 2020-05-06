@@ -6,7 +6,7 @@ import { share } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 
 import { Context } from '../shared/services/context';
-import { keyItems } from '../shared/constants/sessions-keys';
+import { keyItems } from '../shared/constants/session.constants';
 import { SourceService } from './services/source.service';
 import { EditItem, SourceItem, } from '../app-administration/shared/models/edit-form.model';
 import { SourceView } from './models/source-view.model';

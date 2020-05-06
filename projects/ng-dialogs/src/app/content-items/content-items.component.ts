@@ -22,7 +22,7 @@ import { ContentItemsActionsParams } from './models/content-items-actions-params
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
-import { keyFilters } from '../shared/constants/sessions-keys';
+import { keyFilters } from '../shared/constants/session.constants';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';

@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
 // tslint:disable-next-line:max-line-length
-import { keyAppRoot, keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/sessions-keys';
+import { keyAppRoot, keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EditForm } from '../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
 
