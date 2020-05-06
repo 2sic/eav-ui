@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
-import { ContentTypeFieldsActionsParams } from '../../models/content-type-fields-actions-params';
+import { ContentTypeFieldsActionsParams } from './content-type-fields-actions-params';
 import { Field } from '../../models/field.model';
 import { InputTypeConstants } from '../../constants/input-type.constants';
 
