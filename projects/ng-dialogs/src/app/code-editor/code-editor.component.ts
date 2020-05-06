@@ -12,7 +12,7 @@ import { ElementEventListener } from '../../../../shared/element-event-listener.
 import { SnippetsService } from './services/snippets.service';
 import { share } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
-import { SnackbarStack } from '../shared/snackbar/snackbar-stack';
+import { SnackbarStack } from '../shared/services/snackbar-stack.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
