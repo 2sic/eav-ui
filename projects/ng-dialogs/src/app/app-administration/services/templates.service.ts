@@ -5,7 +5,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
 import { View } from '../models/view.model';
-import { Polymorphism } from '../models/polymorphism';
+import { Polymorphism } from '../models/polymorphism.model';
 
 @Injectable()
 export class TemplatesService {
