@@ -25,6 +25,7 @@ import { ExternalWebComponentComponent } from '../../../eav-material-controls/in
 import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
+import { CustomJsonEditorComponent } from '../../../eav-material-controls/input-types/custom/custom-json-editor/custom-json-editor.component';
 
 @Directive({
   selector: '[appEavField]'
@@ -47,6 +48,7 @@ export class EavFieldDirective implements OnInit {
     'boolean-default': BooleanDefaultComponent,
     'boolean-tristate': BooleanTristateComponent,
     'custom-default': CustomDefaultComponent,
+    'custom-json-editor': CustomJsonEditorComponent,
     'datetime-default': DatetimeDefaultComponent,
     'empty-default': EmptyDefaultComponent,
     'entity-content-blocks': EntityContentBlockComponent,
