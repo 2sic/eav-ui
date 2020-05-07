@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
-import { ContentGroup } from '../models/content-group.model';
+import { ContentGroup, ContentGroupAdd } from '../models/content-group.model';
 import { ReplaceConfig } from '../../replace-content/models/replace-config.model';
 import { GroupHeader } from '../models/group-header.model';
 
@@ -18,9 +18,9 @@ export class ContentGroupService {
     }) as Observable<ReplaceConfig>;
   }
 
-  saveItem(item: ContentGroup) {
+  saveItem(item: ContentGroupAdd) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/contentgroup/replace'), {}, {
-      params: { guid: item.guid, part: item.part, index: item.index.toString(), entityId: item.id.toString() }
+      params: { guid: item.guid, part: item.part, index: item.index.toString(), entityId: item.id.toString(), add: `${item.add}` }
     }) as Observable<null>;
   }
 
