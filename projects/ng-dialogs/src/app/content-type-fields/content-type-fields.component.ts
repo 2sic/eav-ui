@@ -243,7 +243,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
       if (newName === field.StaticName) { return; }
     }
+    this.snackBar.open('Saving...');
     this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchFields();
     });
   }

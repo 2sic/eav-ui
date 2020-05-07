@@ -89,7 +89,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
       if (name === null) { return; }
       name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
     }
+    this.snackBar.open('Saving...');
     this.appsListService.create(name).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchAppsList();
     });
   }

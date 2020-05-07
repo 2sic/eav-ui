@@ -136,7 +136,9 @@ export class DataComponent implements OnInit, OnDestroy {
     // tslint:disable-next-line:max-line-length
     const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
     if (!sourceName) { return; }
+    this.snackBar.open('Saving...');
     this.contentTypesService.createGhost(sourceName).subscribe(res => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchContentTypes();
     });
   }
@@ -232,9 +234,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private deleteContentType(contentType: ContentType) {
     if (!confirm(`Are you sure you want to delete '${contentType.Name}' (${contentType.Id})?`)) { return; }
-    this.snackBar.open(`Deleting...`);
+    this.snackBar.open('Deleting...');
     this.contentTypesService.delete(contentType).subscribe(result => {
-      this.snackBar.open(`Deleted`, null, { duration: 2000 });
+      this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchContentTypes();
     });
   }

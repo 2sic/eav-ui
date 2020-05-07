@@ -110,9 +110,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private cloneQuery(query: Query) {
-    this.snackBar.open(`Copying...`);
+    this.snackBar.open('Copying...');
     this.pipelinesService.clonePipeline(query.Id).subscribe(() => {
-      this.snackBar.open(`Copied`, null, { duration: 2000 });
+      this.snackBar.open('Copied', null, { duration: 2000 });
       this.fetchQueries();
     });
   }
@@ -130,9 +130,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private deleteQuery(query: Query) {
     if (!confirm(`Delete Pipeline '${query.Name}' (${query.Id})?`)) { return; }
-    this.snackBar.open(`Deleting...`);
+    this.snackBar.open('Deleting...');
     this.pipelinesService.delete(query.Id).subscribe(res => {
-      this.snackBar.open(`Deleted`, null, { duration: 2000 });
+      this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchQueries();
     });
   }
