@@ -26,13 +26,13 @@ export class ContentGroupService {
 
   getList(contentGroup: ContentGroup) {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/contentgroup/itemlist'), {
-      params: { appId: this.context.appId.toString(), guid: contentGroup.guid }
+      params: { appId: this.context.appId.toString(), guid: contentGroup.guid, part: contentGroup.part }
     }) as Observable<GroupHeader[]>;
   }
 
   saveList(contentGroup: ContentGroup, resortedList: GroupHeader[]) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/contentgroup/itemlist'), resortedList, {
-      params: { appId: this.context.appId.toString(), guid: contentGroup.guid }
+      params: { appId: this.context.appId.toString(), guid: contentGroup.guid, part: contentGroup.part }
     }) as Observable<boolean>;
   }
 
