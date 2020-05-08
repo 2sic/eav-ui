@@ -15,7 +15,6 @@ function buildHtml(name) {
   fs.writeFileSync(htmlOutputPath, outputHtml, 'utf8');
   console.log(chalkSuccess('Build ' + name + '.html success!'));
 }
-buildHtml('ui');
 buildHtml('local');
 
 // helper
