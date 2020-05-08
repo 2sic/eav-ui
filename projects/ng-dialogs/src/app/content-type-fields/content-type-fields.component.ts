@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,11 +28,10 @@ import { InputTypeConstants } from './constants/input-type.constants';
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   fields: Field[];
-  enableTextSelection = true;
 
   private gridApi: GridApi;
   columnDefs: ColDef[] = [
-    { rowDrag: true, width: 18, cellClass: 'no-padding' },
+    { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline' },
     {
       headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
       cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
@@ -96,6 +95,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -117,30 +117,32 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   onRowDragEnter(event: RowDragEvent) {
-    this.enableTextSelection = false;
+    this.gridApi.setEnableCellTextSelection(false);
   }
 
   onRowDragEnd(event: RowDragEvent) {
-    this.enableTextSelection = true;
+    this.gridApi.setSuppressRowDrag(true);
     const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(res => {
-      this.fetchFields();
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(async res => {
+      await this.fetchFields();
+      this.changeDetectorRef.detectChanges();
+      this.gridApi.setEnableCellTextSelection(true);
+      this.gridApi.setSuppressRowDrag(false);
     });
   }
 
   onRowDragMove(event: RowDragEvent) {
     const movingNode = event.node;
     const overNode = event.overNode;
+    if (!overNode) { return; }
     const rowNeedsToMove = movingNode !== overNode;
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
       const overData: Field = overNode.data;
       const fromIndex = this.fields.indexOf(movingData);
       const toIndex = this.fields.indexOf(overData);
-      const newStore = this.fields.slice();
-      this.moveInArray(newStore, fromIndex, toIndex);
-      this.fields = newStore;
-      this.gridApi.setRowData(newStore);
+      this.moveInArray(this.fields, fromIndex, toIndex);
+      this.gridApi.setRowData(this.fields);
       this.gridApi.clearFocusedCell();
     }
   }
