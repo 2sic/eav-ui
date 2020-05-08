@@ -53,7 +53,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   formIsSaved = false;
   isParentDialog: boolean;
-  formId = Math.random() * Math.pow(10, 17); // generate unique form id. Probably won't need more randomness than this
+  formId = Math.floor(Math.random() * 99999);
   currentLanguage$: Observable<string>;
   currentLanguage: string;
   enableDraft = false;

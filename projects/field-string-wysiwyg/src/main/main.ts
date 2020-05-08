@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
+import { buildTemplate } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { TinyMceButtons } from '../config/buttons';
@@ -37,7 +37,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   constructor() {
     super();
     webpackConsoleLog('FieldStringWysiwygDialog constructor called');
-    this.instanceId = `${randomIntFromInterval(1, 1000000)}`;
+    this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }

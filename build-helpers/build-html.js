@@ -10,14 +10,9 @@ function buildHtml(name) {
   fs.removeSync(htmlOutputPath);
 
   const sourceHtml = fs.readFileSync(htmlSourcePath, 'utf8');
-  const outputHtml = sourceHtml.replace(/SXC_VER/g, `${pjson.version}.${randomIntFromInterval(10000, 99999)}`);
+  const outputHtml = sourceHtml.replace(/SXC_VER/g, `${pjson.version}.${Math.floor(Math.random() * 99999)}`);
 
   fs.writeFileSync(htmlOutputPath, outputHtml, 'utf8');
   console.log(chalkSuccess('Build ' + name + '.html success!'));
 }
 buildHtml('local');
-
-// helper
-function randomIntFromInterval(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
