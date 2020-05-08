@@ -117,13 +117,6 @@ export class InputFieldHelper {
     return wrappers;
   }
 
-  static isWysiwygInputType(inputType: string): boolean {
-    return inputType === InputTypeConstants.StringWysiwyg
-      || inputType === InputTypeConstants.StringWysiwygAdv
-      || inputType === InputTypeConstants.StringWysiwygDnn
-      || inputType === InputTypeConstants.StringWysiwygTinymce;
-  }
-
   static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
     let defaultValue = settings.DefaultValue;
 
