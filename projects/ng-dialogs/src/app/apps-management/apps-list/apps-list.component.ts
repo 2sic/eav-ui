@@ -56,8 +56,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter',
       },
       {
-        headerName: 'Items', field: 'Items', width: 70, cellClass: 'no-outline', sortable: true,
+        headerName: 'Version', field: 'Version', width: 70, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
+      },      {
+        headerName: 'Items', field: 'Items', width: 70, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', type: 'numericColumn',
       },
 
     ],
