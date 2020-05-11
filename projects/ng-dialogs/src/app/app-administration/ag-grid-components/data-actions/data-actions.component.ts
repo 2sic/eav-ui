@@ -25,9 +25,9 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  editContentType() {
-    this.params.onEdit(this.contentType);
-  }
+  // editContentType() {
+  //   this.params.onEdit(this.contentType);
+  // }
 
   createOrEditMetadata() {
     this.params.onCreateOrEditMetadata(this.contentType);
