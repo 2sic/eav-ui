@@ -1,16 +1,4 @@
-.edit-input {
-  background-color: white;
-  height: 44px;
-  display: flex;
-  align-items: flex-end;
-}
-
-.set-dropdown {
-  font-size: 14px;
-  height: auto;
-}
-
-.collapsible {
+.collapsible-header {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -19,8 +7,17 @@
   user-select: none;
   padding: 3px 0;
 
-  &:hover {
-    background-color: rgb(42, 45, 46);
+  &.section {
+    background-color: rgb(56, 56, 56);
+    font-weight: 500;
+  }
+
+  &.folder {
+    padding-left: 8px;
+
+    &:hover {
+      background-color: rgb(42, 45, 46);
+    }
   }
 
   .mat-icon {
@@ -30,28 +27,22 @@
   }
 }
 
-.list {
-  list-style-type: none;
-  margin: 0;
-  user-select: none;
-  padding: 0;
+.snippet {
+  padding-right: 8px;
 
-  .list-item {
-    padding-right: 8px;
+  &:hover {
+    background-color: rgb(42, 45, 46);
+  }
 
-    &:hover {
-      background-color: rgb(42, 45, 46);
-    }
+  &-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
 
-    &__label-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .label {
+    .text {
       cursor: pointer;
-      padding: 3px 0 3px 24px;
+      padding: 3px 0 3px 32px;
       flex: 1 1 auto;
       overflow: hidden;
       white-space: nowrap;
@@ -64,15 +55,15 @@
       height: 18px;
       font-size: 18px;
     }
+  }
 
-    &__help-wrapper {
-      padding: 3px 18px 3px 24px;
-      user-select: text;
+  &-help {
+    padding: 3px 18px 3px 32px;
 
-      .text {
-        font-size: 12px;
-        font-style: oblique;
-      }
+    .text {
+      font-size: 12px;
+      font-style: oblique;
+      word-break: break-word;
     }
   }
 }
