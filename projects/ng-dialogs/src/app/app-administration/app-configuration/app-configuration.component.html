@@ -8,7 +8,7 @@
         </button>
         <button mat-icon-button matTooltip="Configure app settings"
           (click)="config(eavConstants.contentTypes.settings)">
-          <mat-icon>settings</mat-icon>
+          <mat-icon>dns</mat-icon>
         </button>
       </div>
     </mat-card-header>
@@ -28,7 +28,7 @@
         </button>
         <button mat-icon-button matTooltip="Configure app resources"
           (click)="config(eavConstants.contentTypes.resources)">
-          <mat-icon>settings</mat-icon>
+          <mat-icon>dns</mat-icon>
         </button>
       </div>
     </mat-card-header>
@@ -37,7 +37,10 @@
       views and such, and should not be used for App-Settings.
     </mat-card-content>
   </mat-card>
+</div>
 
+
+<div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
       <mat-card-title>App Package Definition</mat-card-title>
@@ -65,7 +68,10 @@
       Permissions give access to people to the entire app (all content-types / data), so use with care.
     </mat-card-content>
   </mat-card>
+</div>
 
+
+<div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
       <mat-card-title>Export this entire App</mat-card-title>
