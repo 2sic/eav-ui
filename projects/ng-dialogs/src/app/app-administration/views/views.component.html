@@ -2,8 +2,8 @@
   <ag-grid-angular class="ag-theme-material" [rowData]="views" [modules]="modules" [gridOptions]="gridOptions">
   </ag-grid-angular>
 
-  <div>
-    <button mat-button matTooltip="Configure Polymorphism" (click)="editPolymorphisms()">
+  <div class="more-actions-box">
+    <button mat-raised-button matTooltip="Configure Polymorphism" (click)="editPolymorphisms()">
       <img class="polymorph-logo" [src]="polymorphLogo">
       <span>Polymorphism {{ polymorphStatus }}</span>
     </button>
