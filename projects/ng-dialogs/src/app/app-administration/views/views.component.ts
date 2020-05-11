@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { View } from '../models/view.model';
 import { calculateViewType } from './views.helpers';
 import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
@@ -27,6 +28,8 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options'
 })
 export class ViewsComponent implements OnInit, OnDestroy {
   views: View[];
+  polymorphStatus: string;
+  polymorphLogo = polymorphLogo;
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -108,8 +111,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
   private hasChild: boolean;
-
-  polymorphism: Polymorphism;
+  private polymorphism: Polymorphism;
 
   constructor(
     private templatesService: TemplatesService,
@@ -123,7 +125,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchTemplates();
-    this.fetchPolymorph();
+    this.fetchPolymorphism();
     this.refreshOnChildClosed();
   }
 
@@ -138,9 +140,13 @@ export class ViewsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchPolymorph() {
-    // TODO: SPM - do we need to keep a reference to this subscription?
-    this.templatesService.polymorphism().subscribe(pl => this.polymorphism = pl);
+  private fetchPolymorphism() {
+    this.templatesService.getPolymorphism().subscribe(polymorphism => {
+      this.polymorphism = polymorphism;
+      this.polymorphStatus = (polymorphism.Id === null)
+        ? 'not configured'
+        : (polymorphism.Resolver === null ? 'disabled' : 'using ' + polymorphism.Resolver);
+    });
   }
 
   editView(params: CellClickedEvent) {
@@ -159,7 +165,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   editPolymorphisms() {
-    // this must already be loaded - cheap check
     if (!this.polymorphism) { return; }
 
     const form: EditForm = {
@@ -240,7 +245,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         this.hasChild = !!this.route.snapshot.firstChild.firstChild;
         if (!this.hasChild && hadChild) {
           this.fetchTemplates();
-          this.fetchPolymorph();
+          this.fetchPolymorphism();
         }
       })
     );

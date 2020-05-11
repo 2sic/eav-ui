@@ -4,13 +4,8 @@
 
   <div>
     <button mat-button matTooltip="Configure Polymorphism" (click)="editPolymorphisms()">
-      <!-- todo: would be nice if we had a raw-loader to include the right logo <img src="polymorph-logo.png"> -->
-      <mat-icon>layers</mat-icon>
-      Polymorphism
-      {{ polymorphism?.Id === null
-        ? "not configured"
-        : ( polymorphism.Resolver === null ? "disabled" : "using " + polymorphism.Resolver )
-      }}
+      <img class="polymorph-logo" [src]="polymorphLogo">
+      <span>Polymorphism {{ polymorphStatus }}</span>
     </button>
   </div>
 

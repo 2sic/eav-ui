@@ -23,7 +23,7 @@ export class TemplatesService {
     }) as Observable<boolean>;
   }
 
-  polymorphism() {
+  getPolymorphism() {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/polymorphism'), {
       params: { appId: this.context.appId.toString() }
     }) as Observable<Polymorphism>;
