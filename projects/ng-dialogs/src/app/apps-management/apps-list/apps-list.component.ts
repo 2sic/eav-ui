@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { App } from '../models/app.model';
@@ -13,6 +13,7 @@ import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/a
 import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-apps-list',
@@ -22,37 +23,40 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 export class AppsListComponent implements OnInit, OnDestroy {
   apps: App[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
-      filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
-    },
-    {
-      width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
-      cellRendererParams: {
-        onDelete: this.deleteApp.bind(this),
-      } as AppsListActionsParams,
-    },
-    {
-      headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    booleanFilterComponent: BooleanFilterComponent,
-    idFieldComponent: IdFieldComponent,
-    appsListShowComponent: AppsListShowComponent,
-    appsListActionsComponent: AppsListActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      booleanFilterComponent: BooleanFilterComponent,
+      idFieldComponent: IdFieldComponent,
+      appsListShowComponent: AppsListShowComponent,
+      appsListActionsComponent: AppsListActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
+        filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
+      },
+      {
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
+      },
+      {
+        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
+        cellRendererParams: {
+          onDelete: this.deleteApp.bind(this),
+        } as AppsListActionsParams,
+      },
+      {
+        headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+    ],
+  };
 
   private subscription = new Subscription();
   private hasChild: boolean;

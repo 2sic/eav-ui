@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
@@ -26,6 +26,7 @@ import { keyFilters } from '../shared/constants/session.constants';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { defaultGridOptions } from '../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-content-items',
@@ -35,17 +36,20 @@ import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper'
 export class ContentItemsComponent implements OnInit, OnDestroy {
   items: ContentItem[];
 
-  private gridApi: GridApi;
-  frameworkComponents = {
-    pubMetaFilterComponent: PubMetaFilterComponent,
-    booleanFilterComponent: BooleanFilterComponent,
-    idFieldComponent: IdFieldComponent,
-    contentItemsStatusComponent: ContentItemsStatusComponent,
-    contentItemsActionsComponent: ContentItemsActionsComponent,
-    contentItemsEntityComponent: ContentItemsEntityComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      pubMetaFilterComponent: PubMetaFilterComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      idFieldComponent: IdFieldComponent,
+      contentItemsStatusComponent: ContentItemsStatusComponent,
+      contentItemsActionsComponent: ContentItemsActionsComponent,
+      contentItemsEntityComponent: ContentItemsEntityComponent,
+    },
+  };
 
+  private gridApi: GridApi;
   private contentTypeStaticName: string;
   private subscription = new Subscription();
   private hasChild: boolean;

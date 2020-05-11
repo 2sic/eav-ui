@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Query } from '../models/query.model';
@@ -14,6 +14,7 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-queries',
@@ -23,35 +24,38 @@ import { DialogService } from '../../shared/services/dialog.service';
 export class QueriesComponent implements OnInit, OnDestroy {
   queries: Query[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
-    },
-    {
-      width: 200, cellClass: 'secondary-action no-padding',
-      cellRenderer: 'queriesActionsComponent', cellRendererParams: {
-        onEditQuery: this.editQuery.bind(this),
-        onCloneQuery: this.cloneQuery.bind(this),
-        onOpenPermissions: this.openPermissions.bind(this),
-        onExportQuery: this.exportQuery.bind(this),
-        onDelete: this.deleteQuery.bind(this),
-      } as QueriesActionsParams,
-    },
-    {
-      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    idFieldComponent: IdFieldComponent,
-    queriesActionsComponent: QueriesActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      idFieldComponent: IdFieldComponent,
+      queriesActionsComponent: QueriesActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+      },
+      {
+        width: 200, cellClass: 'secondary-action no-padding',
+        cellRenderer: 'queriesActionsComponent', cellRendererParams: {
+          onEditQuery: this.editQuery.bind(this),
+          onCloneQuery: this.cloneQuery.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onExportQuery: this.exportQuery.bind(this),
+          onDelete: this.deleteQuery.bind(this),
+        } as QueriesActionsParams,
+      },
+      {
+        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+    ],
+  };
 
   private subscription = new Subscription();
   private hasChild: boolean;

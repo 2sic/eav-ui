@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { EnableLanguagesService } from '../services/enable-languages.service';
 import { EnableLanguage } from '../models/enable-language.model';
@@ -7,6 +7,7 @@ import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-lan
 import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-enable-languages',
@@ -16,29 +17,32 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 export class EnableLanguagesComponent implements OnInit {
   languages: EnableLanguage[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
-    },
-    {
-      headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
-      cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
-      cellRendererParams: {
-        onEnabledToggle: this.toggleLanguage.bind(this),
-      } as EnableLanguagesStatusParams,
-    },
-  ];
-  frameworkComponents = {
-    idFieldComponent: IdFieldComponent,
-    booleanFilterComponent: BooleanFilterComponent,
-    enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      idFieldComponent: IdFieldComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
+      },
+      {
+        headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
+        cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        cellRendererParams: {
+          onEnabledToggle: this.toggleLanguage.bind(this),
+        } as EnableLanguagesStatusParams,
+      },
+    ],
+  };
 
   constructor(private languagesService: EnableLanguagesService) { }
 

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentType } from '../models/content-type.model';
@@ -17,6 +17,7 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-data',
@@ -29,47 +30,51 @@ export class DataComponent implements OnInit, OnDestroy {
   defaultScope: string;
   scopeOptions: EavScopeOption[];
   debugEnabled = false;
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Content Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
-    },
-    {
-      headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-      sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
-    },
-    {
-      headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-      sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
-    },
-    {
-      width: 240, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
-      cellRendererParams: {
-        enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
-        onEdit: this.editContentType.bind(this),
-        onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
-        onOpenExport: this.openExport.bind(this),
-        onOpenImport: this.openImport.bind(this),
-        onOpenPermissions: this.openPermissions.bind(this),
-        onDelete: this.deleteContentType.bind(this),
-      } as DataActionsParams,
-    },
-    {
-      headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    idFieldComponent: IdFieldComponent,
-    dataItemsComponent: DataItemsComponent,
-    dataFieldsComponent: DataFieldsComponent,
-    dataActionsComponent: DataActionsComponent,
-  };
+
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      idFieldComponent: IdFieldComponent,
+      dataItemsComponent: DataItemsComponent,
+      dataFieldsComponent: DataFieldsComponent,
+      dataActionsComponent: DataActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Content Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
+      },
+      {
+        headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
+      },
+      {
+        headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
+      },
+      {
+        width: 240, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
+        cellRendererParams: {
+          enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
+          onEdit: this.editContentType.bind(this),
+          onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
+          onOpenExport: this.openExport.bind(this),
+          onOpenImport: this.openImport.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onDelete: this.deleteContentType.bind(this),
+        } as DataActionsParams,
+      },
+      {
+        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+    ],
+  };
 
   private enableAppFeatures = false;
   private subscription = new Subscription();

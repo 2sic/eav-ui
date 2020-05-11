@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { View } from '../models/view.model';
@@ -18,6 +18,7 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options';
 
 @Component({
   selector: 'app-views',
@@ -27,80 +28,83 @@ import { Polymorphism } from '../models/polymorphism.model';
 export class ViewsComponent implements OnInit, OnDestroy {
   views: View[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'viewsShowComponent',
-      sortable: true, filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
-    },
-    {
-      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
-    },
-    {
-      width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
-      cellRendererParams: {
-        onOpenCode: this.openCode.bind(this),
-        onOpenPermissions: this.openPermissions.bind(this),
-        onDelete: this.deleteView.bind(this),
-      } as ViewActionsParams,
-    },
-    {
-      headerName: 'Url Key', field: 'ViewNameInUrl', flex: 1, minWidth: 150, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Path', field: 'TemplatePath', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Content', field: 'ContentType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Default', field: 'ContentType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.contentDemoValueGetter,
-    },
-    {
-      headerName: 'Presentation', field: 'PresentationType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Default', field: 'PresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.presentationDemoValueGetter,
-    },
-    {
-      headerName: 'Header', field: 'ListContentType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Default', field: 'ListContentType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerDemoValueGetter,
-    },
-    {
-      headerName: 'Header Presentation', field: 'ListPresentationType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Default', field: 'ListPresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
-    },
-  ];
-  frameworkComponents = {
-    idFieldComponent: IdFieldComponent,
-    booleanFilterComponent: BooleanFilterComponent,
-    viewsTypeComponent: ViewsTypeComponent,
-    viewsShowComponent: ViewsShowComponent,
-    viewsActionsComponent: ViewsActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      idFieldComponent: IdFieldComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      viewsTypeComponent: ViewsTypeComponent,
+      viewsShowComponent: ViewsShowComponent,
+      viewsActionsComponent: ViewsActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'viewsShowComponent',
+        sortable: true, filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
+      },
+      {
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
+      },
+      {
+        headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
+        cellRendererParams: {
+          onOpenCode: this.openCode.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onDelete: this.deleteView.bind(this),
+        } as ViewActionsParams,
+      },
+      {
+        headerName: 'Url Key', field: 'ViewNameInUrl', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Path', field: 'TemplatePath', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Content', field: 'ContentType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Default', field: 'ContentType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.contentDemoValueGetter,
+      },
+      {
+        headerName: 'Presentation', field: 'PresentationType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Default', field: 'PresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.presentationDemoValueGetter,
+      },
+      {
+        headerName: 'Header', field: 'ListContentType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Default', field: 'ListContentType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerDemoValueGetter,
+      },
+      {
+        headerName: 'Header Presentation', field: 'ListPresentationType.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Default', field: 'ListPresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
+      },
+    ],
+  };
 
   private subscription = new Subscription();
   private hasChild: boolean;
