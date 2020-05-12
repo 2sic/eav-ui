@@ -81,9 +81,10 @@ export class DialogService {
     window.open(url, '_blank');
   }
 
+  /** Encodes param if necessary */
   private buildHashParam(key: string, value?: string) {
     const rawKey = key.replace(prefix, '');
-    const valueTemp = (value !== undefined) ? value : sessionStorage.getItem(key);
+    const valueTemp = (value != null) ? value : sessionStorage.getItem(key);
     const rawValue = encodeURIComponent(valueTemp);
     const hashParam = `&${rawKey}=${rawValue}`;
     return hashParam;

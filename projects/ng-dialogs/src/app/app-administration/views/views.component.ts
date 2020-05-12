@@ -214,11 +214,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openCode(view: View) {
-    // const form: EditForm = {
-    //   items: [
-    //     { Path: view.TemplatePath }
-    //   ]
-    // };
     this.dialogService.openCodeFile(view.TemplatePath);
   }
 
