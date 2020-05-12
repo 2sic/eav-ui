@@ -107,7 +107,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
         if (callback) { callback(); }
       },
       error: (reason: any) => {
-        this.snackBar.open(`Save Pipeline failed`, null, { duration: 2000 });
+        this.snackBar.open('Save Pipeline failed', null, { duration: 2000 });
         this.queryDef.readOnly = false;
         this.attachListeners();
       }

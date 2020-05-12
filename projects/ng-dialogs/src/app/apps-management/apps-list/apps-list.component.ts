@@ -134,9 +134,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
     if (result === null) {
       return;
     } else if (result === app.Name || result === 'yes!') {
-      this.snackBar.open(`Deleting...`);
+      this.snackBar.open('Deleting...');
       this.appsListService.delete(app.Id).subscribe(() => {
-        this.snackBar.open(`Deleted`, null, { duration: 2000 });
+        this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchAppsList();
       });
     } else {
@@ -146,9 +146,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private flushApp(app: App) {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
-    this.snackBar.open(`Flushing cache...`);
+    this.snackBar.open('Flushing cache...');
     this.appsListService.flushCache(app.Id).subscribe(() => {
-      this.snackBar.open(`Cache flushed`, null, { duration: 2000 });
+      this.snackBar.open('Cache flushed', null, { duration: 2000 });
     });
   }
 
