@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
@@ -48,7 +49,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
         cellRendererParams: {
           onDelete: this.deleteApp.bind(this),
-          onFlush: (app) => this.flushApp(app),
+          onFlush: (app) => { this.flushApp(app); },
         } as AppsListActionsParams,
       },
       {
@@ -56,13 +57,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter',
       },
       {
-        headerName: 'Version', field: 'Version', width: 70, cellClass: 'no-outline', sortable: true,
+        headerName: 'Version', field: 'Version', width: 78, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
         filter: 'agTextColumnFilter',
-      }, {
-        headerName: 'Items', field: 'Items', width: 70, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', type: 'numericColumn',
       },
-
+      {
+        headerName: 'Items', field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        filter: 'agNumberColumnFilter',
+      },
     ],
   };
 

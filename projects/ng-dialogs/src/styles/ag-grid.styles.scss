@@ -88,6 +88,10 @@ ag-grid-angular.ag-theme-material {
 }
 
 .ag-cell {
+  &.number-cell {
+    text-align: right;
+  }
+
   &:not(.no-padding) {
     padding-left: 8px !important;
     padding-right: 8px !important;
