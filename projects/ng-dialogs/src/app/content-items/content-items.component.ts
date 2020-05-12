@@ -224,8 +224,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
     ];
     for (const column of columns) {
-      // 2dm: disabled, because otherwise you can never see the column name of the title-column. better list twice - see also #1639
-      // if (column.IsTitle) { continue; }
       const colDef: ExtendedColDef = {
         headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true,
