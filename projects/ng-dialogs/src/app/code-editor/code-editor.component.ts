@@ -140,14 +140,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     if (codeFile) {
       this.snackBarStack
         .add(`This template also has a code-behind file '${codeFile}'.`, 'Open')
-        .subscribe(res => {
+        .subscribe(() => {
           this.dialogService.openCodeFile(codeFile);
         });
     }
     if (otherEditions) {
       this.snackBarStack
         .add(`There are ${otherEditions} other editions of this. You may be editing an edition which is not the one you see.`, 'Help')
-        .subscribe(res => {
+        .subscribe(() => {
           window.open('https://r.2sxc.org/polymorphism', '_blank');
         });
     }
