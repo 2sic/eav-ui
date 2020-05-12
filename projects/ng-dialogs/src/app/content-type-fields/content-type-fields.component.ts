@@ -20,7 +20,7 @@ import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-
 import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
-import { defaultGridOptions } from '../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-content-type-fields',

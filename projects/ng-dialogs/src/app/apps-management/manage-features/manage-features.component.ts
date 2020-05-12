@@ -12,7 +12,7 @@ import { ElementEventListener } from '../../../../../shared/element-event-listen
 import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { defaultGridOptions } from '../../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-manage-features',

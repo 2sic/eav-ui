@@ -9,7 +9,7 @@ import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-a
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
 import { EditForm } from '../../shared/models/edit-form.model';
-import { defaultGridOptions } from '../../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-web-api',

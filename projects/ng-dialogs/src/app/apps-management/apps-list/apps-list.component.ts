@@ -12,7 +12,7 @@ import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/a
 import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { defaultGridOptions } from '../../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-apps-list',
@@ -58,7 +58,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
       {
         headerName: 'Version', field: 'Version', width: 70, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
-      },      {
+      }, {
         headerName: 'Items', field: 'Items', width: 70, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter', type: 'numericColumn',
       },
@@ -148,7 +148,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
     this.snackBar.open(`Flushing cache...`);
     this.appsListService.flushCache(app.Id).subscribe(() => {
-      this.snackBar.open(`Cache flushed`, null, {duration: 2000 });
+      this.snackBar.open(`Cache flushed`, null, { duration: 2000 });
     });
   }
 

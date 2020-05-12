@@ -26,7 +26,7 @@ import { keyFilters } from '../shared/constants/session.constants';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
-import { defaultGridOptions } from '../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-content-items',

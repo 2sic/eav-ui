@@ -13,7 +13,7 @@ import { PermissionsActionsParams } from './ag-grid-components/permissions-actio
 import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { defaultGridOptions } from '../shared/constants/default-grid-options';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-permissions',
