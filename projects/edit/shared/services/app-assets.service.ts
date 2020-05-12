@@ -14,9 +14,9 @@ export class AppAssetsService {
     };
 
     const getAll = () => {
-      return this.httpClient.get<string[]>(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
+      return this.httpClient.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
         params: Object.assign({}, params as any, { withSubfolders: 'true' }),
-      });
+      }) as Observable<string[]>;
     };
 
     const create = (path: string, content: any) => {
