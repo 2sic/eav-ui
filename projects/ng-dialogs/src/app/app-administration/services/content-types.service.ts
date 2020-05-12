@@ -25,12 +25,15 @@ export class ContentTypesService {
   }
 
   getScopes() {
-    return (this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/scopes'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/scopes'), {
       params: { appId: this.context.appId.toString() }
-    }) as Observable<{ [key: string]: string }>)
-      .pipe(map(o => Object.keys(o).map((key) => ({ name: o[key], value: key } as EavScopeOption))));
+    }).pipe(
+      map((scopes: { [key: string]: string }) => {
+        const scopeOptions: EavScopeOption[] = Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
+        return scopeOptions;
+      }),
+    );
   }
-
 
   save(contentType: ContentTypeEdit) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/save'), contentType, {

@@ -11,7 +11,7 @@ import { ContentTypesService } from '../services/content-types.service';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavScopesKey, EavScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
@@ -96,7 +96,6 @@ export class DataComponent implements OnInit, OnDestroy {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
     this.scope = eavConstants.scopes.default.value;
     this.defaultScope = eavConstants.scopes.default.value;
-    // this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
   }
 
   async ngOnInit() {
@@ -141,8 +140,8 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private fetchScopes() {
-    this.contentTypesService.getScopes().subscribe(contentTypes => {
-      this.scopeOptions = contentTypes;
+    this.contentTypesService.getScopes().subscribe(scopes => {
+      this.scopeOptions = scopes;
     });
   }
 
