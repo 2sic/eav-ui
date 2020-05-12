@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Subject, Observable } from 'rxjs';
 
@@ -6,7 +6,7 @@ import { Subject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class SnackbarStackService {
+export class SnackBarStackService implements OnDestroy {
   private defaultDuration = 3000;
   private processingMessage = false;
   private messageQueue: SnackBarData[] = [];
@@ -15,39 +15,44 @@ export class SnackbarStackService {
 
   /**
    * Add a message to the stack queue.
-   * @returns will fire if the action is triggered
+   * @returns observable that fires if the action is triggered.
+   * Service will complete the observable
    */
   add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }): Observable<boolean> {
     const triggered = new Subject<boolean>();
     this.messageQueue.push({ message, action, config, triggered });
     if (!this.processingMessage) {
-      this.displaySnackbar();
+      this.showSnackBar();
     }
-    return triggered;
+    return triggered.asObservable();
   }
 
-  private displaySnackbar(): void {
-    const next = this.getNextMessage();
+  private showSnackBar() {
+    const nextMsg = this.messageQueue.shift();
 
-    if (!next) {
+    if (nextMsg == null) {
       this.processingMessage = false;
       return;
     }
 
     this.processingMessage = true;
 
-    const snack = this.snackBar.open(next.message, next.action, next.config);
-    snack.afterDismissed().subscribe(() => {
-      this.displaySnackbar();
+    const snackBarRef = this.snackBar.open(nextMsg.message, nextMsg.action, nextMsg.config);
+    snackBarRef.afterDismissed().subscribe(() => {
+      nextMsg.triggered.complete();
+      this.showSnackBar();
     });
-    snack.onAction().subscribe(() => {
-      next.triggered.next(true);
-      next.triggered.complete();
+    snackBarRef.onAction().subscribe(() => {
+      nextMsg.triggered.next(true);
+      nextMsg.triggered.complete();
     });
   }
 
-  private getNextMessage(): SnackBarData | undefined {
-    return this.messageQueue.length ? this.messageQueue.shift() : undefined;
+  ngOnDestroy() {
+    for (const message of this.messageQueue) {
+      message.triggered.complete();
+    }
+    this.messageQueue = null;
   }
 }
 
