@@ -23,13 +23,13 @@
     <mat-icon>person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" (click)="editContentType()"
+  <!-- <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" (click)="editContentType()"
     matTooltip="Settings">
     <mat-icon>settings</mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
     <mat-icon>settings</mat-icon>
-  </div>
+  </div> -->
 
   <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" matTooltip="Delete"
     (click)="deleteContentType()">

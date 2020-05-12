@@ -25,4 +25,8 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
   deleteApp() {
     this.params.onDelete(this.app);
   }
+
+  flushCache() {
+    this.params.onFlush(this.app);
+  }
 }

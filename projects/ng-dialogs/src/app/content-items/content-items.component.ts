@@ -211,7 +211,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
       },
       {
-        headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
@@ -224,7 +224,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
     ];
     for (const column of columns) {
-      if (column.IsTitle) { continue; }
+      // 2dm: disabled, because otherwise you can never see the column name of the title-column. better list twice - see also #1639
+      // if (column.IsTitle) { continue; }
       const colDef: ExtendedColDef = {
         headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true,

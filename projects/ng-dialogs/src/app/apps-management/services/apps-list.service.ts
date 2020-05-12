@@ -27,4 +27,10 @@ export class AppsListService {
       params: { zoneId: this.context.zoneId.toString(), appId: appId.toString() },
     }) as Observable<null>;
   }
+
+  flushCache(appId: number) {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/system/flushcache'), {
+      params: { zoneId: this.context.zoneId.toString(), appId: appId.toString() },
+    }) as Observable<null>;
+  }
 }

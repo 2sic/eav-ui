@@ -58,16 +58,21 @@ export class DataComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
       },
       {
-        width: 240, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
+        width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
         cellRendererParams: {
           enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
-          onEdit: this.editContentType.bind(this),
+          // onEdit: this.editContentType.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onDelete: this.deleteContentType.bind(this),
         } as DataActionsParams,
+      },
+      {
+        // TODO: 2dm -> SPM - con can this be made disabled if UseShared? not important, but would be nice
+        headerName: 'Name', field: 'Name', minWidth: 100, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (e) => this.editContentType(e.data)
       },
       {
         headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline',
@@ -121,6 +126,10 @@ export class DataComponent implements OnInit, OnDestroy {
     if (!contentType) {
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
+      if (contentType.UsesSharedDef) {
+        alert(`This is a shared Content-Type, it can't be edited`);
+        return;
+      }
       this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
     }
   }
@@ -182,7 +191,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private nameValueGetter(params: ValueGetterParams) {
     const contentType: ContentType = params.data;
     if (contentType.Name !== contentType.Label) {
-      return `${contentType.Label} (${contentType.Name})`;
+      return contentType.Label; // `${contentType.Label} (${contentType.Name})`;
     } else {
       return contentType.Name;
     }

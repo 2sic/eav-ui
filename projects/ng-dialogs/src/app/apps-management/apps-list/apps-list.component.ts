@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
@@ -46,15 +45,24 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
         cellRendererParams: {
           onDelete: this.deleteApp.bind(this),
+          onFlush: (app) => this.flushApp(app),
         } as AppsListActionsParams,
       },
       {
         headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
+      {
+        headerName: 'Version', field: 'Version', width: 70, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },      {
+        headerName: 'Items', field: 'Items', width: 70, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', type: 'numericColumn',
+      },
+
     ],
   };
 
@@ -134,6 +142,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
     } else {
       alert('Input did not match - will not delete');
     }
+  }
+
+  private flushApp(app: App) {
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
+    this.snackBar.open(`Flushing cache...`);
+    this.appsListService.flushCache(app.Id).subscribe(() => {
+      this.snackBar.open(`Cache flushed`, null, {duration: 2000 });
+    });
   }
 
   private openApp(params: CellClickedEvent) {
