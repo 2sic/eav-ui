@@ -13,7 +13,8 @@
   <mat-form-field appearance="standard" color="accent">
     <mat-label>Scope</mat-label>
     <mat-select [ngModel]="exportScope" name="Scope" (selectionChange)="changeScope($event)" [disabled]="lockScope">
-      <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
+      <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
+        {{ scopeOption.name }}
       </mat-option>
       <mat-option value="Other">Other...</mat-option>
     </mat-select>
@@ -34,7 +35,7 @@
     <li class="content-info__item" *ngFor="let contentType of contentInfo.ContentTypes">
       <div class="option-box">
         <mat-checkbox [(ngModel)]="contentType._export">
-          <span class="option-box__text">{{contentType.Name}} ({{contentType.Id}})</span>
+          <span class="option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
         </mat-checkbox>
       </div>
 
@@ -43,7 +44,7 @@
         <li class="content-info__item" *ngFor="let template of contentType.Templates">
           <div class="option-box">
             <mat-checkbox [(ngModel)]="template._export">
-              <span class="option-box__text">{{template.Name}} ({{template.Id}})</span>
+              <span class="option-box__text">{{ template.Name }} ({{ template.Id }})</span>
             </mat-checkbox>
           </div>
         </li>
@@ -54,7 +55,7 @@
         <li class="content-info__item" *ngFor="let entity of contentType.Entities">
           <div class="option-box">
             <mat-checkbox [(ngModel)]="entity._export">
-              <span class="option-box__text">{{entity.Title}} ({{entity.Id}})</span>
+              <span class="option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
             </mat-checkbox>
           </div>
         </li>
@@ -67,7 +68,7 @@
     <li class="content-info__item" *ngFor="let template of contentInfo.TemplatesWithoutContentTypes">
       <div class="option-box">
         <mat-checkbox [(ngModel)]="template._export">
-          <span class="option-box__text">{{template.Name}} ({{template.Id}})</span>
+          <span class="option-box__text">{{ template.Name }} ({{ template.Id }})</span>
         </mat-checkbox>
       </div>
     </li>

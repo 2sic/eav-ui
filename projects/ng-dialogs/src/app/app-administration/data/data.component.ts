@@ -94,8 +94,8 @@ export class DataComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-    this.scope = eavConstants.scopes.default.value;
-    this.defaultScope = eavConstants.scopes.default.value;
+    this.scope = eavConstants.defaultScope.value;
+    this.defaultScope = eavConstants.defaultScope.value;
   }
 
   async ngOnInit() {
@@ -162,7 +162,7 @@ export class DataComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
+        newScope = eavConstants.defaultScope.value;
       } else if (!this.scopeOptions.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,

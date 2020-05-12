@@ -4,7 +4,8 @@ import { MatSelectChange } from '@angular/material/select';
 
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
-import { eavConstants, EavScopeOption, EavScopesKey } from '../../../shared/constants/eav.constants';
+import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
   selector: 'app-export-app-parts',
@@ -13,15 +14,19 @@ import { eavConstants, EavScopeOption, EavScopesKey } from '../../../shared/cons
 })
 export class ExportAppPartsComponent implements OnInit {
   contentInfo: ContentInfo;
-  exportScope = eavConstants.scopes.default.value;
+  exportScope = eavConstants.defaultScope.value;
   scopeOptions: EavScopeOption[];
   lockScope = true;
   isExporting = false;
 
-  constructor(private dialogRef: MatDialogRef<ExportAppPartsComponent>, private exportAppPartsService: ExportAppPartsService) { }
+  constructor(
+    private dialogRef: MatDialogRef<ExportAppPartsComponent>,
+    private exportAppPartsService: ExportAppPartsService,
+    private contentTypesService: ContentTypesService,
+  ) { }
 
   ngOnInit() {
-    this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
+    this.fetchScopes();
     this.fetchContentInfo();
   }
 
@@ -44,7 +49,7 @@ export class ExportAppPartsComponent implements OnInit {
       // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
+        newScope = eavConstants.defaultScope.value;
       } else if (!this.scopeOptions.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,
@@ -61,13 +66,19 @@ export class ExportAppPartsComponent implements OnInit {
     event.stopPropagation();
     this.lockScope = !this.lockScope;
     if (this.lockScope) {
-      this.exportScope = eavConstants.scopes.default.value;
+      this.exportScope = eavConstants.defaultScope.value;
       this.fetchContentInfo();
     }
   }
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  private fetchScopes() {
+    this.contentTypesService.getScopes().subscribe(scopes => {
+      this.scopeOptions = scopes;
+    });
   }
 
   private fetchContentInfo() {

@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
-import { eavConstants, EavScopesKey, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
 import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type.patterns';
 
 @Component({
@@ -30,10 +30,6 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar,
   ) {
     this.scope = this.route.snapshot.paramMap.get('scope');
-    // this.scopeOptions = Object.keys(eavConstants.scopes).map((key: EavScopesKey) => eavConstants.scopes[key]);
-    this.contentTypesService.getScopes().subscribe(contentTypes => {
-      this.scopeOptions = contentTypes;
-    });
     this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
 
@@ -45,6 +41,7 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.fetchScopes();
     if (!this.id) {
       this.contentType = {
         ...(new ContentTypeEdit()),
@@ -66,7 +63,7 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
       // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
+        newScope = eavConstants.defaultScope.value;
       } else if (!this.scopeOptions.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,
@@ -98,6 +95,12 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     this.dialogRef.close();
   }
 
+  private fetchScopes() {
+    this.contentTypesService.getScopes().subscribe(scopes => {
+      this.scopeOptions = scopes;
+    });
+  }
+
   private fetchContentType() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       const contentType = contentTypes.find(ct => ct.Id === this.id);
@@ -108,4 +111,5 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
       };
     });
   }
+
 }

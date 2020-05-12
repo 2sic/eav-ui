@@ -1,6 +1,5 @@
 export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
 export type EavKeyTypeKey = 'guid' | 'string' | 'number';
-export type EavScopesKey = 'default' | 'app' | 'cmsSystem' | 'system';
 export interface EavScopeOption { name: string; value: string; }
 
 export const eavConstants = {
@@ -26,17 +25,8 @@ export const eavConstants = {
     number: 'number',
   },
 
-  /** Scopes */
-  scopes: {
-    /** This is the main schema and the data you usually see is from here */
-    default: { name: 'Default', value: '2SexyContent' },
-    /** This contains content-types for configuration, settings and resources of the app */
-    app: { name: 'App', value: '2SexyContent-App' },
-    /** This contains view-definitions, content-types etc. */
-    cmsSystem: { name: 'CMS System', value: '2SexyContent-System' },
-    /** This contains core EAV data like input-field configurations and similar */
-    system: { name: 'System', value: 'System' },
-  },
+  /** This is the main schema and the data you usually see is from here. Other scopes are fetched from the backend */
+  defaultScope: { name: 'Default', value: '2SexyContent' },
 
   /** Content types where templates, permissions, etc. are stored */
   contentTypes: {
