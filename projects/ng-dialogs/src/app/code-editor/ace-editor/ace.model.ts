@@ -417,7 +417,6 @@ export interface EditSession extends EventEmitter, OptionsProvider, Folding {
   on(name: 'tokenizerUpdate',
     callback: (obj: { data: { first: number, last: number } }) => void): Function;
 
-
   setOption<T extends keyof EditSessionOptions>(name: T, value: EditSessionOptions[T]): void;
   getOption<T extends keyof EditSessionOptions>(name: T): EditSessionOptions[T];
 
@@ -655,7 +654,6 @@ export interface VirtualRenderer extends OptionsProvider, EventEmitter {
   attachToShadowRoot(): void;
   destroy(): void;
 }
-
 
 export interface Selection extends EventEmitter {
   moveCursorWordLeft(): void;

@@ -5,5 +5,3 @@ export class EntityInfo {
         this.Text = Text;
     }
 }
-
-

@@ -7,5 +7,3 @@ export class Language {
         this.name = name;
     }
 }
-
-

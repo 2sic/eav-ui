@@ -30,7 +30,6 @@ export class Context {
   }
   private _appId: number;
 
-
   /**
    * The request verification token for http requests.
    * It's only loaded from the root, never from sub-contexts
@@ -65,7 +64,6 @@ export class Context {
     if (!globalWindow.contextId) { globalWindow.contextId = 0; }
     this.id = globalWindow.contextId++;
   }
-
 
   /**
    * This is the initializer at entry-componets of modules.

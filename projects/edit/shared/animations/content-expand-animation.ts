@@ -28,4 +28,3 @@ export const ContentExpandAnimation = [
         ], { params: { bottomPixels: window.innerWidth > 600 ? '100px' : '50px' } }),
     ]),
 ];
-
