@@ -11,7 +11,7 @@ import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
 import { SourceView } from './models/source-view.model';
 import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { SnippetsService } from './services/snippets.service';
-import { SnackBarStackService } from '../shared/services/snackbar-stack.service';
+import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 
