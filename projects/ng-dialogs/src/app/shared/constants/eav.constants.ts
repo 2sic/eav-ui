@@ -25,8 +25,13 @@ export const eavConstants = {
     number: 'number',
   },
 
-  /** This is the main schema and the data you usually see is from here. Other scopes are fetched from the backend */
-  defaultScope: { name: 'Default', value: '2SexyContent' },
+  /** Scopes */
+  scopes: {
+    /** This is the main schema and the data you usually see is from here */
+    default: { name: 'Default', value: '2SexyContent' },
+    /** This contains content-types for configuration, settings and resources of the app */
+    app: { name: 'System: App', value: '2SexyContent-App' },
+  },
 
   /** Content types where templates, permissions, etc. are stored */
   contentTypes: {
