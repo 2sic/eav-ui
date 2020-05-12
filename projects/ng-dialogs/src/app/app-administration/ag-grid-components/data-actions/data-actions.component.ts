@@ -25,10 +25,6 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  // editContentType() {
-  //   this.params.onEdit(this.contentType);
-  // }
-
   createOrEditMetadata() {
     this.params.onCreateOrEditMetadata(this.contentType);
   }
@@ -51,6 +47,6 @@ export class DataActionsComponent implements ICellRendererAngularComp {
 
   private isGuid(txtToTest: string) {
     const patt = new RegExp(/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/i);
-    return patt.test(txtToTest); // note: can't use the txtToTest.match because it causes infinite digest cycles
+    return patt.test(txtToTest);
   }
 }

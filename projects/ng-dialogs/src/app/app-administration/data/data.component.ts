@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentType } from '../models/content-type.model';
@@ -46,8 +46,8 @@ export class DataComponent implements OnInit, OnDestroy {
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
       },
       {
-        headerName: 'Content Type', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this), valueGetter: this.nameValueGetter,
+        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -61,7 +61,6 @@ export class DataComponent implements OnInit, OnDestroy {
         width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
         cellRendererParams: {
           enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
-          // onEdit: this.editContentType.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
@@ -70,12 +69,11 @@ export class DataComponent implements OnInit, OnDestroy {
         } as DataActionsParams,
       },
       {
-        // TODO: 2dm -> SPM - con can this be made disabled if UseShared? not important, but would be nice
-        headerName: 'Name', field: 'Name', minWidth: 100, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (e) => this.editContentType(e.data)
+        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
       },
       {
-        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        headerName: 'Description', field: 'Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
     ],
@@ -125,10 +123,7 @@ export class DataComponent implements OnInit, OnDestroy {
     if (!contentType) {
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
-      if (contentType.UsesSharedDef) {
-        alert(`This is a shared Content-Type, it can't be edited`);
-        return;
-      }
+      if (contentType.UsesSharedDef) { return; }
       this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
     }
   }
@@ -187,17 +182,17 @@ export class DataComponent implements OnInit, OnDestroy {
     return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
-  private nameValueGetter(params: ValueGetterParams) {
-    const contentType: ContentType = params.data;
-    if (contentType.Name !== contentType.Label) {
-      return contentType.Label; // `${contentType.Label} (${contentType.Name})`;
-    } else {
-      return contentType.Name;
-    }
-  }
-
   private enableAppFeaturesGetter() {
     return this.enableAppFeatures;
+  }
+
+  private nameCellClassGetter(params: CellClassParams) {
+    const contentType: ContentType = params.data;
+    if (contentType.UsesSharedDef) {
+      return 'disabled';
+    } else {
+      return 'primary-action highlight';
+    }
   }
 
   private addItem(params: CellClickedEvent) {
