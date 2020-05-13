@@ -53,6 +53,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private contentTypeStaticName: string;
   private subscription = new Subscription();
   private hasChild: boolean;
+  private columnDefs: ColDef[];
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
@@ -71,8 +72,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.fetchItems();
     this.refreshOnChildClosed();
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      const columnDefs = this.buildColumnDefs(columns);
-      this.gridApi.setColumnDefs(columnDefs);
+      this.columnDefs = this.buildColumnDefs(columns);
+      this.gridApi?.setColumnDefs(this.columnDefs);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
       if (filterModel) {
         angularConsoleLog('Will try to apply filter:', filterModel);
@@ -88,6 +89,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    if (this.columnDefs) {
+      this.gridApi.setColumnDefs(this.columnDefs);
+    }
   }
 
   private fetchItems() {
