@@ -8,6 +8,7 @@ import { filter } from 'rxjs/operators';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
+import { Context } from '../../shared/services/context';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -27,18 +28,18 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private globalConfigurationService: GlobalConfigurationService,
+    private context: Context,
   ) { }
 
   ngOnInit() {
-    this.subscription.add(
-      this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-        if (dialogSettings.IsContent) {
-          this.tabs = this.tabs.filter(tab => !(tab === 'queries' || tab === 'web-api'));
-        }
-        this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
-        this.dialogSettings = dialogSettings; // needed to filter tabs
-      })
-    );
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      this.context.appRoot = dialogSettings.AppPath;
+      if (dialogSettings.IsContent) {
+        this.tabs = this.tabs.filter(tab => !(tab === 'queries' || tab === 'web-api'));
+      }
+      this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
+      this.dialogSettings = dialogSettings; // needed to filter tabs
+    });
     this.subscription.add(
       // change tab when route changed
       this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {

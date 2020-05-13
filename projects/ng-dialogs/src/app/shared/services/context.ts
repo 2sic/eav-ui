@@ -1,6 +1,6 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix } from '../constants/session.constants';
+import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix, keyAppRoot } from '../constants/session.constants';
 import { angularConsoleLog } from '../helpers/angular-console-log.helper';
 
 /** The context provides information */
@@ -30,6 +30,15 @@ export class Context {
   }
   private _appId: number;
 
+  /** Root of the current App */
+  get appRoot(): string {
+    return (this._appRoot != null) ? this._appRoot : (this._appRoot = this.parent.appRoot);
+  }
+  set appRoot(path: string) {
+    this._appRoot = path;
+  }
+  private _appRoot: string;
+
   /**
    * The request verification token for http requests.
    * It's only loaded from the root, never from sub-contexts
@@ -56,13 +65,13 @@ export class Context {
   private _moduleId: number;
 
   constructor(@Optional() @SkipSelf() parentContext: Context) {
-    angularConsoleLog('Context.constructor');
     this.parent = parentContext;
 
     // spm NOTE: I've given id to every context to make it easier to follow how things work
     const globalWindow = window as any;
     if (!globalWindow.contextId) { globalWindow.contextId = 0; }
     this.id = globalWindow.contextId++;
+    angularConsoleLog('Context.constructor', this);
   }
 
   /**
@@ -70,15 +79,13 @@ export class Context {
    * It ensures that within that module, the context has the values given by the route
    */
   init(route: ActivatedRoute) {
-    angularConsoleLog('Context.init', route);
     this.routeSnapshot = route && route.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
+    angularConsoleLog('Context.init', this, route);
   }
 
   initRoot() {
-    angularConsoleLog('Context.initRoot');
-
     // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);
     this._zoneId = this.sessionNumber(keyZoneId);
@@ -92,8 +99,10 @@ export class Context {
 
     // optional global things
     this._appId = this.sessionNumber(keyAppId);
+    this._appRoot = sessionStorage.getItem(keyAppRoot);
 
     this.ready = true;
+    angularConsoleLog('Context.initRoot', this);
   }
 
   private sessionNumber(name: string): number {
@@ -129,6 +138,7 @@ export class Context {
   private clearCachedValues() {
     this._zoneId = null;
     this._appId = null;
+    this._appRoot = null;
     this._rvt = null;
     this._tabId = null;
     this._contentBlockId = null;

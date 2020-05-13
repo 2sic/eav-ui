@@ -37,7 +37,7 @@ export class DialogService {
       this.buildHashParam(keyPartOfPage) +
       this.buildHashParam(keyUserCanDesign) +
       this.buildHashParam(keyUserCanDevelop) +
-      this.buildHashParam(keyAppRoot) +
+      this.buildHashParam(keyAppRoot, this.context.appRoot) +
       this.buildHashParam(keyFa) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
@@ -68,7 +68,7 @@ export class DialogService {
       this.buildHashParam(keyPartOfPage) +
       this.buildHashParam(keyUserCanDesign) +
       this.buildHashParam(keyUserCanDevelop) +
-      this.buildHashParam(keyAppRoot) +
+      this.buildHashParam(keyAppRoot, this.context.appRoot) +
       this.buildHashParam(keyFa) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
