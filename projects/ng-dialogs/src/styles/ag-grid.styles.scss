@@ -53,6 +53,20 @@ ag-grid-angular.ag-theme-material {
     color: map_get($mat-eav-item-dialog-secondary, 500);
   }
 
+  .apps-list-primary-action {
+    cursor: pointer;
+
+    .text {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
+    }
+
+    &.ag-column-hover {
+      .text {
+        text-decoration: underline;
+      }
+    }
+  }
+
   .primary-action {
     cursor: pointer;
     color: map_get($mat-eav-item-dialog-secondary, 500);
@@ -93,7 +107,7 @@ ag-grid-angular.ag-theme-material {
   }
 
   &.disabled {
-    color: $grid-color-disabled;
+    color: $grid-color-disabled !important;
   }
 
   &:not(.no-padding) {
@@ -117,6 +131,10 @@ ag-grid-angular.ag-theme-material {
     margin: -1px 1px 1px -1px;
 
     .chip {
+      box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+    }
+
+    .image {
       box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
     }
   }

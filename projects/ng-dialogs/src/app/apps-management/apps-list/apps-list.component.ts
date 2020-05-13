@@ -42,18 +42,25 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
       },
       {
-        width: 60, cellClass: 'no-outline no-padding', cellRenderer: (params: ICellRendererParams) => {
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this), cellRenderer: (params: ICellRendererParams) => {
           const app: App = params.data;
           if (app.Thumbnail != null) {
-            return `<div class="image-box"><img src="${app.Thumbnail}?w=40&h=40&mode=crop" class="app-image"></img></div>`;
+            return `
+            <div class="container">
+              <img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>
+              <div class="text">${params.value}</div>
+            </div>`;
           } else {
-            return '<div class="image-box"><span class="material-icons-outlined">star_border</span></div>';
+            return `
+            <div class="container">
+              <div class="image logo">
+                <span class="material-icons-outlined">star_border</span>
+              </div>
+              <div class="text">${params.value}</div>
+            </div>`;
           }
         },
-      },
-      {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
       },
       {
         width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
@@ -67,7 +74,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter',
       },
       {
-        headerName: 'Version', field: 'Version', width: 78, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        headerName: 'Version', field: 'Version', width: 78, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
       {
