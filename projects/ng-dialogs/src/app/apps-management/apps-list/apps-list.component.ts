@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { App } from '../models/app.model';
@@ -40,6 +40,16 @@ export class AppsListComponent implements OnInit, OnDestroy {
       {
         headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
         filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
+      },
+      {
+        width: 60, cellClass: 'no-outline no-padding', cellRenderer: (params: ICellRendererParams) => {
+          const app: App = params.data;
+          if (app.Thumbnail != null) {
+            return `<div class="image-box"><img src="${app.Thumbnail}?w=40&h=40&mode=crop" class="app-image"></img></div>`;
+          } else {
+            return '<div class="image-box"><span class="material-icons-outlined">star_border</span></div>';
+          }
+        },
       },
       {
         headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,

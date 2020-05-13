@@ -8,5 +8,8 @@ export class App {
     public AppRoot: string,
     public IsHidden: boolean,
     public ConfigurationId: number,
+    public Items: number,
+    public Thumbnail: string,
+    public Version: string,
   ) { }
 }
