@@ -4,17 +4,21 @@
 
 <router-outlet></router-outlet>
 
-<p class="dialog-description">You can manage the list header here (if it is defined):</p>
+<ng-container *ngIf="header">
+  <p class="dialog-description">
+    You can manage the list header here (if it is defined):
+  </p>
 
-<p class="dialog-description" *ngIf="header">
-  <ng-container *ngIf="header.Type">
-    <span>{{ header.Title }}</span>
-    <button mat-icon-button matTooltip="Edit header" (click)="editHeader()">
-      <mat-icon>edit</mat-icon>
-    </button>
-  </ng-container>
-  <ng-container *ngIf="!header.Type">(this list has no header)</ng-container>
-</p>
+  <p class="dialog-description">
+    <ng-container *ngIf="header.Type">
+      <span>{{ header.Title }}</span>
+      <button mat-icon-button matTooltip="Edit header" (click)="editHeader()">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!header.Type">(this list has no header)</ng-container>
+  </p>
+</ng-container>
 
 <p class="dialog-description sort-title">Sort the items by dragging as you need, then save:</p>
 

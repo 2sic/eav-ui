@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { Context } from '../../services/context';
 import { DialogConfig } from '../../models/dialog-config.model';
-import { angularConsoleLog } from '../../helpers/angular-console-log';
+import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-dialog-entry',

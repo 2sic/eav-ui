@@ -1,7 +1,7 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix } from '../constants/sessions-keys';
-import { angularConsoleLog } from '../helpers/angular-console-log';
+import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix } from '../constants/session.constants';
+import { angularConsoleLog } from '../helpers/angular-console-log.helper';
 
 /** The context provides information */
 @Injectable()
@@ -29,7 +29,6 @@ export class Context {
     return (this._appId != null) ? this._appId : (this._appId = this.routeNum(keyAppId) || this.parent.appId);
   }
   private _appId: number;
-
 
   /**
    * The request verification token for http requests.
@@ -65,7 +64,6 @@ export class Context {
     if (!globalWindow.contextId) { globalWindow.contextId = 0; }
     this.id = globalWindow.contextId++;
   }
-
 
   /**
    * This is the initializer at entry-componets of modules.

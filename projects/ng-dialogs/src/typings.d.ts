@@ -16,3 +16,8 @@ declare module '!raw-loader!*' {
   const contents: string;
   export default contents;
 }
+
+declare module '!url-loader!*' {
+  const urlLoaderContents: string;
+  export default urlLoaderContents;
+}

@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ColDef, AllCommunityModules } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 
-import { WebApisService } from '../shared/services/web-apis.service';
-import { WebApi } from '../shared/models/web-api.model';
-import { WebApiActionsComponent } from '../shared/ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../shared/models/web-api-actions-params';
+import { WebApisService } from '../services/web-apis.service';
+import { WebApi } from '../models/web-api.model';
+import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { EditForm } from '../shared/models/edit-form.model';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-web-api',
@@ -18,26 +19,29 @@ import { EditForm } from '../shared/models/edit-form.model';
 export class WebApiComponent implements OnInit {
   webApis: WebApi[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
-        onOpenCode: this.openCode.bind(this),
-        onDelete: this.deleteApi.bind(this),
-      } as WebApiActionsParams,
-    },
-  ];
-  frameworkComponents = {
-    webApiActions: WebApiActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      webApiActions: WebApiActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
+          onOpenCode: this.openCode.bind(this),
+          onDelete: this.deleteApi.bind(this),
+        } as WebApiActionsParams,
+      },
+    ],
+  };
 
   constructor(
     private webApisService: WebApisService,
@@ -92,11 +96,6 @@ export class WebApiComponent implements OnInit {
   }
 
   private openCode(api: WebApi) {
-    // const form: EditForm = {
-    //   items: [
-    //     { Path: `${api.folder}/${api.name}.cs` }
-    //   ]
-    // };
     this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
   }
 

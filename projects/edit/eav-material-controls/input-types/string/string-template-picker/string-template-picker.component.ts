@@ -10,7 +10,7 @@ import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-ass
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';
 import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -80,12 +80,10 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
       ? this.svcGlobal
       : this.svcApp;
 
-    this.svcCurrent.getAll().pipe(take(1)).subscribe(
-      (templates) => {
-        // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
-        this.templates = templates.filter((t) => t.indexOf('.code.') === -1);
-      }
-    );
+    this.svcCurrent.getAll().pipe(take(1)).subscribe(templates => {
+      // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
+      this.templates = templates.filter(template => template.indexOf('.code.') === -1);
+    });
   }
 
   /** filter to only show files which are applicable to this */

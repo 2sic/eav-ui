@@ -1,25 +1,26 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { GridReadyEvent, AllCommunityModules, ColDef, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams, GridOptions } from '@ag-grid-community/all-modules';
+import { GridReadyEvent, AllCommunityModules, GridOptions, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
-import { ContentTypesService } from '../app-administration/shared/services/content-types.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
-import { ContentType } from '../app-administration/shared/models/content-type.model';
+import { ContentType } from '../app-administration/models/content-type.model';
 import { Field } from './models/field.model';
-import { eavConstants } from '../shared/constants/eav-constants';
-import { EditForm, AddItem, EditItem } from '../app-administration/shared/models/edit-form.model';
-import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/shared/constants/content-type';
+import { eavConstants } from '../shared/constants/eav.constants';
+import { EditForm, AddItem, EditItem } from '../shared/models/edit-form.model';
+import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/constants/content-type.patterns';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
-import { ContentTypeFieldsActionsParams } from './models/content-type-fields-actions-params';
+import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
-import { InputTypesConstants } from '../../../../edit/shared/constants/input-types-constants';
+import { InputTypeConstants } from './constants/input-type.constants';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -28,59 +29,59 @@ import { InputTypesConstants } from '../../../../edit/shared/constants/input-typ
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   fields: Field[];
-  enableTextSelection = true;
 
-  private gridApi: GridApi;
-  columnDefs: ColDef[] = [
-    { rowDrag: true, width: 18, cellClass: 'no-padding' },
-    {
-      headerName: 'Title', field: 'IsTitle', width: 40, cellClass: 'secondary-action no-padding no-outline',
-      cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
-    },
-    {
-      headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
-    },
-    {
-      headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsTypeComponent',
-    },
-    {
-      headerName: 'Input', field: 'InputType', width: 160, cellClass: 'secondary-action no-padding',
-      sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
-      onCellClicked: this.changeInputType.bind(this), valueGetter: this.inputTypeValueGetter,
-    },
-    {
-      width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
-      cellRendererParams: {
-        onRename: this.rename.bind(this),
-        onDelete: this.delete.bind(this),
-        onOpenPermissions: this.openPermissions.bind(this),
-      } as ContentTypeFieldsActionsParams,
-    },
-    {
-      headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
-    contentTypeFieldsTypeComponent: ContentTypeFieldsTypeComponent,
-    contentTypeFieldsInputTypeComponent: ContentTypeFieldsInputTypeComponent,
-    contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
-  };
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
+    ...defaultGridOptions,
     getRowClass(params: any) {
       const field: Field = params.data;
-      return field.InputType === InputTypesConstants.emptyDefault ? 'group-row' : '';
-    }
+      return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
+    },
+    frameworkComponents: {
+      contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
+      contentTypeFieldsTypeComponent: ContentTypeFieldsTypeComponent,
+      contentTypeFieldsInputTypeComponent: ContentTypeFieldsInputTypeComponent,
+      contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
+    },
+    columnDefs: [
+      { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline' },
+      {
+        headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
+        cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
+      },
+      {
+        headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+      },
+      {
+        headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsTypeComponent',
+      },
+      {
+        headerName: 'Input', field: 'InputType', width: 160, cellClass: 'secondary-action no-padding',
+        sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
+        onCellClicked: this.changeInputType.bind(this), valueGetter: this.inputTypeValueGetter,
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
+        cellRendererParams: {
+          onRename: this.rename.bind(this),
+          onDelete: this.delete.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+        } as ContentTypeFieldsActionsParams,
+      },
+      {
+        headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+    ],
   };
 
+  private gridApi: GridApi;
   private sortApplied = false;
   private filterApplied = false;
   private rowDragSuppressed = false;
@@ -96,6 +97,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -117,30 +119,32 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   onRowDragEnter(event: RowDragEvent) {
-    this.enableTextSelection = false;
+    this.gridApi.setEnableCellTextSelection(false);
   }
 
   onRowDragEnd(event: RowDragEvent) {
-    this.enableTextSelection = true;
+    this.gridApi.setSuppressRowDrag(true);
     const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(res => {
-      this.fetchFields();
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(async res => {
+      await this.fetchFields();
+      this.changeDetectorRef.detectChanges();
+      this.gridApi.setEnableCellTextSelection(true);
+      this.gridApi.setSuppressRowDrag(false);
     });
   }
 
   onRowDragMove(event: RowDragEvent) {
     const movingNode = event.node;
     const overNode = event.overNode;
+    if (!overNode) { return; }
     const rowNeedsToMove = movingNode !== overNode;
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
       const overData: Field = overNode.data;
       const fromIndex = this.fields.indexOf(movingData);
       const toIndex = this.fields.indexOf(overData);
-      const newStore = this.fields.slice();
-      this.moveInArray(newStore, fromIndex, toIndex);
-      this.fields = newStore;
-      this.gridApi.setRowData(newStore);
+      this.moveInArray(this.fields, fromIndex, toIndex);
+      this.gridApi.setRowData(this.fields);
       this.gridApi.clearFocusedCell();
     }
   }
@@ -243,7 +247,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
       if (newName === field.StaticName) { return; }
     }
+    this.snackBar.open('Saving...');
     this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchFields();
     });
   }

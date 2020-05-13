@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
-import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 
 // components
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
@@ -23,8 +23,9 @@ import { EntityContentBlockComponent } from '../../../eav-material-controls/inpu
 import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
 import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
 import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
+import { CustomJsonEditorComponent } from '../../../eav-material-controls/input-types/custom/custom-json-editor/custom-json-editor.component';
 
 @Directive({
   selector: '[appEavField]'
@@ -47,6 +48,7 @@ export class EavFieldDirective implements OnInit {
     'boolean-default': BooleanDefaultComponent,
     'boolean-tristate': BooleanTristateComponent,
     'custom-default': CustomDefaultComponent,
+    'custom-json-editor': CustomJsonEditorComponent,
     'datetime-default': DatetimeDefaultComponent,
     'empty-default': EmptyDefaultComponent,
     'entity-content-blocks': EntityContentBlockComponent,
@@ -106,7 +108,7 @@ export class EavFieldDirective implements OnInit {
     angularConsoleLog('EavFieldDirective createComponent inputType:', fieldConfig.field.inputType);
     let componentType: Type<any>;
     if (fieldConfig.field.isExternal) {
-      componentType = this.readComponentType(InputTypesConstants.externalWebComponent);
+      componentType = this.readComponentType(InputTypeConstants.ExternalWebComponent);
     } else {
       componentType = this.readComponentType(fieldConfig.field.inputType);
     }

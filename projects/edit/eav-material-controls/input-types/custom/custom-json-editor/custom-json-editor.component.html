@@ -1,0 +1,7 @@
+<mat-form-field [formGroup]="group" appearance="standard" color="accent" class="textarea-field">
+  <textarea matInput [rows]="rowCount" type="text" [formControlName]="config.field.name"
+    [placeholder]="config.field.label" [required]="config.field.required"></textarea>
+  <mat-label>{{config.field.label}}</mat-label>
+</mat-form-field>
+
+<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

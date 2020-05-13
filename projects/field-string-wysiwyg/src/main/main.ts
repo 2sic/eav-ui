@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate, randomIntFromInterval } from '../shared/helpers';
+import { buildTemplate } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.css';
 import { TinyMceButtons } from '../config/buttons';
@@ -11,7 +11,7 @@ import { fixMenuPositions } from './fix-menu-positions-helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 declare const tinymce: any;
 
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
@@ -37,7 +37,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   constructor() {
     super();
     webpackConsoleLog('FieldStringWysiwygDialog constructor called');
-    this.instanceId = `${randomIntFromInterval(1, 1000000)}`;
+    this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }

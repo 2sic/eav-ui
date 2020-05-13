@@ -10,11 +10,11 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamConfig } from '../../../shared/models/adam/adam-config';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav-constants';
+import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
-import { EditForm } from '../../../../ng-dialogs/src/app/app-administration/shared/models/edit-form.model';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

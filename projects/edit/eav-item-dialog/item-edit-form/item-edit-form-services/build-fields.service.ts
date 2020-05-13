@@ -9,7 +9,7 @@ import { AttributeDef } from '../../../shared/models/eav/attribute-def';
 import { EavAttributes, ContentType, Item, Language, InputType } from '../../../shared/models/eav';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
-import { InputTypesConstants } from '../../../shared/constants/input-types-constants';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
@@ -50,7 +50,7 @@ export class BuildFieldsService {
         switchMap((data: ContentType) => {
           // build first empty
           const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null,
-            { inputType: InputTypesConstants.emptyDefault, isExternal: false },
+            { inputType: InputTypeConstants.EmptyDefault, isExternal: false },
             data.contentType.settings, true);
           let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
@@ -59,7 +59,7 @@ export class BuildFieldsService {
             try {
               // if input type is empty-default create new field group and than continue to add fields to that group
               const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
-              const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
+              const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
               if (isEmptyInputType) {
                 // group-fields (empty)
                 currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType,
@@ -95,7 +95,7 @@ export class BuildFieldsService {
     if (childFieldSetsCount === 0) { return; }
 
     const lastChildFieldSet = field.fieldGroup[childFieldSetsCount - 1];
-    if (lastChildFieldSet.field.inputType !== InputTypesConstants.emptyDefault) {
+    if (lastChildFieldSet.field.inputType !== InputTypeConstants.EmptyDefault) {
       lastChildFieldSet.field.isLastInGroup = true;
     }
 
@@ -126,7 +126,7 @@ export class BuildFieldsService {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
     let fullSettings: EavAttributes;
-    const isEmptyInputType = (calculatedInputType.inputType === InputTypesConstants.emptyDefault);
+    const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
 
     if (attribute) {
       settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);

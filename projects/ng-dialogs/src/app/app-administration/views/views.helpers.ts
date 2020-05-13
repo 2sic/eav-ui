@@ -1,4 +1,4 @@
-import { View } from '../shared/models/view.model';
+import { View } from '../models/view.model';
 
 export function calculateViewType(view: View) {
   let value = '';

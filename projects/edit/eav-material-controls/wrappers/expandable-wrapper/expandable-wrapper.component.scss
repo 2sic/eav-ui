@@ -167,56 +167,6 @@
     }
   }
 
-  &__preview--wysiwyg,
-  &__inline--wysiwyg {
-    $wysiwyg-border: 1px solid $field-border-color--initial;
-    $wysiwyg-border-hover: 2px solid $field-border-color--initial;
-    $wysiwyg-border-focused: 2px solid $field-border-color--focus;
-    $wysiwyg-border-invalid: 2px solid $field-border-color--invalid;
-    $wysiwyg-padding: 1px;
-    $wysiwyg-padding-hover: 0;
-    $wysiwyg-padding-disabled: 2px;
-
-    padding: $wysiwyg-padding;
-    border-top: $wysiwyg-border;
-    border-right: $wysiwyg-border;
-    border-left: $wysiwyg-border;
-
-    &:hover:not(.c-ew__preview--disabled):not(.c-ew__preview--invalid):not(.c-ew__preview--focused) {
-      padding: $wysiwyg-padding-hover;
-      border-top: $wysiwyg-border-hover;
-      border-right: $wysiwyg-border-hover;
-      border-left: $wysiwyg-border-hover;
-    }
-
-    &.c-ew__preview--invalid {
-      padding: $wysiwyg-padding-hover;
-      border-top: $wysiwyg-border-invalid;
-      border-right: $wysiwyg-border-invalid;
-      border-left: $wysiwyg-border-invalid;
-    }
-
-    &.c-ew__preview--disabled {
-      border: none !important;
-      padding: $wysiwyg-padding-disabled;
-      background: linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
-        linear-gradient($field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
-        linear-gradient(to right, $field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%),
-        linear-gradient($field-border-color--disabled 0%, $field-border-color--disabled 33%, transparent 0%);
-      background-position: top, right, bottom, left;
-      background-repeat: repeat-x, repeat-y;
-      background-size: 4px 1px, 1px 4px;
-    }
-
-    &.c-ew__preview--focused:not(.c-ew__preview--invalid) {
-      padding: $wysiwyg-padding-hover;
-      border-top: $wysiwyg-border-hover;
-      border-right: $wysiwyg-border-hover;
-      border-left: $wysiwyg-border-hover;
-      border-bottom: $wysiwyg-border-focused;
-    }
-  }
-
   &__inline {
     cursor: auto;
     max-height: $max-height-inline;

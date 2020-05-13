@@ -4,8 +4,8 @@ import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/sessions-keys';
-import { EditForm, EditItem, GroupItem } from './app-administration/shared/models/edit-form.model';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
+import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -72,7 +72,9 @@ export function paramsInitFactory(injector: Injector) {
           const rGuid = replaceItems[0].Group.Guid;
           const rPart = replaceItems[0].Group.Part;
           const rIndex = replaceItems[0].Group.Index;
-          router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`]);
+          const add = replaceItems[0].Group.Add;
+          const queryParams = add ? { add: true } : {};
+          router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
         case 'instance-list':
           const groupItems: GroupItem[] = JSON.parse(items);

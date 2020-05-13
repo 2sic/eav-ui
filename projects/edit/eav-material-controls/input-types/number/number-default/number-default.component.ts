@@ -35,12 +35,9 @@ export class NumberDefaultComponent implements Field, OnInit {
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit(): void {
-
-
     // this.decimal = this.config.currentFieldConfig.settings.Decimals
     // ? `^[0-9]+(\.[0-9]{1,${this.config.currentFieldConfig.settings.Decimals}})?$`
     // : null;
-
   }
 
 }

@@ -2,7 +2,7 @@ import { ValidatorFn, Validators } from '@angular/forms';
 
 import { FieldSettings } from '../../../edit-types';
 import { CustomValidators } from './custom-validators';
-import { InputTypesConstants } from '../../shared/constants/input-types-constants';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 
 export class ValidationHelper {
 
@@ -20,7 +20,7 @@ export class ValidationHelper {
   private static setDefaultValidations(settings: FieldSettings): ValidatorFn[] {
     const validation: ValidatorFn[] = [];
     const required = settings.Required ? settings.Required : false;
-    const isHyperlinkLibrary = settings.InputType === InputTypesConstants.hyperlinkLibrary;
+    const isHyperlinkLibrary = settings.InputType === InputTypeConstants.HyperlinkLibrary;
 
     // hyperlink-library field will set custom required validator
     if (required && !isHyperlinkLibrary) {

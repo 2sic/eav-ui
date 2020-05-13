@@ -5,16 +5,31 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class HandleErrorsInterceptor implements HttpInterceptor {
+  /** URLs excluded from detailed error alert  */
+  private excludedUrls = [
+    'dist/ng-edit/i18n',
+  ];
 
   constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        this.showDetailedHttpError(error);
+        if (!this.checkIfExcluded(error.url)) {
+          this.showDetailedHttpError(error);
+        }
         return throwError(error);
       })
     );
+  }
+
+  private checkIfExcluded(url: string) {
+    for (const excludedUrl of this.excludedUrls) {
+      if (url.includes(excludedUrl)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private showDetailedHttpError(error: HttpErrorResponse) {

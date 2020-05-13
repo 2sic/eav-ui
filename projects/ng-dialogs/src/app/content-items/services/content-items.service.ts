@@ -6,7 +6,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { Field } from '../../content-type-fields/models/field.model';
-import { toBase64 } from '../../shared/helpers/fileToBase64.helper';
+import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 
 @Injectable()
 export class ContentItemsService {

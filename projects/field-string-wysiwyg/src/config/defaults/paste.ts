@@ -1,4 +1,4 @@
-import { webpackConsoleLog } from '../../../../shared/webpack-console-log';
+import { webpackConsoleLog } from '../../../../shared/webpack-console-log.helper';
 
 export class DefaultPaste {
 

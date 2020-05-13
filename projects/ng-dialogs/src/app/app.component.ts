@@ -3,7 +3,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from './shared/services/context';
-import { keyModuleId, keyContentBlockId } from './shared/constants/sessions-keys';
+import { keyModuleId, keyContentBlockId } from './shared/constants/session.constants';
 
 @Component({
   selector: 'app-root',

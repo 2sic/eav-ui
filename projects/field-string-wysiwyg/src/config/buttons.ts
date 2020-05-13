@@ -1,7 +1,7 @@
 import { loadCustomIcons } from '../main/load-icons-helper';
 import { Guid } from '../shared/guid';
 import { FieldStringWysiwygDialog } from '../main/main';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 // const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
 

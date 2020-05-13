@@ -88,6 +88,14 @@ ag-grid-angular.ag-theme-material {
 }
 
 .ag-cell {
+  &.number-cell {
+    text-align: right;
+  }
+
+  &.disabled {
+    color: $grid-color-disabled;
+  }
+
   &:not(.no-padding) {
     padding-left: 8px !important;
     padding-right: 8px !important;
@@ -96,6 +104,10 @@ ag-grid-angular.ag-theme-material {
   &.no-padding {
     padding-left: 0 !important;
     padding-right: 0 !important;
+  }
+
+  &.no-select {
+    user-select: none;
   }
 
   &.highlight:hover .ag-cell-value,

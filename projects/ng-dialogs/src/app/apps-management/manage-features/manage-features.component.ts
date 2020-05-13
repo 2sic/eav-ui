@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import { AllCommunityModules, ColDef, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
-import { Feature } from '../shared/models/feature.model';
-import { FeaturesListEnabledComponent } from '../shared/ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesListUiComponent } from '../shared/ag-grid-components/features-list-ui/features-list-ui.component';
-import { FeaturesListPublicComponent } from '../shared/ag-grid-components/features-list-public/features-list-public.component';
-import { FeaturesListSecurityComponent } from '../shared/ag-grid-components/features-list-security/features-list-security.component';
-import { FeaturesConfigService } from '../shared/services/features-config.service';
-import { ElementEventListener } from '../../../../../shared/element-event-listener-model';
-import { ManageFeaturesMessageData } from '../shared/models/manage-features-message-data.model';
+import { Feature } from '../models/feature.model';
+import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
+import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
+import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
+import { FeaturesConfigService } from '../services/features-config.service';
+import { ElementEventListener } from '../../../../../shared/element-event-listener.model';
+import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-manage-features',
@@ -25,43 +26,46 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   managementUrl: SafeUrl;
   managementListener: ElementEventListener;
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Enabled', field: 'enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
-      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
-    },
-    {
-      headerName: 'UI', field: 'ui', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
-    },
-    {
-      headerName: 'Public', field: 'public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-      sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent'
-    },
-    {
-      headerName: 'Name', field: 'id', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openFeature,
-      cellRenderer: (params: ICellRendererParams) => `details (name lookup still WIP)`,
-    },
-    {
-      headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterDateTime,
-    },
-    { headerName: 'Security', width: 70, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent' },
-  ];
-  frameworkComponents = {
-    booleanFilterComponent: BooleanFilterComponent,
-    idFieldComponent: IdFieldComponent,
-    featuresListEnabledComponent: FeaturesListEnabledComponent,
-    featuresListUiComponent: FeaturesListUiComponent,
-    featuresListPublicComponent: FeaturesListPublicComponent,
-    featuresListSecurityComponent: FeaturesListSecurityComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      booleanFilterComponent: BooleanFilterComponent,
+      idFieldComponent: IdFieldComponent,
+      featuresListEnabledComponent: FeaturesListEnabledComponent,
+      featuresListUiComponent: FeaturesListUiComponent,
+      featuresListPublicComponent: FeaturesListPublicComponent,
+      featuresListSecurityComponent: FeaturesListSecurityComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Enabled', field: 'enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
+      },
+      {
+        headerName: 'UI', field: 'ui', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
+      },
+      {
+        headerName: 'Public', field: 'public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent'
+      },
+      {
+        headerName: 'Name', field: 'id', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.openFeature,
+        cellRenderer: (params: ICellRendererParams) => 'details (name lookup still WIP)',
+      },
+      {
+        headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterDateTime,
+      },
+      { headerName: 'Security', width: 70, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent' },
+    ],
+  };
 
   constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
 

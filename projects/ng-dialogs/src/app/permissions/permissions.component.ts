@@ -3,16 +3,17 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PermissionsService } from './services/permissions.service';
 import { Permission } from './models/permission.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from './models/permissions-actions-params';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
-import { eavConstants, EavMetadataKey } from '../shared/constants/eav-constants';
+import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
+import { EditForm } from '../shared/models/edit-form.model';
+import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-permissions',
@@ -22,39 +23,42 @@ import { IdFieldComponent } from '../shared/components/id-field/id-field.compone
 export class PermissionsComponent implements OnInit, OnDestroy {
   permissions: Permission[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-      sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
-    },
-    {
-      width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent',
-      cellRendererParams: {
-        onDelete: this.deletePermission.bind(this),
-      } as PermissionsActionsParams,
-    },
-    {
-      headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter',
-    },
-    {
-      headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-      sortable: true, filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    idFieldComponent: IdFieldComponent,
-    permissionsActionsComponent: PermissionsActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      idFieldComponent: IdFieldComponent,
+      permissionsActionsComponent: PermissionsActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+      },
+      {
+        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent',
+        cellRendererParams: {
+          onDelete: this.deletePermission.bind(this),
+        } as PermissionsActionsParams,
+      },
+      {
+        headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+    ],
+  };
 
   private subscription = new Subscription();
   private hasChild: boolean;

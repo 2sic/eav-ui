@@ -15,9 +15,8 @@ import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-expandable-wrapper',
@@ -34,7 +33,6 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   @Input() group: FormGroup;
   dialogIsOpen = false;
   inlineMode = true;
-  isWysiwyg = false;
   private subscription = new Subscription();
   private elConnector: ConnectorService;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -64,8 +62,6 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   ) { }
 
   ngOnInit() {
-    this.isWysiwyg = InputFieldHelper.isWysiwygInputType(this.config.field.inputType);
-    this.isWysiwyg = false;
     this.changeDetector.detectChanges();
     const elName = `field-${this.config.field.inputType}`;
     angularConsoleLog('ExpandableWrapper created for:', elName, 'Config:', this.config.field);

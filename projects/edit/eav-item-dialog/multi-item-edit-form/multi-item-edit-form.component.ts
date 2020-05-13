@@ -31,11 +31,11 @@ import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { FormSet } from '../../../edit-types';
 import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
-import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -48,12 +48,13 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
+  private createMode = false;
   slide = 'initial';
   slideListenersAdded = false;
 
   formIsSaved = false;
   isParentDialog: boolean;
-  formId = Math.random() * Math.pow(10, 17); // generate unique form id. Probably won't need more randomness than this
+  formId = Math.floor(Math.random() * 99999);
   currentLanguage$: Observable<string>;
   currentLanguage: string;
   enableDraft = false;
@@ -184,7 +185,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(saveResult);
+      this.dialogRef.close(this.createMode ? saveResult : undefined);
     }
   }
 
@@ -244,6 +245,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.items$ = this.itemService.selectItemsByIdList(
       data.Items.map((item: JsonItem1) => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id))
     );
+    this.items$.pipe(take(1)).subscribe(items => {
+      if (items && items.length && items[0].entity.id === 0) {
+        this.createMode = true;
+      }
+    });
   }
 
   /** Determine is from is dirty on any language. If any form is dirty we need to ask to save */

@@ -18,8 +18,7 @@ import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
-
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-translate-group-menu',

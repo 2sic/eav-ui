@@ -2,7 +2,7 @@
 import { EavValue, EavAttributes, EavDimensions } from '../models/eav';
 import { FieldSettings } from '../../../edit-types';
 import { EavValues } from '../models/eav/eav-values';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export class LocalizationHelper {
   /**

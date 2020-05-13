@@ -18,7 +18,7 @@ import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.se
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 import { ExperimentalProps, InputTypeName, AdamSetValue, AdamAfterUpload } from '../../../../../../edit-types';
-import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];

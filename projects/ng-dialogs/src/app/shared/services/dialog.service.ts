@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { Context } from './context';
-import { EditForm } from '../../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../models/edit-form.model';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyFa, keyRequestToken, keyDebug, keyUserCanDesign, keyUserCanDevelop, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/sessions-keys';
+import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyFa, keyRequestToken, keyDebug, keyUserCanDesign, keyUserCanDevelop, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
 
 @Injectable()
 export class DialogService {
@@ -81,9 +81,10 @@ export class DialogService {
     window.open(url, '_blank');
   }
 
+  /** Encodes param if necessary */
   private buildHashParam(key: string, value?: string) {
     const rawKey = key.replace(prefix, '');
-    const valueTemp = (value !== undefined) ? value : sessionStorage.getItem(key);
+    const valueTemp = (value != null) ? value : sessionStorage.getItem(key);
     const rawValue = encodeURIComponent(valueTemp);
     const hashParam = `&${rawKey}=${rawValue}`;
     return hashParam;

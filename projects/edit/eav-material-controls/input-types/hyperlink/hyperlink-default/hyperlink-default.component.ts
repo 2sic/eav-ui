@@ -13,7 +13,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

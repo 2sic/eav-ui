@@ -2,17 +2,18 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, ColDef, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { App } from '../../shared/models/app.model';
-import { AppsListService } from '../shared/services/apps-list.service';
-import { AppsListShowComponent } from '../shared/ag-grid-components/apps-list-show/apps-list-show.component';
-import { AppsListActionsComponent } from '../shared/ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from '../shared/models/apps-list-actions-params.model';
-import { appNamePattern, appNameError } from '../shared/constants/app';
+import { App } from '../models/app.model';
+import { AppsListService } from '../services/apps-list.service';
+import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
+import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
+import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-apps-list',
@@ -22,37 +23,59 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 export class AppsListComponent implements OnInit, OnDestroy {
   apps: App[];
 
-  columnDefs: ColDef[] = [
-    {
-      headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-      cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
-    },
-    {
-      headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
-      filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
-    },
-    {
-      headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-      filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
-    },
-    {
-      width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
-      cellRendererParams: {
-        onDelete: this.deleteApp.bind(this),
-      } as AppsListActionsParams,
-    },
-    {
-      headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-      filter: 'agTextColumnFilter',
-    },
-  ];
-  frameworkComponents = {
-    booleanFilterComponent: BooleanFilterComponent,
-    idFieldComponent: IdFieldComponent,
-    appsListShowComponent: AppsListShowComponent,
-    appsListActionsComponent: AppsListActionsComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      booleanFilterComponent: BooleanFilterComponent,
+      idFieldComponent: IdFieldComponent,
+      appsListShowComponent: AppsListShowComponent,
+      appsListActionsComponent: AppsListActionsComponent,
+    },
+    columnDefs: [
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+      },
+      {
+        headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
+        filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
+      },
+      {
+        width: 60, cellClass: 'no-outline no-padding', cellRenderer: (params: ICellRendererParams) => {
+          const app: App = params.data;
+          if (app.Thumbnail != null) {
+            return `<div class="image-box"><img src="${app.Thumbnail}?w=40&h=40&mode=crop" class="app-image"></img></div>`;
+          } else {
+            return '<div class="image-box"><span class="material-icons-outlined">star_border</span></div>';
+          }
+        },
+      },
+      {
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this),
+      },
+      {
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
+        cellRendererParams: {
+          onDelete: this.deleteApp.bind(this),
+          onFlush: (app) => { this.flushApp(app); },
+        } as AppsListActionsParams,
+      },
+      {
+        headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Version', field: 'Version', width: 78, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Items', field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        filter: 'agNumberColumnFilter',
+      },
+    ],
+  };
 
   private subscription = new Subscription();
   private hasChild: boolean;
@@ -89,7 +112,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
       if (name === null) { return; }
       name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
     }
+    this.snackBar.open('Saving...');
     this.appsListService.create(name).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchAppsList();
     });
   }
@@ -120,14 +145,22 @@ export class AppsListComponent implements OnInit, OnDestroy {
     if (result === null) {
       return;
     } else if (result === app.Name || result === 'yes!') {
-      this.snackBar.open(`Deleting...`);
+      this.snackBar.open('Deleting...');
       this.appsListService.delete(app.Id).subscribe(() => {
-        this.snackBar.open(`Deleted`, null, { duration: 2000 });
+        this.snackBar.open('Deleted', null, { duration: 2000 });
         this.fetchAppsList();
       });
     } else {
       alert('Input did not match - will not delete');
     }
+  }
+
+  private flushApp(app: App) {
+    if (!confirm(`Flush the App Cache for ${app.Name} (${app.Id})?`)) { return; }
+    this.snackBar.open('Flushing cache...');
+    this.appsListService.flushCache(app.Id).subscribe(() => {
+      this.snackBar.open('Cache flushed', null, { duration: 2000 });
+    });
   }
 
   private openApp(params: CellClickedEvent) {

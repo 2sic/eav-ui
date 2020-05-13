@@ -8,6 +8,7 @@ import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
+import { Context } from '../../../../../ng-dialogs/src/app/shared/services/context';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,6 +34,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   constructor(
     private queryService: QueryService,
     private translate: TranslateService,
+    private context: Context,
   ) { }
 
   ngOnInit() {
@@ -57,8 +59,9 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
       alert(`No query defined for ${this.config.field.name} - can't load entities`);
     }
 
-    const params = this.fieldMaskService.resolve(); // always get the latest definition
-    // TODO: SPM - params.replace('[App:AppId]', ...).replace('[App:ZoneId]', ...); #APPIDandZoneId
+    let params = this.fieldMaskService.resolve(); // always get the latest definition
+    params = params.replace('[App:AppId]', this.context.appId.toString());
+    params = params.replace('[App:ZoneId]', this.context.zoneId.toString());
     let queryUrl = this.query;
     if (queryUrl.indexOf('/') === -1) { // append stream name if not defined
       queryUrl = queryUrl + '/' + this.streamName;

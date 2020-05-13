@@ -46,7 +46,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit, OnDestroy {
     this.multiFormDialogRef.componentInstance.closeDialog();
   }
 
-  public openSaveSatusDialog() {
+  public openSaveStatusDialog() {
     // Open dialog
     const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
       panelClass: 'c-save-status-dialog',

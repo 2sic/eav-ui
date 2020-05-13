@@ -4,9 +4,9 @@ import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
-import { ElementEventListener } from '../../../shared/element-event-listener-model';
+import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { FieldStringWysiwygDialog } from '../main/main';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;

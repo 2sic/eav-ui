@@ -85,6 +85,7 @@ import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboa
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AppAssetsService } from '../shared/services/app-assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
+import { CustomJsonEditorComponent } from './input-types/custom/custom-json-editor/custom-json-editor.component';
 
 @NgModule({
   declarations: [
@@ -135,6 +136,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,
+    CustomJsonEditorComponent,
   ],
   imports: [
     SharedComponentsModule,
@@ -203,6 +205,7 @@ import { ScriptsLoaderService } from '../shared/services/scripts-loader.service'
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,
+    CustomJsonEditorComponent,
   ],
   exports: [EavLanguageSwitcherComponent],
   providers: [

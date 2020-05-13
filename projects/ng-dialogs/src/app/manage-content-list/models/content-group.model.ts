@@ -4,3 +4,7 @@ export class ContentGroup {
   index: number;
   part: string;
 }
+
+export class ContentGroupAdd extends ContentGroup {
+  add: boolean;
+}

@@ -1,7 +1,7 @@
 import { EavEntity } from './eav-entity';
 import { EavHeader } from './eav-header';
 import { JsonItem1 } from '../json-format-v1/json-item1';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export class Item {
   header: EavHeader;

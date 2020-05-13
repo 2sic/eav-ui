@@ -5,12 +5,12 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { edit } from '../../../../edit/edit.matcher';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
-import { editContentTypeDialog } from './shared/modals/edit-content-type/edit-content-type-dialog.config';
-import { contentImportDialog } from './shared/modals/content-import/content-import-dialog.config';
-import { importQueryDialog } from './shared/modals/import-query/import-query-dialog.config';
-import { exportAppDialog } from './shared/modals/export-app/export-app-dialog.config';
-import { exportAppPartsDialog } from './shared/modals/export-app-parts/export-app-parts-dialog.config';
-import { importAppPartsDialog } from './shared/modals/import-app-parts/import-app-parts-dialog.config';
+import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
+import { contentImportDialog } from './sub-dialogs/content-import/content-import-dialog.config';
+import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
+import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
+import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
+import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
 
 const appAdministrationRoutes: Routes = [
   {

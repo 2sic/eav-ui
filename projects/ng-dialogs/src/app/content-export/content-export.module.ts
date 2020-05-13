@@ -12,7 +12,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ContentExportRoutingModule } from './content-export-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ContentExportComponent } from './content-export.component';
-import { ContentExportService } from '../app-administration/shared/services/content-export.service';
+import { ContentExportService } from '../app-administration/services/content-export.service';
 import { Context } from '../shared/services/context';
 
 @NgModule({

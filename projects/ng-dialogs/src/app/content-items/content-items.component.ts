@@ -5,27 +5,28 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
 import { Field } from '../content-type-fields/models/field.model';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { EditForm } from '../shared/models/edit-form.model';
 import { EntitiesService } from './services/entities.service';
-import { ContentExportService } from '../app-administration/shared/services/content-export.service';
-import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav-constants';
+import { ContentExportService } from '../app-administration/services/content-export.service';
+import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav.constants';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ExtendedColDef } from './models/extended-col-def.model';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsActionsParams } from './models/content-items-actions-params';
+import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
-import { keyFilters } from '../shared/constants/sessions-keys';
+import { keyFilters } from '../shared/constants/session.constants';
 import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log';
+import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-content-items',
@@ -35,17 +36,20 @@ import { angularConsoleLog } from '../shared/helpers/angular-console-log';
 export class ContentItemsComponent implements OnInit, OnDestroy {
   items: ContentItem[];
 
-  private gridApi: GridApi;
-  frameworkComponents = {
-    pubMetaFilterComponent: PubMetaFilterComponent,
-    booleanFilterComponent: BooleanFilterComponent,
-    idFieldComponent: IdFieldComponent,
-    contentItemsStatusComponent: ContentItemsStatusComponent,
-    contentItemsActionsComponent: ContentItemsActionsComponent,
-    contentItemsEntityComponent: ContentItemsEntityComponent,
-  };
   modules = AllCommunityModules;
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    frameworkComponents: {
+      pubMetaFilterComponent: PubMetaFilterComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      idFieldComponent: IdFieldComponent,
+      contentItemsStatusComponent: ContentItemsStatusComponent,
+      contentItemsActionsComponent: ContentItemsActionsComponent,
+      contentItemsEntityComponent: ContentItemsEntityComponent,
+    },
+  };
 
+  private gridApi: GridApi;
   private contentTypeStaticName: string;
   private subscription = new Subscription();
   private hasChild: boolean;
@@ -207,7 +211,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
       },
       {
-        headerName: 'Title', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
@@ -220,7 +224,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
     ];
     for (const column of columns) {
-      if (column.IsTitle) { continue; }
       const colDef: ExtendedColDef = {
         headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true,

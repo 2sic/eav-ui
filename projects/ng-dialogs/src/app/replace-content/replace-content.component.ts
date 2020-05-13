@@ -7,8 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
-import { ContentGroup } from '../manage-content-list/models/content-group.model';
-import { EditForm } from '../app-administration/shared/models/edit-form.model';
+import { ContentGroup, ContentGroupAdd } from '../manage-content-list/models/content-group.model';
+import { EditForm } from '../shared/models/edit-form.model';
 
 @Component({
   selector: 'app-replace-content',
@@ -17,7 +17,7 @@ import { EditForm } from '../app-administration/shared/models/edit-form.model';
 })
 export class ReplaceContentComponent implements OnInit, OnDestroy {
   options: ReplaceOption[];
-  item: ContentGroup;
+  item: ContentGroupAdd;
   contentTypeName: string;
 
   private subscription = new Subscription();
@@ -36,6 +36,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
       guid: this.route.snapshot.paramMap.get('guid'),
       part: this.route.snapshot.paramMap.get('part'),
       index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
+      add: !!this.route.snapshot.queryParamMap.get('add'),
     };
   }
 
@@ -77,7 +78,8 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
         const itemName = replaceConfig.Items[nKey];
         this.options.push({ label: `${itemName} (${nKey})`, value: nKey });
       }
-      if (!this.item.id) {
+      // don't set the ID if the dialog should be in add-mode
+      if (!this.item.id && !this.item.add) {
         this.item.id = replaceConfig.SelectedId;
       }
       if (!this.contentTypeName) {

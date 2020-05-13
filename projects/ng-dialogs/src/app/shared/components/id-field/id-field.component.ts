@@ -3,7 +3,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { copyToClipboard } from '../../helpers/copyToClipboard';
+import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
 
 @Component({
   selector: 'app-id-field',
