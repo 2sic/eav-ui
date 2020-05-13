@@ -48,6 +48,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
 
   private subscriptions: Subscription[] = [];
   private eavConfig: EavConfiguration;
+  private createMode = false;
   slide = 'initial';
   slideListenersAdded = false;
 
@@ -184,7 +185,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     if (this.dialogRef.disableClose) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(saveResult);
+      this.dialogRef.close(this.createMode ? saveResult : undefined);
     }
   }
 
@@ -244,6 +245,11 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.items$ = this.itemService.selectItemsByIdList(
       data.Items.map((item: JsonItem1) => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id))
     );
+    this.items$.pipe(take(1)).subscribe(items => {
+      if (items && items.length && items[0].entity.id === 0) {
+        this.createMode = true;
+      }
+    });
   }
 
   /** Determine is from is dirty on any language. If any form is dirty we need to ask to save */
