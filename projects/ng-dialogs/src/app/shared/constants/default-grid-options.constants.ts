@@ -7,4 +7,5 @@ export const defaultGridOptions: GridOptions = {
   headerHeight: 32,
   suppressScrollOnNewData: true,
   valueCache: true,
+  defaultColDef: { filterParams: { newRowsAction: 'keep' } },
 };
