@@ -322,7 +322,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private getUsage(params: ValueGetterParams) {
     const item: ContentItem = params.data;
-    console.log(`${item._Used}/${item._Uses}`);
     return `${item._Used} / ${item._Uses}`;
   }
 
@@ -342,7 +341,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private valueGetterBoolean(params: ValueGetterParams) {
     const rawValue = params.data[params.colDef.field];
-    if (typeof rawValue !== 'boolean') { return null; }
+    if (typeof rawValue !== typeof true) { return null; }
     return rawValue.toString();
   }
 }
