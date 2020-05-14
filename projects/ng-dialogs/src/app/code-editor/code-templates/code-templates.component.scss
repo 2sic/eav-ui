@@ -26,22 +26,40 @@
   }
 }
 
-.folder-name {
+.folder-name-wrapper {
   display: flex;
-  align-items: center;
   cursor: pointer;
-  overflow: hidden;
-  white-space: nowrap;
   user-select: none;
-  padding: 3px 0;
-
-  &:hover {
-    background-color: rgb(42, 45, 46);
-  }
+  align-items: center;
 
   .mat-icon {
     width: 18px;
     height: 18px;
     font-size: 18px;
+  }
+
+  .folder-name {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 3px 0;
+    flex: 1 1 auto;
+  }
+
+  .add-item {
+    margin-right: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+  }
+
+  &:hover {
+    background-color: rgb(42, 45, 46);
+
+    .add-item {
+      display: flex;
+    }
   }
 }

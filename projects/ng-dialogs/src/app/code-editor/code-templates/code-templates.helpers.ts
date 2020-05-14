@@ -32,24 +32,7 @@ export function calculateTree(templates: string[]): TreeItem[] {
   return tree;
 }
 
-export function calculateOpenItems(filename: string, tree: TreeItem[]): TreeItem[] {
-  if (!filename || !tree) { return []; }
-
-  const openItems: TreeItem[] = [];
-  const paths = filename.split('/');
-  let parent = tree;
-  for (const path of paths) {
-    const existing = parent.find(item => item.name === path);
-    if (!existing) { break; }
-    openItems.push(existing);
-    if (!existing.children) { break; }
-    parent = existing.children;
-  }
-
-  return openItems;
-}
-
-export function toggleInArray(item: TreeItem, array: TreeItem[]) {
+export function toggleInArray<T>(item: T, array: T[]) {
   const index = array.indexOf(item);
   if (index === -1) {
     array.push(item);

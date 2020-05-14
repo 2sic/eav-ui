@@ -14,6 +14,7 @@ import { SnippetsService } from './services/snippets.service';
 import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
+import { defaultTemplateName, defaultControllerName } from '../shared/constants/file-names.constants';
 
 @Component({
   selector: 'app-code-editor',
@@ -83,11 +84,20 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  createTemplate() {
-    let name = prompt('File name:', '_MyFile.cshtml');
+  createTemplate(folder?: string) {
+    let question = 'File name:';
+    let suggestion = defaultTemplateName;
+    if (folder === 'api' || folder?.startsWith('api/')) {
+      question = 'Controller name:';
+      suggestion = defaultControllerName;
+    }
+    let name = prompt(question, suggestion);
     if (name === null || name.length === 0) { return; }
 
-    name = this.sanitizeService.sanitizeName(name);
+    name = this.sanitizeService.sanitizePath(name);
+    if (folder != null) {
+      name = `${folder}/${name}`;
+    }
     this.sourceService.createTemplate(name).subscribe(res => {
       this.sourceService.getTemplates().subscribe(files => {
         this.templates = files;
