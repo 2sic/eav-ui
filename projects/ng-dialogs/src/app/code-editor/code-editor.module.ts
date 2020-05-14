@@ -22,6 +22,7 @@ import { CodeTemplatesComponent } from './code-templates/code-templates.componen
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
+import { SortItemsPipe } from './code-templates/order-items.pipe';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
     CodeTemplatesComponent,
     AceEditorComponent,
     DepthPaddingPipe,
+    SortItemsPipe,
   ],
   entryComponents: [
     CodeEditorComponent,
