@@ -1,3 +1,11 @@
+.mat-tab-group {
+  flex-grow: 1;
+}
+
+.mat-tab-body-wrapper {
+  flex-grow: 1;
+}
+
 .mat-tab-body-wrapper,
 .mat-tab-body-active,
 .mat-tab-body-active .mat-tab-body-content {

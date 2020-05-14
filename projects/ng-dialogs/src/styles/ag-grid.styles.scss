@@ -1,23 +1,31 @@
 $grid-color-disabled: rgba(29, 39, 61, 0.26);
 
+// fixes bug in Chrome where overflow-x scrollbar is visible while there is no overflow at all
+.ag-center-cols-viewport {
+  overflow: hidden;
+}
+
 .group-row {
   background-color: rgba(map_get($mat-eav-item-dialog-background, 500), 0.08) !important;
 }
 
-.grid-wrapper-nav {
-  padding-top: 40px;
-  position: relative;
-
-  .grid-fab {
-    position: absolute;
-    bottom: -8px;
-    right: 0;
-  }
+.nav-component-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-wrapper {
+  height: 100%;
   padding-top: 20px;
+  box-sizing: border-box;
   position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &.mat-tab-grid-wrapper {
+    padding-top: 40px;
+  }
 
   .grid-fab {
     position: absolute;
@@ -27,7 +35,7 @@ $grid-color-disabled: rgba(29, 39, 61, 0.26);
 }
 
 ag-grid-angular.ag-theme-material {
-  width: 100%;
+  flex-grow: 1;
 
   button {
     background-color: inherit;
