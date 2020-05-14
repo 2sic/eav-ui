@@ -6,6 +6,13 @@ export class ContentItem {
   _Title: string;
   Title: string;
   Metadata?: ContentItemMetadata;
+
+  /** How often this is being used by other entities (parents) */
+  _Used: number;
+
+  /** How often this entity uses other entities (children) */
+  _Uses: number;
+
   // fields added by the user
   [key: string]: any;
 }

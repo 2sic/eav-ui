@@ -226,6 +226,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
       },
+      {
+        headerName: 'Stats (used by others / uses others)',
+        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.getUsage,
+      },
     ];
     for (const column of columns) {
       const colDef: ExtendedColDef = {
@@ -313,6 +318,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       metadata: !!item.Metadata,
     };
     return published;
+  }
+
+  private getUsage(params: ValueGetterParams) {
+    const item: ContentItem = params.data;
+    console.log(`${item._Used}/${item._Uses}`);
+    return `${item._Used} / ${item._Uses}`;
   }
 
   private valueGetterEntityField(params: ValueGetterParams) {

@@ -59,6 +59,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
       },
       {
+        headerName: 'Used', field: 'Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agNumberColumnFilter',
+      },
+      {
         width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
         cellRendererParams: {
           onOpenCode: this.openCode.bind(this),
