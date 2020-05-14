@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 import { SourceView } from '../models/source-view.model';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { calculateTree, toggleInArray, calculateOpenItems } from './code-templates.helpers';
 import { TreeItem } from '../models/tree-item.model';
@@ -35,11 +34,6 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
   }
 
   openTemplate(path: string) {
-    // const form: EditForm = {
-    //   items: [
-    //     { Path: path }
-    //   ]
-    // };
     this.dialogService.openCodeFile(path);
   }
 

@@ -21,6 +21,7 @@ import { ToArrayPipe } from './code-snippets/toarray.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
+import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SanitizeService } from '../../../../edit/eav-material-controls/adam/san
     ToArrayPipe,
     CodeTemplatesComponent,
     AceEditorComponent,
+    DepthPaddingPipe,
   ],
   entryComponents: [
     CodeEditorComponent,
