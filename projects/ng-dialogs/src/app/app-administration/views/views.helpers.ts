@@ -5,10 +5,10 @@ export function calculateViewType(view: View) {
   let icon = '';
   if (view.HasQuery) {
     value = 'Data (from query)';
-    icon = 'filter';
+    icon = 'filter_list';
   } else if (view.List) {
     value = 'Items (list)';
-    icon = 'menu';
+    icon = 'format_list_numbered';
   } else if (!view.ContentType && !view.HasQuery) {
     value = 'Code';
     icon = 'check_box_outline_blank';
