@@ -54,6 +54,7 @@ import { ImportAppPartsService } from './services/import-app-parts.service';
 import { WebApiActionsComponent } from './ag-grid-components/web-api-actions/web-api-actions.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../shared/services/dialog.service';
+import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { DialogService } from '../shared/services/dialog.service';
     ExportAppPartsComponent,
     ImportAppPartsComponent,
     WebApiActionsComponent,
+    ViewsUsageComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -95,6 +97,7 @@ import { DialogService } from '../shared/services/dialog.service';
     ExportAppPartsComponent,
     ImportAppPartsComponent,
     WebApiActionsComponent,
+    ViewsUsageComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

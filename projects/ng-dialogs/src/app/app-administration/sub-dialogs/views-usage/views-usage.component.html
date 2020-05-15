@@ -1,0 +1,17 @@
+<div class="nav-component-wrapper">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>View:</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <div class="grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="data" [modules]="modules" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+  </div>
+</div>

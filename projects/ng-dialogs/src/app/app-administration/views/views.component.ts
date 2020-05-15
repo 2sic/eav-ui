@@ -59,8 +59,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
       },
       {
-        headerName: 'Used', field: 'Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (x) => { this.testUsage(x); }
+        headerName: 'Used', field: 'Used', width: 70, headerClass: 'dense', cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (event) => { this.openUsage(event); }
       },
       {
         width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
@@ -181,11 +181,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
   }
 
-  testUsage(evt: CellClickedEvent) {
-    const view = evt.data as View;
-    this.templatesService.getUsage(view.Guid).subscribe();
-  }
-
   private idValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return `ID: ${view.Id}\nGUID: ${view.Guid}`;
@@ -220,6 +215,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
   private headerPresDemoValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return `${view.ListPresentationType.DemoId} ${view.ListPresentationType.DemoTitle}`;
+  }
+
+  private openUsage(event: CellClickedEvent) {
+    const view: View = event.data;
+    this.router.navigate([`usage/${view.Guid}`], { relativeTo: this.route.firstChild });
   }
 
   private openCode(view: View) {
