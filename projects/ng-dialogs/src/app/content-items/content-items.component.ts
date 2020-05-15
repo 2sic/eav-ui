@@ -227,9 +227,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         } as ContentItemsActionsParams,
       },
       {
-        headerName: 'Stats (used by others / uses others)',
+        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
         field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.getUsage,
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
     ];
     for (const column of columns) {
@@ -320,7 +320,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return published;
   }
 
-  private getUsage(params: ValueGetterParams) {
+  private valueGetterUsage(params: ValueGetterParams) {
     const item: ContentItem = params.data;
     return `${item._Used} / ${item._Uses}`;
   }

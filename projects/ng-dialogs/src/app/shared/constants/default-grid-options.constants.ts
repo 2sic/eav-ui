@@ -8,4 +8,5 @@ export const defaultGridOptions: GridOptions = {
   suppressScrollOnNewData: true,
   valueCache: true,
   defaultColDef: { filterParams: { newRowsAction: 'keep' } },
+  tooltipShowDelay: 0,
 };
