@@ -60,7 +60,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Used', field: 'Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agNumberColumnFilter',
+        sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (x) => { this.testUsage(x); }
       },
       {
         width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
@@ -179,6 +179,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
       ]
     };
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+  }
+
+  testUsage(evt: CellClickedEvent) {
+    const view = evt.data as View;
+    this.templatesService.getUsage(view.Guid).subscribe();
   }
 
   private idValueGetter(params: ValueGetterParams) {

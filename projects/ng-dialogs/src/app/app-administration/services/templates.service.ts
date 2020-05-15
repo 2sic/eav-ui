@@ -7,6 +7,7 @@ import { Context } from '../../shared/services/context';
 import { View } from '../models/view.model';
 import { Polymorphism } from '../models/polymorphism.model';
 
+// TODO: rename to ViewServices (because it's not about templates, those are the files)
 @Injectable()
 export class TemplatesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
@@ -29,4 +30,10 @@ export class TemplatesService {
     }) as Observable<Polymorphism>;
   }
 
+  // TODO: spm: type this
+  getUsage(guid: string) {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/template/usage'), {
+      params: { appId: this.context.appId.toString(), guid }
+    }) as Observable<any>;
+  }
 }
