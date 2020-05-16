@@ -1,0 +1,28 @@
+.id-box {
+  padding: 0 8px;
+  text-align: end;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .id {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &:hover {
+    text-decoration: none;
+
+    .id {
+      display: none;
+    }
+  }
+
+  &:not(:hover) {
+    .icon {
+      display: none;
+    }
+  }
+}

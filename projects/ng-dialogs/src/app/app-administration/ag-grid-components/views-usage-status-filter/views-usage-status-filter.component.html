@@ -1,0 +1,13 @@
+<div class="title">Visible</div>
+<mat-radio-group [(ngModel)]="isVisible" (ngModelChange)="filterChanged()">
+  <mat-radio-button value="">All</mat-radio-button>
+  <mat-radio-button value="true">Visible</mat-radio-button>
+  <mat-radio-button value="false">Hidden</mat-radio-button>
+</mat-radio-group>
+
+<div class="title">Deleted</div>
+<mat-radio-group [(ngModel)]="isDeleted" (ngModelChange)="filterChanged()">
+  <mat-radio-button value="">All</mat-radio-button>
+  <mat-radio-button value="true">Is deleted</mat-radio-button>
+  <mat-radio-button value="false">Is not deleted</mat-radio-button>
+</mat-radio-group>
