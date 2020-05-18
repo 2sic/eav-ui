@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
+import { ContentType } from '../app-administration/models/content-type.model';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
 import { Field } from '../content-type-fields/models/field.model';
@@ -34,6 +36,7 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
   styleUrls: ['./content-items.component.scss']
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
+  contentType: ContentType;
   items: ContentItem[];
 
   modules = AllCommunityModules;
@@ -57,6 +60,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
+    private contentTypesService: ContentTypesService,
     private router: Router,
     private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
@@ -69,6 +73,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.fetchContentType();
     this.fetchItems();
     this.refreshOnChildClosed();
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
@@ -92,6 +97,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     if (this.columnDefs) {
       this.gridApi.setColumnDefs(this.columnDefs);
     }
+  }
+
+  private fetchContentType() {
+    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
+      this.contentType = contentType;
+    });
   }
 
   private fetchItems() {

@@ -5,6 +5,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+import { App } from '../../apps-management/models/app.model';
+import { AppsListService } from '../../apps-management/services/apps-list.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
@@ -16,6 +18,7 @@ import { Context } from '../../shared/services/context';
   styleUrls: ['./app-administration-nav.component.scss']
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
+  app: App;
   tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs have to match template and filter below
   tabIndex: number;
   dialogSettings: DialogSettings;
@@ -24,6 +27,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
+    private appsListService: AppsListService,
     private appDialogConfigService: AppDialogConfigService,
     private router: Router,
     private route: ActivatedRoute,
@@ -32,6 +36,9 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.appsListService.getAll().subscribe(apps => {
+      this.app = apps.find(app => app.Id === this.context.appId);
+    });
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
       this.context.appRoot = dialogSettings.AppPath;
       if (dialogSettings.IsContent) {

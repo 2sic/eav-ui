@@ -57,6 +57,7 @@ import { DialogService } from '../shared/services/dialog.service';
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsUsageIdComponent } from './ag-grid-components/views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
+import { AppsListService } from '../apps-management/services/apps-list.service';
 
 @NgModule({
   declarations: [
@@ -141,6 +142,7 @@ import { ViewsUsageStatusFilterComponent } from './ag-grid-components/views-usag
     ImportAppPartsService,
     SanitizeService,
     DialogService,
+    AppsListService,
   ]
 })
 export class AppAdministrationModule { }

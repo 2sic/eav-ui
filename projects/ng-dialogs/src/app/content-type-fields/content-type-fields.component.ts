@@ -28,6 +28,7 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
   styleUrls: ['./content-type-fields.component.scss']
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
+  contentType: ContentType;
   fields: Field[];
 
   modules = AllCommunityModules;
@@ -86,7 +87,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private filterApplied = false;
   private rowDragSuppressed = false;
   private contentTypeStaticName: string;
-  private contentType: ContentType;
   private subscription = new Subscription();
   private hasChild: boolean;
 

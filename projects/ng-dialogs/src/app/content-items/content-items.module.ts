@@ -26,6 +26,7 @@ import { Context } from '../shared/services/context';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/services/content-export.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { ContentExportService } from '../app-administration/services/content-exp
     ContentItemsService,
     EntitiesService,
     ContentExportService,
+    ContentTypesService,
   ]
 })
 export class ContentItemsModule { }
