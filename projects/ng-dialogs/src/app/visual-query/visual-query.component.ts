@@ -214,13 +214,13 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadQuery(showSnackBar?: boolean) {
-    if (showSnackBar) {
-      this.snackBar.open('Loading...');
+  private loadQuery(reloadingSnackBar?: boolean) {
+    if (reloadingSnackBar) {
+      this.snackBar.open('Reloading query, please wait...');
     }
     this.queryDefinitionService.loadQuery(this.pipelineId).then(res => {
-      if (showSnackBar) {
-        this.snackBar.open('Loaded', null, { duration: 2000 });
+      if (reloadingSnackBar) {
+        this.snackBar.open('Query reloaded', null, { duration: 2000 });
       }
       this.queryDef = res;
       this.titleService.setTitle(`${this.queryDef.data.Pipeline.Name} - Visual Query`);
