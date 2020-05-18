@@ -51,6 +51,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   get showAdam() { return this.config.field.settings.ShowAdam ? this.config.field.settings.ShowAdam : true; }
   get fileFilter() { return this.config.field.settings.FileFilter || ''; }
   get buttons(): string { return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more'; }
+  get showInputFileName() { return this.control.value.includes('file:') || this.control.value.includes('page:'); }
 
   constructor(
     private fileTypeService: FileTypeService,
