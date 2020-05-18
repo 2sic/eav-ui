@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import cloneDeep from 'lodash-es/cloneDeep';
+import 'script-loader!node_modules/jsplumb/dist/js/jsPlumb-2.1.7-min.js';
 
 import { Context } from '../shared/services/context';
 import { QueryDefinitionService } from './services/query-definition.service';
