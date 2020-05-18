@@ -213,8 +213,14 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadQuery() {
+  private loadQuery(showSnackBar?: boolean) {
+    if (showSnackBar) {
+      this.snackBar.open('Loading...');
+    }
     this.queryDefinitionService.loadQuery(this.pipelineId).then(res => {
+      if (showSnackBar) {
+        this.snackBar.open('Loaded', null, { duration: 2000 });
+      }
       this.queryDef = res;
       this.titleService.setTitle(`${this.queryDef.data.Pipeline.Name} - Visual Query`);
     });
@@ -251,7 +257,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
-          this.loadQuery();
+          this.loadQuery(true);
         }
       })
     );
