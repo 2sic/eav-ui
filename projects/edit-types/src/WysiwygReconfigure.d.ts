@@ -27,7 +27,7 @@ export interface WysiwygReconfigure {
   editorInit?(editor: any): void;
 
   /** called after the form has prepared the editor */
-  editorReady?(editor: any): void;
+  editorBuilt?(editor: any): void;
 
   // Just booleans to disable various features
   disablePagePicker?: boolean;
