@@ -117,7 +117,12 @@ export class BuildFieldsService {
     };
     const field = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, isParentGroup);
 
-    const fieldConfigSet: FieldConfigSet = { field, entity, form };
+    const fieldConfigSet: FieldConfigSet = {
+      field,
+      entity,
+      form,
+      dropzoneDisabled: calculatedInputType.isExternal, // dropzone is by default disabled for external fields
+    };
     return fieldConfigSet;
   }
 

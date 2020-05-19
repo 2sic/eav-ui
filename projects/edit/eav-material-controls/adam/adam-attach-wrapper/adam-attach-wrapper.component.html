@@ -4,13 +4,18 @@
   </div>
   <adam-browser (openUpload)="openUpload()" [url]="url" [metadataOfCmsObject]="" [config]="config" class="u-shadow-top"
     [ngClass]="{
-      'adam-browser-container--short': !fullScreenAdamBrowser
+      'adam-browser-container--short': !fullScreenAdamBrowser,
+      'u-display-none': dropzoneDisabled
     }">
   </adam-browser>
-  <div class="{{'field-' + config.field.index}}">
+  <div class="{{'field-' + config.field.index}}" [ngClass]="{
+    'u-display-none': dropzoneDisabled
+  }">
     <div class="dropzone-previews">
     </div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>
-  <adam-hint class="field-hints"></adam-hint>
+  <adam-hint class="field-hints" [ngClass]="{
+    'u-display-none': dropzoneDisabled
+  }"></adam-hint>
 </div>

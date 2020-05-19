@@ -50,14 +50,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
-    // TODO: SPM Why does this still come from outside on _experimental?
-    // Shouldn't it come from the settings directly, to which this component has access?
-    // or from a tag attribute - that would make way more sense
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
     this.connector.loadScript('tinymce', `${tinyMceBaseUrl}/tinymce.min.js`, () => { this.tinyMceScriptLoaded(); });
+    this.connector._experimental.enableDropzone();
   }
 
   private tinyMceScriptLoaded() {

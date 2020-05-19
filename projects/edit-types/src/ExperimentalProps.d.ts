@@ -16,6 +16,7 @@ export interface ExperimentalProps {
   translateService: TranslateService; // for WYSIWYG
   expandedField$: Observable<number>;
 
+  enableDropzone(): void;
   updateField(name: string, value: any): void;
   setFocused(focused: boolean): void;
   isFeatureEnabled(guid: string): boolean;
