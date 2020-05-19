@@ -1,17 +1,11 @@
-import { Subscription } from 'rxjs';
-
 import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate } from '../shared/helpers';
-import * as template from './field-string-wysiwyg.html';
-import * as styles from './field-string-wysiwyg.css';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
+import { FieldStringWysiwygPreview } from '../preview/preview';
 import { FieldStringWysiwygDialog } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
+/** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
-  private subscription = new Subscription();
-  private eventListeners: ElementEventListener[] = [];
 
   constructor() {
     super();
@@ -20,7 +14,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   connectedCallback() {
     webpackConsoleLog('FieldStringWysiwyg connectedCallback called');
-    const inline = this.connector.field.settings.Dialog === 'inline';
+    const inline = this.calculateInline();
     if (!inline) {
       this.runPreviewMode();
     } else {
@@ -28,23 +22,17 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     }
   }
 
+  private calculateInline() {
+    const inline = this.connector.field.settings.Dialog === 'inline';
+    return inline;
+  }
+
   private runPreviewMode() {
-    this.innerHTML = buildTemplate(template.default, styles.default);
-    const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
-    if (this.connector.field.disabled) {
-      previewContainer.classList.add('disabled');
-    } else {
-      const expand = () => { this.connector.expand(true); };
-      previewContainer.addEventListener('click', expand);
-      this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
-    }
-    this.subscription.add(
-      this.connector.data.value$.subscribe(value => {
-        previewContainer.innerHTML = !value ? '' : value
-          .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') // content block
-          .replace(/<a[^>]*>(.*?)<\/a>/g, '$1'); // remove href from A tag
-      })
-    );
+    const previewName = 'field-string-wysiwyg-preview';
+    const previewEl = document.createElement(previewName) as FieldStringWysiwygPreview;
+    previewEl.connector = this.connector;
+    previewEl.connector._experimental.inlineMode = true;
+    this.appendChild(previewEl);
   }
 
   private runInlineMode() {
@@ -57,19 +45,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   disconnectedCallback() {
     webpackConsoleLog('FieldStringWysiwyg disconnectedCallback called');
-    this.eventListeners.forEach(listener => {
-      listener.element.removeEventListener(listener.type, listener.listener);
-    });
-    this.eventListeners = null;
-    this.subscription.unsubscribe();
-    this.subscription = null;
   }
 }
 
 customElements.define('field-string-wysiwyg', FieldStringWysiwyg);
-
-// export class FieldStringWysiwygInline extends FieldStringWysiwyg {
-//   inline = true;
-// }
-
-// customElements.define('field-string-wysiwyg-inline', FieldStringWysiwyg);

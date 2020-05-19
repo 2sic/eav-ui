@@ -17,6 +17,7 @@ const configuration = {
   mode: 'development',
   entry: [
     './projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts',
+    './projects/field-string-wysiwyg/src/preview/preview.ts',
     './projects/field-string-wysiwyg/src/editor/editor.ts',
   ],
   plugins: [
