@@ -41,10 +41,9 @@ export class TinyMceConfigurator {
   /**
    * Construct TinyMce options
    */
-  buildOptions(containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: any) => any) {
     const connector = this.connector;
     const exp = connector._experimental;
-    const inlineMode = exp.inlineMode;
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
     const dropzoneConfig = exp.dropzoneConfig$.value;

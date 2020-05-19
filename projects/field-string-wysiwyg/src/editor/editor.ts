@@ -21,6 +21,7 @@ const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
+  mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
   private instanceId: string;
   private containerClass: string;
@@ -52,7 +53,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // TODO: SPM Why does this still come from outside on _experimental?
     // Shouldn't it come from the settings directly, to which this component has access?
     // or from a tag attribute - that would make way more sense
-    this.classList.add(this.connector._experimental.inlineMode ? 'inline-wysiwyg' : 'full-wysiwyg');
+    this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
@@ -63,7 +64,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     webpackConsoleLog(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
+    const tinyOptions = this.configurator.buildOptions(
+      this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this)
+    );
     this.firstInit = true;
     if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     // FYI: SPM - moved this here from Setup as it's actually global
@@ -94,7 +97,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           editor.setContent(this.editorContent);
         }),
       );
-      if (!this.connector._experimental.inlineMode) {
+      if (this.mode !== 'inline') {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -130,7 +133,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.inlineMode) {
+      if (this.mode === 'inline') {
         this.connector._experimental.setFocused(true);
       }
     });
@@ -144,7 +147,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
         delete dzConfig.acceptedFiles;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.inlineMode) {
+      if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
     });
