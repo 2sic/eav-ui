@@ -7,6 +7,8 @@ import * as styles from './preview.css';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
+export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
+
 export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
   private subscription = new Subscription();
@@ -14,11 +16,11 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
 
   constructor() {
     super();
-    webpackConsoleLog('FieldStringWysiwygPreview constructor called');
+    webpackConsoleLog(`${wysiwygPreviewTag} constructor called`);
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldStringWysiwygPreview connectedCallback called');
+    webpackConsoleLog(`${wysiwygPreviewTag} connectedCallback called`);
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
     if (this.connector.field.disabled) {
@@ -38,7 +40,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   disconnectedCallback() {
-    webpackConsoleLog('FieldStringWysiwygPreview disconnectedCallback called');
+    webpackConsoleLog(`${wysiwygPreviewTag} disconnectedCallback called`);
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });
@@ -48,4 +50,4 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 }
 
-customElements.define('field-string-wysiwyg-preview', FieldStringWysiwygPreview);
+customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);

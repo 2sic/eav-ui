@@ -1,6 +1,6 @@
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-import { FieldStringWysiwygDialog } from '../editor/editor';
+import { FieldStringWysiwygEditor } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 // const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
@@ -8,7 +8,7 @@ import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwygDialog, editor: any, expand: (expand: boolean) => void) {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any, expand: (expand: boolean) => void) {
     const instSettings = fieldStringWysiwyg.configurator.instance;
 
     registerTinyMceFormats(editor, instSettings.imgSizes);

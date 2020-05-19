@@ -1,7 +1,9 @@
 import { EavCustomInputField, Connector } from '../../../edit-types';
-import { FieldStringWysiwygPreview } from '../preview/preview';
-import { FieldStringWysiwygDialog } from '../editor/editor';
+import { wysiwygPreviewTag, FieldStringWysiwygPreview } from '../preview/preview';
+import { wysiwygEditorTag, FieldStringWysiwygEditor } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+
+const wysiwygTag = 'field-string-wysiwyg';
 
 /** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
@@ -9,11 +11,11 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   constructor() {
     super();
-    webpackConsoleLog('FieldStringWysiwyg constructor called');
+    webpackConsoleLog(`${wysiwygTag} constructor called`);
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldStringWysiwyg connectedCallback called');
+    webpackConsoleLog(`${wysiwygTag} connectedCallback called`);
     const inline = this.calculateInline();
     if (!inline) {
       this.runPreviewMode();
@@ -28,7 +30,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   private runPreviewMode() {
-    const previewName = 'field-string-wysiwyg-preview';
+    const previewName = wysiwygPreviewTag;
     const previewEl = document.createElement(previewName) as FieldStringWysiwygPreview;
     previewEl.connector = this.connector;
     previewEl.connector._experimental.inlineMode = true;
@@ -36,16 +38,16 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   private runInlineMode() {
-    const dialogName = 'field-string-wysiwyg-dialog';
-    const dialogEl = document.createElement(dialogName) as FieldStringWysiwygDialog;
+    const dialogName = wysiwygEditorTag;
+    const dialogEl = document.createElement(dialogName) as FieldStringWysiwygEditor;
     dialogEl.connector = this.connector;
     dialogEl.connector._experimental.inlineMode = true;
     this.appendChild(dialogEl);
   }
 
   disconnectedCallback() {
-    webpackConsoleLog('FieldStringWysiwyg disconnectedCallback called');
+    webpackConsoleLog(`${wysiwygTag} disconnectedCallback called`);
   }
 }
 
-customElements.define('field-string-wysiwyg', FieldStringWysiwyg);
+customElements.define(wysiwygTag, FieldStringWysiwyg);
