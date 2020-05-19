@@ -5,30 +5,22 @@ import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.css';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
-import { FieldStringWysiwygDialog } from '../main/main';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
-class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
+
+export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
   private subscription = new Subscription();
   private eventListeners: ElementEventListener[] = [];
 
   constructor() {
     super();
-    webpackConsoleLog('FieldStringWysiwyg constructor called');
+    webpackConsoleLog(`${wysiwygPreviewTag} constructor called`);
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldStringWysiwyg connectedCallback called');
-    const inline = this.connector.field.settings.Dialog === 'inline';
-    if (!inline) {
-      this.runPreviewMode();
-    } else {
-      this.runInlineMode();
-    }
-  }
-
-  private runPreviewMode() {
+    webpackConsoleLog(`${wysiwygPreviewTag} connectedCallback called`);
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
     if (this.connector.field.disabled) {
@@ -47,16 +39,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     );
   }
 
-  private runInlineMode() {
-    const dialogName = 'field-string-wysiwyg-dialog';
-    const dialogEl = document.createElement(dialogName) as FieldStringWysiwygDialog;
-    dialogEl.connector = this.connector;
-    dialogEl.connector._experimental.inlineMode = true;
-    this.appendChild(dialogEl);
-  }
-
   disconnectedCallback() {
-    webpackConsoleLog('FieldStringWysiwyg disconnectedCallback called');
+    webpackConsoleLog(`${wysiwygPreviewTag} disconnectedCallback called`);
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });
@@ -66,10 +50,4 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 }
 
-customElements.define('field-string-wysiwyg', FieldStringWysiwyg);
-
-// export class FieldStringWysiwygInline extends FieldStringWysiwyg {
-//   inline = true;
-// }
-
-// customElements.define('field-string-wysiwyg-inline', FieldStringWysiwyg);
+customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);

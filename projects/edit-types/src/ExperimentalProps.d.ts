@@ -15,7 +15,6 @@ export interface ExperimentalProps {
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   translateService: TranslateService; // for WYSIWYG
   expandedField$: Observable<number>;
-  inlineMode?: boolean; // for WYSIWYG, set by the preview
 
   updateField(name: string, value: any): void;
   setFocused(focused: boolean): void;

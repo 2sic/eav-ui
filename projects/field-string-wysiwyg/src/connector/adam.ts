@@ -1,5 +1,5 @@
 import { AdamSetValue, AdamAfterUpload } from '../../../edit-types';
-import { FieldStringWysiwygDialog } from '../main/main';
+import { FieldStringWysiwygEditor } from '../editor/editor';
 
 // TODO: SPM this must really become a normal class, which then becomes .adam on the field
 export function attachAdam(fieldStringWysiwyg: any /* FieldStringWysiwygDialog */, editor: any) {

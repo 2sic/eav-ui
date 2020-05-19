@@ -1,24 +1,27 @@
 import { Subscription } from 'rxjs';
+
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
-import * as template from './main.html';
-import * as styles from './main.css';
+import * as template from './editor.html';
+import * as styles from './editor.css';
 import { TinyMceButtons } from '../config/buttons';
 import { attachDnnBridgeService } from '../connector/dnn-page-picker';
 import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
-import { fixMenuPositions } from './fix-menu-positions-helper';
+import { fixMenuPositions } from './fix-menu-positions.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 declare const tinymce: any;
 
+export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
 
-export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomInputField<string> {
+export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
+  mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
   private instanceId: string;
   private containerClass: string;
@@ -36,21 +39,21 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
 
   constructor() {
     super();
-    webpackConsoleLog('FieldStringWysiwygDialog constructor called');
+    webpackConsoleLog(`${wysiwygEditorTag} constructor called`);
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldStringWysiwygDialog connectedCallback called');
+    webpackConsoleLog(`${wysiwygEditorTag} connectedCallback called`);
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     // TODO: SPM Why does this still come from outside on _experimental?
     // Shouldn't it come from the settings directly, to which this component has access?
     // or from a tag attribute - that would make way more sense
-    this.classList.add(this.connector._experimental.inlineMode ? 'inline-wysiwyg' : 'full-wysiwyg');
+    this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
@@ -58,10 +61,12 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   }
 
   private tinyMceScriptLoaded() {
-    webpackConsoleLog('FieldStringWysiwygDialog tinyMceScriptLoaded called');
+    webpackConsoleLog(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    const tinyOptions = this.configurator.buildOptions(this.containerClass, this.toolbarContainerClass, this.tinyMceSetup.bind(this));
+    const tinyOptions = this.configurator.buildOptions(
+      this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this)
+    );
     this.firstInit = true;
     if (tinymce.baseURL !== tinyMceBaseUrl) { tinymce.baseURL = tinyMceBaseUrl; }
     // FYI: SPM - moved this here from Setup as it's actually global
@@ -76,7 +81,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   private tinyMceSetup(editor: any) {
     this.editor = editor;
     editor.on('init', (_event: any) => {
-      webpackConsoleLog('FieldStringWysiwygDialog TinyMCE initialized', editor);
+      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorInit?.(editor);
       // FYI: SPM - anything against using the more () => syntax?
       TinyMceButtons.registerAll(this, editor, (exp) => this.expand(exp)); // .bind(this));
@@ -92,7 +97,7 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
           editor.setContent(this.editorContent);
         }),
       );
-      if (!this.connector._experimental.inlineMode) {
+      if (this.mode !== 'inline') {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -112,13 +117,13 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
 
     // called after tinymce editor is removed
     editor.on('remove', (_event: any) => {
-      webpackConsoleLog('FieldStringWysiwygDialog TinyMCE removed', _event);
+      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
-      webpackConsoleLog('FieldStringWysiwygDialog TinyMCE focused', _event);
+      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
       if (this.pasteImageFromClipboardEnabled) {
@@ -128,21 +133,21 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
         dzConfig.acceptedFiles = extWhitelist;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.inlineMode) {
+      if (this.mode === 'inline') {
         this.connector._experimental.setFocused(true);
       }
     });
 
     editor.on('blur', (_event: any) => {
       this.classList.remove('focused');
-      webpackConsoleLog('FieldStringWysiwygDialog TinyMCE blurred', _event);
+      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE blurred`, _event);
       if (!this.pasteImageFromClipboardEnabled) {
         // Dropzone will handle image uploads again
         const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
         delete dzConfig.acceptedFiles;
         this.connector._experimental.dropzoneConfig$.next(dzConfig);
       }
-      if (this.connector._experimental.inlineMode) {
+      if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
     });
@@ -181,9 +186,9 @@ export class FieldStringWysiwygDialog extends HTMLElement implements EavCustomIn
   }
 
   disconnectedCallback() {
-    webpackConsoleLog('FieldStringWysiwygDialog disconnectedCallback called');
+    webpackConsoleLog(`${wysiwygEditorTag} disconnectedCallback called`);
     this.clearData();
   }
 }
 
-customElements.define('field-string-wysiwyg-dialog', FieldStringWysiwygDialog);
+customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
