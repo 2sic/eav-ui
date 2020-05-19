@@ -14,8 +14,8 @@ export class ConnectorInstance<T> implements Connector<T> {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
   }
 
-  expand(expand: boolean) {
-    this._connectorHost.expand(expand);
+  expand(expand: boolean, componentTag?: string) {
+    this._connectorHost.expand(expand, componentTag);
   }
 
   loadScript(globalObject: string, src: string, callback: (...args: any[]) => any) {
@@ -68,6 +68,6 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
 /** Props and methods available to the connector to communicate with the host */
 export class ConnectorHost<T> {
   update: (value: T) => void;
-  expand: (expand: boolean) => void;
+  expand: (expand: boolean, componentTag?: string) => void;
   forceConnectorSave$: Observable<null>;
 }

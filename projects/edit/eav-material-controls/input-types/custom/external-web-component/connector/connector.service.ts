@@ -125,8 +125,10 @@ export class ConnectorService {
         this._ngZone.run(() => this.update(value));
       },
       forceConnectorSave$: this.eavService.forceConnectorSave$$,
-      expand: (expand) => {
-        this._ngZone.run(() => { this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId); });
+      expand: (expand, componentTag?: string) => {
+        this._ngZone.run(() => {
+          this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId, componentTag);
+        });
       },
     };
     this.previousValue = this.group.controls[this.config.field.name].value;
@@ -213,7 +215,7 @@ export class ConnectorService {
     angularConsoleLog('Connector destroyed');
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subjects.forEach(subject => { subject.complete(); });
-    this.customEl.parentNode.removeChild(this.customEl);
+    this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }
 }

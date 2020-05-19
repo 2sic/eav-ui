@@ -16,7 +16,7 @@ export interface Connector<T> {
   data: ConnectorData<T>;
 
   /** Opens component in dialog mode */
-  expand(expand: boolean): void;
+  expand(expand: boolean, componentTag?: string): void;
 
   /** Makes sure that script with the same source is loaded only once and executes callback */
   loadScript(globalObject: string, src: string, callback: (...args: any[]) => any): void;
