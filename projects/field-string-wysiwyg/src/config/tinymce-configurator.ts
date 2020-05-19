@@ -46,7 +46,8 @@ export class TinyMceConfigurator {
     const exp = connector._experimental;
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
-    const dropzoneConfig = exp.dropzoneConfig$.value;
+    const dropzoneConfig = exp.dropzoneConfig$?.value;
+    if (dropzoneConfig == null) console.error(`dropzone Config not available, some things won't work`);
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
       ? exp.allInputTypeNames[connector.field.index + 1].inputType === 'entity-content-blocks'
@@ -72,7 +73,7 @@ export class TinyMceConfigurator {
       options = { ...options, ...DefaultPaste.formattedText };
 
     if (exp.isFeatureEnabled(FeatGuids.PasteImageFromClipboard))
-      options = { ...options, ...DefaultPaste.images(dropzoneConfig.url as string, dropzoneConfig.headers) };
+      options = { ...options, ...DefaultPaste.images(dropzoneConfig?.url as string, dropzoneConfig?.headers) };
 
     if (this.reconfigure?.optionsReady)
       this.reconfigure.optionsReady(options);
