@@ -29,7 +29,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   private calculateInline() {
     let inline = this.connector.field.settings?.Dialog === 'inline';
-    if (this.mode != null) {
+    if (this.mode != null || this.getAttribute('mode') != null) {
       inline = this.mode === 'inline' || this.getAttribute('mode') === 'inline';
     }
 
