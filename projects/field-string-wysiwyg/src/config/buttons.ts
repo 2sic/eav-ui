@@ -8,7 +8,7 @@ import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any, expand: (expand: boolean) => void) {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any) {
     const instSettings = fieldStringWysiwyg.configurator.instance;
 
     registerTinyMceFormats(editor, instSettings.imgSizes);
@@ -27,7 +27,7 @@ export class TinyMceButtons {
 
     TinyMceButtons.switchModes(editor);
 
-    TinyMceButtons.openDialog(editor, expand);
+    TinyMceButtons.openDialog(editor, fieldStringWysiwyg.connector.dialog.open);
 
     TinyMceButtons.headingButtons(editor);
 
@@ -287,12 +287,12 @@ export class TinyMceButtons {
   }
 
   /** Switch to Dialog Mode */
-  static openDialog(editor: any, expand: (expand: boolean) => void) {
+  static openDialog(editor: any, open: (componentTag?: string) => void) {
     editor.ui.registry.addButton('expandfulleditor', {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (_: any) => {
-        expand(true);
+        open();
       },
     });
   }

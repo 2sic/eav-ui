@@ -83,8 +83,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', (_event: any) => {
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorInit?.(editor);
-      // FYI: SPM - anything against using the more () => syntax?
-      TinyMceButtons.registerAll(this, editor, (exp) => this.expand(exp)); // .bind(this));
+      TinyMceButtons.registerAll(this, editor);
       // tslint:disable: curly
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
@@ -157,10 +156,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('redo', this.saveValue.bind(this));
     this.reconfigure?.editorReady?.(editor);
     this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
-  }
-
-  private expand(expand: boolean) {
-    this.connector.expand(expand);
   }
 
   private saveValue() {

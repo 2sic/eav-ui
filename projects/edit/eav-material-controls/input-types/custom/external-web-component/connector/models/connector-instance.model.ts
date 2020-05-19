@@ -1,21 +1,20 @@
 import { Observable } from 'rxjs';
 import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../../../../../../edit-types';
+import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 
 export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
+  dialog: ConnectorDialog<T>;
 
   constructor(
-    private _connectorHost: ConnectorHost<T>,
+    _connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
     public field: FieldConfig,
     public _experimental: ExperimentalProps,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
-  }
-
-  expand(expand: boolean, componentTag?: string) {
-    this._connectorHost.expand(expand, componentTag);
+    this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
   }
 
   loadScript(globalObject: string, src: string, callback: (...args: any[]) => any) {
@@ -62,6 +61,16 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
 
   onValueChange(callback: (newValue: T) => void) {
     this.clientValueChangeListeners.push(callback);
+  }
+}
+
+export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
+  open: (componentTag?: string) => void;
+  close: () => void;
+
+  constructor(_connectorHost: ConnectorHost<T>) {
+    this.open = (componentTag?) => _connectorHost.expand(true, componentTag);
+    this.close = () => _connectorHost.expand(false);
   }
 }
 

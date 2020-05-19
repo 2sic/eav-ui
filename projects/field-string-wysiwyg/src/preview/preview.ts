@@ -26,7 +26,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     if (this.connector.field.disabled) {
       previewContainer.classList.add('disabled');
     } else {
-      const expand = () => { this.connector.expand(true); };
+      const expand = () => { this.connector.dialog.open(); };
       previewContainer.addEventListener('click', expand);
       this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
     }
