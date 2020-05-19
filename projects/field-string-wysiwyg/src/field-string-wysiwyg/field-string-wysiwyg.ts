@@ -2,10 +2,10 @@ import { Subscription } from 'rxjs';
 
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
-import * as template from './preview.html';
-import * as styles from './preview.css';
+import * as template from './field-string-wysiwyg.html';
+import * as styles from './field-string-wysiwyg.css';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
-import { FieldStringWysiwygDialog } from '../main/main';
+import { FieldStringWysiwygDialog } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {

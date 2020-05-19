@@ -1,6 +1,6 @@
-import { loadCustomIcons } from '../main/load-icons-helper';
+import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-import { FieldStringWysiwygDialog } from '../main/main';
+import { FieldStringWysiwygDialog } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 // const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
@@ -40,7 +40,6 @@ export class TinyMceButtons {
 
     TinyMceButtons.contextMenus(editor);
   }
-
 
   /** Group with adam-link, dnn-link */
   // TODO: SPM this should be typed, and then it should be .adam.toggle
@@ -124,7 +123,6 @@ export class TinyMceButtons {
     editor.ui.registry.addSplitButton('linkgrouppro', linkgroupPro);
   }
 
-
   /** Images menu */
   static images(editor: any, fieldStringWysiwyg: any) {
     const imageButton = editor.ui.registry.getAll().buttons.image;
@@ -191,7 +189,6 @@ export class TinyMceButtons {
     });
   }
 
-
   /** Drop-down with italic, strikethrough, ... */
   static dropDownItalicAndMore(editor: any) {
     const italicButton = editor.ui.registry.getAll().buttons.italic;
@@ -231,7 +228,6 @@ export class TinyMceButtons {
     });
   }
 
-
   /** Lists / Indent / Outdent etc. */
   static listButtons(editor: any) {
     const bullistButton = editor.ui.registry.getAll().buttons.bullist;
@@ -265,7 +261,6 @@ export class TinyMceButtons {
     });
   }
 
-
   /** Switch normal / advanced mode */
   static switchModes(editor: any) {
     editor.ui.registry.addButton('modestandard', {
@@ -291,7 +286,6 @@ export class TinyMceButtons {
     });
   }
 
-
   /** Switch to Dialog Mode */
   static openDialog(editor: any, expand: (expand: boolean) => void) {
     editor.ui.registry.addButton('expandfulleditor', {
@@ -302,7 +296,6 @@ export class TinyMceButtons {
       },
     });
   }
-
 
   /** Headings Buttons */
   static headingButtons(editor: any) {
@@ -333,7 +326,6 @@ export class TinyMceButtons {
       });
     });
   }
-
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
   static headingsGroup(editor: any) {
@@ -394,7 +386,6 @@ export class TinyMceButtons {
     });
   }
 
-
   /** Inside content (contentblocks) */
   static contentBlock(editor: any) {
     editor.ui.registry.addButton('addcontentblock', {
@@ -406,7 +397,6 @@ export class TinyMceButtons {
       },
     });
   }
-
 
   /** Image alignment / size buttons in context menu */
   static imageContextMenu(editor: any, imgSizes: number[]) {
@@ -493,9 +483,6 @@ export class TinyMceButtons {
   }
 }
 
-
-
-
 /**
  * Helper function to add activate/deactivate to buttons like alignleft, alignright etc.
  * copied/modified from
@@ -521,7 +508,6 @@ function initOnPostRender(name: any, editor: any) {
     }
   };
 }
-
 
 /** Register all formats - like img-sizes */
 function registerTinyMceFormats(editor: any, imgSizes: number[]) {

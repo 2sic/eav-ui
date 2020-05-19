@@ -15,7 +15,10 @@ args.forEach((val, index) => {
 
 const configuration = {
   mode: 'development',
-  entry: ['./projects/field-string-wysiwyg/src/main/main.ts', './projects/field-string-wysiwyg/src/preview/preview.ts'],
+  entry: [
+    './projects/field-string-wysiwyg/src/field-string-wysiwyg/field-string-wysiwyg.ts',
+    './projects/field-string-wysiwyg/src/editor/editor.ts',
+  ],
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({

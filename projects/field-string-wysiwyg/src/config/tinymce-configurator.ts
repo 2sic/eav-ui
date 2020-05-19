@@ -2,7 +2,7 @@ import { TinyMceTranslations } from './translations';
 import { Connector } from '../../../edit-types';
 import { DefaultPlugins, DefaultOptions, DefaultPaste } from './defaults';
 import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
-import * as contentStyle from '../main/tinymce-content.css';
+import * as contentStyle from '../editor/tinymce-content.css';
 import { TinyMceToolbars } from './toolbars';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { TinyInstanceOptions } from './defaults/tinyInstance';
@@ -79,9 +79,6 @@ export class TinyMceConfigurator {
       this.reconfigure.optionsReady(options);
     return options;
   }
-
-
-
 
   addTranslations() {
     TinyMceTranslations.addTranslations(this.language,

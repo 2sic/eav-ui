@@ -1,13 +1,13 @@
 import { Subscription } from 'rxjs';
 import { EavCustomInputField, Connector } from '../../../edit-types';
 import { buildTemplate } from '../shared/helpers';
-import * as template from './main.html';
-import * as styles from './main.css';
+import * as template from './editor.html';
+import * as styles from './editor.css';
 import { TinyMceButtons } from '../config/buttons';
 import { attachDnnBridgeService } from '../connector/dnn-page-picker';
 import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
-import { fixMenuPositions } from './fix-menu-positions-helper';
+import { fixMenuPositions } from './fix-menu-positions.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
