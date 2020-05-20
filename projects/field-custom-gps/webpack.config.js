@@ -48,8 +48,8 @@ const configuration = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: 'gps-picker.js',
-    path: path.resolve(__dirname, '../../dist/elements/field-custom-gps'),
+    filename: 'index.js',
+    path: path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-custom-gps'),
   },
 };
 
