@@ -4,6 +4,7 @@ import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
 import { EavConfiguration } from '../../../../../../shared/models/eav-configuration';
+declare const sxcVersion: string;
 
 export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
@@ -29,6 +30,10 @@ export class ConnectorInstance<T> implements Connector<T> {
       src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
         .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
         .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
+      const url = new URL(src);
+      if (url.search === '') {
+        src = `${src}?sxcver=${sxcVersion}`;
+      }
 
       const scriptElement: HTMLScriptElement = document.querySelector('script[src="' + src + '"]');
       if (scriptElement) {
