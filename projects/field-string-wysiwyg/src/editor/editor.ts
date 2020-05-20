@@ -184,4 +184,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 }
 
-customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
+// only register the tag, if it has not been registered before
+if (!customElements.get(wysiwygEditorTag)) {
+  customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
+}

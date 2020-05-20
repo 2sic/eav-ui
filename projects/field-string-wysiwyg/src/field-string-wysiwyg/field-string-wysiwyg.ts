@@ -59,4 +59,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 }
 
-customElements.define(wysiwygTag, FieldStringWysiwyg);
+// only register the tag, if it has not been registered before
+if (!customElements.get(wysiwygTag)) {
+  customElements.define(wysiwygTag, FieldStringWysiwyg);
+}
