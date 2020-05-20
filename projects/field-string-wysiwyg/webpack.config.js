@@ -67,8 +67,8 @@ const configuration = {
     extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: 'wysiwyg-tinymce.js',
-    path: path.resolve(__dirname, '../../dist/elements/field-string-wysiwyg'),
+    filename: 'index.js',
+    path: path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-string-wysiwyg'),
   },
 };
 
