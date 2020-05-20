@@ -1,6 +1,6 @@
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-import { FieldStringWysiwygEditor } from '../editor/editor';
+import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 
 // const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
@@ -292,7 +292,7 @@ export class TinyMceButtons {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (_: any) => {
-        open('field-string-wysiwyg-dialog');
+        open(wysiwygEditorTag);
       },
     });
   }
