@@ -30,8 +30,7 @@ export class ConnectorInstance<T> implements Connector<T> {
       src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
         .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
         .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
-      const url = new URL(src);
-      if (url.search === '') {
+      if (!src.includes('?')) {
         src = `${src}?sxcver=${sxcVersion}`;
       }
 
