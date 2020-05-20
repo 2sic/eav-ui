@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import cloneDeep from 'lodash-es/cloneDeep';
 
@@ -15,6 +16,7 @@ export class SnippetsService {
   constructor(
     private http: HttpClient,
     private dnnContext: DnnContext,
+    private translate: TranslateService,
   ) { }
 
   async getSnippets(view: SourceView) {
@@ -140,7 +142,7 @@ export class SnippetsService {
   private label(set: any, subset: any, snip: any) {
     const key = this.getHelpKey(set, subset, snip, '.Key');
 
-    let result = key;
+    let result = this.translate.instant(key);
     if (result === key) {
       result = snip;
     }
@@ -154,7 +156,7 @@ export class SnippetsService {
   private help(set: any, subset: any, snip: any) {
     const key = this.getHelpKey(set, subset, snip, '.Help');
 
-    let result = key;
+    let result = this.translate.instant(key);
     if (result === key) {
       result = '';
     }
@@ -204,7 +206,7 @@ export class SnippetsService {
               key: std[i],
               label: std[i],
               snip: this.valuePlaceholder(prefix, std[i], templateConfiguration),
-              help: 'SourceEditorSnippets.StandardFields.' + std[i] + '.Help'
+              help: this.translate.instant('SourceEditorSnippets.StandardFields.' + std[i] + '.Help'),
             };
           }
         }
