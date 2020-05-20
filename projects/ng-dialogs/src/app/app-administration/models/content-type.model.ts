@@ -20,7 +20,7 @@ export class ContentTypeMetadata {
   Id: number;
   Label: string;
   Link: string;
-  ListInstructions: any; // spm TODO: figure out the type
+  ListInstructions: any;
   Notes: string;
   Title: string;
 }

@@ -59,7 +59,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     });
   }
 
-  // spm TODO: edit header seems to be broken
   editHeader() {
     const form: EditForm = {
       items: [
@@ -113,7 +112,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private fetchHeader() {
     this.contentGroupService.getHeader(this.contentGroup).subscribe(res => {
-      // spm TODO: Header title seems to always be an empty string
       this.header = res;
     });
   }

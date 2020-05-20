@@ -16,7 +16,6 @@ export class View {
   Used: number;
 }
 
-// spm TODO: figure out what this type is
 export class ViewEntity {
   DemoId: number;
   DemoTitle: string;

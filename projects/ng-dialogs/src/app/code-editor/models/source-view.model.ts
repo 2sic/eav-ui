@@ -17,5 +17,5 @@ export class SourceView {
 }
 
 export class SourceViewStreams {
-  [key: string]: any; // spm TODO: Figure out the type
+  [key: string]: any;
 }
