@@ -152,6 +152,9 @@ export class BuildFieldsService {
         disableI18n = type.DisableI18n;
       }
     });
+    if (settingsTranslated.DisableTranslation === true) {
+      disableI18n = true;
+    }
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 
