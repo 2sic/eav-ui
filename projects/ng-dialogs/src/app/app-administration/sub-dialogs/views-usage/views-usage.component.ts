@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { ViewsService } from '../../services/templates.service';
+import { ViewsService } from '../../services/views.service';
 import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsUsageIdComponent } from '../../ag-grid-components/views-usage-id/views-usage-id.component';
 import { ViewUsageData } from '../../models/view-usage-data.model';

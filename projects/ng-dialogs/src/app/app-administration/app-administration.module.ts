@@ -37,7 +37,7 @@ import { ViewsActionsComponent } from './ag-grid-components/views-actions/views-
 import { AppDialogConfigService } from './services/app-dialog-config.service';
 import { ContentTypesService } from './services/content-types.service';
 import { PipelinesService } from './services/pipelines.service';
-import { ViewsService } from './services/templates.service';
+import { ViewsService } from './services/views.service';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
 import { ContentExportService } from './services/content-export.service';
 import { ContentImportComponent } from './sub-dialogs/content-import/content-import.component';

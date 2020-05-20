@@ -11,7 +11,7 @@ import { calculateViewType } from './views.helpers';
 import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
 import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
-import { ViewsService } from '../services/templates.service';
+import { ViewsService } from '../services/views.service';
 import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
