@@ -292,7 +292,7 @@ export class TinyMceButtons {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (_: any) => {
-        open();
+        open('field-string-wysiwyg-dialog');
       },
     });
   }
