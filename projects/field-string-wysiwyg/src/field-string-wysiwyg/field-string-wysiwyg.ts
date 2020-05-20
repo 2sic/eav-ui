@@ -5,11 +5,13 @@ import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 
 const wysiwygTag = 'field-string-wysiwyg';
+const modeEdit = 'edit';
+const modePreview = 'preview';
 
 /** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
-  mode?: 'inline' | 'normal';
+  mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
 
   constructor() {
@@ -30,7 +32,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   private calculateInline() {
     let inline = this.connector.field.settings?.Dialog === 'inline';
     if (this.mode != null || this.getAttribute('mode') != null) {
-      inline = this.mode === 'inline' || this.getAttribute('mode') === 'inline';
+      inline = this.mode === modeEdit || this.getAttribute('mode') === modeEdit;
     }
 
     return inline;
