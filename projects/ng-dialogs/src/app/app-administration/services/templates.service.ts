@@ -8,9 +8,8 @@ import { View } from '../models/view.model';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
 
-// TODO: rename to ViewServices (because it's not about templates, those are the files)
 @Injectable()
-export class TemplatesService {
+export class ViewsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {

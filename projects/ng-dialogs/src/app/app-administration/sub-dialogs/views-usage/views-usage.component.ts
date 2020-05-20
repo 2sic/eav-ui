@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { TemplatesService } from '../../services/templates.service';
+import { ViewsService } from '../../services/templates.service';
 import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsUsageIdComponent } from '../../ag-grid-components/views-usage-id/views-usage-id.component';
 import { ViewUsageData } from '../../models/view-usage-data.model';
@@ -60,13 +60,13 @@ export class ViewsUsageComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<ViewsUsageComponent>,
     private route: ActivatedRoute,
-    private templatesService: TemplatesService
+    private viewsService: ViewsService,
   ) {
     this.viewGuid = this.route.snapshot.paramMap.get('guid');
   }
 
   async ngOnInit() {
-    this.templatesService.getUsage(this.viewGuid).subscribe(viewUsages => {
+    this.viewsService.getUsage(this.viewGuid).subscribe(viewUsages => {
       this.viewUsage = viewUsages[0];
       this.viewTooltip = `ID: ${this.viewUsage.Id}\nGUID: ${this.viewUsage.Guid}`;
       this.data = buildData(this.viewUsage);

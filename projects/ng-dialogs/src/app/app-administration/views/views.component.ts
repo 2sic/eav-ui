@@ -11,7 +11,7 @@ import { calculateViewType } from './views.helpers';
 import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
 import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
 import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
-import { TemplatesService } from '../services/templates.service';
+import { ViewsService } from '../services/templates.service';
 import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -118,7 +118,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   private polymorphism: Polymorphism;
 
   constructor(
-    private templatesService: TemplatesService,
+    private viewsService: ViewsService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -139,13 +139,13 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private fetchTemplates() {
-    this.templatesService.getAll().subscribe(views => {
+    this.viewsService.getAll().subscribe(views => {
       this.views = views;
     });
   }
 
   private fetchPolymorphism() {
-    this.templatesService.getPolymorphism().subscribe(polymorphism => {
+    this.viewsService.getPolymorphism().subscribe(polymorphism => {
       this.polymorphism = polymorphism;
       this.polymorphStatus = (polymorphism.Id === null)
         ? 'not configured'
@@ -236,7 +236,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   private deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.templatesService.delete(view.Id).subscribe(res => {
+    this.viewsService.delete(view.Id).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchTemplates();
     });
