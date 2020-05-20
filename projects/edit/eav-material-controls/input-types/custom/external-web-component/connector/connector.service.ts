@@ -135,7 +135,9 @@ export class ConnectorService {
     this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
     this.subjects.push(this.value$);
     const experimental = this.calculateExperimentalProps();
-    const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field, experimental);
+    const connector = new ConnectorInstance<any>(
+      connectorHost, this.value$.asObservable(), this.config.field, experimental, this.eavConfig
+    );
 
     return connector;
   }
