@@ -50,4 +50,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 }
 
-customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);
+// only register the tag, if it has not been registered before
+if (!customElements.get(wysiwygPreviewTag)) {
+  customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);
+}
