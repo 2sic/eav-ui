@@ -2,14 +2,15 @@ import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
-
-// const imgSizes = [100, 75, 70, 66, 60, 50, 40, 33, 30, 25, 10];
+// tslint:disable: curly
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
   static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any) {
-    const instSettings = fieldStringWysiwyg.configurator.instance;
+    const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
+
+    if (!instSettings.enabled) return;
 
     registerTinyMceFormats(editor, instSettings.imgSizes);
 
