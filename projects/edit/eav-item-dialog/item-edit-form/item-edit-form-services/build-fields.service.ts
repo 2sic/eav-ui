@@ -145,16 +145,10 @@ export class BuildFieldsService {
     const name: string = attribute ? attribute.name : 'Edit Item';
     const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     let inputTypeSettings: InputType;
-    let disableI18n = false;
+    const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, fullSettings);
     this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      if (type) {
-        inputTypeSettings = type;
-        disableI18n = type.DisableI18n;
-      }
+      inputTypeSettings = type;
     });
-    if (settingsTranslated.DisableTranslation === true) {
-      disableI18n = true;
-    }
     const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 

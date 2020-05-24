@@ -256,10 +256,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
           if (item.entity.attributes.hasOwnProperty(key)) {
             const attributeDef = contentType.contentType.attributes.find(attr => attr.name === key);
             const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
-            let disableI18n = false;
-            inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-              if (type) { disableI18n = type.DisableI18n; }
-            });
+            const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.settings);
             attributesValues.push({
               values: item.entity.attributes[key],
               disableI18n,
