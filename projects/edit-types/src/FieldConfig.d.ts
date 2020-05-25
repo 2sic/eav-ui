@@ -26,5 +26,10 @@ export interface FieldConfig {
   /** Tells whether the field is disabled. This is the initial value that was set in settings for this field */
   disabled: boolean;
 
+  /**
+   * Settings of the field, as configured in the UI
+   * This is just a normal dictionary-object with keys having the same names as the fields in the configuration dialog.
+   * Note that most keys are PascalCase, not camelCase.
+   */
   settings: FieldSettings;
 }
