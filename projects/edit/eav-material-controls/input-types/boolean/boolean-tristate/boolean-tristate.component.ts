@@ -31,7 +31,7 @@ export class BooleanTristateComponent implements Field {
     if (value === false && this.config.field.settings.TitleFalse != null && this.config.field.settings.TitleFalse !== '') {
       return this.config.field.settings.TitleFalse;
     }
-    if (value == null && this.config.field.settings.TitleIndeterminate != null && this.config.field.settings.TitleIndeterminate !== '') {
+    if (value === null && this.config.field.settings.TitleIndeterminate != null && this.config.field.settings.TitleIndeterminate !== '') {
       return this.config.field.settings.TitleIndeterminate;
     }
     return this.config.field.label;
