@@ -1,8 +1,12 @@
 
+import { take } from 'rxjs/operators';
+
 import { EavValue, EavAttributes, EavDimensions } from '../models/eav';
 import { FieldSettings } from '../../../edit-types';
 import { EavValues } from '../models/eav/eav-values';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { InputTypeService } from '../store/ngrx-data/input-type.service';
+import { CalculatedInputType } from '../models/input-field-models';
 
 export class LocalizationHelper {
   /**
@@ -86,6 +90,18 @@ export class LocalizationHelper {
       return allAttributesValues ? allAttributesValues.values.filter(eavValue =>
         eavValue.dimensions.find(d => d.value === defaultLanguage)).length > 0 : false;
     }
+  }
+
+  public static isI18nDisabled(inputTypeService: InputTypeService, calculatedInputType: CalculatedInputType, fullSettings: EavAttributes) {
+    let disableI18n = false;
+    inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
+      if (type?.DisableI18n === true) { disableI18n = true; }
+    });
+    const disableTranslationSetting = !!fullSettings.DisableTranslation?.values.find(value => value.value === true);
+    if (disableTranslationSetting) {
+      disableI18n = true;
+    }
+    return disableI18n;
   }
 
   public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {

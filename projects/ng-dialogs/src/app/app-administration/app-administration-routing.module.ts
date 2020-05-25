@@ -11,6 +11,7 @@ import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialo
 import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
 import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
 import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
+import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
 const appAdministrationRoutes: Routes = [
   {
@@ -59,6 +60,7 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'views', component: EmptyRouteComponent, children: [
+          { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)

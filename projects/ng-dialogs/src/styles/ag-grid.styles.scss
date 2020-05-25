@@ -1,23 +1,31 @@
 $grid-color-disabled: rgba(29, 39, 61, 0.26);
 
+// fixes bug in Chrome where overflow-x scrollbar is visible while there is no overflow at all
+.ag-center-cols-viewport {
+  overflow: hidden;
+}
+
 .group-row {
   background-color: rgba(map_get($mat-eav-item-dialog-background, 500), 0.08) !important;
 }
 
-.grid-wrapper-nav {
-  padding-top: 40px;
-  position: relative;
-
-  .grid-fab {
-    position: absolute;
-    bottom: -8px;
-    right: 0;
-  }
+.nav-component-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-wrapper {
+  height: 100%;
   padding-top: 20px;
+  box-sizing: border-box;
   position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &.mat-tab-grid-wrapper {
+    padding-top: 40px;
+  }
 
   .grid-fab {
     position: absolute;
@@ -27,7 +35,7 @@ $grid-color-disabled: rgba(29, 39, 61, 0.26);
 }
 
 ag-grid-angular.ag-theme-material {
-  width: 100%;
+  flex-grow: 1;
 
   button {
     background-color: inherit;
@@ -51,6 +59,20 @@ ag-grid-angular.ag-theme-material {
   .id-action {
     cursor: pointer;
     color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+
+  .apps-list-primary-action {
+    cursor: pointer;
+
+    .text {
+      color: map_get($mat-eav-item-dialog-secondary, 500);
+    }
+
+    &.ag-column-hover {
+      .text {
+        text-decoration: underline;
+      }
+    }
   }
 
   .primary-action {
@@ -93,7 +115,7 @@ ag-grid-angular.ag-theme-material {
   }
 
   &.disabled {
-    color: $grid-color-disabled;
+    color: $grid-color-disabled !important;
   }
 
   &:not(.no-padding) {
@@ -117,6 +139,10 @@ ag-grid-angular.ag-theme-material {
     margin: -1px 1px 1px -1px;
 
     .chip {
+      box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
+    }
+
+    .image {
       box-shadow: 2px 2px 4px #fff, 4px 4px 4px #666666;
     }
   }

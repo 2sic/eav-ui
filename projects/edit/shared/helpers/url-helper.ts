@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EavConfiguration } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
 // tslint:disable-next-line:max-line-length
-import { keyAppRoot, keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
 
@@ -25,7 +25,7 @@ export class UrlHelper {
     return new EavConfiguration(
       context.zoneId.toString(),
       context.appId.toString(),
-      sessionStorage.getItem(keyAppRoot),
+      context.appRoot,
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),

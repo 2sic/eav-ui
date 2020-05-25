@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 import { SourceView } from '../models/source-view.model';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { calculateTree, toggleInArray, calculateOpenItems } from './code-templates.helpers';
+import { calculateTree, toggleInArray } from './code-templates.helpers';
 import { TreeItem } from '../models/tree-item.model';
 
 @Component({
@@ -15,9 +14,9 @@ import { TreeItem } from '../models/tree-item.model';
 export class CodeTemplatesComponent implements OnInit, OnChanges {
   @Input() view: SourceView;
   @Input() templates: string[];
-  @Output() createTemplate: EventEmitter<null> = new EventEmitter();
+  @Output() createTemplate: EventEmitter<string> = new EventEmitter();
   tree: TreeItem[];
-  toggledItems: TreeItem[] = [];
+  toggledItems: string[] = [];
 
   constructor(private dialogService: DialogService) { }
 
@@ -27,28 +26,35 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.templates?.currentValue) {
       this.tree = calculateTree(this.templates);
-      this.toggledItems = calculateOpenItems(this.view?.FileName, this.tree);
     }
     if (changes.view?.currentValue) {
-      this.toggledItems = calculateOpenItems(this.view?.FileName, this.tree);
+      this.showFileInTree(this.view.FileName);
     }
   }
 
   openTemplate(path: string) {
-    // const form: EditForm = {
-    //   items: [
-    //     { Path: path }
-    //   ]
-    // };
     this.dialogService.openCodeFile(path);
   }
 
-  toggleItem(item: TreeItem) {
-    toggleInArray(item, this.toggledItems);
+  toggleItem(path: string) {
+    toggleInArray(path, this.toggledItems);
   }
 
-  addFile() {
-    this.createTemplate.emit();
+  addFile(folder?: string) {
+    this.createTemplate.emit(folder);
+  }
+
+  private showFileInTree(file: string) {
+    if (file == null) { return; }
+    if (this.toggledItems.includes(file)) { return; }
+
+    const paths = file.split('/');
+    let pathFromRoot = '';
+    for (const path of paths) {
+      pathFromRoot = !pathFromRoot ? path : `${pathFromRoot}/${path}`;
+      if (this.toggledItems.includes(pathFromRoot)) { continue; }
+      this.toggleItem(pathFromRoot);
+    }
   }
 
 }

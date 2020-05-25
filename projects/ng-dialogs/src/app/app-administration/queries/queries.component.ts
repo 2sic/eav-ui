@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Query } from '../models/query.model';
@@ -105,7 +105,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     return `ID: ${query.Id}\nGUID: ${query.Guid}`;
   }
 
-  private openVisualQueryDesigner(params: ValueGetterParams) {
+  private openVisualQueryDesigner(params: CellClickedEvent) {
     const query: Query = params.data;
     const form: EditForm = {
       items: [{ EntityId: query.Id.toString() }],

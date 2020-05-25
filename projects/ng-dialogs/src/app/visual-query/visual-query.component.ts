@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import cloneDeep from 'lodash-es/cloneDeep';
+import 'script-loader!node_modules/jsplumb/dist/js/jsPlumb-2.1.7-min.js';
 
 import { Context } from '../shared/services/context';
 import { QueryDefinitionService } from './services/query-definition.service';
@@ -213,8 +214,14 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadQuery() {
+  private loadQuery(reloadingSnackBar?: boolean) {
+    if (reloadingSnackBar) {
+      this.snackBar.open('Reloading query, please wait...');
+    }
     this.queryDefinitionService.loadQuery(this.pipelineId).then(res => {
+      if (reloadingSnackBar) {
+        this.snackBar.open('Query reloaded', null, { duration: 2000 });
+      }
       this.queryDef = res;
       this.titleService.setTitle(`${this.queryDef.data.Pipeline.Name} - Visual Query`);
     });
@@ -251,7 +258,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
         const hadChild = this.hasChild;
         this.hasChild = !!this.route.snapshot.firstChild;
         if (!this.hasChild && hadChild) {
-          this.loadQuery();
+          this.loadQuery(true);
         }
       })
     );

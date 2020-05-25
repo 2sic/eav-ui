@@ -1,0 +1,24 @@
+<div class="nav-component-wrapper">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div matTooltip="{{ viewTooltip }}">View: {{ viewUsage?.Name }}</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <p class="dialog-description">
+    This shows where this view is being used. Read about the
+    <a href="https://r.2sxc.org/content-in-dnn" target="_blank">connections between DNN and 2sxc Views</a>
+    to make good decisions if you're doing clean-up or just want to better know what this is all about.
+    <em>Before you get confused about some things you see here, do read the FAQ on that page.</em>
+  </p>
+
+  <router-outlet></router-outlet>
+
+  <div class="grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="data" [modules]="modules" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+  </div>
+</div>

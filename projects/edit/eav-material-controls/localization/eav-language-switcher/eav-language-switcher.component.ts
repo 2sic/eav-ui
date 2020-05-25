@@ -1,4 +1,6 @@
 import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import { Language } from '../../../shared/models/eav';
@@ -33,6 +35,8 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private ngZone: NgZone,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit() {
@@ -71,5 +75,10 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     if (!this.centerSelectedService.stopClickIfMouseMoved()) {
       this.languageInstanceService.updateCurrentLanguage(this.formId, language.key);
     }
+  }
+
+  showError() {
+    if (!this.areButtonsDisabled()) { return; }
+    this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 2000 });
   }
 }

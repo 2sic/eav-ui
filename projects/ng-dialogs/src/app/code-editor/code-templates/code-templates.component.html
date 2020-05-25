@@ -1,28 +1,39 @@
 <div class="editor-active-explorer editor-fancy-scrollbar explorer-wrapper">
 
   <div>
-    <ng-container *ngFor="let item of tree">
-      <ng-container *ngTemplateOutlet="collapsible; context: {item: item}"></ng-container>
+    <ng-container *ngFor="let item of (tree | sortItems)">
+      <ng-container *ngTemplateOutlet="fileOrFolder; context: {item: item}"></ng-container>
     </ng-container>
 
-    <ng-template #collapsible let-item="item">
+    <ng-template #fileOrFolder let-item="item">
 
-      <div class="template-option" [ngClass]="{'active': toggledItems.includes(item) }" *ngIf="!item.children"
-        matTooltipShowDelay="750" [matTooltip]="item.name" (click)="openTemplate(item.pathFromRoot)">
+      <div class="file" *ngIf="!item.isFolder" [style]="item.depth | depthPadding: item.isFolder"
+        [ngClass]="{'active': toggledItems.includes(item.pathFromRoot) }" matTooltipShowDelay="750"
+        [matTooltip]="item.name" (click)="openTemplate(item.pathFromRoot)">
         {{ item.name }}
       </div>
 
-      <div class="collapsible" *ngIf="item.children" matTooltipShowDelay="750" [matTooltip]="item.name"
-        (click)="toggleItem(item)">
-        <mat-icon>{{ toggledItems.includes(item) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-        <span>{{ item.name }}</span>
-      </div>
-
-      <ng-container *ngIf="toggledItems.includes(item)">
-        <div class="list" *ngFor="let item1 of item.children">
-          <ng-container *ngTemplateOutlet="collapsible; context: {item: item1}"></ng-container>
+      <div *ngIf="item.isFolder">
+        <div class="folder-name-wrapper" [style]="item.depth | depthPadding: item.isFolder"
+          (click)="toggleItem(item.pathFromRoot)">
+          <div class="folder-name" matTooltipShowDelay="750" [matTooltip]="item.name">
+            <mat-icon>
+              {{ toggledItems.includes(item.pathFromRoot) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+            </mat-icon>
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="add-item" matTooltipShowDelay="750" matTooltip="Create file in this folder"
+            appClickStopPropagation (click)="addFile(item.pathFromRoot)">
+            <mat-icon>add</mat-icon>
+          </div>
         </div>
-      </ng-container>
+
+        <ng-container *ngIf="toggledItems.includes(item.pathFromRoot)">
+          <ng-container *ngFor="let item1 of (item.children | sortItems)">
+            <ng-container *ngTemplateOutlet="fileOrFolder; context: {item: item1}"></ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
 
     </ng-template>
   </div>

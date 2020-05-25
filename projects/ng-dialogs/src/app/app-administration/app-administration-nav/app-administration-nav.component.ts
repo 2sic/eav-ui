@@ -5,9 +5,12 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+import { App } from '../../apps-management/models/app.model';
+import { AppsListService } from '../../apps-management/services/apps-list.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
+import { Context } from '../../shared/services/context';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -15,6 +18,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
   styleUrls: ['./app-administration-nav.component.scss']
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
+  app: App;
   tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs have to match template and filter below
   tabIndex: number;
   dialogSettings: DialogSettings;
@@ -23,22 +27,26 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
+    private appsListService: AppsListService,
     private appDialogConfigService: AppDialogConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private globalConfigurationService: GlobalConfigurationService,
+    private context: Context,
   ) { }
 
   ngOnInit() {
-    this.subscription.add(
-      this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-        if (dialogSettings.IsContent) {
-          this.tabs = this.tabs.filter(tab => !(tab === 'queries' || tab === 'web-api'));
-        }
-        this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
-        this.dialogSettings = dialogSettings; // needed to filter tabs
-      })
-    );
+    this.appsListService.getAll().subscribe(apps => {
+      this.app = apps.find(app => app.Id === this.context.appId);
+    });
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      this.context.appRoot = dialogSettings.AppPath;
+      if (dialogSettings.IsContent) {
+        this.tabs = this.tabs.filter(tab => !(tab === 'queries' || tab === 'web-api'));
+      }
+      this.tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
+      this.dialogSettings = dialogSettings; // needed to filter tabs
+    });
     this.subscription.add(
       // change tab when route changed
       this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {

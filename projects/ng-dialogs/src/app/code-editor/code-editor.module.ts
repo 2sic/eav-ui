@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +24,13 @@ import { ToArrayPipe } from './code-snippets/toarray.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
+import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
+import { SortItemsPipe } from './code-templates/order-items.pipe';
+declare const sxcVersion: string;
+
+export function translateLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './i18n/code-editor.', `.js?${sxcVersion}`);
+}
 
 @NgModule({
   declarations: [
@@ -29,6 +39,8 @@ import { SanitizeService } from '../../../../edit/eav-material-controls/adam/san
     ToArrayPipe,
     CodeTemplatesComponent,
     AceEditorComponent,
+    DepthPaddingPipe,
+    SortItemsPipe,
   ],
   entryComponents: [
     CodeEditorComponent,
@@ -48,6 +60,15 @@ import { SanitizeService } from '../../../../edit/eav-material-controls/adam/san
     FormsModule,
     MatSelectModule,
     MatRippleModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (translateLoaderFactory),
+        deps: [HttpClient],
+      },
+      defaultLanguage: 'en',
+      isolate: true,
+    }),
   ],
   providers: [
     Context,
@@ -55,6 +76,7 @@ import { SanitizeService } from '../../../../edit/eav-material-controls/adam/san
     DialogService,
     SnippetsService,
     SanitizeService,
+    TranslateService,
   ]
 })
 export class CodeEditorModule { }

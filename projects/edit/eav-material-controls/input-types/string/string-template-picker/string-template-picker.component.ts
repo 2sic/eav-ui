@@ -11,6 +11,7 @@ import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { EavService } from '../../../../shared/services/eav.service';
 import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { defaultTokenName, defaultTemplateName } from '../../../../../ng-dialogs/src/app/shared/constants/file-names.constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -67,9 +68,9 @@ export class StringTemplatePickerComponent implements OnInit, OnDestroy {
   private setFileConfig(type: string) {
     const specs: { [key: string]: StringTemplatePickerFile } = {
       // tslint:disable-next-line:max-line-length
-      Token: { ext: '.html', prefix: '', suggestion: 'yourfile.html', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
+      Token: { ext: '.html', prefix: '', suggestion: defaultTokenName, body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
       // tslint:disable-next-line:max-line-length
-      'C# Razor': { ext: '.cshtml', prefix: '_', suggestion: '_yourfile.cshtml', body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' }
+      'C# Razor': { ext: '.cshtml', prefix: '_', suggestion: defaultTemplateName, body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' }
     };
     this.file = specs[type];
   }

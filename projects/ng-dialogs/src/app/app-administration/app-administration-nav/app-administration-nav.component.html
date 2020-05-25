@@ -1,7 +1,7 @@
-<div (click)="toggleDebugEnabled($event)">
+<div class="nav-component-wrapper" (click)="toggleDebugEnabled($event)">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>Administration</div>
+      <div>{{ app?.Name }} Admin</div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>

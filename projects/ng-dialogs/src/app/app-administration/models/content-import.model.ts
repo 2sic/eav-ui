@@ -33,5 +33,5 @@ export class EvaluateContentResultDetail {
 
 export class ImportContentResult {
   Succeeded: boolean;
-  Detail: any; // spm TODO: figure out the type
+  Detail: any;
 }

@@ -11,9 +11,11 @@ export class View {
   PresentationType: ViewEntity;
   TemplatePath: string;
   ViewNameInUrl: string;
+
+  /** How often this is used in ContentBlocks */
+  Used: number;
 }
 
-// spm TODO: figure out what this type is
 export class ViewEntity {
   DemoId: number;
   DemoTitle: string;

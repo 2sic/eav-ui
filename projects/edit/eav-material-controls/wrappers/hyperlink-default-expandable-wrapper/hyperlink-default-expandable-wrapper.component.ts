@@ -44,6 +44,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   isKnownType: boolean;
   adamButton: boolean;
   pageButton: boolean;
+  showInputFileName: boolean;
 
   constructor(
     private fileTypeService: FileTypeService,
@@ -154,6 +155,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     this.isKnownType = this.fileTypeService.isKnownType(this.link);
     this.iconClass = this.fileTypeService.getIconClass(this.link);
     this.tooltipUrl = this.buildTooltipUrl(this.link);
+    this.showInputFileName = this.control.value.includes('file:') || this.control.value.includes('page:');
   }
 
   /** Subscribe to form value changes */

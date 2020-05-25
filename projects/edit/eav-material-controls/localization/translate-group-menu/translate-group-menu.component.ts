@@ -70,12 +70,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
     this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
+    this.subscribeToItemFromStore();
+    this.subscribeToContentTypeFromStore();
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
     this.subscribeToEntityHeaderFromStore();
-    this.subscribeToItemFromStore();
-    this.subscribeToContentTypeFromStore();
   }
 
   ngOnDestroy() {
@@ -113,7 +113,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   translateUnlink(attributeKey: string) {
-    if (!this.isTranslateEnabled(attributeKey)) { return; }
+    if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
@@ -131,7 +131,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   linkToDefault(attributeKey: string) {
-    if (!this.isTranslateEnabled(attributeKey)) { return; }
+    if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       this.config.entity.entityGuid);
@@ -168,7 +168,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * If value of current language don't exist then add new value
    */
   copyFrom(copyFromLanguageKey: string, attributeKey: string) {
-    if (!this.isTranslateEnabled(attributeKey)) { return; }
+    if (this.isTranslateDisabled(attributeKey)) { return; }
 
     const attributeValueTranslation: EavValue<any> = LocalizationHelper.getValueTranslation(this.attributes[attributeKey],
       copyFromLanguageKey, this.defaultLanguage);
@@ -203,7 +203,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   linkReadOnly(languageKey: string, attributeKey: string) {
-    if (!this.isTranslateEnabled(attributeKey)) { return; }
+    if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.setTranslationState(TranslationLinkTypeConstants.linkReadOnly, languageKey);
     this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
@@ -222,7 +222,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   linkReadWrite(languageKey: string, attributeKey: string) {
-    if (!this.isTranslateEnabled(attributeKey)) { return; }
+    if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.setTranslationState(TranslationLinkTypeConstants.linkReadWrite, languageKey);
     this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
@@ -253,12 +253,11 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   private refreshControlConfig(attributeKey: string) {
-    if (!this.fieldConfig.isParentGroup) {
-      this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-      this.setAdamDisable();
-      this.readTranslationState(this.attributes[this.config.field.name], this.currentLanguage, this.defaultLanguage);
-      this.setInfoMessage(this.attributes[this.config.field.name], this.currentLanguage, this.defaultLanguage);
-    }
+    if (this.fieldConfig.isParentGroup) { return; }
+    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setAdamDisable();
+    this.readTranslationState(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.setInfoMessage(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
   }
 
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
@@ -313,7 +312,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
           this.defaultLanguageMissingValue = true;
         } else {
           this.defaultLanguageMissingValue = false;
-          if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+          if (this.isTranslateDisabled(attributeKey)) {
+            this.group.controls[attributeKey].disable({ emitEvent: false });
+          } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
             this.group.controls[attributeKey].enable({ emitEvent: false });
           } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
             this.group.controls[attributeKey].disable({ emitEvent: false });
@@ -402,21 +403,20 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
    * Fetch inputType definition to check if input field of this type shouldn't be translated
    * @param attributeType new attribute type defined in contentTypes
    */
-  public isTranslateEnabled(attributeKey: string) {
-    if (!LocalizationHelper.translationExistsInDefault(this.attributes[attributeKey], this.defaultLanguage)) { return false; }
+  public isTranslateDisabled(attributeKey: string) {
+    if (!LocalizationHelper.translationExistsInDefault(this.attributes[attributeKey], this.defaultLanguage)) { return true; }
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
     const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
-
-    let inputType: InputType;
-    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
-    if (!inputType) { return true; } // if you dont find it assume its translateable
-    return !inputType.DisableI18n;
+    const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, attributeDef.settings);
+    return disableI18n;
   }
 
-  private readTranslationState(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
+  private readTranslationState(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
     // Determine is control disabled or enabled and info message
     if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
       this.setTranslationState(TranslationLinkTypeConstants.missingDefaultLangValue, '');
+    } else if (this.isTranslateDisabled(attributeKey)) {
+      this.setTranslationState(TranslationLinkTypeConstants.dontTranslate, '');
     } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
       const editableElements: EavDimensions<string>[] = LocalizationHelper.getValueTranslation(attributes,
         currentLanguage, defaultLanguage)
@@ -455,9 +455,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   }
 
   /** Set info message */
-  private setInfoMessage(attributes: EavValues<any>, currentLanguage: string, defaultLanguage: string) {
+  private setInfoMessage(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
     // Determine whether control is disabled or enabled and info message
-    if (this.fieldConfig.disableI18n) {
+    if (this.isTranslateDisabled(attributeKey)) {
       this.infoMessage = '';
       this.infoMessageLabel = 'LangMenu.InAllLanguages';
       return;

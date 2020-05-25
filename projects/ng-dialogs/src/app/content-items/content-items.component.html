@@ -1,35 +1,37 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Manage Content / Data</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-</div>
-
-<router-outlet></router-outlet>
-
-<div class="grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules" [gridOptions]="gridOptions"
-    (gridReady)="onGridReady($event)">
-  </ag-grid-angular>
-
-  <div class="actions-box">
-    <button mat-icon-button matTooltip="Export" (click)="exportContent()">
-      <mat-icon>cloud_download</mat-icon>
-    </button>
-    <button mat-icon-button matTooltip="Import" (click)="importItem()">
-      <mat-icon>cloud_upload</mat-icon>
-    </button>
-    <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
-      <mat-icon>local_offer</mat-icon>
-    </button>
-    <button mat-icon-button matTooltip="Debug filter" (click)="debugFilter()">
-      <mat-icon>filter_list</mat-icon>
-    </button>
+<div class="nav-component-wrapper">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>{{ contentType?.Name }} Data</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
 
-  <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Add item" (click)="editItem(null)">
-    <mat-icon>add</mat-icon>
-  </button>
+  <router-outlet></router-outlet>
+
+  <div class="grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules" [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+
+    <div class="actions-box">
+      <button mat-icon-button matTooltip="Export" (click)="exportContent()">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Import" (click)="importItem()">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
+        <mat-icon>local_offer</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Debug filter" (click)="debugFilter()">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+    </div>
+
+    <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Add item" (click)="editItem(null)">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>

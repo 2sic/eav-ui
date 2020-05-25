@@ -118,10 +118,11 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit {
 
   // helper method to find the offset
   getElementOffset(element: any) {
-    const de = document.documentElement;
+    const container = document.getElementById('pipelineContainer') as HTMLDivElement;
+    const containerBox = container.getBoundingClientRect();
     const box = element.getBoundingClientRect();
-    const top = box.top + window.pageYOffset - de.clientTop;
-    const left = box.left + window.pageXOffset - de.clientLeft;
+    const top = box.top + container.scrollTop - containerBox.top;
+    const left = box.left + container.scrollLeft - containerBox.left;
     return { top, left };
   }
 

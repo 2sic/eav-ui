@@ -54,7 +54,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   private expand() {
-    this.connector.expand(true);
+    this.connector.dialog.open();
   }
 
   disconnectedCallback() {

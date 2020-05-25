@@ -99,19 +99,12 @@ export class InputFieldHelper {
     }
 
     if (isExternal) {
-      if (inputTypeSettings?.UseAdam) {
-        wrappers.push(
-          WrappersConstants.dropzoneWrapper,
-          WrappersConstants.eavLocalizationWrapper,
-          WrappersConstants.expandableWrapper,
-          WrappersConstants.adamAttachWrapper,
-        );
-      } else {
-        wrappers.push(
-          WrappersConstants.eavLocalizationWrapper,
-          WrappersConstants.expandableWrapper,
-        );
-      }
+      wrappers.push(
+        WrappersConstants.dropzoneWrapper,
+        WrappersConstants.eavLocalizationWrapper,
+        WrappersConstants.expandableWrapper,
+        WrappersConstants.adamAttachWrapper,
+      );
     }
 
     return wrappers;

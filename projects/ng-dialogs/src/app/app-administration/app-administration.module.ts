@@ -37,7 +37,7 @@ import { ViewsActionsComponent } from './ag-grid-components/views-actions/views-
 import { AppDialogConfigService } from './services/app-dialog-config.service';
 import { ContentTypesService } from './services/content-types.service';
 import { PipelinesService } from './services/pipelines.service';
-import { TemplatesService } from './services/templates.service';
+import { ViewsService } from './services/views.service';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
 import { ContentExportService } from './services/content-export.service';
 import { ContentImportComponent } from './sub-dialogs/content-import/content-import.component';
@@ -54,6 +54,10 @@ import { ImportAppPartsService } from './services/import-app-parts.service';
 import { WebApiActionsComponent } from './ag-grid-components/web-api-actions/web-api-actions.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../shared/services/dialog.service';
+import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
+import { ViewsUsageIdComponent } from './ag-grid-components/views-usage-id/views-usage-id.component';
+import { ViewsUsageStatusFilterComponent } from './ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
+import { AppsListService } from '../apps-management/services/apps-list.service';
 
 @NgModule({
   declarations: [
@@ -78,6 +82,9 @@ import { DialogService } from '../shared/services/dialog.service';
     ExportAppPartsComponent,
     ImportAppPartsComponent,
     WebApiActionsComponent,
+    ViewsUsageComponent,
+    ViewsUsageIdComponent,
+    ViewsUsageStatusFilterComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -95,6 +102,9 @@ import { DialogService } from '../shared/services/dialog.service';
     ExportAppPartsComponent,
     ImportAppPartsComponent,
     WebApiActionsComponent,
+    ViewsUsageComponent,
+    ViewsUsageIdComponent,
+    ViewsUsageStatusFilterComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -122,7 +132,7 @@ import { DialogService } from '../shared/services/dialog.service';
     AppDialogConfigService,
     ContentTypesService,
     PipelinesService,
-    TemplatesService,
+    ViewsService,
     ContentExportService,
     ContentImportService,
     WebApisService,
@@ -132,6 +142,7 @@ import { DialogService } from '../shared/services/dialog.service';
     ImportAppPartsService,
     SanitizeService,
     DialogService,
+    AppsListService,
   ]
 })
 export class AppAdministrationModule { }

@@ -76,7 +76,7 @@
           </mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->
-        <div *ngIf="control.value" class="c-hyperlink-default-link__container" fxHide fxShow.gt-xs>
+        <div *ngIf="showInputFileName" class="c-hyperlink-default-link__container" fxHide fxShow.gt-xs>
           <div class="c-hyperlink-default-link__value">{{control.value}}</div>
           <div class="c-hyperlink-default-link__link">
             <a href="{{link}}" target="_blank" tabindex="-1" class="c-hyperlink-default-link__link-text"

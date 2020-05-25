@@ -8,8 +8,8 @@ import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/we
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { DialogService } from '../../shared/services/dialog.service';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { defaultControllerName } from '../../shared/constants/file-names.constants';
 
 @Component({
   selector: 'app-web-api',
@@ -55,10 +55,10 @@ export class WebApiComponent implements OnInit {
   }
 
   addController() {
-    let name = prompt('Controller name:', 'TestController.cs');
+    let name = prompt('Controller name:', defaultControllerName);
     if (name === null || name.length === 0) { return; }
 
-    name = this.sanitizeService.sanitizeName(name);
+    name = this.sanitizeService.sanitizePath(name);
     name = name.replace(/\s/g, ''); // remove all whitespaces
     // find name without extension
     let nameLower = name.toLocaleLowerCase();

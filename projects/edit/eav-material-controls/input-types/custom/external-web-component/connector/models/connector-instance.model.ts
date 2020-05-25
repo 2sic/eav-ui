@@ -1,40 +1,52 @@
 import { Observable } from 'rxjs';
+
 import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../../../../../../edit-types';
+import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
+import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
+import { EavConfiguration } from '../../../../../../shared/models/eav-configuration';
+declare const sxcVersion: string;
 
 export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
+  dialog: ConnectorDialog<T>;
+  loadScript: (globalObject: string, src: string, callback: (...args: any[]) => any) => void;
 
   constructor(
-    private _connectorHost: ConnectorHost<T>,
+    _connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
     public field: FieldConfig,
     public _experimental: ExperimentalProps,
+    eavConfig: EavConfiguration,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
+    this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
+    this.loadScript = (globalObject: string, src: string, callback: (...args: any[]) => any) => {
+      if (!!(window as any)[globalObject]) {
+        callback();
+        return;
+      }
+
+      src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
+        .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
+        .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
+      if (!src.includes('?')) {
+        src = `${src}?sxcver=${sxcVersion}`;
+      }
+
+      const scriptElement: HTMLScriptElement = document.querySelector('script[src="' + src + '"]');
+      if (scriptElement) {
+        scriptElement.addEventListener('load', callback, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = src;
+      script.addEventListener('load', callback, { once: true });
+      document.head.appendChild(script);
+    };
   }
 
-  expand(expand: boolean) {
-    this._connectorHost.expand(expand);
-  }
-
-  loadScript(globalObject: string, src: string, callback: (...args: any[]) => any) {
-    if (!!(window as any)[globalObject]) {
-      callback();
-      return;
-    }
-
-    const scriptElement: HTMLScriptElement = document.querySelector('script[src="' + src + '"]');
-    if (scriptElement) {
-      scriptElement.addEventListener('load', callback, { once: true });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = src;
-    script.addEventListener('load', callback, { once: true });
-    document.head.appendChild(script);
-  }
 }
 
 export class ConnectorDataInstance<T> implements ConnectorData<T> {
@@ -65,9 +77,19 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 }
 
+export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
+  open: (componentTag?: string) => void;
+  close: () => void;
+
+  constructor(_connectorHost: ConnectorHost<T>) {
+    this.open = (componentTag?) => _connectorHost.expand(true, componentTag);
+    this.close = () => _connectorHost.expand(false);
+  }
+}
+
 /** Props and methods available to the connector to communicate with the host */
 export class ConnectorHost<T> {
   update: (value: T) => void;
-  expand: (expand: boolean) => void;
+  expand: (expand: boolean, componentTag?: string) => void;
   forceConnectorSave$: Observable<null>;
 }

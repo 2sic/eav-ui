@@ -4,13 +4,13 @@ const draggingClass = 'eav-dragging';
 
 /** Prevent drop on page - can only drop on dropzone */
 window.addEventListener('dragover', function (event) {
-  const dropzone = event.target.closest('.' + dropzoneClass);
+  const dropzone = event.target.closest('.' + dropzoneClass + ':not(.' + dropzoneDisabledClass + ')');
   if (dropzone === null) {
     event.preventDefault();
   }
 });
 window.addEventListener('drop', function (event) {
-  const dropzone = event.target.closest('.' + dropzoneClass);
+  const dropzone = event.target.closest('.' + dropzoneClass + ':not(.' + dropzoneDisabledClass + ')');
   if (dropzone === null) {
     event.preventDefault();
   }

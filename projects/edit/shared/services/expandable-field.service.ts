@@ -33,9 +33,9 @@ export class ExpandableFieldService {
     return this.expandedField$$.asObservable();
   }
 
-  expand(expand: boolean, fieldId: number, formId: number) {
+  expand(expand: boolean, fieldId: number, formId: number, componentTag?: string) {
     this.languageInstanceService.updateHideHeader(formId, expand);
-    this.updateUrl(expand, fieldId);
+    this.updateUrl(expand, fieldId, componentTag);
   }
 
   destroy() {
@@ -46,7 +46,7 @@ export class ExpandableFieldService {
     this.route = null;
   }
 
-  private updateUrl(expand: boolean, fieldId: number) {
+  private updateUrl(expand: boolean, fieldId: number, componentTag?: string) {
     let lastChild = this.route;
     while (lastChild.firstChild) {
       lastChild = lastChild.firstChild;
@@ -66,7 +66,7 @@ export class ExpandableFieldService {
     if (lastIndex <= 0) { return; }
     const newEditUrl = `edit/${routeParams.items}` + (expand ? `/details/${fieldId}` : '');
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
-    this.router.navigate([newUrl]);
+    this.router.navigate([newUrl], { state: componentTag && { componentTag } });
   }
 
   /** Opens child dialog and stores update fieldId in the url, if field is not expanded already. If form === null, child will close */

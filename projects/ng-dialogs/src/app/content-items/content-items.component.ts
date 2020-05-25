@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
+import { ContentType } from '../app-administration/models/content-type.model';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentItemsService } from './services/content-items.service';
 import { ContentItem } from './models/content-item.model';
 import { Field } from '../content-type-fields/models/field.model';
@@ -34,6 +36,7 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
   styleUrls: ['./content-items.component.scss']
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
+  contentType: ContentType;
   items: ContentItem[];
 
   modules = AllCommunityModules;
@@ -53,9 +56,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private contentTypeStaticName: string;
   private subscription = new Subscription();
   private hasChild: boolean;
+  private columnDefs: ColDef[];
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
+    private contentTypesService: ContentTypesService,
     private router: Router,
     private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
@@ -68,11 +73,12 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.fetchContentType();
     this.fetchItems();
     this.refreshOnChildClosed();
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      const columnDefs = this.buildColumnDefs(columns);
-      this.gridApi.setColumnDefs(columnDefs);
+      this.columnDefs = this.buildColumnDefs(columns);
+      this.gridApi?.setColumnDefs(this.columnDefs);
       const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
       if (filterModel) {
         angularConsoleLog('Will try to apply filter:', filterModel);
@@ -88,6 +94,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    if (this.columnDefs) {
+      this.gridApi.setColumnDefs(this.columnDefs);
+    }
+  }
+
+  private fetchContentType() {
+    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
+      this.contentType = contentType;
+    });
   }
 
   private fetchItems() {
@@ -222,6 +237,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
       },
+      {
+        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
+        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
+      },
     ];
     for (const column of columns) {
       const colDef: ExtendedColDef = {
@@ -311,6 +331,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     return published;
   }
 
+  private valueGetterUsage(params: ValueGetterParams) {
+    const item: ContentItem = params.data;
+    return `${item._Used} / ${item._Uses}`;
+  }
+
   private valueGetterEntityField(params: ValueGetterParams) {
     const rawValue: ContentItem[] = params.data[params.colDef.field];
     if (rawValue.length === 0) { return null; }
@@ -327,7 +352,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private valueGetterBoolean(params: ValueGetterParams) {
     const rawValue = params.data[params.colDef.field];
-    if (typeof rawValue !== 'boolean') { return null; }
+    if (typeof rawValue !== typeof true) { return null; }
     return rawValue.toString();
   }
 }

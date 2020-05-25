@@ -25,6 +25,10 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
 
   get disabled() { return this.group.controls[this.config.field.name].disabled; }
 
+  get dropzoneDisabled() {
+    return this.config.dropzoneDisabled === true;
+  }
+
   constructor(private dnnContext: DnnContext) { }
 
   ngOnInit() {

@@ -198,7 +198,7 @@ export class QueryDefinitionService {
     addGuiType('Filter', 'filter_list', 'filter data - usually returning less items than came in');
     addGuiType('Logic', 'share', 'logic operations - usually choosing between different streams');
     addGuiType('Lookup', 'search', 'lookup operation - usually looking for other data based on a criteria');
-    addGuiType('Modify', 'star_half', 'modify data - usually changing, adding or removing values'); // todo
+    addGuiType('Modify', 'star_half', 'modify data - usually changing, adding or removing values');
     addGuiType('Security', 'account_circle', 'security - usually limit what the user sees based on his identity');
     addGuiType('Sort', 'sort', 'sort the items');
     addGuiType('Source', 'cloud_upload', 'source of new data - usually SQL, CSV or similar');

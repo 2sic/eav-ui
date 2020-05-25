@@ -125,15 +125,19 @@ export class ConnectorService {
         this._ngZone.run(() => this.update(value));
       },
       forceConnectorSave$: this.eavService.forceConnectorSave$$,
-      expand: (expand) => {
-        this._ngZone.run(() => { this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId); });
+      expand: (expand, componentTag?: string) => {
+        this._ngZone.run(() => {
+          this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId, componentTag);
+        });
       },
     };
     this.previousValue = this.group.controls[this.config.field.name].value;
     this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
     this.subjects.push(this.value$);
     const experimental = this.calculateExperimentalProps();
-    const connector = new ConnectorInstance<any>(connectorHost, this.value$.asObservable(), this.config.field, experimental);
+    const connector = new ConnectorInstance<any>(
+      connectorHost, this.value$.asObservable(), this.config.field, experimental, this.eavConfig
+    );
 
     return connector;
   }
@@ -148,6 +152,7 @@ export class ConnectorService {
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entity.entityGuid,
       allInputTypeNames,
+      enableDropzone: () => { this.config.dropzoneDisabled = false; },
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
       },
@@ -213,7 +218,7 @@ export class ConnectorService {
     angularConsoleLog('Connector destroyed');
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.subjects.forEach(subject => { subject.complete(); });
-    this.customEl.parentNode.removeChild(this.customEl);
+    this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }
 }

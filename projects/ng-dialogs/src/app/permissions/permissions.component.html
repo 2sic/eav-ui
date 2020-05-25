@@ -1,20 +1,22 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Permissions</div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
+<div class="nav-component-wrapper">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Permissions</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <div class="grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="permissions" [modules]="modules" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+
+    <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new permission"
+      (click)="editPermission(null)">
+      <mat-icon>add</mat-icon>
     </button>
   </div>
-</div>
-
-<router-outlet></router-outlet>
-
-<div class="grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="permissions" [modules]="modules" [gridOptions]="gridOptions">
-  </ag-grid-angular>
-
-  <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new permission"
-    (click)="editPermission(null)">
-    <mat-icon>add</mat-icon>
-  </button>
 </div>

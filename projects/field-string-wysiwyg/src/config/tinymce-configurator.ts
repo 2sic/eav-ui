@@ -2,11 +2,13 @@ import { TinyMceTranslations } from './translations';
 import { Connector } from '../../../edit-types';
 import { DefaultPlugins, DefaultOptions, DefaultPaste } from './defaults';
 import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
-import * as contentStyle from '../main/tinymce-content.css';
+import * as contentStyle from '../editor/tinymce-content.css';
 import { TinyMceToolbars } from './toolbars';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { TinyInstanceOptions } from './defaults/tinyInstance';
+import { AddOnSettings } from './defaults/add-on-settings';
 // tslint:disable: curly
+
+const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
 
 /**
  * This object will configure the tinyMCE
@@ -27,27 +29,36 @@ export class TinyMceConfigurator {
 
     // call optional reconfiguration
     if (reconfigure) {
-      reconfigure.managerInit?.(editorManager);
-      if (reconfigure.optionsInit) reconfigure.optionsInit(this.options, this.instance);
+      reconfigure.initManager?.(editorManager);
+      if (reconfigure.configureAddOns) {
+        const changedAddOns = reconfigure.configureAddOns(this.addOnSettings);
+        if (changedAddOns)
+          this.addOnSettings = changedAddOns;
+        else
+          console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reconfigErr}`);
+      }
+
+      this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
+      // if (reconfigure.optionsInit) reconfigure.optionsInit(this.options, this.instance);
     }
 
   }
 
   /** options to be used - can be modified before it's applied */
-  options = { ...DefaultOptions, ...{ plugins: [...DefaultPlugins] } };  // copy the object, so changes don't affect original
+  private options = { ...DefaultOptions, ...{ plugins: [...DefaultPlugins] } };  // copy the object, so changes don't affect original
 
-  instance = { ...TinyInstanceOptions };
+  public addOnSettings = { ...AddOnSettings };
 
   /**
    * Construct TinyMce options
    */
-  buildOptions(containerClass: string, fixedToolbarClass: string, setup: (editor: any) => any) {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: any) => any) {
     const connector = this.connector;
     const exp = connector._experimental;
-    const inlineMode = exp.inlineMode;
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
-    const dropzoneConfig = exp.dropzoneConfig$.value;
+    const dropzoneConfig = exp.dropzoneConfig$?.value;
+    if (dropzoneConfig == null) console.error(`dropzone Config not available, some things won't work`);
     // enable content blocks if there is another field after this one and it's type is entity-content-blocks
     const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
       ? exp.allInputTypeNames[connector.field.index + 1].inputType === 'entity-content-blocks'
@@ -73,15 +84,15 @@ export class TinyMceConfigurator {
       options = { ...options, ...DefaultPaste.formattedText };
 
     if (exp.isFeatureEnabled(FeatGuids.PasteImageFromClipboard))
-      options = { ...options, ...DefaultPaste.images(dropzoneConfig.url as string, dropzoneConfig.headers) };
+      options = { ...options, ...DefaultPaste.images(dropzoneConfig?.url as string, dropzoneConfig?.headers) };
 
-    if (this.reconfigure?.optionsReady)
-      this.reconfigure.optionsReady(options);
+    if (this.reconfigure?.configureOptions) {
+      const newOptions = this.reconfigure.configureOptions(options);
+      if (newOptions) return newOptions;
+      console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
+    }
     return options;
   }
-
-
-
 
   addTranslations() {
     TinyMceTranslations.addTranslations(this.language,
