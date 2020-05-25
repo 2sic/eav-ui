@@ -24,12 +24,15 @@ export class BooleanTristateComponent implements Field {
   }
 
   get label() {
-    const value = this.group.controls[this.config.field.name].value;
+    const value = this.value;
     if (value === true && this.config.field.settings.TitleTrue != null && this.config.field.settings.TitleTrue !== '') {
       return this.config.field.settings.TitleTrue;
     }
     if (value === false && this.config.field.settings.TitleFalse != null && this.config.field.settings.TitleFalse !== '') {
       return this.config.field.settings.TitleFalse;
+    }
+    if (value == null && this.config.field.settings.TitleIndeterminate != null && this.config.field.settings.TitleIndeterminate !== '') {
+      return this.config.field.settings.TitleIndeterminate;
     }
     return this.config.field.label;
   }
