@@ -4,7 +4,7 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
-import { FieldConfig } from '../../../edit-types';
+import { FieldConfig, FieldSettings } from '../../../edit-types';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
@@ -27,6 +27,7 @@ export interface FieldConfigAngular extends FieldConfig {
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;
+  settings$: BehaviorSubject<FieldSettings>;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

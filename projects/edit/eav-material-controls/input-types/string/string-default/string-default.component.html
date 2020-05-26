@@ -1,18 +1,19 @@
-<div *ngIf="rowCount > 1; then textareaField else inputField"></div>
+<div *ngIf="(rowCount$ | async) > 1; then textareaField else inputField"></div>
 
 <ng-template #inputField>
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
     <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
-      [placeholder]="config.field.label" [required]="config.field.required">
-    <mat-label>{{config.field.label}}</mat-label>
+      [placeholder]="placeholder$ | async" [required]="config.field.required">
+    <mat-label>{{ label$ | async }}</mat-label>
   </mat-form-field>
 </ng-template>
 
 <ng-template #textareaField>
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="textarea-field">
-    <textarea matInput [rows]="rowCount" type="text" class="form-control material" [formControlName]="config.field.name"
-      [placeholder]="config.field.label" [required]="config.field.required"></textarea>
-    <mat-label>{{config.field.label}}</mat-label>
+    <textarea matInput [rows]="rowCount$ | async" type="text" class="form-control material"
+      [formControlName]="config.field.name" [placeholder]="placeholder$ | async"
+      [required]="config.field.required"></textarea>
+    <mat-label>{{ label$ | async }}</mat-label>
   </mat-form-field>
 </ng-template>
 
