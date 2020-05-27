@@ -1,69 +1,56 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-tristate',
   templateUrl: './boolean-tristate.component.html',
-  styleUrls: ['./boolean-tristate.component.scss']
+  styleUrls: ['./boolean-tristate.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush // not working because of disabled
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class BooleanTristateComponent implements Field {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit {
 
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled;
+  constructor(eavService: EavService) {
+    super(eavService);
   }
 
-  get label() {
-    const value = this.value;
-    if (value === true && this.config.field.settings.TitleTrue != null && this.config.field.settings.TitleTrue !== '') {
-      return this.config.field.settings.TitleTrue;
-    }
-    if (value === false && this.config.field.settings.TitleFalse != null && this.config.field.settings.TitleFalse !== '') {
-      return this.config.field.settings.TitleFalse;
-    }
-    if (value === null && this.config.field.settings.TitleIndeterminate != null && this.config.field.settings.TitleIndeterminate !== '') {
-      return this.config.field.settings.TitleIndeterminate;
-    }
-    return this.config.field.label;
-  }
-
-  get value(): boolean {
-    let value: boolean | string = this.group.controls[this.config.field.name].value;
-    if (typeof value === typeof '') {
-      value = (value as string).toLocaleLowerCase();
-      switch (value) {
-        case 'true':
-          value = true;
-          break;
-        case 'false':
-          value = false;
-          break;
-        case '':
-          value = null;
-          break;
-        default:
-          value = null;
+  ngOnInit() {
+    super.ngOnInit();
+    this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
+    this.label$ = combineLatest(this.value$, this.settings$, this.label$).pipe(map(combined => {
+      const value = combined[0];
+      const settings = combined[1];
+      const label = combined[2];
+      if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
+        return settings.TitleTrue;
       }
-    }
-    return value as boolean;
+      if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
+        return settings.TitleFalse;
+      }
+      if (value === null && settings.TitleIndeterminate != null && settings.TitleIndeterminate !== '') {
+        return settings.TitleIndeterminate;
+      }
+      return label;
+    }));
   }
 
   toggle() {
+    const currentValue: boolean | '' = this.control.value;
     let nextValue: boolean;
-    switch (this.value) {
+    switch (currentValue) {
       case false:
         nextValue = null;
         break;
+      case '':
       case null:
         nextValue = true;
         break;
@@ -71,7 +58,7 @@ export class BooleanTristateComponent implements Field {
         nextValue = false;
         break;
     }
-    this.group.controls[this.config.field.name].patchValue(nextValue);
+    this.control.patchValue(nextValue);
   }
 
 }

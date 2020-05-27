@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,8 +17,12 @@ import { BaseComponent } from '../../base/base.component';
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringDefaultComponent extends BaseComponent implements OnInit {
+export class StringDefaultComponent extends BaseComponent<string> implements OnInit {
   rowCount$: Observable<number>;
+
+  constructor(eavService: EavService) {
+    super(eavService);
+  }
 
   ngOnInit() {
     super.ngOnInit();

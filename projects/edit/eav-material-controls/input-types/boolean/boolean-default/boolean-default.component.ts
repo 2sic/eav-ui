@@ -1,37 +1,41 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
-  styleUrls: ['./boolean-default.component.scss']
+  styleUrls: ['./boolean-default.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class BooleanDefaultComponent implements Field {
-  config: FieldConfigSet;
-  group: FormGroup;
+export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit {
 
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled;
+  constructor(eavService: EavService) {
+    super(eavService);
   }
 
-  get label() {
-    const value = this.group.controls[this.config.field.name].value;
-    if (value === true && this.config.field.settings.TitleTrue != null && this.config.field.settings.TitleTrue !== '') {
-      return this.config.field.settings.TitleTrue;
-    }
-    if (value === false && this.config.field.settings.TitleFalse != null && this.config.field.settings.TitleFalse !== '') {
-      return this.config.field.settings.TitleFalse;
-    }
-    return this.config.field.label;
+  ngOnInit() {
+    super.ngOnInit();
+    this.label$ = combineLatest(this.value$, this.settings$, this.label$).pipe(map(combined => {
+      const value = combined[0];
+      const settings = combined[1];
+      const label = combined[2];
+      if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
+        return settings.TitleTrue;
+      }
+      if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
+        return settings.TitleFalse;
+      }
+      return label;
+    }));
   }
-
 }
