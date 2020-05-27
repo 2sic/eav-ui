@@ -3,7 +3,7 @@
 } as data">
 
   <div [formGroup]="group">
-    <mat-slide-toggle [disabled]="control.disabled" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
+    <mat-slide-toggle [disabled]="disabled$ | async" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
     'toggle-false': data.value === false,
     'toggle-null': data.value === null
     }">

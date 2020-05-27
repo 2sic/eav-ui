@@ -17,7 +17,7 @@ export class BaseComponent<T> implements Field, OnInit {
   label$: Observable<string>;
   placeholder$: Observable<string>;
   value$: Observable<T>;
-  // disabled$: Observable<boolean>;
+  disabled$: Observable<boolean>;
 
   constructor(private eavService: EavService) { }
 
@@ -27,24 +27,25 @@ export class BaseComponent<T> implements Field, OnInit {
     this.label$ = this.config.field.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.config.field.settings$.pipe(map(settings => settings.Placeholder));
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
-    // this.value$ = this.group.controls[this.config.field.name].valueChanges.pipe(
-    //   startWith(this.group.controls[this.config.field.name].value)
+    // this.value$ = this.control.valueChanges.pipe(
+    //   startWith(this.control.value)
     // );
-    // this.status$ = this.group.controls[this.config.field.name].statusChanges.pipe(
-    //   startWith(this.group.controls[this.config.field.name].status)
+    // this.status$ = this.control.statusChanges.pipe(
+    //   startWith(this.control.status)
     // );
     this.value$ = this.eavService.formSetValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
-      distinctUntilChanged(),
       startWith(this.control.value),
+      distinctUntilChanged(),
     );
-    // doesn't work because control status is updated after value change
-    // this.disabled$ = this.eavService.formSetValueChange$.pipe(
-    //   filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-    //   map(formSet => this.control.status === 'DISABLED'),
-    //   distinctUntilChanged(),
-    //   startWith(this.control.status === 'DISABLED'),
-    // );
+    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
+        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
+      ),
+      map(formSet => this.control.disabled),
+      startWith(this.control.disabled),
+      distinctUntilChanged(),
+    );
   }
 }
