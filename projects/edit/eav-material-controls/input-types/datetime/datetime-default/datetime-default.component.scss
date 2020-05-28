@@ -2,8 +2,9 @@ $datetime-icon-color: rgb(69, 79, 99);
 $datetime-icon-color--disabled: rgb(190, 194, 201);
 
 .datetime-icon {
-    color: $datetime-icon-color;
+  color: $datetime-icon-color;
 }
+
 .datetime-icon--disabled {
-    color: $datetime-icon-color--disabled;
+  color: $datetime-icon-color--disabled;
 }
