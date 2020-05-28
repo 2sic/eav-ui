@@ -19,7 +19,15 @@ export interface Connector<T> {
   /** Communicates with the dialog */
   dialog: ConnectorDialog<T>;
 
-  /** Makes sure that script with the same source is loaded only once and executes callback */
+  /**
+   * Load a script into the browser - but only once.
+   * Makes sure that script with the same source is loaded only once and executes callback.
+   *
+   * @param {string} globalObject - name on window.xxx which is checked if the js is already loaded
+   * @param {string} src - path to the script
+   * @param {(...args: any[]) => any} callback - your callback function
+   * @memberof Connector
+   */
   loadScript(globalObject: string, src: string, callback: (...args: any[]) => any): void;
 
   /** Data not yet standardized */
