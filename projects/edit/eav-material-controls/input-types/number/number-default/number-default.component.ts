@@ -1,43 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'number-default',
   templateUrl: './number-default.component.html',
-  styleUrls: ['./number-default.component.scss']
+  styleUrls: ['./number-default.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class NumberDefaultComponent implements Field, OnInit {
-  config: FieldConfigSet;
-  group: FormGroup;
+export class NumberDefaultComponent extends BaseComponent<number> implements OnInit {
+  min$: Observable<number>;
+  max$: Observable<number>;
 
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
+  constructor(eavService: EavService) {
+    super(eavService);
   }
 
-  get max() {
-    return this.config.field.settings.Max;
+  ngOnInit() {
+    super.ngOnInit();
+    this.min$ = this.settings$.pipe(map(settings => settings.Min));
+    this.max$ = this.settings$.pipe(map(settings => settings.Max));
   }
-
-  get min() {
-    return this.config.field.settings.Min;
-  }
-
-  constructor(private validationMessagesService: ValidationMessagesService) { }
-
-  ngOnInit(): void {
-    // this.decimal = this.config.currentFieldConfig.settings.Decimals
-    // ? `^[0-9]+(\.[0-9]{1,${this.config.currentFieldConfig.settings.Decimals}})?$`
-    // : null;
-  }
-
 }
