@@ -1,113 +1,61 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { BaseComponent } from '../../base/base.component';
+import { DropdownOption } from './string-dropdown.models';
+import { calculateDropdownOptions } from './string-dropdown.helpers';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-dropdown',
   templateUrl: './string-dropdown.component.html',
-  styleUrls: ['./string-dropdown.component.scss']
+  styleUrls: ['./string-dropdown.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringDropdownComponent implements Field, OnInit, OnDestroy {
-  config: FieldConfigSet;
-  group: FormGroup;
+export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+  enableTextEntry$: Observable<boolean>;
+  dropdownOptions$: Observable<DropdownOption[]>;
+  freeTextMode$: Observable<boolean>;
 
-  freeTextMode = false;
-  selectOptions: { label: string, value: string }[] = [];
-  subscriptions: Subscription[] = [];
+  private freeTextMode$$ = new BehaviorSubject(undefined);
 
-  get enableTextEntry() {
-    return this.config.field.settings.EnableTextEntry || false;
+  constructor(eavService: EavService) {
+    super(eavService);
   }
-
-  get notes() {
-    return this.config.field.settings.Notes || '';
-  }
-
-  get inputInvalid() {
-    return this.group.controls[this.config.field.name].invalid;
-  }
-
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled;
-  }
-
-  get value() {
-    return this.group.controls[this.config.field.name].value;
-  }
-
-  constructor(
-    private eavService: EavService,
-  ) { }
 
   ngOnInit() {
-    this.selectOptions = this.setOptionsFromDropdownValues();
-    this.freeTextMode = this.setFreeTextMode();
-
-    const updateOptionsSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      // check if update is for current form
-      if (formSet.formId !== this.config.form.formId) { return; }
-      // check if update is for current entity
-      if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
-      this.selectOptions = this.setOptionsFromDropdownValues();
-    });
-    this.subscriptions.push(updateOptionsSub);
-  }
-
-  freeTextModeChange(event: Event) {
-    this.freeTextMode = !this.freeTextMode;
-    // Stops dropdown from opening
-    event.stopPropagation();
-  }
-
-  private setFreeTextMode() {
-    if (this.value) {
-      const isInSelectOptions: boolean = !!this.selectOptions.find(s => s.value === this.value);
-      if (!isInSelectOptions && this.enableTextEntry) { return true; }
-    }
-    return false;
-  }
-
-  /** Read settings Dropdown values */
-  private setOptionsFromDropdownValues() {
-    const currentValue = this.group.controls[this.config.field.name].value;
-    let currentValueFound = false;
-    let options: { label: string, value: string }[] = [];
-    if (this.config.field.settings.DropdownValues) {
-      const dropdownValues: string = this.config.field.settings.DropdownValues;
-      const dropdownValuesArray = dropdownValues.replace(/\r/g, '').split('\n');
-      options = dropdownValuesArray.map(e => {
-        const s = e.split(':');
-        const maybeWantedEmptyVal = s[1];
-        const key = s.shift(); // take first, shrink the array
-        const val = s.join(':');
-        const option = {
-          label: key,
-          value: (val || maybeWantedEmptyVal === '') ? val : key
-        };
-        if (option.value === currentValue) { currentValueFound = true; }
-        return option;
-      });
-    }
-    if (!currentValueFound) {
-      options.push({
-        label: currentValue,
-        value: currentValue,
-      });
-    }
-    return options;
+    super.ngOnInit();
+    this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
+    this.dropdownOptions$ = combineLatest(this.value$, this.settings$).pipe(
+      map(combined => {
+        const value = combined[0];
+        const settings = combined[1];
+        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
+        return dropdownOptions;
+      }),
+    );
+    this.freeTextMode$ = combineLatest(this.enableTextEntry$, this.freeTextMode$$).pipe(
+      map(combined => {
+        const enableTextEntry = combined[0];
+        const freeTextMode = combined[1];
+        if (!enableTextEntry) { return false; }
+        return freeTextMode;
+      }),
+    );
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.freeTextMode$$.complete();
+  }
+
+  setFreeTextMode(value: boolean) {
+    this.freeTextMode$$.next(value);
   }
 }

@@ -27,7 +27,7 @@ export interface FieldConfigAngular extends FieldConfig {
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;
-  settings$: BehaviorSubject<FieldSettings>;
+  settings$$: BehaviorSubject<FieldSettings>;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

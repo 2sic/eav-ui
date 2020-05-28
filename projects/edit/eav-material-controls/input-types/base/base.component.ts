@@ -25,7 +25,7 @@ export class BaseComponent<T> implements Field, OnInit {
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    this.settings$ = this.config.field.settings$;
+    this.settings$ = this.config.field.settings$$.asObservable();
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));

@@ -1,17 +1,34 @@
-<mat-form-field [formGroup]="group" appearance="standard" color="accent">
-  <mat-select *ngIf="!freeTextMode" placeholder="Favorite animal" [formControlName]="config.field.name"
-    [required]='config.field.required' [placeholder]="config.field.placeholder">
-    <mat-option *ngFor="let item of selectOptions" [value]="item.value">
-      {{item.label}}
-    </mat-option>
-  </mat-select>
-  <input matInput *ngIf="freeTextMode" type="text" class="form-control input-material material"
-    [required]='config.field.required' [formControlName]="config.field.name" [placeholder]="config.field.placeholder">
-  <button mat-icon-button matSuffix *ngIf="enableTextEntry" (click)="freeTextModeChange($event)" [disabled]="disabled"
-    type="button">
-    <mat-icon *ngIf="!freeTextMode" matTooltip="{{ 'Fields.String.Freetext' | translate }}">text_fields</mat-icon>
-    <mat-icon *ngIf="freeTextMode" matTooltip="{{ 'Fields.String.Dropdown' | translate }}">arrow_drop_down</mat-icon>
-  </button>
-  <mat-label>{{config.field.label}}</mat-label>
-</mat-form-field>
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+<ng-container *ngIf="{
+  required: required$ | async,
+  placeholder: placeholder$ | async,
+  label: label$ | async,
+  disabled: disabled$ | async,
+  enableTextEntry: enableTextEntry$ | async,
+  dropdownOptions: dropdownOptions$ | async,
+  freeTextMode: freeTextMode$ | async
+} as data">
+
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+
+    <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.field.name" [required]="data.required"
+      [placeholder]="data.placeholder">
+      <mat-option *ngFor="let option of data.dropdownOptions" [value]="option.value">
+        {{ option.label }}
+      </mat-option>
+    </mat-select>
+
+    <input matInput *ngIf="data.freeTextMode" type="text" [required]="data.required"
+      [formControlName]="config.field.name" [placeholder]="data.placeholder">
+
+    <button type="button" mat-icon-button matSuffix *ngIf="data.enableTextEntry" [disabled]="data.disabled"
+      appClickStopPropagation (click)="setFreeTextMode(!data.freeTextMode)">
+      <mat-icon [matTooltip]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
+        {{ data.freeTextMode ? 'arrow_drop_down_circle' : 'text_fields' }}
+      </mat-icon>
+    </button>
+
+    <mat-label>{{ data.label }}</mat-label>
+  </mat-form-field>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</ng-container>
