@@ -1,24 +1,28 @@
-<!-- input -->
-<mat-form-field [formGroup]="group" appearance="standard" color="accent">
-  <div class="c-input-text-wrapper">
-    <div class="thumbnail-before-input">
-      <i *ngIf="value" class="{{config.field.settings.PreviewCss}} {{value}} icon-preview"></i>
+<ng-container *ngIf="{
+  value: value$ | async,
+  disabled: disabled$ | async,
+  previewCss: previewCss$ | async
+} as data">
+
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+    <div class="icon-option">
+      <i *ngIf="data.value" class="icon-preview {{ data.previewCss }} {{ data.value }}"></i>
+      <input matInput type="text" [formControlName]="config.field.name" [placeholder]="placeholder$ | async"
+        [required]="required$ | async" [matAutocomplete]="auto">
     </div>
-    <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
-      [placeholder]="config.field.label" [required]="config.field.required" [matAutocomplete]="auto" (click)="update()">
-  </div>
-  <mat-label>{{config.field.label}}</mat-label>
-</mat-form-field>
 
-<!-- field helper text -->
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let icon of filteredIcons$ | async" [value]="icon.class">
+        <div class="icon-option">
+          <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
+          <span>{{ icon.class }}</span>
+        </div>
+      </mat-option>
+    </mat-autocomplete>
 
-<!-- options -->
-<mat-autocomplete #auto="matAutocomplete">
-  <mat-option *ngFor="let icn of filteredIcons | async" [value]="icn.class">
-    <a (click)="setIcon(icn.class, config.field.name)">
-      <i class="{{config.field.settings.PreviewCss}} {{icn.class}} icon-preview"></i>
-      <span>{{icn.class}}</span>
-    </a>
-  </mat-option>
-</mat-autocomplete>
+    <mat-label>{{ label$ | async }}</mat-label>
+  </mat-form-field>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>
