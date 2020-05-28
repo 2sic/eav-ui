@@ -1,27 +1,31 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'custom-json-editor',
   templateUrl: './custom-json-editor.component.html',
-  styleUrls: ['./custom-json-editor.component.scss']
+  styleUrls: ['./custom-json-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class CustomJsonEditorComponent implements OnInit {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  rowCount: number;
+export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit {
+  rowCount$: Observable<number>;
 
-  constructor() { }
+  constructor(eavService: EavService) {
+    super(eavService);
+  }
 
   ngOnInit() {
-    this.rowCount = this.config.field.settings.Rows ? this.config.field.settings.Rows : 5;
+    super.ngOnInit();
+    this.rowCount$ = this.settings$.pipe(map(settings => settings.Rows || 5));
   }
 }
