@@ -1,89 +1,81 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Helper } from '../../../../shared/helpers/helper';
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-url-path',
   templateUrl: './string-url-path.component.html',
-  styleUrls: ['./string-url-path.component.scss']
+  styleUrls: ['./string-url-path.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.eavLocalizationWrapper],
 })
-export class StringUrlPathComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-
-  private enableSlashes = true;
-  private lastAutoCopy = '';
-  private subscriptions: Subscription[] = [];
+export class StringUrlPathComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+  private autoGenerateMask: string;
+  private allowSlashes: boolean;
   private fieldMaskService: FieldMaskService;
+  private subscription = new Subscription();
+  /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
+  private lastAutoCopy = '';
 
-  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
-  get autoGenerateMask(): string { return this.config.field.settings.AutoGenerateMask || null; }
-
-  constructor() { }
+  constructor(eavService: EavService) {
+    super(eavService);
+  }
 
   ngOnInit() {
-    const sourceMask = this.autoGenerateMask;
-    // this will contain the auto-resolve type (based on other contentType-field)
-    this.fieldMaskService = new FieldMaskService(sourceMask, this.group.controls, null, this.preCleane);
+    super.ngOnInit();
+    this.subscription.add(this.settings$.subscribe(settings => {
+      this.autoGenerateMask = settings.AutoGenerateMask || null;
+      this.allowSlashes = settings.AllowSlashes || false;
+      if (this.fieldMaskService != null) {
+        this.fieldMaskService.destroy();
+        this.fieldMaskService = null;
+      }
+      this.fieldMaskService = new FieldMaskService(this.autoGenerateMask, this.group.controls,
+        this.onSourcesChanged.bind(this), this.preClean);
+    }));
 
     // set initial value
-    this.sourcesChangedTryToUpdate(this.fieldMaskService);
-
-    // get all mask field and subcribe to changes. On every change sourcesChangedTryToUpdate.
-    this.fieldMaskService.fieldList().forEach((e, i) => {
-      if (this.group.controls[e]) {
-        this.group.controls[e].valueChanges.subscribe((item) => {
-          this.sourcesChangedTryToUpdate(this.fieldMaskService);
-        });
-      }
-    });
+    this.onSourcesChanged(this.fieldMaskService.resolve());
 
     // clean on value change
-    this.subscriptions.push(
-      this.group.controls[this.config.field.name].valueChanges.subscribe((item) => {
-        this.clean(this.config.field.name, false);
-      })
-    );
+    this.subscription.add(this.control.valueChanges.subscribe(value => {
+      this.clean(false);
+    }));
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscription.unsubscribe();
   }
 
-  /** Field-Mask handling */
-  private sourcesChangedTryToUpdate(fieldMaskService: FieldMaskService) {
-    const formControlValue = this.group.controls[this.config.field.name].value;
+  private onSourcesChanged(newValue: string) {
+    const value = this.control.value;
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
-    if (formControlValue && formControlValue !== this.lastAutoCopy) { return; }
+    if (value && value !== this.lastAutoCopy) { return; }
 
-    const orig = fieldMaskService.resolve();
-    const cleaned = Helper.stripNonUrlCharacters(orig, this.enableSlashes, true);
-    if (cleaned) {
-      this.lastAutoCopy = cleaned;
-      this.group.controls[this.config.field.name].patchValue(cleaned, { emitEvent: false });
-    }
+    const cleaned = Helper.stripNonUrlCharacters(newValue, this.allowSlashes, true);
+    if (!cleaned) { return; }
+    this.lastAutoCopy = cleaned;
+    if (value === cleaned) { return; }
+    this.control.patchValue(cleaned);
   }
 
-  private preCleane = (key: string, value: string) => {
-    return value.replace('/', '-').replace('\\', '-'); // this will remove slashes which could look like path-parts
+  private preClean(key: string, value: string) {
+    return value.replace('/', '-').replace('\\', '-'); // remove slashes which could look like path-parts
   }
 
-  clean(formControlName: string, trimEnd: boolean) {
-    const formControlValue = this.group.controls[formControlName].value;
-    const cleaned = Helper.stripNonUrlCharacters(formControlValue, this.enableSlashes, trimEnd);
-    if (formControlValue !== cleaned) {
-      this.group.controls[formControlName].patchValue(cleaned, { emitEvent: false });
-    }
+  clean(trimEnd: boolean) {
+    const value = this.control.value;
+    const cleaned = Helper.stripNonUrlCharacters(value, this.allowSlashes, trimEnd);
+    if (value === cleaned) { return; }
+    this.control.patchValue(cleaned);
   }
 }
