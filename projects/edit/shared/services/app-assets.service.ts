@@ -3,35 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
+import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
+
 @Injectable()
 export class AppAssetsService {
-  constructor(private httpClient: HttpClient, private dnnContext: DnnContext) { }
+  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  createSvc(appId: string, global: boolean): AssetsSvc {
-    const params = {
-      appId,
-      global: global || false,
-    };
-
-    const getAll = () => {
-      return this.httpClient.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
-        params: Object.assign({}, params as any, { withSubfolders: 'true' }),
-      }) as Observable<string[]>;
-    };
-
-    const create = (path: string, content: any) => {
-      return this.httpClient.post(
-        this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'),
-        { content: content || '' },
-        { params: Object.assign({}, params as any, { path }) },
-      );
-    };
-
-    return { getAll, create };
+  getAll(global: boolean) {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/list'), {
+      params: { appId: this.context.appId.toString(), global: global.toString(), withSubfolders: 'true' },
+    }) as Observable<string[]>;
   }
-}
 
-export interface AssetsSvc {
-  getAll: () => Observable<string[]>;
-  create: (path: string, content: any) => Observable<any>;
+  create(path: string, content: string, global: boolean) {
+    return this.http.post(
+      this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'), { content }, {
+      params: { appId: this.context.appId.toString(), global: global.toString(), path }
+    }) as Observable<boolean>;
+  }
 }
