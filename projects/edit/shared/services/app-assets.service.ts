@@ -6,7 +6,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
-export class AppAssetsService {
+export class AssetsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(global: boolean) {

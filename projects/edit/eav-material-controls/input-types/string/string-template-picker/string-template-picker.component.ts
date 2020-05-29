@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { AppAssetsService } from '../../../../shared/services/app-assets.service';
+import { AssetsService } from '../../../../shared/services/app-assets.service';
 import { templateTypes } from './string-template-picker.constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -30,7 +30,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(eavService: EavService, private appAssetsService: AppAssetsService) {
+  constructor(eavService: EavService, private assetsService: AssetsService) {
     super(eavService);
   }
 
@@ -52,7 +52,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   private onLocationChange(location: string) {
     this.global = (location === 'Host File System');
 
-    this.appAssetsService.getAll(this.global).subscribe(templates => {
+    this.assetsService.getAll(this.global).subscribe(templates => {
       this.templates = templates;
       this.resetIfNotFound = true;
       this.setTemplateOptions();
@@ -96,7 +96,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     const fullPath = path + name;
 
     // 4. tell service to create it
-    this.appAssetsService.create(fullPath, this.activeSpec.body, this.global).subscribe(res => {
+    this.assetsService.create(fullPath, this.activeSpec.body, this.global).subscribe(res => {
       if (res === false) {
         alert('Server reported that create failed - the file probably already exists'); // todo: i18n
       } else {
