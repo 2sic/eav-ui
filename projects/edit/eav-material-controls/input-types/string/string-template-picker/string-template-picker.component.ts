@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { AssetsService } from '../../../../shared/services/app-assets.service';
+import { AssetsService } from '../../../../shared/services/assets.service';
 import { templateTypes } from './string-template-picker.constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';

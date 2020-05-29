@@ -83,7 +83,7 @@ import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
-import { AssetsService } from '../shared/services/app-assets.service';
+import { AssetsService } from '../shared/services/assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
 import { CustomJsonEditorComponent } from './input-types/custom/custom-json-editor/custom-json-editor.component';
 
