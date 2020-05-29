@@ -27,6 +27,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
   private global = false;
+  /** Reset only after templates have been fetched once */
+  private resetIfNotFound = false;
 
   constructor(eavService: EavService, private appAssetsService: AppAssetsService) {
     super(eavService);
@@ -52,6 +54,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
     this.appAssetsService.getAll(this.global).subscribe(templates => {
       this.templates = templates;
+      this.resetIfNotFound = true;
       this.setTemplateOptions();
     });
   }
@@ -63,6 +66,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     filtered = filtered.filter(template => !template.includes('.code.'));
     filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
     this.templateOptions$$.next(filtered);
+    const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
+    if (resetValue) { this.control.patchValue(''); }
   }
 
   createTemplate() {
