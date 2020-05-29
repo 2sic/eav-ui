@@ -202,7 +202,7 @@ export class BuildFieldsService {
         type: attribute.type, // other fields specific
         required, // other fields specific
         disabled, // other fields specific
-        settings$$: new BehaviorSubject(settingsTranslated),
+        settings$: new BehaviorSubject(settingsTranslated),
       };
     }
     return fieldConfig;
