@@ -15,9 +15,9 @@ export class AssetsService {
     }) as Observable<string[]>;
   }
 
-  create(path: string, content: string, global: boolean) {
+  create(path: string, global: boolean) {
     return this.http.post(
-      this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'), { content }, {
+      this.dnnContext.$2sxc.http.apiUrl('app-sys/appassets/create'), {}, {
       params: { appId: this.context.appId.toString(), global: global.toString(), path }
     }) as Observable<boolean>;
   }

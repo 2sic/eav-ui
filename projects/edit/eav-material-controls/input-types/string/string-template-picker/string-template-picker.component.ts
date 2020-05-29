@@ -96,7 +96,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     const fullPath = path + name;
 
     // 4. tell service to create it
-    this.assetsService.create(fullPath, this.activeSpec.body, this.global).subscribe(res => {
+    this.assetsService.create(fullPath, this.global).subscribe(res => {
       if (res === false) {
         alert('Server reported that create failed - the file probably already exists'); // todo: i18n
       } else {
