@@ -8,6 +8,7 @@ import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldSettings } from '../../../../edit-types';
 import { EavService } from '../../../shared/services/eav.service';
 import { ValidationHelper } from '../../validators/validation-helper';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 export class BaseComponent<T> implements Field, OnInit {
   @Input() config: FieldConfigSet;
@@ -20,8 +21,9 @@ export class BaseComponent<T> implements Field, OnInit {
   value$: Observable<T>;
   disabled$: Observable<boolean>;
   required$: Observable<boolean>;
+  showValidation$: Observable<AbstractControl>;
 
-  constructor(private eavService: EavService) { }
+  constructor(private eavService: EavService, private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
@@ -29,6 +31,7 @@ export class BaseComponent<T> implements Field, OnInit {
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
+    this.showValidation$ = this.validationMessagesService.showValidation$.pipe(filter(control => control === this.control));
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
     // this.value$ = this.control.valueChanges.pipe(
     //   startWith(this.control.value)

@@ -8,6 +8,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { BaseComponent } from '../../base/base.component';
 import { DropdownOption } from './string-dropdown.models';
 import { calculateDropdownOptions } from './string-dropdown.helpers';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,8 +27,8 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
 
   private freeTextMode$$ = new BehaviorSubject(undefined);
 
-  constructor(eavService: EavService) {
-    super(eavService);
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {

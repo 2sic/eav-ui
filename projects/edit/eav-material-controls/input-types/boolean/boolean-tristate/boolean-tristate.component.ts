@@ -6,6 +6,7 @@ import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.de
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,8 +20,8 @@ import { EavService } from '../../../../shared/services/eav.service';
 })
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit {
 
-  constructor(eavService: EavService) {
-    super(eavService);
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {

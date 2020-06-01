@@ -7,6 +7,7 @@ import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,8 +27,8 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
-  constructor(eavService: EavService) {
-    super(eavService);
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {

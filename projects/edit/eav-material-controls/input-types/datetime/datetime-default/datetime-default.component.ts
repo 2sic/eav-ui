@@ -10,6 +10,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers-constan
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,11 +27,12 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
   constructor(
     eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private translate: TranslateService,
     private dateAdapter: DateAdapter<any>,
     private ngxDateTimeAdapter: NgxMatDateAdapter<any>,
   ) {
-    super(eavService);
+    super(eavService, validationMessagesService);
     const currentLang = this.translate.currentLang;
     angularConsoleLog('Datepickers locale:', currentLang);
     this.dateAdapter.setLocale(currentLang);

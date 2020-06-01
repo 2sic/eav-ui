@@ -9,6 +9,7 @@ import { IconOption } from './string-font-icon-picker.models';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { calculateIconOptions } from './string-font-icon-picker.helpers';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -27,8 +28,12 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
 
   private subscription = new Subscription();
 
-  constructor(eavService: EavService, private scriptsLoaderService: ScriptsLoaderService) {
-    super(eavService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    private scriptsLoaderService: ScriptsLoaderService,
+  ) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {

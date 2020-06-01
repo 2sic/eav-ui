@@ -8,6 +8,7 @@ import { AssetsService } from '../../../../shared/services/assets.service';
 import { templateTypes } from './string-template-picker.constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -30,8 +31,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(eavService: EavService, private assetsService: AssetsService) {
-    super(eavService);
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService, private assetsService: AssetsService) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {

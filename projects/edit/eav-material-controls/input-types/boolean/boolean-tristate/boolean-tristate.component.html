@@ -1,5 +1,6 @@
 <ng-container *ngIf="{
-  value: value$ | async
+  value: value$ | async,
+  showValidation: showValidation$ | async
 } as data">
 
   <div [formGroup]="group">

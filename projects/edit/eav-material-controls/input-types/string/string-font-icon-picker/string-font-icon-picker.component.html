@@ -1,7 +1,8 @@
 <ng-container *ngIf="{
   value: value$ | async,
   disabled: disabled$ | async,
-  previewCss: previewCss$ | async
+  previewCss: previewCss$ | async,
+  showValidation: showValidation$ | async
 } as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">

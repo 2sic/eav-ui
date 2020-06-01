@@ -1,17 +1,23 @@
-<div class="picker-wrapper">
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <mat-select [formControlName]="config.field.name" [required]="required$ | async">
-      <mat-option value="">(no file selected)</mat-option>
-      <mat-option *ngFor="let file of templateOptions$$ | async" [value]="file">
-        {{ file }}
-      </mat-option>
-    </mat-select>
-    <mat-label>{{ label$ | async }}</mat-label>
-  </mat-form-field>
-  <button type="button" mat-icon-button matTooltip="Create a new file" [disabled]="disabled$ | async"
-    (click)="createTemplate()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+<ng-container *ngIf="{
+  showValidation: showValidation$ | async
+} as data">
 
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+  <div class="picker-wrapper">
+    <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+      <mat-select [formControlName]="config.field.name" [required]="required$ | async">
+        <mat-option value="">(no file selected)</mat-option>
+        <mat-option *ngFor="let file of templateOptions$$ | async" [value]="file">
+          {{ file }}
+        </mat-option>
+      </mat-select>
+      <mat-label>{{ label$ | async }}</mat-label>
+    </mat-form-field>
+    <button type="button" mat-icon-button matTooltip="Create a new file" [disabled]="disabled$ | async"
+      (click)="createTemplate()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>

@@ -1,5 +1,6 @@
 <ng-container *ngIf="{
-  disabled: disabled$ | async
+  disabled: disabled$ | async,
+  showValidation: showValidation$ | async
 } as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="textarea-field">
