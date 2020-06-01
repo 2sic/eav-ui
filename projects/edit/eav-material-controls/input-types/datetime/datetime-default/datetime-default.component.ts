@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
-import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
+import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,13 +28,13 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
     eavService: EavService,
     private translate: TranslateService,
     private dateAdapter: DateAdapter<any>,
-    private dateTimeAdapter: DateTimeAdapter<any>,
+    private ngxDateTimeAdapter: NgxMatDateAdapter<any>,
   ) {
     super(eavService);
     const currentLang = this.translate.currentLang;
     angularConsoleLog('Datepickers locale:', currentLang);
     this.dateAdapter.setLocale(currentLang);
-    this.dateTimeAdapter.setLocale(currentLang);
+    this.ngxDateTimeAdapter.setLocale(currentLang);
   }
 
   ngOnInit() {

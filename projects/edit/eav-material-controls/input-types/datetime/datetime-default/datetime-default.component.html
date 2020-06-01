@@ -9,23 +9,18 @@
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!data.useTimePicker">
     <input matInput [formControlName]="config.field.name" [matDatepicker]="picker" [placeholder]="data.placeholder"
       [required]="data.required">
-    <mat-datepicker-toggle matSuffix [for]="picker">
-      <mat-icon class="datetime-icon" matDatepickerToggleIcon [matTooltip]="'Fields.DateTime.Open' | translate"
-        [ngClass]="{'datetime-icon--disabled': data.disabled}">
-        today
-      </mat-icon>
+    <mat-datepicker-toggle matSuffix [for]="picker" [matTooltip]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="data.useTimePicker">
-    <input matInput [formControlName]="config.field.name" [owlDateTime]="picker" [placeholder]="data.placeholder"
-      [required]="data.required">
-    <owl-date-time #picker></owl-date-time>
-    <button mat-icon-button matSuffix type="button" [disabled]="data.disabled" [owlDateTimeTrigger]="picker">
-      <mat-icon class="datetime-icon" [matTooltip]="'Fields.DateTime.Open' | translate">today</mat-icon>
-    </button>
+    <input matInput [formControlName]="config.field.name" [ngxMatDatetimePicker]="picker"
+      [placeholder]="data.placeholder" [required]="data.required">
+    <mat-datepicker-toggle matSuffix [for]="picker" [matTooltip]="'Fields.DateTime.Open' | translate">
+    </mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 

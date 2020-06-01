@@ -9,6 +9,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -22,8 +24,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-// tslint:disable-next-line:max-line-length
-import { OwlDateTimeModule, OwlDateTimeIntl, OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from '@danielmoncada/angular-datetime-picker';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { CollapsibleWrapperComponent } from './wrappers';
@@ -80,7 +80,6 @@ import { ExternalWebComponentComponent } from './input-types/custom/external-web
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { SafeHtmlPipe } from '../shared/pipes/safe-html';
-import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AssetsService } from '../shared/services/assets.service';
@@ -163,8 +162,8 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     MatSlideToggleModule,
     MatTabsModule,
     MatTooltipModule,
-    OwlDateTimeModule,
-    OwlMomentDateTimeModule,
+    NgxMatDatetimePickerModule,
+    NgxMatMomentModule,
     ReactiveFormsModule,
     MatRippleModule,
     MatChipsModule,
@@ -212,8 +211,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     FileTypeService,
     ValidationMessagesService,
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride, deps: [TranslateService] },
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     AssetsService,
     ScriptsLoaderService,
   ],
