@@ -6,7 +6,7 @@ import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-othe
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { Language } from '../../../shared/models/eav';
-import { TranslationLinkTypeConstants } from '../../../shared/constants/translation-link.constants';
+import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
@@ -73,23 +73,23 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
     switch (i18nKey) {
       case 'FromPrimary':
-        this.selectedOption.linkType = TranslationLinkTypeConstants.translate;
+        this.selectedOption.linkType = TranslationLinkConstants.Translate;
         break;
       case 'NoTranslate':
         this.selectedOption.linkType =
-          TranslationLinkTypeConstants.dontTranslate;
+          TranslationLinkConstants.DontTranslate;
         break;
       case 'LinkReadOnly':
         this.selectedOption.linkType =
-          TranslationLinkTypeConstants.linkReadOnly;
+          TranslationLinkConstants.LinkReadOnly;
         break;
       case 'LinkShared':
         this.selectedOption.linkType =
-          TranslationLinkTypeConstants.linkReadWrite;
+          TranslationLinkConstants.LinkReadWrite;
         break;
       case 'FromOther':
         this.selectedOption.linkType =
-          TranslationLinkTypeConstants.linkCopyFrom;
+          TranslationLinkConstants.LinkCopyFrom;
         break;
     }
     this.languageList18nRoot = 'LangMenu.Dialog.' + i18nKey;
@@ -102,9 +102,9 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
   okButtonDisabled() {
     return (
       this.selectedOption.language === '' &&
-      this.selectedOption.linkType !== TranslationLinkTypeConstants.translate &&
+      this.selectedOption.linkType !== TranslationLinkConstants.Translate &&
       this.selectedOption.linkType !==
-      TranslationLinkTypeConstants.dontTranslate
+      TranslationLinkConstants.DontTranslate
     );
   }
 
