@@ -20,7 +20,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit {
   useTimePicker$: Observable<boolean>;

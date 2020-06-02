@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateOptions$$ = new BehaviorSubject<string[]>([]);

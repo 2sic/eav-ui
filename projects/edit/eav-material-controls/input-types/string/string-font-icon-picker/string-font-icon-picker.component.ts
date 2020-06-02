@@ -19,7 +19,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class StringFontIconPickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   iconOptions$$ = new BehaviorSubject<IconOption[]>([]);

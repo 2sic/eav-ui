@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   enableTextEntry$: Observable<boolean>;

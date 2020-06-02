@@ -17,8 +17,8 @@ import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/help
   styleUrls: ['./hyperlink-library.component.scss']
 })
 @InputType({
-  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
-  WrappersConstants.hyperlinkLibraryExpandableWrapper, WrappersConstants.adamAttachWrapper],
+  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
+  WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;

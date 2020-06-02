@@ -16,7 +16,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit {
 

@@ -17,7 +17,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class StringUrlPathComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   private autoGenerateMask: string;

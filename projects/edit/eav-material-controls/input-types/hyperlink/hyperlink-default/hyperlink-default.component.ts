@@ -22,8 +22,8 @@ import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/help
   styleUrls: ['./hyperlink-default.component.scss']
 })
 @InputType({
-  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
-  WrappersConstants.hyperlinkDefaultExpandableWrapper, WrappersConstants.adamAttachWrapper],
+  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
+  WrappersConstants.HyperlinkDefaultExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
