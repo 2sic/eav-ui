@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Helper } from '../../../../shared/helpers/helper';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';

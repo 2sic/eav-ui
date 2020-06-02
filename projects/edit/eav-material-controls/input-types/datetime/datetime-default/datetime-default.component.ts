@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';

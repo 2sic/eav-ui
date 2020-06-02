@@ -6,7 +6,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { CustomValidators } from '../../../validators/custom-validators';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 

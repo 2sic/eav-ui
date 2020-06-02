@@ -10,7 +10,7 @@ import { Field } from '../../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';

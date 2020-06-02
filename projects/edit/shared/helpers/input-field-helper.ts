@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavHeader, Item, InputType } from '../models/eav';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
-import { WrappersConstants } from '../constants/wrappers-constants';
+import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models/input-field-models';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';

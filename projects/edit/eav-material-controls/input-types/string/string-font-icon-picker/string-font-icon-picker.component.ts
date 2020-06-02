@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 import { IconOption } from './string-font-icon-picker.models';
 import { BaseComponent } from '../../base/base.component';
