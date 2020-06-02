@@ -13,7 +13,7 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { TranslationLinkTypeConstants } from '../../../shared/constants/type-constants';
+import { TranslationLinkTypeConstants } from '../../../shared/constants/translation-link.constants';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
