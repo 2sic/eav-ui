@@ -4,35 +4,31 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { DnnBridgeConnector } from '../models/dnn-bridge/dnn-bridge-connector';
-import { EavAdminUiService } from './eav-admin-ui.service';
+import { DnnBridgeConnector, DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
 // tslint:disable-next-line:max-line-length
 import { HyperlinkDefaultPagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
 export class DnnBridgeService {
-  constructor(
-    private http: HttpClient,
-    private eavAdminUiService: EavAdminUiService,
-    private dnnContext: DnnContext,
-    private context: Context,
-  ) { }
+  constructor(private http: HttpClient, private dnnContext: DnnContext, private context: Context) { }
 
   open(oldValue: any, params: any, callback: any, dialog: MatDialog) {
     const type = 'pagepicker';
     const connector: DnnBridgeConnector = new DnnBridgeConnector(params, callback, type);
 
-    let modalInstance: MatDialogRef<any, any>;
+    let dialogRef: MatDialogRef<any, any>;
     connector.valueChanged = (value: any) => {
-      modalInstance.close();
+      dialogRef.close();
       callback(value);
     };
     connector.params.CurrentValue = oldValue;
 
-    // Open dialog
-    modalInstance = this.eavAdminUiService.openPagePickerModal(dialog, HyperlinkDefaultPagepickerComponent, type, connector);
-    return modalInstance;
+    dialogRef = dialog.open(HyperlinkDefaultPagepickerComponent, {
+      width: '650px',
+      data: { type, connector } as DnnBridgeDialogData,
+    });
+    return dialogRef;
   }
 
   getUrlOfId(url: string, contentType: string, guid: string, field: string) {
