@@ -12,8 +12,6 @@ import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,28 +27,18 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  showPreview = true;
-  toggleAdamValue = false;
   link = '';
   control: AbstractControl;
 
   private oldValue: any;
-  private eavConfig: EavConfiguration;
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
   private adamModeConfig: AdamModeConfig = {
     usePortalRoot: false
   };
 
-  get value() { return this.group.controls[this.config.field.name].value; }
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
-  /**
-   * this.config.currentFieldConfig.settings.ShowAdam.values.Where(v => v.Dimensions.Contains("en-en").value) or values[0],
-   * then the wrapper will enable/disable the field, depending on the dimension state.
-   * So if it's read-only sharing, the input-field is disabled till the globe is clicked to enable edit...
-   */
   get showAdam() { return this.config.field.settings.ShowAdam ? this.config.field.settings.ShowAdam : true; }
   get fileFilter() { return this.config.field.settings.FileFilter || ''; }
-  get buttons(): string { return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more'; }
+  get buttons() { return this.config.field.settings.Buttons ? this.config.field.settings.Buttons : 'adam,more'; }
   get showInputFileName() { return this.control.value.includes('file:') || this.control.value.includes('page:'); }
 
   constructor(
@@ -58,23 +46,17 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     private dnnBridgeService: DnnBridgeService,
     private eavService: EavService,
     private dialog: MatDialog,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
     this.attachAdam();
-    this.setLink(this.value);
+    this.setLink(this.control.value);
     this.suscribeValueChanges();
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-  }
-
-  private setFormValue(formControlName: string, value: any) {
-    this.group.patchValue({ [formControlName]: value });
+    this.subscription.unsubscribe();
   }
 
   isImage = () => this.fileTypeService.isImage(this.link);
@@ -96,47 +78,32 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
   }
 
   tooltipUrl = (str: string): string => {
-    if (!str) {
-      return '';
-    }
+    if (!str) { return ''; }
     return str.replace(/\//g, '/&#8203;');
   }
 
   // #region dnn-page picker dialog
-  /** Callback when something was selected */
-  private processResultOfPagePicker(value: PagePickerResult) {
-    // Convert to page:xyz format (if it wasn't cancelled)
-    if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
-  }
-
-  /** Open the dialog */
   openPageDialog() {
     this.dnnBridgeService.open(
-      this.value,
+      this.control.value,
       {
         Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
         FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : ''
       },
       this.processResultOfPagePicker.bind(this),
-      this.dialog);
+      this.dialog
+    );
+  }
+
+  private processResultOfPagePicker(value: PagePickerResult) {
+    // Convert to page:xyz format (if it wasn't cancelled)
+    if (value) { this.control.patchValue(`page:${value.id}`); }
   }
   // #endregion
 
-  // #region new adam: callbacks only
-  setValue(fileItem: any) {
-    this.setFormValue(this.config.field.name, `file:${fileItem.Id}`);
-  }
-
-  toggleAdam(usePortalRoot?: boolean, showImagesOnly?: boolean) {
-    this.config.adam.toggle({
-      showImagesOnly,
-      usePortalRoot,
-    });
-  }
-
   /** Subscribe to form value changes */
   private suscribeValueChanges() {
-    this.oldValue = this.group.controls[this.config.field.name].value;
+    this.oldValue = this.control.value;
     const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
       // check if update is for current form
       if (formSet.formId !== this.config.form.formId) { return; }
@@ -148,7 +115,7 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
 
       this.setLink(formSet.entityValues[this.config.field.name]);
     });
-    this.subscriptions.push(formSetSub);
+    this.subscription.add(formSetSub);
   }
 
   /** Update test-link if necessary - both when typing or if link was set by dialogs */
@@ -156,11 +123,12 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     if (!value) { return null; }
 
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
       value,
       this.config.entity.header.ContentTypeName,
       this.config.entity.header.Guid,
-      this.config.field.name);
+      this.config.field.name
+    );
 
     if (urlFromId$) {
       urlFromId$.subscribe((data) => {
@@ -171,27 +139,28 @@ export class HyperlinkDefaultComponent implements Field, OnInit, OnDestroy {
     }
   }
 
+  // #region new adam: callbacks only
+  toggleAdam(usePortalRoot?: boolean, showImagesOnly?: boolean) {
+    this.config.adam.toggle({
+      showImagesOnly,
+      usePortalRoot,
+    });
+  }
+
   private attachAdam() {
-    if (this.config.adam) {
-      // callbacks - functions called from adam
-      this.config.adam.updateCallback = (value: any) => this.setValue(value);
+    if (!this.config.adam) { return; }
+    this.config.adam.updateCallback = (value: any) => this.setValue(value);
+    this.config.adam.afterUploadCallback = (value: any) => this.setValue(value);
+    this.config.adam.getValueCallback = () => this.control.value;
+    this.config.adam.setConfig({
+      ...new AdamConfig(),
+      adamModeConfig: this.adamModeConfig,
+      fileFilter: this.fileFilter
+    });
+  }
 
-      // binding for dropzone
-      this.config.adam.afterUploadCallback = (value: any) => this.setValue(value);
-
-      // return value from form
-      this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
-
-      angularConsoleLog('HyperDefault setConfig : ', Object.assign(new AdamConfig(), {
-        adamModeConfig: this.adamModeConfig,
-        fileFilter: this.fileFilter
-      }));
-
-      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
-        adamModeConfig: this.adamModeConfig,
-        fileFilter: this.fileFilter
-      }));
-    }
+  private setValue(fileItem: any) {
+    this.control.patchValue(`file:${fileItem.Id}`);
   }
   //#endregion
 }

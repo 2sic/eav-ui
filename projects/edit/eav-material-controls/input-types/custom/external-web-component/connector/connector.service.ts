@@ -53,11 +53,12 @@ export class ConnectorService {
   // spm 2019.04.08. move to experimentalProps
   private getUrlOfIdDnnDialog(value: string, urlCallback: any) {
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(this.eavConfig.appId,
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
       value,
       this.config.entity.header.ContentTypeName,
       this.config.entity.header.Guid,
-      this.config.field.name);
+      this.config.field.name
+    );
 
     if (urlFromId$) {
       urlFromId$.subscribe((data) => {

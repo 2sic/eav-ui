@@ -2,7 +2,6 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, After
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -10,7 +9,6 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
@@ -29,7 +27,6 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  private eavConfig: EavConfiguration;
   private subscriptions: Subscription[] = [];
   private oldValue: any;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -53,9 +50,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private zone: NgZone,
     private dialog: MatDialog,
     private expandableFieldService: ExpandableFieldService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  ) { }
 
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
@@ -130,7 +125,6 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     if (!value) { return; }
     // handle short-ID links like file:17
     const urlFromId$ = this.dnnBridgeService.getUrlOfId(
-      this.eavConfig.appId,
       value,
       this.config.entity.header.ContentTypeName,
       this.config.entity.header.Guid,
@@ -141,7 +135,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
       this.link = value;
       this.setValues();
     } else {
-      urlFromId$.pipe(take(1)).subscribe(data => {
+      urlFromId$.subscribe(data => {
         if (!data) { return; }
         this.link = data;
         this.setValues();
