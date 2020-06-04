@@ -121,7 +121,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       if (!path) { return; }
       const preview: Preview = {
         url: path,
-        floatingText: path.substring(path.lastIndexOf('/') + 1, path.length),
+        floatingText: `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}`,
         thumbnailUrl: this.thumbnailUrl(path),
         thumbnailPreviewUrl: this.thumbnailUrl(path, 2),
         isImage: this.fileTypeService.isImage(path),
