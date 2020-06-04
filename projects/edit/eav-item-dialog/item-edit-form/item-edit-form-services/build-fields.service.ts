@@ -121,7 +121,7 @@ export class BuildFieldsService {
       field,
       entity,
       form,
-      dropzoneDisabled: calculatedInputType.isExternal, // dropzone is by default disabled for external fields
+      dropzoneDisabled$: new BehaviorSubject(calculatedInputType.isExternal), // dropzone is by default disabled for external fields
     };
     return fieldConfigSet;
   }

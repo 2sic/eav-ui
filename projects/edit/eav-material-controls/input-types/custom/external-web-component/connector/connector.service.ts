@@ -153,7 +153,7 @@ export class ConnectorService {
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entity.entityGuid,
       allInputTypeNames,
-      enableDropzone: () => { this.config.dropzoneDisabled = false; },
+      enableDropzone: () => { this.config.dropzoneDisabled$.next(false); },
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
       },

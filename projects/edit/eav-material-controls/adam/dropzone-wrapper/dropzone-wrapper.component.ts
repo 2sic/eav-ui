@@ -26,9 +26,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   url: string;
   usePortalRoot = false;
 
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled || this.config.dropzoneDisabled === true;
-  }
+  get disabled() { return this.group.controls[this.config.field.name].disabled || this.config.dropzoneDisabled$.value === true; }
 
   constructor(private eavService: EavService, private dnnContext: DnnContext) {
     this.eavConfig = this.eavService.getEavConfiguration();

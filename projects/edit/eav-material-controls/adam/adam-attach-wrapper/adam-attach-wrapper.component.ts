@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -13,31 +14,36 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
   templateUrl: './adam-attach-wrapper.component.html',
   styleUrls: ['./adam-attach-wrapper.component.scss']
 })
-export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
+export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
   @ViewChild(AdamBrowserComponent, { static: true }) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  fullScreenAdamBrowser = false;
+
+  fullScreenAdamBrowser: boolean;
   url: string;
+  dropzoneDisabled: boolean;
 
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
-
-  get dropzoneDisabled() {
-    return this.config.dropzoneDisabled === true;
-  }
+  private subscription = new Subscription();
 
   constructor(private dnnContext: DnnContext) { }
 
   ngOnInit() {
     this.fullScreenAdamBrowser = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
     this.config.adam = this.adamRef;
-    const contentType = this.config.entity.header.ContentTypeName; // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
-    const entityGuid = this.config.entity.header.Guid; // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
-    const field = this.config.field.name; // const field = 'HyperLinkStaticName';
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
+    this.subscription.add(this.config.dropzoneDisabled$.subscribe(disabled => {
+      this.dropzoneDisabled = disabled;
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   /** triger click on clickable element for load open */

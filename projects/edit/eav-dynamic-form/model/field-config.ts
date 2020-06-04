@@ -13,7 +13,7 @@ export interface FieldConfigSet {
   form: FormConfig;
   adam?: AdamBrowserComponent;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
-  dropzoneDisabled?: boolean;
+  dropzoneDisabled$?: BehaviorSubject<boolean>;
   cache?: any;
   saveImage?: (image: File) => void;
 }
