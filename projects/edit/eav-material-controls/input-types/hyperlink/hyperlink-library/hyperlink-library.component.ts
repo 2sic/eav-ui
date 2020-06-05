@@ -40,7 +40,7 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.adamSubscription.unsubscribe();
+    this.adamSubscription?.unsubscribe();
   }
 
   private attachAdam(settings: FieldSettings) {
