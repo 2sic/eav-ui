@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { FormGroup, AbstractControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -39,17 +40,13 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 })
 export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-
-  // New Configuration
+  @Input() group: FormGroup;
   @Input() url: string;
-
-  // Basic functionality
-  @Input() disabled = false;
-  @Input() show = false;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
   // Configuration
+  show = false;
   adamModeConfig = { usePortalRoot: false };
   allowAssetsInRoot: boolean;
   autoLoad = false;
@@ -69,9 +66,10 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   allowedFileTypes: string[] = [];
   clipboardPasteImageFunctionalityDisabled = true;
   items: AdamItem[];
-  items$: Observable<AdamItem[]>; // = this.svc.liveList();
+  items$: Observable<AdamItem[]>;
   oldConfig: any;
   svc: any;
+  control: AbstractControl;
 
   private subscription = new Subscription();
   private hasChild: boolean;
@@ -88,6 +86,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.control = this.group.controls[this.config.field.name];
     this.refreshOnChildClosed();
     this.subFolder = this.config.field.settings.Paths || '';
     // fixed leading "/"
@@ -127,14 +126,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       ...currDzConfig,
       url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder),
     });
-    this.showImagesOnly = this.showImagesOnly || false; // spm 2019.02.28. test this line against old angular
+    this.showImagesOnly = this.showImagesOnly || false;
     this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
     this.showFolders = !!this.folderDepth;
     // if true, the initial folder can have files, otherwise only subfolders
-    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true; // spm 2019.02.28. test this line against old angular
+    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true;
     this.metadataContentTypes = this.metadataContentTypes || '';
 
-    this.enableSelect = (this.enableSelect === false) ? false : true; // must do it like this, $scope.enableSelect || true will not work
+    this.enableSelect = (this.enableSelect === false) ? false : true;
 
     // if feature clipboardPasteImageFunctionality enabled
     const featureEnabled = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
@@ -142,7 +141,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   addFolder() {
-    if (this.disabled) { return; }
+    if (this.control.disabled) { return; }
 
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
     if (folderName) { this.svc.addFolder(folderName).subscribe(); }
@@ -157,7 +156,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   del(item: AdamItem) {
-    if (this.disabled) { return; }
+    if (this.control.disabled) { return; }
 
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
     if (ok) { this.svc.deleteItem(item).subscribe(); }
@@ -209,7 +208,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     // -- not implemented yet
 
     // check if the type "image" or "document" has a special registration
-    // -- not implemneted yet
+    // -- not implemented yet
 
     // nothing found so far, go for the default with nothing as the prefix
     found = this.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
@@ -242,7 +241,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   openUploadClick = (event: Event) => this.openUpload.emit();
 
   rename(item: AdamItem) {
-    if (this.disabled) { return; }
+    if (this.control.disabled) { return; }
 
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
     if (newName) { this.svc.rename(item, newName).subscribe(); }
@@ -251,7 +250,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   refresh = () => this.svc.liveListReload();
 
   select(fileItem: AdamItem) {
-    if (this.disabled || !this.enableSelect) { return; }
+    if (this.control.disabled || !this.enableSelect) { return; }
     this.updateCallback(fileItem);
   }
 

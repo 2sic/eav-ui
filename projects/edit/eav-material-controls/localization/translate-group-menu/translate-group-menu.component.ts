@@ -2,10 +2,9 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 import isEqual from 'lodash-es/isEqual';
 
-import { EavValue, EavAttributes, EavValues, EavDimensions, InputType, Item, ContentType } from '../../../shared/models/eav';
+import { EavValue, EavAttributes, EavValues, EavDimensions, Item, ContentType } from '../../../shared/models/eav';
 import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
@@ -257,7 +256,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   private refreshControlConfig(attributeKey: string) {
     if (this.fieldConfig.isParentGroup) { return; }
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
-    this.setAdamDisable();
     this.readTranslationState(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
     this.setInfoMessage(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
   }
@@ -456,13 +454,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
         }
       })
     );
-  }
-
-  /** Change adam disabled state */
-  private setAdamDisable() {
-    if (this.config.adam) {
-      this.config.adam.disabled = this.group.controls[this.config.field.name].disabled;
-    }
   }
 
   /** Set info message */

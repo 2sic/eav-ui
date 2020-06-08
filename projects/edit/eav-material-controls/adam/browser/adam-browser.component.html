@@ -1,10 +1,9 @@
 <!-- TODO: this dropzone class only because css - need to change-->
-<div class="dropzone" *ngIf="!config.field.disabled" [@adamShowAnimate]="show ? 'open' : 'closed'">
+<div class="dropzone" [@adamShowAnimate]="show ? 'open' : 'closed'">
   <div *ngIf="show" ngClass="{{'adam-scope-' + (adamModeConfig.usePortalRoot ? 'site' : 'field')}}">
 
     <!-- info for dropping stuff here -->
-    <!--  [disabled]="disabled"-->
-    <div *ngIf="!disabled" class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
+    <div *ngIf="!control.disabled" class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
       matTooltip="{{'Fields.Hyperlink.AdamFileManager.UploadTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
         <mat-icon>cloud_upload</mat-icon>
@@ -16,8 +15,8 @@
     </div>
 
     <!-- info for paste image from clipboard here -->
-    <div #pasteDiv *ngIf="!clipboardPasteImageFunctionalityDisabled && allowEdit()" appPasteClipboardImage
-      [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
+    <div #pasteDiv *ngIf="!control.disabled && !clipboardPasteImageFunctionalityDisabled && allowEdit()"
+      appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
       matTooltip="{{'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
         <mat-icon>filter</mat-icon>
@@ -29,7 +28,7 @@
     </div>
 
     <!-- add folder - not always shown -->
-    <div *ngIf="!disabled && allowCreateFolder()" class="dz-preview" (click)="addFolder()"
+    <div *ngIf="!control.disabled && allowCreateFolder()" class="dz-preview" (click)="addFolder()"
       matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate }}">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
         <mat-icon svgIcon="folder-plus"></mat-icon>
@@ -39,7 +38,6 @@
     </div>
 
     <!-- browse up a folder - not always shown -->
-    <!-- <div  ng-disabled="vm.disabled"> -->
     <ng-container *ngIf="showFolders">
       <div *ngIf="folders.length > 0" class="dz-preview" (click)="goUp()"
         matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.BackFolderTip' | translate }}">
@@ -65,12 +63,12 @@
         <div class="dz-details file-type-{{item.Type}}">
           <mat-icon *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button"
             matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Delete' | translate}}" [ngClass]="{
-            'adam-button-disabled': disabled
+            'adam-button-disabled': control.disabled
           }">clear
           </mat-icon>
           <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button"
             matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Edit' | translate}}" [ngClass]="{
-            'adam-button-disabled': disabled
+            'adam-button-disabled': control.disabled
           }">edit
           </mat-icon>
           <div class="adam-full-name-area">
@@ -85,7 +83,6 @@
     </ng-container>
 
     <!-- files -->
-    <!-- <div  ng-disabled="vm.disabled || !vm.enableSelect"> -->
     <div class="dz-preview"
       *ngFor="let item of (items$ | async | filter: 'IsFolder' : false | filter: (showImagesOnly ? 'Type' : undefined) : (showImagesOnly ? 'image' : undefined) | fileEndingFilter: allowedFileTypes | orderby : 'Name')"
       (click)="select(item)" [ngClass]="{
@@ -104,12 +101,12 @@
       <div class="dz-details file-type-{{item.Type}}">
         <mat-icon *ngIf="allowEdit()" (click)="del(item)" appClickStopPropagation class="adam-delete-button"
           matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Delete' | translate}}" [ngClass]="{
-          'adam-button-disabled': disabled
+          'adam-button-disabled': control.disabled
         }">clear
         </mat-icon>
         <mat-icon *ngIf="allowEdit()" (click)="rename(item)" appClickStopPropagation class="adam-rename-button"
           matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Edit' | translate}}" [ngClass]="{
-          'adam-button-disabled': disabled
+          'adam-button-disabled': control.disabled
         }">edit
         </mat-icon>
         <div class="adam-full-name-area">

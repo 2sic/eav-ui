@@ -1,32 +1,26 @@
 
-import { throwError, Observable } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { SvcCreatorService } from '../../shared/services/svc-creator.service';
 import { AdamItem } from '../../shared/models/adam/adam-item';
-import { EavService } from '../../shared/services/eav.service';
-import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { SanitizeService } from './sanitize.service';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
 export class AdamService {
-  private eavConfig: EavConfiguration;
-
   constructor(
-    private httpClient: HttpClient,
+    private http: HttpClient,
     private svcCreatorService: SvcCreatorService,
-    private eavService: EavService,
-    private sanitizeSvc: SanitizeService
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+    private sanitizeSvc: SanitizeService,
+    private context: Context,
+  ) { }
 
   createSvc(subfolder: string, serviceConfig: any, url: string) {
     const folders: AdamItem[] = [];
-    const adamRoot = this.eavConfig.approot.substr(0, this.eavConfig.approot.indexOf('2sxc'));
+    const adamRoot = this.context.appRoot.substring(0, this.context.appRoot.indexOf('2sxc'));
     const startingSubfolder = subfolder;
     let allowEdit: boolean;
 
@@ -56,14 +50,14 @@ export class AdamService {
 
     // create folder
     const addFolder = (newfolder: string) => {
-      return this.httpClient.post(url + '/folder',
+      return this.http.post(url + '/folder',
         {},
         {
           params: {
             subfolder,
             newFolder: this.sanitizeSvc.sanitizeName(newfolder),
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: this.eavConfig.appId
+            appId: this.context.appId.toString(),
           }
         })
         .pipe(
@@ -71,8 +65,6 @@ export class AdamService {
             reload();
             return data;
           }),
-          tap(data => angularConsoleLog('addFolder: ', data)),
-          catchError(error => this.handleError(error))
         );
     };
 
@@ -85,7 +77,7 @@ export class AdamService {
       }
       subPath = subPath.replace('//', '/');
       if (subPath[subPath.length - 1] === '/') {
-        subPath = subPath.substr(0, subPath.length - 1);
+        subPath = subPath.substring(0, subPath.length - 1);
         subPath = (!!startingSubfolder) ? startingSubfolder + '/' + subPath : subPath;
       }
 
@@ -112,13 +104,12 @@ export class AdamService {
     };
 
     const getAll = (): Observable<AdamItem[]> => {
-      angularConsoleLog('GET ALL subfolder:', subfolder);
-      return this.httpClient.get(url + '/items',
+      return this.http.get(url + '/items',
         {
           params: {
             subfolder,
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: this.eavConfig.appId
+            appId: this.context.appId.toString(),
           }
         })
         .pipe(
@@ -130,22 +121,20 @@ export class AdamService {
             checkAllowEdit(data);
             return data;
           }),
-          tap(data => angularConsoleLog('items subfolder: ', subfolder)),
-          catchError(error => this.handleError(error))
         );
     };
 
     // delete, then reload
     // IF verb DELETE fails, so I'm using get for now
     const deleteItem = (item: AdamItem) => {
-      return this.httpClient.get(url + '/delete',
+      return this.http.get(url + '/delete',
         {
           params: {
             subfolder,
             isFolder: item.IsFolder.toString(),
             id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,
-            appId: this.eavConfig.appId,
+            appId: this.context.appId.toString(),
           }
         })
         .pipe(
@@ -153,13 +142,12 @@ export class AdamService {
             reload();
             return data;
           }),
-          catchError(error => this.handleError(error))
         );
     };
 
     // rename, then reload
     const rename = (item: AdamItem, newName: string) => {
-      return this.httpClient.get(url + '/rename',
+      return this.http.get(url + '/rename',
         {
           params: {
             subfolder,
@@ -167,7 +155,7 @@ export class AdamService {
             id: item.Id.toString(),
             usePortalRoot: serviceConfig.usePortalRoot,
             newName: this.sanitizeSvc.sanitizeName(newName),
-            appId: this.eavConfig.appId,
+            appId: this.context.appId.toString(),
           }
         })
         .pipe(
@@ -175,7 +163,6 @@ export class AdamService {
             reload();
             return data;
           }),
-          catchError(error => this.handleError(error))
         );
     };
 
@@ -187,7 +174,7 @@ export class AdamService {
         : url + '?subfolder=' + targetSubfolder;
       urlUpl += (urlUpl.indexOf('?') === -1 ? '?' : '&')
         + 'usePortalRoot=' + serviceConfig.usePortalRoot
-        + '&appId=' + this.eavConfig.appId;
+        + '&appId=' + this.context.appId.toString();
       return urlUpl;
     };
 
@@ -213,11 +200,5 @@ export class AdamService {
     const reload = () => svc.liveListReload();
 
     return svc;
-  }
-
-  private handleError(error: Error) {
-    const errMsg = error.message || 'Server error';
-    console.error(errMsg);
-    return throwError(errMsg);
   }
 }
