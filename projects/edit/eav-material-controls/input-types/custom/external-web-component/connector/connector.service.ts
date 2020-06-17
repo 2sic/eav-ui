@@ -6,24 +6,22 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { CustomElementProperties } from './models/custom-element-properties.model';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EavConfiguration } from '../../../../../shared/models/eav-configuration';
-import { AdamConfig } from '../../../../../shared/models/adam/adam-config';
 import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
-import { ExperimentalProps, InputTypeName, AdamSetValue, AdamAfterUpload } from '../../../../../../edit-types';
+import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
 import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export class ConnectorService {
   private subscriptions: Subscription[] = [];
   private subjects: BehaviorSubject<any>[] = [];
-  private customEl: HTMLElement & CustomElementProperties<any>;
+  private customEl: EavCustomInputField<any>;
   private eavConfig: EavConfiguration;
   private value$: BehaviorSubject<any>;
   private previousValue: any;
@@ -45,68 +43,6 @@ export class ConnectorService {
     this.eavConfig = eavService.getEavConfiguration();
   }
 
-  // spm 2019.04.08. move to experimentalProps
-  private openDnnDialog(oldValue: any, params: any, callback: any) {
-    this.dnnBridgeService.open(oldValue, params, callback, this.dialog);
-  }
-
-  // spm 2019.04.08. move to experimentalProps
-  private getUrlOfIdDnnDialog(value: string, urlCallback: any) {
-    // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
-      value,
-      this.config.entity.header.ContentTypeName,
-      this.config.entity.header.Guid,
-      this.config.field.name
-    );
-
-    if (urlFromId$) {
-      urlFromId$.subscribe((data) => {
-        if (data) { urlCallback(data); }
-      });
-    } else {
-      urlCallback(value);
-    }
-  }
-
-  private attachAdam(adamSetValue: AdamSetValue, adamAfterUpload: AdamAfterUpload) {
-    // spm check if adam is enabled
-    if (!this.config.adam) { return; }
-
-    if (!adamSetValue || !adamAfterUpload) {
-      // callbacks - functions called from adam, old wysiwyg
-      this.config.adam.updateCallback = (value: any) =>
-        this.customEl.adamSetValueCallback
-          ? this.customEl.adamSetValueCallback = value
-          : alert('adam attached but adamSetValue method not exist');
-
-      this.config.adam.afterUploadCallback = (value: any) =>
-        this.customEl.adamAfterUploadCallback
-          ? this.customEl.adamAfterUploadCallback = value
-          : alert('adam attached but adamAfterUpload method not exist');
-    } else {
-      // new wysiwyg
-      this.config.adam.updateCallback = (value: any) => { adamSetValue(value); };
-      this.config.adam.afterUploadCallback = (value: any) => { adamAfterUpload(value); };
-    }
-    // return value from form
-    this.config.adam.getValueCallback = () => this.group.controls[this.config.field.name].value;
-
-    return {
-      toggleAdam: (value1: any, value2: any) => {
-        this._ngZone.run(() => this.config.adam.toggle(value1));
-      },
-      setAdamConfig: (adamConfig: AdamConfig) => {
-        this._ngZone.run(() => this.config.adam.setConfig(adamConfig));
-      },
-      adamModeImage: () => {
-        this._ngZone.run(() => (this.config && this.config.adam)
-          ? this.config.adam.showImagesOnly
-          : null);
-      },
-    };
-  }
-
   public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {
     this.customElContainer = customElContainer;
     this.config = config;
@@ -126,7 +62,7 @@ export class ConnectorService {
         this._ngZone.run(() => this.update(value));
       },
       forceConnectorSave$: this.eavService.forceConnectorSave$$,
-      expand: (expand, componentTag?: string) => {
+      expand: (expand, componentTag) => {
         this._ngZone.run(() => {
           this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId, componentTag);
         });
@@ -163,7 +99,6 @@ export class ConnectorService {
       setFocused: (focused) => {
         this._ngZone.run(() => { this.config.field.focused = focused; });
       },
-      attachAdam: (adamSetValue, adamAfterUpload) => this.attachAdam(adamSetValue, adamAfterUpload),
       openDnnDialog: (oldValue, params, callback) => {
         this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback));
       },
@@ -171,18 +106,38 @@ export class ConnectorService {
         this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
       },
       expandedField$: this.expandableFieldService.getObservable(),
+      dropzoneConfig$: this.config.dropzoneConfig$,
+      adam: this.config.adam,
     };
-    // optional props
-    if (this.config.dropzoneConfig$) {
-      experimentalProps.dropzoneConfig$ = this.config.dropzoneConfig$;
-    }
 
     return experimentalProps;
   }
 
-  /**
-   * This is subscribe for all setforms - even if is not changing value.
-   */
+  private openDnnDialog(oldValue: any, params: any, callback: any) {
+    this.dnnBridgeService.open(oldValue, params, callback, this.dialog);
+  }
+
+  private getUrlOfIdDnnDialog(value: string, urlCallback: (value: string) => any) {
+    if (!value) { return; }
+
+    // handle short-ID links like file:17
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
+
+    if (!urlFromId$) {
+      urlCallback(value);
+      return;
+    }
+
+    urlFromId$.subscribe(data => {
+      if (!data) { return; }
+      urlCallback(data);
+    });
+  }
+
+  /** This is subscribe for all setforms - even if is not changing value. */
   private subscribeFormChange() {
     this.subscriptions.push(
       this.eavService.formSetValueChange$.subscribe(formSet => {

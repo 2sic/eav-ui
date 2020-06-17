@@ -121,24 +121,24 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
 
   private setLink(value: string) {
     if (!value) { return; }
+
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
-      value,
-      this.config.entity.header.ContentTypeName,
-      this.config.entity.header.Guid,
-      this.config.field.name
-    );
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
 
     if (!urlFromId$) {
       this.link = value;
       this.setValues();
-    } else {
-      urlFromId$.subscribe(data => {
-        if (!data) { return; }
-        this.link = data;
-        this.setValues();
-      });
+      return;
     }
+
+    urlFromId$.subscribe(data => {
+      if (!data) { return; }
+      this.link = data;
+      this.setValues();
+    });
   }
 
   private setValues() {

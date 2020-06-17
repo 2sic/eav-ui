@@ -43,28 +43,29 @@
     <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div *ngIf="config.adam" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px"
         class="c-ew__preview-content">
-        <!-- folder list - not always shown -->
-        <ng-container *ngIf="config.adam && config.adam.showFolders">
-          <div fxLayout="row" fxLayoutAlign="start start"
-            *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : true | filter: 'Name' : '.' : false | filter: 'Name' : '2sxc' : false | filter: 'Name' : 'adam' : false | orderby : 'Name')">
-            <div class="adam-browse-background-icon">
-              <mat-icon svgIcon="folder"></mat-icon>
-              <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+        <ng-container *ngFor="let item of (config.adam.items$ | async); let i = index ; trackBy: trackByFn">
+          <ng-container *ngIf="i < 9">
+            <!-- folders -->
+            <div fxLayout="row" fxLayoutAlign="start start" *ngIf="item.IsFolder">
+              <div class="adam-browse-background-icon">
+                <mat-icon svgIcon="folder"></mat-icon>
+                <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+              </div>
             </div>
-          </div>
+            <!-- files -->
+            <div *ngIf="!item.IsFolder">
+              <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
+                <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
+                <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
+                <div class="adam-short-label mat-caption">{{ item.Name }}</div>
+              </div>
+              <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
+                <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name"
+                  [src]="item.FullPath + '?w=78&h=78&mode=crop'">
+              </div>
+            </div>
+          </ng-container>
         </ng-container>
-        <!-- file list -->
-        <div
-          *ngFor="let item of (config.adam.items$ | async | filter: 'IsFolder' : false | fileEndingFilter: config.adam.allowedFileTypes | orderby : 'Name')">
-          <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
-            <mat-icon *ngIf="isKnownType(item)">{{icon(item)}}</mat-icon>
-            <mat-icon *ngIf="!isKnownType(item)" svgIcon="{{icon(item)}}"></mat-icon>
-            <div class="adam-short-label mat-caption">{{ item.Name }}</div>
-          </div>
-          <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
-            <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.FullPath + '?w=78&h=78&mode=crop'">
-          </div>
-        </div>
       </div>
     </div>
   </div>

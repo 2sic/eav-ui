@@ -81,10 +81,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', (_event: any) => {
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      TinyMceButtons.registerAll(this, editor);
-      // tslint:disable: curly
+      TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
+      // tslint:disable:curly
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
-      if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
@@ -121,8 +121,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
-      if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       if (this.pasteImageFromClipboardEnabled) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone

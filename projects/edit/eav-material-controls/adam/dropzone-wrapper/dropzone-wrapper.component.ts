@@ -63,9 +63,8 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   ngAfterViewInit() {
-    const currDzConfig = this.config.dropzoneConfig$.value;
     this.config.dropzoneConfig$.next({
-      ...currDzConfig,
+      ...this.config.dropzoneConfig$.value,
       previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
       clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
     });
@@ -76,19 +75,19 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
     };
   }
 
-  public onUploadError(args: any): void {
+  onUploadError(args: any) {
     angularConsoleLog('onUploadError:', args);
     // Reset dropzone
     this.dropzoneRef.reset();
   }
 
-  public onUploadSuccess(args: any): void {
+  onUploadSuccess(args: any) {
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
-        this.config.adam.svc.addFullPath(response); // calculate additional infos
-        this.config.adam.afterUploadCallback(response);
-        this.config.adam.refresh(); // Refresh Adam
+        this.config.adam.addFullPath(response);
+        this.config.adam.onItemUpload(response);
+        this.config.adam.refresh();
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }

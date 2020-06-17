@@ -1,27 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
+import { filter, map, startWith, distinctUntilChanged } from 'rxjs/operators';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { AdamService } from '../adam.service';
-import { AdamItem } from '../../../shared/models/adam/adam-item';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
-import { AdamConfig } from '../../../shared/models/adam/adam-config';
+import { AdamConfigInstance } from './adam-browser.models';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { EavService } from '../../../shared/services/eav.service';
+import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { AdamItem, AdamConfig } from '../../../../edit-types';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'adam-browser',
   templateUrl: './adam-browser.component.html',
   styleUrls: ['./adam-browser.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('adamShowAnimate', [
       state('closed', style({
@@ -41,39 +44,19 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  @Input() url: string;
 
   @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
 
-  // Configuration
-  show = false;
-  adamModeConfig = { usePortalRoot: false };
-  allowAssetsInRoot: boolean;
-  autoLoad = false;
-  enableSelect = true;
-  fileFilter = '';
-  folderDepth = 0;
-  metadataContentTypes: string;
-  showImagesOnly: boolean;
-  subFolder = '';
-  showFolders: boolean;
+  value$: Observable<string>;
+  disabled$: Observable<boolean>;
+  expanded$: Observable<boolean>;
+  adamConfig$ = new BehaviorSubject<AdamConfig>(null);
+  pasteClipboardImage: boolean;
 
-  // callback is set in attachAdam
-  updateCallback: (value: any) => void;
-  afterUploadCallback: (value: any) => void;
-  getValueCallback: () => any;
-
-  allowedFileTypes: string[] = [];
-  clipboardPasteImageFunctionalityDisabled = true;
-  items: AdamItem[];
-  items$: Observable<AdamItem[]>;
-  oldConfig: any;
-  svc: any;
-  control: AbstractControl;
-
+  private control: AbstractControl;
+  private url: string;
   private subscription = new Subscription();
   private hasChild: boolean;
-  get folders() { return this.svc ? this.svc.folders : []; }
 
   constructor(
     private adamService: AdamService,
@@ -81,6 +64,10 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private featureService: FeatureService,
     private router: Router,
     private route: ActivatedRoute,
+    private dnnContext: DnnContext,
+    private eavService: EavService,
+    private expandableFieldService: ExpandableFieldService,
+    private zone: NgZone,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild;
   }
@@ -88,78 +75,81 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
     this.refreshOnChildClosed();
-    this.subFolder = this.config.field.settings.Paths || '';
-    // fixed leading "/"
-    if (this.subFolder.startsWith('/') || this.subFolder.startsWith('\\')) {
-      this.subFolder = this.subFolder.slice(1);
-    }
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
-      url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder),
-    });
-    this.initConfig();
-    this.svc = this.adamService.createSvc(this.subFolder, this.adamModeConfig, this.url);
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
+    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
 
-    angularConsoleLog('adam ngOnInit url:', this.url);
-    this.setAllowedFileTypes();
-
-    // TODO: when to load folders??? Before was toggle!!!
-    this.items$ = this.svc.liveListCache$;
-    // loading items on adam load might not be required because they are loaded when field is toggled, file uploaded...
-    // this.loadFileList();
-    // TODO: when set folders??? Before was toggle!!!
-    // this.folders = this.svc.folders;
-
-    if (this.autoLoad) { this.toggle(null); }
+    // run inside zone to detect changes when called from custom components
+    this.config.adam = {
+      items$: new BehaviorSubject([]),
+      toggle: (usePortalRoot, showImagesOnly) => {
+        this.zone.run(() => {
+          this.toggle(usePortalRoot, showImagesOnly);
+        });
+      },
+      setConfig: (config) => {
+        this.zone.run(() => {
+          this.setConfig(config);
+        });
+      },
+      getConfig: () => this.adamConfig$.value,
+      onItemClick: () => { return; },
+      onItemUpload: () => { return; },
+      refresh: () => {
+        this.zone.run(() => {
+          this.fetchItems();
+        });
+      },
+      addFullPath: (item) => { this.adamService.addFullPath(item); }
+    };
+    this.subscription.add(this.adamConfig$.subscribe(adamConfig => {
+      this.fetchItems();
+    }));
+    this.expanded$ = this.expandableFieldService.getObservable().pipe(map(expandedFieldId => expandedFieldId === this.config.field.index));
+    this.value$ = this.eavService.formSetValueChange$.pipe(
+      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+      map(formSet => this.control.value),
+      startWith(this.control.value),
+      distinctUntilChanged(),
+    );
+    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
+        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
+      ),
+      map(formSet => this.control.disabled),
+      startWith(this.control.disabled),
+      distinctUntilChanged(),
+    );
   }
 
   ngOnDestroy() {
+    this.adamConfig$.complete();
+    this.config.adam.items$.complete();
     this.subscription.unsubscribe();
-    this.subscription = null;
-  }
-
-  initConfig() {
-    this.subFolder = this.subFolder || '';
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
-      url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder),
-    });
-    this.showImagesOnly = this.showImagesOnly || false;
-    this.folderDepth = (typeof this.folderDepth !== 'undefined' && this.folderDepth !== null) ? this.folderDepth : 2;
-    this.showFolders = !!this.folderDepth;
-    // if true, the initial folder can have files, otherwise only subfolders
-    this.allowAssetsInRoot = this.allowAssetsInRoot === false ? false : true;
-    this.metadataContentTypes = this.metadataContentTypes || '';
-
-    this.enableSelect = (this.enableSelect === false) ? false : true;
-
-    // if feature clipboardPasteImageFunctionality enabled
-    const featureEnabled = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
-    this.clipboardPasteImageFunctionalityDisabled = (featureEnabled === false);
   }
 
   addFolder() {
     if (this.control.disabled) { return; }
 
     const folderName = window.prompt('Please enter a folder name'); // todo i18n
-    if (folderName) { this.svc.addFolder(folderName).subscribe(); }
-  }
+    if (!folderName) { return; }
 
-  allowEdit(): boolean {
-    return this.svc.getAllowEdit();
-  }
-
-  allowCreateFolder(): boolean {
-    return (this.allowEdit()) && (this.svc.folders.length < this.folderDepth);
+    this.adamService.addFolder(folderName, this.url, this.adamConfig$.value).subscribe(res => {
+      this.fetchItems();
+    });
   }
 
   del(item: AdamItem) {
     if (this.control.disabled) { return; }
 
     const ok = window.confirm('Are you sure you want to delete this item?'); // todo i18n
-    if (ok) { this.svc.deleteItem(item).subscribe(); }
+    if (!ok) { return; }
+
+    this.adamService.deleteItem(item, this.url, this.adamConfig$.value).subscribe(res => {
+      this.fetchItems();
+    });
   }
 
   addItemMetadata(adamItem: AdamItem) {
@@ -182,13 +172,10 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
   }
 
-  goUp = () => {
-    this.subFolder = this.svc.goUp();
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
-      url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder)
-    });
+  goUp() {
+    let subfolder = this.adamConfig$.value.subfolder;
+    subfolder = subfolder.includes('/') ? subfolder.slice(0, subfolder.lastIndexOf('/')) : '';
+    this.config.adam.setConfig({ subfolder });
   }
 
   getMetadataType(item: AdamItem) {
@@ -196,7 +183,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
     // check if it's a folder and if this has a special registration
     if (item.Type === 'folder') {
-      found = this.metadataContentTypes.match(/^(folder)(:)([^\n]*)/im);
+      found = this.adamConfig$.value.metadataContentTypes.match(/^(folder)(:)([^\n]*)/im);
       if (found) {
         return found[3];
       } else {
@@ -211,23 +198,24 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     // -- not implemented yet
 
     // nothing found so far, go for the default with nothing as the prefix
-    found = this.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
+    found = this.adamConfig$.value.metadataContentTypes.match(/^([^:\n]*)(\n|$)/im);
     if (found) { return found[1]; }
 
     // this is if we don't find anything
     return null;
   }
 
-  //#region Folder Navigation
-  goIntoFolder(folder: AdamItem) {
-    const subFolder = this.svc.goIntoFolder(folder);
-    // this.refresh();
-    this.subFolder = subFolder;
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
-      url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder)
-    });
+  goIntoFolder(item: AdamItem) {
+    let subfolder = this.adamConfig$.value.subfolder;
+    subfolder = subfolder ? `${subfolder}/${item.Name}` : item.Name;
+    this.config.adam.setConfig({ subfolder });
+  }
+
+  maxFolderDepth(adamConfig: AdamConfig) {
+    if (adamConfig.usePortalRoot) { return false; }
+
+    const currentDepth = adamConfig.subfolder ? adamConfig.subfolder.split('/').length : 0;
+    return currentDepth >= adamConfig.folderDepth;
   }
 
   isKnownType(item: AdamItem) {
@@ -238,91 +226,111 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     return this.fileTypeService.getIconClass(item.Name);
   }
 
-  openUploadClick = (event: Event) => this.openUpload.emit();
+  openUploadClick(event: MouseEvent) {
+    this.openUpload.emit();
+  }
 
   rename(item: AdamItem) {
     if (this.control.disabled) { return; }
 
     const newName = window.prompt('Rename the file / folder to: ', item.Name);
-    if (newName) { this.svc.rename(item, newName).subscribe(); }
-  }
+    if (!newName) { return; }
 
-  refresh = () => this.svc.liveListReload();
-
-  select(fileItem: AdamItem) {
-    if (this.control.disabled || !this.enableSelect) { return; }
-    this.updateCallback(fileItem);
-  }
-
-  toggle(newConfig: { [key: string]: any }) {
-    // Reload configuration
-    this.initConfig();
-    let configChanged = false;
-
-    if (newConfig) {
-      // Detect changes in config, allows correct toggle behaviour
-      if (JSON.stringify(newConfig) !== this.oldConfig) { configChanged = true; }
-      this.oldConfig = JSON.stringify(newConfig);
-
-      this.showImagesOnly = newConfig.showImagesOnly;
-      this.adamModeConfig.usePortalRoot = !!(newConfig.usePortalRoot);
-      const currDzConfig = this.config.dropzoneConfig$.value;
-      this.config.dropzoneConfig$.next({
-        ...currDzConfig,
-        url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'usePortalRoot', this.adamModeConfig.usePortalRoot.toString()),
-      });
-    }
-
-    this.show = configChanged || !this.show;
-
-    if (!this.show) {
-      this.adamModeConfig.usePortalRoot = false;
-      const currDzConfig = this.config.dropzoneConfig$.value;
-      this.config.dropzoneConfig$.next({
-        ...currDzConfig,
-        url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'usePortalRoot', this.adamModeConfig.usePortalRoot.toString()),
-      });
-    }
-
-    // Override configuration in portal mode
-    if (this.adamModeConfig.usePortalRoot) {
-      this.showFolders = true;
-      this.folderDepth = 99;
-    }
-
-    if (this.show) { this.refresh(); }
-  }
-
-  /** Set configuration (called from input type) */
-  setConfig(adamConfig: AdamConfig) {
-    this.allowAssetsInRoot = adamConfig.allowAssetsInRoot;
-    this.autoLoad = adamConfig.autoLoad;
-    this.enableSelect = adamConfig.enableSelect;
-    this.fileFilter = adamConfig.fileFilter;
-    this.folderDepth = adamConfig.folderDepth;
-    this.metadataContentTypes = adamConfig.metadataContentTypes;
-    this.showImagesOnly = adamConfig.showImagesOnly;
-    this.subFolder = adamConfig.subFolder;
-
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
-      url: UrlHelper.replaceUrlParam(currDzConfig.url as string, 'subfolder', this.subFolder),
+    this.adamService.rename(item, newName, this.url, this.adamConfig$.value).subscribe(res => {
+      this.fetchItems();
     });
-
-    // Reload configuration
-    this.initConfig();
-    this.show = this.autoLoad;
-    if (this.show) { this.refresh(); }
   }
 
-  private setAllowedFileTypes() {
-    if (this.fileFilter) {
-      this.allowedFileTypes = this.fileFilter.split(',').map(i => i.replace('*', '').trim());
+  select(item: AdamItem) {
+    if (this.control.disabled || !this.adamConfig$.value.enableSelect) { return; }
+    this.config.adam.onItemClick(item);
+  }
+
+  private fetchItems() {
+    const adamConfig = this.adamConfig$.value;
+    if (adamConfig == null) { return; }
+    if (!adamConfig.autoLoad) { return; }
+    this.adamService.getAll(this.url, adamConfig).subscribe(items => {
+      const root = items.find(item => item.Name === '.');
+      const allowEdit = root.AllowEdit;
+      if (allowEdit !== adamConfig.allowEdit) {
+        this.config.adam.setConfig({ allowEdit });
+      }
+      if (adamConfig.showImagesOnly) {
+        items = items.filter(item => item.Type === 'image');
+      }
+      if (adamConfig.fileFilter) {
+        const allowedFileTypes = adamConfig.fileFilter.split(',').map(extension => extension.replace('*', '').trim());
+        items = items.filter(item => allowedFileTypes.includes(item.Name.match(/(?:\.([^.]+))?$/)[0]));
+      }
+      if (this.maxFolderDepth(adamConfig)) {
+        items = items.filter(item => !item.IsFolder);
+      }
+      items = items.filter(item => item.Name !== '.' && item.Name !== '2sxc' && item.Name !== 'adam');
+      items.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
+      items.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
+      this.config.adam.items$.next(items);
+    });
+  }
+
+  private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
+    const newConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
+    if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value)) {
+      newConfig.autoLoad = !newConfig.autoLoad;
+    } else if (!newConfig.autoLoad) {
+      newConfig.autoLoad = true;
+    }
+    this.config.adam.setConfig(newConfig);
+  }
+
+  trackByFn(index: number, item: AdamItem) {
+    return item.Id;
+  }
+
+  private setConfig(config: Partial<AdamConfig>) {
+    // set new values and use old ones where new value is not provided
+    const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance();
+    const newConfig = new AdamConfigInstance();
+    const newConfigKeys = Object.keys(newConfig);
+    for (const key of newConfigKeys) {
+      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+    }
+
+    // fixes
+    const fixBackSlashes = newConfig.rootSubfolder.includes('\\');
+    if (fixBackSlashes) {
+      newConfig.rootSubfolder = newConfig.rootSubfolder.replace(/\\/g, '/');
+    }
+    const fixStartingSlash = newConfig.rootSubfolder.startsWith('/');
+    if (fixStartingSlash) {
+      newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
+    }
+    const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
+    const fixDepth = !newConfig.usePortalRoot && currentDepth > newConfig.folderDepth;
+    if (fixDepth) {
+      let folders = newConfig.subfolder.split('/');
+      folders = folders.slice(0, newConfig.folderDepth);
+      newConfig.subfolder = folders.join('/');
+    }
+    const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
+    if (fixRoot) {
+      newConfig.subfolder = newConfig.rootSubfolder;
+    }
+    this.adamConfig$.next(newConfig);
+
+    // sync dropzone
+    const dzConfig = this.config.dropzoneConfig$.value;
+    const dzUrlParams = UrlHelper.getUrlParams(dzConfig.url as string);
+    const dzSubfolder = dzUrlParams.subfolder || '';
+    const dzUsePortalRoot = dzUrlParams.usePortalRoot;
+    const syncDropzone = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
+    if (syncDropzone) {
+      let newUrl = dzConfig.url as string;
+      newUrl = UrlHelper.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
+      newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
+      this.config.dropzoneConfig$.next({ ...dzConfig, url: newUrl });
     }
   }
-
-  private loadFileList = () => this.svc.liveListLoad();
 
   private refreshOnChildClosed() {
     this.subscription.add(
@@ -332,7 +340,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         if (!this.hasChild && hadChild) {
           const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
           if (expandedFieldId !== this.config.field.index.toString()) { return; }
-          this.refresh();
+          this.fetchItems();
         }
       })
     );

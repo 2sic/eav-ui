@@ -2,7 +2,7 @@
   <div class="adam-dialog-content">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <adam-browser (openUpload)="openUpload()" [url]="url" [config]="config" class="u-shadow-top" [ngClass]="{
+  <adam-browser (openUpload)="openUpload()" [config]="config" [group]="group" class="u-shadow-top" [ngClass]="{
       'adam-browser-container--short u-hide-scrollbar': !fullScreenAdamBrowser,
       'u-display-none': dropzoneDisabled
     }">

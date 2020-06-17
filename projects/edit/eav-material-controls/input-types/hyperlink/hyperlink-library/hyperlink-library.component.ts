@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/
 import { Subscription } from 'rxjs';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { CustomValidators } from '../../../validators/custom-validators';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { FieldSettings } from '../../../../../edit-types';
+import { AdamControl } from './hyperlink-library.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,18 +44,14 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   }
 
   private attachAdam(settings: FieldSettings) {
-    if (!this.config.adam) { return; }
-
-    this.config.adam.updateCallback = (fileItem: any) => { };
-    this.config.adam.afterUploadCallback = (fileItem: any) => { };
     this.config.adam.setConfig({
-      ...new AdamConfig(),
-      adamModeConfig: { usePortalRoot: false },
-      allowAssetsInRoot: settings.AllowAssetsInRoot === false ? false : true,
+      allowAssetsInRoot: settings.AllowAssetsInRoot,
       autoLoad: true,
       enableSelect: false,
+      rootSubfolder: settings.Paths,
+      fileFilter: settings.FileFilter,
       folderDepth: settings.FolderDepth || 0,
-      metadataContentTypes: settings.MetadataContentTypes || '',
+      metadataContentTypes: settings.MetadataContentTypes,
     });
   }
 
@@ -68,12 +64,12 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
     const validators = [
       ...this.config.field.validation,
-      CustomValidators.validateAdam(this.config.adam.items$),
+      CustomValidators.validateAdam(),
     ];
     this.control.setValidators(validators);
-    // onlySelf doesn't update form being valid for some reason
-    this.control.updateValueAndValidity(/*{ onlySelf: true }*/);
     this.adamSubscription = this.config.adam.items$.subscribe(items => {
+      (this.control as AdamControl).adamItems = items.length;
+      // onlySelf doesn't update form being valid for some reason
       this.control.updateValueAndValidity(/*{ onlySelf: true }*/);
     });
   }

@@ -3,15 +3,15 @@ import { BehaviorSubject } from 'rxjs';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
-import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
 import { FieldConfig, FieldSettings } from '../../../edit-types';
+import { Adam } from '../../../edit-types';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
   field: FieldConfigAngular;
   entity: ItemConfig;
   form: FormConfig;
-  adam?: AdamBrowserComponent;
+  adam?: Adam;
   dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
   dropzoneDisabled$?: BehaviorSubject<boolean>;
   cache?: any;

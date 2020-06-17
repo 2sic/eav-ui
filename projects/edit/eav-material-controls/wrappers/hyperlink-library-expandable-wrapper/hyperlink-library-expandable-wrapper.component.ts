@@ -6,7 +6,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { FileTypeService } from '../../../shared/services/file-type.service';
-import { AdamItem } from '../../../shared/models/adam/adam-item';
+import { AdamItem } from '../../../../edit-types';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -56,6 +56,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
+  trackByFn(index: number, item: AdamItem) {
+    return item.Id;
+  }
+
   isKnownType(item: AdamItem) {
     return this.fileTypeService.isKnownType(item.Name);
   }
@@ -68,6 +72,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
     angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
+
   closeDialog() {
     angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);

@@ -2,12 +2,13 @@ import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { Adam } from '../../../edit-types';
 // tslint:disable: curly
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any) {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any, adam: Adam) {
     const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
 
     if (!instSettings.enabled) return;
@@ -16,11 +17,11 @@ export class TinyMceButtons {
 
     loadCustomIcons(editor);
 
-    TinyMceButtons.linkFiles(editor, fieldStringWysiwyg);
+    TinyMceButtons.linkFiles(editor, adam);
 
     TinyMceButtons.linksGroups(editor, fieldStringWysiwyg);
 
-    TinyMceButtons.images(editor, fieldStringWysiwyg);
+    TinyMceButtons.images(editor, adam);
 
     TinyMceButtons.dropDownItalicAndMore(editor);
 
@@ -43,15 +44,14 @@ export class TinyMceButtons {
   }
 
   /** Group with adam-link, dnn-link */
-  // TODO: SPM this should be typed, and then it should be .adam.toggle
-  static linkFiles(editor: any, fieldStringWysiwyg: any) {
+  static linkFiles(editor: any, adam: Adam) {
     editor.ui.registry.addSplitButton('linkfiles', {
       icon: 'custom-file-pdf',
       tooltip: 'Link.AdamFile.Tooltip',
       presets: 'listpreview',
       columns: 3,
       onAction: (_: any) => {
-        fieldStringWysiwyg.toggleAdam(false);
+        adam.toggle(false, false);
       },
       onItemAction: (api: any, value: any) => {
         value(api);
@@ -63,14 +63,14 @@ export class TinyMceButtons {
             text: 'Link.AdamFile.Tooltip',
             tooltip: 'Link.AdamFile.Tooltip',
             icon: 'custom-file-pdf',
-            value: (api: any) => { fieldStringWysiwyg.toggleAdam(false); },
+            value: (api: any) => { adam.toggle(false, false); },
           },
           {
             type: 'choiceitem',
             text: 'Link.DnnFile.Tooltip',
             tooltip: 'Link.DnnFile.Tooltip',
             icon: 'custom-file-dnn',
-            value: (api: any) => { fieldStringWysiwyg.toggleAdam(false, true); },
+            value: (api: any) => { adam.toggle(true, false); },
           },
         ];
         callback(items);
@@ -125,7 +125,7 @@ export class TinyMceButtons {
   }
 
   /** Images menu */
-  static images(editor: any, fieldStringWysiwyg: any) {
+  static images(editor: any, adam: Adam) {
     const imageButton = editor.ui.registry.getAll().buttons.image;
     const alignleftButton = editor.ui.registry.getAll().buttons.alignleft;
     const aligncenterButton = editor.ui.registry.getAll().buttons.aligncenter;
@@ -137,7 +137,7 @@ export class TinyMceButtons {
       presets: 'listpreview',
       columns: 3,
       onAction: (_: any) => {
-        fieldStringWysiwyg.toggleAdam(true);
+        adam.toggle(false, true);
       },
       onItemAction: (api: any, value: any) => {
         value(api);
@@ -149,14 +149,14 @@ export class TinyMceButtons {
             type: 'choiceitem',
             text: 'Image.AdamImage.Tooltip',
             tooltip: 'Image.AdamImage.Tooltip',
-            value: (api: any) => { fieldStringWysiwyg.toggleAdam(true); },
+            value: (api: any) => { adam.toggle(false, true); },
           },
           {
             type: 'choiceitem',
             text: 'Image.DnnImage.Tooltip',
             tooltip: 'Image.DnnImage.Tooltip',
             icon: 'custom-image-dnn',
-            value: (api: any) => { fieldStringWysiwyg.toggleAdam(true, true); },
+            value: (api: any) => { adam.toggle(true, true); },
           },
           // note: all these use i18n from tinyMce standard
           {

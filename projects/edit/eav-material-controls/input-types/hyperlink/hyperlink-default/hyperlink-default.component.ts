@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subscription, Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AdamConfig } from '../../../../shared/models/adam/adam-config';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
@@ -13,8 +12,9 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { BaseComponent } from '../../base/base.component';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { AdamItem } from '../../../../shared/models/adam/adam-item';
+import { AdamItem } from '../../../../../edit-types';
 import { Preview } from './hyperlink-default.models';
+import { FieldSettings } from '../../../../../edit-types';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -48,22 +48,16 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   ngOnInit() {
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
-    this.subscription.add(
-      this.settings$.pipe(map(settings => settings.FileFilter || '')).subscribe(fileFilter => {
-        this.attachAdam(fileFilter);
-      })
-    );
-    this.subscription.add(
-      this.value$.subscribe(value => {
-        this.setLink(value);
-      })
-    );
-    this.subscription.add(
-      this.route.params.subscribe(params => {
-        const isOpen = this.config.field.index.toString() === params.expandedFieldId;
-        this.open$.next(isOpen);
-      })
-    );
+    this.subscription.add(this.settings$.subscribe(settings => {
+      this.attachAdam(settings);
+    }));
+    this.subscription.add(this.value$.subscribe(value => {
+      this.setLink(value);
+    }));
+    this.subscription.add(this.route.params.subscribe(params => {
+      const isOpen = this.config.field.index.toString() === params.expandedFieldId;
+      this.open$.next(isOpen);
+    }));
   }
 
   ngOnDestroy() {
@@ -96,12 +90,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     if (!value) { return; }
 
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
-      value,
-      this.config.entity.header.ContentTypeName,
-      this.config.entity.header.Guid,
-      this.config.field.name,
-    );
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
 
     if (!urlFromId$) {
       const preview: Preview = {
@@ -145,19 +137,16 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   // #region adam
-  toggleAdam(usePortalRoot?: boolean, showImagesOnly?: boolean) {
-    this.config.adam.toggle({ showImagesOnly, usePortalRoot });
+  toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
+    this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
 
-  private attachAdam(fileFilter: string) {
-    if (!this.config.adam) { return; }
-    this.config.adam.updateCallback = (item: AdamItem) => this.setValue(item);
-    this.config.adam.afterUploadCallback = (item: AdamItem) => this.setValue(item);
-    this.config.adam.getValueCallback = () => this.control.value;
+  private attachAdam(settings: FieldSettings) {
+    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
+    this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
     this.config.adam.setConfig({
-      ...new AdamConfig(),
-      adamModeConfig: { usePortalRoot: false },
-      fileFilter,
+      rootSubfolder: settings.Paths,
+      fileFilter: settings.FileFilter,
     });
   }
 

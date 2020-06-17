@@ -60,6 +60,22 @@ export class UrlHelper {
     }
   }
 
+  /** https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters/1099670#1099670 */
+  static getUrlParams(qs: string) {
+    qs = qs.split('+').join(' ');
+
+    const params: { [key: string]: string } = {};
+    let tokens;
+    const re = /[?&]?([^=]+)=([^&]*)/g;
+
+    // tslint:disable-next-line:no-conditional-assignment
+    while (tokens = re.exec(qs)) {
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+  }
+
   static replaceUrlParam(url: string, paramName: string, paramValue: string) {
     if (paramValue === null) { paramValue = ''; }
 

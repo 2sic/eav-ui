@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { AdamItem } from '../models/adam/adam-item';
+import { AdamItem } from '../../../edit-types';
 
 @Pipe({ name: 'fileEndingFilter' })
 export class FileEndingFilterPipe implements PipeTransform {
