@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy, NgZone } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -25,13 +25,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   @Input() group: FormGroup;
 
   dialogIsOpen = false;
-  private subscriptions: Subscription[] = [];
+  control: AbstractControl;
+  private subscription = new Subscription();
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
-  get value() { return this.group.controls[this.config.field.name].value; }
-  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   constructor(
@@ -41,13 +38,12 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-        this.dialogIsOpen = dialogShouldBeOpen;
-      }),
-    );
+    this.control = this.group.controls[this.config.field.name];
+    this.subscription.add(this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+      const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+      if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+      this.dialogIsOpen = dialogShouldBeOpen;
+    }));
   }
 
   ngAfterViewInit() {
@@ -69,6 +65,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   }
 
   expandDialog() {
+    if (this.config.field.disabled) { return; }
     angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
@@ -79,7 +76,7 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscription.unsubscribe();
     this.dropzoneDraggingHelper.detach();
   }
 }
