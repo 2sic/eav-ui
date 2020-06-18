@@ -1,6 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,7 +24,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { CollapsibleWrapperComponent } from './wrappers';
@@ -47,7 +49,7 @@ import { ValidationMessagesService } from './validators/validation-messages-serv
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
-import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
+import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
@@ -56,8 +58,6 @@ import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
