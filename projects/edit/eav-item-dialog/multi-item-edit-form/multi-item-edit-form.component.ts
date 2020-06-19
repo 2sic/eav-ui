@@ -133,7 +133,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   ngAfterViewChecked() {
     this.attachAllSaveFormObservables();
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges(); // 2020-06-19 SPM TODO: remove when form is stable. ATM a whole lot of stuff breaks without it
   }
 
   ngOnDestroy() {
