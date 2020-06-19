@@ -61,7 +61,7 @@
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let item of (config.adam.items$ | async); trackBy: trackByFn">
+      <ng-container *ngFor="let item of (items$ | async); trackBy: trackByFn">
         <!-- folders -->
         <ng-container *ngIf="item.IsFolder">
           <div class="dz-preview" (click)="goIntoFolder(item)">

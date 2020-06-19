@@ -17,6 +17,10 @@ export * from './src/FieldSettings';
 
 export * from './src/FormSet';
 
+export * from './src/Dropzone';
+
+export * from './src/DropzoneConfigExt';
+
 export * from './src/Adam';
 
 export * from './src/AdamItem';

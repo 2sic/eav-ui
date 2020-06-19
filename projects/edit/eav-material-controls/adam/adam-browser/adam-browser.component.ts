@@ -51,6 +51,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   disabled$: Observable<boolean>;
   expanded$: Observable<boolean>;
   adamConfig$ = new BehaviorSubject<AdamConfig>(null);
+  items$ = new BehaviorSubject<AdamItem[]>([]);
   pasteClipboardImage: boolean;
 
   private control: AbstractControl;
@@ -83,7 +84,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {
-      items$: new BehaviorSubject([]),
+      items$: this.items$.asObservable(),
       toggle: (usePortalRoot, showImagesOnly) => {
         this.zone.run(() => {
           this.toggle(usePortalRoot, showImagesOnly);
@@ -95,6 +96,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         });
       },
       getConfig: () => this.adamConfig$.value,
+      getConfig$: () => this.adamConfig$.asObservable(),
       onItemClick: () => { return; },
       onItemUpload: () => { return; },
       refresh: () => {
@@ -126,7 +128,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.adamConfig$.complete();
-    this.config.adam.items$.complete();
+    this.items$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -269,7 +271,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       items = items.filter(item => item.Name !== '.' && item.Name !== '2sxc' && item.Name !== 'adam');
       items.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
       items.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
-      this.config.adam.items$.next(items);
+      this.items$.next(items);
     });
   }
 
@@ -289,8 +291,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private setConfig(config: Partial<AdamConfig>) {
     // set new values and use old ones where new value is not provided
-    const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance();
-    const newConfig = new AdamConfigInstance();
+    const startDisabled = this.config.field.isExternal;
+    const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
+    const newConfig = new AdamConfigInstance(startDisabled);
     const newConfigKeys = Object.keys(newConfig);
     for (const key of newConfigKeys) {
       (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
@@ -319,7 +322,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.adamConfig$.next(newConfig);
 
     // sync dropzone
-    const dzConfig = this.config.dropzoneConfig$.value;
+    const dzConfig = this.config.dropzone.getConfig();
     const dzUrlParams = UrlHelper.getUrlParams(dzConfig.url as string);
     const dzSubfolder = dzUrlParams.subfolder || '';
     const dzUsePortalRoot = dzUrlParams.usePortalRoot;
@@ -328,7 +331,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       let newUrl = dzConfig.url as string;
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
-      this.config.dropzoneConfig$.next({ ...dzConfig, url: newUrl });
+      this.config.dropzone.setConfig({ url: newUrl });
     }
   }
 

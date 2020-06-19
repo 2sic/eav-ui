@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -12,7 +12,7 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
   templateUrl: './adam-attach-wrapper.component.html',
   styleUrls: ['./adam-attach-wrapper.component.scss']
 })
-export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
 
@@ -20,7 +20,7 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestr
   @Input() group: FormGroup;
 
   fullScreenAdamBrowser: boolean;
-  dropzoneDisabled: boolean;
+  adamDisabled$ = new BehaviorSubject(true);
 
   private subscription = new Subscription();
 
@@ -28,13 +28,18 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestr
 
   ngOnInit() {
     this.fullScreenAdamBrowser = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
-    this.subscription.add(this.config.dropzoneDisabled$.subscribe(disabled => {
-      this.dropzoneDisabled = disabled;
+  }
+
+  ngAfterViewInit() {
+    this.subscription.add(this.config.adam.getConfig$().subscribe(adamConfig => {
+      if (adamConfig == null) { return; }
+      this.adamDisabled$.next(adamConfig.disabled);
     }));
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.adamDisabled$.complete();
   }
 
   /** triger click on clickable element for load open */

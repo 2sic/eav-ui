@@ -89,7 +89,6 @@ export class ConnectorService {
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entity.entityGuid,
       allInputTypeNames,
-      enableDropzone: () => { this.config.dropzoneDisabled$.next(false); },
       updateField: (name, value) => {
         this._ngZone.run(() => this.updateField(name, value));
       },
@@ -106,7 +105,7 @@ export class ConnectorService {
         this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
       },
       expandedField$: this.expandableFieldService.getObservable(),
-      dropzoneConfig$: this.config.dropzoneConfig$,
+      dropzone: this.config.dropzone,
       adam: this.config.adam,
     };
 

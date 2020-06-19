@@ -13,6 +13,6 @@ export function attachAdam(editor: any, adam: Adam) {
   };
   adam.onItemUpload = adam.onItemClick;
   if (adam.getConfig() == null) {
-    adam.setConfig({});
+    adam.setConfig({ disabled: false });
   }
 }

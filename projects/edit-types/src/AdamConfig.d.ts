@@ -17,5 +17,6 @@ export interface AdamConfig {
   enableSelect: boolean,
   subfolder: string,
   allowEdit: boolean,
+  disabled: boolean,
   //#endregion
 }
