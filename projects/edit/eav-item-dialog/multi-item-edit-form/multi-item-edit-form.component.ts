@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, OnDestroy, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,7 +42,7 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
 })
-export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
+export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
   @ViewChild('slideable') slideableRef: ElementRef;
 
@@ -68,7 +68,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
   languages: Language[];
-  Object = Object;
   publishMode: 'branch' | 'show' | 'hide' = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions: VersioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
@@ -132,14 +131,8 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.hideHeaderSubscribe();
   }
 
-  ngAfterContentChecked() {
-    this.attachAllSaveFormObservables();
-    // need this to detectChange for this.formsAreValid after ViewChecked
-    this.changeDetectorRef.detectChanges();
-  }
-
   ngAfterViewChecked() {
-    // need this to detectChange for this.formsAreValid
+    this.attachAllSaveFormObservables();
     this.changeDetectorRef.detectChanges();
   }
 
