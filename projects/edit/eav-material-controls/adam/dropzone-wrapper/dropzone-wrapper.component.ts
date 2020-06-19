@@ -50,7 +50,6 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       const controlDisabled = combined[0];
       const dropzoneConfig = combined[1];
       const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-      console.error(`Field: ${this.config.field.name} is disabled ${controlDisabled || dropzoneDisabled}`);
       return controlDisabled || dropzoneDisabled;
     }));
 
