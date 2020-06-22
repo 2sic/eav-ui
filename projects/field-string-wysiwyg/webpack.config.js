@@ -73,6 +73,6 @@ const configuration = {
 };
 
 /* change source map generation based on production mode */
-setExternalSourceMaps(configuration, 'elements/field-string-wysiwyg/');
+setExternalSourceMaps(configuration, '/system/field-string-wysiwyg/');
 
 module.exports = configuration;

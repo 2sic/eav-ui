@@ -21,7 +21,7 @@ function setExternalSourceMaps(configuration, path) {
 
     const sourceMapDevToolPlugin = new webpack.SourceMapDevToolPlugin({
       // this is the url of our local sourcemap server
-      publicPath: 'https://sources.2sxc.org/' + pjson.version + '/ng-edit/' + path,
+      publicPath: 'https://sources.2sxc.org/' + pjson.version + path,
       filename: '[file].map',
     });
 
