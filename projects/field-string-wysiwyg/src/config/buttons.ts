@@ -330,6 +330,8 @@ export class TinyMceButtons {
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
   static headingsGroup(editor: any) {
+    // FIXME: replace all following access to getall().buttons with the next buttons;
+    // const buttons = editor.ui.registry.getAll().buttons;
     const blockquoteButton = editor.ui.registry.getAll().buttons.blockquote;
     editor.ui.registry.addSplitButton('hgroup', {
       ...editor.ui.registry.getAll().buttons.h4,
@@ -401,6 +403,8 @@ export class TinyMceButtons {
 
   /** Image alignment / size buttons in context menu */
   static imageContextMenu(editor: any, imgSizes: number[]) {
+    // FIXME: replace all following access to addButtons with the next addButtons;
+    // const reg = editor.ui.registry;
     editor.ui.registry.addButton('alignimgleft', {
       icon: 'align-left',
       tooltip: 'Align left',
