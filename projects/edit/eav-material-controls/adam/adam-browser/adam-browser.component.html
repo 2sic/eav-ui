@@ -74,7 +74,7 @@
               <mat-icon svgIcon="folder"></mat-icon>
               <div class="short-label">{{ item.Name }}</div>
             </div>
-            <div class="dz-details file-type-{{item.Type}}">
+            <div class="dz-details file-type-{{ item.Type }}">
               <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
                 class="adam-delete-button" [matTooltip]="'Fields.Hyperlink.AdamFileManager.Delete' | translate"
                 [ngClass]="{
@@ -87,7 +87,7 @@
               }">edit
               </mat-icon>
               <div class="adam-full-name-area">
-                <div class="adam-full-name" appClickStopPropagation title="{{ item.Name }}">{{ item.Name }}</div>
+                <div class="adam-full-name" [title]="item.Name">{{ item.Name }}</div>
               </div>
             </div>
             <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
@@ -127,7 +127,7 @@
               }">edit
               </mat-icon>
               <div class="adam-full-name-area">
-                <div class="adam-full-name" appClickStopPropagation [title]="item.Name">{{ item.Name }}</div>
+                <div class="adam-full-name" [title]="item.Name">{{ item.Name }}</div>
               </div>
               <div class="dz-filename adam-short-label" appClickStopPropagation
                 title="#{{ item.Id }} - {{ item._displaySize }} KB">
