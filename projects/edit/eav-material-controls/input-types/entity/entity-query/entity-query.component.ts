@@ -40,7 +40,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   ngOnInit() {
     // Initialize url parameters mask
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.group.controls, null, null);
+    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.group.controls, null, null, this.context);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
@@ -59,9 +59,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
       alert(`No query defined for ${this.config.field.name} - can't load entities`);
     }
 
-    let params = this.fieldMaskService.resolve(); // always get the latest definition
-    params = params.replace('[App:AppId]', this.context.appId.toString());
-    params = params.replace('[App:ZoneId]', this.context.zoneId.toString());
+    const params = this.fieldMaskService.resolve(); // always get the latest definition
     let queryUrl = this.query;
     if (queryUrl.indexOf('/') === -1) { // append stream name if not defined
       queryUrl = queryUrl + '/' + this.streamName;
