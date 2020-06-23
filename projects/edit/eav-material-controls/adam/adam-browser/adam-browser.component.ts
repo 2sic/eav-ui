@@ -17,7 +17,7 @@ import { FeaturesGuidsConstants } from '../../../../shared/features-guids.consta
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { EavService } from '../../../shared/services/eav.service';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
-import { AdamItem, AdamConfig } from '../../../../edit-types';
+import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -321,17 +321,26 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     }
     this.adamConfig$.next(newConfig);
 
-    // sync dropzone
-    const dzConfig = this.config.dropzone.getConfig();
-    const dzUrlParams = UrlHelper.getUrlParams(dzConfig.url as string);
+    // fix dropzone
+    const oldDzConfig = this.config.dropzone.getConfig();
+    const newDzConfig: Partial<DropzoneConfigExt> = {};
+    const dzUrlParams = UrlHelper.getUrlParams(oldDzConfig.url as string);
     const dzSubfolder = dzUrlParams.subfolder || '';
     const dzUsePortalRoot = dzUrlParams.usePortalRoot;
-    const syncDropzone = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
-    if (syncDropzone) {
-      let newUrl = dzConfig.url as string;
+    const fixUploadUrl = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
+    if (fixUploadUrl) {
+      let newUrl = oldDzConfig.url as string;
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
-      this.config.dropzone.setConfig({ url: newUrl });
+      newDzConfig.url = newUrl;
+    }
+    const uploadDisabled = !newConfig.allowEdit;
+    const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
+    if (fixDisabled) {
+      newDzConfig.disabled = uploadDisabled;
+    }
+    if (Object.keys(newDzConfig).length > 0) {
+      this.config.dropzone.setConfig(newDzConfig);
     }
   }
 
