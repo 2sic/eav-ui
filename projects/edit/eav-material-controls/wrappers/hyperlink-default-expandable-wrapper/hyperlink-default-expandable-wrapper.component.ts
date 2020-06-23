@@ -92,6 +92,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   expandDialog() {
+    if (this.control.disabled) { return; }
     angularConsoleLog('HyperlinkDefaultExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
