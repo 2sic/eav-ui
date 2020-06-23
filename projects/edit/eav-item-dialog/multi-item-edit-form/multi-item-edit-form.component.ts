@@ -188,7 +188,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
       if (this.formsAreValid || this.allControlsAreDisabled) {
-        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
           itemEditFormComponent.form.submitOutside();
         });
         angularConsoleLog('saveAll', close);
@@ -285,7 +285,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private calculateAllValidationMessages() {
     this.formErrors = [];
     if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         if (itemEditFormComponent.form.form.invalid) {
           this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
         }
@@ -397,14 +397,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
    */
   private attachAllSaveFormObservables() {
     if (this.formSaveAllObservables$.length === 0) {
-      if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      if (this.itemEditFormComponentQueryList?.length > 0) {
+        this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
           this.formSaveAllObservables$.push(itemEditFormComponent.formSaveObservable());
         });
       }
 
       // only called once when a formSaveAllObservables array is filled
-      if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
+      if (this.formSaveAllObservables$.length > 0) {
         this.saveFormSubscribe();
         this.checkFormsState();
       }
@@ -477,7 +477,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.allControlsAreDisabled = true;
       this.formsAreValid = true;
       this.formsAreDirty[this.itemEditFormComponentQueryList.first.currentLanguage] = false;
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         // set form valid
         if (itemEditFormComponent.form.valid === false
           && (!itemEditFormComponent.item.header.Group || itemEditFormComponent.item.header.Group.SlotCanBeEmpty === false)) {
