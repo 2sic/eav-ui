@@ -2,7 +2,7 @@ import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { angularConsoleLog } from '../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { Context } from '../ng-dialogs/src/app/shared/services/context';
+import { EavConfiguration } from '../edit/shared/models/eav-configuration';
 
 /**
  * Create a new FieldMaskService instance and access result with resolve
@@ -28,7 +28,7 @@ export class FieldMaskService {
     model: { [key: string]: AbstractControl; },
     private changeEvent: (newValue: string) => any,
     overloadPreCleanValues: (key: string, value: string) => string,
-    private context?: Context,
+    private eavConfig?: EavConfiguration,
   ) {
     this.mask = mask;
     this.model = model;
@@ -47,9 +47,9 @@ export class FieldMaskService {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    if (this.context != null) {
-      value = value.replace('[App:AppId]', this.context.appId.toString());
-      value = value.replace('[App:ZoneId]', this.context.zoneId.toString());
+    if (this.eavConfig != null) {
+      value = value.replace('[App:AppId]', this.eavConfig.appId);
+      value = value.replace('[App:ZoneId]', this.eavConfig.zoneId);
     }
     this.fields.forEach((e, i) => {
       const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
