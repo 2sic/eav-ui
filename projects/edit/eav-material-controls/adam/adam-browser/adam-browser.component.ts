@@ -305,7 +305,15 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (fixStartingSlash) {
       newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
     }
-    const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
+    const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
+    if (fixRoot) {
+      newConfig.subfolder = newConfig.rootSubfolder;
+    }
+    let pathFromRoot = newConfig.subfolder.replace(newConfig.rootSubfolder, '');
+    if (pathFromRoot.startsWith('/')) {
+      pathFromRoot = pathFromRoot.replace('/', '');
+    }
+    const currentDepth = pathFromRoot ? pathFromRoot.split('/').length : 0;
     const fixDepth = !newConfig.usePortalRoot && currentDepth >= newConfig.folderDepth;
     if (fixDepth) {
       let folders = newConfig.subfolder.split('/');
@@ -314,10 +322,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       newConfig.maxDepthReached = true;
     } else {
       newConfig.maxDepthReached = false;
-    }
-    const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
-    if (fixRoot) {
-      newConfig.subfolder = newConfig.rootSubfolder;
     }
     this.adamConfig$.next(newConfig);
 
