@@ -20,6 +20,7 @@ export class AdamConfigInstance implements AdamConfig {
   subfolder = '';
   allowEdit = true;
   disabled = true;
+  maxDepthReached = false;
   //#endregion
 
   constructor(disabled: boolean) {

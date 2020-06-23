@@ -18,5 +18,6 @@ export interface AdamConfig {
   subfolder: string,
   allowEdit: boolean,
   disabled: boolean,
+  maxDepthReached: boolean;
   //#endregion
 }

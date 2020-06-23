@@ -157,7 +157,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   addItemMetadata(adamItem: AdamItem) {
     const form: EditForm = {
       items: [{
-        ContentTypeName: this.getMetadataType(adamItem),
+        ContentTypeName: adamItem._metadataContentType,
         For: {
           Target: eavConstants.metadata.cmsObject.target,
           String: (adamItem.Type === 'folder' ? 'folder' : 'file') + ':' + adamItem.Id,
@@ -180,7 +180,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.config.adam.setConfig({ subfolder });
   }
 
-  getMetadataType(item: AdamItem) {
+  private getMetadataContentType(item: AdamItem) {
     let found: string[];
 
     // check if it's a folder and if this has a special registration
@@ -213,21 +213,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.config.adam.setConfig({ subfolder });
   }
 
-  maxFolderDepth(adamConfig: AdamConfig) {
-    if (adamConfig.usePortalRoot) { return false; }
-
-    const currentDepth = adamConfig.subfolder ? adamConfig.subfolder.split('/').length : 0;
-    return currentDepth >= adamConfig.folderDepth;
-  }
-
-  isKnownType(item: AdamItem) {
-    return this.fileTypeService.isKnownType(item.Name);
-  }
-
-  icon(item: AdamItem) {
-    return this.fileTypeService.getIconClass(item.Name);
-  }
-
   openUploadClick(event: MouseEvent) {
     this.openUpload.emit();
   }
@@ -253,25 +238,37 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (adamConfig == null) { return; }
     if (!adamConfig.autoLoad) { return; }
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
-      const root = items.find(item => item.Name === '.');
-      const allowEdit = root.AllowEdit;
-      if (allowEdit !== adamConfig.allowEdit) {
-        this.config.adam.setConfig({ allowEdit });
+      const filteredItems: AdamItem[] = [];
+      const allowedFileTypes = adamConfig.fileFilter
+        ? adamConfig.fileFilter.split(',').map(extension => extension.replace('*', '').trim())
+        : [];
+
+      for (const item of items) {
+        if (item.Name === '.') { // is root
+          const allowEdit = item.AllowEdit;
+          if (allowEdit !== adamConfig.allowEdit) {
+            this.config.adam.setConfig({ allowEdit });
+          }
+          continue;
+        }
+        if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
+        if (adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
+        if (adamConfig.maxDepthReached && item.IsFolder) { continue; }
+        if (allowedFileTypes.length > 0) {
+          const extension = item.Name.substring(item.Name.lastIndexOf('.'));
+          if (!allowedFileTypes.includes(extension)) { continue; }
+        }
+
+        item._metadataContentType = this.getMetadataContentType(item);
+        item._icon = this.fileTypeService.getIconClass(item.Name);
+        item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
+        item._displaySize = (item.Size / 1024).toFixed(0);
+        filteredItems.push(item);
       }
-      if (adamConfig.showImagesOnly) {
-        items = items.filter(item => item.Type === 'image');
-      }
-      if (adamConfig.fileFilter) {
-        const allowedFileTypes = adamConfig.fileFilter.split(',').map(extension => extension.replace('*', '').trim());
-        items = items.filter(item => allowedFileTypes.includes(item.Name.match(/(?:\.([^.]+))?$/)[0]));
-      }
-      if (this.maxFolderDepth(adamConfig)) {
-        items = items.filter(item => !item.IsFolder);
-      }
-      items = items.filter(item => item.Name !== '.' && item.Name !== '2sxc' && item.Name !== 'adam');
-      items.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
-      items.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
-      this.items$.next(items);
+
+      filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
+      filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
+      this.items$.next(filteredItems);
     });
   }
 
@@ -309,11 +306,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
     }
     const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
-    const fixDepth = !newConfig.usePortalRoot && currentDepth > newConfig.folderDepth;
+    const fixDepth = !newConfig.usePortalRoot && currentDepth >= newConfig.folderDepth;
     if (fixDepth) {
       let folders = newConfig.subfolder.split('/');
       folders = folders.slice(0, newConfig.folderDepth);
       newConfig.subfolder = folders.join('/');
+      newConfig.maxDepthReached = true;
+    } else {
+      newConfig.maxDepthReached = false;
     }
     const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
     if (fixRoot) {

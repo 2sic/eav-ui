@@ -9,8 +9,8 @@
   }">
 
       <!-- info for dropping stuff here -->
-      <div *ngIf="!data.disabled" class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
-        [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
+      <div *ngIf="!data.disabled && data.adamConfig.allowEdit" class="dz-preview dropzone-adam"
+        (click)="openUploadClick($event)" [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon>cloud_upload</mat-icon>
           <div class="adam-upload-label">
@@ -23,8 +23,8 @@
       </div>
 
       <!-- paste image from clipboard -->
-      <div #pasteDiv *ngIf="pasteClipboardImage && !data.disabled" appPasteClipboardImage [config]="config"
-        [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
+      <div #pasteDiv *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit" appPasteClipboardImage
+        [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
         [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon>filter</mat-icon>
@@ -38,7 +38,7 @@
       </div>
 
       <!-- add folder -->
-      <div *ngIf="!data.disabled && data.adamConfig.allowEdit && !maxFolderDepth(data.adamConfig)" class="dz-preview"
+      <div *ngIf="!data.disabled && data.adamConfig.allowEdit && !data.adamConfig.maxDepthReached" class="dz-preview"
         (click)="addFolder()" [matTooltip]="'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon svgIcon="folder-plus"></mat-icon>
@@ -71,14 +71,13 @@
             </div>
             <div class="dz-details file-type-{{item.Type}}">
               <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
-                class="adam-delete-button" matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Delete' | translate}}"
+                class="adam-delete-button" [matTooltip]="'Fields.Hyperlink.AdamFileManager.Delete' | translate"
                 [ngClass]="{
                 'adam-button-disabled': data.disabled
               }">clear
               </mat-icon>
               <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="rename(item)" appClickStopPropagation
-                class="adam-rename-button" matTooltip="{{ 'Fields.Hyperlink.AdamFileManager.Edit' | translate}}"
-                [ngClass]="{
+                class="adam-rename-button" [matTooltip]="'Fields.Hyperlink.AdamFileManager.Edit' | translate" [ngClass]="{
                 'adam-button-disabled': data.disabled
               }">edit
               </mat-icon>
@@ -86,10 +85,10 @@
                 <div class="adam-full-name" appClickStopPropagation title="{{ item.Name }}">{{ item.Name }}</div>
               </div>
             </div>
-            <mat-icon class="adam-tag" [ngClass]="{'metadata-exists': item.MetadataId > 0}"
+            <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
               (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
-              matTooltip="{{getMetadataType(item)}}: {{item.MetadataId}}" appClickStopPropagation
-              *ngIf="getMetadataType(item)">local_offer</mat-icon>
+              matTooltip="{{ item._metadataContentType }}: {{ item.MetadataId }}" appClickStopPropagation
+              *ngIf="item._metadataContentType">local_offer</mat-icon>
           </div>
         </ng-container>
 
@@ -101,8 +100,8 @@
           }">
             <div *ngIf="item.Type !== 'image'"
               class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
-              <mat-icon *ngIf="isKnownType(item)">{{ icon(item) }}</mat-icon>
-              <mat-icon *ngIf="!isKnownType(item)" [svgIcon]="icon(item)"></mat-icon>
+              <mat-icon *ngIf="item._isMaterialIcon">{{ item._icon }}</mat-icon>
+              <mat-icon *ngIf="!item._isMaterialIcon" [svgIcon]="item._icon"></mat-icon>
               <div class="adam-short-label">{{ item.Name }}</div>
             </div>
             <div *ngIf="item.Type === 'image'" class="dz-image adam-browse-background-image">
@@ -126,8 +125,8 @@
                 <div class="adam-full-name" appClickStopPropagation [title]="item.Name">{{ item.Name }}</div>
               </div>
               <div class="dz-filename adam-short-label" appClickStopPropagation
-                title="#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb">
-                <span>#{{ item.Id }} - {{ (item.Size / 1024).toFixed(0) }} kb</span>
+                title="#{{ item.Id }} - {{ item._displaySize }} KB">
+                <span>#{{ item.Id }} - {{ item._displaySize }} KB</span>
               </div>
               <a class="adam-link-button" target="_blank" [href]="item.FullPath" appClickStopPropagation>
                 <mat-icon [matTooltip]="'Fields.Hyperlink.AdamFileManager.Show' | translate">open_in_new</mat-icon>
@@ -135,8 +134,8 @@
             </div>
             <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
               (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
-              *ngIf="getMetadataType(item)" appClickStopPropagation
-              matTooltip="{{ getMetadataType(item) }}: {{ item.MetadataId }}">local_offer</mat-icon>
+              *ngIf="item._metadataContentType" appClickStopPropagation
+              matTooltip="{{ item._metadataContentType }}: {{ item.MetadataId }}">local_offer</mat-icon>
 
             <div class="dz-success-mark">
               <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="https://www.w3.org/2000/svg"

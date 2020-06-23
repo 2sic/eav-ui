@@ -11,4 +11,9 @@ export interface AdamItem {
   AllowEdit: boolean,
   Created: string,
   Modified: string,
+
+  _metadataContentType: string,
+  _icon: string,
+  _isMaterialIcon: boolean,
+  _displaySize: string,
 }

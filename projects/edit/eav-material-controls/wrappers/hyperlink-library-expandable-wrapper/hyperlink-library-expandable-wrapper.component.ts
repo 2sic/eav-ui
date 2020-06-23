@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { FileTypeService } from '../../../shared/services/file-type.service';
 import { AdamItem } from '../../../../edit-types';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
@@ -32,7 +31,6 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
   get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
 
   constructor(
-    private fileTypeService: FileTypeService,
     private zone: NgZone,
     private expandableFieldService: ExpandableFieldService,
   ) { }
@@ -54,14 +52,6 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   trackByFn(index: number, item: AdamItem) {
     return item.Id;
-  }
-
-  isKnownType(item: AdamItem) {
-    return this.fileTypeService.isKnownType(item.Name);
-  }
-
-  icon(item: AdamItem) {
-    return this.fileTypeService.getIconClass(item.Name);
   }
 
   expandDialog() {

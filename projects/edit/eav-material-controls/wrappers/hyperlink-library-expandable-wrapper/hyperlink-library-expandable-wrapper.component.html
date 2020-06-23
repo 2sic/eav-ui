@@ -58,8 +58,8 @@
             <!-- files -->
             <div *ngIf="!item.IsFolder">
               <div *ngIf="item.Type !== 'image'" class="adam-browse-background-icon">
-                <mat-icon *ngIf="isKnownType(item)">{{ icon(item) }}</mat-icon>
-                <mat-icon *ngIf="!isKnownType(item)" [svgIcon]="icon(item)"></mat-icon>
+                <mat-icon *ngIf="item._isMaterialIcon">{{ item._icon }}</mat-icon>
+                <mat-icon *ngIf="!item._isMaterialIcon" [svgIcon]="item._icon"></mat-icon>
                 <div class="adam-short-label mat-caption">{{ item.Name }}</div>
               </div>
               <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
