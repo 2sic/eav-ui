@@ -8,9 +8,11 @@
     'adam-scope-field': !data.adamConfig.usePortalRoot
   }">
 
-      <!-- info for dropping stuff here -->
-      <div *ngIf="!data.disabled && data.adamConfig.allowEdit" class="dz-preview dropzone-adam"
-        (click)="openUploadClick($event)" [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
+      <!-- click to upload -->
+      <div
+        *ngIf="!data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
+        [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon>cloud_upload</mat-icon>
           <div class="adam-upload-label">
@@ -23,8 +25,9 @@
       </div>
 
       <!-- paste image from clipboard -->
-      <div #pasteDiv *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit" appPasteClipboardImage
-        [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
+      <div #pasteDiv
+        *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
         [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon>filter</mat-icon>
@@ -38,8 +41,10 @@
       </div>
 
       <!-- add folder -->
-      <div *ngIf="!data.disabled && data.adamConfig.allowEdit && !data.adamConfig.maxDepthReached" class="dz-preview"
-        (click)="addFolder()" [matTooltip]="'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate">
+      <div
+        *ngIf="!data.adamConfig.maxDepthReached && !data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        class="dz-preview" (click)="addFolder()"
+        [matTooltip]="'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon svgIcon="folder-plus"></mat-icon>
           <div class="adam-short-label">{{ 'Fields.Hyperlink.AdamFileManager.NewFolder' | translate }}</div>

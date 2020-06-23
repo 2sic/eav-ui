@@ -334,7 +334,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
       newDzConfig.url = newUrl;
     }
-    const uploadDisabled = !newConfig.allowEdit;
+    const uploadDisabled = !newConfig.allowEdit || (newConfig.rootSubfolder === newConfig.subfolder && !newConfig.allowAssetsInRoot);
     const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
     if (fixDisabled) {
       newDzConfig.disabled = uploadDisabled;
