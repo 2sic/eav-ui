@@ -309,15 +309,13 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (fixRoot) {
       newConfig.subfolder = newConfig.rootSubfolder;
     }
-    let pathFromRoot = newConfig.subfolder.replace(newConfig.rootSubfolder, '');
-    if (pathFromRoot.startsWith('/')) {
-      pathFromRoot = pathFromRoot.replace('/', '');
-    }
-    const currentDepth = pathFromRoot ? pathFromRoot.split('/').length : 0;
-    const fixDepth = !newConfig.usePortalRoot && currentDepth >= newConfig.folderDepth;
+    debugger;
+    const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
+    const rootDepth = newConfig.rootSubfolder ? newConfig.rootSubfolder.split('/').length : 0;
+    const fixDepth = !newConfig.usePortalRoot && currentDepth >= newConfig.folderDepth + rootDepth;
     if (fixDepth) {
       let folders = newConfig.subfolder.split('/');
-      folders = folders.slice(0, newConfig.folderDepth);
+      folders = folders.slice(0, newConfig.folderDepth + rootDepth);
       newConfig.subfolder = folders.join('/');
       newConfig.maxDepthReached = true;
     } else {
