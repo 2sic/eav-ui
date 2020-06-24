@@ -2,6 +2,7 @@ import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { angularConsoleLog } from '../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { EavConfiguration } from '../edit/shared/models/eav-configuration';
 
 /**
  * Create a new FieldMaskService instance and access result with resolve
@@ -27,6 +28,7 @@ export class FieldMaskService {
     model: { [key: string]: AbstractControl; },
     private changeEvent: (newValue: string) => any,
     overloadPreCleanValues: (key: string, value: string) => string,
+    private eavConfig?: EavConfiguration,
   ) {
     this.mask = mask;
     this.model = model;
@@ -45,6 +47,10 @@ export class FieldMaskService {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
+    if (this.eavConfig != null) {
+      value = value.replace('[App:AppId]', this.eavConfig.appId);
+      value = value.replace('[App:ZoneId]', this.eavConfig.zoneId);
+    }
     this.fields.forEach((e, i) => {
       const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
       const cleaned = this.preClean(e, replaceValue);
@@ -97,6 +103,6 @@ export class FieldMaskService {
   }
 
   destroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 }

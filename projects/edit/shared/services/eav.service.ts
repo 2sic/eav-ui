@@ -11,7 +11,7 @@ import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfiguration } from '../models/eav-configuration';
-import { FormSet } from '../../../edit-types';
+import { FormSet, FormDisabledSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
@@ -27,6 +27,7 @@ export class EavService {
   /** formSetValueChangeSource observable is used in external components */
   private formSetValueChangeSource = new Subject<FormSet>();
   formSetValueChange$ = this.formSetValueChangeSource.asObservable();
+  formDisabledChanged$$ = new Subject<FormDisabledSet>();
 
   private eavConfig: EavConfiguration;
 

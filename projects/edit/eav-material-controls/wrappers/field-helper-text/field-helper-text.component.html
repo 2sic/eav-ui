@@ -10,6 +10,6 @@
       (mouseenter)="changeAnchorTarget($event)" [innerHtml]="description | safeHtml"></span>
   </mat-hint>
   <mat-error *ngIf="control.invalid && !disableError" class="mat-caption">
-    {{ getErrorMessage() | translate:{ param:config.field.settings } }}
+    {{ errorMessage | translate:{ param:config.field.settings } }}
   </mat-error>
 </div>

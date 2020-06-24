@@ -1,102 +1,76 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup, ValidatorFn } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { AdamConfig, AdamModeConfig } from '../../../../shared/models/adam/adam-config';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { CustomValidators } from '../../../validators/custom-validators';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { FieldSettings } from '../../../../../edit-types';
+import { AdamControl } from './hyperlink-library.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'hyperlink-library',
   templateUrl: './hyperlink-library.component.html',
-  styleUrls: ['./hyperlink-library.component.scss']
+  styleUrls: ['./hyperlink-library.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.dropzoneWrapper, WrappersConstants.eavLocalizationWrapper,
-  WrappersConstants.hyperlinkLibraryExpandableWrapper, WrappersConstants.adamAttachWrapper],
+  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
+  WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
-export class HyperlinkLibraryComponent implements Field, OnInit, OnDestroy {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
+  private subscription = new Subscription();
+  /** Requires more handling that normal subscriptions */
+  private adamSubscription: Subscription;
 
-  adamModeConfig: AdamModeConfig = {
-    usePortalRoot: false
-  };
-
-  get folderDepth() {
-    return this.config.field.settings.FolderDepth || '';
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
   }
-
-  get metadataContentTypes() {
-    return this.config.field.settings.MetadataContentTypes || '';
-  }
-
-  get allowAssetsInRoot() {
-    return this.config.field.settings.AllowAssetsInRoot === false ? false : true;
-  }
-
-  private subscriptions: Subscription[] = [];
-
-  constructor() { }
 
   ngOnInit() {
-    this.attachAdam();
-    this.attachAdamValidator();
+    super.ngOnInit();
+    this.subscription.add(this.settings$.subscribe(settings => {
+      this.attachAdam(settings);
+      this.attachAdamValidator(settings.Required);
+    }));
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subscriptions = null;
+    this.subscription.unsubscribe();
+    this.adamSubscription?.unsubscribe();
   }
 
-  private attachAdam() {
-    if (this.config.adam) {
-      // callbacks - functions called from adam
-      this.config.adam.updateCallback = (fileItem: any) => { };
+  private attachAdam(settings: FieldSettings) {
+    this.config.adam.setConfig({
+      allowAssetsInRoot: settings.AllowAssetsInRoot,
+      autoLoad: true,
+      enableSelect: false,
+      rootSubfolder: settings.Paths,
+      fileFilter: settings.FileFilter,
+      folderDepth: settings.FolderDepth || 0,
+      metadataContentTypes: settings.MetadataContentTypes,
+    });
+  }
 
-      // binding for dropzone
-      this.config.adam.afterUploadCallback = (fileItem: any) => { };
-
-      angularConsoleLog('HyperLibrary setConfig : ', Object.assign(new AdamConfig(), {
-        adamModeConfig: this.adamModeConfig,
-        allowAssetsInRoot: this.allowAssetsInRoot,
-        autoLoad: true,
-        enableSelect: false,
-        folderDepth: this.folderDepth,
-        metadataContentTypes: this.metadataContentTypes
-      }));
-      // set adam configuration (initial config)
-      this.config.adam.setConfig(Object.assign(new AdamConfig(), {
-        adamModeConfig: this.adamModeConfig,
-        allowAssetsInRoot: this.allowAssetsInRoot,
-        autoLoad: true,
-        enableSelect: false,
-        folderDepth: this.folderDepth,
-        metadataContentTypes: this.metadataContentTypes
-      }));
+  private attachAdamValidator(required: boolean) {
+    if (!required) {
+      this.adamSubscription?.unsubscribe();
+      this.control.setValidators(this.config.field.validation);
+      return;
     }
-  }
 
-  private attachAdamValidator() {
-    if (this.config.field.required) {
-      const validators: ValidatorFn[] = [];
-      validators.push(
-        ...this.config.field.validation,
-        CustomValidators.validateAdam(this.config.adam.items$),
-      );
-      this.group.controls[this.config.field.name].setValidators(validators);
+    const validators = [
+      ...this.config.field.validation,
+      CustomValidators.validateAdam(),
+    ];
+    this.control.setValidators(validators);
+    this.adamSubscription = this.config.adam.items$.subscribe(items => {
+      (this.control as AdamControl).adamItems = items.length;
       // onlySelf doesn't update form being valid for some reason
-      this.group.controls[this.config.field.name].updateValueAndValidity(/*{ onlySelf: true }*/);
-      this.subscriptions.push(
-        this.config.adam.items$.subscribe(items => {
-          this.group.controls[this.config.field.name].updateValueAndValidity(/*{ onlySelf: true }*/);
-        }),
-      );
-    }
+      this.control.updateValueAndValidity(/*{ onlySelf: true }*/);
+    });
   }
 }

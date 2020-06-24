@@ -8,7 +8,8 @@ import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryService } from '../../../../shared/services/query.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { Context } from '../../../../../ng-dialogs/src/app/shared/services/context';
+import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { EavService } from '../../../../shared/services/eav.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -23,6 +24,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
 
   availableEntities: EntityInfo[] = [];
   error = '';
+  private eavConfig: EavConfiguration;
   private fieldMaskService: FieldMaskService;
 
   get query() { return this.config.field.settings.Query || ''; }
@@ -34,13 +36,15 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
   constructor(
     private queryService: QueryService,
     private translate: TranslateService,
-    private context: Context,
-  ) { }
+    private eavService: EavService,
+  ) {
+    this.eavConfig = this.eavService.getEavConfiguration();
+  }
 
   ngOnInit() {
     // Initialize url parameters mask
     // this will contain the auto-resolve url parameters
-    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.group.controls, null, null);
+    this.fieldMaskService = new FieldMaskService(this.urlParameters, this.group.controls, null, null, this.eavConfig);
 
     // get all mask field and subcribe to changes. On every change getAvailableEntities.
     this.subscribeToMaskFieldsChanges();
@@ -59,9 +63,7 @@ export class EntityQueryComponent implements Field, OnInit, OnDestroy {
       alert(`No query defined for ${this.config.field.name} - can't load entities`);
     }
 
-    let params = this.fieldMaskService.resolve(); // always get the latest definition
-    params = params.replace('[App:AppId]', this.context.appId.toString());
-    params = params.replace('[App:ZoneId]', this.context.zoneId.toString());
+    const params = this.fieldMaskService.resolve(); // always get the latest definition
     let queryUrl = this.query;
     if (queryUrl.indexOf('/') === -1) { // append stream name if not defined
       queryUrl = queryUrl + '/' + this.streamName;

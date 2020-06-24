@@ -50,7 +50,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     angularConsoleLog('PASTE IMAGE', 'event:', event);
     // todo: convert png to jpg to reduce file size
     const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
-    this.config.saveImage(image);
+    this.config.dropzone.uploadFile(image);
   }
 
   private getFile(data: PasteClipboardImageEventDetail) {

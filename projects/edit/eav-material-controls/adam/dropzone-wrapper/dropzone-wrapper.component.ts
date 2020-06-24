@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
+import { FormGroup, AbstractControl } from '@angular/forms';
+import { DropzoneDirective } from 'ngx-dropzone-wrapper';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { filter, map, startWith, distinctUntilChanged } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -9,95 +10,138 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { DropzoneConfigInstance } from './dropzone-wrapper.models';
+import { DropzoneConfigExt } from '../../../../edit-types';
 
 @Component({
   selector: 'app-dropzone-wrapper',
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss']
 })
-export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit {
+export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
+  control: AbstractControl;
+  disabled$: Observable<boolean>;
+  dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
+  dropzoneDisabled$: Observable<boolean>;
+
   private eavConfig: EavConfiguration;
-  url: string;
-  usePortalRoot = false;
 
-  get disabled() {
-    return this.group.controls[this.config.field.name].disabled || this.config.dropzoneDisabled === true;
-  }
-
-  constructor(private eavService: EavService, private dnnContext: DnnContext) {
+  constructor(private eavService: EavService, private dnnContext: DnnContext, private zone: NgZone) {
     this.eavConfig = this.eavService.getEavConfiguration();
   }
 
   ngOnInit() {
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
-    const field = this.config.field.name;
-    this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
+    this.control = this.group.controls[this.config.field.name];
+    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
+        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
+      ),
+      map(formSet => this.control.disabled),
+      startWith(this.control.disabled),
+      distinctUntilChanged(),
+    );
+    this.dropzoneDisabled$ = combineLatest(this.disabled$, this.dropzoneConfig$).pipe(map(combined => {
+      const controlDisabled = combined[0];
+      const dropzoneConfig = combined[1];
+      const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
+      return controlDisabled || dropzoneDisabled;
+    }));
 
-    const dropzoneConfig: DropzoneConfigInterface = {
-      // usePortalRoot is updated in AdamBrowser. Switches between Adam and DNN image
-      url: this.url + `?subfolder=&usePortalRoot=${this.usePortalRoot}&appId=${this.eavConfig.appId}`,
-      maxFiles: 1000, // keep maxFiles and parallelUploads in sync
-      parallelUploads: 1000,
-      autoReset: null,
-      errorReset: null,
-      cancelReset: null,
-      maxFilesize: 10000, // 10'000 MB = 10 GB, note that it will also be stopped on the server if it's larger than the really allowed sized
-      paramName: 'uploadfile',
-      maxThumbnailFilesize: 10,
-      headers: this.dnnContext.sxc.webApi.headers(),
-      dictDefaultMessage: '',
-      addRemoveLinks: false,
-      // '.field-' + field.toLowerCase() + ' .dropzone-previews',
-      previewsContainer: '.dropzone-previews', // '.field-' + this.config.currentFieldConfig.index + ' .dropzone-previews',
-      // we need a clickable, because otherwise the entire area is clickable.
-      // so i'm just making the preview clickable, as it's not important
-      clickable: '.dropzone-previews' // '.field-' + this.config.currentFieldConfig.index + ' .invisible-clickable'  // " .dropzone-adam"
+    this.config.dropzone = {
+      setConfig: (config) => {
+        this.zone.run(() => {
+          this.setConfig(config);
+        });
+      },
+      getConfig: () => this.dropzoneConfig$.value,
+      getConfig$: () => this.dropzoneConfig$.asObservable(),
+      uploadFile: (image) => {
+        this.zone.run(() => {
+          this.uploadFile(image);
+        });
+      }
     };
 
-    this.config.dropzoneConfig$ = new BehaviorSubject(dropzoneConfig);
+    this.config.dropzone.setConfig({});
   }
 
   ngAfterViewInit() {
-    const currDzConfig = this.config.dropzoneConfig$.value;
-    this.config.dropzoneConfig$.next({
-      ...currDzConfig,
+    this.config.dropzone.setConfig({
       previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
       clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
     });
-    this.config.saveImage = (image) => {
-      const dropzone = this.dropzoneRef.dropzone();
-      (image as any).upload = { chunked: dropzone.defaultOptions.chunking };
-      dropzone.processFile(image);
-    };
   }
 
-  public onUploadError(args: any): void {
+  ngOnDestroy() {
+    this.dropzoneConfig$.complete();
+  }
+
+  onUploadError(args: any) {
     angularConsoleLog('onUploadError:', args);
-    // Reset dropzone
     this.dropzoneRef.reset();
   }
 
-  public onUploadSuccess(args: any): void {
+  onUploadSuccess(args: any) {
     const response = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
-        this.config.adam.svc.addFullPath(response); // calculate additional infos
-        this.config.adam.afterUploadCallback(response);
-        this.config.adam.refresh(); // Refresh Adam
+        this.config.adam.addFullPath(response);
+        this.config.adam.onItemUpload(response);
+        this.config.adam.refresh();
       } else {
         alert('Upload failed because: ADAM reference doesn\'t exist');
       }
     } else {
       alert('Upload failed because: ' + response.Error);
     }
-    // Reset dropzone
     this.dropzoneRef.reset();
   }
+
+  private setConfig(config: Partial<DropzoneConfigExt>) {
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    const appId = this.eavConfig.appId;
+
+    const startDisabled = this.config.field.isExternal;
+    const url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
+    const headers = this.dnnContext.sxc.webApi.headers();
+
+    const oldConfig = (this.dropzoneConfig$.value != null)
+      ? this.dropzoneConfig$.value
+      : new DropzoneConfigInstance(startDisabled, url, headers);
+    const newConfig = new DropzoneConfigInstance(startDisabled, url, headers);
+
+    const newConfigKeys = Object.keys(newConfig);
+    for (const key of newConfigKeys) {
+      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+    }
+
+    // fixes
+    const syncUploadLimit = newConfig.maxFiles !== newConfig.parallelUploads;
+    if (syncUploadLimit) {
+      const uploadLimit = (newConfig.maxFiles >= newConfig.parallelUploads) ? newConfig.maxFiles : newConfig.parallelUploads;
+      newConfig.maxFiles = uploadLimit;
+      newConfig.parallelUploads = uploadLimit;
+    }
+    const fixAcceptedFiles = newConfig.acceptedFiles == null || newConfig.acceptedFiles === '';
+    if (fixAcceptedFiles) {
+      delete newConfig.acceptedFiles; // only way to tell dropzone to accept all files is to remove acceptedFiles from config
+    }
+
+    this.dropzoneConfig$.next(newConfig);
+  }
+
+  private uploadFile(file: File) {
+    const dropzone = this.dropzoneRef.dropzone();
+    (file as any).upload = { chunked: dropzone.defaultOptions.chunking };
+    dropzone.processFile(file);
+  }
+
 }

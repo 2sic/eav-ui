@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -14,34 +13,23 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 export class FieldHelperTextComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  // @Input() hasDirtyTouched = true;
   @Input() disableError = false;
-  private subscriptions: Subscription[] = [];
 
-  currentLanguage$: Observable<string>;
   isFullText = false;
   control: AbstractControl;
   description: string;
 
-  getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.group.controls[this.config.field.name], this.config);
-  }
+  private subscription = new Subscription();
 
-  constructor(
-    private validationMessagesService: ValidationMessagesService,
-    private languageInstanceService: LanguageInstanceService,
-  ) { }
+  get errorMessage() { return this.validationMessagesService.getErrorMessage(this.control, this.config); }
+
+  constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
-    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.control = this.group.controls[this.config.field.name];
-    this.description = this.config.field.settings.Notes;
-
-    this.subscriptions.push(
-      this.currentLanguage$.subscribe(currentLang => {
-        this.description = this.config.field.settings.Notes;
-      }),
-    );
+    this.subscription.add(this.config.field.settings$.subscribe(settings => {
+      this.description = settings.Notes;
+    }));
   }
 
   /** spm Don't toggle if clicked on an anchor tag or it's children */
@@ -59,10 +47,12 @@ export class FieldHelperTextComponent implements OnInit, OnDestroy {
   }
 
   changeAnchorTarget(event: MouseEvent) {
-    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => anchor.target = '_blank');
+    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => {
+      anchor.target = '_blank';
+    });
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscription.unsubscribe();
   }
 }

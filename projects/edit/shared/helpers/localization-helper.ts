@@ -297,11 +297,11 @@ export class LocalizationHelper {
   }
 
   public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
-    const settingsTranslated: FieldSettings = {};
+    const settingsTranslated: { [key: string]: any } = {};
     Object.keys(settings).forEach(attributesKey => {
       settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
         defaultLanguage, settings[attributesKey], false);
     });
-    return settingsTranslated;
+    return settingsTranslated as FieldSettings;
   }
 }

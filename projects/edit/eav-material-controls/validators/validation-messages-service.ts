@@ -1,12 +1,20 @@
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { Injectable, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Injectable()
-export class ValidationMessagesService {
+export class ValidationMessagesService implements OnDestroy {
+  /** Fires on field validation touch to display validation messages */
+  showValidation$ = new Subject<AbstractControl>();
 
   constructor() { }
+
+  ngOnDestroy() {
+    this.showValidation$.complete();
+  }
 
   /** return list of error messages */
   public validationMessages(): any {
@@ -55,6 +63,7 @@ export class ValidationMessagesService {
           }
           // this displays an error message on an invalid control
           control.markAsTouched({ onlySelf: true });
+          this.showValidation$.next(control);
         }
       }
     });

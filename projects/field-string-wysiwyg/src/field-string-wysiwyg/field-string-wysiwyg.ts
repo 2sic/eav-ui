@@ -3,6 +3,7 @@ import { wysiwygPreviewTag, FieldStringWysiwygPreview } from '../preview/preview
 import { wysiwygEditorTag, FieldStringWysiwygEditor } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import * as styles from './field-string-wysiwyg.css';
 
 const wysiwygTag = 'field-string-wysiwyg';
 const modeEdit = 'edit';
@@ -21,6 +22,9 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   connectedCallback() {
     webpackConsoleLog(`${wysiwygTag} connectedCallback called`);
+    this.innerHTML = `<style>${styles.default}</style>`;
+    this.classList.add('wysiwyg-switcher');
+
     const inline = this.calculateInline();
     if (!inline) {
       this.createPreview();

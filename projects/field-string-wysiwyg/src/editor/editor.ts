@@ -28,7 +28,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private toolbarContainerClass: string;
   private subscriptions: Subscription[] = [];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
-  private pasteImageFromClipboardEnabled: boolean;
+  private pasteClipboardImage: boolean;
   private editor: any;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
@@ -55,13 +55,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.classList.add('disabled');
     }
     this.connector.loadScript('tinymce', `${tinyMceBaseUrl}/tinymce.min.js`, () => { this.tinyMceScriptLoaded(); });
-    this.connector._experimental.enableDropzone();
+    this.connector._experimental.dropzone.setConfig({ disabled: false });
   }
 
   private tinyMceScriptLoaded() {
     webpackConsoleLog(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
-    this.pasteImageFromClipboardEnabled = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this)
     );
@@ -81,10 +81,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', (_event: any) => {
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      TinyMceButtons.registerAll(this, editor);
-      // tslint:disable: curly
+      TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
+      // tslint:disable:curly
       if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
-      if (!this.reconfigure?.disableAdam) attachAdam(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
@@ -121,14 +121,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
-      if (!this.reconfigure?.disableAdam) attachAdam(this, editor); // TODO: spm 2019-09-23 just a workaround. Fix asap
-      if (this.pasteImageFromClipboardEnabled) {
+      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
+      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
+      if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
-        const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
-        dzConfig.acceptedFiles = extWhitelist;
-        this.connector._experimental.dropzoneConfig$.next(dzConfig);
+        this.connector._experimental.dropzone.setConfig({ acceptedFiles: extWhitelist });
       }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(true);
@@ -138,11 +136,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('blur', (_event: any) => {
       this.classList.remove('focused');
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE blurred`, _event);
-      if (!this.pasteImageFromClipboardEnabled) {
+      if (this.pasteClipboardImage) {
         // Dropzone will handle image uploads again
-        const dzConfig = { ...this.connector._experimental.dropzoneConfig$.value };
-        delete dzConfig.acceptedFiles;
-        this.connector._experimental.dropzoneConfig$.next(dzConfig);
+        this.connector._experimental.dropzone.setConfig({ acceptedFiles: '' });
       }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);

@@ -1,10 +1,17 @@
-<div [formGroup]="group">
-  <mat-slide-toggle [disabled]="disabled" [checked]="value" (toggleChange)="toggle()" [ngClass]="{
-    'toggle-false': value === false,
-    'toggle-null': value === null
-    }">
-    {{ label }}
-  </mat-slide-toggle>
+<ng-container *ngIf="{
+  value: value$ | async,
+  showValidation: showValidation$ | async
+} as data">
 
-  <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
-</div>
+  <div [formGroup]="group">
+    <mat-slide-toggle [disabled]="disabled$ | async" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
+    'toggle-false': data.value === false,
+    'toggle-null': data.value === null
+    }">
+      {{ label$ | async }}
+    </mat-slide-toggle>
+
+    <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
+  </div>
+
+</ng-container>

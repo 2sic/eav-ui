@@ -1,9 +1,10 @@
-import { ViewContainerRef, Input } from '@angular/core';
-import { Field } from './field';
-import { FieldConfigSet } from './field-config';
+import { ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
+import { FieldConfigSet } from './field-config';
+
 export interface FieldWrapper {
-    fieldComponent: ViewContainerRef;
-    config: FieldConfigSet;
+  fieldComponent: ViewContainerRef;
+  config: FieldConfigSet;
+  group: FormGroup;
 }

@@ -3,3 +3,8 @@ export class FormSet {
   entityGuid: string;
   entityValues: { [name: string]: any };
 }
+
+export class FormDisabledSet {
+  formId: number;
+  entityGuid: string;
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash-es/isEmpty';
@@ -121,7 +121,6 @@ export class BuildFieldsService {
       field,
       entity,
       form,
-      dropzoneDisabled: calculatedInputType.isExternal, // dropzone is by default disabled for external fields
     };
     return fieldConfigSet;
   }
@@ -202,6 +201,7 @@ export class BuildFieldsService {
         type: attribute.type, // other fields specific
         required, // other fields specific
         disabled, // other fields specific
+        settings$: new BehaviorSubject(settingsTranslated),
       };
     }
     return fieldConfig;

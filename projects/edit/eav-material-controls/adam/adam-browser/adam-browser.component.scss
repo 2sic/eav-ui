@@ -121,6 +121,10 @@
   .dz-image {
     cursor: default;
   }
+
+  .adam-full-name {
+    cursor: text;
+  }
 }
 
 .dropzone .dz-preview:hover .adam-blur {
@@ -166,7 +170,6 @@
 }
 
 .adam-full-name {
-  cursor: text;
   background-color: rgba(255, 255, 255, .8);
   border-radius: 3px;
   word-break: break-all;

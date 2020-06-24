@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { AdamBrowserComponent } from '../browser/adam-browser.component';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
@@ -13,31 +12,34 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
   templateUrl: './adam-attach-wrapper.component.html',
   styleUrls: ['./adam-attach-wrapper.component.scss']
 })
-export class AdamAttachWrapperComponent implements FieldWrapper, OnInit {
+export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
-  @ViewChild(AdamBrowserComponent, { static: true }) adamRef: AdamBrowserComponent;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  fullScreenAdamBrowser = false;
-  url: string;
 
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
+  fullScreenAdamBrowser: boolean;
+  adamDisabled$ = new BehaviorSubject(true);
 
-  get dropzoneDisabled() {
-    return this.config.dropzoneDisabled === true;
-  }
+  private subscription = new Subscription();
 
-  constructor(private dnnContext: DnnContext) { }
+  constructor() { }
 
   ngOnInit() {
     this.fullScreenAdamBrowser = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
-    this.config.adam = this.adamRef;
-    const contentType = this.config.entity.header.ContentTypeName; // const contentType = '106ba6ed-f807-475a-b004-cd77e6b317bd';
-    const entityGuid = this.config.entity.header.Guid; // const entityGuid = '386ec145-d884-4fea-935b-a4d8d0c68d8d';
-    const field = this.config.field.name; // const field = 'HyperLinkStaticName';
-    this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
+  }
+
+  ngAfterViewInit() {
+    this.subscription.add(this.config.adam.getConfig$().subscribe(adamConfig => {
+      if (adamConfig == null) { return; }
+      this.adamDisabled$.next(adamConfig.disabled);
+    }));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.adamDisabled$.complete();
   }
 
   /** triger click on clickable element for load open */
