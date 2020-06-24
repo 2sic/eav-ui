@@ -153,7 +153,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private saveValue() {
-    this.editorContent = this.editor.getContent();
+    const newContent = this.editor.getContent();
+    if (newContent.includes('<img src="data:image')) { return; }
+
+    this.editorContent = newContent;
     this.connector.data.update(this.editorContent);
   }
 
