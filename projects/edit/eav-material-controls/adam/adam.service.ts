@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AdamItem, AdamConfig } from '../../../edit-types';
+import { AdamItem, AdamConfig, AdamPostResponse } from '../../../edit-types';
 import { SanitizeService } from './sanitize.service';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
@@ -34,7 +34,7 @@ export class AdamService {
   }
 
   /** Calculates full URL to an item */
-  addFullPath(item: AdamItem) {
+  addFullPath(item: AdamItem | AdamPostResponse) {
     const adamRoot = this.context.appRoot.substring(0, this.context.appRoot.indexOf('2sxc'));
     item.FullPath = item.Path;
     if (!item.Path?.toLowerCase().includes(adamRoot.toLowerCase())) {

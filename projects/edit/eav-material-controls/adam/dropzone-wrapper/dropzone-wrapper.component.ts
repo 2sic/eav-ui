@@ -11,7 +11,7 @@ import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';
-import { DropzoneConfigExt } from '../../../../edit-types';
+import { DropzoneConfigExt, AdamPostResponse } from '../../../../edit-types';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -88,17 +88,17 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
   }
 
   onUploadSuccess(args: any) {
-    const response = args[1]; // Gets the server response as second argument.
+    const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
         this.config.adam.addFullPath(response);
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {
-        alert('Upload failed because: ADAM reference doesn\'t exist');
+        alert(`Upload failed because: ADAM reference doesn't exist`);
       }
     } else {
-      alert('Upload failed because: ' + response.Error);
+      alert(`Upload failed because: ${response.Error}`);
     }
     this.dropzoneRef.reset();
   }

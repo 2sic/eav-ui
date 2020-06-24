@@ -12,7 +12,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { BaseComponent } from '../../base/base.component';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { AdamItem } from '../../../../../edit-types';
+import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { Preview } from './hyperlink-default.models';
 import { FieldSettings } from '../../../../../edit-types';
 
@@ -143,14 +143,14 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
 
   private attachAdam(settings: FieldSettings) {
     this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-    this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
+    this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
     this.config.adam.setConfig({
       rootSubfolder: settings.Paths,
       fileFilter: settings.FileFilter,
     });
   }
 
-  private setValue(item: AdamItem) {
+  private setValue(item: AdamItem | AdamPostResponse) {
     this.control.patchValue(`file:${item.Id}`);
   }
   //#endregion

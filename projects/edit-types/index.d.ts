@@ -25,6 +25,8 @@ export * from './src/Adam';
 
 export * from './src/AdamItem';
 
+export * from './src/AdamPostResponse';
+
 export * from './src/AdamConfig';
 
 export * from './src/InputTypeName';
