@@ -9,25 +9,21 @@ const languages = 'de,es,fr,it,uk,nl'.split(',');
 const prefix = 'Extension.TinyMce';
 const prefixDot = 'Extension.TinyMce.';
 
-
 export class TinyMceTranslations {
 
-  /**
-   * Get a tiny-mce configuration for a language file
-   * TODO: looks fishy, the files are in a strange place - probably wrong for this?
-   * TODO: not ever sure if this is actually used, as we're already adding translations in the other code?
-   */
+  /** Get a TinyMCE translation pack */
   static getLanguageOptions(currentLang: string) {
     // check if it's an additionally translated language and load the translations
-    const lang2 = currentLang.substr(0, 2);
-    if (languages.indexOf(lang2) === -1) {
+    const langShort = currentLang.substr(0, 2);
+    if (languages.indexOf(langShort) === -1) {
       return {
         language: defaultLanguage,
       };
     } else {
       return {
-        language: lang2,
-        language_url: '/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/' + lang2 + '.js',
+        language: langShort,
+        // language_url: '/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/' + langShort + '.js',
+        // language_url: `./i18n/${langShort}.js`,
       };
     }
   }
@@ -47,7 +43,6 @@ export class TinyMceTranslations {
 
     const translations = translateService.instant(keys);
 
-    // TODO: SPM - this looks unused
     for (const key of keys) {
       mceTranslations[key.replace(prefixDot, '')] = translations[key];
     }
@@ -55,6 +50,4 @@ export class TinyMceTranslations {
     editorManager.addI18n(language, translations[keys[0]]);
   }
 
-
 }
-
