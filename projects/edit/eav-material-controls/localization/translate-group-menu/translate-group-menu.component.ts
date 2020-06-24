@@ -415,6 +415,11 @@ export class TranslateGroupMenuComponent implements OnInit, OnDestroy {
   public isTranslateDisabled(attributeKey: string) {
     if (!LocalizationHelper.translationExistsInDefault(this.attributes[attributeKey], this.defaultLanguage)) { return true; }
     const attributeDef = this.contentType.contentType.attributes.find(attr => attr.name === attributeKey);
+    if (attributeDef == null) {
+      // since it's not defined it's not disabled. Happens when creating a new metadata entity, like settings for a field
+      return false;
+    }
+
     const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
     const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, attributeDef.settings);
     return disableI18n;
