@@ -94,12 +94,12 @@ export class SnippetsService {
     if (templateConfiguration.HasList) {
       sets.List = Object.assign({}, sets.List, { Fields: {}, PresentationFields: {} });
       if (templateConfiguration.TypeList) {
-        this.loadContentType(sets.List.Fields, templateConfiguration.TypeList, 'ListContent', templateConfiguration, inputTypeSnippets);
+        this.loadContentType(sets.List.Fields, templateConfiguration.TypeList, 'Header', templateConfiguration, inputTypeSnippets);
       }
       if (templateConfiguration.TypeListPresentation) {
         this.loadContentType(
           sets.List.PresentationFields, templateConfiguration.TypeListPresentation,
-          'ListContent.Presentation', templateConfiguration, inputTypeSnippets,
+          'Header.Presentation', templateConfiguration, inputTypeSnippets,
         );
       }
     } else {
