@@ -21,7 +21,7 @@ export class SnippetsService {
   ) { }
 
   async getSnippets(view: SourceView) {
-    const res: any = await this.http.get('../sxc-develop/snippets.json.js').toPromise();
+    const res: any = await this.http.get('../ng-assets/snippets.json.js').toPromise();
     const snippets: Snippet[] = res.snippets;
     const relevant = this.filterAwayNotNeededSnippetsList(snippets, view);
     const standAndInputSnips = this.extractInputTypeSnippets(relevant);
