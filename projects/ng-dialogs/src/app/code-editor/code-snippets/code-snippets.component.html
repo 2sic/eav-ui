@@ -18,7 +18,7 @@
         </div>
 
         <ng-container *ngIf="toggledFolders.includes(folder)">
-          <div class="snippet" *ngFor="let snippet of (folder.value | toarray)">
+          <div class="snippet" *ngFor="let snippet of (folder.value | objectToArray)">
 
             <div class="snippet-label">
               <div matRipple class="text" [matTooltip]="snippet.snip" matTooltipShowDelay="750"
@@ -43,7 +43,7 @@
             </div>
 
             <ng-container *ngIf="toggledMores.includes(snippet)">
-              <div *ngFor="let more of (snippet.more | toarray)">
+              <div *ngFor="let more of (snippet.more | objectToArray)">
 
                 <div class="snippet-label">
                   <div matRipple class="text text-more" [matTooltip]="more.snip" matTooltipShowDelay="750"
