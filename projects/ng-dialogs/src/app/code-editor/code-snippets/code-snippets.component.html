@@ -25,6 +25,10 @@
                 (click)="addSnippet(snippet.snip)">
                 {{ snippet.label }}
               </div>
+              <mat-icon *ngIf="snippet.more" matTooltip="Show More" matTooltipShowDelay="750"
+                (click)="toggleMore(snippet)">
+                {{ toggledMores.includes(snippet) ? 'more_vert' : 'more_horiz' }}
+              </mat-icon>
               <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
                 (click)="toggleInfo(snippet)">
                 info
@@ -37,6 +41,30 @@
                 <a [href]="link.url" target="_blank">{{ link.name }}</a>
               </div>
             </div>
+
+            <ng-container *ngIf="toggledMores.includes(snippet)">
+              <div *ngFor="let more of (snippet.more | toarray)">
+
+                <div class="snippet-label">
+                  <div matRipple class="text text-more" [matTooltip]="more.snip" matTooltipShowDelay="750"
+                    (click)="addSnippet(more.snip)">
+                    {{ more.label }}
+                  </div>
+                  <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
+                    (click)="toggleInfo(more)">
+                    info
+                  </mat-icon>
+                </div>
+
+                <div class="snippet-help snippet-help-more" *ngIf="toggledInfos.includes(more)">
+                  <div class="text" [innerHTML]="more.help | safeHtml"></div>
+                  <div *ngFor="let link of more.links">
+                    <a [href]="link.url" target="_blank">{{ link.name }}</a>
+                  </div>
+                </div>
+
+              </div>
+            </ng-container>
 
           </div>
         </ng-container>
