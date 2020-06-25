@@ -72,6 +72,10 @@
       font-size: 12px;
       font-style: oblique;
       word-break: break-word;
+
+      ::ng-deep p {
+        margin: 0;
+      }
     }
   }
 }
