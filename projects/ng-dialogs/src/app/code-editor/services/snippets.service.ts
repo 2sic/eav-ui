@@ -7,6 +7,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import { SourceView } from '../models/source-view.model';
 import { Snippet } from '../models/snippet.model';
 import { Field } from '../../content-type-fields/models/field.model';
+import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
 
 @Injectable()
 export class SnippetsService {
@@ -225,6 +226,7 @@ export class SnippetsService {
     })
       .toPromise()
       .then((fields: Field[]) => {
+        fields = fields.filter(field => field.Type !== DataTypeConstants.Empty);
         if (fields) {
           for (const fld of fields) {
             if (!fld.Metadata) { continue; }
