@@ -15,6 +15,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagination.directive';
+import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
@@ -26,6 +27,7 @@ import { MousedownStopPropagationDirective } from './directives/mousedown-stop-p
     MousedownStopPropagationDirective,
     BooleanFilterComponent,
     IdFieldComponent,
+    SafeHtmlPipe,
   ],
   entryComponents: [
     BooleanFilterComponent,
@@ -50,6 +52,7 @@ import { MousedownStopPropagationDirective } from './directives/mousedown-stop-p
     ClickStopPropagationDirective,
     MousedownStopPropagationDirective,
     BooleanFilterComponent,
+    SafeHtmlPipe,
   ]
 })
 export class SharedComponentsModule { }

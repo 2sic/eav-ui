@@ -79,7 +79,6 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
 import { ExternalWebComponentComponent } from './input-types/custom/external-web-component/external-web-component.component';
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
-import { SafeHtmlPipe } from '../shared/pipes/safe-html';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AssetsService } from '../shared/services/assets.service';
@@ -111,7 +110,6 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
-    SafeHtmlPipe,
     PasteClipboardImageDirective,
     HiddenWrapperComponent,
     HyperlinkDefaultPagepickerComponent,
