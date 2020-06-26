@@ -46,6 +46,12 @@ interface StringWysiwyg extends String {
   Dialog: "" | "dialog" | "inline";
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
+
+  /** CSS file to be used for styling the content
+   * new in 11.03
+   * must be a real path to work, not file:xx
+   */
+  ContentCss: string;
 }
 
 /** @string-dropdown-query */
