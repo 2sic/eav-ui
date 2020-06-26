@@ -1,30 +1,26 @@
 import { TranslateService } from '@ngx-translate/core';
 
-// default language
-const defaultLanguage = 'en';
-// translated languages
-const languages = 'de,es,fr,it,uk,nl'.split(',');
-
-// prefixes in the i18n files
-const prefix = 'Extension.TinyMce';
-const prefixDot = 'Extension.TinyMce.';
-
 export class TinyMceTranslations {
+  // default language
+  static defaultLanguage = 'en';
+
+  // translated languages
+  static supportedLanguages = 'de,es,fr_FR,it,nl,pt_PT,uk'.split(',');
+
+  // prefixes in the i18n files
+  static prefix = 'Extension.TinyMce';
+  static prefixDot = 'Extension.TinyMce.';
 
   /** Get a TinyMCE translation pack */
   static getLanguageOptions(currentLang: string) {
     // check if it's an additionally translated language and load the translations
-    const langShort = currentLang.substr(0, 2);
-    if (languages.indexOf(langShort) === -1) {
-      return {
-        language: defaultLanguage,
-      };
+    let lang = currentLang.substr(0, 2);
+    lang = TinyMceTranslations.fixTranslationKey(lang);
+
+    if (!TinyMceTranslations.supportedLanguages.includes(lang)) {
+      return { language: TinyMceTranslations.defaultLanguage };
     } else {
-      return {
-        language: langShort,
-        // language_url: '/DesktopModules/ToSIC_SexyContent/dist/i18n/lib/tinymce/' + langShort + '.js',
-        // language_url: `./i18n/${langShort}.js`,
-      };
+      return { language: lang };
     }
   }
 
@@ -34,9 +30,9 @@ export class TinyMceTranslations {
     const mceTranslations: any = {};
 
     // find all relevant keys by querying the primary language
-    const all = translateService.translations[defaultLanguage];
+    const all = translateService.translations[TinyMceTranslations.defaultLanguage];
     for (const key in all) {
-      if (key.indexOf(prefix) === 0) {
+      if (key.indexOf(TinyMceTranslations.prefix) === 0) {
         keys.push(key);
       }
     }
@@ -44,10 +40,21 @@ export class TinyMceTranslations {
     const translations = translateService.instant(keys);
 
     for (const key of keys) {
-      mceTranslations[key.replace(prefixDot, '')] = translations[key];
+      mceTranslations[key.replace(TinyMceTranslations.prefixDot, '')] = translations[key];
     }
 
-    editorManager.addI18n(language, translations[keys[0]]);
+    let fixedLang = TinyMceTranslations.fixTranslationKey(language);
+    if (!TinyMceTranslations.supportedLanguages.includes(fixedLang)) {
+      fixedLang = TinyMceTranslations.defaultLanguage;
+    }
+    editorManager.addI18n(fixedLang, translations[keys[0]]);
+  }
+
+  /** TinyMCE language keys are not always the same as Angular's */
+  static fixTranslationKey(key: string) {
+    if (key === 'fr') { return 'fr_FR'; }
+    if (key === 'pt') { return 'pt_PT'; }
+    return key;
   }
 
 }

@@ -1,6 +1,6 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
 
@@ -26,15 +26,15 @@ const configuration = {
     new webpack.DefinePlugin({
       '__PRODUCTION__': JSON.stringify(isProduction),
     }),
-    // new CopyPlugin({
-    //   patterns: [
-    //     {
-    //       from: './projects/field-string-wysiwyg/src/i18n/*.js',
-    //       to: './i18n',
-    //       flatten: true,
-    //     },
-    //   ],
-    // }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: './projects/field-string-wysiwyg/src/i18n/*.js',
+          to: './i18n',
+          flatten: true,
+        },
+      ],
+    }),
   ],
   devtool: 'source-map',
   module: {

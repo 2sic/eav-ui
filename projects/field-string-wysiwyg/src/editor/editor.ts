@@ -13,11 +13,13 @@ import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { TinyMceTranslations } from '../config/translations';
 declare const tinymce: any;
 
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
+const translationBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;
@@ -54,7 +56,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
-    this.connector.loadScript('tinymce', `${tinyMceBaseUrl}/tinymce.min.js`, () => { this.tinyMceScriptLoaded(); });
+    let lang = this.connector._experimental.translateService.currentLang;
+    lang = TinyMceTranslations.fixTranslationKey(lang);
+    this.connector.loadScript([
+      { test: 'tinymce', src: `${tinyMceBaseUrl}/tinymce.min.js` },
+      {
+        test: () => lang === 'en' || Object.keys(tinymce.i18n.getData()).includes(lang)
+          || !TinyMceTranslations.supportedLanguages.includes(lang),
+        src: `${translationBaseUrl}/i18n/${lang}.js`
+      }
+    ], () => { this.tinyMceScriptLoaded(); });
     this.connector._experimental.dropzone.setConfig({ disabled: false });
   }
 

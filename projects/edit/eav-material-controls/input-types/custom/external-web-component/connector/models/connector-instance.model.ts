@@ -4,13 +4,14 @@ import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
 import { EavConfiguration } from '../../../../../../shared/models/eav-configuration';
+import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
 declare const sxcVersion: string;
 
 export class ConnectorInstance<T> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
   dialog: ConnectorDialog<T>;
-  loadScript: (globalObject: string, src: string, callback: (...args: any[]) => any) => void;
+  loadScript: (...args: any[]) => void;
 
   constructor(
     _connectorHost: ConnectorHost<T>,
@@ -21,32 +22,43 @@ export class ConnectorInstance<T> implements Connector<T> {
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
-    this.loadScript = (globalObject: string, src: string, callback: (...args: any[]) => any) => {
-      if (!!(window as any)[globalObject]) {
-        callback();
+
+    this.loadScript = (
+      testOrScripts: string | (() => any) | { test: string | (() => any); src: string }[],
+      srcOrCallback: string | (() => any),
+      callback?: () => any
+    ) => {
+      // one script (3 parameters: global or test, script url and a callback)
+      if (
+        (typeof testOrScripts === 'string' || typeof testOrScripts === 'function')
+        && typeof srcOrCallback === 'string'
+        && typeof callback === 'function'
+      ) {
+        srcOrCallback = this.resolveTokens(srcOrCallback, eavConfig);
+        loadScripts([{ test: testOrScripts, src: srcOrCallback }], callback);
         return;
       }
-
-      src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
-        .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
-        .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
-      if (!src.includes('?')) {
-        src = `${src}?sxcver=${sxcVersion}`;
-      }
-
-      const scriptElement: HTMLScriptElement = document.querySelector('script[src="' + src + '"]');
-      if (scriptElement) {
-        scriptElement.addEventListener('load', callback, { once: true });
+      // multiple scripts (2 parameters: scripts array and a callback)
+      if (Array.isArray(testOrScripts) && typeof srcOrCallback === 'function') {
+        for (const script of testOrScripts) {
+          script.src = this.resolveTokens(script.src, eavConfig);
+        }
+        loadScripts(testOrScripts, srcOrCallback);
         return;
       }
-
-      const script = document.createElement('script');
-      script.src = src;
-      script.addEventListener('load', callback, { once: true });
-      document.head.appendChild(script);
+      throw new Error('Unrecognized parameters. Please double check your input');
     };
   }
 
+  resolveTokens(src: string, eavConfig: EavConfiguration) {
+    src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
+    if (!src.includes('?')) {
+      src = `${src}?sxcver=${sxcVersion}`;
+    }
+    return src;
+  }
 }
 
 export class ConnectorDataInstance<T> implements ConnectorData<T> {

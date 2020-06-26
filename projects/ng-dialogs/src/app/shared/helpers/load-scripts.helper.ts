@@ -1,9 +1,17 @@
-export function loadScripts(scriptObjects: ScriptObject[], callback: (...args: any[]) => any, iteration = 0) {
+export function loadScripts(scriptObjects: ScriptObject[], callback: () => any, iteration = 0) {
   const isLast = scriptObjects.length === iteration + 1;
   const newCallback = isLast ? callback : loadScripts.bind(this, scriptObjects, callback, iteration + 1);
   const scrObj = scriptObjects[iteration];
 
-  if (!!(window as any)[scrObj.globalVar]) {
+  const global = typeof scrObj.test === 'string' ? scrObj.test : null;
+  const test = typeof scrObj.test === 'function' ? scrObj.test : null;
+
+  if (global != null && !!(window as any)[global]) {
+    callback();
+    return;
+  }
+
+  if (test != null && test()) {
     callback();
     return;
   }
@@ -21,6 +29,7 @@ export function loadScripts(scriptObjects: ScriptObject[], callback: (...args: a
 }
 
 export class ScriptObject {
-  globalVar: string;
+  /** window.xxx or a function that returns a boolean */
+  test: string | (() => boolean);
   src: string;
 }
