@@ -42,12 +42,20 @@ export class TinyMceConfigurator {
       // if (reconfigure.optionsInit) reconfigure.optionsInit(this.options, this.instance);
     }
 
+    this.warnAboutCommonSettingsIssues();
+
   }
 
   /** options to be used - can be modified before it's applied */
   private options = { ...DefaultOptions, ...{ plugins: [...DefaultPlugins] } };  // copy the object, so changes don't affect original
 
   public addOnSettings = { ...AddOnSettings };
+
+  private warnAboutCommonSettingsIssues() {
+    const contentCss = this.connector.field.settings.ContentCss;
+    if (contentCss && contentCss?.toLocaleLowerCase().indexOf('file:') >= 0 )
+      console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
+  }
 
   /**
    * Construct TinyMce options
@@ -72,6 +80,7 @@ export class TinyMceConfigurator {
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
+      content_css: connector.field.settings?.ContentCss,
       setup, // callback function during setup
     };
 
