@@ -929,3 +929,7 @@ $tmce-split-button-hover-box-shadow: 0 0 0 1px map_get($mat-eav-item-dialog-seco
 .tox .tox-dialog-loading::before {
   background-color: rgba(0, 0, 0, .5);
 }
+
+.tox-platform-touch .tox-collection--horizontal {
+  background-color: $tmce-menubar-toolbar-color;
+}
