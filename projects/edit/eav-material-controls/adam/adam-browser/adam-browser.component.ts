@@ -252,8 +252,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           continue;
         }
         if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
-        if (adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
-        if (adamConfig.maxDepthReached && item.IsFolder) { continue; }
+        if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
+        if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
         if (allowedFileTypes.length > 0) {
           const extension = item.Name.substring(item.Name.lastIndexOf('.'));
           if (!allowedFileTypes.includes(extension)) { continue; }
@@ -297,28 +297,36 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     }
 
     // fixes
-    const fixBackSlashes = newConfig.rootSubfolder.includes('\\');
-    if (fixBackSlashes) {
-      newConfig.rootSubfolder = newConfig.rootSubfolder.replace(/\\/g, '/');
+    const resetSubfolder = oldConfig.usePortalRoot !== newConfig.usePortalRoot;
+    if (resetSubfolder) {
+      newConfig.subfolder = '';
     }
-    const fixStartingSlash = newConfig.rootSubfolder.startsWith('/');
-    if (fixStartingSlash) {
-      newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
+    if (newConfig.usePortalRoot) {
+      const fixBackSlashes = newConfig.rootSubfolder.includes('\\');
+      if (fixBackSlashes) {
+        newConfig.rootSubfolder = newConfig.rootSubfolder.replace(/\\/g, '/');
+      }
+      const fixStartingSlash = newConfig.rootSubfolder.startsWith('/');
+      if (fixStartingSlash) {
+        newConfig.rootSubfolder = newConfig.rootSubfolder.replace('/', '');
+      }
+      const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
+      if (fixRoot) {
+        newConfig.subfolder = newConfig.rootSubfolder;
+      }
+      newConfig.maxDepthReached = false; // when using portal root depth is infinite
     }
-    const fixRoot = !newConfig.subfolder.startsWith(newConfig.rootSubfolder);
-    if (fixRoot) {
-      newConfig.subfolder = newConfig.rootSubfolder;
-    }
-    const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
-    const rootDepth = newConfig.rootSubfolder ? newConfig.rootSubfolder.split('/').length : 0;
-    const fixDepth = !newConfig.usePortalRoot && currentDepth >= newConfig.folderDepth + rootDepth;
-    if (fixDepth) {
-      let folders = newConfig.subfolder.split('/');
-      folders = folders.slice(0, newConfig.folderDepth + rootDepth);
-      newConfig.subfolder = folders.join('/');
-      newConfig.maxDepthReached = true;
-    } else {
-      newConfig.maxDepthReached = false;
+    if (!newConfig.usePortalRoot) {
+      const currentDepth = newConfig.subfolder ? newConfig.subfolder.split('/').length : 0;
+      const fixDepth = currentDepth >= newConfig.folderDepth;
+      if (fixDepth) {
+        let folders = newConfig.subfolder.split('/');
+        folders = folders.slice(0, newConfig.folderDepth);
+        newConfig.subfolder = folders.join('/');
+        newConfig.maxDepthReached = true;
+      } else {
+        newConfig.maxDepthReached = false;
+      }
     }
     this.adamConfig$.next(newConfig);
 
@@ -335,7 +343,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
       newDzConfig.url = newUrl;
     }
-    const uploadDisabled = !newConfig.allowEdit || (newConfig.rootSubfolder === newConfig.subfolder && !newConfig.allowAssetsInRoot);
+    const uploadDisabled = !newConfig.allowEdit
+      || (
+        (newConfig.subfolder === '' || newConfig.usePortalRoot && newConfig.subfolder === newConfig.rootSubfolder)
+        && !newConfig.allowAssetsInRoot
+      );
     const fixDisabled = oldDzConfig.disabled !== uploadDisabled;
     if (fixDisabled) {
       newDzConfig.disabled = uploadDisabled;

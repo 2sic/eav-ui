@@ -10,7 +10,7 @@
 
       <!-- click to upload -->
       <div
-        *ngIf="!data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        *ngIf="!data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
         class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
         [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
@@ -26,7 +26,7 @@
 
       <!-- paste image from clipboard -->
       <div #pasteDiv
-        *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
         appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
         [matTooltip]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
@@ -42,7 +42,7 @@
 
       <!-- add folder -->
       <div
-        *ngIf="!data.adamConfig.maxDepthReached && !data.disabled && data.adamConfig.allowEdit && !(data.adamConfig.rootSubfolder === data.adamConfig.subfolder && !data.adamConfig.allowAssetsInRoot)"
+        *ngIf="!data.adamConfig.maxDepthReached && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
         class="dz-preview" (click)="addFolder()"
         [matTooltip]="'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
@@ -53,7 +53,8 @@
       </div>
 
       <!-- browse up a folder -->
-      <ng-container *ngIf="data.adamConfig.subfolder !== data.adamConfig.rootSubfolder">
+      <ng-container
+        *ngIf="data.adamConfig.subfolder !== '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder !== data.adamConfig.rootSubfolder">
         <div class="dz-preview" (click)="goUp()"
           [matTooltip]="'Fields.Hyperlink.AdamFileManager.BackFolderTip' | translate">
           <div class="dz-image adam-browse-background-icon adam-browse-background">
