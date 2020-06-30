@@ -147,6 +147,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.config.adam.setConfig({
       rootSubfolder: settings.Paths,
       fileFilter: settings.FileFilter,
+      autoLoad: true,
     });
   }
 
