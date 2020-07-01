@@ -21,10 +21,11 @@
         <mat-panel-description></mat-panel-description>
       </mat-expansion-panel-header>
 
+      <!-- spm TODO: Remove description from here. It will only be available in metadata -->
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Description</mat-label>
-          <input matInput type="text" [(ngModel)]="contentType.Description" name="Description">
+          <input matInput type="text" [ngModel]="contentType.Description" name="Description" disabled>
         </mat-form-field>
       </div>
 
