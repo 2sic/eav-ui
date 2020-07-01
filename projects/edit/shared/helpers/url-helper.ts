@@ -6,6 +6,7 @@ import { VersioningOptions } from '../models/eav/versioning-options';
 import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { paramDecode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 export class UrlHelper {
 
@@ -21,7 +22,7 @@ export class UrlHelper {
 
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
-    const editFormData: EditForm = JSON.parse(decodeURIComponent(route.snapshot.params.items));
+    const editFormData: EditForm = JSON.parse(paramDecode(route.snapshot.params.items));
     return new EavConfiguration(
       context.zoneId.toString(),
       context.appId.toString(),

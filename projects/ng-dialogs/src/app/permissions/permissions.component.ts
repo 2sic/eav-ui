@@ -14,6 +14,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-permissions',
@@ -131,7 +132,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         items: [{ EntityId: permission.Id.toString() }],
       };
     }
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   private deletePermission(permission: Permission) {

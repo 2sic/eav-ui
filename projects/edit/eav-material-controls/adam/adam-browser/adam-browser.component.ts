@@ -18,6 +18,7 @@ import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form
 import { EavService } from '../../../shared/services/eav.service';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types';
+import { paramEncode } from '../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -164,14 +165,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         }
       }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   editItemMetadata(metadataId: string) {
     const form: EditForm = {
       items: [{ EntityId: metadataId.toString() }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   goUp() {

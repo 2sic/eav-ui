@@ -15,6 +15,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-queries',
@@ -97,7 +98,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         ? [{ ContentTypeName: eavConstants.contentTypes.query, Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters } }]
         : [{ EntityId: query.Id.toString() }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   private idValueGetter(params: ValueGetterParams) {

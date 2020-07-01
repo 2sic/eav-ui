@@ -18,6 +18,7 @@ import { DataSource } from './models/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';
 import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { QueryResultComponent } from './query-result/query-result.component';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-visual-query',
@@ -133,7 +134,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
           const form: EditForm = {
             items: [{ EntityId: success[0].Id.toString() }],
           };
-          this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+          this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
         } else { // Check if the type exists, and if yes, create new Entity
           this.contentTypesService.getDetails(contentTypeName, { ignoreErrors: true }).subscribe({
             next: (res: any) => {
@@ -146,7 +147,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
                   }
                 }],
               };
-              this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+              this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
             },
             error: () => {
               alert('Server reports error - this usually means that this data-source doesn\'t have any configuration');
@@ -168,7 +169,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
       const form: EditForm = {
         items: [{ EntityId: this.queryDef.id.toString() }],
       };
-      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     });
   }
 

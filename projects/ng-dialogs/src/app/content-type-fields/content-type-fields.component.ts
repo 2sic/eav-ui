@@ -21,6 +21,7 @@ import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-typ
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -206,7 +207,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.createItemDefinition(field, field.InputType)
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {

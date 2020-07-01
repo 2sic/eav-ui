@@ -10,6 +10,7 @@ import { ContentGroupService } from './services/content-group.service';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -80,7 +81,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
         },
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   editItem(id: number) {
@@ -89,7 +90,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
         { EntityId: id.toString() },
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   drop(event: CdkDragDrop<any[]>) {

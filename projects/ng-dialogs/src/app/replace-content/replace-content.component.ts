@@ -9,6 +9,7 @@ import { ContentGroupService } from '../manage-content-list/services/content-gro
 import { ReplaceOption } from './models/replace-option.model';
 import { ContentGroup, ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { EditForm } from '../shared/models/edit-form.model';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-replace-content',
@@ -62,7 +63,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: this.item.id }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   closeDialog() {

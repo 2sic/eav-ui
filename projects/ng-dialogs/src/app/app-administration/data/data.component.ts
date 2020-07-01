@@ -18,6 +18,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-data',
@@ -200,7 +201,7 @@ export class DataComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   private editFields(params: CellClickedEvent) {
@@ -222,7 +223,7 @@ export class DataComponent implements OnInit, OnDestroy {
         }]
         : [{ EntityId: contentType.Metadata.Id.toString() }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   private openExport(contentType: ContentType) {

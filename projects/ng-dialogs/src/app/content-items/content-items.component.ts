@@ -29,6 +29,7 @@ import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-content-items',
@@ -123,7 +124,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         items: [{ EntityId: item.Id.toString() }],
       };
     }
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   exportContent() {
@@ -191,7 +192,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         },
       }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   debugFilter() {
@@ -288,7 +289,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   private export(item: ContentItem) {

@@ -13,6 +13,7 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { paramEncode } from '../../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-entity-default-list',
@@ -102,7 +103,7 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ EntityId: entityId }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   /** Remove entity value from form */
