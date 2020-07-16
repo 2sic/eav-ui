@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding, OnDestroy, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription, forkJoin, of } from 'rxjs';
+import { map, mergeMap, share, catchError, toArray, filter, concatMap } from 'rxjs/operators';
 
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
@@ -11,14 +14,18 @@ import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers
 import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/constants/content-type.patterns';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { InputTypeConstants } from '../constants/input-type.constants';
+import { DataTypeConstants } from '../constants/data-type.constants';
 
 @Component({
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
   styleUrls: ['./edit-content-type-fields.component.scss']
 })
-export class EditContentTypeFieldsComponent implements OnInit {
-  fields: Partial<Field>[];
+export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+  @ViewChild('ngForm', { read: NgForm }) form: NgForm;
+
+  fields: Partial<Field>[] = [];
   editMode: boolean;
   dataTypes: DataType[];
   inputTypeOptions: FieldInputTypeOption[];
@@ -27,9 +34,10 @@ export class EditContentTypeFieldsComponent implements OnInit {
   inputTypeHints: string[] = [];
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
+  findIcon = calculateTypeIcon;
 
-  private contentTypeStaticName: string;
   private contentType: ContentType;
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
@@ -38,39 +46,57 @@ export class EditContentTypeFieldsComponent implements OnInit {
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
   ) {
-    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+    this.dialogRef.disableClose = true;
+    this.subscription.add(this.dialogRef.backdropClick().subscribe(event => {
+      if (this.form.dirty) {
+        const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
+        if (!confirmed) { return; }
+      }
+      this.closeDialog();
+    }));
   }
 
-  async ngOnInit() {
-    this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
-    const allFields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
+  ngOnInit() {
+    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
     this.editMode = (editFieldId !== null);
-    const rawDataTypes = await this.contentTypesFieldsService.typeListRetrieve().toPromise();
-    this.dataTypes = calculateDataTypes(rawDataTypes);
-    this.inputTypeOptions = await this.contentTypesFieldsService.getInputTypesList().toPromise();
 
-    if (this.editMode) {
-      const editField = allFields.find(field => field.Id === editFieldId);
-      this.fields = [editField];
-    } else {
-      this.fields = [];
-      for (let i = 1; i <= 8; i++) {
-        this.fields.push({
-          Id: 0,
-          Type: 'String',
-          InputType: 'string-default',
-          StaticName: '',
-          IsTitle: allFields.length === 0,
-          SortOrder: allFields.length + i,
-        });
+    const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
+    const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
+    const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
+    const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
+
+    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(joined => {
+      this.contentType = joined[0];
+      const allFields = joined[1];
+      this.dataTypes = joined[2];
+      this.inputTypeOptions = joined[3];
+
+      if (this.editMode) {
+        const editField = allFields.find(field => field.Id === editFieldId);
+        this.fields.push(editField);
+      } else {
+        for (let i = 1; i <= 8; i++) {
+          this.fields.push({
+            Id: 0,
+            Type: DataTypeConstants.String,
+            InputType: InputTypeConstants.StringDefault,
+            StaticName: '',
+            IsTitle: allFields.length === 0,
+            SortOrder: allFields.length + i,
+          });
+        }
       }
-    }
 
-    for (let i = 0; i < this.fields.length; i++) {
-      this.calculateInputTypeOptions(i);
-      this.calculateHints(i);
-    }
+      for (let i = 0; i < this.fields.length; i++) {
+        this.calculateInputTypeOptions(i);
+        this.calculateHints(i);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   closeDialog() {
@@ -93,23 +119,25 @@ export class EditContentTypeFieldsComponent implements OnInit {
     this.inputTypeHints[index] = selectedInputType ? selectedInputType.description : '';
   }
 
-  async onSubmit() {
+  save() {
     this.snackBar.open('Saving...');
     if (this.editMode) {
-      const res = await this.contentTypesFieldsService
-        .updateInputType(this.fields[0].Id, this.fields[0].StaticName, this.fields[0].InputType)
-        .toPromise();
+      const field = this.fields[0];
+      this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(res => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.closeDialog();
+      });
     } else {
-      const rowsWithValue = this.fields.filter(field => field.StaticName);
-      for (const rowWithValue of rowsWithValue) {
-        await this.contentTypesFieldsService.add(rowWithValue, this.contentType.Id).toPromise();
-      }
+      of(...this.fields).pipe(
+        filter(field => !!field.StaticName),
+        concatMap(field =>
+          this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
+        ),
+        toArray(),
+      ).subscribe(responses => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.closeDialog();
+      });
     }
-    this.snackBar.open('Saved', null, { duration: 2000 });
-    this.closeDialog();
-  }
-
-  findIcon(typeName: string) {
-    return calculateTypeIcon(typeName);
   }
 }

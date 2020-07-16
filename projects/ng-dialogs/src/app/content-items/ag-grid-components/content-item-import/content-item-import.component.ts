@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { ContentItemsService } from '../../services/content-items.service';
@@ -9,6 +9,8 @@ import { ContentItemsService } from '../../services/content-items.service';
   styleUrls: ['./content-item-import.component.scss']
 })
 export class ContentItemImportComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   private viewStates = {
     Default: 1,
     Waiting: 2,

@@ -2,70 +2,72 @@
   <div class="dialog-title-box">{{ id ? 'Edit Content Type' : 'New Content Type' }}</div>
 </div>
 
-<form *ngIf="contentType" (ngSubmit)="onSubmit()" #ngForm="ngForm">
-  <div class="edit-input">
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Name</mat-label>
-      <input matInput type="text" [pattern]="contentTypeNamePattern" [(ngModel)]="contentType.Name" name="Name" required
-        #name='ngModel'>
-    </mat-form-field>
-    <ng-container *ngIf="name.touched && name.errors">
-      <app-field-hint *ngIf="name.errors.required" [isError]="true">This field is required</app-field-hint>
-      <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
-    </ng-container>
+<form class="dialog-form" *ngIf="contentType" #ngForm="ngForm">
+  <div class="dialog-form-content fancy-scrollbar-light">
+    <div class="edit-input">
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" [pattern]="contentTypeNamePattern" [(ngModel)]="contentType.Name" name="Name"
+          required #name="ngModel">
+      </mat-form-field>
+      <ng-container *ngIf="name.touched && name.errors">
+        <app-field-hint *ngIf="name.errors.required" [isError]="true">This field is required</app-field-hint>
+        <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
+      </ng-container>
+    </div>
+    <mat-accordion [@.disabled]="disableAnimation">
+      <mat-expansion-panel expanded="false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Advanced</mat-panel-title>
+          <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- spm TODO: Remove description from here. It will only be available in metadata -->
+        <div class="edit-input">
+          <mat-form-field appearance="standard" color="accent">
+            <mat-label>Description</mat-label>
+            <input matInput type="text" [ngModel]="contentType.Description" name="Description" disabled>
+          </mat-form-field>
+        </div>
+
+        <div class="edit-input">
+          <mat-form-field appearance="standard" color="accent">
+            <mat-label>Scope</mat-label>
+            <mat-select [ngModel]="contentType.Scope" name="Scope" (selectionChange)="changeScope($event)"
+              [disabled]="lockScope">
+              <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
+              </mat-option>
+              <mat-option value="Other">Other...</mat-option>
+            </mat-select>
+            <button mat-icon-button type="button" matSuffix [matTooltip]="lockScope ? 'Unlock' : 'Lock'">
+              <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
+              <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
+            </button>
+          </mat-form-field>
+          <app-field-hint>
+            The scope should almost never be changed -
+            <a href="http://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+          </app-field-hint>
+        </div>
+
+        <div class="edit-input">
+          <mat-form-field appearance="standard" color="accent">
+            <mat-label>Static Name</mat-label>
+            <input matInput type="text" [ngModel]="contentType.StaticName" name="StaticName" disabled>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="contentType.SharedDefId" class="edit-input">
+          <h3>Shared Content Type (Ghost)</h3>
+          <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
+          <p>Uses Type Definition of: {{ contentType.SharedDefId }}</p>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
-  <mat-accordion [@.disabled]="disableAnimation">
-    <mat-expansion-panel expanded="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Advanced</mat-panel-title>
-        <mat-panel-description></mat-panel-description>
-      </mat-expansion-panel-header>
 
-      <!-- spm TODO: Remove description from here. It will only be available in metadata -->
-      <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Description</mat-label>
-          <input matInput type="text" [ngModel]="contentType.Description" name="Description" disabled>
-        </mat-form-field>
-      </div>
-
-      <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Scope</mat-label>
-          <mat-select [ngModel]="contentType.Scope" name="Scope" (selectionChange)="changeScope($event)"
-            [disabled]="lockScope">
-            <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">{{ scopeOption.name }}
-            </mat-option>
-            <mat-option value="Other">Other...</mat-option>
-          </mat-select>
-          <button mat-icon-button type="button" matSuffix [matTooltip]="lockScope ? 'Unlock' : 'Lock'">
-            <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
-            <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
-          </button>
-        </mat-form-field>
-        <app-field-hint>
-          The scope should almost never be changed -
-          <a href="http://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
-        </app-field-hint>
-      </div>
-
-      <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Static Name</mat-label>
-          <input matInput type="text" [ngModel]="contentType.StaticName" name="StaticName" disabled>
-        </mat-form-field>
-      </div>
-
-      <div *ngIf="contentType.SharedDefId" class="edit-input">
-        <h3>Shared Content Type (Ghost)</h3>
-        <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
-        <p>Uses Type Definition of: {{ contentType.SharedDefId }}</p>
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion>
-
-  <div class="dialog-actions-box">
-    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid">Save</button>
+  <div class="dialog-form-actions">
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="save()">Save</button>
   </div>
 </form>

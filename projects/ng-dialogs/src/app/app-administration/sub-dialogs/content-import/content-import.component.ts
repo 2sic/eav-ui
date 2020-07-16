@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -12,6 +12,8 @@ import { keyLangPri } from '../../../shared/constants/session.constants';
   styleUrls: ['./content-import.component.scss']
 })
 export class ContentImportComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   formValues: ContentImport;
   viewStateSelected: number;
   evaluationResult: EvaluateContentResult;

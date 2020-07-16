@@ -8,56 +8,58 @@
   <a href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
 </p>
 
-<form #ngForm="ngForm">
-  <div>
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Languages</mat-label>
-      <mat-select [(ngModel)]="formValues.language" name="Language">
-        <mat-option value="">All</mat-option>
-        <mat-option *ngFor="let lang of languages" [value]="lang.key">{{ lang.key }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<form #ngForm="ngForm" class="dialog-form">
+  <div class="dialog-form-content fancy-scrollbar-light">
+    <div>
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Languages</mat-label>
+        <mat-select [(ngModel)]="formValues.language" name="Language">
+          <mat-option value="">All</mat-option>
+          <mat-option *ngFor="let lang of languages" [value]="lang.key">{{ lang.key }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <p class="field-label">Export data</p>
+      <mat-radio-group [(ngModel)]="formValues.recordExport" name="RecordExport">
+        <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
+        </mat-radio-button>
+        <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
+        <mat-radio-button *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
+          items</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div>
+      <p class="field-label">Value references to other languages</p>
+      <mat-radio-group [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
+        [disabled]="formValues.recordExport === 'Blank'">
+        <mat-radio-button value="Link">Keep references to other languages (for re-import)
+        </mat-radio-button>
+        <mat-radio-button value="Resolve">Replace references with values</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div>
+      <p class="field-label">File / page references</p>
+      <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
+        [disabled]="formValues.recordExport === 'Blank'">
+        <mat-radio-button value="Link">Keep references (for re-import, for example Page:4711)
+        </mat-radio-button>
+        <mat-radio-button value="Resolve">Replace references with real URLs (for example
+          /Portals/0...)
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
   </div>
 
-  <div>
-    <p class="field-label">Export data</p>
-    <mat-radio-group [(ngModel)]="formValues.recordExport" name="RecordExport">
-      <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
-      </mat-radio-button>
-      <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
-      <mat-radio-button *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
-        items</mat-radio-button>
-    </mat-radio-group>
-  </div>
-
-  <div>
-    <p class="field-label">Value references to other languages</p>
-    <mat-radio-group [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
-      [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button value="Link">Keep references to other languages (for re-import)
-      </mat-radio-button>
-      <mat-radio-button value="Resolve">Replace references with values</mat-radio-button>
-    </mat-radio-group>
-  </div>
-
-  <div>
-    <p class="field-label">File / page references</p>
-    <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
-      [disabled]="formValues.recordExport === 'Blank'">
-      <mat-radio-button value="Link">Keep references (for re-import, for example Page:4711)
-      </mat-radio-button>
-      <mat-radio-button value="Resolve">Replace references with real URLs (for example
-        /Portals/0...)
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
-
-  <div class="dialog-actions-box">
-    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="button" [disabled]="!ngForm.form.valid" (click)="exportJson()">
+  <div class="dialog-form-actions">
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button [disabled]="!ngForm.form.valid" (click)="exportJson()">
       Export Type Definition as Json (for developers)
     </button>
-    <button mat-raised-button type="button" color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
+    <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
       Export
     </button>
   </div>

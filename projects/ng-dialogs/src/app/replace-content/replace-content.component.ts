@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -17,6 +17,8 @@ import { paramEncode } from '../shared/helpers/url-prep.helper';
   styleUrls: ['./replace-content.component.scss']
 })
 export class ReplaceContentComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   options: ReplaceOption[];
   item: ContentGroupAdd;
   contentTypeName: string;

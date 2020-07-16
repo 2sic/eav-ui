@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostBinding } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
@@ -15,6 +15,8 @@ import { contentTypeNamePattern, contentTypeNameError } from '../../constants/co
   styleUrls: ['./edit-content-type.component.scss']
 })
 export class EditContentTypeComponent implements OnInit, AfterViewInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   scope: string;
   id: number;
   contentType: ContentTypeEdit;
@@ -83,7 +85,7 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubmit() {
+  save() {
     this.snackBar.open('Saving...');
     this.contentTypesService.save(this.contentType).subscribe(result => {
       this.snackBar.open('Saved', null, { duration: 2000 });

@@ -29,7 +29,7 @@
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Duration in Minutes</mat-label>
           <input matInput type="number" min="0" [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
-            name="Duration" #duration='ngModel'>
+            name="Duration" #duration="ngModel">
         </mat-form-field>
         <ng-container *ngIf="duration.touched && duration.errors">
           <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">Only positive whole numbers</app-field-hint>

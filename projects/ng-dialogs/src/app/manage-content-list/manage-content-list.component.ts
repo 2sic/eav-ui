@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -18,6 +18,8 @@ import { paramEncode } from '../shared/helpers/url-prep.helper';
   styleUrls: ['./manage-content-list.component.scss']
 })
 export class ManageContentListComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   items: GroupHeader[];
   header: GroupHeader;
 
