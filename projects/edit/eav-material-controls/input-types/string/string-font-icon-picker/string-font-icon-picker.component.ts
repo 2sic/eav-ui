@@ -49,7 +49,7 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
       })
     );
     this.previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
-    this.filteredIcons$ = combineLatest(this.value$, this.iconOptions$$).pipe(
+    this.filteredIcons$ = combineLatest([this.value$, this.iconOptions$$]).pipe(
       map(combined => {
         const value = combined[0];
         const iconOptions = combined[1];

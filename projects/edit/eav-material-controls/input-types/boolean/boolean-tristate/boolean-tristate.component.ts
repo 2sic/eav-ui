@@ -27,7 +27,7 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
   ngOnInit() {
     super.ngOnInit();
     this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
-    this.label$ = combineLatest(this.value$, this.settings$, this.label$).pipe(map(combined => {
+    this.label$ = combineLatest([this.value$, this.settings$, this.label$]).pipe(map(combined => {
       const value = combined[0];
       const settings = combined[1];
       const label = combined[2];

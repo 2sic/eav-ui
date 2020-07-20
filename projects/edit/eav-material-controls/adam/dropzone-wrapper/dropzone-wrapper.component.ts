@@ -46,7 +46,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
       startWith(this.control.disabled),
       distinctUntilChanged(),
     );
-    this.dropzoneDisabled$ = combineLatest(this.disabled$, this.dropzoneConfig$).pipe(map(combined => {
+    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(map(combined => {
       const controlDisabled = combined[0];
       const dropzoneConfig = combined[1];
       const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
