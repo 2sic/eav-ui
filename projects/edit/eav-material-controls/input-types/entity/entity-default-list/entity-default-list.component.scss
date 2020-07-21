@@ -21,73 +21,110 @@
   background-repeat: repeat-x;
 }
 
-$label-top: 12px;
-
-.cursor-move {
-  cursor: move;
-}
-
-.dnd-element {
-  position: relative;
-  height: 30px;
-
-  @extend %field-border;
-
-  &:hover:not(.dnd-element--disabled) {
-    @extend %field-border--hover;
-  }
-
-  &.first {
-    height: 40px;
-    margin-top: calc(#{$label-top} + 12px);
-  }
-
-  .mat-caption {
-    background-color: white;
-    position: absolute;
-    top: -$label-top;
-    z-index: 1;
-    pointer-events: none;
-    font-size: 12px;
-    line-height: 14px;
-  }
-}
-
-.dnd-element-multi {
-  position: relative;
-  height: 56px;
-  background: white;
-  border-radius: 32px;
-  border: 1px solid $field-border-color--initial;
-  margin: 4px 0 4px 0;
-  padding: 0 16px 0 16px;
-}
-
-.dnd-element-content {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: -4px;
-}
-
-.dnd-element-content mat-label {
+.field-label {
+  display: block;
+  user-select: none;
+  font-size: 12px;
+  line-height: 14px;
+  padding-top: 12px;
+  padding-bottom: 4px;
   color: rgba($editUI-foreground-color, 0.44);
+
+  &.disabled {
+    color: $editUI-label-disabled-color;
+  }
 }
 
-.dnd-element-text {
-  white-space: nowrap;
+.normal-list {
+  .normal-item {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @extend %field-border;
+
+    &:hover:not(.disabled) {
+      @extend %field-border--hover;
+    }
+
+    &.disabled {
+      @extend %field-border--disabled;
+    }
+
+    // Ugly fix to match the height of a customized material field
+    &:first-of-type {
+      height: 31px;
+
+      .item-title {
+        margin-top: -2px;
+      }
+
+      .item-actions {
+        margin-top: -2px;
+      }
+    }
+  }
+}
+
+.dnd-list {
+  border: 1px solid #ccc;
+  border-radius: 4px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 16px;
-  line-height: 20px;
+  margin-bottom: 32px;
 }
 
-.dnd-buttons {
+.dnd-item {
+  height: 40px;
+  border-bottom: 1px solid #ccc;
+  padding: 0 8px;
   display: flex;
-  margin-bottom: -4px;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  box-sizing: border-box;
+  font-size: 14px;
+
+  &:not(.disabled) {
+    cursor: move;
+  }
+
+  &:last-child {
+    border: none;
+  }
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  &__icon {
+    margin-right: 8px;
+    opacity: 0.4;
+    user-select: none;
+  }
+
+  &__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &.disabled {
+    .item-title__icon {
+      color: $editUI-label-disabled-color;
+    }
+
+    .item-title__text {
+      color: $editUI-label-disabled-color;
+      cursor: default;
+    }
+  }
+}
+
+.item-actions {
+  flex-shrink: 0;
 
   .mat-icon-button {
     width: 30px;
@@ -96,33 +133,9 @@ $label-top: 12px;
   }
 }
 
-.dnd-element--disabled {
-  @extend %field-border--disabled;
-
-  .dnd-element-text {
-    color: $editUI-label-disabled-color;
-  }
-
-  .dnd-element-content mat-label,
-  .dnd-element-content mat-icon {
-    color: $editUI-label-disabled-color;
-  }
-}
-
-.dnd-space {
-  height: 32px;
-}
-
-.dnd-box {
-  flex-direction: row;
-  box-sizing: border-box;
-  display: flex;
-  place-content: center flex-start;
-  align-items: center;
-}
-
-// drag and drop
 .cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -136,6 +149,6 @@ $label-top: 12px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.dnd-list.cdk-drop-list-dragging .dnd-box:not(.cdk-drag-placeholder) {
+.dnd-list.cdk-drop-list-dragging .dnd-item:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

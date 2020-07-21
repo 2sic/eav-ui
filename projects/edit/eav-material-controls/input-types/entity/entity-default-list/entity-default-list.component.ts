@@ -93,10 +93,6 @@ export class EntityDefaultListComponent implements OnInit, OnDestroy {
     return entity ? entity.Id : value;
   }
 
-  stopDnD(event: MouseEvent) {
-    event.stopPropagation();
-  }
-
   /** Open edit eav item dialog for item */
   edit(value: string) {
     const entityId = this.getEntityId(value);

@@ -99,10 +99,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     moveItemInArray(this.items, event.previousIndex, event.currentIndex);
   }
 
-  stopDnD(event: MouseEvent) {
-    event.stopPropagation();
-  }
-
   closeDialog() {
     this.dialogRef.close();
   }

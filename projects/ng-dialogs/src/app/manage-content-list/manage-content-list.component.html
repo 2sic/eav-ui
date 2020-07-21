@@ -30,7 +30,7 @@
         <span class="dnd-item__title-text">{{ item.Title }} ({{ item.Id }})</span>
       </div>
       <div *ngIf="item.Id !== 0">
-        <button mat-icon-button matTooltip="Edit item" (mousedown)="stopDnD($event)" (click)="editItem(item.Id)">
+        <button mat-icon-button matTooltip="Edit item" appMousedownStopPropagation (click)="editItem(item.Id)">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
