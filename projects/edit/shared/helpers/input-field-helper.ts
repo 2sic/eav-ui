@@ -119,20 +119,21 @@ export class InputFieldHelper {
 
     switch (inputType) {
       case InputTypeConstants.BooleanDefault:
-        return defaultValue !== undefined && defaultValue !== null
+        return defaultValue != null
           ? defaultValue.toLowerCase() === 'true'
           : false;
       case InputTypeConstants.DatetimeDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
+        return defaultValue != null && defaultValue !== ''
           ? new Date(defaultValue)
           : null;
       case InputTypeConstants.NumberDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
+        return defaultValue != null && defaultValue !== ''
           ? Number(defaultValue)
           : '';
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
-        if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
+      case InputTypeConstants.EntityContentBlocks:
+        if (!(defaultValue != null && defaultValue !== '')) {
           return []; // no default value
         }
         // 3 possibilities

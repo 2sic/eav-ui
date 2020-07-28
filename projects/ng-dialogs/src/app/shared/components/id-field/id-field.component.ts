@@ -21,11 +21,11 @@ export class IdFieldComponent implements ICellRendererAngularComp {
     this.params = params;
     this.tooltip = this.params.value;
     const data: any = this.params.data;
-    if (data.Id !== undefined && data.Id !== null) {
+    if (data.Id != null) {
       this.id = data.Id;
-    } else if (data.id !== undefined && data.id !== null) {
+    } else if (data.id != null) {
       this.id = data.id;
-    } else if (data.Code !== undefined && data.Code !== null) {
+    } else if (data.Code != null) {
       this.id = data.Code;
     }
   }

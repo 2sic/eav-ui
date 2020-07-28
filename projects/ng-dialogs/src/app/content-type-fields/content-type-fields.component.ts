@@ -211,7 +211,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {
-    return field.Metadata[metadataType] !== undefined
+    return field.Metadata[metadataType] != null
       ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
       : {
         ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
