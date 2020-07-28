@@ -1,78 +1,70 @@
-<app-entity-default-list [config]="config" [group]="group" [autoCompleteInputControl]="autoCompleteInputControl"
-  [isStringFormat]="isStringFormat" [freeTextMode]="freeTextMode" (callAvailableEntities)="setAvailableEntities()">
-</app-entity-default-list>
-
-<!-- pick existing entity close-->
 <div [hidden]="freeTextMode">
   <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
     <div
-      [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
-      <div [hidden]="!(enableAddExisting && (allowMultiValue || (chosenEntities && chosenEntities.length < 1)))">
+      [ngClass]="(settings.EnableCreate && settings.EntityType && !selectedEntities.length && !settings.AllowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
+      <div [hidden]="!(settings.EnableAddExisting && (settings.AllowMultiValue || !selectedEntities.length))">
         <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
-          'mat-form-field-invalid': inputInvalid && touched
+          'mat-form-field-invalid': control.invalid && control.touched
         }">
-          <input matInput type="text" #autoCompleteInput [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-            [disabled]="disabled" (blur)="setTouched()" (input)="filterSelectionList($event.target.value)">
-          <button *ngIf="!enableTextEntry" [disabled]="disabled" type="button" matSuffix mat-icon-button>
+          <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto" [disabled]="disabled"
+            (blur)="control.markAsTouched()" (input)="filterSelectionList($event.target.value)">
+          <button mat-icon-button matSuffix [disabled]="disabled" *ngIf="!settings.EnableTextEntry">
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
-          <a matSuffix *ngIf="enableTextEntry" (click)="!disabled && freeTextModeChange($event)"
-            fxLayoutAlign="center center">
-            <button [disabled]="disabled" type="button" mat-icon-button>
-              <mat-icon matTooltip="{{ 'Fields.String.Freetext' | translate }}">text_fields</mat-icon>
+          <a matSuffix *ngIf="settings.EnableTextEntry" fxLayoutAlign="center center" appClickStopPropagation
+            (click)="!disabled && toggleFreeText()">
+            <button mat-icon-button [disabled]="disabled">
+              <mat-icon [matTooltip]="'Fields.String.Freetext' | translate">text_fields</mat-icon>
             </button>
-            <button *ngIf="freeTextMode" [disabled]="disabled" type="button" mat-icon-button>
+            <button mat-icon-button [disabled]="disabled" *ngIf="freeTextMode">
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </a>
-          <mat-label [ngClass]="inputInvalid && touched ? 'mat-error' : ''">{{
-            allowMultiValue ?
-            ('Fields.Entity.Choose' | translate) : config.field.label}}
-            {{config.field.required ? '*': '' }}</mat-label>
+          <mat-label [ngClass]="{ 'mat-error': control.invalid && control.touched }">
+            {{ settings.AllowMultiValue ? ('Fields.Entity.Choose' | translate) : label }}
+            {{ required ? '*': '' }}
+          </mat-label>
         </mat-form-field>
 
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
-          <mat-option *ngFor="let item of selectEntities" [value]="item.Value"
-            [disabled]="isInChosenEntities(item.Value)">
-            <span>{{item.Text ? item.Text: item.Value}}</span>
+          <mat-option *ngFor="let item of filteredEntities" [value]="item.Value"
+            [disabled]="isOptionDisabled(item.Value)">
+            <span>{{ item.Text ? item.Text : item.Value }}</span>
           </mat-option>
         </mat-autocomplete>
       </div>
     </div>
-    <div
-      [ngClass]="(enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'"
-      fxLayoutAlign="end center">
+    <div fxLayoutAlign="end center"
+      [ngClass]="(settings.EnableCreate && settings.EntityType && !selectedEntities.length && !settings.AllowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
       <!-- create new entity to add to this list -->
-      <button mat-icon-button *ngIf="enableCreate && entityType !== '' && chosenEntities.length < 1 && !allowMultiValue"
-        type="button" (click)="openNewEntityDialog()" [disabled]="disabled || disableAddNew"
-        matTooltip="{{ 'Fields.Entity.New' | translate }}">
+      <button mat-icon-button [matTooltip]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
+        *ngIf="settings.EnableCreate && settings.EntityType && !selectedEntities.length && !settings.AllowMultiValue"
+        (click)="openNewEntityDialog()">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </div>
   </div>
 </div>
 
-<!-- formly-skip-ng-model-attrs-manipulator -->
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
-  <input matInput type="text" [required]='config.field.required' [formControlName]="config.field.name"
-    [placeholder]="config.field.placeholder">
+  <input matInput [required]="required" [formControlName]="config.field.name" [placeholder]="placeholder">
 
-  <a matSuffix (click)="!disabled && freeTextModeChange($event)">
-    <button [disabled]="disabled" type="button" mat-icon-button>
+  <a matSuffix appClickStopPropagation (click)="!disabled && toggleFreeText()">
+    <button mat-icon-button [disabled]="disabled">
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
   </a>
-  <mat-label>{{config.field.label}}</mat-label>
+  <mat-label>{{ label }}</mat-label>
 </mat-form-field>
 
-<div *ngIf="debugEnabled">debug: <span (click)="insertNull()">add null-item</span></div>
+<div *ngIf="debugEnabled$ | async">debug: <span (click)="insertNull()">add null-item</span></div>
 
 <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
 <!-- add new entity -->
-<div *ngIf="!freeTextMode && enableCreate && entityType !== '' && allowMultiValue">
-  <button mat-mini-fab color="accent" type="button" (click)="openNewEntityDialog()" [disabled]="disabled"
-    matTooltip="{{ 'Fields.Entity.New' | translate }}">
+<div *ngIf="!freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue">
+  <button mat-mini-fab color="accent" [matTooltip]="'Fields.Entity.New' | translate" [disabled]="disabled"
+    (click)="openNewEntityDialog()">
     <mat-icon>add</mat-icon>
   </button>
 </div>

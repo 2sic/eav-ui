@@ -1,23 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { throwError, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+
+import { QueryStreams } from '../../eav-material-controls/input-types/entity/entity-query/entity-query.models';
 
 @Injectable()
 export class QueryService {
-  constructor(private httpClient: HttpClient, private dnnContext: DnnContext) { }
+  constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
-  /** (used in entity-query and string-dropdown-query input type) */
-  getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string, ignoreErrors: boolean) {
-    return this.httpClient
-      .get(this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? '&' + params : ''}`))
-      .pipe(catchError(error => this.handleError(error))) as Observable<any>;
-  }
-
-  private handleError(error: Error) {
-    const errMsg = error.message || 'Server error';
-    console.error(errMsg);
-    return throwError(errMsg);
+  getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string) {
+    return this.http.get(
+      this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?includeGuid=${includeGuid}${params ? `&${params}` : ''}`)
+    ) as Observable<QueryStreams>;
   }
 }

@@ -1,43 +1,58 @@
 
-import { FormGroup } from '@angular/forms';
-import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
-import { EntityDefaultComponent } from '../entity-default/entity-default.component';
-import { Field } from '../../../../eav-dynamic-form/model/field';
-import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
-import { EntityFieldConfigSet } from '../../../../shared/models/entity/entity-field-config-set';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EntityService } from '../../../../shared/services/entity.service';
+import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { FieldSettings } from '../../../../../edit-types';
+import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-content-blocks',
-  templateUrl: './entity-content-blocks.component.html',
-  styleUrls: ['./entity-content-blocks.component.scss']
+  templateUrl: '../entity-default/entity-default.component.html',
+  styleUrls: ['../entity-default/entity-default.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
-export class EntityContentBlockComponent extends EntityDefaultComponent implements Field, OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent) entityDefaultMainSearchComponent: EntityDefaultMainSearchComponent;
+export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
 
-  @Input() config: EntityFieldConfigSet;
-  @Input() group: FormGroup;
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    entityService: EntityService,
+    translate: TranslateService,
+    router: Router,
+    route: ActivatedRoute,
+    expandableFieldService: ExpandableFieldService,
+    snackBar: MatSnackBar,
+  ) {
+    super(eavService, validationMessagesService, entityService, translate, router, route, expandableFieldService, snackBar);
+  }
 
   ngOnInit() {
-    this.config.field.settings.AllowMultiValue = false;
-    this.config.field.settings.EnableRemove = true;
-    this.config.field.settings.AllowMultiValue = true; // for correct UI showing "remove"
-    this.config.field.settings.EnableAddExisting = false; // disable manual select existing
-    this.config.field.settings.EnableCreate = false; // disable manual create
-    this.config.field.settings.EnableEdit = false;
-    this.config.field.settings.EntityType = 'ContentGroupReference';
-
-    // important for calling a FieldMaskService from extended component
     super.ngOnInit();
   }
 
   ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
-  callAvailableEntities(event: Event) {
-    this.getAvailableEntities();
+  /** Override function in superclass */
+  calculateSettings(settings: FieldSettings) {
+    const fixedSettings = super.calculateSettings(settings);
+    fixedSettings.AllowMultiValue = false;
+    fixedSettings.EnableRemove = true;
+    fixedSettings.AllowMultiValue = true;
+    fixedSettings.EnableAddExisting = false;
+    fixedSettings.EnableCreate = false;
+    fixedSettings.EnableEdit = false;
+    fixedSettings.EntityType = 'ContentGroupReference';
+    return fixedSettings;
   }
 }

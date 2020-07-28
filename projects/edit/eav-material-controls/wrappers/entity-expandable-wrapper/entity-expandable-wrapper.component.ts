@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EntityFieldConfigSet } from '../../../shared/models/entity/entity-field-config-set';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
@@ -20,7 +20,7 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: EntityFieldConfigSet;
+  @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
   dialogIsOpen = false;

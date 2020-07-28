@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { FieldConfig, FieldSettings, Dropzone, Adam } from '../../../edit-types';
+import { EntityInfo } from '../../shared/models/eav/entity-info';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
@@ -11,7 +12,8 @@ export interface FieldConfigSet {
   form: FormConfig;
   dropzone?: Dropzone;
   adam?: Adam;
-  cache?: any;
+  cache?: EntityInfo[];
+  entityCache$?: BehaviorSubject<EntityInfo[]>;
 }
 
 export interface FieldConfigAngular extends FieldConfig {

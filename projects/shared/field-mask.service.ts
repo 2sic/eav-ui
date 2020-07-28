@@ -47,7 +47,7 @@ export class FieldMaskService {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    if (this.eavConfig != null) {
+    if (this.eavConfig != null && value != null) {
       value = value.replace('[App:AppId]', this.eavConfig.appId);
       value = value.replace('[App:ZoneId]', this.eavConfig.zoneId);
     }

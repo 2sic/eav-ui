@@ -11,7 +11,7 @@ import { ContentTypesFieldsService } from '../services/content-types-fields.serv
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { contentTypeNamePattern, contentTypeNameError } from '../../app-administration/constants/content-type.patterns';
+import { fieldNamePattern, fieldNameError } from '../../app-administration/constants/field-name.patterns';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { DataTypeConstants } from '../constants/data-type.constants';
@@ -32,8 +32,8 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
   inputTypeHints: string[] = [];
-  contentTypeNamePattern = contentTypeNamePattern;
-  contentTypeNameError = contentTypeNameError;
+  fieldNamePattern = fieldNamePattern;
+  fieldNameError = fieldNameError;
   findIcon = calculateTypeIcon;
 
   private contentType: ContentType;

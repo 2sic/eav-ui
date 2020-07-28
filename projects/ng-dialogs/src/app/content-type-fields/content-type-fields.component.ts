@@ -13,7 +13,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { Field } from './models/field.model';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { EditForm, AddItem, EditItem } from '../shared/models/edit-form.model';
-import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/constants/content-type.patterns';
+import { fieldNamePattern, fieldNameError } from '../app-administration/constants/field-name.patterns';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
@@ -242,8 +242,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     if (newName === null) { return; }
     newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
     if (newName === field.StaticName) { return; }
-    while (!newName.match(contentTypeNamePattern)) {
-      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${contentTypeNameError}`, newName);
+    while (!newName.match(fieldNamePattern)) {
+      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${fieldNameError}`, newName);
       if (newName === null) { return; }
       newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
       if (newName === field.StaticName) { return; }
