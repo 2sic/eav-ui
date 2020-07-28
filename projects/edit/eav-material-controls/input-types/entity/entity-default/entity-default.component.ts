@@ -20,7 +20,7 @@ import { SelectedEntity } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { paramEncode } from '../../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
-import { EntityDefaultMainSearchComponent } from '../entity-default-main-search/entity-default-main-search.component';
+import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { Helper } from '../../../../shared/helpers/helper';
 import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
 
@@ -33,7 +33,7 @@ import { ExpandableFieldService } from '../../../../shared/services/expandable-f
 })
 @InputType({})
 export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
-  @ViewChild(EntityDefaultMainSearchComponent) private entitySearchComponent: EntityDefaultMainSearchComponent;
+  @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
   useQuery = false;
   contentTypeMask: FieldMaskService;

@@ -20,10 +20,10 @@
     (deleteEntity)="deleteEntity($event)">
   </app-entity-default-list>
 
-  <app-entity-default-main-search [config]="config" [group]="group" [control]="control" [label]="data.label"
+  <app-entity-default-search [config]="config" [group]="group" [control]="control" [label]="data.label"
     [placeholder]="data.placeholder" [required]="data.required" [disabled]="data.disabled"
     [freeTextMode]="data.freeTextMode" [settings]="data.settings" [selectedEntities]="data.selectedEntities"
     [availableEntities]="data.availableEntities" [disableAddNew]="data.disableAddNew" [error]="data.error"
     (toggleFreeTextMode)="toggleFreeTextMode()" (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
-  </app-entity-default-main-search>
+  </app-entity-default-search>
 </ng-container>

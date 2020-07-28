@@ -67,7 +67,7 @@ import { TranslateGroupMenuComponent } from './localization/translate-group-menu
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
-import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-default-main-search/entity-default-main-search.component';
+import { EntityDefaultSearchComponent } from './input-types/entity/entity-default-search/entity-default-search.component';
 import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
 // tslint:disable-next-line:max-line-length
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
@@ -123,7 +123,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     LinkToOtherLanguageComponent,
     EntityExpandableWrapperComponent,
     EntityDefaultListComponent,
-    EntityDefaultMainSearchComponent,
+    EntityDefaultSearchComponent,
     EntityQueryComponent,
     HyperlinkDefaultExpandableWrapperComponent,
     DropzoneWrapperComponent,

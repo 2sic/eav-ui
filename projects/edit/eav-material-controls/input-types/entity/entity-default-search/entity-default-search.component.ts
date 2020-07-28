@@ -12,12 +12,12 @@ import { SelectedEntity } from '../entity-default/entity-default.models';
 import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 
 @Component({
-  selector: 'app-entity-default-main-search',
-  templateUrl: './entity-default-main-search.component.html',
-  styleUrls: ['./entity-default-main-search.component.scss'],
+  selector: 'app-entity-default-search',
+  templateUrl: './entity-default-search.component.html',
+  styleUrls: ['./entity-default-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityDefaultMainSearchComponent implements OnInit, OnDestroy, OnChanges {
+export class EntityDefaultSearchComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('autocomplete') autocompleteRef: ElementRef;
 
   @Input() config: FieldConfigSet;
