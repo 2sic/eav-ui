@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
@@ -40,7 +40,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   ngOnInit() {
     super.ngOnInit();
     this.separator = this.config.field.settings$.value.Separator;
-    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'));
+    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
     this.dialogIsOpen$ = this.expandableFieldService
       .getObservable()
       .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));

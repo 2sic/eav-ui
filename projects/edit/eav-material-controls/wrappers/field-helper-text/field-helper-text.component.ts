@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -8,31 +9,28 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
 @Component({
   selector: 'app-field-helper-text',
   templateUrl: './field-helper-text.component.html',
-  styleUrls: ['./field-helper-text.component.scss']
+  styleUrls: ['./field-helper-text.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FieldHelperTextComponent implements OnInit, OnDestroy {
+export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() disableError = false;
 
   isFullText = false;
+  description$: Observable<string>;
+  invalid$: Observable<boolean>;
   control: AbstractControl;
-  description: string;
-
-  private subscription = new Subscription();
-
-  get errorMessage() { return this.validationMessagesService.getErrorMessage(this.control, this.config); }
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    this.subscription.add(this.config.field.settings$.subscribe(settings => {
-      this.description = settings.Notes;
-    }));
+    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
+    this.description$ = this.config.field.settings$.pipe(map(settings => settings.Notes));
   }
 
-  /** spm Don't toggle if clicked on an anchor tag or it's children */
+  /** Don't toggle if clicked on an anchor tag or it's children */
   toggleHint(event: MouseEvent) {
     let target = event.target as HTMLElement;
 
@@ -52,7 +50,7 @@ export class FieldHelperTextComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  getErrorMessage() {
+    return this.validationMessagesService.getErrorMessage(this.control, this.config);
   }
 }
