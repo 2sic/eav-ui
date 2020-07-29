@@ -28,6 +28,10 @@ export class EntityDefaultListComponent {
 
   constructor() { }
 
+  trackByFn(item: SelectedEntity) {
+    return item.value;
+  }
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {

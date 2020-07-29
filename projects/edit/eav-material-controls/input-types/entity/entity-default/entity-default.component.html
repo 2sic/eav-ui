@@ -12,9 +12,12 @@
   selectedEntities: selectedEntities$ | async,
   availableEntities: config.entityCache$ | async,
   disableAddNew: disableAddNew$ | async,
+  isExpanded: isExpanded$ | async,
   error: error$ | async
 } as data">
-  <app-entity-default-list [config]="config" [label]="data.label" [required]="data.required" [disabled]="data.disabled"
+  <app-entity-default-list
+    *ngIf="!data.freeTextMode && data.selectedEntities.length && (!data.settings.AllowMultiValue || (data.settings.AllowMultiValue && data.isExpanded))"
+    [config]="config" [label]="data.label" [required]="data.required" [disabled]="data.disabled"
     [freeTextMode]="data.freeTextMode" [settings]="data.settings" [selectedEntities]="data.selectedEntities"
     (reorder)="reorder($event)" (removeSelected)="removeSelected($event)" (editEntity)="editEntity($event)"
     (deleteEntity)="deleteEntity($event)">

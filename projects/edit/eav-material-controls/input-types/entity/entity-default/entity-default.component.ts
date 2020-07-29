@@ -40,10 +40,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   error$ = new BehaviorSubject<string>('');
   freeTextMode$ = new BehaviorSubject<boolean>(false);
   disableAddNew$ = new BehaviorSubject<boolean>(true);
+  isExpanded$ = new BehaviorSubject<boolean>(false);
   selectedEntities$: Observable<SelectedEntity[]>;
   eavConfig: EavConfiguration;
   subscription = new Subscription();
   private hasChild: boolean;
+  private separator: string;
 
   constructor(
     eavService: EavService,
@@ -65,14 +67,14 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.config.entityCache$ = new BehaviorSubject<EntityInfo[]>([]);
 
     this.settings$ = this.settings$.pipe(map(settings => this.calculateSettings(settings)));
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$, this.settings$]).pipe(map(combined => {
+    this.separator = this.config.field.settings$.value.Separator;
+    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
       const fieldValue = combined[0];
       const availableEntities = combined[1];
-      const settings = combined[2];
       let selectedEntities: SelectedEntity[];
 
       if (typeof fieldValue === 'string') {
-        const names = Helper.convertValueToArray(fieldValue, settings.Separator);
+        const names = Helper.convertValueToArray(fieldValue, this.separator);
         selectedEntities = names.map(name => {
           const selectedEntity: SelectedEntity = {
             value: name,
@@ -99,6 +101,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       return selectedEntities;
     }));
 
+    this.subscription.add(this.expandableFieldService.getObservable().subscribe(index => {
+      this.isExpanded$.next(index === this.config.field.index);
+    }));
+
     this.subscription.add(this.settings$.subscribe(settings => {
       this.contentTypeMask?.destroy();
       this.contentTypeMask = new FieldMaskService(
@@ -123,6 +129,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.error$.complete();
     this.freeTextMode$.complete();
     this.disableAddNew$.complete();
+    this.isExpanded$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
     this.subscription.unsubscribe();
@@ -169,78 +176,15 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   reorder(reorderIndexes: ReorderIndexes) {
-    const fieldValue: string | string[] = this.control.value;
-    let newFieldValue: string | string[];
-
-    if (typeof fieldValue === 'string') {
-      let separator: string;
-      this.settings$.pipe(take(1)).subscribe(settings => {
-        separator = settings.Separator;
-      });
-      const valuesArray = Helper.convertValueToArray(fieldValue, separator);
-      moveItemInArray(valuesArray, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
-      newFieldValue = Helper.convertArrayToString(valuesArray, separator);
-    } else {
-      newFieldValue = [...fieldValue];
-      moveItemInArray(newFieldValue, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
-    }
-
-    this.control.patchValue(newFieldValue);
-    if (!this.control.dirty) {
-      this.control.markAsDirty();
-    }
+    this.updateValue('reorder', reorderIndexes);
   }
 
-  addSelected(value: string) {
-    const fieldValue: string | string[] = this.control.value;
-    let newFieldValue: string | string[];
-
-    if (typeof fieldValue === 'string') {
-      let separator: string;
-      this.settings$.pipe(take(1)).subscribe(settings => {
-        separator = settings.Separator;
-      });
-      const valuesArray = Helper.convertValueToArray(fieldValue, separator);
-      valuesArray.push(value);
-      newFieldValue = Helper.convertArrayToString(valuesArray, separator);
-    } else {
-      newFieldValue = [...fieldValue];
-      newFieldValue.push(value);
-    }
-
-    this.control.patchValue(newFieldValue);
-    if (!this.control.dirty) {
-      this.control.markAsDirty();
-    }
+  addSelected(guid: string) {
+    this.updateValue('add', guid);
   }
 
   removeSelected(index: number) {
-    const fieldValue: string | string[] = this.control.value;
-    let newFieldValue: string | string[];
-
-    if (typeof fieldValue === 'string') {
-      let separator: string;
-      this.settings$.pipe(take(1)).subscribe(settings => {
-        separator = settings.Separator;
-      });
-      const valuesArray = Helper.convertValueToArray(fieldValue, separator);
-      valuesArray.splice(index, 1);
-      newFieldValue = Helper.convertArrayToString(valuesArray, separator);
-    } else {
-      newFieldValue = [...fieldValue];
-      newFieldValue.splice(index, 1);
-    }
-
-    this.control.patchValue(newFieldValue);
-    if (!this.control.dirty) {
-      this.control.markAsDirty();
-    }
-
-    if (!newFieldValue.length) {
-      setTimeout(() => {
-        this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
-      }, 0);
-    }
+    this.updateValue('delete', index);
   }
 
   editEntity(entityGuid: string) {
@@ -320,6 +264,44 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         }
       }
     }));
+  }
+
+  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {
+    const valueArray: string[] = (typeof this.control.value === 'string')
+      ? Helper.convertValueToArray(this.control.value, this.separator)
+      : [...this.control.value];
+
+    switch (action) {
+      case 'add':
+        const guid = value as string;
+        valueArray.push(guid);
+        break;
+      case 'delete':
+        const index = value as number;
+        valueArray.splice(index, 1);
+        break;
+      case 'reorder':
+        const reorderIndexes = value as ReorderIndexes;
+        moveItemInArray(valueArray, reorderIndexes.previousIndex, reorderIndexes.currentIndex);
+        break;
+    }
+
+    if (typeof this.control.value === 'string') {
+      const valueString = Helper.convertArrayToString(valueArray, this.separator);
+      this.control.patchValue(valueString);
+    } else {
+      this.control.patchValue(valueArray);
+    }
+
+    if (!this.control.dirty) {
+      this.control.markAsDirty();
+    }
+
+    if (action === 'delete' && !valueArray.length) {
+      setTimeout(() => {
+        this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
+      }, 0);
+    }
   }
 
 }

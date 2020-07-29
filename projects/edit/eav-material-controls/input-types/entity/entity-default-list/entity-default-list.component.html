@@ -1,45 +1,43 @@
-<ng-container *ngIf="!freeTextMode && selectedEntities.length">
-  <mat-label class="field-label" *ngIf="!settings.AllowMultiValue" [ngClass]="{ 'disabled': disabled }">
-    {{ label }} {{ required ? '*': '' }}
-  </mat-label>
+<mat-label class="field-label" *ngIf="!settings.AllowMultiValue" [ngClass]="{ 'disabled': disabled }">
+  {{ label }} {{ required ? '*': '' }}
+</mat-label>
 
-  <div cdkDropList [cdkDropListDisabled]="!settings.AllowMultiValue || disabled" (cdkDropListDropped)="drop($event)"
-    [ngClass]="{
+<div cdkDropList [cdkDropListDisabled]="!settings.AllowMultiValue || disabled" (cdkDropListDropped)="drop($event)"
+  [ngClass]="{
     'normal-list': !settings.AllowMultiValue,
     'dnd-list': settings.AllowMultiValue
   }">
-    <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-    <div *ngFor="let item of selectedEntities; let index = index" cdkDrag [ngClass]="{
+  <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
+  <div *ngFor="let item of selectedEntities; trackBy: trackByFn; let index = index" cdkDrag [ngClass]="{
       'normal-item': !settings.AllowMultiValue,
       'dnd-item': settings.AllowMultiValue,
       'disabled': disabled
     }">
-      <div class="item-title" [ngClass]="{ 'disabled': disabled }">
-        <mat-icon class="item-title__icon" *ngIf="settings.AllowMultiValue" [matTooltipDisabled]="disabled"
-          [matTooltip]="'Fields.Entity.DragMove' | translate">
-          drag_handle
-        </mat-icon>
-        <span class="item-title__text" [matTooltip]="item.tooltip">
-          {{ item.label }}
-        </span>
-      </div>
-      <div class="item-actions">
-        <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-        <button mat-icon-button *ngIf="settings.EnableEdit && !item.isFreeTextOrNotFound"
-          [matTooltip]="'Fields.Entity.Edit' | translate" [disabled]="config.field.disabled" appMousedownStopPropagation
-          (click)="edit(item.value)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="settings.EnableDelete && !item.isFreeTextOrNotFound"
-          [matTooltip]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
-          (click)="deleteItem(item.value)">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="settings.EnableRemove" [matTooltip]="'Fields.Entity.Remove' | translate"
-          [disabled]="disabled" appMousedownStopPropagation (click)="removeItem(index)">
-          <mat-icon>{{ settings.AllowMultiValue ? 'clear' : 'arrow_drop_down' }}</mat-icon>
-        </button>
-      </div>
+    <div class="item-title" [ngClass]="{ 'disabled': disabled }">
+      <mat-icon class="item-title__icon" *ngIf="settings.AllowMultiValue" [matTooltipDisabled]="disabled"
+        [matTooltip]="'Fields.Entity.DragMove' | translate">
+        drag_handle
+      </mat-icon>
+      <span class="item-title__text" [matTooltip]="item.tooltip">
+        {{ item.label }}
+      </span>
+    </div>
+    <div class="item-actions">
+      <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
+      <button mat-icon-button *ngIf="settings.EnableEdit && !item.isFreeTextOrNotFound"
+        [matTooltip]="'Fields.Entity.Edit' | translate" [disabled]="config.field.disabled" appMousedownStopPropagation
+        (click)="edit(item.value)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="settings.EnableDelete && !item.isFreeTextOrNotFound"
+        [matTooltip]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
+        (click)="deleteItem(item.value)">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="settings.EnableRemove" [matTooltip]="'Fields.Entity.Remove' | translate"
+        [disabled]="disabled" appMousedownStopPropagation (click)="removeItem(index)">
+        <mat-icon>{{ settings.AllowMultiValue ? 'clear' : 'arrow_drop_down' }}</mat-icon>
+      </button>
     </div>
   </div>
-</ng-container>
+</div>
