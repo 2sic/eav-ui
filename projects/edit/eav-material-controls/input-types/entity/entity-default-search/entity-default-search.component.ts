@@ -1,9 +1,9 @@
 // tslint:disable-next-line:max-line-length
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FieldSettings } from '../../../../../edit-types';
@@ -17,7 +17,7 @@ import { GlobalConfigurationService } from '../../../../shared/services/global-c
   styleUrls: ['./entity-default-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityDefaultSearchComponent implements OnInit, OnDestroy, OnChanges {
+export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @ViewChild('autocomplete') autocompleteRef: ElementRef;
 
   @Input() config: FieldConfigSet;
@@ -39,20 +39,12 @@ export class EntityDefaultSearchComponent implements OnInit, OnDestroy, OnChange
   @Output() editEntity = new EventEmitter<string>();
 
   filteredEntities: EntityInfo[] = [];
-  debugEnabled$ = new BehaviorSubject<boolean>(false);
-  private subscription = new Subscription();
+  debugEnabled$: Observable<boolean>;
 
   constructor(private translate: TranslateService, private globalConfigurationService: GlobalConfigurationService) { }
 
   ngOnInit() {
-    this.subscription.add(this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
-      this.debugEnabled$.next(debugEnabled);
-    }));
-  }
-
-  ngOnDestroy() {
-    this.debugEnabled$.complete();
-    this.subscription.unsubscribe();
+    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
   }
 
   ngOnChanges(changes: SimpleChanges) {

@@ -40,7 +40,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   error$ = new BehaviorSubject<string>('');
   freeTextMode$ = new BehaviorSubject<boolean>(false);
   disableAddNew$ = new BehaviorSubject<boolean>(true);
-  isExpanded$ = new BehaviorSubject<boolean>(false);
+  isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   eavConfig: EavConfiguration;
   subscription = new Subscription();
@@ -101,9 +101,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       return selectedEntities;
     }));
 
-    this.subscription.add(this.expandableFieldService.getObservable().subscribe(index => {
-      this.isExpanded$.next(index === this.config.field.index);
-    }));
+    this.isExpanded$ = this.expandableFieldService
+      .getObservable()
+      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
 
     this.subscription.add(this.settings$.subscribe(settings => {
       this.contentTypeMask?.destroy();
@@ -129,7 +129,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.error$.complete();
     this.freeTextMode$.complete();
     this.disableAddNew$.complete();
-    this.isExpanded$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
     this.subscription.unsubscribe();
