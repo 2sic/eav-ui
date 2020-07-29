@@ -1,84 +1,101 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { EntityInfo } from '../../../shared/models/eav/entity-info';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
   templateUrl: './entity-expandable-wrapper.component.html',
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, AfterViewInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-
-  dialogIsOpen = false;
-  private subscriptions: Subscription[] = [];
-
-  get availableEntities(): EntityInfo[] { return this.config.cache || []; }
-  get value() { return Helper.convertValueToArray(this.group.controls[this.config.field.name].value, this.separator); }
-  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
-  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
-  get enableAddExisting() { return this.config.field.settings.EnableAddExisting || false; }
-  get entityType() { return this.config.field.settings.EntityType || ''; }
-  get separator() { return this.config.field.settings.Separator || ','; }
-  get touched() { return this.group.controls[this.config.field.name].touched || false; }
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
-  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
-
-  private entityTextDefault = this.translate.instant('Fields.Entity.EntityNotFound');
+  dialogIsOpen$: Observable<boolean>;
+  invalid$: Observable<boolean>;
+  selectedEntities$: Observable<SelectedEntity[]>;
+  private separator: string;
 
   constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private translate: TranslateService,
     private expandableFieldService: ExpandableFieldService,
-  ) { }
-
-  ngOnInit() {
-    // this.setAvailableEntities();
-    this.subscriptions.push(
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-        this.dialogIsOpen = dialogShouldBeOpen;
-      }),
-    );
+  ) {
+    super(eavService, validationMessagesService);
   }
 
-  ngAfterViewInit() { }
+  ngOnInit() {
+    super.ngOnInit();
+    this.separator = this.config.field.settings$.value.Separator;
+    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'));
+    this.dialogIsOpen$ = this.expandableFieldService
+      .getObservable()
+      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+  }
 
-  // TODO: same method in entity - !!!
-  getEntityText = (value: string): string => {
-    if (value === null) { return 'empty slot'; }
+  ngAfterViewInit() {
+    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
+      const fieldValue = combined[0];
+      const availableEntities = combined[1];
+      let selectedEntities: SelectedEntity[];
 
-    const entities = this.availableEntities.filter(f => f.Value === value);
-    if (entities.length > 0) {
-      return entities.length > 0 ? entities[0].Text :
-        this.entityTextDefault ? this.entityTextDefault : value;
-    }
-    return value;
+      if (typeof fieldValue === 'string') {
+        const names = Helper.convertValueToArray(fieldValue, this.separator);
+        selectedEntities = names.map(name => {
+          const selectedEntity: SelectedEntity = {
+            value: name,
+            label: name,
+            tooltip: `${name} (${name})`,
+            isFreeTextOrNotFound: true,
+          };
+          return selectedEntity;
+        });
+      } else {
+        selectedEntities = fieldValue.map(guid => {
+          const entity = availableEntities.find(e => e.Value === guid);
+          const label = (guid == null) ? 'empty slot' : entity?.Text || this.translate.instant('Fields.Entity.EntityNotFound');
+          const selectedEntity: SelectedEntity = {
+            value: guid,
+            label,
+            tooltip: `${label} (${guid})`,
+            isFreeTextOrNotFound: !entity,
+          };
+          return selectedEntity;
+        });
+      }
+
+      return selectedEntities;
+    }));
+  }
+
+  calculateBottomPixels() {
+    return window.innerWidth > 600 ? '100px' : '50px';
+  }
+
+  trackByFn(item: SelectedEntity) {
+    return item.value;
   }
 
   expandDialog() {
     angularConsoleLog('EntityExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
+
   closeDialog() {
     angularConsoleLog('EntityExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 }
