@@ -7,6 +7,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import { SourceView } from '../models/source-view.model';
 import { Snippet } from '../models/snippet.model';
 import { Field } from '../../content-type-fields/models/field.model';
+import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
 
 @Injectable()
 export class SnippetsService {
@@ -20,7 +21,7 @@ export class SnippetsService {
   ) { }
 
   async getSnippets(view: SourceView) {
-    const res: any = await this.http.get('../sxc-develop/snippets.json.js').toPromise();
+    const res: any = await this.http.get('../ng-assets/snippets.json.js').toPromise();
     const snippets: Snippet[] = res.snippets;
     const relevant = this.filterAwayNotNeededSnippetsList(snippets, view);
     const standAndInputSnips = this.extractInputTypeSnippets(relevant);
@@ -93,12 +94,12 @@ export class SnippetsService {
     if (templateConfiguration.HasList) {
       sets.List = Object.assign({}, sets.List, { Fields: {}, PresentationFields: {} });
       if (templateConfiguration.TypeList) {
-        this.loadContentType(sets.List.Fields, templateConfiguration.TypeList, 'ListContent', templateConfiguration, inputTypeSnippets);
+        this.loadContentType(sets.List.Fields, templateConfiguration.TypeList, 'Header', templateConfiguration, inputTypeSnippets);
       }
       if (templateConfiguration.TypeListPresentation) {
         this.loadContentType(
           sets.List.PresentationFields, templateConfiguration.TypeListPresentation,
-          'ListContent.Presentation', templateConfiguration, inputTypeSnippets,
+          'Header.Presentation', templateConfiguration, inputTypeSnippets,
         );
       }
     } else {
@@ -225,6 +226,7 @@ export class SnippetsService {
     })
       .toPromise()
       .then((fields: Field[]) => {
+        fields = fields.filter(field => field.Type !== DataTypeConstants.Empty);
         if (fields) {
           for (const fld of fields) {
             if (!fld.Metadata) { continue; }

@@ -3,10 +3,6 @@
 /// <reference types="ngx-dropzone-wrapper" />
 /// <reference types="rxjs" />
 
-export * from './src/AdamAfterUpload';
-
-export * from './src/AdamSetValue';
-
 export * from './src/Connector';
 
 export * from './src/ConnectorData';
@@ -21,8 +17,16 @@ export * from './src/FieldSettings';
 
 export * from './src/FormSet';
 
-export * from './src/IAdamConfig';
+export * from './src/Dropzone';
 
-export * from './src/IAdamModeConfig';
+export * from './src/DropzoneConfigExt';
+
+export * from './src/Adam';
+
+export * from './src/AdamItem';
+
+export * from './src/AdamPostResponse';
+
+export * from './src/AdamConfig';
 
 export * from './src/InputTypeName';

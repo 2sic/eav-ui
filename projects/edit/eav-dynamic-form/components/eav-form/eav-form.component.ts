@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
   selector: 'app-eav-form',
@@ -27,7 +28,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
   get dirty() { return this.form.dirty; }
   get debugEnviroment() { return !environment.production; }
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private eavService: EavService) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
@@ -89,6 +90,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
       } else {
         this.form.controls[name].enable({ emitEvent });
       }
+      const config = this.config.find(cfg => cfg.field.name === name);
+      this.eavService.formDisabledChanged$$.next({ formId: config.form.formId, entityGuid: config.entity.entityGuid });
     }
   }
 

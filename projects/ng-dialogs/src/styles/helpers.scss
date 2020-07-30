@@ -31,3 +31,42 @@
 .mat-button.icon .mat-icon {
   margin-right: 8px;
 }
+
+@mixin fancy-scrollbar($thumbColor, $trackColor, $thumbHoverColor) {
+  scrollbar-width: thin;
+  scrollbar-color: $thumbColor $trackColor;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumbColor;
+    border: 1px solid $trackColor;
+
+    &:hover {
+      background-color: $thumbHoverColor;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $trackColor;
+  }
+}
+
+.fancy-scrollbar-light {
+  @include fancy-scrollbar(rgb(205, 205, 205), rgb(240, 240, 240), rgb(166, 166, 166));
+}
+
+.fancy-scrollbar-dark {
+  @include fancy-scrollbar(rgb(119, 119, 120), rgb(32, 32, 34), rgb(95, 95, 96));
+}

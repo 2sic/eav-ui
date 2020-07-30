@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { ContentGroupService } from './services/content-group.service';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -17,6 +18,8 @@ import { GroupHeader } from './models/group-header.model';
   styleUrls: ['./manage-content-list.component.scss']
 })
 export class ManageContentListComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   items: GroupHeader[];
   header: GroupHeader;
 
@@ -80,7 +83,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
         },
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   editItem(id: number) {
@@ -89,15 +92,11 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
         { EntityId: id.toString() },
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.items, event.previousIndex, event.currentIndex);
-  }
-
-  stopDnD(event: MouseEvent) {
-    event.stopPropagation();
   }
 
   closeDialog() {

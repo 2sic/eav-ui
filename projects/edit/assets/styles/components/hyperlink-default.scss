@@ -1,9 +1,5 @@
 // hyperlink-default overrides
 .c-hyperlink-default-field-preview {
-  .c-ew__preview {
-    &--last-in-group {}
-  }
-
   .mat-form-field-outline {
 
     .mat-form-field-outline-start,
@@ -14,30 +10,28 @@
   }
 }
 
-.c-hyperlink-default-input-link-wrapper {
+.hyperlink-input-link-wrapper {
   position: relative;
 }
 
-.c-hyperlink-default-link {
-  &__container {
-    position: absolute;
-    top: 35px;
-    pointer-events: none;
-    display: flex;
-  }
+.hyperlink-floating {
+  position: absolute;
+  top: 35px;
+  pointer-events: none;
+  display: flex;
 
   &__value {
     opacity: 0;
     margin-right: 16px;
   }
 
-  &__link {
-    font-size: 14px;
+  &__url-box {
     display: flex;
     align-items: center;
   }
 
-  &__link-text {
+  &__url {
+    font-size: 14px;
     pointer-events: all;
     max-width: 340px;
     overflow: hidden;

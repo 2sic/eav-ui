@@ -1,21 +1,21 @@
-<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="(dialogIsOpen$ | async) ? 'c-ew__container' : 'u-display-none'">
   <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
-    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen$ | async }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()"
-          matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [matTooltip]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      <div [@itemShrinkAnimation]="!(dialogIsOpen$ | async) ? 'open' : 'closed'">
       </div>
       <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="{
-        value: !dialogIsOpen ? 'closed' : 'expanded',
-        params: {bottomPixels: bottomPixels}
+        value: !(dialogIsOpen$ | async) ? 'closed' : 'expanded',
+        params: { bottomPixels: calculateBottomPixels() }
       }">
         <div class="mdc-layout-grid">
           <div class="mdc-layout-grid__inner">
@@ -28,34 +28,40 @@
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder">
+<div class="c-ew__preview-holder" *ngIf="{
+  label: label$ | async,
+  required: required$ | async,
+  invalid: invalid$ | async,
+  selectedEntities: (selectedEntities$ | async)?.slice(0, 9) || [],
+  entitiesNumber: (selectedEntities$ | async)?.length || 0
+} as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : value && value.length > 0,
-      'mat-empty' : !(value && value.length > 0),
-      'mat-error' : inputInvalid && touched && !config.field.disabled,
-      'color__primary' : !(inputInvalid && touched) && !config.field.disabled,
-      'color__label-disabled' : config.field.disabled
-    }">
-    {{config.field.label}}
-    {{config.field.required? '*': '' }}
+    'mat-caption' : data.entitiesNumber,
+    'mat-empty' : !data.entitiesNumber,
+    'mat-error' : data.invalid && control.touched && !config.field.disabled,
+    'color__primary' : !(data.invalid && control.touched) && !config.field.disabled,
+    'color__label-disabled' : config.field.disabled
+  }">
+    {{ data.label }} {{ data.required ? '*': '' }}
   </mat-label>
-  <div matRipple (click)="!config.field.disabled ? expandDialog() : null" class="c-ew__preview mat-ripple"
-    [matRippleAnimation]="{enterDuration: 360}" [ngClass]="{
-      'c-ew__preview--invalid' : inputInvalid && touched,
+  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple"
+    (click)="!config.field.disabled && expandDialog()" [ngClass]="{
+      'c-ew__preview--invalid' : data.invalid && control.touched,
       'c-ew__preview--disabled': config.field.disabled
     }">
-    <div [ngClass]="value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-list *ngIf="value && availableEntities" fxLayout="row">
-          <mat-list-item role="listitem" *ngFor="let item of value">
-            <span mat-line>{{getEntityText(item)}}</span>
+        <mat-list *ngIf="data.entitiesNumber" fxLayout="row">
+          <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn">
+            <span mat-line>{{ item.label }}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="value?.length > 5" class="more-entities mat-body-1">
-          {{value?.length}}</span>
+        <span *ngIf="data.entitiesNumber > 5" class="more-entities mat-body-1">
+          {{ data.entitiesNumber }}
+        </span>
       </div>
     </div>
   </div>
-  <!-- hasDirtyTouched="fasle" -->
+
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </div>

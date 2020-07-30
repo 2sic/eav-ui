@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -11,6 +11,8 @@ import { ImportAppResult } from './models/import-app-result.model';
   styleUrls: ['./import-app.component.scss']
 })
 export class ImportAppComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   isImporting = false;
   importFile: File;
   importResult: ImportAppResult;

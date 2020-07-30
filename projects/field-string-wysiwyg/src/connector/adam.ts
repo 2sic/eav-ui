@@ -1,49 +1,27 @@
-import { AdamSetValue, AdamAfterUpload } from '../../../edit-types';
-import { FieldStringWysiwygEditor } from '../editor/editor';
+import { Adam, AdamItem, AdamPostResponse } from '../../../edit-types';
 
-// TODO: SPM this must really become a normal class, which then becomes .adam on the field
-export function attachAdam(fieldStringWysiwyg: any /* FieldStringWysiwygDialog */, editor: any) {
-  const adamSetValue: AdamSetValue = (fileItem: any, modeImage: any) => {
-    if (modeImage === undefined) {  // if not supplied, use the setting in the adam
-      modeImage = fieldStringWysiwyg.adam.adamModeImage;
-    }
-
-    const fileName = fileItem.Name.substr(0, fileItem.Name.lastIndexOf('.'));
-
-    const content = modeImage
-      ? '<img src="' + fileItem.FullPath + '" + alt="' + fileName + '">'
-      : '<a href="' + fileItem.FullPath + '">' + fileName + '</a>';
-
-    editor.insertContent(content);
+export function attachAdam(editor: any, adam: Adam) {
+  adam.onItemClick = (item) => {
+    insertContent(item, editor, adam);
   };
 
-  const adamAfterUpload: AdamAfterUpload = (fileItem: any) => {
-    adamSetValue(fileItem, fileItem.Type === 'image');
+  adam.onItemUpload = (item) => {
+    insertContent(item, editor, adam);
   };
 
-  fieldStringWysiwyg.adam = fieldStringWysiwyg.connector._experimental.attachAdam(adamSetValue, adamAfterUpload);
+  if (adam.getConfig() == null) {
+    adam.setConfig({ disabled: false });
+  }
+}
 
-  fieldStringWysiwyg.toggleAdam = (imagesOnly: any, usePortalRoot: boolean) => {
-    fieldStringWysiwyg.adam.adamModeImage = imagesOnly;
-    fieldStringWysiwyg.adam.toggleAdam({
-      showImagesOnly: imagesOnly,
-      usePortalRoot,
-    });
-  };
+function insertContent(item: AdamItem | AdamPostResponse, editor: any, adam: Adam) {
+  const imageMode = adam.getConfig().showImagesOnly;
+  const selected = editor.selection.getContent();
+  const fileName = item.Name.substring(0, item.Name.lastIndexOf('.'));
 
-  fieldStringWysiwyg.setAdamConfig = (adamConfig: any) => {
-    fieldStringWysiwyg.adam.setAdamConfig(adamConfig);
-  };
+  const content = imageMode
+    ? `${selected}<img src="${item.FullPath}" alt="${fileName}">`
+    : `<a href="${item.FullPath}">${selected || fileName}</a>`;
 
-  fieldStringWysiwyg.setAdamConfig({ // default adam config
-    adamModeConfig: { usePortalRoot: false },
-    allowAssetsInRoot: true,
-    autoLoad: false,
-    enableSelect: true,
-    folderDepth: 0,
-    fileFilter: '',
-    metadataContentTypes: '',
-    subFolder: '',
-    showImagesOnly: false, // adamModeImage?
-  });
+  editor.insertContent(content);
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 
@@ -13,6 +13,8 @@ import { ContentTypesService } from '../../services/content-types.service';
   styleUrls: ['./export-app-parts.component.scss']
 })
 export class ExportAppPartsComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
   scopeOptions: EavScopeOption[];

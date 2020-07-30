@@ -4,6 +4,7 @@
   max-height: inherit;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .inline-wysiwyg {
@@ -12,6 +13,7 @@
   max-height: inherit;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .tinymce-toolbar-container {
@@ -32,8 +34,8 @@
   overflow-y: scroll;
   background-color: #fff;
   padding: 0 8px 1px 8px;
-  /* min-height 1px less because of padding pixel bottom */
-  min-height: 119px;
+  min-height: 120px;
+  box-sizing: border-box;
   font-size: medium;
   /* IE 10+ */
   -ms-overflow-style: none;

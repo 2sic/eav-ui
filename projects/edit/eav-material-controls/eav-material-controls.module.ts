@@ -1,6 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +10,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -21,9 +24,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-// tslint:disable-next-line:max-line-length
-import { OwlDateTimeModule, OwlDateTimeIntl, OwlMomentDateTimeModule, OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS } from '@danielmoncada/angular-datetime-picker';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { CollapsibleWrapperComponent } from './wrappers';
@@ -47,7 +49,7 @@ import { ValidationMessagesService } from './validators/validation-messages-serv
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
-import { AdamBrowserComponent } from './adam/browser/adam-browser.component';
+import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
@@ -56,8 +58,6 @@ import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -67,7 +67,7 @@ import { TranslateGroupMenuComponent } from './localization/translate-group-menu
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
-import { EntityDefaultMainSearchComponent } from './input-types/entity/entity-default-main-search/entity-default-main-search.component';
+import { EntityDefaultSearchComponent } from './input-types/entity/entity-default-search/entity-default-search.component';
 import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
 // tslint:disable-next-line:max-line-length
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
@@ -79,11 +79,9 @@ import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-w
 import { ExternalWebComponentComponent } from './input-types/custom/external-web-component/external-web-component.component';
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
-import { SafeHtmlPipe } from '../shared/pipes/safe-html';
-import { OwlDateTimeIntlOverride } from './input-types/datetime/datetime-default/owl-date-time-intl-override';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
-import { AppAssetsService } from '../shared/services/app-assets.service';
+import { AssetsService } from '../shared/services/assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
 import { CustomJsonEditorComponent } from './input-types/custom/custom-json-editor/custom-json-editor.component';
 
@@ -112,7 +110,6 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     FilterPipe,
     OrderByPipe,
     FileEndingFilterPipe,
-    SafeHtmlPipe,
     PasteClipboardImageDirective,
     HiddenWrapperComponent,
     HyperlinkDefaultPagepickerComponent,
@@ -126,7 +123,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     LinkToOtherLanguageComponent,
     EntityExpandableWrapperComponent,
     EntityDefaultListComponent,
-    EntityDefaultMainSearchComponent,
+    EntityDefaultSearchComponent,
     EntityQueryComponent,
     HyperlinkDefaultExpandableWrapperComponent,
     DropzoneWrapperComponent,
@@ -163,8 +160,8 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     MatSlideToggleModule,
     MatTabsModule,
     MatTooltipModule,
-    OwlDateTimeModule,
-    OwlMomentDateTimeModule,
+    NgxMatDatetimePickerModule,
+    NgxMatMomentModule,
     ReactiveFormsModule,
     MatRippleModule,
     MatChipsModule,
@@ -212,9 +209,8 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     FileTypeService,
     ValidationMessagesService,
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: OWL_MOMENT_DATE_TIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: OwlDateTimeIntl, useClass: OwlDateTimeIntlOverride, deps: [TranslateService] },
-    AppAssetsService,
+    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    AssetsService,
     ScriptsLoaderService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

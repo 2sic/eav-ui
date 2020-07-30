@@ -1,4 +1,5 @@
 import { webpackConsoleLog } from '../../../../shared/webpack-console-log.helper';
+import { Dropzone, Adam, AdamPostResponse } from '../../../../edit-types';
 
 export class DefaultPaste {
 
@@ -33,37 +34,44 @@ export class DefaultPaste {
   };
 
   /** Paste image */
-  static images(uploadUrl: string, headers: any) {
+  static images(dropzone: Dropzone, adam: Adam) {
     return {
       automatic_uploads: true,
       images_reuse_filename: true,
       paste_data_images: true,
       paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_url: uploadUrl,
-      images_upload_base_path: '/images_upload_base_path/',
-      images_upload_handler: DefaultPaste.imagesUploadHandler,
-      upload_headers: headers,
+      images_upload_handler: (blobInfo: any, success: (imgPath: string) => any, failure: () => any) => {
+        DefaultPaste.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
+      },
     };
   }
 
-  private static imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any) {
+  private static imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any, dropzone: Dropzone, adam: Adam) {
+    webpackConsoleLog('TinyMCE upload');
+
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
-    const settings = (window as any).tinymce.activeEditor.settings;
-    webpackConsoleLog('TinyMCE upload settings', settings);
+    const dropzoneConfig = dropzone.getConfig();
 
-    fetch(settings.images_upload_url, {
+    fetch(dropzoneConfig.url as string, {
       method: 'POST',
       // mode: 'cors',
-      headers: settings.upload_headers,
+      headers: dropzoneConfig.headers,
       body: formData,
     }).then(response =>
       response.json()
-    ).then(data => {
-      webpackConsoleLog('TinyMCE upload data', data);
-      success(data.Path);
+    ).then((response: AdamPostResponse) => {
+      webpackConsoleLog('TinyMCE upload data', response);
+      if (!response.Success) {
+        alert(`Upload failed because: ${response.Error}`);
+        return;
+      }
+
+      adam.addFullPath(response);
+      success(response.FullPath);
+      adam.refresh();
     }).catch(error => {
       webpackConsoleLog('TinyMCE upload error:', error);
     });

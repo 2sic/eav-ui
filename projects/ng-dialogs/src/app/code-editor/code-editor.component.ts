@@ -129,6 +129,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private calculateViewKey() {
+    // spm TODO: Move items for code-editor to the url?
     const itemsRaw = sessionStorage.getItem(keyItems);
     const editItems: EditItem[] | SourceItem[] = JSON.parse(itemsRaw);
     const item = editItems[0];

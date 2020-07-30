@@ -47,6 +47,10 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
+      &-more {
+        padding-left: 40px;
+      }
     }
 
     .mat-icon {
@@ -60,10 +64,18 @@
   &-help {
     padding: 3px 18px 3px 32px;
 
+    &-more {
+      padding-left: 40px;
+    }
+
     .text {
       font-size: 12px;
       font-style: oblique;
       word-break: break-word;
+
+      ::ng-deep p {
+        margin: 0;
+      }
     }
   }
 }

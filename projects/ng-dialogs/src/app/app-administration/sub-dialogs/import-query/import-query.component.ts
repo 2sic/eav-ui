@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -10,6 +10,8 @@ import { PipelinesService } from '../../services/pipelines.service';
   styleUrls: ['./import-query.component.scss']
 })
 export class ImportQueryComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   private viewStates = {
     Default: 1,
     Waiting: 2,

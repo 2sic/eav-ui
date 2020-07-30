@@ -1,19 +1,23 @@
-<div class="stp-field" fxLayout="row" fxLayoutAlign="start end">
-  <div class="stp-field__field-short" fxLayoutAlign="start center">
+<ng-container *ngIf="{
+  showValidation: showValidation$ | async
+} as data">
+
+  <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-      <mat-select [formControlName]="config.field.name">
+      <mat-select [formControlName]="config.field.name" [required]="required$ | async">
         <mat-option value="">(no file selected)</mat-option>
-        <mat-option *ngFor="let item of isValidFile(templates, file.ext)" [value]="item">
-          {{item}}
+        <mat-option *ngFor="let file of templateOptions$$ | async" [value]="file">
+          {{ file }}
         </mat-option>
       </mat-select>
-      <mat-label>{{config.field.label}}</mat-label>
+      <mat-label>{{ label$ | async }}</mat-label>
     </mat-form-field>
-  </div>
-  <div class="stp-field__create-icon" fxLayoutAlign="end center">
-    <button mat-icon-button type="button" (click)="add()" [disabled]="group.controls[config.field.name].disabled">
+    <button type="button" mat-icon-button matTooltip="Create a new file" [disabled]="disabled$ | async"
+      (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
-</div>
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>

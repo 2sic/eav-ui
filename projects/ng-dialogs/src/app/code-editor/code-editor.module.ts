@@ -20,7 +20,7 @@ import { SourceService } from './services/source.service';
 import { DialogService } from '../shared/services/dialog.service';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
 import { SnippetsService } from './services/snippets.service';
-import { ToArrayPipe } from './code-snippets/toarray.pipe';
+import { ObjectToArrayPipe } from './code-snippets/object-to-array.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
@@ -36,7 +36,7 @@ export function translateLoaderFactory(http: HttpClient) {
   declarations: [
     CodeEditorComponent,
     CodeSnippetsComponent,
-    ToArrayPipe,
+    ObjectToArrayPipe,
     CodeTemplatesComponent,
     AceEditorComponent,
     DepthPaddingPipe,

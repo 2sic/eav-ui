@@ -7,7 +7,7 @@
   For further help visit <a href="http://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
 </p>
 
-<div *ngIf="appInfo">
+<div class="dialog-component-content fancy-scrollbar-light" *ngIf="appInfo">
   <p class="app-info__title">Specs</p>
   <ul class="app-info__content">
     <li>Name: {{appInfo.Name}}</li>
@@ -44,10 +44,10 @@
       </mat-checkbox>
     </div>
   </div>
+</div>
 
-  <div class="dialog-actions-box">
-    <button mat-raised-button [disabled]="isExporting" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button [disabled]="isExporting" (click)="exportGit()">Export Data for Github versioning</button>
-    <button mat-raised-button color="accent" [disabled]="isExporting" (click)="exportApp()">Export App</button>
-  </div>
+<div class="dialog-component-actions">
+  <button mat-raised-button [disabled]="isExporting" (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button [disabled]="isExporting" (click)="exportGit()">Export Data for Github versioning</button>
+  <button mat-raised-button color="accent" [disabled]="isExporting" (click)="exportApp()">Export App</button>
 </div>

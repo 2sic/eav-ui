@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, AfterContentChecked, OnDestroy, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, OnDestroy, AfterViewChecked, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,7 +42,7 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
 })
-export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, OnDestroy, AfterViewChecked {
+export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) itemEditFormComponentQueryList: QueryList<ItemEditFormComponent>;
   @ViewChild('slideable') slideableRef: ElementRef;
 
@@ -68,7 +68,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
   languages: Language[];
-  Object = Object;
   publishMode: 'branch' | 'show' | 'hide' = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
   versioningOptions: VersioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
@@ -132,15 +131,9 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     this.hideHeaderSubscribe();
   }
 
-  ngAfterContentChecked() {
-    this.attachAllSaveFormObservables();
-    // need this to detectChange for this.formsAreValid after ViewChecked
-    this.changeDetectorRef.detectChanges();
-  }
-
   ngAfterViewChecked() {
-    // need this to detectChange for this.formsAreValid
-    this.changeDetectorRef.detectChanges();
+    this.attachAllSaveFormObservables();
+    this.changeDetectorRef.detectChanges(); // 2020-06-19 SPM TODO: remove when form is stable. ATM a whole lot of stuff breaks without it
   }
 
   ngOnDestroy() {
@@ -195,7 +188,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
       if (this.formsAreValid || this.allControlsAreDisabled) {
-        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+        this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
           itemEditFormComponent.form.submitOutside();
         });
         angularConsoleLog('saveAll', close);
@@ -292,7 +285,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
   private calculateAllValidationMessages() {
     this.formErrors = [];
     if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         if (itemEditFormComponent.form.form.invalid) {
           this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
         }
@@ -404,14 +397,14 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
    */
   private attachAllSaveFormObservables() {
     if (this.formSaveAllObservables$.length === 0) {
-      if (this.itemEditFormComponentQueryList && this.itemEditFormComponentQueryList.length > 0) {
-        this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      if (this.itemEditFormComponentQueryList?.length > 0) {
+        this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
           this.formSaveAllObservables$.push(itemEditFormComponent.formSaveObservable());
         });
       }
 
       // only called once when a formSaveAllObservables array is filled
-      if (this.formSaveAllObservables$ && this.formSaveAllObservables$.length > 0) {
+      if (this.formSaveAllObservables$.length > 0) {
         this.saveFormSubscribe();
         this.checkFormsState();
       }
@@ -484,7 +477,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterContentChecked, 
       this.allControlsAreDisabled = true;
       this.formsAreValid = true;
       this.formsAreDirty[this.itemEditFormComponentQueryList.first.currentLanguage] = false;
-      this.itemEditFormComponentQueryList.forEach((itemEditFormComponent: ItemEditFormComponent) => {
+      this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         // set form valid
         if (itemEditFormComponent.form.valid === false
           && (!itemEditFormComponent.item.header.Group || itemEditFormComponent.item.header.Group.SlotCanBeEmpty === false)) {

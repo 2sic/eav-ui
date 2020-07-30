@@ -1,28 +1,34 @@
-<div class="editor-active-explorer editor-fancy-scrollbar">
+<div class="editor-active-explorer fancy-scrollbar-dark">
   <div *ngFor="let section of snippets | keyvalue">
 
-    <div class="collapsible-header section" (click)="toggleSection(section)">
+    <div class="collapsible-header section" [matTooltip]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
+      matTooltipShowDelay="750" (click)="toggleSection(section)">
       <mat-icon>{{ toggledSections.includes(section) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-      <span>{{ section.key.toLocaleUpperCase() }}</span>
+      <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
     </div>
 
     <ng-container *ngIf="toggledSections.includes(section)">
       <div *ngFor="let folder of section.value | keyvalue">
 
-        <div class="collapsible-header folder" [matTooltip]="folder.key" matTooltipShowDelay="750"
-          (click)="toggleFolder(folder)">
+        <div class="collapsible-header folder"
+          [matTooltip]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate"
+          matTooltipShowDelay="750" (click)="toggleFolder(folder)">
           <mat-icon>{{ toggledFolders.includes(folder) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
-          <span>{{ folder.key }}</span>
+          <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
         </div>
 
         <ng-container *ngIf="toggledFolders.includes(folder)">
-          <div class="snippet" *ngFor="let snippet of (folder.value | toarray)">
+          <div class="snippet" *ngFor="let snippet of (folder.value | objectToArray)">
 
             <div class="snippet-label">
               <div matRipple class="text" [matTooltip]="snippet.snip" matTooltipShowDelay="750"
                 (click)="addSnippet(snippet.snip)">
                 {{ snippet.label }}
               </div>
+              <mat-icon *ngIf="snippet.more" matTooltip="Show More" matTooltipShowDelay="750"
+                (click)="toggleMore(snippet)">
+                {{ toggledMores.includes(snippet) ? 'more_vert' : 'more_horiz' }}
+              </mat-icon>
               <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
                 (click)="toggleInfo(snippet)">
                 info
@@ -30,11 +36,35 @@
             </div>
 
             <div class="snippet-help" *ngIf="toggledInfos.includes(snippet)">
-              <div class="text">{{ snippet.help }}</div>
+              <div class="text" [innerHTML]="snippet.help | safeHtml"></div>
               <div *ngFor="let link of snippet.links">
-                <a href="{{ link.url }}" target="_blank">{{ link.name }}</a>
+                <a [href]="link.url" target="_blank">{{ link.name }}</a>
               </div>
             </div>
+
+            <ng-container *ngIf="toggledMores.includes(snippet)">
+              <div *ngFor="let more of (snippet.more | objectToArray)">
+
+                <div class="snippet-label">
+                  <div matRipple class="text text-more" [matTooltip]="more.snip" matTooltipShowDelay="750"
+                    (click)="addSnippet(more.snip)">
+                    {{ more.label }}
+                  </div>
+                  <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
+                    (click)="toggleInfo(more)">
+                    info
+                  </mat-icon>
+                </div>
+
+                <div class="snippet-help snippet-help-more" *ngIf="toggledInfos.includes(more)">
+                  <div class="text" [innerHTML]="more.help | safeHtml"></div>
+                  <div *ngFor="let link of more.links">
+                    <a [href]="link.url" target="_blank">{{ link.name }}</a>
+                  </div>
+                </div>
+
+              </div>
+            </ng-container>
 
           </div>
         </ng-container>

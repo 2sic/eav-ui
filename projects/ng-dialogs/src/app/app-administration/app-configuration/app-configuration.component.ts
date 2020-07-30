@@ -6,6 +6,7 @@ import { ContentItemsService } from '../../content-items/services/content-items.
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { paramEncode } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-app-configuration',
@@ -37,7 +38,7 @@ export class AppConfigurationComponent implements OnInit {
       const form: EditForm = {
         items: [{ EntityId: item.Id.toString() }],
       };
-      this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
     });
   }
 

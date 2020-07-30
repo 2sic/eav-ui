@@ -1,7 +1,7 @@
 {
   "name": "eav-item-dialog-angular",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "11.02.00",
+  "version": "11.04.00",
   "license": "MIT",
   "scripts": {
     "// SHARED": "build shared parts - always in the same mode for both prod/dev",
@@ -50,6 +50,8 @@
     "@2sic.com/dnn-sxc-angular": "^10.25.5",
     "@ag-grid-community/all-modules": "^23.0.2",
     "@ag-grid-community/angular": "^23.0.2",
+    "@angular-material-components/datetime-picker": "^2.0.4",
+    "@angular-material-components/moment-adapter": "^2.0.2",
     "@angular/animations": "^9.1.0",
     "@angular/cdk": "^9.2.0",
     "@angular/common": "^9.1.0",
@@ -62,7 +64,6 @@
     "@angular/platform-browser": "^9.1.0",
     "@angular/platform-browser-dynamic": "^9.1.0",
     "@angular/router": "^9.1.0",
-    "@danielmoncada/angular-datetime-picker": "^9.3.0",
     "@ecodev/fab-speed-dial": "^5.0.3",
     "@material/layout-grid": "^5.1.0",
     "@ngrx/data": "^9.0.0",
@@ -100,6 +101,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "codelyzer": "^5.2.2",
     "concurrently": "^5.1.0",
+    "copy-webpack-plugin": "^6.0.2",
     "fs-extra": "^9.0.0",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "~5.0.1",

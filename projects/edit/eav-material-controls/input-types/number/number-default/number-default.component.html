@@ -1,6 +1,13 @@
-<mat-form-field [formGroup]="group" appearance="standard" color="accent">
-  <input matInput type="number" class="form-control material" [formControlName]="config.field.name"
-    [required]='config.field.required' [placeholder]="config.field.label" [min]="min" [max]="max">
-  <mat-label>{{config.field.label}}</mat-label>
-</mat-form-field>
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+<ng-container *ngIf="{
+  disabled: disabled$ | async,
+  showValidation: showValidation$ | async
+} as data">
+
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+    <input matInput type="number" [formControlName]="config.field.name" [required]="required$ | async"
+      [placeholder]="placeholder$ | async" [min]="min$ | async" [max]="max$ | async">
+    <mat-label>{{ label$ | async }}</mat-label>
+  </mat-form-field>
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>

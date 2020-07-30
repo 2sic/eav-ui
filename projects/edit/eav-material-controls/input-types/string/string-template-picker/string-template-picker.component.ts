@@ -1,148 +1,116 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { take } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { WrappersConstants } from '../../../../shared/constants/wrappers-constants';
+import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { AppAssetsService, AssetsSvc } from '../../../../shared/services/app-assets.service';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { AssetsService } from '../../../../shared/services/assets.service';
+import { templateTypes } from './string-template-picker.constants';
+import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
-import { StringTemplatePickerFile } from '../../../../shared/models/input-types/string-template-picker-file';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { defaultTokenName, defaultTemplateName } from '../../../../../ng-dialogs/src/app/shared/constants/file-names.constants';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-template-picker',
   templateUrl: './string-template-picker.component.html',
-  styleUrls: ['./string-template-picker.component.scss']
+  styleUrls: ['./string-template-picker.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.eavLocalizationWrapper],
+  wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class StringTemplatePickerComponent implements OnInit, OnDestroy {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  private typeWatcher: FieldMaskService;
-  private locWatcher: FieldMaskService;
-  file: StringTemplatePickerFile;
-  templates: string[];
-  private eavConfig: EavConfiguration;
-  private svcApp: AssetsSvc;
-  private svcGlobal: AssetsSvc;
-  private svcCurrent: AssetsSvc;
+export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+  templateOptions$$ = new BehaviorSubject<string[]>([]);
 
-  constructor(
-    private appAssetsSvc: AppAssetsService,
-    private eavService: EavService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
+  private typeWatcher: FieldMaskService;
+  private locationWatcher: FieldMaskService;
+  private activeSpec = templateTypes.Token;
+  private templates: string[] = [];
+  private global = false;
+  /** Reset only after templates have been fetched once */
+  private resetIfNotFound = false;
+
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService, private assetsService: AssetsService) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {
-    this.activate();
-  }
-
-  private activate() {
-    // ensure settings are merged
-    if (!this.config.field.settings.merged) {
-      this.config.field.settings.merged = {};
-    }
-
+    super.ngOnInit();
     // set change-watchers to the other values
     this.typeWatcher = new FieldMaskService('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
-    this.locWatcher = new FieldMaskService('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
-
-    // create initial list for binding
-    this.templates = [];
-
-    this.svcApp = this.appAssetsSvc.createSvc(this.eavConfig.appId, false);
-    this.svcGlobal = this.appAssetsSvc.createSvc(this.eavConfig.appId, true);
+    this.locationWatcher = new FieldMaskService('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
     this.setFileConfig(this.typeWatcher.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
-    this.onLocationChange(this.locWatcher.resolve() || null); // set initial file list
+    this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
   }
 
   private setFileConfig(type: string) {
-    const specs: { [key: string]: StringTemplatePickerFile } = {
-      // tslint:disable-next-line:max-line-length
-      Token: { ext: '.html', prefix: '', suggestion: defaultTokenName, body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' },
-      // tslint:disable-next-line:max-line-length
-      'C# Razor': { ext: '.cshtml', prefix: '_', suggestion: defaultTemplateName, body: '<p>You successfully created your own template. Start editing it by hovering the "Manage" button and opening the "Edit Template" dialog.</p>' }
-    };
-    this.file = specs[type];
+    this.activeSpec = templateTypes[type];
+    this.setTemplateOptions();
   }
 
-  /** when the watcher says the location changed, reset stuff */
-  private onLocationChange(loc: string) {
-    this.svcCurrent = (loc === 'Host File System')
-      ? this.svcGlobal
-      : this.svcApp;
+  private onLocationChange(location: string) {
+    this.global = (location === 'Host File System');
 
-    this.svcCurrent.getAll().pipe(take(1)).subscribe(templates => {
-      // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
-      this.templates = templates.filter(template => template.indexOf('.code.') === -1);
+    this.assetsService.getAll(this.global).subscribe(templates => {
+      this.templates = templates;
+      this.resetIfNotFound = true;
+      this.setTemplateOptions();
     });
   }
 
-  /** filter to only show files which are applicable to this */
-  isValidFile(paths: string[], ext: string) {
-    // set the required parameter name to **number**
-    const out: string[] = [];
-    paths.forEach(path => {
-      if (path.slice(path.length - ext.length) === ext) {
-        out.push(path);
-      }
-    });
-    return out;
+  private setTemplateOptions() {
+    let filtered = this.templates;
+    const ext = this.activeSpec.ext;
+    // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
+    filtered = filtered.filter(template => !template.includes('.code.'));
+    filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
+    this.templateOptions$$.next(filtered);
+    const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
+    if (resetValue) { this.control.patchValue(''); }
   }
 
-  // ask for a new file name and add
-  add() {
-    let fileName = prompt('enter new file name', this.file.suggestion); // todo: i18n
-
-    if (!fileName) { return; }
+  createTemplate() {
+    let name = prompt('Enter new file name', this.activeSpec.suggestion); // todo: i18n
+    if (!name) { return; }
 
     // 1. check for folders
     let path = '';
-    fileName = fileName.replace('\\', '/');
-    const foundSlash = fileName.lastIndexOf('/');
+    name = name.replace('\\', '/');
+    const foundSlash = name.lastIndexOf('/');
     if (foundSlash > -1) {
-      path = fileName.substring(0, foundSlash + 1); // path with slash
-      fileName = fileName.substring(foundSlash + 1);
+      path = name.substring(0, foundSlash + 1); // path with slash
+      name = name.substring(foundSlash + 1);
     }
 
     // 2. check if extension already provided, otherwise or if not perfect, just attach default
-    if (!fileName.endsWith(this.file.ext)) {
-      fileName += this.file.ext;
+    if (!name.endsWith(this.activeSpec.ext)) {
+      name += this.activeSpec.ext;
     }
 
     // 3. check if cshtmls have a "_" in the file name (not folder, must be the file name part)
-    if (this.file.prefix !== '' && fileName[0] !== this.file.prefix) {
-      fileName = this.file.prefix + fileName;
+    if (this.activeSpec.prefix !== '' && name[0] !== this.activeSpec.prefix) {
+      name = this.activeSpec.prefix + name;
     }
 
-    const fullPath = path + fileName;
-    angularConsoleLog(fullPath);
+    const fullPath = path + name;
 
     // 4. tell service to create it
-    this.svcCurrent.create(fullPath, this.file.body).pipe(take(1)).subscribe(
-      (res: boolean) => {
-        if (res === false) {
-          alert('server reported that create failed - the file probably already exists'); // todo: i18n
-        } else {
-          // set the dropdown to the new file
-          this.templates.push(fullPath);
-          this.group.controls[this.config.field.name].setValue(fullPath);
-        }
+    this.assetsService.create(fullPath, this.global).subscribe(res => {
+      if (res === false) {
+        alert('Server reported that create failed - the file probably already exists'); // todo: i18n
+      } else {
+        this.templates.push(fullPath);
+        this.setTemplateOptions();
+        this.control.patchValue(fullPath);
       }
-    );
+    });
   }
 
   ngOnDestroy() {
+    this.templateOptions$$.complete();
     this.typeWatcher.destroy();
-    this.locWatcher.destroy();
+    this.locationWatcher.destroy();
   }
 }

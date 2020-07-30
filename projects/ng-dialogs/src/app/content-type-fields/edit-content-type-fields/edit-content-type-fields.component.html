@@ -6,51 +6,53 @@
   </div>
 </div>
 
-<form *ngIf="fields" (ngSubmit)="onSubmit()" #ngForm="ngForm">
-  <div class="row-container" *ngFor="let field of fields; index as i">
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Name</mat-label>
-        <input matInput [pattern]="contentTypeNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
-          [disabled]="editMode" #staticName='ngModel'>
-      </mat-form-field>
-      <ng-container *ngIf="staticName.touched && staticName.errors">
-        <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
-      </ng-container>
-    </div>
+<form #ngForm="ngForm" class="dialog-form">
+  <div class="dialog-form-content fancy-scrollbar-light">
+    <div class="row-container" *ngFor="let field of fields; index as i">
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Name</mat-label>
+          <input matInput [pattern]="fieldNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
+            [disabled]="editMode" #staticName="ngModel">
+        </mat-form-field>
+        <ng-container *ngIf="staticName.touched && staticName.errors">
+          <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ fieldNameError }}</app-field-hint>
+        </ng-container>
+      </div>
 
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Data Type</mat-label>
-        <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
-          [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
-          <mat-select-trigger>
-            <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
-            <span>{{ field.Type }}</span>
-          </mat-select-trigger>
-          <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
-            <mat-icon>{{ dataType.icon }}</mat-icon>
-            <span>{{ dataType.label }}</span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
-    </div>
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Data Type</mat-label>
+          <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
+            [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
+            <mat-select-trigger>
+              <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
+              <span>{{ field.Type }}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
+              <mat-icon>{{ dataType.icon }}</mat-icon>
+              <span>{{ dataType.label }}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
+      </div>
 
-    <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Input Type</mat-label>
-        <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i">
-          <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType">
-            {{ option.label }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
+      <div class="edit-input">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Input Type</mat-label>
+          <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i">
+            <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType">
+              {{ option.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
+      </div>
     </div>
   </div>
 
-  <div class="dialog-actions-box">
-    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" type="submit" [disabled]="!ngForm.form.valid">Save</button>
+  <div class="dialog-form-actions">
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="save()">Save</button>
   </div>
 </form>

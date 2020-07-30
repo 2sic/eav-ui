@@ -6,6 +6,7 @@ import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 // tslint:disable-next-line:max-line-length
 import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
+import { paramEncode } from './shared/helpers/url-prep.helper';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -58,7 +59,7 @@ export function paramsInitFactory(injector: Injector) {
         case 'edit':
           const editItems: EditItem[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
-          router.navigate([`${zoneId}/${appId}/edit/${JSON.stringify(form)}`]);
+          router.navigate([`${zoneId}/${appId}/edit/${paramEncode(JSON.stringify(form))}`]);
           break;
         case 'develop':
           router.navigate([`${zoneId}/${appId}/code`]);

@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { AttributeDef } from '../models/eav/attribute-def';
 import { EavHeader, Item, InputType } from '../models/eav';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
-import { WrappersConstants } from '../constants/wrappers-constants';
+import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models/input-field-models';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
@@ -77,10 +77,10 @@ export class InputFieldHelper {
     const isEmptyInputType = (inputType === InputTypeConstants.EmptyDefault)
       || (inputType === DataTypeConstants.Empty);
     if (isEmptyInputType) {
-      return [WrappersConstants.collapsibleWrapper];
+      return [WrappersConstants.CollapsibleWrapper];
     }
     // default wrappers
-    const wrappers: string[] = [WrappersConstants.hiddenWrapper];
+    const wrappers: string[] = [WrappersConstants.HiddenWrapper];
     // entity-default wrappers
     const isEntityType = (inputType === InputTypeConstants.EntityDefault)
       || (inputType === InputTypeConstants.StringDropdownQuery)
@@ -88,22 +88,22 @@ export class InputFieldHelper {
       || (inputType === InputTypeConstants.EntityContentBlocks);
 
     if (isEntityType) {
-      wrappers.push(WrappersConstants.eavLocalizationWrapper);
+      wrappers.push(WrappersConstants.EavLocalizationWrapper);
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
       if (inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.collapsibleFieldWrapper);
+        wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
       }
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.entityExpandableWrapper);
+        wrappers.push(WrappersConstants.EntityExpandableWrapper);
       }
     }
 
     if (isExternal) {
       wrappers.push(
-        WrappersConstants.dropzoneWrapper,
-        WrappersConstants.eavLocalizationWrapper,
-        WrappersConstants.expandableWrapper,
-        WrappersConstants.adamAttachWrapper,
+        WrappersConstants.DropzoneWrapper,
+        WrappersConstants.EavLocalizationWrapper,
+        WrappersConstants.ExpandableWrapper,
+        WrappersConstants.AdamAttachWrapper,
       );
     }
 
@@ -119,20 +119,21 @@ export class InputFieldHelper {
 
     switch (inputType) {
       case InputTypeConstants.BooleanDefault:
-        return defaultValue !== undefined && defaultValue !== null
+        return defaultValue != null
           ? defaultValue.toLowerCase() === 'true'
           : false;
       case InputTypeConstants.DatetimeDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
+        return defaultValue != null && defaultValue !== ''
           ? new Date(defaultValue)
           : null;
       case InputTypeConstants.NumberDefault:
-        return defaultValue !== undefined && defaultValue !== null && defaultValue !== ''
+        return defaultValue != null && defaultValue !== ''
           ? Number(defaultValue)
           : '';
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
-        if (!(defaultValue !== undefined && defaultValue !== null && defaultValue !== '')) {
+      case InputTypeConstants.EntityContentBlocks:
+        if (!(defaultValue != null && defaultValue !== '')) {
           return []; // no default value
         }
         // 3 possibilities

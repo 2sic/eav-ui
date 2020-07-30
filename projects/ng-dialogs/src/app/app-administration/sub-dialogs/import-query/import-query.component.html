@@ -12,21 +12,21 @@
       <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
     </div>
 
-    <div class="dialog-actions-box">
+    <div class="dialog-component-actions">
       <button mat-raised-button (click)="closeDialog()">Cancel</button>
       <button mat-raised-button color="accent" [disabled]="!importFile" (click)="importQuery()">Import</button>
     </div>
   </div>
   <div *ngSwitchCase="2">
     <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-    <div class="dialog-actions-box">
+    <div class="dialog-component-actions">
       <button mat-raised-button disabled>Cancel</button>
       <button mat-raised-button color="accent" disabled>Import</button>
     </div>
   </div>
   <div *ngSwitchCase="3">
     <p>Import completed!</p>
-    <div class="dialog-actions-box">
+    <div class="dialog-component-actions">
       <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
     </div>
   </div>

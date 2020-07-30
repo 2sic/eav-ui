@@ -20,6 +20,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-views',
@@ -165,7 +166,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         items: [{ EntityId: view.Id.toString() }],
       };
     }
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   editPolymorphisms() {
@@ -178,7 +179,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
           : { ContentTypeName: this.polymorphism.TypeName }
       ]
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   private idValueGetter(params: ValueGetterParams) {

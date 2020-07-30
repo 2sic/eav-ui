@@ -13,7 +13,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { Field } from './models/field.model';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { EditForm, AddItem, EditItem } from '../shared/models/edit-form.model';
-import { contentTypeNamePattern, contentTypeNameError } from '../app-administration/constants/content-type.patterns';
+import { fieldNamePattern, fieldNameError } from '../app-administration/constants/field-name.patterns';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
@@ -21,6 +21,7 @@ import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-typ
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -206,11 +207,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.createItemDefinition(field, field.InputType)
       ],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {
-    return field.Metadata[metadataType] !== undefined
+    return field.Metadata[metadataType] != null
       ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
       : {
         ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
@@ -241,8 +242,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     if (newName === null) { return; }
     newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
     if (newName === field.StaticName) { return; }
-    while (!newName.match(contentTypeNamePattern)) {
-      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${contentTypeNameError}`, newName);
+    while (!newName.match(fieldNamePattern)) {
+      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${fieldNameError}`, newName);
       if (newName === null) { return; }
       newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
       if (newName === field.StaticName) { return; }

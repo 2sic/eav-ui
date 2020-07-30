@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 
@@ -13,6 +13,8 @@ import { keyLangs, keyLangPri } from '../shared/constants/session.constants';
   styleUrls: ['./content-export.component.scss']
 })
 export class ContentExportComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   formValues: ContentExport;
   languages: Language[] = JSON.parse(sessionStorage.getItem(keyLangs));
   itemIds: number[];

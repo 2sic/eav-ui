@@ -2,7 +2,6 @@ import { Component, OnInit, ViewContainerRef, ViewChild, Input, OnDestroy, After
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -10,7 +9,6 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
 import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
@@ -29,8 +27,7 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  private eavConfig: EavConfiguration;
-  private subscriptions: Subscription[] = [];
+  private subscription = new Subscription();
   private oldValue: any;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
@@ -46,6 +43,8 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   pageButton: boolean;
   showInputFileName: boolean;
 
+  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
+
   constructor(
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
@@ -53,25 +52,21 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
     private zone: NgZone,
     private dialog: MatDialog,
     private expandableFieldService: ExpandableFieldService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
-
-  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
+  ) { }
 
   ngOnInit() {
-    this.adamButton = this.config.field.settings.Buttons ? this.config.field.settings.Buttons.indexOf('adam') > -1 : false;
-    this.pageButton = this.config.field.settings.Buttons ? this.config.field.settings.Buttons.indexOf('page') > -1 : false;
     this.control = this.group.controls[this.config.field.name];
     this.setLink(this.control.value);
     this.suscribeValueChanges();
-    this.subscriptions.push(
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-        this.dialogIsOpen = dialogShouldBeOpen;
-      }),
-    );
+    this.subscription.add(this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
+      const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
+      if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
+      this.dialogIsOpen = dialogShouldBeOpen;
+    }));
+    this.subscription.add(this.config.field.settings$.subscribe(settings => {
+      this.adamButton = settings.Buttons?.includes('adam');
+      this.pageButton = settings.Buttons?.includes('page');
+    }));
   }
 
   ngAfterViewInit() {
@@ -92,14 +87,16 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
+    this.subscription.unsubscribe();
     this.dropzoneDraggingHelper.detach();
   }
 
   expandDialog() {
+    if (this.control.disabled) { return; }
     angularConsoleLog('HyperlinkDefaultExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
+
   closeDialog() {
     angularConsoleLog('HyperlinkDefaultExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
@@ -113,40 +110,36 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
         FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : ''
       },
       this.processResultOfPagePicker.bind(this),
-      this.dialog);
+      this.dialog
+    );
   }
 
   private processResultOfPagePicker(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
-    if (value) { this.setFormValue(this.config.field.name, `page:${value.id}`); }
+    if (!value) { return; }
+    this.control.patchValue(`page:${value.id}`);
   }
 
-  private setFormValue(formControlName: string, value: any) {
-    this.group.patchValue({ [formControlName]: value });
-  }
-
-  /** Update test-link if necessary - both when typing or if link was set by dialogs */
   private setLink(value: string) {
     if (!value) { return; }
+
     // handle short-ID links like file:17
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(
-      this.eavConfig.appId,
-      value,
-      this.config.entity.header.ContentTypeName,
-      this.config.entity.header.Guid,
-      this.config.field.name
-    );
+    const contentType = this.config.entity.header.ContentTypeName;
+    const entityGuid = this.config.entity.header.Guid;
+    const field = this.config.field.name;
+    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
 
     if (!urlFromId$) {
       this.link = value;
       this.setValues();
-    } else {
-      urlFromId$.pipe(take(1)).subscribe(data => {
-        if (!data) { return; }
-        this.link = data;
-        this.setValues();
-      });
+      return;
     }
+
+    urlFromId$.subscribe(data => {
+      if (!data) { return; }
+      this.link = data;
+      this.setValues();
+    });
   }
 
   private setValues() {
@@ -161,18 +154,14 @@ export class HyperlinkDefaultExpandableWrapperComponent implements FieldWrapper,
   /** Subscribe to form value changes */
   private suscribeValueChanges() {
     this.oldValue = this.control.value;
-    const formSetSub = this.eavService.formSetValueChange$.subscribe(formSet => {
-      // check if update is for current form
+    this.subscription.add(this.eavService.formSetValueChange$.subscribe(formSet => {
       if (formSet.formId !== this.config.form.formId) { return; }
-      // check if update is for current entity
       if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
-      // check if update is for this field
       if (formSet.entityValues[this.config.field.name] === this.oldValue) { return; }
       this.oldValue = formSet.entityValues[this.config.field.name];
 
       this.setLink(formSet.entityValues[this.config.field.name]);
-    });
-    this.subscriptions.push(formSetSub);
+    }));
   }
 
   private buildThumbnailUrl(url: string, size: number, quote: boolean): string {

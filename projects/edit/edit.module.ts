@@ -7,10 +7,8 @@ import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 
 import { EavService } from './shared/services/eav.service';
 import { AdamService } from './eav-material-controls/adam/adam.service';
-import { SvcCreatorService } from './shared/services/svc-creator.service';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EntityService } from './shared/services/entity.service';
-import { EavAdminUiService } from './shared/services/eav-admin-ui.service';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { QueryService } from './shared/services/query.service';
 import { EditRoutingModule } from './edit-routing.module';
@@ -45,10 +43,8 @@ export function createTranslateLoader(http: HttpClient) {
     DnnInterceptor,
     EavService,
     AdamService,
-    SvcCreatorService,
     DnnBridgeService,
     EntityService,
-    EavAdminUiService,
     QueryService,
     SanitizeService,
     ExpandableFieldService,

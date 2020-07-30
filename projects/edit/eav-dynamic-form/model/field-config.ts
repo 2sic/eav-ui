@@ -1,21 +1,19 @@
 import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
-import { AdamBrowserComponent } from '../../eav-material-controls/adam/browser/adam-browser.component';
-import { FieldConfig } from '../../../edit-types';
+import { FieldConfig, FieldSettings, Dropzone, Adam } from '../../../edit-types';
+import { EntityInfo } from '../../shared/models/eav/entity-info';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
   field: FieldConfigAngular;
   entity: ItemConfig;
   form: FormConfig;
-  adam?: AdamBrowserComponent;
-  dropzoneConfig$?: BehaviorSubject<DropzoneConfigInterface>;
-  dropzoneDisabled?: boolean;
-  cache?: any;
-  saveImage?: (image: File) => void;
+  dropzone?: Dropzone;
+  adam?: Adam;
+  cache?: EntityInfo[];
+  entityCache$?: BehaviorSubject<EntityInfo[]>;
 }
 
 export interface FieldConfigAngular extends FieldConfig {
@@ -27,6 +25,7 @@ export interface FieldConfigAngular extends FieldConfig {
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;
+  settings$: BehaviorSubject<FieldSettings>;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

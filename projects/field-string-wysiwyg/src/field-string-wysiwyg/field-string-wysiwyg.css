@@ -1,0 +1,7 @@
+.wysiwyg-switcher {
+  display: block;
+  height: inherit;
+  min-height: inherit;
+  max-height: inherit;
+  box-sizing: border-box;
+}

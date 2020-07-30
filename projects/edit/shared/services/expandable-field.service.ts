@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { paramEncode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 @Injectable()
 export class ExpandableFieldService {
@@ -93,7 +94,7 @@ export class ExpandableFieldService {
 
     if (routeParams.expandedFieldId && open) {
       // if field is already expanded, just open child
-      this.router.navigate([`edit/${JSON.stringify(childForm)}`], { relativeTo: this.route });
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(childForm))}`], { relativeTo: this.route });
       return;
     } else if (routeParams.expandedFieldId && !open) {
       // if field is already expanded, but should close, other service will take care of it

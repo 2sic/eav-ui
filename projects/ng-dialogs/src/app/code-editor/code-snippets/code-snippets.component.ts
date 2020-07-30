@@ -14,6 +14,7 @@ export class CodeSnippetsComponent implements OnInit {
   toggledSections: any[] = [];
   toggledFolders: any[] = [];
   toggledInfos: any[] = [];
+  toggledMores: any[] = [];
 
   constructor() { }
 
@@ -34,6 +35,10 @@ export class CodeSnippetsComponent implements OnInit {
 
   toggleInfo(info: any) {
     toggleInArray(info, this.toggledInfos);
+  }
+
+  toggleMore(more: any) {
+    toggleInArray(more, this.toggledMores);
   }
 
 }

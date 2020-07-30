@@ -1,19 +1,24 @@
-<div *ngIf="rowCount > 1; then textareaField else inputField"></div>
+<ng-container *ngIf="{
+  rowCount: rowCount$ | async,
+  label: label$ | async,
+  placeholder: placeholder$ | async,
+  required: required$ | async,
+  disabled: disabled$ | async,
+  showValidation: showValidation$ | async
+} as data">
 
-<ng-template #inputField>
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <input matInput type="text" class="form-control material" [formControlName]="config.field.name"
-      [placeholder]="config.field.label" [required]="config.field.required">
-    <mat-label>{{config.field.label}}</mat-label>
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
+      'textarea-field': data.rowCount > 1
+    }">
+    <input matInput *ngIf="data.rowCount <= 1" [formControlName]="config.field.name" [placeholder]="data.placeholder"
+      [required]="data.required">
+
+    <textarea matInput *ngIf="data.rowCount > 1" [formControlName]="config.field.name" [rows]="data.rowCount"
+      [placeholder]="data.placeholder" [required]="data.required"></textarea>
+
+    <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
-</ng-template>
 
-<ng-template #textareaField>
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="textarea-field">
-    <textarea matInput [rows]="rowCount" type="text" class="form-control material" [formControlName]="config.field.name"
-      [placeholder]="config.field.label" [required]="config.field.required"></textarea>
-    <mat-label>{{config.field.label}}</mat-label>
-  </mat-form-field>
-</ng-template>
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
-<app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</ng-container>

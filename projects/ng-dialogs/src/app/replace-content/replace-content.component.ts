@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { ContentGroupService } from '../manage-content-list/services/content-gro
 import { ReplaceOption } from './models/replace-option.model';
 import { ContentGroup, ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { EditForm } from '../shared/models/edit-form.model';
+import { paramEncode } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-replace-content',
@@ -16,6 +17,8 @@ import { EditForm } from '../shared/models/edit-form.model';
   styleUrls: ['./replace-content.component.scss']
 })
 export class ReplaceContentComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   options: ReplaceOption[];
   item: ContentGroupAdd;
   contentTypeName: string;
@@ -62,7 +65,7 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: this.item.id }],
     };
-    this.router.navigate([`edit/${JSON.stringify(form)}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   closeDialog() {

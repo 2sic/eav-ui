@@ -1,21 +1,29 @@
 @import "../../../assets/styles/variables.scss";
 
-.c-ah-field-hint {
-    padding: 2px 24px;
-    background-color: white;
-    color: rgba($editUI-foreground-color, 0.44);
+.hint-box {
+  padding: 2px 24px;
+  background-color: white;
+  color: rgba($editUI-foreground-color, 0.44);
+  display: flex;
+
+  &__hint {
+    flex: 1 1 auto;
+  }
+
+  &__sponsor {
+    display: flex;
+    align-items: flex-start;
+  }
 }
 
 .adam-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
+  display: flex;
+  align-items: center;
 
-.apple-icon {
+  .mat-icon {
     font-size: 14px;
     width: 14px;
     height: 14px;
     line-height: 14px;
+  }
 }

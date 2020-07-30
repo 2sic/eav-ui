@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -11,6 +11,8 @@ import { ExportAppService } from '../../services/export-app.service';
   styleUrls: ['./export-app.component.scss']
 })
 export class ExportAppComponent implements OnInit {
+  @HostBinding('className') hostClass = 'dialog-component';
+
   appInfo: AppInfo;
   includeContentGroups = false;
   resetAppGuid = false;

@@ -46,7 +46,7 @@ export class FileTypeService {
   }
 
   public isKnownType = (filename: string) => {
-    return this.matExtensions[this.getExtension(filename)] !== undefined;
+    return this.matExtensions[this.getExtension(filename)] != null;
   }
 
   public isImage = (filename: string) => {

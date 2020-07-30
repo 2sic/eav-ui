@@ -2,7 +2,7 @@
 import { Component, OnInit, Input, ElementRef, NgZone, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnDestroy, forwardRef, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { loadScripts } from './ace-editor.helpers';
+import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { aceOptions } from './ace-options';
 import { Ace, Editor } from './ace.model';
 declare const ace: Ace;
@@ -37,9 +37,9 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     loadScripts(
       [
-        { globalVar: 'ace', src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js' },
-        { globalVar: null, src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ext-modelist.min.js' },
-        { globalVar: null, src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ext-language_tools.min.js' },
+        { test: 'ace', src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js' },
+        { test: null, src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ext-modelist.min.js' },
+        { test: null, src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ext-language_tools.min.js' },
       ],
       this.aceLoaded.bind(this)
     );

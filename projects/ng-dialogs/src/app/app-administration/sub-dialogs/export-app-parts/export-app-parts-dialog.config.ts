@@ -5,7 +5,6 @@ export const exportAppPartsDialog: DialogConfig = {
   initContext: false,
   panelSize: 'medium',
   panelClass: null,
-  showScrollbar: true,
 
   async getComponent() {
     const { ExportAppPartsComponent } = await import('./export-app-parts.component');
