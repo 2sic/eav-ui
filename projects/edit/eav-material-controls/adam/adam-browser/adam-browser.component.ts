@@ -111,13 +111,13 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       this.fetchItems();
     }));
     this.expanded$ = this.expandableFieldService.getObservable().pipe(map(expandedFieldId => expandedFieldId === this.config.field.index));
-    this.value$ = this.eavService.formSetValueChange$.pipe(
+    this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),

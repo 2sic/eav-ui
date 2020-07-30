@@ -91,7 +91,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
         this.form.controls[name].enable({ emitEvent });
       }
       const config = this.config.find(cfg => cfg.field.name === name);
-      this.eavService.formDisabledChanged$$.next({ formId: config.form.formId, entityGuid: config.entity.entityGuid });
+      this.eavService.formDisabledChange$.next({
+        formId: config.form.formId,
+        entityGuid: config.entity.entityGuid,
+      });
     }
   }
 

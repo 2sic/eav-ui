@@ -7,7 +7,7 @@ import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-conf
 import { EavService } from '../../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
-import { ConnectorHelper } from './connector.service';
+import { ConnectorHelper } from './connector.helper';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';

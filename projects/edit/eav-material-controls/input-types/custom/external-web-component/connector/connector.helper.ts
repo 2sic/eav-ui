@@ -42,7 +42,7 @@ export class ConnectorHelper {
     this.eavConfig = eavService.getEavConfiguration();
     this.control = this.group.controls[this.config.field.name];
 
-    this.subscription.add(this.eavService.formSetValueChange$.pipe(
+    this.subscription.add(this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
       startWith(this.control.value),
@@ -71,7 +71,7 @@ export class ConnectorHelper {
 
   private calculateRegularProps() {
     const connectorHost: ConnectorHost<any> = {
-      forceConnectorSave$: this.eavService.forceConnectorSave$$,
+      forceConnectorSave$: this.eavService.forceConnectorSave$,
       update: (value) => {
         this.zone.run(() => { this.updateControl(this.control, value); });
       },

@@ -29,7 +29,6 @@ import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dia
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
-import { FormSet } from '../../../edit-types';
 import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
@@ -184,7 +183,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   /** Save all forms */
   saveAll(close: boolean) {
-    this.eavService.forceConnectorSave$$.next();
+    this.eavService.forceConnectorSave$.next();
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
       if (this.formsAreValid || this.allControlsAreDisabled) {
@@ -307,7 +306,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   private formSetValueChangeSubscribe() {
     this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe((formSet: FormSet) => {
+      this.eavService.formValueChange$.subscribe(formSet => {
         // check if update is for current entity
         if (formSet.formId !== this.formId) { return; }
         this.checkFormsState();

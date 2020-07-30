@@ -15,7 +15,6 @@ import * as fromItems from '../../shared/store/actions/item.actions';
 import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
-import { FormSet } from '../../../edit-types';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
@@ -128,12 +127,11 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
         this.form.patchValue(formValues, emit);
       }
       // important to be after patchValue
-      const formSet: FormSet = {
+      this.eavService.formValueChange$.next({
         formId: this.formId,
         entityGuid: this.item.entity.guid,
-        entityValues: formValues
-      };
-      this.eavService.triggerFormSetValueChange(formSet);
+        entityValues: formValues,
+      });
     }
   }
 

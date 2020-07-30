@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.service';
+import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';

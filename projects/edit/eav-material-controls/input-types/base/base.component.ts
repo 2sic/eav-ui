@@ -39,13 +39,13 @@ export class BaseComponent<T> implements Field, OnInit {
     // this.status$ = this.control.statusChanges.pipe(
     //   startWith(this.control.status)
     // );
-    this.value$ = this.eavService.formSetValueChange$.pipe(
+    this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),

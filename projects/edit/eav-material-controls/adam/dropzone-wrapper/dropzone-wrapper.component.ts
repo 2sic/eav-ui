@@ -38,7 +38,7 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),
