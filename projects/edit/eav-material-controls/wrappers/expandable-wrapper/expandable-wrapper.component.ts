@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { ConnectorService } from '../../input-types/custom/external-web-component/connector/connector.service';
+import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
@@ -26,22 +26,23 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 })
 export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer') previewContainer: ElementRef;
+  @ViewChild('previewContainer') previewContainerRef: ElementRef;
   @ViewChild('backdrop') backdropRef: ElementRef;
   @ViewChild('dialog') dialogRef: ElementRef;
+
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
+
   dialogIsOpen = false;
   inlineMode = true;
   private subscription = new Subscription();
-  private elConnector: ConnectorService;
+  private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   get value() {
     return this.group.controls[this.config.field.name].value ? this.group.controls[this.config.field.name].value
       .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') : '';
   }
-  get id() { return `${this.config.entity.entityId}${this.config.field.index}`; }
   get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
   get touched() { return this.group.controls[this.config.field.name].touched || false; }
   get dirty() { return this.group.controls[this.config.field.name].dirty || false; }
@@ -51,31 +52,35 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
   constructor(
     private eavService: EavService,
     private translateService: TranslateService,
-    private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
-    private zone: NgZone,
     private contentTypeService: ContentTypeService,
-    private featureService: FeatureService,
     private inputTypeService: InputTypeService,
-    private changeDetector: ChangeDetectorRef,
+    private featureService: FeatureService,
     private expandableFieldService: ExpandableFieldService,
+    private dnnBridgeService: DnnBridgeService,
+    private zone: NgZone,
+    private dialog: MatDialog,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     this.changeDetector.detectChanges();
     const elName = `field-${this.config.field.inputType}`;
     angularConsoleLog('ExpandableWrapper created for:', elName, 'Config:', this.config.field);
-    this.elConnector = new ConnectorService(this.zone, this.contentTypeService, this.dialog, this.dnnBridgeService,
-      this.eavService, this.translateService, this.previewContainer, this.config, this.group, this.featureService,
-      this.inputTypeService, this.expandableFieldService);
-    this.elConnector.createElementWebComponent(this.config, this.group, this.previewContainer, elName);
-
-    this.group.controls[this.config.field.name].statusChanges.subscribe(status => {
-      angularConsoleLog('ExpandableWrapperComponent statusChanges:', this.config.field.name, status);
-    });
-    this.group.controls[this.config.field.name].valueChanges.subscribe(value => {
-      angularConsoleLog('ExpandableWrapperComponent valueChanges:', this.config.field.name, value);
-    });
+    this.connectorCreator = new ConnectorHelper(
+      this.config,
+      this.group,
+      this.previewContainerRef,
+      elName,
+      this.eavService,
+      this.translateService,
+      this.contentTypeService,
+      this.inputTypeService,
+      this.featureService,
+      this.expandableFieldService,
+      this.dnnBridgeService,
+      this.dialog,
+      this.zone,
+    );
 
     this.subscription.add(
       this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
@@ -100,6 +105,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     angularConsoleLog('ExpandableWrapperComponent expandDialog');
     this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
   }
+
   closeDialog() {
     angularConsoleLog('ExpandableWrapperComponent closeDialog');
     this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
@@ -107,7 +113,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   ngOnDestroy() {
     angularConsoleLog('ExpandableWrapper destroyed');
-    this.elConnector.destroy();
+    this.connectorCreator.destroy();
     this.subscription.unsubscribe();
     this.subscription = null;
     this.dropzoneDraggingHelper.detach();

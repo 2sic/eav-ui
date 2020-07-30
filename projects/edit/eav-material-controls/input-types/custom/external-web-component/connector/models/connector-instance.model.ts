@@ -100,8 +100,8 @@ export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
 }
 
 /** Props and methods available to the connector to communicate with the host */
-export class ConnectorHost<T> {
+export interface ConnectorHost<T> {
+  forceConnectorSave$: Observable<null>;
   update: (value: T) => void;
   expand: (expand: boolean, componentTag?: string) => void;
-  forceConnectorSave$: Observable<null>;
 }

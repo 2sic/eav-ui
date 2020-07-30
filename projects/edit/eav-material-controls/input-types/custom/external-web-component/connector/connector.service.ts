@@ -1,9 +1,9 @@
 import { NgZone, ElementRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
@@ -16,97 +16,101 @@ import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.se
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
 import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
 import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
-import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
-export class ConnectorService {
-  private subscriptions: Subscription[] = [];
-  private subjects: BehaviorSubject<any>[] = [];
-  private customEl: EavCustomInputField<any>;
+export class ConnectorHelper {
   private eavConfig: EavConfiguration;
-  private value$: BehaviorSubject<any>;
-  private previousValue: any;
+  private control: AbstractControl;
+  private customEl: EavCustomInputField<any>;
+  private value$ = new BehaviorSubject<any>(null);
+  private subscription = new Subscription();
 
   constructor(
-    private _ngZone: NgZone,
-    private contentTypeService: ContentTypeService,
-    private dialog: MatDialog,
-    private dnnBridgeService: DnnBridgeService,
-    private eavService: EavService,
-    private translateService: TranslateService,
-    private customElContainer: ElementRef,
     private config: FieldConfigSet,
     private group: FormGroup,
-    private featureService: FeatureService,
+    private customElContainerRef: ElementRef,
+    private customElName: string,
+    private eavService: EavService,
+    private translateService: TranslateService,
+    private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
+    private featureService: FeatureService,
     private expandableFieldService: ExpandableFieldService,
+    private dnnBridgeService: DnnBridgeService,
+    private dialog: MatDialog,
+    private zone: NgZone,
   ) {
     this.eavConfig = eavService.getEavConfiguration();
-  }
+    this.control = this.group.controls[this.config.field.name];
 
-  public createElementWebComponent(config: FieldConfigSet, group: FormGroup, customElContainer: ElementRef, customElName: string) {
-    this.customElContainer = customElContainer;
-    this.config = config;
-    this.group = group;
+    this.subscription.add(this.eavService.formSetValueChange$.pipe(
+      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+      map(formSet => this.control.value),
+      startWith(this.control.value),
+      distinctUntilChanged(),
+    ).subscribe(newValue => {
+      this.value$.next(newValue);
+    }));
 
-    this.customEl = document.createElement(customElName) as any;
+    this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();
-    angularConsoleLog('order host createElementWebComponent');
-    this.customElContainer.nativeElement.appendChild(this.customEl);
-
-    this.subscribeFormChange();
+    this.customElContainerRef.nativeElement.appendChild(this.customEl);
   }
 
-  private buildConnector(): ConnectorInstance<any> {
+  private buildConnector() {
+    const connectorHost = this.calculateRegularProps();
+    const experimental = this.calculateExperimentalProps();
+    const connector = new ConnectorInstance<any>(
+      connectorHost,
+      this.value$.asObservable(),
+      this.config.field,
+      experimental,
+      this.eavConfig,
+    );
+    return connector;
+  }
+
+  private calculateRegularProps() {
     const connectorHost: ConnectorHost<any> = {
-      update: value => {
-        this._ngZone.run(() => this.update(value));
-      },
       forceConnectorSave$: this.eavService.forceConnectorSave$$,
+      update: (value) => {
+        this.zone.run(() => { this.updateControl(this.control, value); });
+      },
       expand: (expand, componentTag) => {
-        this._ngZone.run(() => {
+        this.zone.run(() => {
           this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId, componentTag);
         });
       },
     };
-    this.previousValue = this.group.controls[this.config.field.name].value;
-    this.value$ = new BehaviorSubject<any>(this.group.controls[this.config.field.name].value);
-    this.subjects.push(this.value$);
-    const experimental = this.calculateExperimentalProps();
-    const connector = new ConnectorInstance<any>(
-      connectorHost, this.value$.asObservable(), this.config.field, experimental, this.eavConfig
-    );
-
-    return connector;
+    return connectorHost;
   }
 
-  private calculateExperimentalProps(): ExperimentalProps {
+  private calculateExperimentalProps() {
     let allInputTypeNames: InputTypeName[];
-    const contentType$ = this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId);
-    contentType$.pipe(take(1)).subscribe(data => {
+    this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId).pipe(take(1)).subscribe(data => {
       allInputTypeNames = InputFieldHelper.calculateInputTypes(data.contentType.attributes, this.inputTypeService);
     });
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entity.entityGuid,
       allInputTypeNames,
-      updateField: (name, value) => {
-        this._ngZone.run(() => this.updateField(name, value));
-      },
       formGroup: this.group,
-      isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       translateService: this.translateService,
-      setFocused: (focused) => {
-        this._ngZone.run(() => { this.config.field.focused = focused; });
-      },
-      openDnnDialog: (oldValue, params, callback) => {
-        this._ngZone.run(() => this.openDnnDialog(oldValue, params, callback));
-      },
-      getUrlOfIdDnnDialog: (value, callback) => {
-        this._ngZone.run(() => this.getUrlOfIdDnnDialog(value, callback));
-      },
       expandedField$: this.expandableFieldService.getObservable(),
       dropzone: this.config.dropzone,
       adam: this.config.adam,
+      updateField: (name, value) => {
+        this.zone.run(() => { this.updateControl(this.group.controls[name], value); });
+      },
+      isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
+      setFocused: (focused) => {
+        this.zone.run(() => { this.config.field.focused = focused; });
+      },
+      openDnnDialog: (oldValue, params, callback) => {
+        this.zone.run(() => { this.openDnnDialog(oldValue, params, callback); });
+      },
+      getUrlOfIdDnnDialog: (value, callback) => {
+        this.zone.run(() => { this.getUrlOfIdDnnDialog(value, callback); });
+      },
     };
 
     return experimentalProps;
@@ -136,43 +140,17 @@ export class ConnectorService {
     });
   }
 
-  /** This is subscribe for all setforms - even if is not changing value. */
-  private subscribeFormChange() {
-    this.subscriptions.push(
-      this.eavService.formSetValueChange$.subscribe(formSet => {
-        // check if update is for current form
-        if (formSet.formId !== this.config.form.formId) { return; }
-        // check if update is for current entity
-        if (formSet.entityGuid !== this.config.entity.entityGuid) { return; }
-        // check if update is for this field
-        const newValue = formSet.entityValues[this.config.field.name];
-        if (this.previousValue === newValue) { return; }
+  private updateControl(control: AbstractControl, value: any) {
+    if (control == null || control.disabled) { return; }
 
-        this.previousValue = newValue;
-        this.value$.next(newValue);
-      })
-    );
-  }
-
-  private update(value: any) {
-    // TODO: validate value
-    this.group.controls[this.config.field.name].patchValue(value);
-    this.group.controls[this.config.field.name].markAsDirty();
-    this.group.controls[this.config.field.name].markAsTouched(); // spm should be marked on first focus. Read JSDoc
-    angularConsoleLog('wysiwyg order: host update(value)', this.group.controls[this.config.field.name].value);
-  }
-
-  private updateField(name: string, value: any) {
-    if (!this.group.controls[name] || this.group.controls[name].disabled) { return; }
-    this.group.controls[name].patchValue(value);
-    this.group.controls[name].markAsDirty();
-    this.group.controls[this.config.field.name].markAsTouched();
+    if (control.value !== value) { control.patchValue(value); }
+    if (!control.dirty) { control.markAsDirty(); }
+    if (!control.touched) { control.markAsTouched(); }
   }
 
   public destroy() {
-    angularConsoleLog('Connector destroyed');
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.subjects.forEach(subject => { subject.complete(); });
+    this.subscription.unsubscribe();
+    this.value$.complete();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }
