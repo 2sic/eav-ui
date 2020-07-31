@@ -4,7 +4,7 @@
       [ngClass]="(settings.EnableCreate && settings.EntityType && !selectedEntities.length && !settings.AllowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!settings.AllowMultiValue && selectedEntities.length">
         <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
-          'mat-form-field-invalid': control.invalid && control.touched
+          'mat-form-field-invalid': invalid && touched
         }">
           <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled || !settings.EnableAddExisting" (blur)="control.markAsTouched()"
@@ -22,7 +22,7 @@
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </a>
-          <mat-label [ngClass]="{ 'mat-error': control.invalid && control.touched }">
+          <mat-label [ngClass]="{ 'mat-error': invalid && touched }">
             {{ settings.AllowMultiValue ? ('Fields.Entity.Choose' | translate) : label }}
             {{ required ? '*': '' }}
           </mat-label>

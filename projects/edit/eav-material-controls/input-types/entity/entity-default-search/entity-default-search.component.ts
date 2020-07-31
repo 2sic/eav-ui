@@ -26,6 +26,8 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Input() label: string;
   @Input() placeholder: string;
   @Input() required: boolean;
+  @Input() invalid: boolean;
+  @Input() touched: boolean;
   @Input() disabled: boolean;
   @Input() freeTextMode: boolean;
   @Input() settings: FieldSettings;

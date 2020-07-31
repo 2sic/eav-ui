@@ -1,23 +1,23 @@
 <!-- header -->
-<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="(open$ | async) ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen }">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()"
-          [matTooltip]="'Form.Buttons.Return.Tip' | translate">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [matTooltip]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-display-1">{{ config.field.label }}</span>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      <div [@itemShrinkAnimation]="!(open$ | async) ? 'open' : 'closed'">
       </div>
       <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-          value: !dialogIsOpen ? 'closed' : 'expanded',
-          params: { bottomPixels: bottomPixels }
+          value: !(open$ | async) ? 'closed' : 'expanded',
+          params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
       </div>
@@ -26,21 +26,36 @@
 </div>
 
 <!-- preview -->
-<div class="c-hyperlink-default-field-preview">
-  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
-    'c-ew__preview--disabled': control.disabled,
+<div class="c-hyperlink-default-field-preview" *ngIf="{
+  value: value$ | async,
+  preview: preview$ | async,
+  label: label$ | async,
+  placeholder: placeholder$ | async,
+  invalid: invalid$ | async,
+  touched: control.touched,
+  required: required$ | async,
+  disabled: disabled$ | async,
+  adamButton: adamButton$ | async,
+  pageButton: pageButton$ | async,
+  showValidation: showValidation$ | async
+} as data">
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" *ngIf="data.preview" [ngClass]="{
+    'c-ew__preview--disabled': data.disabled,
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">
     <!-- image / icon -->
-    <div class="thumbnail-before-input" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate" [ngClass]="{
-      'icon-before-input': control.value && !isImage,
-      'thumbnail-before-input--disabled': control.disabled
-    }" [ngStyle]="{ 'background-image': control.value && isImage ? thumbnailUrl : '' }" (click)="expandDialog()">
-      <mat-icon *ngIf="control.value && !isImage && isKnownType" [matTooltip]="tooltipUrl" matTooltipPosition="right">
-        {{ iconClass }}
+    <div class="thumbnail-before-input" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate"
+      [matTooltipDisabled]="data.disabled" [ngClass]="{
+      'icon-before-input': data.value && !data.preview.isImage,
+      'thumbnail-before-input--disabled': data.disabled
+    }" [ngStyle]="{ 'background-image': data.value && data.preview.isImage ? data.preview.thumbnailUrl : '' }"
+      (click)="expandDialog()">
+      <mat-icon *ngIf="data.value && !data.preview.isImage && data.preview.isKnownType" [matTooltip]="data.preview.url"
+        matTooltipPosition="right">
+        {{ data.preview.icon }}
       </mat-icon>
-      <mat-icon *ngIf="control.value && !isImage && !isKnownType" [matTooltip]="tooltipUrl" matTooltipPosition="right"
-        [svgIcon]="iconClass">
+      <mat-icon *ngIf="data.value && !data.preview.isImage && !data.preview.isKnownType" [matTooltip]="data.preview.url"
+        matTooltipPosition="right" [svgIcon]="data.preview.icon">
       </mat-icon>
     </div>
     <!-- field -->
@@ -48,38 +63,41 @@
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
         <mat-form-field appearance="standard" color="accent" [ngClass]="{
-            'mat-form-field-invalid': control.invalid && control.touched
-          }">
-          <input matInput type="text" [placeholder]="config.field.label" (change)="setValue($event)"
-            [disabled]="control.disabled" (keyup)="setValue($event)" [value]="control.value"
-            [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
-            (blur)="setTouched()" appPasteClipboardImage [config]="config" [elementType]="'input'">
-          <div matSuffix fxLayoutAlign="center center" *ngIf="adamButton || pageButton">
+          'mat-form-field-invalid': data.invalid && data.touched
+        }">
+          <input matInput [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
+            [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.disabled"
+            (blur)="control.markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
+            [config]="config" [elementType]="'input'">
+          <div matSuffix fxLayoutAlign="center center" *ngIf="data.adamButton || data.pageButton">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
-            'c-ew__preview-suffix-text--disabled': control.disabled
-          }">{{ adamButton ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}</div>
-            <button mat-icon-button class="c-ew__preview-suffix-icon" *ngIf="adamButton" [disabled]="control.disabled"
-              type="button" (click)="expandDialog()" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate"
-              appClickStopPropagation>
+              'c-ew__preview-suffix-text--disabled': data.disabled
+            }">
+              {{ data.adamButton ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
+            </div>
+            <button mat-icon-button class="c-ew__preview-suffix-icon"
+              [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
+              *ngIf="data.adamButton" [disabled]="data.disabled" (click)="expandDialog()">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
-            <button mat-icon-button class="c-ew__preview-suffix-icon" *ngIf="pageButton" [disabled]="control.disabled"
-              type="button" (click)="openPageDialog()" [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate"
-              appClickStopPropagation>
+            <button mat-icon-button class="c-ew__preview-suffix-icon"
+              [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
+              *ngIf="data.pageButton" [disabled]="data.disabled" (click)="openPageDialog()">
               <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
-          <mat-label [ngClass]="{ 'mat-error' : control.invalid && control.touched }">
-            {{ config.field.label }}
-            {{ config.field.required ? '*': '' }}
+          <mat-label [ngClass]="{ 'mat-error' : data.invalid && data.touched }">
+            {{ data.label }}
+            {{ data.required ? '*': '' }}
           </mat-label>
         </mat-form-field>
         <!-- link absolutely positioned above input -->
-        <div *ngIf="showInputFileName" class="hyperlink-floating" fxHide fxShow.gt-xs>
-          <div class="hyperlink-floating__value">{{ control.value }}</div>
+        <div *ngIf="data.preview.floatingText" class="hyperlink-floating" fxHide fxShow.gt-xs>
+          <div class="hyperlink-floating__value">{{ data.value }}</div>
           <div class="hyperlink-floating__url-box">
-            <a [href]="link" target="_blank" tabindex="-1" class="hyperlink-floating__url" [matTooltip]="link">
-              <span>.../{{ link.substr(link.lastIndexOf("/") + 1, link.length) }}</span>
+            <a [href]="data.preview.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
+              [matTooltip]="data.preview.url">
+              <span>{{ data.preview.floatingText }}</span>
             </a>
           </div>
         </div>
@@ -88,7 +106,7 @@
       <div class="c__helper-wrapper">
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
         </app-field-helper-text>
-        <div *ngIf="adamButton" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
+        <div *ngIf="data.adamButton" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
           <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
         </div>

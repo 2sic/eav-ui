@@ -32,6 +32,7 @@
   label: label$ | async,
   required: required$ | async,
   invalid: invalid$ | async,
+  touched: control.touched,
   selectedEntities: (selectedEntities$ | async)?.slice(0, 9) || [],
   entitiesNumber: (selectedEntities$ | async)?.length || 0,
   showValidation: showValidation$ | async
@@ -39,15 +40,15 @@
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : data.entitiesNumber,
     'mat-empty' : !data.entitiesNumber,
-    'mat-error' : data.invalid && control.touched && !config.field.disabled,
-    'color__primary' : !(data.invalid && control.touched) && !config.field.disabled,
+    'mat-error' : data.invalid && data.touched && !config.field.disabled,
+    'color__primary' : !(data.invalid && data.touched) && !config.field.disabled,
     'color__label-disabled' : config.field.disabled
   }">
     {{ data.label }} {{ data.required ? '*': '' }}
   </mat-label>
   <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
     [ngClass]="{
-      'c-ew__preview--invalid' : data.invalid && control.touched,
+      'c-ew__preview--invalid' : data.invalid && data.touched,
       'c-ew__preview--disabled': config.field.disabled
     }">
     <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">

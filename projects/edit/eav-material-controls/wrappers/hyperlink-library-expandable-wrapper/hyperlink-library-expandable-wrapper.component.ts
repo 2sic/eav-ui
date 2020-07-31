@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ElementRef, OnDestroy, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -32,6 +33,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
+    private route: ActivatedRoute,
     private expandableFieldService: ExpandableFieldService,
   ) {
     super(eavService, validationMessagesService);
@@ -39,7 +41,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.expandableFieldService.getObservable().pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+    this.open$ = this.route.params.pipe(map(params => this.config.field.index.toString() === params.expandedFieldId));
   }
 
   ngOnDestroy() {
