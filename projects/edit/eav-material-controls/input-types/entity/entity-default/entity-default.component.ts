@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map, take, filter } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -37,13 +37,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   useQuery = false;
   contentTypeMask: FieldMaskService;
-  error$ = new BehaviorSubject<string>('');
-  freeTextMode$ = new BehaviorSubject<boolean>(false);
-  disableAddNew$ = new BehaviorSubject<boolean>(true);
+  error$ = new BehaviorSubject('');
+  freeTextMode$ = new BehaviorSubject(false);
+  disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   eavConfig: EavConfiguration;
-  subscription = new Subscription();
   private hasChild: boolean;
   private separator: string;
 
@@ -131,7 +130,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   toggleFreeTextMode() {

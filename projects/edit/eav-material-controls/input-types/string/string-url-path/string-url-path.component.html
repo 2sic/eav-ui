@@ -4,8 +4,8 @@
 } as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <input matInput type="text" [formControlName]="config.field.name" (blur)="clean(true)"
-      [placeholder]="placeholder$ | async" [required]="required$ | async">
+    <input matInput [formControlName]="config.field.name" (blur)="clean(true)" [placeholder]="placeholder$ | async"
+      [required]="required$ | async">
     <mat-label>{{ label$ | async }}</mat-label>
   </mat-form-field>
 

@@ -29,10 +29,12 @@ export class EavService implements OnDestroy {
 
   private eavConfig: EavConfiguration;
 
-  constructor(private httpClient: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
+  constructor(private http: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
 
   ngOnDestroy() {
     this.forceConnectorSave$.complete();
+    this.formValueChange$.complete();
+    this.formDisabledChange$.complete();
   }
 
   getEavConfiguration(): EavConfiguration {
@@ -44,7 +46,7 @@ export class EavService implements OnDestroy {
   }
 
   loadAllDataForForm(appId: string, items: string | any) {
-    return this.httpClient.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items) as Observable<any>;
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items) as Observable<any>;
   }
 
   saveItem(item: Item) {
@@ -60,7 +62,7 @@ export class EavService implements OnDestroy {
   }
 
   savemany(appId: string, partOfPage: string, body: string) {
-    return this.httpClient.post(
+    return this.http.post(
       this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`),
       body
     ) as Observable<SaveResult>;

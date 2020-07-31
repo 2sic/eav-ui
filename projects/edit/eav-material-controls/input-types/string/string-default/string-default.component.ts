@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class StringDefaultComponent extends BaseComponent<string> implements OnInit {
+export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   rowCount$: Observable<number>;
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
@@ -28,5 +28,9 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
   ngOnInit() {
     super.ngOnInit();
     this.rowCount$ = this.settings$.pipe(map(settings => settings.RowCount || 1));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }

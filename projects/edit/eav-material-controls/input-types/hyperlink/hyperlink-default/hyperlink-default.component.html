@@ -3,7 +3,8 @@
   buttons: buttons$ | async,
   settings: settings$ | async,
   value: value$ | async,
-  preview: preview$ | async
+  preview: preview$ | async,
+  showValidation: showValidation$ | async
 } as data">
 
   <ng-container *ngIf="open$ | async">
@@ -49,7 +50,7 @@
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
             <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-              <input matInput type="text" [formControlName]="config.field.name"
+              <input matInput [formControlName]="config.field.name"
                 [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
                 [placeholder]="placeholder$ | async" [required]="required$ | async" appPasteClipboardImage
                 [config]="config" [elementType]="'input'">

@@ -13,7 +13,8 @@
   availableEntities: config.entityCache$ | async,
   disableAddNew: disableAddNew$ | async,
   isExpanded: isExpanded$ | async,
-  error: error$ | async
+  error: error$ | async,
+  showValidation: showValidation$ | async
 } as data">
   <app-entity-default-list
     *ngIf="!data.freeTextMode && data.selectedEntities.length && (!data.settings.AllowMultiValue || (data.settings.AllowMultiValue && data.isExpanded))"

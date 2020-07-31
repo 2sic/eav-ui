@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit {
+export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -42,6 +42,10 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
       }
       return label;
     }));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   toggle() {

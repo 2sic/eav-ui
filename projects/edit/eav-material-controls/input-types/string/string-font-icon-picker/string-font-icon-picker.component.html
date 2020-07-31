@@ -8,7 +8,7 @@
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
     <div class="icon-option">
       <i *ngIf="data.value" class="icon-preview {{ data.previewCss }} {{ data.value }}"></i>
-      <input matInput type="text" [formControlName]="config.field.name" [placeholder]="placeholder$ | async"
+      <input matInput [formControlName]="config.field.name" [placeholder]="placeholder$ | async"
         [required]="required$ | async" [matAutocomplete]="auto">
     </div>
 

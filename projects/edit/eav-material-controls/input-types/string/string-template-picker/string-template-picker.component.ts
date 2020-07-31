@@ -21,7 +21,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  templateOptions$$ = new BehaviorSubject<string[]>([]);
+  templateOptions$ = new BehaviorSubject<string[]>([]);
 
   private typeWatcher: FieldMaskService;
   private locationWatcher: FieldMaskService;
@@ -45,6 +45,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
   }
 
+  ngOnDestroy() {
+    this.templateOptions$.complete();
+    this.typeWatcher.destroy();
+    this.locationWatcher.destroy();
+    this.ngOnDestroy();
+  }
+
   private setFileConfig(type: string) {
     this.activeSpec = templateTypes[type];
     this.setTemplateOptions();
@@ -66,7 +73,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
     filtered = filtered.filter(template => !template.includes('.code.'));
     filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
-    this.templateOptions$$.next(filtered);
+    this.templateOptions$.next(filtered);
     const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
     if (resetValue) { this.control.patchValue(''); }
   }
@@ -108,9 +115,4 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     });
   }
 
-  ngOnDestroy() {
-    this.templateOptions$$.complete();
-    this.typeWatcher.destroy();
-    this.locationWatcher.destroy();
-  }
 }

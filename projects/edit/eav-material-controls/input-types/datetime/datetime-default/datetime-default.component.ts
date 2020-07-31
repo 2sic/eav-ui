@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -22,7 +21,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit {
+export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   useTimePicker$: Observable<boolean>;
 
   constructor(
@@ -34,7 +33,6 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
   ) {
     super(eavService, validationMessagesService);
     const currentLang = this.translate.currentLang;
-    angularConsoleLog('Datepickers locale:', currentLang);
     this.dateAdapter.setLocale(currentLang);
     this.ngxDateTimeAdapter.setLocale(currentLang);
   }
@@ -42,5 +40,9 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
   ngOnInit() {
     super.ngOnInit();
     this.useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }

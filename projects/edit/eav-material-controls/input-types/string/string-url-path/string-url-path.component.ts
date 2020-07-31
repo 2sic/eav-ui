@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Subscription } from 'rxjs';
 
 import { Helper } from '../../../../shared/helpers/helper';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -23,7 +22,6 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
   private autoGenerateMask: string;
   private allowSlashes: boolean;
   private fieldMaskService: FieldMaskService;
-  private subscription = new Subscription();
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
@@ -54,7 +52,7 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   private onSourcesChanged(newValue: string) {

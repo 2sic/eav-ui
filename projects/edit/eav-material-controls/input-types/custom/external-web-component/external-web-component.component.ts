@@ -35,10 +35,16 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.isExpanded$ = this.expandableFieldService
       .getObservable()
       .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
     this.loadAssets();
+  }
+
+  ngOnDestroy() {
+    this.loading$.complete();
+    super.ngOnDestroy();
   }
 
   private loadAssets() {
@@ -53,9 +59,5 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   private assetsLoaded() {
     angularConsoleLog('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
     this.loading$.next(false);
-  }
-
-  ngOnDestroy() {
-    this.loading$.complete();
   }
 }

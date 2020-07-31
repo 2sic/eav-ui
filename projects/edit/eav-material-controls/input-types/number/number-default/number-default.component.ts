@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class NumberDefaultComponent extends BaseComponent<number> implements OnInit {
+export class NumberDefaultComponent extends BaseComponent<number> implements OnInit, OnDestroy {
   min$: Observable<number>;
   max$: Observable<number>;
 
@@ -30,5 +30,9 @@ export class NumberDefaultComponent extends BaseComponent<number> implements OnI
     super.ngOnInit();
     this.min$ = this.settings$.pipe(map(settings => settings.Min));
     this.max$ = this.settings$.pipe(map(settings => settings.Max));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }

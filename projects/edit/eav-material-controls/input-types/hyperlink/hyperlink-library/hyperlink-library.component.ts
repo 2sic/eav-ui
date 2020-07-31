@@ -22,9 +22,8 @@ import { AdamControl } from './hyperlink-library.models';
   WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
-  private subscription = new Subscription();
   /** Requires more handling that normal subscriptions */
-  private adamSubscription: Subscription;
+  private adamValidation: Subscription;
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -39,8 +38,8 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.adamSubscription?.unsubscribe();
+    this.adamValidation?.unsubscribe();
+    super.ngOnDestroy();
   }
 
   private attachAdam(settings: FieldSettings) {
@@ -57,7 +56,7 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   private attachAdamValidator(required: boolean) {
     if (!required) {
-      this.adamSubscription?.unsubscribe();
+      this.adamValidation?.unsubscribe();
       this.control.setValidators(this.config.field.validation);
       return;
     }
@@ -67,7 +66,7 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
       CustomValidators.validateAdam(),
     ];
     this.control.setValidators(validators);
-    this.adamSubscription = this.config.adam.items$.subscribe(items => {
+    this.adamValidation = this.config.adam.items$.subscribe(items => {
       (this.control as AdamControl).adamItems = items.length;
       // onlySelf doesn't update form being valid for some reason
       this.control.updateValueAndValidity(/*{ onlySelf: true }*/);

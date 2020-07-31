@@ -1,6 +1,6 @@
-import { Input, OnInit } from '@angular/core';
+import { Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, startWith, filter, distinctUntilChanged } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -10,7 +10,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
-export class BaseComponent<T> implements Field, OnInit {
+export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
@@ -22,6 +22,7 @@ export class BaseComponent<T> implements Field, OnInit {
   disabled$: Observable<boolean>;
   required$: Observable<boolean>;
   showValidation$: Observable<AbstractControl>;
+  subscription = new Subscription();
 
   constructor(private eavService: EavService, private validationMessagesService: ValidationMessagesService) { }
 
@@ -53,5 +54,9 @@ export class BaseComponent<T> implements Field, OnInit {
       startWith(this.control.disabled),
       distinctUntilChanged(),
     );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

@@ -18,11 +18,11 @@
       </mat-option>
     </mat-select>
 
-    <input matInput type="text" *ngIf="data.freeTextMode" [formControlName]="config.field.name"
-      [required]="data.required" [placeholder]="data.placeholder">
+    <input matInput *ngIf="data.freeTextMode" [formControlName]="config.field.name" [required]="data.required"
+      [placeholder]="data.placeholder">
 
-    <button type="button" mat-icon-button matSuffix *ngIf="data.enableTextEntry" [disabled]="data.disabled"
-      appClickStopPropagation (click)="setFreeTextMode(!data.freeTextMode)">
+    <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.disabled" appClickStopPropagation
+      (click)="toggleFreeTextMode()">
       <mat-icon [matTooltip]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
         {{ data.freeTextMode ? 'arrow_drop_down_circle' : 'text_fields' }}
       </mat-icon>

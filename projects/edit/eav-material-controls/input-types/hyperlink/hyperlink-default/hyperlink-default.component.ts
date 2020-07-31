@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -29,10 +29,8 @@ import { FieldSettings } from '../../../../../edit-types';
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   buttons$: Observable<string>;
+  open$: Observable<boolean>;
   preview$ = new BehaviorSubject<Preview>(null);
-  open$ = new BehaviorSubject(false);
-
-  private subscription = new Subscription();
 
   constructor(
     eavService: EavService,
@@ -48,22 +46,18 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   ngOnInit() {
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
+    this.open$ = this.route.params.pipe(map(params => this.config.field.index.toString() === params.expandedFieldId));
     this.subscription.add(this.settings$.subscribe(settings => {
       this.attachAdam(settings);
     }));
     this.subscription.add(this.value$.subscribe(value => {
       this.setLink(value);
     }));
-    this.subscription.add(this.route.params.subscribe(params => {
-      const isOpen = this.config.field.index.toString() === params.expandedFieldId;
-      this.open$.next(isOpen);
-    }));
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.preview$.complete();
-    this.open$.complete();
+    super.ngOnDestroy();
   }
 
   // #region dnn-page picker dialog
