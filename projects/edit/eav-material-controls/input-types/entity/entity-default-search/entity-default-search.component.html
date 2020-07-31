@@ -14,7 +14,7 @@
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
           <a matSuffix *ngIf="settings.EnableTextEntry" fxLayoutAlign="center center" appClickStopPropagation
-            (click)="!disabled && toggleFreeText()">
+            (click)="toggleFreeText()">
             <button mat-icon-button [disabled]="disabled">
               <mat-icon [matTooltip]="'Fields.String.Freetext' | translate">text_fields</mat-icon>
             </button>
@@ -51,7 +51,7 @@
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
   <input matInput [required]="required" [formControlName]="config.field.name" [placeholder]="placeholder">
 
-  <a matSuffix appClickStopPropagation (click)="!disabled && toggleFreeText()">
+  <a matSuffix appClickStopPropagation (click)="toggleFreeText()">
     <button mat-icon-button [disabled]="disabled">
       <mat-icon>arrow_drop_down</mat-icon>
     </button>

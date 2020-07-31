@@ -21,6 +21,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   value$: Observable<T>;
   disabled$: Observable<boolean>;
   required$: Observable<boolean>;
+  invalid$: Observable<boolean>;
   showValidation$: Observable<AbstractControl>;
   subscription = new Subscription();
 
@@ -32,6 +33,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
+    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
     this.showValidation$ = this.validationMessagesService.showValidation$.pipe(filter(control => control === this.control));
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
     // this.value$ = this.control.valueChanges.pipe(

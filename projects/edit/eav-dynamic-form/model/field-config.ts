@@ -12,7 +12,6 @@ export interface FieldConfigSet {
   form: FormConfig;
   dropzone?: Dropzone;
   adam?: Adam;
-  cache?: EntityInfo[];
   entityCache$?: BehaviorSubject<EntityInfo[]>;
 }
 

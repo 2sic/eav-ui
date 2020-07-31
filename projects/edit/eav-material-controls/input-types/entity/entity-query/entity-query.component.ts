@@ -98,7 +98,6 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
           return;
         }
         const items: EntityInfo[] = data[streamName].map(this.queryEntityMapping.bind(this));
-        this.config.cache = items;
         this.config.entityCache$.next(items);
       },
       error: (error) => {

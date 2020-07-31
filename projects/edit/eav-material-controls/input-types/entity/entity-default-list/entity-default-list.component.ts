@@ -28,7 +28,7 @@ export class EntityDefaultListComponent {
 
   constructor() { }
 
-  trackByFn(item: SelectedEntity) {
+  trackByFn(index: number, item: SelectedEntity) {
     return item.value;
   }
 

@@ -66,6 +66,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   }
 
   toggleFreeText() {
+    if (this.disabled) { return; }
     this.toggleFreeTextMode.emit();
   }
 

@@ -163,7 +163,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     // if we can't add, then we only need one...
     const filterText = enableAddExisting ? null : this.control.value;
     this.entityService.getAvailableEntities(filterText, contentTypeName).subscribe(items => {
-      this.config.cache = items;
       this.config.entityCache$.next(items);
     });
   }

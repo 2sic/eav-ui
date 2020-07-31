@@ -33,7 +33,8 @@
   required: required$ | async,
   invalid: invalid$ | async,
   selectedEntities: (selectedEntities$ | async)?.slice(0, 9) || [],
-  entitiesNumber: (selectedEntities$ | async)?.length || 0
+  entitiesNumber: (selectedEntities$ | async)?.length || 0,
+  showValidation: showValidation$ | async
 } as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : data.entitiesNumber,
@@ -44,8 +45,8 @@
   }">
     {{ data.label }} {{ data.required ? '*': '' }}
   </mat-label>
-  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple"
-    (click)="!config.field.disabled && expandDialog()" [ngClass]="{
+  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
+    [ngClass]="{
       'c-ew__preview--invalid' : data.invalid && control.touched,
       'c-ew__preview--disabled': config.field.disabled
     }">
