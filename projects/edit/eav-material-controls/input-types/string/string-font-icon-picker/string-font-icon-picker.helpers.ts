@@ -1,7 +1,7 @@
 import { IconOption, LoadedIcons } from './string-font-icon-picker.models';
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
-export function calculateIconOptions(className: string) {
+export function findAllIconsInCss(className: string) {
   const foundList: IconOption[] = [];
   const duplicateDetector: LoadedIcons = {};
 
@@ -32,7 +32,11 @@ export function calculateIconOptions(className: string) {
       const iconClass = selector.substring(0, selector.indexOf(':')).replace('.', '');
       if (duplicateDetector[iconClass]) { continue; }
 
-      foundList.push({ rule, class: iconClass });
+      foundList.push({
+        rule,
+        class: iconClass,
+        search: iconClass?.toLowerCase()
+      });
       duplicateDetector[iconClass] = true;
     }
   }

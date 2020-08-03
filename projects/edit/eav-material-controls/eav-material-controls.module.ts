@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -165,6 +166,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     ReactiveFormsModule,
     MatRippleModule,
     MatChipsModule,
+    ScrollingModule,
     TranslateModule,
   ],
   entryComponents: [
