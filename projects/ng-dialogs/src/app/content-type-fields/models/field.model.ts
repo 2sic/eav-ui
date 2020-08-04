@@ -29,7 +29,6 @@ export class FieldInputTypeConfig {
   Assets: string;
   DisableI18n: boolean;
   AngularAssets: string;
-  AngularMode: string;
   UseAdam: boolean;
 }
 
