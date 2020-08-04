@@ -5,12 +5,12 @@ import { map } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { Helper } from '../../../shared/helpers/helper';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { EavService } from '../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
+import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -50,34 +50,9 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
       const fieldValue = combined[0];
       const availableEntities = combined[1];
-      let selectedEntities: SelectedEntity[];
 
-      if (typeof fieldValue === 'string') {
-        const names = Helper.convertValueToArray(fieldValue, this.separator);
-        selectedEntities = names.map(name => {
-          const selectedEntity: SelectedEntity = {
-            value: name,
-            label: name,
-            tooltip: `${name} (${name})`,
-            isFreeTextOrNotFound: true,
-          };
-          return selectedEntity;
-        });
-      } else {
-        selectedEntities = fieldValue.map(guid => {
-          const entity = availableEntities.find(e => e.Value === guid);
-          const label = (guid == null) ? 'empty slot' : entity?.Text || this.translate.instant('Fields.Entity.EntityNotFound');
-          const selectedEntity: SelectedEntity = {
-            value: guid,
-            label,
-            tooltip: `${label} (${guid})`,
-            isFreeTextOrNotFound: !entity,
-          };
-          return selectedEntity;
-        });
-      }
-
-      return selectedEntities;
+      const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+      return selected;
     }));
   }
 
