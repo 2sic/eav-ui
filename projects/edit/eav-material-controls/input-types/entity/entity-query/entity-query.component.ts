@@ -12,7 +12,7 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { FieldSettings } from '../../../../../edit-types';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryEntity } from './entity-query.models';
-import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 
 @Component({

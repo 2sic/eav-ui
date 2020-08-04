@@ -9,7 +9,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { FieldSettings } from '../../../../../edit-types';
-import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

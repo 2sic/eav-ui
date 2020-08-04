@@ -14,7 +14,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { Preview } from './hyperlink-default.models';
 import { FieldSettings } from '../../../../../edit-types';
-import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

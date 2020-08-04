@@ -15,7 +15,7 @@ import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { EditRoutingService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({

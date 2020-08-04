@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
-import { EditRoutingService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { EavService } from '../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';

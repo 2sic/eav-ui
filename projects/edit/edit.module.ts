@@ -15,7 +15,7 @@ import { EditRoutingModule } from './edit-routing.module';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
-import { EditRoutingService } from './shared/services/expandable-field.service';
+import { EditRoutingService } from './shared/services/edit-routing.service';
 declare const sxcVersion: string;
 
 export function createTranslateLoader(http: HttpClient) {

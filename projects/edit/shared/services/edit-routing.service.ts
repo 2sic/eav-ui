@@ -6,7 +6,7 @@ import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { paramEncode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
-import { ChildFormResult } from './expandable-field.models';
+import { ChildFormResult } from './edit-routing.models';
 import { EditParams } from '../../edit-matcher.models';
 
 @Injectable()

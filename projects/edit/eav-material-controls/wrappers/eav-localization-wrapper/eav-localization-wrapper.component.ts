@@ -5,7 +5,7 @@ import { Subscription, Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { EditRoutingService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 
 @Component({
   selector: 'app-eav-localization-wrapper',

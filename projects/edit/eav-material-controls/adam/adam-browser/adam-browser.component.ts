@@ -15,7 +15,7 @@ import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types';
 
 @Component({

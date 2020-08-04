@@ -12,7 +12,7 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

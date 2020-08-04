@@ -20,7 +20,7 @@ import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-f
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { Helper } from '../../../../shared/helpers/helper';
-import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
