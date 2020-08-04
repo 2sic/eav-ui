@@ -13,12 +13,14 @@
     </div>
 
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let icon of filteredIcons$ | async" [value]="icon.class">
-        <div class="icon-option">
-          <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
-          <span>{{ icon.class }}</span>
-        </div>
-      </mat-option>
+      <cdk-virtual-scroll-viewport itemSize="48" style="height: 256px" minBufferPx="500" maxBufferPx="1000">
+        <mat-option *cdkVirtualFor="let icon of filteredIcons$ | async" [value]="icon.class">
+          <div class="icon-option">
+            <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
+            <span>{{ icon.label }}</span>
+          </div>
+        </mat-option>
+    </cdk-virtual-scroll-viewport>
     </mat-autocomplete>
 
     <mat-label>{{ label$ | async }}</mat-label>
