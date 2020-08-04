@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,6 +14,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { Preview } from './hyperlink-default.models';
 import { FieldSettings } from '../../../../../edit-types';
+import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -30,7 +30,15 @@ import { FieldSettings } from '../../../../../edit-types';
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   buttons$: Observable<string>;
   open$: Observable<boolean>;
-  preview$ = new BehaviorSubject<Preview>(null);
+  preview$ = new BehaviorSubject<Preview>({
+    url: '',
+    thumbnailUrl: '',
+    thumbnailPreviewUrl: '',
+    floatingText: '',
+    isImage: false,
+    isKnownType: false,
+    icon: '',
+  });
 
   constructor(
     eavService: EavService,
@@ -38,7 +46,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
-    private route: ActivatedRoute,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
@@ -46,7 +54,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   ngOnInit() {
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
-    this.open$ = this.route.params.pipe(map(params => this.config.field.index.toString() === params.expandedFieldId));
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.subscription.add(this.settings$.subscribe(settings => {
       this.attachAdam(settings);
     }));

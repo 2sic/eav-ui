@@ -49,7 +49,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.templateOptions$.complete();
     this.typeWatcher.destroy();
     this.locationWatcher.destroy();
-    this.ngOnDestroy();
+    super.ngOnDestroy();
   }
 
   private setFileConfig(type: string) {

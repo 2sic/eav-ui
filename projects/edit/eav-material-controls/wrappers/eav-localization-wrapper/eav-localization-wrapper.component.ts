@@ -5,7 +5,7 @@ import { Subscription, Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
@@ -26,7 +26,7 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) { }
 
   get inputDisabled() {
@@ -39,10 +39,8 @@ export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy
     this.subscriptions.push(
       this.currentLanguage$.subscribe(currentLanguage => { this.currentLanguage = currentLanguage; }),
       this.defaultLanguage$.subscribe(defaultLanguage => { this.defaultLanguage = defaultLanguage; }),
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-        this.dialogIsOpen = dialogShouldBeOpen;
+      this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid).subscribe(isExpanded => {
+        this.dialogIsOpen = isExpanded;
       }),
     );
   }

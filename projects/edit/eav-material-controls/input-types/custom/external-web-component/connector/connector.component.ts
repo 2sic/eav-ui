@@ -10,7 +10,7 @@ import { ContentTypeService } from '../../../../../shared/store/ngrx-data/conten
 import { ConnectorHelper } from './connector.helper';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
-import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
@@ -33,7 +33,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
     private zone: NgZone,
@@ -52,7 +52,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.contentTypeService,
       this.inputTypeService,
       this.featureService,
-      this.expandableFieldService,
+      this.editRoutingService,
       this.dnnBridgeService,
       this.dialog,
       this.zone,

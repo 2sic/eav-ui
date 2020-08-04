@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ElementRef, OnDestroy, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { AdamItem } from '../../../../edit-types';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { EavService } from '../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -33,15 +31,14 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
-    private route: ActivatedRoute,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.route.params.pipe(map(params => this.config.field.index.toString() === params.expandedFieldId));
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngOnDestroy() {
@@ -69,10 +66,10 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   expandDialog() {
     if (this.config.field.disabled) { return; }
-    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
-    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 }

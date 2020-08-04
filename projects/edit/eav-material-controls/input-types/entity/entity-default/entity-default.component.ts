@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, take, filter } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -18,11 +17,10 @@ import { FieldSettings } from '../../../../../edit-types';
 import { EavConfiguration } from '../../../../shared/models/eav-configuration';
 import { SelectedEntity } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { paramEncode } from '../../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { Helper } from '../../../../shared/helpers/helper';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -43,7 +41,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   eavConfig: EavConfiguration;
-  private hasChild: boolean;
   private separator: string;
 
   constructor(
@@ -51,14 +48,11 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     validationMessagesService: ValidationMessagesService,
     private entityService: EntityService,
     public translate: TranslateService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
   ) {
     super(eavService, validationMessagesService);
     this.eavConfig = eavService.getEavConfiguration();
-    this.hasChild = !!this.route.snapshot.firstChild;
   }
 
   ngOnInit() {
@@ -100,9 +94,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       return selectedEntities;
     }));
 
-    this.isExpanded$ = this.expandableFieldService
-      .getObservable()
-      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
 
     this.subscription.add(this.settings$.subscribe(settings => {
       this.contentTypeMask?.destroy();
@@ -185,23 +177,23 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   editEntity(entityGuid: string) {
+    let form: EditForm;
     if (entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
-      const form: EditForm = {
+      form = {
         items: [{ ContentTypeName: contentTypeName }],
       };
-      this.expandableFieldService.openWithUpdate(this.config.field.index, form);
     } else {
       let availableEntities: EntityInfo[];
       this.config.entityCache$.pipe(take(1)).subscribe(entities => {
         availableEntities = entities;
       });
       const entity = availableEntities.find(e => e.Value === entityGuid);
-      const form: EditForm = {
+      form = {
         items: [{ EntityId: entity.Id.toString() }],
       };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     }
+    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   deleteEntity(entityGuid: string) {
@@ -237,30 +229,15 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-      const hadChild = this.hasChild;
-      this.hasChild = !!this.route.snapshot.firstChild;
-      if (!this.hasChild && hadChild) {
-        const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
-        const updateFieldId = this.route.snapshot.paramMap.get('updateFieldId');
-        const thisId = this.config.field.index.toString();
-
-        if (expandedFieldId != null && expandedFieldId !== thisId) { return; }
-        if (updateFieldId != null && updateFieldId !== thisId) { return; }
-
-        const navigation = this.router.getCurrentNavigation();
-        const editResult = navigation.extras?.state;
-        if (editResult) {
-          const newItemGuid = Object.keys(editResult)[0];
-          this.addSelected(newItemGuid);
-        }
-        this.fetchAvailableEntities();
-
-        if (updateFieldId != null && updateFieldId === thisId) {
-          this.expandableFieldService.openWithUpdate(this.config.field.index, null);
-        }
-      }
+    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(() => {
+      this.fetchAvailableEntities();
     }));
+    this.subscription.add(
+      this.editRoutingService.childFormResult(this.config.field.index, this.config.entity.entityGuid).subscribe(result => {
+        const newItemGuid = Object.keys(result)[0];
+        this.addSelected(newItemGuid);
+      })
+    );
   }
 
   private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {

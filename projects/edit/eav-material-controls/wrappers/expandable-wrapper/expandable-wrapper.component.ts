@@ -15,7 +15,7 @@ import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
@@ -55,7 +55,7 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
     private dialog: MatDialog,
@@ -76,18 +76,16 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
       this.contentTypeService,
       this.inputTypeService,
       this.featureService,
-      this.expandableFieldService,
+      this.editRoutingService,
       this.dnnBridgeService,
       this.dialog,
       this.zone,
     );
 
     this.subscription.add(
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-        this.dialogIsOpen = dialogShouldBeOpen;
-      }),
+      this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid).subscribe(isExpanded => {
+        this.dialogIsOpen = isExpanded;
+      })
     );
   }
 
@@ -103,12 +101,12 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
 
   expandDialog() {
     angularConsoleLog('ExpandableWrapperComponent expandDialog');
-    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
     angularConsoleLog('ExpandableWrapperComponent closeDialog');
-    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngOnDestroy() {

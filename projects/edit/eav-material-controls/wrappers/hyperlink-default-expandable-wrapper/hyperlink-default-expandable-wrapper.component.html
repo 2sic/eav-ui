@@ -39,7 +39,7 @@
   pageButton: pageButton$ | async,
   showValidation: showValidation$ | async
 } as data">
-  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" *ngIf="data.preview" [ngClass]="{
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
     'c-ew__preview--disabled': data.disabled,
     'c-ew__preview--last-in-group': config.field.isLastInGroup
   }">

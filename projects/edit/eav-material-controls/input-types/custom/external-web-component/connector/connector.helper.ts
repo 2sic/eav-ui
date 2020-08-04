@@ -14,7 +14,7 @@ import { InputFieldHelper } from '../../../../../shared/helpers/input-field-help
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
-import { ExpandableFieldService } from '../../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../../shared/services/expandable-field.service';
 import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
 
 export class ConnectorHelper {
@@ -34,7 +34,7 @@ export class ConnectorHelper {
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
     private zone: NgZone,
@@ -77,7 +77,7 @@ export class ConnectorHelper {
       },
       expand: (expand, componentTag) => {
         this.zone.run(() => {
-          this.expandableFieldService.expand(expand, this.config.field.index, this.config.form.formId, componentTag);
+          this.editRoutingService.expand(expand, this.config.field.index, this.config.entity.entityGuid, componentTag);
         });
       },
     };
@@ -95,7 +95,7 @@ export class ConnectorHelper {
       allInputTypeNames,
       formGroup: this.group,
       translateService: this.translateService,
-      expandedField$: this.expandableFieldService.getObservable(),
+      isExpanded$: this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid),
       dropzone: this.config.dropzone,
       adam: this.config.adam,
       updateField: (name, value) => {

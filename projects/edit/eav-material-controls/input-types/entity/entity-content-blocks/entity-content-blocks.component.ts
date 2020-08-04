@@ -1,7 +1,6 @@
 
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -10,7 +9,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { EntityService } from '../../../../shared/services/entity.service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { FieldSettings } from '../../../../../edit-types';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -27,12 +26,10 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
     validationMessagesService: ValidationMessagesService,
     entityService: EntityService,
     translate: TranslateService,
-    router: Router,
-    route: ActivatedRoute,
-    expandableFieldService: ExpandableFieldService,
+    editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
   ) {
-    super(eavService, validationMessagesService, entityService, translate, router, route, expandableFieldService, snackBar);
+    super(eavService, validationMessagesService, entityService, translate, editRoutingService, snackBar);
   }
 
   ngOnInit() {

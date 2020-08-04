@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
@@ -13,7 +12,7 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { FieldSettings } from '../../../../../edit-types';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { QueryEntity } from './entity-query.models';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 
 @Component({
@@ -33,13 +32,11 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     validationMessagesService: ValidationMessagesService,
     entityService: EntityService,
     translate: TranslateService,
-    router: Router,
-    route: ActivatedRoute,
-    expandableFieldService: ExpandableFieldService,
+    editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     private queryService: QueryService,
   ) {
-    super(eavService, validationMessagesService, entityService, translate, router, route, expandableFieldService, snackBar);
+    super(eavService, validationMessagesService, entityService, translate, editRoutingService, snackBar);
   }
 
   ngOnInit() {

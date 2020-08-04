@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { Helper } from '../../../shared/helpers/helper';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { EavService } from '../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -31,7 +31,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
     private translate: TranslateService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
@@ -39,9 +39,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   ngOnInit() {
     super.ngOnInit();
     this.separator = this.config.field.settings$.value.Separator;
-    this.dialogIsOpen$ = this.expandableFieldService
-      .getObservable()
-      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+    this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngOnDestroy() {
@@ -93,10 +91,10 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   expandDialog() {
     if (this.config.field.disabled) { return; }
-    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
-    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 }

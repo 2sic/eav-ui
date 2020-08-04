@@ -110,15 +110,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
         // Inline only subscriptions
-        this.subscriptions.push(
-          this.connector._experimental.expandedField$.subscribe(expandedFieldId => {
-            const dialogShouldBeOpen = (this.connector.field.index === expandedFieldId);
-            if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-            this.dialogIsOpen = dialogShouldBeOpen;
+        this.subscriptions.push(this.connector._experimental.isExpanded$.subscribe(isExpanded => {
+          this.dialogIsOpen = isExpanded;
 
-            if (!this.firstInit && !this.dialogIsOpen) { setTimeout(() => { editor.focus(false); }, 100); }
-          }),
-        );
+          if (!this.firstInit && !this.dialogIsOpen) { setTimeout(() => { editor.focus(false); }, 100); }
+        }));
       }
       this.firstInit = false;
     });

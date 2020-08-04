@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../shared/models/eav';
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -29,16 +29,14 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
     validationMessagesService: ValidationMessagesService,
     private inputTypeService: InputTypeService,
     private scriptsLoaderService: ScriptsLoaderService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.isExpanded$ = this.expandableFieldService
-      .getObservable()
-      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.loadAssets();
   }
 

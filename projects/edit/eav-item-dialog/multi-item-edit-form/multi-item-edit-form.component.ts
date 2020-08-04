@@ -33,7 +33,7 @@ import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.h
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { ExpandableFieldService } from '../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../shared/services/expandable-field.service';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
@@ -95,7 +95,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private ngZone: NgZone,
     private route: ActivatedRoute,
     private context: Context,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) {
     // Read configuration from queryString
     this.eavService.setEavConfiguration(this.route, this.context);
@@ -103,7 +103,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    this.expandableFieldService.init(this.route);
+    this.editRoutingService.init(this.route, this.formId);
     this.isParentDialog = calculateIsParentDialog(this.route);
     if (this.isParentDialog) {
       const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
@@ -137,7 +137,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-    this.expandableFieldService.destroy();
     this.languageInstanceService.removeLanguageInstance(this.formId);
     if (this.isParentDialog) {
       // clear the rest of the store

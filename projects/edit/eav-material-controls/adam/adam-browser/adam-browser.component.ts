@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
@@ -16,9 +15,8 @@ import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { EavService } from '../../../shared/services/eav.service';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types';
-import { paramEncode } from '../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -58,21 +56,16 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   private control: AbstractControl;
   private url: string;
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private adamService: AdamService,
     private fileTypeService: FileTypeService,
     private featureService: FeatureService,
-    private router: Router,
-    private route: ActivatedRoute,
     private dnnContext: DnnContext,
     private eavService: EavService,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private zone: NgZone,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
@@ -110,7 +103,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.subscription.add(this.adamConfig$.subscribe(adamConfig => {
       this.fetchItems();
     }));
-    this.expanded$ = this.expandableFieldService.getObservable().pipe(map(expandedFieldId => expandedFieldId === this.config.field.index));
+    this.expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
@@ -155,24 +148,24 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     });
   }
 
-  addItemMetadata(adamItem: AdamItem) {
-    const form: EditForm = {
-      items: [{
-        ContentTypeName: adamItem._metadataContentType,
-        For: {
-          Target: eavConstants.metadata.cmsObject.target,
-          String: (adamItem.Type === 'folder' ? 'folder' : 'file') + ':' + adamItem.Id,
-        }
-      }],
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
-  }
-
-  editItemMetadata(metadataId: string) {
-    const form: EditForm = {
-      items: [{ EntityId: metadataId.toString() }],
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+  editItemMetadata(adamItem: AdamItem) {
+    let form: EditForm;
+    if (adamItem.MetadataId === 0) {
+      form = {
+        items: [{
+          ContentTypeName: adamItem._metadataContentType,
+          For: {
+            Target: eavConstants.metadata.cmsObject.target,
+            String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
+          }
+        }],
+      };
+    } else {
+      form = {
+        items: [{ EntityId: adamItem.MetadataId.toString() }],
+      };
+    }
+    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   goUp() {
@@ -359,17 +352,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
-          if (expandedFieldId !== this.config.field.index.toString()) { return; }
-          this.fetchItems();
-        }
-      })
-    );
+    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(result => {
+      this.fetchItems();
+    }));
   }
 
 }

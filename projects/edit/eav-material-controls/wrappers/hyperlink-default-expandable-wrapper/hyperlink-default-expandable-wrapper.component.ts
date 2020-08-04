@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, OnDestroy, AfterViewInit, ElementRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +10,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../shared/services/expandable-field.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
@@ -32,7 +31,15 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   open$: Observable<boolean>;
   adamButton$: Observable<boolean>;
   pageButton$: Observable<boolean>;
-  preview$ = new BehaviorSubject<Preview>(null);
+  preview$ = new BehaviorSubject<Preview>({
+    url: '',
+    thumbnailUrl: '',
+    thumbnailPreviewUrl: '',
+    floatingText: '',
+    isImage: false,
+    isKnownType: false,
+    icon: '',
+  });
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
@@ -41,9 +48,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
-    private route: ActivatedRoute,
     private dialog: MatDialog,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
@@ -53,7 +59,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     this.subscription.add(this.value$.subscribe(value => {
       this.setLink(value);
     }));
-    this.open$ = this.route.params.pipe(map(params => this.config.field.index.toString() === params.expandedFieldId));
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
   }
@@ -83,11 +89,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   expandDialog() {
     if (this.control.disabled) { return; }
-    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
-    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 
   openPageDialog() {
