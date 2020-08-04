@@ -6,7 +6,7 @@ export class IconOption {
   search: string;
 
   /** The label for showing in the dropdown */
-  // label: string;
+  label: string;
 }
 
 export class LoadedIcons {

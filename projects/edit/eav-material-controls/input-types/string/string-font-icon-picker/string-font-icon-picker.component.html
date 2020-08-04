@@ -17,7 +17,7 @@
         <mat-option *cdkVirtualFor="let icon of filteredIcons$ | async" [value]="icon.class">
           <div class="icon-option">
             <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
-            <span>{{ icon.class }}</span>
+            <span>{{ icon.label }}</span>
           </div>
         </mat-option>
     </cdk-virtual-scroll-viewport>

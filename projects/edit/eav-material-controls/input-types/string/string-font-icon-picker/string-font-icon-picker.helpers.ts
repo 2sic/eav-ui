@@ -1,11 +1,13 @@
 import { IconOption, LoadedIcons } from './string-font-icon-picker.models';
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
-export function findAllIconsInCss(className: string) {
+export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
   const foundList: IconOption[] = [];
   const duplicateDetector: LoadedIcons = {};
 
-  if (!className) { return foundList; }
+  if (!classPrefix) { return foundList; }
+
+  const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
 
   // tslint:disable-next-line:prefer-for-of
   for (let i = 0; i < document.styleSheets.length; i++) {
@@ -26,7 +28,7 @@ export function findAllIconsInCss(className: string) {
     // tslint:disable-next-line:prefer-for-of
     for (let j = 0; j < rules.length; j++) {
       const rule = rules[j] as CSSStyleRule;
-      if (!(rule.selectorText && rule.selectorText.startsWith(className))) { continue; }
+      if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) { continue; }
 
       const selector = rule.selectorText;
       const iconClass = selector.substring(0, selector.indexOf(':')).replace('.', '');
@@ -35,7 +37,8 @@ export function findAllIconsInCss(className: string) {
       foundList.push({
         rule,
         class: iconClass,
-        search: iconClass?.toLowerCase()
+        search: iconClass?.toLowerCase(),
+        label: iconClass.substring(truncateLabel),
       });
       duplicateDetector[iconClass] = true;
     }

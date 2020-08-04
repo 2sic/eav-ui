@@ -39,9 +39,10 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
     this.subscription.add(this.settings$.subscribe(settings => {
       const files = settings.Files || '';
       const cssPrefix = settings.CssPrefix || '';
+      const showPrefix = settings.ShowPrefix || false;
       // load each file (usually CSS) in the settings
       this.scriptsLoaderService.load(files.split('\n'), () => {
-        const newIconOptions = findAllIconsInCss(cssPrefix);
+        const newIconOptions = findAllIconsInCss(cssPrefix, showPrefix);
         this.iconOptions$.next(newIconOptions);
       });
     }));
