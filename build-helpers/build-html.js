@@ -1,3 +1,4 @@
+// Used to append SXC_VER to file names in local.html. ATM it's not used at all because we are not using local.html
 const fs = require('fs-extra');
 const pjson = require('../package.json');
 const chalk = require('chalk');

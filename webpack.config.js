@@ -9,12 +9,12 @@ function findParts() {
   console.log("args:", args);
   const partsIndex = args.findIndex(a => a === paramParts);
   if (partsIndex !== -1) {
-    if (args.length < partsIndex + 1) throw "nothing after --parts parameter"
+    if (args.length < partsIndex + 1) throw "nothing after --parts parameter";
     return args[partsIndex + 1].replace("'", '');
   }
 
   const partsEq = args.find(a => a.startsWith(paramParts) + "=");
-  if(partsEq) return partsEq.substring(paramParts.length + 1).replace("'", '');
+  if (partsEq) return partsEq.substring(paramParts.length + 1).replace("'", '');
 
   throw "--parts parameter missing, please specify something like --parts all";
 }
@@ -24,7 +24,7 @@ const parts = partsTxt.split(' ');
 console.log('Parts (' + parts.length + "): '" + partsTxt + "'");
 
 function hasPart(name) {
-  return partsTxt === 'all' || parts.split(' ').includes(name);
+  return partsTxt === 'all' || parts.includes(name);
 }
 
 console.log('has all:' + hasPart('something'));
