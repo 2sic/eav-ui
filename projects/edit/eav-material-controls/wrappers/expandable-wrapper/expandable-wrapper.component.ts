@@ -1,12 +1,10 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { EavService } from '../../../shared/services/eav.service';
@@ -16,61 +14,56 @@ import { FeatureService } from '../../../shared/store/ngrx-data/feature.service'
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-expandable-wrapper',
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation]
+  animations: [ContentExpandAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class ExpandableWrapperComponent extends BaseComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer') previewContainerRef: ElementRef;
   @ViewChild('backdrop') backdropRef: ElementRef;
   @ViewChild('dialog') dialogRef: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  open$: Observable<boolean>;
 
-  dialogIsOpen = false;
-  inlineMode = true;
-  private subscription = new Subscription();
   private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
-  get value() {
-    return this.group.controls[this.config.field.name].value ? this.group.controls[this.config.field.name].value
-      .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') : '';
-  }
-  get inputInvalid() { return this.group.controls[this.config.field.name].invalid; }
-  get touched() { return this.group.controls[this.config.field.name].touched || false; }
-  get dirty() { return this.group.controls[this.config.field.name].dirty || false; }
-  get disabled() { return this.group.controls[this.config.field.name].disabled; }
-  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
-
   constructor(
-    private eavService: EavService,
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private zone: NgZone,
     private dialog: MatDialog,
-    private changeDetector: ChangeDetectorRef,
-  ) { }
+    private zone: NgZone,
+  ) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
-    this.changeDetector.detectChanges();
-    const elName = `field-${this.config.field.inputType}`;
-    angularConsoleLog('ExpandableWrapper created for:', elName, 'Config:', this.config.field);
+    super.ngOnInit();
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+  }
+
+  ngAfterViewInit() {
+    const componentTag = `field-${this.config.field.inputType}`;
+    angularConsoleLog('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
       this.previewContainerRef,
-      elName,
+      componentTag,
       this.eavService,
       this.translateService,
       this.contentTypeService,
@@ -82,38 +75,27 @@ export class ExpandableWrapperComponent implements FieldWrapper, OnInit, AfterVi
       this.zone,
     );
 
-    this.subscription.add(
-      this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid).subscribe(isExpanded => {
-        this.dialogIsOpen = isExpanded;
-      })
-    );
-  }
-
-  ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
   }
 
-  setTouched() {
-    this.group.controls[this.config.field.name].markAsTouched();
+  ngOnDestroy() {
+    angularConsoleLog('ExpandableWrapper destroyed');
+    this.connectorCreator.destroy();
+    this.dropzoneDraggingHelper.detach();
+    super.ngOnDestroy();
   }
 
   expandDialog() {
-    angularConsoleLog('ExpandableWrapperComponent expandDialog');
     this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
-    angularConsoleLog('ExpandableWrapperComponent closeDialog');
     this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 
-  ngOnDestroy() {
-    angularConsoleLog('ExpandableWrapper destroyed');
-    this.connectorCreator.destroy();
-    this.subscription.unsubscribe();
-    this.subscription = null;
-    this.dropzoneDraggingHelper.detach();
+  calculateBottomPixels() {
+    return window.innerWidth > 600 ? '100px' : '50px';
   }
 }

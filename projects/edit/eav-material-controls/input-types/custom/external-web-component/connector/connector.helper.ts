@@ -103,7 +103,7 @@ export class ConnectorHelper {
       },
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       setFocused: (focused) => {
-        this.zone.run(() => { this.config.field.focused = focused; });
+        this.zone.run(() => { this.config.field.focused$.next(focused); });
       },
       openDnnDialog: (oldValue, params, callback) => {
         this.zone.run(() => { this.openDnnDialog(oldValue, params, callback); });

@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<null> implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
+export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') backdropRef: ElementRef;
   @ViewChild('dialog') dialogRef: ElementRef;
@@ -41,12 +41,6 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
-  ngOnDestroy() {
-    this.dropzoneDraggingHelper.detach();
-    this.adamItems$.complete();
-    super.ngOnDestroy();
-  }
-
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
@@ -54,6 +48,12 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     this.subscription.add(this.config.adam.items$.subscribe(items => {
       this.adamItems$.next(items);
     }));
+  }
+
+  ngOnDestroy() {
+    this.dropzoneDraggingHelper.detach();
+    this.adamItems$.complete();
+    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

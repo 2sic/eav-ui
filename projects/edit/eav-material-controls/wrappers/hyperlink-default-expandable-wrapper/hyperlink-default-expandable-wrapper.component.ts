@@ -64,16 +64,16 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
   }
 
-  ngOnDestroy() {
-    this.dropzoneDraggingHelper.detach();
-    this.preview$.complete();
-    super.ngOnDestroy();
-  }
-
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
+  }
+
+  ngOnDestroy() {
+    this.dropzoneDraggingHelper.detach();
+    this.preview$.complete();
+    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

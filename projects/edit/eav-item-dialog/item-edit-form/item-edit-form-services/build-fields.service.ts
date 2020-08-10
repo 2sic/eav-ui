@@ -189,7 +189,7 @@ export class BuildFieldsService {
         settings: settingsTranslated,
         fullSettings,
         wrappers,
-        focused: false,
+        focused$: new BehaviorSubject(false),
         isExternal: calculatedInputType.isExternal,
         disableI18n,
         isLastInGroup,

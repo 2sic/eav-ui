@@ -13,7 +13,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
   styleUrls: ['./adam-attach-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdamAttachWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
+export class AdamAttachWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 

@@ -20,7 +20,7 @@ export interface FieldConfigAngular extends FieldConfig {
   validation: ValidatorFn[];
   fullSettings: EavAttributes;
   wrappers: string[];
-  focused: boolean;
+  focused$: BehaviorSubject<boolean>;
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;

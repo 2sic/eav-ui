@@ -20,7 +20,7 @@ import { calculateSelectedEntities } from '../../input-types/entity/entity-defau
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 // tslint:disable-next-line:max-line-length
-export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
+export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;
@@ -42,10 +42,6 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   ngAfterViewInit() {
     this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
       const fieldValue = combined[0];
@@ -54,6 +50,10 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
       const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
       return selected;
     }));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   calculateBottomPixels() {

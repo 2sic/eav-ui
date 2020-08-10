@@ -3,7 +3,6 @@ import { FormGroup, AbstractControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Injectable()
 export class ValidationMessagesService implements OnDestroy {
@@ -57,7 +56,6 @@ export class ValidationMessagesService implements OnDestroy {
         if (control && control.invalid) {
           if (!checkDirty || (control.dirty || control.touched)) {
             Object.keys(control.errors).forEach(keyError => {
-              angularConsoleLog('error key', keyError);
               formErrors[key] = formErrors[key] || messages[keyError](undefined);
             });
           }

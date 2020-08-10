@@ -25,7 +25,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   showValidation$: Observable<AbstractControl>;
   subscription = new Subscription();
 
-  constructor(private eavService: EavService, private validationMessagesService: ValidationMessagesService) { }
+  constructor(public eavService: EavService, public validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];

@@ -1,61 +1,58 @@
-<div [ngClass]="dialogIsOpen ? 'c-ew__container' : 'u-display-none'">
+<div [ngClass]="(open$ | async) ? 'c-ew__container' : 'u-display-none'">
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
-    <div [ngClass]="dialogIsOpen ? 'c-ew__dialog-header mat-elevation-z2' : ''">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
-        <button class="back-arrow" mat-icon-button type="button" fxLayoutAlign="center center" (click)="closeDialog()"
-          matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [matTooltip]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-display-1">{{config.field.label}}</span>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="!dialogIsOpen ? 'open' : 'closed'">
+      <div [@itemShrinkAnimation]="!(open$ | async) ? 'open' : 'closed'">
       </div>
-      <div class="c-ew__dialog-content u-border-radius-bottom  u-add-scrollbar u-hide-scrollbar"
+      <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-          value: !dialogIsOpen ? 'closed' : 'expanded',
-          params: {bottomPixels: bottomPixels}
+          value: !(open$ | async) ? 'closed' : 'expanded',
+          params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
       </div>
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder">
+<div class="c-ew__preview-holder" *ngIf="{
+  value: value$ | async,
+  label: label$ | async,
+  required: required$ | async,
+  invalid: invalid$ | async,
+  touched: control.touched,
+  dirty: control.dirty,
+  focused: config.field.focused$ | async,
+  disabled: disabled$ | async
+} as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-      'mat-caption' : value && value.length > 0,
-      'mat-empty' : !(value && value.length > 0),
-      'mat-error' : inputInvalid && touched && !disabled,
-      'color__primary' : !(inputInvalid && touched) && !disabled,
-      'color__label-disabled' : disabled,
-      'c-ew__preview-label--focused': config.field.focused
-    }">
-    {{config.field.label}}
-    {{config.field.required? '*': '' }}
+    'mat-caption' : data.value,
+    'mat-empty' : !data.value,
+    'mat-error' : data.invalid && data.touched && !data.disabled,
+    'color__primary' : !(data.invalid && data.touched) && !data.disabled,
+    'color__label-disabled' : data.disabled,
+    'c-ew__preview-label--focused': data.focused
+  }">
+    {{ data.label }}
+    {{ data.required ? '*': '' }}
   </mat-label>
-  <div *ngIf="!inlineMode" matRipple (click)="!disabled ? expandDialog() : null; setTouched();"
-    [matRippleAnimation]="{enterDuration: 360}" class="c-ew__preview mat-ripple" [ngClass]="{
-      'c-ew__preview--invalid' : inputInvalid && (touched || dirty),
-      'c-ew__preview--disabled': disabled,
-      'c-ew__preview--focused': config.field.focused
-    }">
-    <div class="c-ew__preview-container">
-      <div #previewContainer class="c-ew__preview-content" [ngClass]="{
-        'c-ew__preview-content--disabled': disabled
-      }"></div>
-    </div>
-  </div>
-  <div *ngIf="inlineMode" class="c-ew__preview c-ew__inline" [ngClass]="{
-    'c-ew__preview--invalid c-ew__inline--invalid' : inputInvalid && (touched || dirty),
-    'c-ew__preview--disabled': disabled,
-    'c-ew__preview--focused': config.field.focused
+  <div class="c-ew__preview" [ngClass]="{
+    'c-ew__preview--invalid' : data.invalid && (data.touched || data.dirty),
+    'c-ew__preview--disabled': data.disabled,
+    'c-ew__preview--focused': data.focused
   }">
     <div class="c-ew__preview-container">
-      <div #previewContainer class="c-ew__preview-content c-ew__inline-content" [ngClass]="{
-          'c-ew__preview-content--disabled': disabled
-        }"></div>
+      <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
+        'c-ew__preview-content--disabled': data.disabled
+      }"></div>
     </div>
   </div>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
