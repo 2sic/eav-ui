@@ -31,7 +31,8 @@
   touched: control.touched,
   dirty: control.dirty,
   focused: config.field.focused$ | async,
-  disabled: disabled$ | async
+  disabled: disabled$ | async,
+  showValidation: showValidation$ | async
 } as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : data.value,

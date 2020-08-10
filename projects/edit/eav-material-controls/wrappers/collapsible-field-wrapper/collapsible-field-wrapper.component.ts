@@ -1,23 +1,36 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { FormGroup } from '@angular/forms';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-collapsible-field-wrapper',
   templateUrl: './collapsible-field-wrapper.component.html',
-  styleUrls: ['./collapsible-field-wrapper.component.scss']
+  styleUrls: ['./collapsible-field-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollapsibleFieldWrapperComponent implements FieldWrapper, OnInit {
+export class CollapsibleFieldWrapperComponent extends BaseComponent<string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfigSet;
-  group: FormGroup;
-  enableCollapseField = true;
-  collapseField = true;
+  collapse$ = new BehaviorSubject(true);
 
-  constructor() { }
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
+    super.ngOnInit();
+  }
+
+  ngOnDestroy() {
+    this.collapse$.complete();
+    super.ngOnDestroy();
+  }
+
+  toggleCollapse() {
+    this.collapse$.next(!this.collapse$.value);
   }
 }
