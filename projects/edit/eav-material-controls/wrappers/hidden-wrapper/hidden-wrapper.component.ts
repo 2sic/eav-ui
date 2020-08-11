@@ -1,24 +1,33 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild, ViewContainerRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-hidden-wrapper',
   templateUrl: './hidden-wrapper.component.html',
-  styleUrls: ['./hidden-wrapper.component.scss']
+  styleUrls: ['./hidden-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HiddenWrapperComponent implements FieldWrapper, OnInit {
+export class HiddenWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  visibleInEditUI$: Observable<boolean>;
 
-  get visibleInEditUI() { return (this.config.field.settings.VisibleInEditUI === false) ? false : true; }
-
-  constructor() { }
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
+    super.ngOnInit();
+    this.visibleInEditUI$ = this.settings$.pipe(map(settings => (settings.VisibleInEditUI === false) ? false : true));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }
