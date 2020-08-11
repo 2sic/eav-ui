@@ -1,57 +1,64 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-eav-localization-wrapper',
   templateUrl: './eav-localization-wrapper.component.html',
-  styleUrls: ['./eav-localization-wrapper.component.scss']
+  styleUrls: ['./eav-localization-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavLocalizationComponent implements FieldWrapper, OnInit, OnDestroy {
+export class EavLocalizationComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-  private subscriptions: Subscription[] = [];
   currentLanguage$: Observable<string>;
-  currentLanguage = '';
   defaultLanguage$: Observable<string>;
-  defaultLanguage = '';
-  toggleTranslateField = false;
-  dialogIsOpen = false;
+  open$: Observable<boolean>;
+  toggleTranslateField$ = new BehaviorSubject(false);
 
   constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private languageInstanceService: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
-  ) { }
-
-  get inputDisabled() {
-    return this.group.controls[this.config.field.name].disabled;
+  ) {
+    super(eavService, validationMessagesService);
   }
 
   ngOnInit() {
+    super.ngOnInit();
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    this.subscriptions.push(
-      this.currentLanguage$.subscribe(currentLanguage => { this.currentLanguage = currentLanguage; }),
-      this.defaultLanguage$.subscribe(defaultLanguage => { this.defaultLanguage = defaultLanguage; }),
-      this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid).subscribe(isExpanded => {
-        this.dialogIsOpen = isExpanded;
-      }),
-    );
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.toggleTranslateField$.complete();
+    super.ngOnDestroy();
   }
 
-  toggleTranslate(isToggleEnabled: boolean) {
-    if (isToggleEnabled) {
-      this.toggleTranslateField = !this.toggleTranslateField;
-    }
+  toggleTranslate() {
+    let open: boolean;
+    this.open$.pipe(take(1)).subscribe(isOpen => {
+      open = isOpen;
+    });
+    let currentLanguage: string;
+    this.currentLanguage$.pipe(take(1)).subscribe(lang => {
+      currentLanguage = lang;
+    });
+    let defaultLanguage: string;
+    this.defaultLanguage$.pipe(take(1)).subscribe(lang => {
+      defaultLanguage = lang;
+    });
+    const toggleEnabled = !open && currentLanguage !== defaultLanguage;
+    if (!toggleEnabled) { return; }
+
+    this.toggleTranslateField$.next(!this.toggleTranslateField$.value);
   }
 }
