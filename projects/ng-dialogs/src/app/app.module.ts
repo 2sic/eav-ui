@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -45,6 +45,7 @@ import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.int
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
     Context,
+    Title
   ],
   bootstrap: [AppComponent]
 })
