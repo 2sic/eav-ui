@@ -35,6 +35,8 @@ import { VersioningOptions } from '../../shared/models/eav/versioning-options';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -204,8 +206,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             fieldErrors.push({ field: key, message: formError[key] });
           });
         });
+        const data: SaveErrorsSnackData = {
+          fieldErrors,
+        };
         this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-          data: { fieldErrors },
+          data,
           duration: 5000,
         });
       }
@@ -520,9 +525,12 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   /** Open snackbar when snack bar not saved */
   public snackBarYouHaveUnsavedChanges() {
+    const data: UnsavedChangesSnackData = {
+      save: false,
+    };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: { save: false },
-      duration: 5000
+      data,
+      duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(s => {
