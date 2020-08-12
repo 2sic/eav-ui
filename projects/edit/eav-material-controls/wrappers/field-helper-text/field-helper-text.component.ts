@@ -44,12 +44,6 @@ export class FieldHelperTextComponent implements OnInit {
     this.isFullText = !this.isFullText;
   }
 
-  changeAnchorTarget(event: MouseEvent) {
-    (event.target as HTMLElement).querySelectorAll('a').forEach(anchor => {
-      anchor.target = '_blank';
-    });
-  }
-
   getErrorMessage() {
     return this.validationMessagesService.getErrorMessage(this.control, this.config);
   }

@@ -81,6 +81,7 @@ import { ExternalWebComponentComponent } from './input-types/custom/external-web
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
+import { ChangeAnchorTargetDirective } from '../shared/directives/change-anchor-target.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AssetsService } from '../shared/services/assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
@@ -112,6 +113,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     OrderByPipe,
     FileEndingFilterPipe,
     PasteClipboardImageDirective,
+    ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
     HyperlinkDefaultPagepickerComponent,
     WebFormBridgeDirective,

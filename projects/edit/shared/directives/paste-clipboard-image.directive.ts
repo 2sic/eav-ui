@@ -1,4 +1,5 @@
 import { Directive, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
+
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FeatureService } from '../store/ngrx-data/feature.service';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
@@ -12,10 +13,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
 
-  constructor(
-    private elementRef: ElementRef, // dom element which directive was applied to
-    private featureService: FeatureService,
-  ) { }
+  constructor(private elementRef: ElementRef, private featureService: FeatureService) { }
 
   ngOnInit() {
     if (!this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard)) { return; }

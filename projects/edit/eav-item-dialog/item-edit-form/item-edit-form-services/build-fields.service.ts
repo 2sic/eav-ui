@@ -164,6 +164,7 @@ export class BuildFieldsService {
         name,
         label,
         inputType: calculatedInputType.inputType,
+        settings$: new BehaviorSubject(settingsTranslated),
       } as FieldConfigGroup;
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
