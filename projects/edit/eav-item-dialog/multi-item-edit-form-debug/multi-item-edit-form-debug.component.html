@@ -1,19 +1,21 @@
-<mat-card fxLayout="column" fxLayoutAlign="center start" [ngClass]="{
-  'debug-enabled': showDebugInfo
-}">
-  <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="space-between center">
-    <button type="button" mat-icon-button (click)="toggleDebugInfo()"
-      matTooltip="{{ 'General.Buttons.Debug' | translate }}">
-      <mat-icon>offline_bolt</mat-icon>
-    </button>
-    <div>2sxc {{ sxcVer }}</div>
-    <!-- copy button to keep 2sxc version text in the middle -->
-    <button type="button" mat-icon-button (click)="toggleDebugInfo()"
-      matTooltip="{{ 'General.Buttons.Debug' | translate }}" class="debug-button-copy">
-      <mat-icon>offline_bolt</mat-icon>
-    </button>
-  </div>
-  <div *ngIf="showDebugInfo" class="debug-info-container">
-    <textarea readonly class="debug-dump">{{ items | json }}</textarea>
-  </div>
-</mat-card>
+<ng-container *ngIf="{
+  showDebugInfo: showDebugInfo$ | async,
+  items: items$ | async
+} as data">
+
+  <mat-card fxLayout="column" fxLayoutAlign="center start" [ngClass]="{ 'debug-enabled': data.showDebugInfo }">
+    <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="space-between center">
+      <button mat-icon-button [matTooltip]="'General.Buttons.Debug' | translate" (click)="toggleDebugInfo()">
+        <mat-icon>offline_bolt</mat-icon>
+      </button>
+      <div>2sxc {{ sxcVer }}</div>
+      <!-- copy of the button to keep 2sxc version text correctly aligned in the middle -->
+      <button mat-icon-button class="hidden">
+        <mat-icon>offline_bolt</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="data.showDebugInfo" class="debug-info-container">
+      <textarea readonly class="debug-dump">{{ data.items | json }}</textarea>
+    </div>
+  </mat-card>
+</ng-container>
