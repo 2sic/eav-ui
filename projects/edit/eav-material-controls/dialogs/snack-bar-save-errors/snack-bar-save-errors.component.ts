@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 import { SaveErrorsSnackData } from './snack-bar-save-errors.models';
 import { FieldErrorMessage } from '../../../shared/models/eav/field-error-message';
@@ -13,10 +13,7 @@ import { FieldErrorMessage } from '../../../shared/models/eav/field-error-messag
 export class SnackBarSaveErrorsComponent implements OnInit {
   fieldErrors: FieldErrorMessage[] = [];
 
-  constructor(
-    public snackRef: MatSnackBarRef<SnackBarSaveErrorsComponent>,
-    @Inject(MAT_SNACK_BAR_DATA) private snackBarData: SaveErrorsSnackData,
-  ) { }
+  constructor(@Inject(MAT_SNACK_BAR_DATA) private snackBarData: SaveErrorsSnackData) { }
 
   ngOnInit() {
     this.fieldErrors = this.snackBarData.fieldErrors;

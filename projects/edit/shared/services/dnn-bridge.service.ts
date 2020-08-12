@@ -4,8 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { DnnBridgeConnector, DnnBridgeDialogData } from '../models/dnn-bridge/dnn-bridge-connector';
-// tslint:disable-next-line:max-line-length
+import { DnnBridgeConnector, DnnBridgeDialogData } from '../../eav-material-controls/input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { HyperlinkDefaultPagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
@@ -15,7 +14,11 @@ export class DnnBridgeService {
 
   open(oldValue: any, params: any, callback: any, dialog: MatDialog) {
     const type = 'pagepicker';
-    const connector: DnnBridgeConnector = new DnnBridgeConnector(params, callback, type);
+    const connector: DnnBridgeConnector = {
+      params,
+      valueChanged: callback,
+      dialogType: type,
+    };
 
     let dialogRef: MatDialogRef<any, any>;
     connector.valueChanged = (value: any) => {
@@ -24,9 +27,13 @@ export class DnnBridgeService {
     };
     connector.params.CurrentValue = oldValue;
 
+    const data: DnnBridgeDialogData = {
+      type,
+      connector,
+    };
     dialogRef = dialog.open(HyperlinkDefaultPagepickerComponent, {
+      data,
       width: '650px',
-      data: { type, connector } as DnnBridgeDialogData,
     });
     return dialogRef;
   }

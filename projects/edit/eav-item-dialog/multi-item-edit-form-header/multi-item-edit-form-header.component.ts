@@ -22,7 +22,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   hasLanguages: boolean;
 
   constructor(
-    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
+    private multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
     private dialog: MatDialog,
     private languageService: LanguageService,
   ) { }

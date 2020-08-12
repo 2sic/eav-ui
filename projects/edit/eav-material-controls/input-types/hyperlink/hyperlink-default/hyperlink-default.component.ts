@@ -8,7 +8,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { PagePickerResult } from '../../dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { BaseComponent } from '../../base/base.component';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';

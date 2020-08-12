@@ -11,9 +11,10 @@ export class SaveStatusDialogComponent implements OnInit {
   versioningOptions: VersioningOptions;
   publishMode: 'branch' | 'show' | 'hide';
 
-  constructor(public dialogRef: MatDialogRef<SaveStatusDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<SaveStatusDialogComponent>) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   publishEntry() {
     this.publishMode = 'show';

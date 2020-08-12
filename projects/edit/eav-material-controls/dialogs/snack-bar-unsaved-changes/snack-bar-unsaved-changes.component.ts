@@ -12,7 +12,7 @@ import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes.models';
 export class SnackBarUnsavedChangesComponent implements OnInit {
 
   constructor(
-    public snackRef: MatSnackBarRef<SnackBarUnsavedChangesComponent>,
+    private snackRef: MatSnackBarRef<SnackBarUnsavedChangesComponent>,
     @Inject(MAT_SNACK_BAR_DATA) private snackBarData: UnsavedChangesSnackData,
   ) { }
 

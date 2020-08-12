@@ -9,7 +9,7 @@ import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../shared/services/eav.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { PagePickerResult } from '../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { PagePickerResult } from '../../input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
