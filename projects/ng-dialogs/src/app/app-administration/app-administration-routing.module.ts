@@ -66,7 +66,8 @@ const appAdministrationRoutes: Routes = [
           {
             path: 'import',
             component: DialogEntryComponent,
-            data: { dialog: importQueryDialog, title: 'Import Query' } },
+            data: { dialog: importQueryDialog, title: 'Import Query' }
+          },
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
