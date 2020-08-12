@@ -15,11 +15,12 @@ const appsManagementRoutes: Routes = [
             path: 'import',
             loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
           },
-        ]
+        ],
+        data: { title: 'Apps in this Zone' },
       },
-      { path: 'languages', component: EmptyRouteComponent },
-      { path: 'features', component: EmptyRouteComponent },
-      { path: 'sxc-insights', component: EmptyRouteComponent },
+      { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
+      { path: 'features', component: EmptyRouteComponent, data: { title: 'Zone Features' } },
+      { path: 'sxc-insights', component: EmptyRouteComponent, data: { title: 'Debug Insights' } },
       {
         path: ':appId',
         loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
