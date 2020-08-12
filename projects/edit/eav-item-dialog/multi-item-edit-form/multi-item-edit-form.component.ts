@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, zip, of, Subscription } from 'rxjs';
+import { Observable, zip, of, Subscription, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -59,15 +59,16 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   enableDraft = false;
 
   formErrors: { [key: string]: any }[] = [];
-  formsAreValid = false;
+  formsAreValid$ = new BehaviorSubject(false);
   formsAreDirty: { [key: string]: boolean } = {};
-  allControlsAreDisabled = true;
+  allControlsAreDisabled$ = new BehaviorSubject(true);
 
   formSaveAllObservables$: Observable<Action>[] = [];
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
   languages: Language[];
-  publishMode: 'branch' | 'show' | 'hide' = 'hide';    // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
+  /** has 3 modes: show, hide, branch (where branch is a hidden, linked clone) */
+  publishMode$ = new BehaviorSubject<'branch' | 'show' | 'hide'>('hide');
   versioningOptions: VersioningOptions;
   willPublish = false;     // default is won't publish, but will usually be overridden
   extendedSaveButtonIsReduced = false;
@@ -136,6 +137,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   ngOnDestroy() {
+    this.formsAreValid$.complete();
+    this.allControlsAreDisabled$.complete();
+    this.publishMode$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
     if (this.isParentDialog) {
@@ -185,7 +189,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eavService.forceConnectorSave$.next();
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
-      if (this.formsAreValid || this.allControlsAreDisabled) {
+      if (this.formsAreValid$.value || this.allControlsAreDisabled$.value) {
         this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
           itemEditFormComponent.form.submitOutside();
         });
@@ -423,8 +427,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         });
         const body = {
           Items: allItems,
-          IsPublished: this.publishMode === 'show',
-          DraftShouldBranch: this.publishMode === 'branch'
+          IsPublished: this.publishMode$.value === 'show',
+          DraftShouldBranch: this.publishMode$.value === 'branch'
         };
         return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
           .pipe(map(data => {
@@ -472,14 +476,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemEditFormComponentQueryList.length > 0 &&
       this.itemEditFormComponentQueryList.first.currentLanguage) {
       // Default values
-      this.allControlsAreDisabled = true;
-      this.formsAreValid = true;
+      this.allControlsAreDisabled$.next(true);
+      this.formsAreValid$.next(true);
       this.formsAreDirty[this.itemEditFormComponentQueryList.first.currentLanguage] = false;
       this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         // set form valid
         if (itemEditFormComponent.form.valid === false
           && (!itemEditFormComponent.item.header.Group || itemEditFormComponent.item.header.Group.SlotCanBeEmpty === false)) {
-          this.formsAreValid = false;
+          this.formsAreValid$.next(false);
         }
         // set form dirty
         if (itemEditFormComponent.form.dirty) {
@@ -487,7 +491,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         }
         // set all form are disabled
         if (!itemEditFormComponent.allControlsAreDisabled) {
-          this.allControlsAreDisabled = false;
+          this.allControlsAreDisabled$.next(false);
         }
       });
     }
@@ -500,12 +504,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
     this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
-    this.publishMode = draftShouldBranch
-      ? 'branch' // it's a branch, so it must have been saved as a draft-branch
-      : isPublished ? 'show' : 'hide';
+    this.publishMode$.next(draftShouldBranch ? 'branch' : isPublished ? 'show' : 'hide');
     // if publish mode is prohibited, revert to default
-    if (!this.eavConfig.versioningOptions[this.publishMode]) {
-      this.publishMode = Object.keys(this.eavConfig.versioningOptions)[0] as 'branch' | 'show' | 'hide';
+    if (!this.eavConfig.versioningOptions[this.publishMode$.value]) {
+      this.publishMode$.next(Object.keys(this.eavConfig.versioningOptions)[0] as 'branch' | 'show' | 'hide');
     }
   }
 

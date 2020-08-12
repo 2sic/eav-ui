@@ -1,7 +1,8 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -14,7 +15,8 @@ import { LanguageButton, calculateLanguageButtons } from './eav-language-switche
 @Component({
   selector: 'app-eav-language-switcher',
   templateUrl: './eav-language-switcher.component.html',
-  styleUrls: ['./eav-language-switcher.component.scss']
+  styleUrls: ['./eav-language-switcher.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollable') headerRef: ElementRef;
@@ -23,10 +25,10 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   @Input() formId: number;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
-  private subscriptions: Subscription[] = [];
-  languages: Language[];
-  currentLanguage: string;
+
   languageButtons: LanguageButton[] = [];
+  currentLanguage$: Observable<string>;
+
   private centerSelectedService: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
   private showShadowsService: ShowShadowsHelper;
@@ -40,11 +42,12 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.languageService.entities$.subscribe(languages => { this.languages = languages; }),
-      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(currentLang => { this.currentLanguage = currentLang; }),
-    );
-    this.languageButtons = calculateLanguageButtons(this.languages);
+    let languages: Language[];
+    this.languageService.entities$.pipe(take(1)).subscribe(langs => {
+      languages = langs;
+    });
+    this.languageButtons = calculateLanguageButtons(languages);
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
   }
 
   ngAfterViewInit() {
@@ -54,7 +57,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
-  areButtonsDisabled(): boolean {
+  areButtonsDisabled() {
     return !this.formsAreValid && !this.allControlsAreDisabled;
   }
 
@@ -62,7 +65,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.centerSelectedService.destroy();
     this.mouseScrollHelper.destroy();
     this.showShadowsService.destroy();
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
   }
 
   lngButtonMouseDown(event: MouseEvent) {
