@@ -43,7 +43,7 @@ import {
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
   NumberDefaultComponent,
-  HyperlinkDefaultPagepickerComponent,
+  PagepickerComponent,
   StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
@@ -115,7 +115,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
-    HyperlinkDefaultPagepickerComponent,
+    PagepickerComponent,
     WebFormBridgeDirective,
     SaveStatusDialogComponent,
     ExpandableWrapperComponent,
@@ -185,7 +185,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     ExpandableWrapperComponent,
     HiddenWrapperComponent,
     HyperlinkDefaultComponent,
-    HyperlinkDefaultPagepickerComponent,
+    PagepickerComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
     SaveStatusDialogComponent,

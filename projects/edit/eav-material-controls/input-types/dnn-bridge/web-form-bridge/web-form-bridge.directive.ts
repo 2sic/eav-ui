@@ -44,31 +44,14 @@ export class WebFormBridgeDirective implements OnInit, OnDestroy {
 
     element.src = this.webFormsBridgeUrl + '&type=' + this.type + (this.bridge.params ? '&' + params : '');
 
-    this.subscription.add(fromEvent(element, 'load').subscribe(s => {
+    this.subscription.add(fromEvent(element, 'load').subscribe(e => {
       const w = element.contentWindow || element;
       // test if the connectBridge works, if not, it's usually a telerik-not-installed issue
       if (!w.connectBridge) {
-        return alert(`Can't connect to the dialog - you are probably running a new DNN(v.8 +) and didn't activate the old Telerik components.Please install these in the host > extensions to get this to work`);
+        return alert(`Can't connect to the dialog - you are probably running a new DNN(v.8 +) and didn't activate the old Telerik components. Please install these in the host > extensions to get this to work`);
       }
 
       w.connectBridge(this.bridge);
-
-      // Sync height
-      if (this.bridgeSyncHeight) {
-        const resize = () => {
-          element.css('height', '');
-          element.css('height', w.document.body.scrollHeight + 'px');
-        };
-
-        // w.$(w).resize(resize); // Performance issues when uncommenting this line...
-        resize();
-        w.$(w.document).ready(() => {
-          resize();
-        });
-        w.$(w.document).on('triggerbridgeresize', () => {
-          window.setTimeout(resize, 0);
-        });
-      }
     }));
   }
 }

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { DnnBridgeConnector, DnnBridgeDialogData } from '../../eav-material-controls/input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
-import { HyperlinkDefaultPagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/hyperlink-default-pagepicker.component';
+import { PagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/pagepicker.component';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class DnnBridgeService {
       type,
       connector,
     };
-    dialogRef = dialog.open(HyperlinkDefaultPagepickerComponent, {
+    dialogRef = dialog.open(PagepickerComponent, {
       data,
       width: '650px',
     });
