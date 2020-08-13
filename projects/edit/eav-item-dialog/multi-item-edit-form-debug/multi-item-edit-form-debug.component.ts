@@ -12,7 +12,7 @@ declare const sxcVersion: string;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiItemEditFormDebugComponent implements OnInit, OnDestroy {
-  @Output() debugInfoOpened: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() debugInfoOpened = new EventEmitter<boolean>();
 
   sxcVer = sxcVersion.substring(0, sxcVersion.lastIndexOf('\.'));
   showDebugInfo$ = new BehaviorSubject(false);

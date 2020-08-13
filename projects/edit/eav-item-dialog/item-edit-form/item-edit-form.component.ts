@@ -32,7 +32,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
   get item(): Item {
     return this.itemBehaviorSubject$.getValue();
   }
-  @Output() itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() itemFormValueChange = new EventEmitter<null>();
 
   get allControlsAreDisabled() {
     return this.checkAreAllControlsDisabled();

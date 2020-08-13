@@ -14,8 +14,8 @@ import { EavService } from '../../../shared/services/eav.service';
 })
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
-  @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
-  @Output() formValueChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() formSubmit = new EventEmitter<any>();
+  @Output() formValueChange = new EventEmitter<any>();
 
   form: FormGroup = new FormGroup({});
   showDebugItems = false;

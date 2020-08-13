@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { MultiItemEditFormComponent } from '../multi-item-edit-form/multi-item-edit-form.component';
 import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { PublishMode } from '../multi-item-edit-form/multi-item-edit-form.constants';
 
 @Component({
   selector: 'app-multi-item-edit-form-header',
@@ -18,22 +18,20 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;
-  @Input() publishMode: boolean;
+  @Input() publishMode: PublishMode;
+  @Output() closeDialog = new EventEmitter<null>();
+  @Output() setPublishMode = new EventEmitter<PublishMode>();
 
   hasLanguages$: Observable<boolean>;
 
-  constructor(
-    private multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
-    private dialog: MatDialog,
-    private languageService: LanguageService,
-  ) { }
+  constructor(private dialog: MatDialog, private languageService: LanguageService) { }
 
   ngOnInit() {
     this.hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
   }
 
-  closeDialog() {
-    this.multiFormDialogRef.componentInstance.closeDialog();
+  close() {
+    this.closeDialog.emit();
   }
 
   openSaveStatusDialog() {
@@ -41,17 +39,16 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
       panelClass: 'c-save-status-dialog',
       autoFocus: false,
       width: '350px',
+      data: this.publishMode
     });
     dialogRef.keydownEvents().subscribe(e => {
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
         e.preventDefault(); // CTRL + S
       }
     });
-
-    dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode$.value;
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.multiFormDialogRef.componentInstance.publishMode$.next(dialogRef.componentInstance.publishMode);
+    dialogRef.afterClosed().subscribe((res: PublishMode) => {
+      if (res == null) { return; }
+      this.setPublishMode.emit(res);
     });
   }
 }

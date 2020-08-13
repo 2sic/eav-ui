@@ -43,8 +43,7 @@ import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types'
 export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-
-  @Output() openUpload: EventEmitter<any> = new EventEmitter<any>();
+  @Output() openUpload = new EventEmitter<null>();
 
   value$: Observable<string>;
   disabled$: Observable<boolean>;

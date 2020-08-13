@@ -37,6 +37,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
+import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -69,10 +70,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   items$: Observable<Item[]>;
   languages$: Observable<Language[]>;
   languages: Language[];
-  /** has 3 modes: show, hide, branch (where branch is a hidden, linked clone) */
-  publishMode$ = new BehaviorSubject<'branch' | 'show' | 'hide'>('hide');
+  publishMode$ = new BehaviorSubject<PublishMode>('hide');
   versioningOptions: VersioningOptions;
-  willPublish = false;     // default is won't publish, but will usually be overridden
+  willPublish = false;
   extendedSaveButtonIsReduced = false;
   debugEnabled = false;
   debugInfoIsOpen = false;
@@ -432,8 +432,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         });
         const body = {
           Items: allItems,
-          IsPublished: this.publishMode$.value === 'show',
-          DraftShouldBranch: this.publishMode$.value === 'branch'
+          IsPublished: this.publishMode$.value === PublishModeConstants.Show,
+          DraftShouldBranch: this.publishMode$.value === PublishModeConstants.Branch
         };
         return this.eavService.savemany(this.eavConfig.appId, this.eavConfig.partOfPage, JSON.stringify(body))
           .pipe(map(data => {
@@ -508,12 +508,20 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   private setPublishMode(items: JsonItem1[], isPublished: boolean, draftShouldBranch: boolean) {
     this.versioningOptions = this.getVersioningOptions();
-    this.enableDraft = items[0].Header.EntityId !== 0; // it already exists, so enable draft
-    this.publishMode$.next(draftShouldBranch ? 'branch' : isPublished ? 'show' : 'hide');
+    this.enableDraft = items[0].Header.EntityId !== 0;
+
+    let newPublishMode: PublishMode = draftShouldBranch
+      ? PublishModeConstants.Branch
+      : isPublished ? PublishModeConstants.Show : PublishModeConstants.Hide;
     // if publish mode is prohibited, revert to default
-    if (!this.eavConfig.versioningOptions[this.publishMode$.value]) {
-      this.publishMode$.next(Object.keys(this.eavConfig.versioningOptions)[0] as 'branch' | 'show' | 'hide');
+    if (!this.eavConfig.versioningOptions[newPublishMode]) {
+      newPublishMode = Object.keys(this.eavConfig.versioningOptions)[0] as PublishMode;
     }
+    this.publishMode$.next(newPublishMode);
+  }
+
+  setPublishMode1(mode: PublishMode) {
+    this.publishMode$.next(mode);
   }
 
   /** Open snackbar with message and after closed call function close */

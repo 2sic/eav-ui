@@ -1,5 +1,5 @@
 <mat-card class="header">
-  <button mat-icon-button class="header__exit-button" (click)="closeDialog()"
+  <button mat-icon-button class="header__exit-button" (click)="close()"
     [matTooltip]="(isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
     <mat-icon>{{ isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
