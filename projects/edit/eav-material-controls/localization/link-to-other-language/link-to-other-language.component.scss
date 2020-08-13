@@ -1,26 +1,15 @@
 @import "../../../assets/styles/variables.scss";
 
 .link-other-lang-container {
-    max-height: 99vh;
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    /* IE 10+ */
-    overflow: -moz-scrollbars-none;
-    /* Firefox */
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-.link-other-lang-container::-webkit-scrollbar {
-    /* Chrome */
-    display: none;
+  max-height: 99vh;
+  overflow-y: scroll;
 }
 
 .mat-list-item-focus {
-    background: $edit-ui-selected-option;
+  background: $edit-ui-selected-option;
 }
 
 .mat-list-item--disabled {
-    cursor: default;
-    color: $editUI-label-disabled-color;
+  cursor: default;
+  color: $editUI-label-disabled-color;
 }

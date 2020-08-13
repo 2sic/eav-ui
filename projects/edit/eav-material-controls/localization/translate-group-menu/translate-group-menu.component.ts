@@ -124,9 +124,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       }
     });
     dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
-      if (actionResult) {
-        this.triggerTranslation(actionResult);
-      }
+      if (!actionResult) { return; }
+      this.triggerTranslation(actionResult);
     });
   }
 
