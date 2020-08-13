@@ -4,7 +4,7 @@
   <div #leftShadow class="scrollable__overlay--left-shadow"></div>
   <div #rightShadow class="scrollable__overlay--right-shadow"></div>
   <div #scrollable class="scrollable lang-switch" (click)="showError()">
-    <button mat-flat-button class="lang-switch__button" *ngFor="let langButton of languageButtons"
+    <button mat-flat-button class="lang-switch__button" *ngFor="let langButton of (languageButtons$ | async)"
       [disabled]="!formsAreValid && data.currentLanguage !== langButton.key && !allControlsAreDisabled"
       [color]="data.currentLanguage === langButton.key ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
       (click)="lngButtonClick($event, langButton)" [matTooltip]="langButton.name">

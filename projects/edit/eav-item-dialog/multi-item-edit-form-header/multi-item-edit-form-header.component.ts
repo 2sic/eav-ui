@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MultiItemEditFormComponent } from '../multi-item-edit-form/multi-item-edit-form.component';
 import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
@@ -19,7 +20,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() isParentDialog: boolean;
   @Input() publishMode: boolean;
 
-  hasLanguages: boolean;
+  hasLanguages$: Observable<boolean>;
 
   constructor(
     private multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
@@ -28,9 +29,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.languageService.entities$.pipe(take(1)).subscribe(languages => {
-      this.hasLanguages = languages.length > 0;
-    });
+    this.hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
   }
 
   closeDialog() {
@@ -38,24 +37,19 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   }
 
   openSaveStatusDialog() {
-    // Open dialog
     const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
       panelClass: 'c-save-status-dialog',
       autoFocus: false,
       width: '350px',
-      // height: '80vh',
-      // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
     });
-    // spm add dialog and subdialog events through a helper
     dialogRef.keydownEvents().subscribe(e => {
-      // CTRL + S
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault(); // spm don't open browser default save
+        e.preventDefault(); // CTRL + S
       }
     });
 
     dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode$.value;
-    // Close dialog
+
     dialogRef.afterClosed().subscribe(result => {
       this.multiFormDialogRef.componentInstance.publishMode$.next(dialogRef.componentInstance.publishMode);
     });

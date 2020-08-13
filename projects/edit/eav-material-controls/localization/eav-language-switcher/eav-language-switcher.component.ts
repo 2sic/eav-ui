@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnIn
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Language } from '../../../shared/models/eav';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -26,7 +26,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
 
-  languageButtons: LanguageButton[] = [];
+  languageButtons$: Observable<LanguageButton[]>;
   currentLanguage$: Observable<string>;
 
   private centerSelectedService: CenterSelectedHelper;
@@ -42,11 +42,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   ) { }
 
   ngOnInit() {
-    let languages: Language[];
-    this.languageService.entities$.pipe(take(1)).subscribe(langs => {
-      languages = langs;
-    });
-    this.languageButtons = calculateLanguageButtons(languages);
+    this.languageButtons$ = this.languageService.entities$.pipe(map(langs => calculateLanguageButtons(langs)));
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
   }
 
