@@ -119,9 +119,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       data: dialogData
     });
     dialogRef.keydownEvents().subscribe(e => {
-      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault(); // CTRL + S
-      }
+      const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
+      if (!CTRL_S) { return; }
+      e.preventDefault();
     });
     dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
       if (!actionResult) { return; }

@@ -267,12 +267,13 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eventListeners.push({ element: window, type: 'beforeunload', listener: windowBeforeUnloadBound });
     this.dialogRef.backdropClick().subscribe(e => { this.closeDialog(); });
 
-    // spm Bind save events here
     this.dialogRef.keydownEvents().subscribe(e => {
-      // escape key
-      if (e.keyCode === 27) { this.closeDialog(); }
-      // CTRL + S
-      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+      const ESCAPE = e.keyCode === 27;
+      if (ESCAPE) {
+        this.closeDialog();
+      }
+      const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
+      if (CTRL_S) {
         e.preventDefault();
         this.saveAll(false);
       }
