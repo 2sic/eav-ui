@@ -47,7 +47,7 @@ export class DialogService {
   openQueryDesigner(queryId: number) {
     const dialog = DialogTypeConstants.PipelineDesigner;
     const form: EditForm = {
-      items: [{ EntityId: queryId.toString() }],
+      items: [{ EntityId: queryId }],
     };
     const oldHref = sessionStorage.getItem(keyUrl);
     const oldUrl = new URL(oldHref);

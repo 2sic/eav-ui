@@ -6,7 +6,7 @@ export class EditForm {
 }
 
 export class EditItem {
-  constructor(public EntityId: string) { }
+  constructor(public EntityId: number) { }
 }
 
 export class AddItem {

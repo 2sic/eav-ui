@@ -46,15 +46,16 @@ export class UrlHelper {
   }
 
   private static calculateItems(routeItems: string) {
-    let items: string;
+    let form: EditForm;
     const isNumber = /^[0-9]*$/g;
-    const itemIsId = isNumber.test(routeItems);
-    if (itemIsId) {
-      items = `[{"EntityId":${routeItems}}]`;
+    if (isNumber.test(routeItems)) {
+      form = {
+        items: [{ EntityId: parseInt(routeItems, 10) }]
+      };
     } else {
-      const editFormData: EditForm = JSON.parse(paramDecode(routeItems));
-      items = JSON.stringify(editFormData.items);
+      form = JSON.parse(paramDecode(routeItems));
     }
+    const items = JSON.stringify(form.items);
     return items;
   }
 
