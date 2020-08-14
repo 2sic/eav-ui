@@ -1,5 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 
+import { DialogTypeConstants } from '../../../ng-dialogs/src/app/shared/constants/dialog-types.constants';
 import { Language } from '../../shared/models/eav';
 
 export function calculateIsParentDialog(route: ActivatedRoute) {
@@ -7,7 +8,7 @@ export function calculateIsParentDialog(route: ActivatedRoute) {
   for (const path of route.snapshot.pathFromRoot) {
     if (path.url.length <= 0) { continue; }
     for (const urlSegment of path.url) {
-      if (urlSegment.path !== 'edit') { continue; }
+      if (urlSegment.path !== DialogTypeConstants.Edit) { continue; }
       editDialogCount++;
     }
   }

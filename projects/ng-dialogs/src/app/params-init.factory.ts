@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
+import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
@@ -21,7 +22,7 @@ export function paramsInitFactory(injector: Injector) {
         sessionStorage.removeItem(key);
       }
       sessionStorage.setItem(keyUrl, window.location.href); // save url which opened the dialog
-      sessionStorage.setItem(keyDialog, 'edit'); // set edit dialog as the default
+      sessionStorage.setItem(keyDialog, DialogTypeConstants.Edit); // set edit dialog as the default
 
       // save params
       const urlHash = window.location.hash.substring(1); // substring removes first # char
@@ -41,34 +42,34 @@ export function paramsInitFactory(injector: Injector) {
       const contentType = sessionStorage.getItem(keyContentType);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
-        case 'zone':
+        case DialogTypeConstants.Zone:
           router.navigate([`${zoneId}/apps`]);
           break;
-        case 'app-import':
+        case DialogTypeConstants.AppImport:
           router.navigate([`${zoneId}/import`]);
           break;
-        case 'app':
+        case DialogTypeConstants.App:
           router.navigate([`${zoneId}/${appId}/app`]);
           break;
-        case 'contenttype':
+        case DialogTypeConstants.ContentType:
           router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
           break;
-        case 'contentitems':
+        case DialogTypeConstants.ContentItems:
           router.navigate([`${zoneId}/${appId}/items/${contentType}`]);
           break;
-        case 'edit':
+        case DialogTypeConstants.Edit:
           const editItems: EditItem[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
           router.navigate([`${zoneId}/${appId}/edit/${paramEncode(JSON.stringify(form))}`]);
           break;
-        case 'develop':
+        case DialogTypeConstants.Develop:
           router.navigate([`${zoneId}/${appId}/code`]);
           break;
-        case 'pipeline-designer':
+        case DialogTypeConstants.PipelineDesigner:
           const pipelineId = sessionStorage.getItem(keyPipelineId);
           router.navigate([`${zoneId}/${appId}/query/${pipelineId}`]);
           break;
-        case 'replace':
+        case DialogTypeConstants.Replace:
           const replaceItems: GroupItem[] = JSON.parse(items);
           const rGuid = replaceItems[0].Group.Guid;
           const rPart = replaceItems[0].Group.Part;
@@ -77,7 +78,7 @@ export function paramsInitFactory(injector: Injector) {
           const queryParams = add ? { add: true } : {};
           router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
-        case 'instance-list':
+        case DialogTypeConstants.InstanceList:
           const groupItems: GroupItem[] = JSON.parse(items);
           const gGuid = groupItems[0].Group.Guid;
           const gPart = groupItems[0].Group.Part;

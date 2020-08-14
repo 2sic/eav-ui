@@ -87,12 +87,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   editItem(id: number) {
-    const form: EditForm = {
-      items: [
-        { EntityId: id.toString() },
-      ],
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    this.router.navigate([`edit/${id}`], { relativeTo: this.route });
   }
 
   drop(event: CdkDragDrop<any[]>) {

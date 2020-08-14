@@ -106,8 +106,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   editPermission(params: CellClickedEvent) {
-    let form: EditForm;
-    if (params === null) {
+    if (params == null) {
       let target: string;
       const keys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
       for (const key of keys) {
@@ -115,7 +114,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         target = eavConstants.metadata[key].target;
         break;
       }
-      form = {
+      const form: EditForm = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
@@ -126,13 +125,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           }
         }],
       };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     } else {
       const permission: Permission = params.data;
-      form = {
-        items: [{ EntityId: permission.Id.toString() }],
-      };
+      this.router.navigate([`edit/${permission.Id}`], { relativeTo: this.route });
     }
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   private deletePermission(permission: Permission) {

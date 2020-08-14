@@ -68,18 +68,19 @@ export class EditRoutingService implements OnDestroy {
   }
 
   /** Opens child dialog and stores update entityGuid and fieldId in the url, if field is not expanded already */
-  open(fieldId: number, entityGuid: string, form: EditForm) {
+  open(fieldId: number, entityGuid: string, form: EditForm | number) {
+    const formString = typeof form === 'number' ? form.toString() : paramEncode(JSON.stringify(form));
     const params = this.route.snapshot.params as EditParams;
     const hasDetails = params.detailsEntityGuid != null && params.detailsFieldId != null;
     // if field is expanded, just open child because that info will be used for field update
     if (hasDetails) {
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+      this.router.navigate([`edit/${formString}`], { relativeTo: this.route });
       return;
     }
 
     // otherwise add /update/:entityGuid/:fieldId to the url
     const oldEditUrl = `edit/${params.items}`;
-    const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${paramEncode(JSON.stringify(form))}`;
+    const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${formString}`;
 
     const currentUrl = this.calculatePathFromRoot();
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);

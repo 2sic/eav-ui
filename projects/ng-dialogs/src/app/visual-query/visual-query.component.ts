@@ -131,10 +131,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     this.metadataService
       .getMetadata(assignmentObjectTypeId, eavConstants.keyTypes.guid, keyGuid, contentTypeName).subscribe((success: any) => {
         if (success.length) { // Edit existing Entity
-          const form: EditForm = {
-            items: [{ EntityId: success[0].Id.toString() }],
-          };
-          this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+          this.router.navigate([`edit/${success[0].Id}`], { relativeTo: this.route });
         } else { // Check if the type exists, and if yes, create new Entity
           this.contentTypesService.getDetails(contentTypeName, { ignoreErrors: true }).subscribe({
             next: (res: any) => {
@@ -166,10 +163,7 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     // save Pipeline, then open Edit Dialog
     this.savePipeline(() => {
       this.detachListeners();
-      const form: EditForm = {
-        items: [{ EntityId: this.queryDef.id.toString() }],
-      };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+      this.router.navigate([`edit/${this.queryDef.id}`], { relativeTo: this.route });
     });
   }
 

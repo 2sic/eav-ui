@@ -22,7 +22,6 @@ export class UrlHelper {
 
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
-    const editFormData: EditForm = JSON.parse(paramDecode(route.snapshot.params.items));
     return new EavConfiguration(
       context.zoneId.toString(),
       context.appId.toString(),
@@ -30,7 +29,7 @@ export class UrlHelper {
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      JSON.stringify(editFormData.items),
+      this.calculateItems(route.snapshot.params.items),
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),
@@ -44,6 +43,19 @@ export class UrlHelper {
       sessionStorage.getItem(keyWebsiteRoot),
       UrlHelper.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
     );
+  }
+
+  private static calculateItems(routeItems: string) {
+    let items: string;
+    const isNumber = /^[0-9]*$/g;
+    const itemIsId = isNumber.test(routeItems);
+    if (itemIsId) {
+      items = `[{"EntityId":${routeItems}}]`;
+    } else {
+      const editFormData: EditForm = JSON.parse(paramDecode(routeItems));
+      items = JSON.stringify(editFormData.items);
+    }
+    return items;
   }
 
   private static getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {

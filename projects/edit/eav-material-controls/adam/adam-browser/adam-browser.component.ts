@@ -148,9 +148,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem) {
-    let form: EditForm;
     if (adamItem.MetadataId === 0) {
-      form = {
+      const form: EditForm = {
         items: [{
           ContentTypeName: adamItem._metadataContentType,
           For: {
@@ -159,12 +158,10 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           }
         }],
       };
+      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
     } else {
-      form = {
-        items: [{ EntityId: adamItem.MetadataId.toString() }],
-      };
+      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, adamItem.MetadataId);
     }
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   goUp() {

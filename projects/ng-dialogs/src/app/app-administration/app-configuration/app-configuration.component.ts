@@ -3,10 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
-import { paramEncode } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-app-configuration',
@@ -35,10 +33,7 @@ export class AppConfigurationComponent implements OnInit {
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length !== 1) { throw new Error(`Found too many settings for the type ${staticName}`); }
       const item = contentItems[0];
-      const form: EditForm = {
-        items: [{ EntityId: item.Id.toString() }],
-      };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`edit/${item.Id}`], { relativeTo: this.route.firstChild });
     });
   }
 

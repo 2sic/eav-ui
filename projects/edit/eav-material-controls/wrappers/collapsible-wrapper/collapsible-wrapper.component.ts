@@ -48,8 +48,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     this.collapse$.next(this.fieldConfig.settings$.value.DefaultCollapsed || false);
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    this.slotCanBeEmpty$ = this.header$.pipe(map(header => header.Group?.SlotCanBeEmpty || false));
-    this.slotIsEmpty$ = this.header$.pipe(map(header => header.Group?.SlotIsEmpty || false));
+    this.slotCanBeEmpty$ = this.header$.pipe(map(header => header?.Group?.SlotCanBeEmpty || false));
+    this.slotIsEmpty$ = this.header$.pipe(map(header => header?.Group?.SlotIsEmpty || false));
 
     this.itemTitle$ = !this.fieldConfig.isParentGroup
       ? this.fieldConfig.settings$.pipe(map(settings => settings.Name))

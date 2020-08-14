@@ -93,12 +93,17 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   editQuery(query: Query) {
-    const form: EditForm = {
-      items: (query === null)
-        ? [{ ContentTypeName: eavConstants.contentTypes.query, Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters } }]
-        : [{ EntityId: query.Id.toString() }],
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    if (query == null) {
+      const form: EditForm = {
+        items: [{
+          ContentTypeName: eavConstants.contentTypes.query,
+          Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters }
+        }]
+      };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    } else {
+      this.router.navigate([`edit/${query.Id}`], { relativeTo: this.route.firstChild });
+    }
   }
 
   private idValueGetter(params: ValueGetterParams) {
@@ -108,10 +113,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private openVisualQueryDesigner(params: CellClickedEvent) {
     const query: Query = params.data;
-    const form: EditForm = {
-      items: [{ EntityId: query.Id.toString() }],
-    };
-    this.dialogService.openQueryDesigner(form, query.Id);
+    this.dialogService.openQueryDesigner(query.Id);
   }
 
   private cloneQuery(query: Query) {

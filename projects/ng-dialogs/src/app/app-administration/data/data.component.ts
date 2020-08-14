@@ -211,9 +211,9 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    const form: EditForm = {
-      items: !contentType.Metadata
-        ? [{
+    if (!contentType.Metadata) {
+      const form: EditForm = {
+        items: [{
           ContentTypeName: eavConstants.contentTypes.contentType,
           For: {
             Target: eavConstants.metadata.contentType.target,
@@ -221,9 +221,11 @@ export class DataComponent implements OnInit, OnDestroy {
           },
           Prefill: { Label: contentType.Name, Description: contentType.Description },
         }]
-        : [{ EntityId: contentType.Metadata.Id.toString() }],
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+      };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    } else {
+      this.router.navigate([`edit/${contentType.Metadata.Id}`], { relativeTo: this.route.firstChild });
+    }
   }
 
   private openExport(contentType: ContentType) {

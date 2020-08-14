@@ -153,23 +153,20 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   editEntity(entityGuid: string) {
-    let form: EditForm;
     if (entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
-      form = {
+      const form: EditForm = {
         items: [{ ContentTypeName: contentTypeName }],
       };
+      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
     } else {
       let availableEntities: EntityInfo[];
       this.config.entityCache$.pipe(take(1)).subscribe(entities => {
         availableEntities = entities;
       });
       const entity = availableEntities.find(e => e.Value === entityGuid);
-      form = {
-        items: [{ EntityId: entity.Id.toString() }],
-      };
+      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, entity.Id);
     }
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   deleteEntity(entityGuid: string) {

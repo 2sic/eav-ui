@@ -155,31 +155,28 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   editView(params: CellClickedEvent) {
-    let form: EditForm;
-    if (params === null) {
-      form = {
+    if (params == null) {
+      const form: EditForm = {
         items: [{ ContentTypeName: eavConstants.contentTypes.template }],
       };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
     } else {
       const view: View = params.data;
-      form = {
-        items: [{ EntityId: view.Id.toString() }],
-      };
+      this.router.navigate([`edit/${view.Id}`], { relativeTo: this.route.firstChild });
     }
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
   }
 
   editPolymorphisms() {
     if (!this.polymorphism) { return; }
 
-    const form: EditForm = {
-      items: [
-        this.polymorphism.Id
-          ? { EntityId: this.polymorphism.Id.toString() }
-          : { ContentTypeName: this.polymorphism.TypeName }
-      ]
-    };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    if (!this.polymorphism.Id) {
+      const form: EditForm = {
+        items: [{ ContentTypeName: this.polymorphism.TypeName }]
+      };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    } else {
+      this.router.navigate([`edit/${this.polymorphism.Id}`], { relativeTo: this.route.firstChild });
+    }
   }
 
   private idValueGetter(params: ValueGetterParams) {

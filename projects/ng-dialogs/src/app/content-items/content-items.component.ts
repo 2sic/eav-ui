@@ -113,18 +113,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   editItem(params: CellClickedEvent) {
-    let form: EditForm;
-    if (params === null) {
-      form = {
+    if (params == null) {
+      const form: EditForm = {
         items: [{ ContentTypeName: this.contentTypeStaticName }],
       };
+      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     } else {
       const item: ContentItem = params.data;
-      form = {
-        items: [{ EntityId: item.Id.toString() }],
-      };
+      this.router.navigate([`edit/${item.Id}`], { relativeTo: this.route });
     }
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
   }
 
   exportContent() {
