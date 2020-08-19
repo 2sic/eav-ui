@@ -62,7 +62,6 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
   changeScope(event: MatSelectChange) {
     let newScope: string = event.value;
     if (newScope === 'Other') {
-      // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;

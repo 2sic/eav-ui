@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';

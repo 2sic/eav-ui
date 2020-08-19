@@ -15,7 +15,6 @@ export function calculateWarnings(pipelineData: any, context: Context): any[] {
     const testMid = matches[1];
     const urlMid = context.moduleId.toString();
     if (testMid !== urlMid) {
-      // tslint:disable-next-line:max-line-length
       warnings.push(`Your test moduleid (${testMid}) is different from the current moduleid (${urlMid}). Note that 2sxc 9.33 automatically provides the moduleid - so you usually do not need to set it any more.`);
     }
   } catch (error) { }

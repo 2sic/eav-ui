@@ -141,7 +141,6 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   createGhost() {
-    // tslint:disable-next-line:max-line-length
     const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
     if (!sourceName) { return; }
     this.snackBar.open('Saving...');
@@ -154,7 +153,6 @@ export class DataComponent implements OnInit, OnDestroy {
   changeScope(event: MatSelectChange) {
     let newScope: string = event.value;
     if (newScope === 'Other') {
-      // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;

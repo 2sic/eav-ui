@@ -147,7 +147,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   private deleteApp(app: App) {
-    // tslint:disable-next-line:max-line-length
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
     if (result === null) {
       return;

@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { Component, OnInit, Input, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 
 import { QueryDefinitionService } from '../services/query-definition.service';

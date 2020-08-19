@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';

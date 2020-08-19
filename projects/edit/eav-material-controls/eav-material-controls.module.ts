@@ -67,10 +67,8 @@ import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-w
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
 import { EntityDefaultSearchComponent } from './input-types/entity/entity-default-search/entity-default-search.component';
 import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
-// tslint:disable-next-line:max-line-length
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
-// tslint:disable-next-line:max-line-length
 import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
