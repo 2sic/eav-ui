@@ -53,9 +53,6 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
 import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
-import { FilterPipe } from '../shared/pipes/filter.pipe';
-import { OrderByPipe } from '../shared/pipes/orderby.pipe';
-import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
@@ -109,9 +106,6 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     AdamAttachWrapperComponent,
     HyperlinkLibraryComponent,
     EavLanguageSwitcherComponent,
-    FilterPipe,
-    OrderByPipe,
-    FileEndingFilterPipe,
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
