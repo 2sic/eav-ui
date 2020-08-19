@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
@@ -18,7 +18,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-data',
@@ -112,7 +112,6 @@ export class DataComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -201,7 +200,8 @@ export class DataComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private editFields(params: CellClickedEvent) {
@@ -211,21 +211,22 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private createOrEditMetadata(contentType: ContentType) {
-    if (!contentType.Metadata) {
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: eavConstants.contentTypes.contentType,
-          For: {
-            Target: eavConstants.metadata.contentType.target,
-            String: contentType.StaticName,
-          },
-          Prefill: { Label: contentType.Name, Description: contentType.Description },
-        }]
-      };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
-    } else {
-      this.router.navigate([`edit/${contentType.Metadata.Id}`], { relativeTo: this.route.firstChild });
-    }
+    const form: EditForm = {
+      items: [
+        !contentType.Metadata
+          ? {
+            ContentTypeName: eavConstants.contentTypes.contentType,
+            For: {
+              Target: eavConstants.metadata.contentType.target,
+              String: contentType.StaticName,
+            },
+            Prefill: { Label: contentType.Name, Description: contentType.Description },
+          }
+          : { EntityId: contentType.Metadata.Id }
+      ],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private openExport(contentType: ContentType) {

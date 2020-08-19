@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PermissionsService } from './services/permissions.service';
 import { Permission } from './models/permission.model';
@@ -14,7 +14,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-permissions',
@@ -87,7 +87,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   closeDialog() {
@@ -106,6 +105,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   }
 
   editPermission(params: CellClickedEvent) {
+    let form: EditForm;
     if (params == null) {
       let target: string;
       const keys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
@@ -114,7 +114,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         target = eavConstants.metadata[key].target;
         break;
       }
-      const form: EditForm = {
+      form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
@@ -125,11 +125,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           }
         }],
       };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     } else {
       const permission: Permission = params.data;
-      this.router.navigate([`edit/${permission.Id}`], { relativeTo: this.route });
+      form = {
+        items: [{ EntityId: permission.Id }],
+      };
     }
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private deletePermission(permission: Permission) {

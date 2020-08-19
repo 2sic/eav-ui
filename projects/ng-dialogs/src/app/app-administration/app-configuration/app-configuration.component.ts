@@ -5,6 +5,8 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { Context } from '../../shared/services/context';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-app-configuration',
@@ -33,7 +35,11 @@ export class AppConfigurationComponent implements OnInit {
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
       if (contentItems.length !== 1) { throw new Error(`Found too many settings for the type ${staticName}`); }
       const item = contentItems[0];
-      this.router.navigate([`edit/${item.Id}`], { relativeTo: this.route.firstChild });
+      const form: EditForm = {
+        items: [{ EntityId: item.Id }],
+      };
+      const formUrl = convertFormToUrl(form);
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
     });
   }
 

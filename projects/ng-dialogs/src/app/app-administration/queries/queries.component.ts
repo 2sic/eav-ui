@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Query } from '../models/query.model';
 import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
@@ -15,7 +15,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-queries',
@@ -79,7 +79,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   private fetchQueries() {
@@ -93,17 +92,18 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   editQuery(query: Query) {
-    if (query == null) {
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: eavConstants.contentTypes.query,
-          Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters }
-        }]
-      };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
-    } else {
-      this.router.navigate([`edit/${query.Id}`], { relativeTo: this.route.firstChild });
-    }
+    const form: EditForm = {
+      items: [
+        query == null
+          ? {
+            ContentTypeName: eavConstants.contentTypes.query,
+            Prefill: { TestParameters: eavConstants.pipelineDesigner.testParameters }
+          }
+          : { EntityId: query.Id }
+      ],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private idValueGetter(params: ValueGetterParams) {

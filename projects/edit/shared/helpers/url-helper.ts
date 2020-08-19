@@ -5,8 +5,7 @@ import { VersioningOptions } from '../models/eav/versioning-options';
 // tslint:disable-next-line:max-line-length
 import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { paramDecode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 export class UrlHelper {
 
@@ -22,6 +21,8 @@ export class UrlHelper {
 
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
+    const form = convertUrlToForm(route.snapshot.params.items);
+    const editItems = JSON.stringify(form.items);
     return new EavConfiguration(
       context.zoneId.toString(),
       context.appId.toString(),
@@ -29,7 +30,7 @@ export class UrlHelper {
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      this.calculateItems(route.snapshot.params.items),
+      editItems,
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),
@@ -43,20 +44,6 @@ export class UrlHelper {
       sessionStorage.getItem(keyWebsiteRoot),
       UrlHelper.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
     );
-  }
-
-  private static calculateItems(routeItems: string) {
-    let form: EditForm;
-    const isNumber = /^[0-9]*$/g;
-    if (isNumber.test(routeItems)) {
-      form = {
-        items: [{ EntityId: parseInt(routeItems, 10) }]
-      };
-    } else {
-      form = JSON.parse(paramDecode(routeItems));
-    }
-    const items = JSON.stringify(form.items);
-    return items;
   }
 
   private static getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {

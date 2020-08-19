@@ -18,7 +18,7 @@ import { DataSource } from './models/data-sources.model';
 import { PlumbGuiService } from './services/plumb-gui.service';
 import { ElementEventListener } from '../../../../shared/element-event-listener.model';
 import { QueryResultComponent } from './query-result/query-result.component';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-visual-query',
@@ -131,7 +131,11 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     this.metadataService
       .getMetadata(assignmentObjectTypeId, eavConstants.keyTypes.guid, keyGuid, contentTypeName).subscribe((success: any) => {
         if (success.length) { // Edit existing Entity
-          this.router.navigate([`edit/${success[0].Id}`], { relativeTo: this.route });
+          const form: EditForm = {
+            items: [{ EntityId: success[0].Id }],
+          };
+          const formUrl = convertFormToUrl(form);
+          this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
         } else { // Check if the type exists, and if yes, create new Entity
           this.contentTypesService.getDetails(contentTypeName, { ignoreErrors: true }).subscribe({
             next: (res: any) => {
@@ -140,11 +144,12 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
                   ContentTypeName: contentTypeName,
                   For: {
                     Target: eavConstants.metadata.entity.target,
-                    Guid: keyGuid
+                    Guid: keyGuid,
                   }
                 }],
               };
-              this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+              const formUrl = convertFormToUrl(form);
+              this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
             },
             error: () => {
               alert('Server reports error - this usually means that this data-source doesn\'t have any configuration');
@@ -163,7 +168,11 @@ export class VisualQueryComponent implements OnInit, OnDestroy {
     // save Pipeline, then open Edit Dialog
     this.savePipeline(() => {
       this.detachListeners();
-      this.router.navigate([`edit/${this.queryDef.id}`], { relativeTo: this.route });
+      const form: EditForm = {
+        items: [{ EntityId: this.queryDef.id }],
+      };
+      const formUrl = convertFormToUrl(form);
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
     });
   }
 

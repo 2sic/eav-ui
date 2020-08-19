@@ -21,7 +21,7 @@ import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-typ
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -112,7 +112,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -207,7 +206,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.createItemDefinition(field, field.InputType)
       ],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {
@@ -217,7 +217,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
-          Number: field.Id
+          Number: field.Id,
         },
         Prefill: { Name: field.StaticName },
       };

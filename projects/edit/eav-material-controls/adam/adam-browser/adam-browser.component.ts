@@ -148,20 +148,20 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem) {
-    if (adamItem.MetadataId === 0) {
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: adamItem._metadataContentType,
-          For: {
-            Target: eavConstants.metadata.cmsObject.target,
-            String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
+    const form: EditForm = {
+      items: [
+        adamItem.MetadataId === 0
+          ? {
+            ContentTypeName: adamItem._metadataContentType,
+            For: {
+              Target: eavConstants.metadata.cmsObject.target,
+              String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
+            }
           }
-        }],
-      };
-      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
-    } else {
-      this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, adamItem.MetadataId);
-    }
+          : { EntityId: adamItem.MetadataId }
+      ],
+    };
+    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   goUp() {

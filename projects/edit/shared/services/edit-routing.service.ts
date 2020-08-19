@@ -5,7 +5,7 @@ import { map, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { paramEncode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { ChildFormResult } from './edit-routing.models';
 import { EditParams } from '../../edit-matcher.models';
 
@@ -68,19 +68,19 @@ export class EditRoutingService implements OnDestroy {
   }
 
   /** Opens child dialog and stores update entityGuid and fieldId in the url, if field is not expanded already */
-  open(fieldId: number, entityGuid: string, form: EditForm | number) {
-    const formString = typeof form === 'number' ? form.toString() : paramEncode(JSON.stringify(form));
+  open(fieldId: number, entityGuid: string, form: EditForm) {
+    const formUrl = convertFormToUrl(form);
     const params = this.route.snapshot.params as EditParams;
     const hasDetails = params.detailsEntityGuid != null && params.detailsFieldId != null;
     // if field is expanded, just open child because that info will be used for field update
     if (hasDetails) {
-      this.router.navigate([`edit/${formString}`], { relativeTo: this.route });
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
       return;
     }
 
     // otherwise add /update/:entityGuid/:fieldId to the url
     const oldEditUrl = `edit/${params.items}`;
-    const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${formString}`;
+    const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${formUrl}`;
 
     const currentUrl = this.calculatePathFromRoot();
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);

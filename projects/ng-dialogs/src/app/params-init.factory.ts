@@ -7,7 +7,7 @@ import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
-import { paramEncode } from './shared/helpers/url-prep.helper';
+import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -60,7 +60,8 @@ export function paramsInitFactory(injector: Injector) {
         case DialogTypeConstants.Edit:
           const editItems: EditItem[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
-          router.navigate([`${zoneId}/${appId}/edit/${paramEncode(JSON.stringify(form))}`]);
+          const formUrl = convertFormToUrl(form);
+          router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
           break;
         case DialogTypeConstants.Develop:
           router.navigate([`${zoneId}/${appId}/code`]);
