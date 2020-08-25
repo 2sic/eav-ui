@@ -1,107 +1,151 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { Context } from '../../shared/services/context';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { PipelineModel, PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
+import { DataSource } from '../models/data-sources.model';
+import { QueryDef, QueryDefData, TypeInfo } from '../models/query-def.model';
+import { PipelineResult } from '../models/pipeline-result.model';
+import { GuiTypes } from '../models/gui-type.model';
+
+const guiTypes: GuiTypes = {
+  Cache: { name: 'Cache', icon: 'history', notes: 'Caching of data' },
+  Filter: { name: 'Filter', icon: 'filter_list', notes: 'Filter data - usually returning less items than came in' },
+  Logic: { name: 'Logic', icon: 'share', notes: 'Logic operations - usually choosing between different streams' },
+  Lookup: { name: 'Lookup', icon: 'search', notes: 'Lookup operation - usually looking for other data based on a criteria' },
+  Modify: { name: 'Modify', icon: 'star_half', notes: 'Modify data - usually changing, adding or removing values' },
+  Security: { name: 'Security', icon: 'account_circle', notes: 'Security - usually limit what the user sees based on his identity' },
+  Sort: { name: 'Sort', icon: 'sort', notes: 'Sort the items' },
+  Source: { name: 'Source', icon: 'cloud_upload', notes: 'Source of new data - usually SQL, CSV or similar' },
+  Target: { name: 'Target', icon: 'adjust', notes: 'Target - usually just a destination of data' },
+  Unknown: { name: 'Unknown', icon: 'fiber_manual_record', notes: 'Unknown type' },
+};
 
 @Injectable()
 export class QueryDefinitionService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  async loadQuery(pipelineEntityId: number): Promise<any> {
-    const model: any = await this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetPipeline'), {
+  loadQuery(pipelineEntityId: number) {
+    const pipelineModel$ = this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetPipeline'), {
       params: { appId: this.context.appId.toString(), id: pipelineEntityId.toString() }
-    }).toPromise();
+    }) as Observable<PipelineModel>;
 
-    model.InstalledDataSources = await this.http.get(
+    const installedDataSources$ = this.http.get(
       this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetInstalledDataSources')
-    ).toPromise();
+    ) as Observable<DataSource[]>;
 
-    // Init new Pipeline Object
-    if (!pipelineEntityId) {
-      model.Pipeline = {
-        AllowEdit: 'True',
-      };
-    }
+    return forkJoin([pipelineModel$, installedDataSources$]).pipe(
+      map(combined => {
+        const pipelineModel = combined[0];
+        const installedDataSources = combined[1];
 
-    const outDs = eavConstants.pipelineDesigner.outDataSource;
-    // Add Out-DataSource for the UI
-    model.InstalledDataSources.push({
-      PartAssemblyAndType: outDs.className,
-      Name: outDs.name || outDs.className,
-      In: outDs.in,
-      Out: null,
-      allowNew: false,
-      PrimaryType: 'Target',
-      DynamicOut: false,
-      Difficulty: 100,
-    });
+        const queryDefData: QueryDefData = {
+          DataSources: pipelineModel.DataSources,
+          InstalledDataSources: installedDataSources,
+          Pipeline: pipelineModel.Pipeline,
+        };
 
-    this.postProcessDataSources(model);
+        // Init new Pipeline Object
+        if (!pipelineEntityId) {
+          queryDefData.Pipeline = {
+            AllowEdit: true,
+            Description: undefined,
+            EntityGuid: undefined,
+            EntityId: undefined,
+            Name: undefined,
+            ParametersGroup: undefined,
+            Params: undefined,
+            StreamWiring: undefined,
+            StreamsOut: undefined,
+            TestParameters: undefined,
+          };
+        }
 
-    const queryDef = {
-      id: pipelineEntityId,
-      data: model,
-      readOnly: false,
-    };
+        const outDs = eavConstants.pipelineDesigner.outDataSource;
+        const outDsConst: DataSource = {
+          ContentType: undefined,
+          Difficulty: 100,
+          DynamicOut: false,
+          EnableConfig: undefined,
+          HelpLink: undefined,
+          Icon: undefined,
+          In: outDs.in,
+          Name: outDs.name || outDs.className,
+          Out: undefined,
+          PartAssemblyAndType: outDs.className,
+          PrimaryType: 'Target',
+          UiHint: undefined,
+          allowNew: false,
+        };
+        installedDataSources.push(outDsConst);
 
-    // If a new (empty) Pipeline is made, init new Pipeline
-    if (!queryDef.id || queryDef.data.DataSources.length === 1) {
-      queryDef.readOnly = false;
-      this.loadQueryFromDefaultTemplate(queryDef);
-    } else {
-      // if read only, show message
-      queryDef.readOnly = !model.Pipeline.AllowEdit;
-    }
+        this.postProcessDataSources(queryDefData);
 
-    return queryDef;
-  }
+        const queryDef: QueryDef = {
+          id: pipelineEntityId,
+          data: queryDefData,
+          readOnly: false,
+        };
 
-  // Test wether a DataSource is persisted on the Server
-  dataSourceIsPersisted(dataSource: any) {
-    return dataSource.EntityGuid.indexOf('unsaved') === -1;
+        // If a new (empty) Pipeline is made, init new Pipeline
+        if (!queryDef.id || queryDef.data.DataSources.length === 1) {
+          queryDef.readOnly = false;
+          this.loadQueryFromDefaultTemplate(queryDef);
+        } else {
+          // if read only, show message
+          queryDef.readOnly = !queryDef.data.Pipeline.AllowEdit;
+        }
+
+        return queryDef;
+      })
+    ) as Observable<QueryDef>;
   }
 
   // Extend Pipeline-Model retrieved from the Server
-  postProcessDataSources(model: any) {
+  postProcessDataSources(queryDefData: QueryDefData) {
     // stop Post-Process if the model already contains the Out-DataSource
-    if (model.DataSources.find((d: any) => d.EntityGuid === 'Out')) { return; }
+    if (queryDefData.DataSources.find(dataSource => dataSource.EntityGuid === 'Out')) { return; }
 
     const outDs = eavConstants.pipelineDesigner.outDataSource;
-    // Append Out-DataSource for the UI
-    model.DataSources.push({
-      Name: outDs.name,
+    const outDsConst: PipelineDataSource = {
       Description: outDs.description,
       EntityGuid: 'Out',
+      EntityId: undefined,
+      Name: outDs.name,
       PartAssemblyAndType: outDs.className,
       VisualDesignerData: outDs.visualDesignerData,
       ReadOnly: true,
-      Difficulty: 100
-    });
+      Difficulty: 100,
+    };
+    // Append Out-DataSource for the UI
+    queryDefData.DataSources.push(outDsConst);
 
     // Extend each DataSource with Definition-Property and ReadOnly Status
-    for (const dataSource of model.DataSources) {
-      dataSource.Definition = () => this.getDataSourceDefinitionProperty(model, dataSource);
-      dataSource.ReadOnly = dataSource.ReadOnly || !model.Pipeline.AllowEdit;
+    for (const dataSource of queryDefData.DataSources) {
+      dataSource.Definition = () => this.getDataSourceDefinitionProperty(queryDefData, dataSource);
+      dataSource.ReadOnly = dataSource.ReadOnly || !queryDefData.Pipeline.AllowEdit;
       // in case server returns null, use a default setting
       dataSource.VisualDesignerData = dataSource.VisualDesignerData || { Top: 50, Left: 50 };
     }
   }
 
   // Get the Definition of a DataSource
-  private getDataSourceDefinitionProperty(model: any, dataSource: any) {
-    const definition = model.InstalledDataSources.filter((d: any) => d.PartAssemblyAndType === dataSource.PartAssemblyAndType)[0];
-    if (!definition) {
+  private getDataSourceDefinitionProperty(queryDefData: QueryDefData, dataSource: PipelineDataSource) {
+    const definition = queryDefData.InstalledDataSources
+      .find(installedDataSource => installedDataSource.PartAssemblyAndType === installedDataSource.PartAssemblyAndType);
+    if (definition == null) {
       throw new Error(`DataSource Definition not found: ${dataSource.PartAssemblyAndType}`);
     }
     return definition;
   }
 
   // Init a new Pipeline with DataSources and Wirings from Configuration
-  private loadQueryFromDefaultTemplate(queryDef: any) {
+  private loadQueryFromDefaultTemplate(queryDef: QueryDef) {
     const templateForNew = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
     for (const dataSource of templateForNew) {
       this.addDataSource(queryDef, dataSource.partAssemblyAndType, dataSource.visualDesignerData, dataSource.entityGuid, null);
@@ -111,25 +155,25 @@ export class QueryDefinitionService {
     queryDef.data.Pipeline.StreamWiring = eavConstants.pipelineDesigner.defaultPipeline.streamWiring;
   }
 
-  addDataSource(queryDef: any, partAssemblyAndType: any, visualDesignerData: any, entityGuid: any, name: any) {
-    if (!visualDesignerData) {
+  addDataSource(queryDef: QueryDef, partAssemblyAndType: string, visualDesignerData: VisualDesignerData, entityGuid: string, name: string) {
+    if (visualDesignerData == null) {
       visualDesignerData = { Top: 100, Left: 100 };
     }
 
-    let newDataSource = {
-      VisualDesignerData: visualDesignerData,
-      Name: name || this.typeNameFilter(partAssemblyAndType, 'className'),
+    const newDataSource: PipelineDataSource = {
       Description: '',
+      EntityGuid: entityGuid || 'unsaved' + (queryDef.dsCount + 1),
+      EntityId: undefined,
+      Name: name || this.typeNameFilter(partAssemblyAndType, 'className'),
       PartAssemblyAndType: partAssemblyAndType,
-      EntityGuid: entityGuid || 'unsaved' + (queryDef.dsCount + 1)
+      VisualDesignerData: visualDesignerData,
     };
-    // Extend it with a Property to it's Definition
-    newDataSource = Object.assign(newDataSource, this.getNewDataSource(queryDef.data, newDataSource));
+    newDataSource.Definition = () => this.getDataSourceDefinitionProperty(queryDef.data, newDataSource);
 
     queryDef.data.DataSources.push(newDataSource);
   }
 
-  typeNameFilter(input: any, format: any) {
+  typeNameFilter(input: string, format: string) {
     const globalParts = input.match(/[^,\s]+/g);
 
     switch (format) {
@@ -148,28 +192,18 @@ export class QueryDefinitionService {
     return input;
   }
 
-  // Get a JSON for a DataSource with Definition-Property
-  private getNewDataSource(model: any, dataSourceBase: any) {
-    return {
-      Definition: () => this.getDataSourceDefinitionProperty(model, dataSourceBase)
-    };
-  }
-
-  dsTypeInfo(dataSource: any, queryDef: any) {
+  dsTypeInfo(dataSource: PipelineDataSource, queryDef: QueryDef) {
     // maybe we already retrieved it before...
     const cacheKey = dataSource.EntityGuid;
     if (!queryDef._typeInfos) { queryDef._typeInfos = {}; }
     if (queryDef._typeInfos[cacheKey]) { return queryDef._typeInfos[cacheKey]; }
 
-    let typeInfo = null;
+    let typeInfo: TypeInfo;
     // try to find the type on the source
-    const found = queryDef.data.InstalledDataSources.find((ids: any) => ids.PartAssemblyAndType === dataSource.PartAssemblyAndType);
-    const guiTypes = this.buildGuiTypes();
-    if (found) {
-      const def = found;
-      const primType = def.PrimaryType;
-      typeInfo = Object.assign({}, primType ? guiTypes[primType] : guiTypes.Unknown);
-      if (def.Icon) { typeInfo.icon = guiTypes.iconPrefix + def.Icon; }
+    const def = queryDef.data.InstalledDataSources.find(ids => ids.PartAssemblyAndType === dataSource.PartAssemblyAndType);
+    if (def) {
+      typeInfo = { ...(def.PrimaryType ? guiTypes[def.PrimaryType] : guiTypes.Unknown) };
+      if (def.Icon) { typeInfo.icon = def.Icon; }
       if (def.DynamicOut) { typeInfo.dynamicOut = true; }
       if (def.HelpLink) { typeInfo.helpLink = def.HelpLink; }
       if (def.EnableConfig) { typeInfo.config = def.EnableConfig; }
@@ -180,55 +214,28 @@ export class QueryDefinitionService {
     return typeInfo;
   }
 
-  private buildGuiTypes() {
-    const guiTypes: { [key: string]: any } = {
-      iconPrefix: ''
-    };
-
-    function addGuiType(name: any, icon: any, notes: any) {
-      guiTypes[name] = {
-        name,
-        icon: guiTypes.iconPrefix + icon,
-        notes
-      };
-    }
-
-    addGuiType('Unknown', 'fiber_manual_record', 'unknown type');
-    addGuiType('Cache', 'history', 'caching of data');
-    addGuiType('Filter', 'filter_list', 'filter data - usually returning less items than came in');
-    addGuiType('Logic', 'share', 'logic operations - usually choosing between different streams');
-    addGuiType('Lookup', 'search', 'lookup operation - usually looking for other data based on a criteria');
-    addGuiType('Modify', 'star_half', 'modify data - usually changing, adding or removing values');
-    addGuiType('Security', 'account_circle', 'security - usually limit what the user sees based on his identity');
-    addGuiType('Sort', 'sort', 'sort the items');
-    addGuiType('Source', 'cloud_upload', 'source of new data - usually SQL, CSV or similar');
-    addGuiType('Target', 'adjust', 'target - usually just a destination of data');
-
-    return guiTypes;
-  }
-
   // save the current query and reload entire definition as returned from server
-  save(queryDef: any) {
+  save(queryDef: QueryDef) {
+    const pipeline = queryDef.data.Pipeline;
+
     // Remove some Properties from the DataSource before Saving
-    const dataSourcesPrepared: any[] = [];
-    queryDef.data.DataSources.forEach((dataSource: any) => {
+    const dataSourcesPrepared = queryDef.data.DataSources.map(dataSource => {
       const dataSourceClone = cloneDeep(dataSource);
       delete dataSourceClone.ReadOnly;
-      dataSourcesPrepared.push(dataSourceClone);
+      return dataSourceClone;
     });
 
-    const pipeline = queryDef.data.Pipeline;
     return this.http.post(
       this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/SavePipeline'),
       { pipeline, dataSources: dataSourcesPrepared },
-      { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId } }
-    ) as Observable<any>;
+      { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId.toString() } }
+    ) as Observable<PipelineModel>;
   }
 
   queryPipeline(id: number) {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/QueryPipeline'), {
       params: { appId: this.context.appId.toString(), id: id.toString() }
-    }) as Observable<any>;
+    }) as Observable<PipelineResult>;
   }
 
 }

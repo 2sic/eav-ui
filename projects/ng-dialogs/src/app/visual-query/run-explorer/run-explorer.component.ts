@@ -1,7 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 import { Context } from '../../shared/services/context';
+import { SaveRun } from '../models/save-run.model';
 import { calculateWarnings } from './run-explorer.helpers';
+import { QueryDef } from '../models/query-def.model';
 
 @Component({
   selector: 'app-run-explorer',
@@ -10,13 +12,14 @@ import { calculateWarnings } from './run-explorer.helpers';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RunExplorerComponent implements OnInit, OnChanges {
-  @Input() queryDef: any;
-  @Output() editPipelineEntity: EventEmitter<null> = new EventEmitter();
-  @Output() saveAndRun: EventEmitter<{ save: boolean, run: boolean }> = new EventEmitter();
-  @Output() repaint: EventEmitter<null> = new EventEmitter();
-  warnings: any[];
+  @Input() queryDef: QueryDef;
+  @Output() editPipelineEntity = new EventEmitter<null>();
+  @Output() saveAndRun = new EventEmitter<SaveRun>();
+  @Output() repaint = new EventEmitter<null>();
 
-  constructor(private context: Context, ) { }
+  warnings: string[] = [];
+
+  constructor(private context: Context) { }
 
   ngOnInit() {
   }

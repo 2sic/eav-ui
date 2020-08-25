@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { Context } from '../../shared/services/context';
-declare const jsPlumb: any;
+import { QueryDef } from '../models/query-def.model';
+import { PipelineDataSource, StreamWire } from '../models/pipeline.model';
+import { PlumbType } from '../models/plumb.model';
+import { PipelineResult } from '../models/pipeline-result.model';
+declare const jsPlumb: PlumbType;
 
 const linePaintDefault = {
   lineWidth: 4,
@@ -21,10 +22,10 @@ const lineColors = [
   '#f0a30a', '#e3c800', '#825a2c', '#6d8764', '#647687',
   '#76608a', '#a0522d'
 ];
-const uuidColorMap: any = {};
+const uuidColorMap: { [key: string]: any } = {};
 const maxCols = lineColors.length - 1;
 
-function nextLinePaintStyle(uuid: any) {
+function nextLinePaintStyle(uuid: string) {
   return uuidColorMap[uuid]
     || (uuidColorMap[uuid] = Object.assign({}, linePaintDefault, { strokeStyle: lineColors[lineCount++ % maxCols] }));
 }
@@ -47,39 +48,36 @@ export const dataSrcIdPrefix = 'dataSource_';
 export class PlumbGuiService {
   connectionsInitialized = false;
 
-  constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
+  constructor() { }
 
-  buildInstance(queryDef: any) {
-    const instance = jsPlumb.getInstance(instanceTemplate);
+  buildInstance(queryDef: QueryDef) {
+    const instance: PlumbType = jsPlumb.getInstance(instanceTemplate);
 
     // If connection on Out-DataSource was removed, remove custom Endpoint
-    instance.bind('connectionDetached', (info: any) => {
-      if (info.targetId === dataSrcIdPrefix + 'Out') {
-        const element = info.target;
-        const fixedEndpoints = this.findDataSourceOfElement(element, queryDef).dataSource.Definition().In;
-        const label = info.targetEndpoint.getOverlay('endpointLabel').label;
-        if (fixedEndpoints.indexOf(label) === -1) {
-          setTimeout(() => { instance.deleteEndpoint(info.targetEndpoint); }, 0);
-        }
+    instance.bind('connectionDetached', (info: PlumbType) => {
+      if (info.targetId !== dataSrcIdPrefix + 'Out') { return; }
+
+      const element: HTMLElement = info.target;
+      const fixedEndpoints = this.findDataSourceOfElement(element, queryDef).Definition().In;
+      const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
+      if (!fixedEndpoints.includes(label)) {
+        setTimeout(() => { instance.deleteEndpoint(info.targetEndpoint); }, 0);
       }
     });
 
-    instance.bind('connection', (info: any) => {
+    instance.bind('connection', (info: PlumbType) => {
       if (!this.connectionsInitialized) { return; }
 
-      const endpointLabel = info.targetEndpoint.getOverlay('endpointLabel');
-      const labelPrompt = endpointLabel.getLabel();
-      const endpoints = instance.getEndpoints(info.target.id);
-      let targetEndpointHavingSameLabel;
-      endpoints.forEach((endpoint: any) => {
-        const label = endpoint.getOverlay('endpointLabel').getLabel();
-        if (label === labelPrompt &&
+      const endpointLabel: PlumbType = info.targetEndpoint.getOverlay('endpointLabel');
+      const labelPrompt: string = endpointLabel.getLabel();
+      const endpoints: PlumbType[] = instance.getEndpoints(info.target.id);
+      const targetEndpointHasSameLabel = endpoints.some(endpoint => {
+        const label: string = endpoint.getOverlay('endpointLabel').getLabel();
+        return label === labelPrompt &&
           info.targetEndpoint.id !== endpoint.id &&
-          (endpoint.canvas as HTMLElement).classList.contains('targetEndpoint')) {
-          targetEndpointHavingSameLabel = endpoint;
-        }
+          (endpoint.canvas as HTMLCanvasElement).classList.contains('targetEndpoint');
       });
-      if (targetEndpointHavingSameLabel) {
+      if (targetEndpointHasSameLabel) {
         endpointLabel.setLabel(`PleaseRename${Math.floor(Math.random() * 99999)}`);
       }
     });
@@ -88,16 +86,16 @@ export class PlumbGuiService {
   }
 
   // this will retrieve the dataSource info-object for a DOM element
-  findDataSourceOfElement(element: HTMLElement, queryDef: any) {
+  findDataSourceOfElement(element: HTMLElement, queryDef: QueryDef) {
     element = this.fixElementNodeList(element);
-    const guid = (element.attributes as any).guid.value;
-    const list = queryDef.data.DataSources;
-    const found = list.find((el: any) => el.EntityGuid === guid);
+    const guid: string = (element.attributes as any).guid.value;
+    const dataSources = queryDef.data.DataSources;
+    const found = dataSources.find(dataSource => dataSource.EntityGuid === guid);
     return found;
   }
 
-  initWirings(queryDef: any, instance: any) {
-    queryDef.data.Pipeline.StreamWiring?.forEach((wire: any) => {
+  initWirings(queryDef: QueryDef, instance: PlumbType) {
+    queryDef.data.Pipeline.StreamWiring?.forEach(wire => {
       // read connections from Pipeline
       const sourceElementId = dataSrcIdPrefix + wire.From;
       const fromUuid = sourceElementId + '_out_' + wire.Out;
@@ -124,9 +122,9 @@ export class PlumbGuiService {
   }
 
   // Add a jsPlumb Endpoint to an Element
-  addEndpoint(element: HTMLElement, name: any, isIn: any, queryDef: any, instance: any) {
+  addEndpoint(element: HTMLElement, name: string, isIn: boolean, queryDef: QueryDef, instance: PlumbType) {
     element = this.fixElementNodeList(element);
-    if (!element) {
+    if (element == null) {
       console.error({ message: 'Element not found', selector: element });
       return;
     }
@@ -136,18 +134,18 @@ export class PlumbGuiService {
     const uuid = element.id + (isIn ? '_in_' : '_out_') + name;
     const params = {
       uuid,
-      enabled:
-        !dataSource.ReadOnly ||
-        dataSource.EntityGuid === 'Out' // Endpoints on Out-DataSource must be always enabled
+      enabled: !dataSource.ReadOnly || dataSource.EntityGuid === 'Out' // Endpoints on Out-DataSource must be always enabled
     };
-    const endPoint = instance.addEndpoint(element,
+    const endPoint: PlumbType = instance.addEndpoint(
+      element,
       (isIn ? this.buildTargetEndpoint(queryDef) : this.buildSourceEndpoint(queryDef)),
-      params);
+      params,
+    );
     endPoint.getOverlay('endpointLabel').setLabel(name);
   }
 
   // the definition of source endpoints (the small blue ones)
-  buildSourceEndpoint(queryDef: any) {
+  buildSourceEndpoint(queryDef: QueryDef) {
     return {
       paintStyle: { fillStyle: 'transparent', radius: 10, lineWidth: 0 },
       cssClass: 'sourceEndpoint',
@@ -159,7 +157,7 @@ export class PlumbGuiService {
   }
 
   // the definition of target endpoints (will appear when the user drags a connection)
-  buildTargetEndpoint(queryDef: any) {
+  buildTargetEndpoint(queryDef: QueryDef) {
     return {
       paintStyle: { fillStyle: 'transparent', radius: 10, lineWidth: 0 },
       cssClass: 'targetEndpoint',
@@ -172,7 +170,7 @@ export class PlumbGuiService {
   }
 
   // #region jsPlumb Endpoint Definitions
-  getEndpointOverlays(isSource: any, readOnlyMode: any) {
+  getEndpointOverlays(isSource: boolean, readOnlyMode: boolean) {
     return [
       [
         'Label', {
@@ -182,7 +180,7 @@ export class PlumbGuiService {
           label: 'Default',
           cssClass: 'noselect ' + (isSource ? 'endpointSourceLabel' : 'endpointTargetLabel'),
           events: {
-            dblclick: (labelOverlay: any) => {
+            dblclick: (labelOverlay: PlumbType) => {
               if (readOnlyMode) { return; }
 
               const newLabel = prompt('Rename Stream', labelOverlay.label);
@@ -196,29 +194,26 @@ export class PlumbGuiService {
     ];
   }
 
-  makeSource(dataSource: any, element: HTMLElement, dragHandler: any, queryDef: any, instance: any) {
+  // tslint:disable-next-line:max-line-length
+  makeSource(dataSource: PipelineDataSource, element: HTMLElement, dragHandler: (draggedWrapper: PlumbType) => void, queryDef: QueryDef, instance: PlumbType) {
     // suspend drawing and initialise
     element = this.fixElementNodeList(element);
     instance.batch(() => {
 
       // make DataSources draggable. Must happen before makeSource()!
       if (!queryDef.readOnly) {
-        instance.draggable(element,
-          {
-            grid: [20, 20],
-            drag: dragHandler
-          });
+        instance.draggable(element, { grid: [20, 20], drag: dragHandler });
       }
 
       // Add Out- and In-Endpoints from Definition
       const dataSourceDefinition = dataSource.Definition();
       if (dataSourceDefinition) {
         // Add Out-Endpoints
-        dataSourceDefinition.Out?.forEach((name: any) => {
+        dataSourceDefinition.Out?.forEach(name => {
           this.addEndpoint(element, name, false, queryDef, instance);
         });
         // Add In-Endpoints
-        dataSourceDefinition.In?.forEach((name: any) => {
+        dataSourceDefinition.In?.forEach(name => {
           this.addEndpoint(element, name, true, queryDef, instance);
         });
         // make the DataSource a Target for new Endpoints (if .In is an Array)
@@ -229,59 +224,55 @@ export class PlumbGuiService {
         }
 
         if (dataSourceDefinition.DynamicOut) {
-          instance.makeSource(element,
+          instance.makeSource(
+            element,
             this.buildSourceEndpoint(queryDef),
-            { filter: '.add-endpoint .new-connection' });
+            { filter: '.add-endpoint .new-connection' }
+          );
         }
       }
     });
   }
 
-  pushPlumbConfigToQueryDef(instance: any, queryDef: any) {
-    const connectionInfos: any[] = [];
-    instance.getAllConnections().forEach((connection: any) => {
-      connectionInfos.push({
+  pushPlumbConfigToQueryDef(instance: PlumbType, queryDef: QueryDef) {
+    const connectionInfos = instance.getAllConnections().map((connection: PlumbType) => {
+      const wire: StreamWire = {
         From: connection.sourceId.substr(dataSrcIdPrefix.length),
         Out: connection.endpoints[0].getOverlay('endpointLabel').label,
         To: connection.targetId.substr(dataSrcIdPrefix.length),
         In: connection.endpoints[1].getOverlay('endpointLabel').label,
-      });
+      };
+      return wire;
     });
     queryDef.data.Pipeline.StreamWiring = connectionInfos;
 
-    const streamsOut: any[] = [];
-    instance.selectEndpoints({ target: dataSrcIdPrefix + 'Out' }).each((endpoint: any) => {
+    const streamsOut: string[] = [];
+    instance.selectEndpoints({ target: dataSrcIdPrefix + 'Out' }).each((endpoint: PlumbType) => {
       streamsOut.push(endpoint.getOverlay('endpointLabel').label);
     });
     queryDef.data.Pipeline.StreamsOut = streamsOut.join(',');
   }
 
-  putEntityCountOnConnection(result: any, queryDef: any, instance: any) {
-    result.Streams?.forEach((stream: any) => {
+  putEntityCountOnConnections(result: PipelineResult, queryDef: QueryDef, instance: PlumbType) {
+    result.Streams?.forEach(stream => {
       // Find jsPlumb Connection for the current Stream
       const sourceElementId = dataSrcIdPrefix + stream.Source;
-      let targetElementId = dataSrcIdPrefix + stream.Target;
-      if (stream.Target === '00000000-0000-0000-0000-000000000000'
-        || stream.Target === queryDef.data.Pipeline.EntityGuid) {
-        targetElementId = dataSrcIdPrefix + 'Out';
-      }
+      const outTargets = ['00000000-0000-0000-0000-000000000000', queryDef.data.Pipeline.EntityGuid];
+      const targetElementId = outTargets.includes(stream.Target) ? dataSrcIdPrefix + 'Out' : dataSrcIdPrefix + stream.Target;
 
       const fromUuid = sourceElementId + '_out_' + stream.SourceOut;
       const toUuid = targetElementId + '_in_' + stream.TargetIn;
 
-      const sEndp = instance.getEndpoint(fromUuid);
-      if (sEndp) {
-        sEndp.connections?.forEach((connection: any) => {
-          if (connection.endpoints[1].getUuid() === toUuid) {
-            // when connection found, update it's label with the Entities-Count
-            connection.setLabel({
-              label: stream.Count.toString(),
-              cssClass: 'streamEntitiesCount'
-            });
-            return;
-          }
+      const sEndp: PlumbType = instance.getEndpoint(fromUuid);
+      sEndp?.connections?.forEach((connection: PlumbType) => {
+        if (connection.endpoints[1].getUuid() !== toUuid) { return; }
+
+        // when connection found, update it's label with the Entities-Count
+        connection.setLabel({
+          label: stream.Count.toString(),
+          cssClass: 'streamEntitiesCount'
         });
-      }
+      });
     });
   }
 

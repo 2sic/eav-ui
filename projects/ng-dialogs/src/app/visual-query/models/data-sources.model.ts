@@ -1,19 +1,26 @@
 export interface DataSource {
-  ClassName: unknown;
   ContentType: string;
   Difficulty: number;
   DynamicOut: boolean;
   EnableConfig: boolean;
   HelpLink: string;
-  Icon: unknown;
+  Icon: string;
   In: string[];
   Name: string;
   Out: string[];
   PartAssemblyAndType: string;
   PrimaryType: string;
-  allowNew: boolean;
+  UiHint: string;
+  allowNew?: boolean;
 }
 
 export interface SortedDataSources {
   [key: string]: DataSource[];
+}
+
+export interface DataSourceMetadata {
+  Guid: string;
+  Id: number;
+  Title: string;
+  TypeName: string;
 }

@@ -2,7 +2,10 @@ import { Component, OnInit, Input, AfterViewInit, ViewChildren, QueryList, Eleme
 
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { PlumbGuiService, dataSrcIdPrefix } from '../services/plumb-gui.service';
-declare const jsPlumb: any;
+import { QueryDef } from '../models/query-def.model';
+import { PipelineDataSource } from '../models/pipeline.model';
+import { PlumbType } from '../models/plumb.model';
+declare const jsPlumb: PlumbType;
 
 @Component({
   selector: 'app-plumb-editor',
@@ -12,28 +15,26 @@ declare const jsPlumb: any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlumbEditorComponent implements OnInit, AfterViewInit {
-  @Input() queryDef: any;
-  @Output() save: EventEmitter<any> = new EventEmitter();
-  @Output() editDataSourcePart: EventEmitter<any> = new EventEmitter();
-  @Output() instanceChanged: EventEmitter<any> = new EventEmitter();
-  @ViewChildren('dataSourceElement') dataSourceElements: QueryList<ElementRef>;
-  instance: any;
+  @Input() queryDef: QueryDef;
+  @Output() save = new EventEmitter<null>();
+  @Output() editDataSourcePart = new EventEmitter<PipelineDataSource>();
+  @Output() instanceChanged = new EventEmitter<PlumbType>();
+  @ViewChildren('dataSourceElement') dataSourceElements: QueryList<ElementRef<HTMLDivElement>>;
 
-  constructor(
-    private queryDefinitionService: QueryDefinitionService,
-    private plumbGuiService: PlumbGuiService,
-  ) { }
+  instance: PlumbType;
+
+  constructor(private queryDefinitionService: QueryDefinitionService, private plumbGuiService: PlumbGuiService) { }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    // executed first because <app-plumb-editor> has *ngIf on it
+    // executed first because <app-plumb-editor> has *ngIf on it and *ngFor for dataSourceElements won't have changes at first init
     jsPlumb.ready(() => { this.jsPlumbReady(); });
 
     // https://stackoverflow.com/questions/37087864/execute-a-function-when-ngfor-finished-in-angular-2/37088348#37088348
     // executed when queryDef changes value
-    this.dataSourceElements.changes.subscribe(t => {
+    this.dataSourceElements.changes.subscribe((elements: QueryList<ElementRef<HTMLDivElement>>) => {
       this.instance.reset();
       this.plumbGuiService.connectionsInitialized = false;
       jsPlumb.ready(() => { this.jsPlumbReady(); });
@@ -53,37 +54,41 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit {
     this.plumbGuiService.connectionsInitialized = true;
   }
 
-  makeDataSource(dataSource: any, element: HTMLElement) {
+  makeDataSource(dataSource: PipelineDataSource, element: HTMLElement) {
     this.plumbGuiService.makeSource(
-      dataSource, element, (draggedWrapper: any) => { this.dataSourceDrag(draggedWrapper); }, this.queryDef, this.instance
+      dataSource,
+      element,
+      (draggedWrapper: PlumbType) => { this.dataSourceDrag(draggedWrapper); },
+      this.queryDef,
+      this.instance,
     );
-    this.queryDef.dsCount++; // unclear what this is for, probably to name/number new sources
+    this.queryDef.dsCount++;
   }
 
-  dataSourceDrag(draggedWrapper: any) {
+  dataSourceDrag(draggedWrapper: PlumbType) {
     const offset = this.getElementOffset(draggedWrapper.el);
     const dataSource = this.plumbGuiService.findDataSourceOfElement(draggedWrapper.el, this.queryDef);
     dataSource.VisualDesignerData.Top = Math.round(offset.top);
     dataSource.VisualDesignerData.Left = Math.round(offset.left);
   }
 
-  configureDataSource(dataSource: any) {
+  configureDataSource(dataSource: PipelineDataSource) {
     if (dataSource.ReadOnly) { return; }
 
     // Ensure dataSource Entity is saved
-    if (!this.queryDefinitionService.dataSourceIsPersisted(dataSource)) {
+    if (dataSource.EntityGuid.includes('unsaved')) {
       this.save.emit();
     } else {
       this.editDataSourcePart.emit(dataSource);
     }
   }
 
-  typeInfo(dataSource: any) {
+  typeInfo(dataSource: PipelineDataSource) {
     const typeInfo = this.queryDefinitionService.dsTypeInfo(dataSource, this.queryDef);
     return typeInfo;
   }
 
-  typeNameFilter(input: any, format: any) {
+  typeNameFilter(input: string, format: string) {
     const filtered = this.queryDefinitionService.typeNameFilter(input, format);
     return filtered;
   }
@@ -91,32 +96,31 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit {
   remove(index: number) {
     const dataSource = this.queryDef.data.DataSources[index];
     if (!confirm(`Delete DataSource ${dataSource.Name || '(unnamed)'}?`)) { return; }
+
     const elementId = dataSrcIdPrefix + dataSource.EntityGuid;
     this.instance.selectEndpoints({ element: elementId }).remove();
     this.queryDef.data.DataSources.splice(index, 1);
   }
 
-  editName(dataSource: any) {
+  editName(dataSource: PipelineDataSource) {
     if (dataSource.ReadOnly) { return; }
 
-    const newName = prompt('Rename DataSource', dataSource.Name);
-    if (newName && newName.trim()) {
-      dataSource.Name = newName.trim();
+    const newName = prompt('Rename DataSource', dataSource.Name)?.trim();
+    if (newName != null && newName !== '') {
+      dataSource.Name = newName;
     }
   }
 
-  // Edit Description of a DataSource
-  editDescription(dataSource: any) {
+  editDescription(dataSource: PipelineDataSource) {
     if (dataSource.ReadOnly) { return; }
 
-    const newDescription = prompt('Edit Description', dataSource.Description);
-    if (newDescription && newDescription.trim()) {
-      dataSource.Description = newDescription.trim();
+    const newDescription = prompt('Edit Description', dataSource.Description)?.trim();
+    if (newDescription != null) {
+      dataSource.Description = newDescription;
     }
   }
 
-  // helper method to find the offset
-  getElementOffset(element: any) {
+  private getElementOffset(element: HTMLDivElement) {
     const container = document.getElementById('pipelineContainer') as HTMLDivElement;
     const containerBox = container.getBoundingClientRect();
     const box = element.getBoundingClientRect();

@@ -5,9 +5,15 @@
       <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
         Save and run
       </button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
-      <button mat-raised-button class="action" (click)="doRepaint()">Repaint</button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">
+        Run
+      </button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">
+        Save
+      </button>
+      <button mat-raised-button class="action" (click)="doRepaint()">
+        Repaint
+      </button>
     </div>
 
     <div class="parameters">
@@ -22,15 +28,19 @@
           </button>
         </div>
       </div>
-      <ul class="values">
-        <li *ngFor="let param of queryDef.data.Pipeline.Params?.split('\n')">{{ param }}</li>
+      <ul class="values" *ngIf="queryDef.data.Pipeline.Params?.length">
+        <li *ngFor="let param of queryDef.data.Pipeline.Params?.split('\n')">
+          {{ param }}
+        </li>
       </ul>
     </div>
 
     <div class="parameters">
       <div class="title">Test Parameters</div>
-      <ul class="values">
-        <li *ngFor="let param of queryDef.data.Pipeline.TestParameters?.split('\n')">{{ param }}</li>
+      <ul class="values" *ngIf="queryDef.data.Pipeline.TestParameters?.length">
+        <li *ngFor="let param of queryDef.data.Pipeline.TestParameters?.split('\n')">
+          {{ param }}
+        </li>
       </ul>
     </div>
 
@@ -40,7 +50,9 @@
         <mat-icon style="color: red">warning</mat-icon>
       </div>
       <ol class="values">
-        <li *ngFor="let warn of warnings">{{ warn }}</li>
+        <li *ngFor="let warning of warnings">
+          {{ warning }}
+        </li>
       </ol>
     </div>
 

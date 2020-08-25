@@ -6,7 +6,7 @@
       'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
     }">
 
-    <div class="configure" (click)="configureDataSource(dataSource)" title="configure this DataSource"
+    <div class="configure" (click)="configureDataSource(dataSource)" title="Configure DataSource"
       *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).config">
       <mat-icon class="eav-icon-settings">settings</mat-icon>
     </div>
@@ -15,13 +15,13 @@
       {{ typeInfo(dataSource).icon }}
     </mat-icon>
 
-    <div class="name noselect" title="click to edit name" (click)="editName(dataSource)">
+    <div class="name noselect" title="Click to edit Name" (click)="editName(dataSource)">
       <span>{{ dataSource.Name || '(no name)' }}</span>
       <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
     </div>
     <br />
 
-    <div class="description noselect" title="click to edit description" (click)="editDescription(dataSource)">
+    <div class="description noselect" title="Click to edit Description" (click)="editDescription(dataSource)">
       <span>{{ dataSource.Description }}</span>
       <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
     </div>
@@ -31,16 +31,16 @@
       Type: {{ typeNameFilter(dataSource.PartAssemblyAndType, 'className') }}
     </div>
 
-    <div class="add-endpoint" title="drag a new Out-Connection from here"
+    <div class="add-endpoint" title="Drag a new Out-Connection"
       *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).dynamicOut">
       <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
     </div>
 
-    <mat-icon class="delete eav-icon-cancel" title="delete this" (click)="remove(index)" *ngIf="!dataSource.ReadOnly">
+    <mat-icon class="delete eav-icon-cancel" title="Delete" (click)="remove(index)" *ngIf="!dataSource.ReadOnly">
       delete
     </mat-icon>
 
-    <a class="help eav-icon-help-circled" title="help for this data source" href="{{ typeInfo(dataSource).helpLink }}"
+    <a class="help eav-icon-help-circled" title="Help for this DataSource" [href]="typeInfo(dataSource).helpLink"
       target="_blank" *ngIf="typeInfo(dataSource).helpLink">
       <mat-icon>help_outline</mat-icon>
     </a>

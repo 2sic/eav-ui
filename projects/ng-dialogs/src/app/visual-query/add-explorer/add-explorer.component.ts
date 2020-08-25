@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
@@ -8,18 +8,20 @@ import { SortedDataSources } from '../models/data-sources.model';
 @Component({
   selector: 'app-add-explorer',
   templateUrl: './add-explorer.component.html',
-  styleUrls: ['./add-explorer.component.scss']
+  styleUrls: ['./add-explorer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddExplorerComponent implements OnInit, OnChanges {
   @Input() dataSources: DataSource[];
-  @Output() addSelectedDataSource: EventEmitter<DataSource> = new EventEmitter();
+  @Output() addSelectedDataSource = new EventEmitter<DataSource>();
+
   difficulty = {
     default: 100,
     advanced: 200,
   };
   activeDiff = this.difficulty.default;
   sorted: SortedDataSources;
-  toggledItems: any[] = [];
+  toggledItems: string[] = [];
 
   constructor() { }
 

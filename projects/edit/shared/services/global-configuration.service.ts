@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import * as fromStore from '../store';
 import * as GlobalConfigurationActions from '../store/actions/global-configuration.actions';
@@ -18,7 +19,7 @@ export class GlobalConfigurationService {
   public toggleDebugEnabled() {
     this.store.dispatch(GlobalConfigurationActions.toggleDebugEnabled());
     let debugEnabled: boolean;
-    this.store.select(fromStore.selectDebugEnabled).subscribe(enabled => {
+    this.store.select(fromStore.selectDebugEnabled).pipe(take(1)).subscribe(enabled => {
       debugEnabled = enabled;
     });
     if (debugEnabled) {

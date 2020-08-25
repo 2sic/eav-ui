@@ -1,10 +1,10 @@
 <div class="editor-root">
   <div class="editor-side-toolbar">
-    <div class="button" [ngClass]="{'active': activeExplorer === explorer.run}" matTooltip="Run"
+    <div class="button" matTooltip="Run" [ngClass]="{ 'active': activeExplorer === explorer.run }"
       (click)="toggleExplorer(explorer.run)">
       <mat-icon>play_arrow</mat-icon>
     </div>
-    <div class="button" [ngClass]="{'active': activeExplorer === explorer.add}" matTooltip="Add"
+    <div class="button" matTooltip="Add" [ngClass]="{ 'active': activeExplorer === explorer.add }"
       (click)="toggleExplorer(explorer.add)">
       <mat-icon>add</mat-icon>
     </div>
@@ -24,5 +24,6 @@
   </app-add-explorer>
 
   <app-plumb-editor *ngIf="queryDef" [queryDef]="queryDef" (save)="savePipeline()"
-    (editDataSourcePart)="editDataSourcePart($event)" (instanceChanged)="instanceChanged($event)"></app-plumb-editor>
+    (editDataSourcePart)="editDataSourcePart($event)" (instanceChanged)="instanceChanged($event)">
+  </app-plumb-editor>
 </div>
