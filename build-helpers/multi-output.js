@@ -14,19 +14,21 @@ console.log('Will build to these targets: \n'
     + '* 2sxc: ' + devAssets + '\n\n'
 );
 
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 function createCopyAfterBuildPlugin(source, target, target2) {
-  const WebpackShellPlugin = require('webpack-shell-plugin');
   const commands = [
       'echo Webpack Compile done - will now copy from project assets to DNN',
       // special note: folders in robocopy need to have a space after the name before closing " - special bug
       'robocopy /mir /nfl /ndl /njs "' + source + ' " "' + target + ' " & exit 0'
   ];
   if(target2) commands.push('robocopy /mir /nfl /ndl /njs "' + source + ' " "' + target2 + ' " & exit 0');
-  return new WebpackShellPlugin({
-      onBuildEnd: commands,
+  return new WebpackShellPluginNext({
+      onBuildEnd: {
+        scripts: commands,
+      },
       dev: false  // run on every build end, not just once
-  })
+  });
 }
 
 module.exports.createCopyAfterBuildPlugin = createCopyAfterBuildPlugin;

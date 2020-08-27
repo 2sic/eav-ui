@@ -6,9 +6,9 @@ const setExternalSourceMaps = require('../../build-helpers/external-source-maps-
 
 // 2020-08-27 2dm changed to have multi-targets
 const multiOutput = require('../../build-helpers/multi-output');
-const distPath = path.resolve(__dirname, "../../dist/system/field-string-wysiwyg");
-const targetDnn = path.resolve(multiOutput.DnnTargetFolder, './system/field-string-wysiwyg');
-const targetAssets = path.resolve(multiOutput.AssetsTarget, './system/field-string-wysiwyg');
+const distWysiwyg = path.resolve(__dirname, "../../dist/system/field-string-wysiwyg");
+const targetDnnWysiwyg = path.resolve(multiOutput.DnnTargetFolder, './system/field-string-wysiwyg');
+const targetAssetsWysiwyg = path.resolve(multiOutput.AssetsTarget, './system/field-string-wysiwyg');
 
 /** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
 let isProduction = false;
@@ -41,7 +41,7 @@ const configuration = {
         },
       ],
     }),
-    multiOutput.createCopyAfterBuildPlugin(distPath, targetDnn, targetAssets),
+    multiOutput.createCopyAfterBuildPlugin(distWysiwyg, targetDnnWysiwyg, targetAssetsWysiwyg),
   ],
   devtool: 'source-map',
   module: {
@@ -85,7 +85,7 @@ const configuration = {
   },
   output: {
     filename: 'index.js',
-    path: distPath, // path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-string-wysiwyg'),
+    path: distWysiwyg, // path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-string-wysiwyg'),
   },
 };
 

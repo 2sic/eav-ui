@@ -36,4 +36,7 @@ if (hasPart('gps')) configs.push(require('./projects/field-custom-gps/webpack.co
 
 console.log('Will run ' + configs.length + ' parts');
 
+// debug multi-build
+// console.log('Testing configs on the copy-bits', configs[0].plugins[3]); //, configs[1].plugins[2]);
+
 module.exports = configs;

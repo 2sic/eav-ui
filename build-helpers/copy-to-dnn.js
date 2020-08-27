@@ -22,11 +22,11 @@ console.log('Will build to these targets: \n'
 
 let sourcePath = 'dist';
 let sourcePathMain = 'dist/ng-dialogs';
-let outputPath = targetDnn + 'dist\\ng-edit' ; //'../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+let outputPath = targetDnn + 'dist\\ng-edit' ;
 let outputAssets = targetAssets + 'dist\\ng-edit';
 
 const excludeDirs = [
-  'out-tsc',
+  'out-tsc', 'system',
 ];
 
 let watchEnabled = false;
