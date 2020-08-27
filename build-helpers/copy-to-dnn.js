@@ -5,9 +5,26 @@ const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
 
+// 2020-08-27 2dm new copy to multiple targets specified in the environment variables
+var dnnRoot = process.env.Dev2sxcDnnRoot;
+if(!dnnRoot) throw "Problem: environment variable 'Dev2sxcDnnRoot' doesn't exist. It should point to the web folder of your dev DNN";
+var targetDnn = (dnnRoot + "DesktopModules\\ToSIC_SexyContent\\").replace('//', '/').replace('\\\\', '\\');
+
+var devAssets = process.env.Dev2sxcAssets;
+if(!devAssets) throw "Problem: environment variable 'Dev2sxcAssets' doesn't exist. It should point to the assets source folder in your 2sxc environment";
+const targetAssets = (devAssets + '\\').replace('//', '/').replace('\\\\', '\\')
+
+console.log('Will build to these targets: \n'
+    + "* Dnn:  " + targetDnn + "\n"
+    + '* 2sxc: ' + devAssets + '\n\n'
+);
+
+
 let sourcePath = 'dist';
 let sourcePathMain = 'dist/ng-dialogs';
-let outputPath = '../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+let outputPath = targetDnn + 'dist\\ng-edit' ; //'../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/dist/ng-edit';
+let outputAssets = targetAssets + 'dist\\ng-edit';
+
 const excludeDirs = [
   'out-tsc',
 ];
@@ -32,10 +49,15 @@ const calculatePaths = (path) => {
     ? `${outputPath}${src.replace(sourcePathMain, '')}`
     : `${outputPath}${src.replace(sourcePath, '')}`;
 
+  const destAssets = src.startsWith(sourcePathMain)
+    ? `${outputAssets}${src.replace(sourcePathMain, '')}`
+    : `${outputAssets}${src.replace(sourcePath, '')}`;
+
   return {
     src: src,
     file: file,
     dest: dest,
+    destAssets: destAssets,
   }
 }
 
@@ -74,6 +96,8 @@ watcher
     if (isExcluded) return;
     fs.ensureDirSync(paths.dest);
     fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
+    fs.ensureDirSync(paths.destAssets);
+    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.destAssets}/${paths.file}`);
   })
   .on('change', path => {
     const paths = calculatePaths(path);
@@ -82,6 +106,8 @@ watcher
     if (isExcluded) return;
     fs.ensureDirSync(paths.dest);
     fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
+    fs.ensureDirSync(paths.destAssets);
+    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.destAssets}/${paths.file}`);
   })
   .on('unlink', path => {
     const paths = calculatePaths(path);
@@ -89,6 +115,7 @@ watcher
     // console.log(`Delete ${paths.src}/${paths.file}\nfrom ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
     if (isExcluded) return;
     fs.removeSync(`${paths.dest}/${paths.file}`);
+    fs.removeSync(`${paths.destAssets}/${paths.file}`);
   })
   .on('error', error => {
     console.log(chalkError(`Watcher error: ${error}`));

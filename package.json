@@ -91,6 +91,7 @@
     "typescript": "^3.8.3",
     "url-loader": "^4.1.0",
     "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-shell-plugin": "^0.5.0"
   }
 }
