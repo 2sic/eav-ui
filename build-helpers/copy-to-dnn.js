@@ -76,9 +76,11 @@ const checkIfExcluded = (paths) => {
 
 console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
 
-// Clear destination folder
+// Clear destination folders
 fs.removeSync(outputPath);
 fs.ensureDirSync(outputPath);
+fs.removeSync(outputAssets);
+fs.ensureDirSync(outputAssets);
 
 // Initialize watcher
 const watcher = chokidar.watch(sourcePath, {
