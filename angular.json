@@ -49,7 +49,7 @@
               "optimization": true,
               "outputHashing": "bundles",
               "sourceMap": true,
-              "extractCss": false,
+              "extractCss": true,
               "namedChunks": true,
               "aot": true,
               "extractLicenses": true,

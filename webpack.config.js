@@ -16,7 +16,7 @@ function findParts() {
   const partsEq = args.find(a => a.startsWith(paramParts) + "=");
   if (partsEq) return partsEq.substring(paramParts.length + 1).replace("'", '');
 
-  throw "--parts parameter missing, please specify something like --parts all";
+  throw "--parts parameter missing, please specify something like --parts=all";
 }
 
 const partsTxt = findParts();
