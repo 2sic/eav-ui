@@ -38,8 +38,4 @@ export class RunExplorerComponent implements OnInit {
     this.visualQueryService.saveAndRun(save, run);
   }
 
-  repaint() {
-    this.visualQueryService.repaint();
-  }
-
 }

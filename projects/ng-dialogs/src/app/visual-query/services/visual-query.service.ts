@@ -23,7 +23,6 @@ import { PipelineResult } from '../models/pipeline-result.model';
 export class VisualQueryService implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
-  forceRepaint$ = new Subject<void>();
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
 
   private pipelineId: number;
@@ -49,7 +48,6 @@ export class VisualQueryService implements OnDestroy {
   ngOnDestroy() {
     this.pipelineModel$.complete();
     this.dataSources$.complete();
-    this.forceRepaint$.complete();
     this.putEntityCountOnConnections$.complete();
     this.subscription.unsubscribe();
   }
@@ -81,10 +79,6 @@ export class VisualQueryService implements OnDestroy {
     } else if (run) {
       this.runPipeline();
     }
-  }
-
-  repaint() {
-    this.forceRepaint$.next();
   }
 
   addDataSource(dataSource: DataSource) {

@@ -45,12 +45,6 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.subscription.add(
-      this.visualQueryService.forceRepaint$.subscribe(() => {
-        this.plumber.repaint();
-      })
-    );
-
-    this.subscription.add(
       this.visualQueryService.putEntityCountOnConnections$.subscribe(result => {
         this.plumber.putEntityCountOnConnections(result);
       })

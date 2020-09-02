@@ -90,10 +90,6 @@ export class Plumber {
     });
   }
 
-  repaint() {
-    this.instance.repaintEverything();
-  }
-
   private nextLinePaintStyle(uuid: string) {
     return (
       this.uuidColorMap[uuid] ||
