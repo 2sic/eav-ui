@@ -8,8 +8,9 @@
         'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
       }">
 
-      <div class="configure" (click)="configureDataSource(dataSource)" title="Configure data source"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].config">
+      <div class="configure" title="Configure data source" appMousedownStopPropagation
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].config"
+        (click)="configureDataSource(dataSource)">
         <mat-icon class="eav-icon-settings">settings</mat-icon>
       </div>
 
@@ -17,13 +18,14 @@
         {{ templateModel.typeInfos[dataSource.EntityGuid].icon }}
       </mat-icon>
 
-      <div class="name noselect" title="Click to edit name" (click)="templateModel.allowEdit && editName(dataSource)">
+      <div class="name noselect" title="Click to edit name" appMousedownStopPropagation
+        (click)="templateModel.allowEdit && editName(dataSource)">
         <span>{{ dataSource.Name || '(no name)' }}</span>
         <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
       </div>
       <br />
 
-      <div class="description noselect" title="Click to edit description"
+      <div class="description noselect" title="Click to edit description" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
         <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
@@ -39,13 +41,13 @@
         <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
       </div>
 
-      <mat-icon class="delete eav-icon-cancel" title="Delete" (click)="remove(dataSource)"
-        *ngIf="templateModel.allowEdit">
+      <mat-icon class="delete eav-icon-cancel" title="Delete" appMousedownStopPropagation
+        *ngIf="templateModel.allowEdit" (click)="remove(dataSource)">
         delete
       </mat-icon>
 
       <a class="help eav-icon-help-circled" title="Help for this data source"
-        [href]="templateModel.typeInfos[dataSource.EntityGuid].helpLink" target="_blank"
+        [href]="templateModel.typeInfos[dataSource.EntityGuid].helpLink" target="_blank" appMousedownStopPropagation
         *ngIf="templateModel.typeInfos[dataSource.EntityGuid].helpLink">
         <mat-icon>help_outline</mat-icon>
       </a>

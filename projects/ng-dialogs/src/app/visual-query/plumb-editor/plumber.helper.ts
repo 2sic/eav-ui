@@ -24,6 +24,7 @@ export class Plumber {
   ];
   private maxCols = this.lineColors.length - 1;
   private uuidColorMap: { [key: string]: any } = {};
+  private bulkDelete = false;
 
   constructor(
     private jsPlumbRoot: HTMLElement,
@@ -35,9 +36,14 @@ export class Plumber {
     private plumbInits: number,
   ) {
     this.instance = jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
-    this.initDomDataSources();
-    this.initWirings();
-    this.bindEvents();
+    this.instance.batch(() => {
+      this.initDomDataSources();
+      this.initWirings();
+      this.bindEvents();
+    });
+    // spm NOTE: repaint after initial paint fixes:
+    // Error: <svg> attribute width: Expected length, "-Infinity".
+    this.instance.repaintEverything();
   }
 
   destroy() {
@@ -46,8 +52,11 @@ export class Plumber {
 
   removeEndpointsOnDataSource(pipelineDataSourceGuid: string) {
     const elementId = dataSrcIdPrefix + pipelineDataSourceGuid;
-    const endpoints = this.instance.selectEndpoints({ element: elementId });
-    endpoints.delete();
+    this.bulkDelete = true;
+    this.instance.batch(() => {
+      this.instance.selectEndpoints({ element: elementId }).delete();
+    });
+    this.bulkDelete = false;
   }
 
   getAllConnections() {
@@ -119,93 +128,87 @@ export class Plumber {
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
       if (!dataSource) { continue; }
 
-      this.instance.batch(() => {
-        if (this.pipelineModel.Pipeline.AllowEdit) {
-          // WARNING! Must happen before instance.makeSource()
-          this.instance.draggable(domDataSource, {
-            grid: [20, 20], stop: (event: PlumbType) => {
-              const element: HTMLElement = event.el;
-              const pipelineDataSourceGuid: string = element.id.replace(dataSrcIdPrefix, '');
-              const position: VisualDesignerData = {
-                Top: event.finalPos[1],
-                Left: event.finalPos[0],
-              };
-              this.onDragend(pipelineDataSourceGuid, position);
-            }
-          });
-        }
-
-        // Add Out-Endpoints from Definition
-        dataSource.Out?.forEach(name => {
-          this.addEndpoint(domDataSource, name, false, pipelineDataSource);
+      if (this.pipelineModel.Pipeline.AllowEdit) {
+        // WARNING! Must happen before instance.makeSource()
+        this.instance.draggable(domDataSource, {
+          grid: [20, 20], stop: (event: PlumbType) => {
+            const element: HTMLElement = event.el;
+            const pipelineDataSourceGuid: string = element.id.replace(dataSrcIdPrefix, '');
+            const position: VisualDesignerData = {
+              Top: event.finalPos[1],
+              Left: event.finalPos[0],
+            };
+            setTimeout(() => { this.onDragend(pipelineDataSourceGuid, position); });
+          }
         });
+      }
 
-        // Add Out-Endpoints from Definition
-        dataSource.In?.forEach(name => {
-          this.addEndpoint(domDataSource, name, true, pipelineDataSource);
-        });
-
-        // Make DataSource a Target for new Endpoints (if .In is an Array)
-        if (dataSource.In) {
-          const targetEndpointUnlimited = this.buildTargetEndpoint();
-          targetEndpointUnlimited.maxConnections = -1;
-          this.instance.makeTarget(domDataSource, targetEndpointUnlimited);
-        }
-
-        if (dataSource.DynamicOut) {
-          this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint .new-connection' });
-        }
+      // Add Out-Endpoints from Definition
+      dataSource.Out?.forEach(name => {
+        this.addEndpoint(domDataSource, name, false, pipelineDataSource);
       });
+
+      // Add Out-Endpoints from Definition
+      dataSource.In?.forEach(name => {
+        this.addEndpoint(domDataSource, name, true, pipelineDataSource);
+      });
+
+      // Make DataSource a Target for new Endpoints (if .In is an Array)
+      if (dataSource.In) {
+        const targetEndpointUnlimited = this.buildTargetEndpoint();
+        targetEndpointUnlimited.maxConnections = -1;
+        this.instance.makeTarget(domDataSource, targetEndpointUnlimited);
+      }
+
+      if (dataSource.DynamicOut) {
+        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint .new-connection' });
+      }
     }
   }
 
   /** Create wires */
   private initWirings() {
-    this.instance.batch(() => {
-      this.pipelineModel.Pipeline.StreamWiring?.forEach(wire => {
-        // read connections from Pipeline
-        const sourceElementId = dataSrcIdPrefix + wire.From;
-        const fromUuid = sourceElementId + '_out_' + wire.Out;
-        const targetElementId = dataSrcIdPrefix + wire.To;
-        const toUuid = targetElementId + '_in_' + wire.In;
+    this.pipelineModel.Pipeline.StreamWiring?.forEach(wire => {
+      // read connections from Pipeline
+      const sourceElementId = dataSrcIdPrefix + wire.From;
+      const fromUuid = sourceElementId + '_out_' + wire.Out;
+      const targetElementId = dataSrcIdPrefix + wire.To;
+      const toUuid = targetElementId + '_in_' + wire.In;
 
-        // Ensure In-Endpoint exist
-        if (!this.instance.getEndpoint(fromUuid)) {
-          const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + sourceElementId);
-          const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-          const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-          this.addEndpoint(domDataSource, wire.Out, false, pipelineDataSource);
-        }
+      // Ensure In-Endpoint exist
+      if (!this.instance.getEndpoint(fromUuid)) {
+        const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + sourceElementId);
+        const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
+        const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
+        this.addEndpoint(domDataSource, wire.Out, false, pipelineDataSource);
+      }
 
-        // Ensure Out-Endpoint exist
-        if (!this.instance.getEndpoint(toUuid)) {
-          const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + targetElementId);
-          const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
-          const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
-          this.addEndpoint(domDataSource, wire.In, true, pipelineDataSource);
-        }
+      // Ensure Out-Endpoint exist
+      if (!this.instance.getEndpoint(toUuid)) {
+        const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + targetElementId);
+        const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
+        const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
+        this.addEndpoint(domDataSource, wire.In, true, pipelineDataSource);
+      }
 
-        try {
-          this.instance.connect({
-            uuids: [fromUuid, toUuid],
-            paintStyle: this.nextLinePaintStyle(fromUuid),
-          });
-        } catch (e) {
-          console.error({ message: 'Connection failed', from: fromUuid, to: toUuid });
-        }
-      });
+      try {
+        this.instance.connect({
+          uuids: [fromUuid, toUuid],
+          paintStyle: this.nextLinePaintStyle(fromUuid),
+        });
+      } catch (e) {
+        console.error({ message: 'Connection failed', from: fromUuid, to: toUuid });
+      }
     });
   }
 
   private addEndpoint(domDataSource: HTMLElement, name: string, isIn: boolean, pipelineDataSource: PipelineDataSource) {
     const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + name;
+    const model = isIn ? this.buildTargetEndpoint() : this.buildSourceEndpoint();
     // Endpoints on Out-DataSource must be always enabled
     const params = { uuid, enabled: this.pipelineModel.Pipeline.AllowEdit || pipelineDataSource.EntityGuid === 'Out' };
-    const endPoint: PlumbType = this.instance.addEndpoint(
-      domDataSource,
-      (isIn ? this.buildTargetEndpoint() : this.buildSourceEndpoint()),
-      params,
-    );
+
+    const endPoint: PlumbType = this.instance.addEndpoint(domDataSource, model, params);
     endPoint.getOverlay('endpointLabel').setLabel(name);
   }
 
@@ -247,7 +250,7 @@ export class Plumber {
             dblclick: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
 
-              // spm 2020.09.01. workaround for multiple dblClick listeners
+              // spm NOTE: workaround for multiple dblclick listeners
               if (labelOverlay.dblClickCounter == null || labelOverlay.dblClickCounter >= this.plumbInits) {
                 labelOverlay.dblClickCounter = 1;
               } else {
@@ -258,7 +261,7 @@ export class Plumber {
               const newLabel = prompt('Rename stream', labelOverlay.label);
               if (!newLabel) { return; }
               labelOverlay.setLabel(newLabel);
-              this.onConnectionsChanged();
+              setTimeout(() => { this.onConnectionsChanged(); });
             }
           }
         }
@@ -271,6 +274,7 @@ export class Plumber {
     this.instance.bind('connectionDetached', (info: PlumbType) => {
       // spm TODO: custom endpoints were removed only on Out DataSource. Bug?
       // if (info.targetId !== dataSrcIdPrefix + 'Out') { return; }
+      if (this.bulkDelete) { return; }
       const domDataSource: HTMLElement = info.target;
       const pipelineDataSource = this.pipelineModel.DataSources.find(
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
@@ -279,13 +283,11 @@ export class Plumber {
       const fixedEndpoints = dataSource.In;
       const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
       if (fixedEndpoints.includes(label)) {
-        this.onConnectionsChanged();
+        setTimeout(() => { this.onConnectionsChanged(); });
         return;
       }
-      setTimeout(() => {
-        this.instance.deleteEndpoint(info.targetEndpoint);
-        this.onConnectionsChanged();
-      });
+      this.instance.deleteEndpoint(info.targetEndpoint);
+      setTimeout(() => { this.onConnectionsChanged(); });
     });
 
     this.instance.bind('connection', (info: PlumbType) => {
@@ -301,7 +303,7 @@ export class Plumber {
       if (targetEndpointHasSameLabel) {
         endpointLabel.setLabel(`PleaseRename${Math.floor(Math.random() * 99999)}`);
       }
-      this.onConnectionsChanged();
+      setTimeout(() => { this.onConnectionsChanged(); });
     });
   }
 

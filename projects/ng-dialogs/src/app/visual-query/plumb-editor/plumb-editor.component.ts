@@ -107,7 +107,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
-    setTimeout(() => { this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position); });
+    this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
   configureDataSource(dataSource: PipelineDataSource) {
