@@ -14,7 +14,6 @@ import { QueryDefinitionService } from './services/query-definition.service';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { AddExplorerComponent } from './add-explorer/add-explorer.component';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
-import { PlumbGuiService } from './services/plumb-gui.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -49,7 +48,6 @@ import { QueryResultComponent } from './query-result/query-result.component';
   providers: [
     Context,
     QueryDefinitionService,
-    PlumbGuiService,
     MetadataService,
     ContentTypesService,
   ]

@@ -1,48 +1,54 @@
-<div id="pipelineContainer" *ngIf="queryDef.data.DataSources">
-  <div #dataSourceElement *ngFor="let dataSource of queryDef.data.DataSources; index as index" datasource
-    [attr.guid]="dataSource.EntityGuid" id="dataSource_{{ dataSource.EntityGuid }}" class="dataSource" [ngStyle]="{
-      'top': dataSource.VisualDesignerData.Top + 'px',
-      'left': dataSource.VisualDesignerData.Left + 'px',
-      'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
-    }">
+<div #domRoot id="pipeline-root" *ngIf="(templateModel$ | async) as templateModel">
+  <!-- do not use trackBy, jsPlumb drag stops working properly after delete -->
+  <ng-container *ngIf="!hardReset">
+    <div #domDataSource *ngFor="let dataSource of templateModel.pipelineDataSources"
+      [id]="dataSrcIdPrefix + dataSource.EntityGuid" class="dataSource" [ngStyle]="{
+        'top': dataSource.VisualDesignerData.Top + 'px',
+        'left': dataSource.VisualDesignerData.Left + 'px',
+        'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
+      }">
 
-    <div class="configure" (click)="configureDataSource(dataSource)" title="Configure DataSource"
-      *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).config">
-      <mat-icon class="eav-icon-settings">settings</mat-icon>
+      <div class="configure" (click)="configureDataSource(dataSource)" title="Configure data source"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].config">
+        <mat-icon class="eav-icon-settings">settings</mat-icon>
+      </div>
+
+      <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].notes">
+        {{ templateModel.typeInfos[dataSource.EntityGuid].icon }}
+      </mat-icon>
+
+      <div class="name noselect" title="Click to edit name" (click)="templateModel.allowEdit && editName(dataSource)">
+        <span>{{ dataSource.Name || '(no name)' }}</span>
+        <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
+      </div>
+      <br />
+
+      <div class="description noselect" title="Click to edit description"
+        (click)="templateModel.allowEdit && editDescription(dataSource)">
+        <span>{{ dataSource.Description }}</span>
+        <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
+      </div>
+      <br />
+
+      <div class="typename" [title]="dataSource.PartAssemblyAndType">
+        Type: {{ typeNameFilter(dataSource.PartAssemblyAndType, 'className') }}
+      </div>
+
+      <div class="add-endpoint" title="Drag a new Out-Connection"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].dynamicOut">
+        <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
+      </div>
+
+      <mat-icon class="delete eav-icon-cancel" title="Delete" (click)="remove(dataSource)"
+        *ngIf="templateModel.allowEdit">
+        delete
+      </mat-icon>
+
+      <a class="help eav-icon-help-circled" title="Help for this data source"
+        [href]="templateModel.typeInfos[dataSource.EntityGuid].helpLink" target="_blank"
+        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].helpLink">
+        <mat-icon>help_outline</mat-icon>
+      </a>
     </div>
-
-    <mat-icon class="type-info" [title]="typeInfo(dataSource).notes">
-      {{ typeInfo(dataSource).icon }}
-    </mat-icon>
-
-    <div class="name noselect" title="Click to edit Name" (click)="editName(dataSource)">
-      <span>{{ dataSource.Name || '(no name)' }}</span>
-      <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
-    </div>
-    <br />
-
-    <div class="description noselect" title="Click to edit Description" (click)="editDescription(dataSource)">
-      <span>{{ dataSource.Description }}</span>
-      <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
-    </div>
-    <br />
-
-    <div class="typename" [title]="dataSource.PartAssemblyAndType">
-      Type: {{ typeNameFilter(dataSource.PartAssemblyAndType, 'className') }}
-    </div>
-
-    <div class="add-endpoint" title="Drag a new Out-Connection"
-      *ngIf="!dataSource.ReadOnly && typeInfo(dataSource).dynamicOut">
-      <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
-    </div>
-
-    <mat-icon class="delete eav-icon-cancel" title="Delete" (click)="remove(index)" *ngIf="!dataSource.ReadOnly">
-      delete
-    </mat-icon>
-
-    <a class="help eav-icon-help-circled" title="Help for this DataSource" [href]="typeInfo(dataSource).helpLink"
-      target="_blank" *ngIf="typeInfo(dataSource).helpLink">
-      <mat-icon>help_outline</mat-icon>
-    </a>
-  </div>
+  </ng-container>
 </div>

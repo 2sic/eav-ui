@@ -1,5 +1,3 @@
-import { DataSource } from './data-sources.model';
-
 export interface PipelineModel {
   DataSources: PipelineDataSource[];
   Pipeline: Pipeline;
@@ -12,12 +10,6 @@ export interface PipelineDataSource {
   Name: string;
   PartAssemblyAndType: string;
   VisualDesignerData: VisualDesignerData;
-  /** Added later */
-  ReadOnly?: boolean; // spm Readonly doesn't work with onPush change detection. Better move this to a separate variable
-  /** Added later */
-  Difficulty?: number;
-  /** Added later */
-  Definition?: () => DataSource;
 }
 
 export interface VisualDesignerData {

@@ -1,9 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Context } from '../../shared/services/context';
-import { SaveRun } from '../models/save-run.model';
 import { calculateWarnings } from './run-explorer.helpers';
-import { QueryDef } from '../models/query-def.model';
+import { VisualQueryService } from '../services/visual-query.service';
+import { PipelineModel } from '../models/pipeline.model';
 
 @Component({
   selector: 'app-run-explorer',
@@ -11,27 +13,21 @@ import { QueryDef } from '../models/query-def.model';
   styleUrls: ['./run-explorer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RunExplorerComponent implements OnInit, OnChanges {
-  @Input() queryDef: QueryDef;
-  @Output() editPipelineEntity = new EventEmitter<null>();
-  @Output() saveAndRun = new EventEmitter<SaveRun>();
-  @Output() repaint = new EventEmitter<null>();
+export class RunExplorerComponent implements OnInit {
+  pipelineModel$: Observable<PipelineModel>;
+  warnings$: Observable<string[]>;
 
-  warnings: string[] = [];
-
-  constructor(private context: Context) { }
+  constructor(private context: Context, private visualQueryService: VisualQueryService) { }
 
   ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.queryDef?.currentValue) {
-      this.warnings = calculateWarnings(this.queryDef.data, this.context);
-    }
+    this.pipelineModel$ = this.visualQueryService.pipelineModel$;
+    this.warnings$ = this.visualQueryService.pipelineModel$.pipe(
+      map(pipelineModel => calculateWarnings(pipelineModel, this.context)),
+    );
   }
 
   editPipeline() {
-    this.editPipelineEntity.emit();
+    this.visualQueryService.editPipelineEntity();
   }
 
   openParamsHelp() {
@@ -39,11 +35,11 @@ export class RunExplorerComponent implements OnInit, OnChanges {
   }
 
   saveAndRunQuery(save: boolean, run: boolean) {
-    this.saveAndRun.emit({ save, run });
+    this.visualQueryService.saveAndRun(save, run);
   }
 
-  doRepaint() {
-    this.repaint.emit();
+  repaint() {
+    this.visualQueryService.repaint();
   }
 
 }
