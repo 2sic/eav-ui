@@ -15,7 +15,7 @@ export class FeatureService extends EntityCollectionServiceBase<Feature> {
     this.addAllToCache(featureList);
   }
 
-  public isFeatureEnabled(guid: string): boolean {
+  public isFeatureEnabled(guid: string) {
     let isEnabled = false;
     this.entities$.pipe(take(1)).subscribe(features => {
       features.forEach(feature => {

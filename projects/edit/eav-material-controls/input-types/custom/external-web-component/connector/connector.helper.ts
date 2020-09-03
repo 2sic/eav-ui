@@ -8,7 +8,7 @@ import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operato
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../../shared/models/eav-configuration';
 import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
@@ -18,7 +18,7 @@ import { EditRoutingService } from '../../../../../shared/services/edit-routing.
 import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
 
 export class ConnectorHelper {
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
   private control: AbstractControl;
   private customEl: EavCustomInputField<any>;
   private value$ = new BehaviorSubject<any>(null);
@@ -39,7 +39,7 @@ export class ConnectorHelper {
     private dialog: MatDialog,
     private zone: NgZone,
   ) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = eavService.getEavConfig();
     this.control = this.group.controls[this.config.field.name];
 
     this.subscription.add(this.eavService.formValueChange$.pipe(

@@ -1,6 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 
-import { EavConfiguration } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
 import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
@@ -22,7 +22,7 @@ export class UrlHelper {
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
     const form = convertUrlToForm(route.snapshot.params.items);
     const editItems = JSON.stringify(form.items);
-    return new EavConfiguration(
+    return new EavConfig(
       context.zoneId.toString(),
       context.appId.toString(),
       context.appRoot,
@@ -86,7 +86,7 @@ export class UrlHelper {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  static getUrlPrefix(area: string, eavConfig: EavConfiguration) {
+  static getUrlPrefix(area: string, eavConfig: EavConfig) {
     let result = '';
 
     if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar

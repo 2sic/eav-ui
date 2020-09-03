@@ -20,7 +20,7 @@ import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
-import { EavConfiguration } from '../../shared/models/eav-configuration';
+import { EavConfig } from '../../shared/models/eav-configuration';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -47,7 +47,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   @ViewChild('slideable') slideableRef: ElementRef;
 
   private subscriptions: Subscription[] = [];
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
   private createMode = false;
   slide = 'initial';
   slideListenersAdded = false;
@@ -100,7 +100,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   ) {
     // Read configuration from queryString
     this.eavService.setEavConfiguration(this.route, this.context);
-    this.eavConfig = this.eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfig();
     this.translate.setDefaultLang('en');
     this.translate.use('en');
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs

@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { EavConfiguration } from '../edit/shared/models/eav-configuration';
+import { EavConfig } from '../edit/shared/models/eav-configuration';
 
 /**
  * Create a new FieldMaskService instance and access result with resolve
@@ -27,7 +27,7 @@ export class FieldMaskService {
     model: { [key: string]: AbstractControl; },
     private changeEvent: (newValue: string) => any,
     overloadPreCleanValues: (key: string, value: string) => string,
-    private eavConfig?: EavConfiguration,
+    private eavConfig?: EavConfig,
   ) {
     this.mask = mask;
     this.model = model;

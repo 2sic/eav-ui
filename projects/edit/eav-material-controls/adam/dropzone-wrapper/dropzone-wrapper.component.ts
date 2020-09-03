@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';
@@ -25,7 +25,7 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
 
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
   dropzoneDisabled$: Observable<boolean>;
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
 
   constructor(
     eavService: EavService,
@@ -34,7 +34,7 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService);
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {

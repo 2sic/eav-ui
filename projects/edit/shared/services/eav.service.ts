@@ -9,7 +9,7 @@ import { Item } from '../models/eav/item';
 import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
-import { EavConfiguration } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-configuration';
 import { FormValueSet, FormDisabledSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { SaveResult } from '../models/eav/save-result.model';
@@ -27,7 +27,7 @@ export class EavService implements OnDestroy {
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
   formDisabledChange$ = new Subject<FormDisabledSet>();
 
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
 
   constructor(private http: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
 
@@ -37,7 +37,7 @@ export class EavService implements OnDestroy {
     this.formDisabledChange$.complete();
   }
 
-  getEavConfiguration(): EavConfiguration {
+  getEavConfig() {
     return this.eavConfig;
   }
 

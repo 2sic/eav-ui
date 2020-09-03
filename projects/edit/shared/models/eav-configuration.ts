@@ -1,6 +1,6 @@
 import { VersioningOptions } from './eav/versioning-options';
 
-export class EavConfiguration {
+export class EavConfig {
   public systemroot: string;
 
   constructor(

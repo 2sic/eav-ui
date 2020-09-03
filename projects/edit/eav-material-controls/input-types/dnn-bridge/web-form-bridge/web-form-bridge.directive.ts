@@ -5,14 +5,14 @@ import { take } from 'rxjs/operators';
 
 import { DnnBridgeDialogData } from './web-form-bridge.models';
 import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../shared/models/eav-configuration';
 
 @Directive({ selector: '[appWebFormBridge]' })
 export class WebFormBridgeDirective implements OnInit {
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
 
   constructor(@Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData, eavService: EavService, private elementRef: ElementRef) {
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {

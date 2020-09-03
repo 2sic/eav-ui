@@ -1,8 +1,8 @@
 import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
 import { Action } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { filter, take, skip } from 'rxjs/operators';
-import { Actions, ofType } from '@ngrx/effects';
 
 import { ContentType, Item } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -12,7 +12,6 @@ import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { EavConfiguration } from '../../shared/models/eav-configuration';
 import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -38,7 +37,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
     return this.checkAreAllControlsDisabled();
   }
 
-  private eavConfig: EavConfiguration;
   private defaultLanguage$: Observable<string>;
   private defaultLanguage: string;
   private currentLanguage$: Observable<string>;
@@ -57,9 +55,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  ) { }
 
   ngOnInit() {
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.formId);

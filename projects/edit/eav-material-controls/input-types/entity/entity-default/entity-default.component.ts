@@ -14,7 +14,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../shared/models/eav-configuration';
 import { SelectedEntity } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
@@ -41,7 +41,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  eavConfig: EavConfiguration;
+  eavConfig: EavConfig;
   private separator: string;
 
   constructor(
@@ -53,7 +53,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     private snackBar: MatSnackBar,
   ) {
     super(eavService, validationMessagesService);
-    this.eavConfig = eavService.getEavConfiguration();
+    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {
