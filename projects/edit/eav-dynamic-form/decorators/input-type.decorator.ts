@@ -1,5 +1,3 @@
-
-// import 'zone.js';
 import 'reflect-metadata';
 
 export function InputType(annotation: any) {

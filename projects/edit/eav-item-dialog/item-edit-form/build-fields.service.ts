@@ -5,18 +5,18 @@ import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import isEmpty from 'lodash-es/isEmpty';
 
-import { AttributeDef } from '../../../shared/models/eav/attribute-def';
-import { EavAttributes, ContentType, Item, Language, InputType } from '../../../shared/models/eav';
-import { FieldSettings } from '../../../../edit-types';
-import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
-import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
-import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
-import { CalculatedInputType } from '../../../shared/models/input-field-models';
-import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
-import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
+import { AttributeDef } from '../../shared/models/eav/attribute-def';
+import { EavAttributes, ContentType, Item, Language, InputType } from '../../shared/models/eav';
+import { FieldSettings } from '../../../edit-types';
+import { FieldConfigSet, ItemConfig, FormConfig, FieldConfigAngular, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { LocalizationHelper } from '../../shared/helpers/localization-helper';
+import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
+import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
+import { CalculatedInputType } from '../../shared/models/input-field-models';
+import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
+import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 
 @Injectable()
 export class BuildFieldsService {

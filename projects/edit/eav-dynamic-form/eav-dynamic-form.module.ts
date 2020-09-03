@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { EavFieldDirective } from './components/eav-field/eav-field.directive';
-import { EavFormComponent } from './components/eav-form/eav-form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -14,29 +11,32 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
+import { EavFieldDirective } from './components/eav-field/eav-field.directive';
+import { EavFormComponent } from './components/eav-form/eav-form.component';
+
 @NgModule({
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatMomentDateModule,
-        MatCardModule,
-        MatIconModule,
-    ],
-    declarations: [
-        EavFieldDirective,
-        EavFormComponent,
-    ],
-    exports: [
-        EavFormComponent
-    ],
-    providers: [
-        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
-    ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
+    MatCardModule,
+    MatIconModule,
+  ],
+  declarations: [
+    EavFieldDirective,
+    EavFormComponent,
+  ],
+  exports: [
+    EavFormComponent
+  ],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ],
 })
 export class EavDynamicFormModule { }

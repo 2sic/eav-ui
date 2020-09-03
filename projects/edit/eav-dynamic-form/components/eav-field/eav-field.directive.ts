@@ -27,12 +27,10 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
 import { CustomJsonEditorComponent } from '../../../eav-material-controls/input-types/custom/custom-json-editor/custom-json-editor.component';
 
-@Directive({
-  selector: '[appEavField]'
-})
+@Directive({ selector: '[appEavField]' })
 export class EavFieldDirective implements OnInit {
-  @Input() config: FieldConfigSet[];
-  @Input() group: FormGroup;
+  @Input() private config: FieldConfigSet[];
+  @Input() private group: FormGroup;
 
   private components: { [key: string]: Type<any> } = {
     'app-adam-attach-wrapper': AdamAttachWrapperComponent,

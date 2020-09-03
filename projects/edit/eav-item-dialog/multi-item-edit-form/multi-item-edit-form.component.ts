@@ -485,16 +485,16 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.formsAreDirty[this.itemEditFormComponentQueryList.first.currentLanguage] = false;
       this.itemEditFormComponentQueryList.forEach(itemEditFormComponent => {
         // set form valid
-        if (itemEditFormComponent.form.valid === false
+        if (itemEditFormComponent.form.form.invalid === true
           && (!itemEditFormComponent.item.header.Group || itemEditFormComponent.item.header.Group.SlotCanBeEmpty === false)) {
           this.formsAreValid$.next(false);
         }
         // set form dirty
-        if (itemEditFormComponent.form.dirty) {
+        if (itemEditFormComponent.form.form.dirty) {
           this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
         }
         // set all form are disabled
-        if (!itemEditFormComponent.allControlsAreDisabled) {
+        if (!itemEditFormComponent.checkAreAllControlsDisabled()) {
           this.allControlsAreDisabled$.next(false);
         }
       });
