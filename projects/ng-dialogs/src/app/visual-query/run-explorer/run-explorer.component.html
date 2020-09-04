@@ -1,13 +1,16 @@
-<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="queryDef">
+<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="(pipelineModel$ | async) as pipelineModel">
 
   <div class="wrapper">
     <div class="actions">
       <button mat-raised-button class="action" color="accent" (click)="saveAndRunQuery(true, true)">
         Save and run
       </button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">Run</button>
-      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">Save</button>
-      <button mat-raised-button class="action" (click)="doRepaint()">Repaint</button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(false, true)">
+        Run
+      </button>
+      <button mat-raised-button class="action" (click)="saveAndRunQuery(true, false)">
+        Save
+      </button>
     </div>
 
     <div class="parameters">
@@ -22,31 +25,39 @@
           </button>
         </div>
       </div>
-      <ul class="values">
-        <li *ngFor="let param of queryDef.data.Pipeline.Params?.split('\n')">{{ param }}</li>
+      <ul class="values" *ngIf="pipelineModel.Pipeline.Params?.length">
+        <li *ngFor="let param of pipelineModel.Pipeline.Params?.split('\n')">
+          {{ param }}
+        </li>
       </ul>
     </div>
 
     <div class="parameters">
       <div class="title">Test Parameters</div>
-      <ul class="values">
-        <li *ngFor="let param of queryDef.data.Pipeline.TestParameters?.split('\n')">{{ param }}</li>
+      <ul class="values" *ngIf="pipelineModel.Pipeline.TestParameters?.length">
+        <li *ngFor="let param of pipelineModel.Pipeline.TestParameters?.split('\n')">
+          {{ param }}
+        </li>
       </ul>
     </div>
 
-    <div class="warnings" *ngIf="warnings.length">
-      <div class="title">
-        <span>Warnings</span>
-        <mat-icon style="color: red">warning</mat-icon>
+    <ng-container *ngIf="(warnings$ | async) as warnings">
+      <div class="warnings" *ngIf="warnings.length">
+        <div class="title">
+          <span>Warnings</span>
+          <mat-icon style="color: red">warning</mat-icon>
+        </div>
+        <ol class="values">
+          <li *ngFor="let warning of warnings">
+            {{ warning }}
+          </li>
+        </ol>
       </div>
-      <ol class="values">
-        <li *ngFor="let warn of warnings">{{ warn }}</li>
-      </ol>
-    </div>
+    </ng-container>
 
-    <div class="description" *ngIf="queryDef.data.Pipeline.Description">
+    <div class="description" *ngIf="pipelineModel.Pipeline.Description">
       <div class="title">Query Description</div>
-      <div>{{ queryDef.data.Pipeline.Description }}</div>
+      <div>{{ pipelineModel.Pipeline.Description }}</div>
     </div>
   </div>
 </div>

@@ -1,46 +1,48 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../shared/models/eav';
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { BaseComponent } from '../../base/base.component';
+import { EavService } from '../../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'external-web-component',
   templateUrl: './external-web-component.component.html',
-  styleUrls: ['./external-web-component.component.scss']
+  styleUrls: ['./external-web-component.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
-export class ExternalWebComponentComponent implements OnInit, OnDestroy {
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-
-  loadingSpinner = true;
-  shouldShowConnector = false;
-  private subscriptions: Subscription[] = [];
+export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+  loading$ = new BehaviorSubject(true);
+  isExpanded$: Observable<boolean>;
 
   constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private inputTypeService: InputTypeService,
     private scriptsLoaderService: ScriptsLoaderService,
-    private expandableFieldService: ExpandableFieldService,
-  ) { }
+    private editRoutingService: EditRoutingService,
+  ) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-        const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-        if (dialogShouldBeOpen === this.shouldShowConnector) { return; }
-        this.shouldShowConnector = dialogShouldBeOpen;
-      }),
-    );
+    super.ngOnInit();
+    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.loadAssets();
+  }
+
+  ngOnDestroy() {
+    this.loading$.complete();
+    super.ngOnDestroy();
   }
 
   private loadAssets() {
@@ -54,10 +56,6 @@ export class ExternalWebComponentComponent implements OnInit, OnDestroy {
 
   private assetsLoaded() {
     angularConsoleLog('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
-    this.loadingSpinner = false;
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.loading$.next(false);
   }
 }

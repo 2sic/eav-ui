@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
@@ -18,7 +18,7 @@ import { GlobalConfigurationService } from '../../../../../edit/shared/services/
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-data',
@@ -112,7 +112,6 @@ export class DataComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -142,7 +141,6 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   createGhost() {
-    // tslint:disable-next-line:max-line-length
     const sourceName = window.prompt('To create a ghost content-type enter source static name / id - this is a very advanced operation - read more about it on 2sxc.org/help?tag=ghost');
     if (!sourceName) { return; }
     this.snackBar.open('Saving...');
@@ -155,7 +153,6 @@ export class DataComponent implements OnInit, OnDestroy {
   changeScope(event: MatSelectChange) {
     let newScope: string = event.value;
     if (newScope === 'Other') {
-      // tslint:disable-next-line:max-line-length
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
@@ -201,7 +198,8 @@ export class DataComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private editFields(params: CellClickedEvent) {
@@ -212,18 +210,21 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private createOrEditMetadata(contentType: ContentType) {
     const form: EditForm = {
-      items: !contentType.Metadata
-        ? [{
-          ContentTypeName: eavConstants.contentTypes.contentType,
-          For: {
-            Target: eavConstants.metadata.contentType.target,
-            String: contentType.StaticName,
-          },
-          Prefill: { Label: contentType.Name, Description: contentType.Description },
-        }]
-        : [{ EntityId: contentType.Metadata.Id.toString() }],
+      items: [
+        !contentType.Metadata
+          ? {
+            ContentTypeName: eavConstants.contentTypes.contentType,
+            For: {
+              Target: eavConstants.metadata.contentType.target,
+              String: contentType.StaticName,
+            },
+            Prefill: { Label: contentType.Name, Description: contentType.Description },
+          }
+          : { EntityId: contentType.Metadata.Id }
+      ],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private openExport(contentType: ContentType) {

@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContentGroupService } from './services/content-group.service';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -51,7 +51,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   saveList() {
@@ -83,16 +82,16 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
         },
       ],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   editItem(id: number) {
     const form: EditForm = {
-      items: [
-        { EntityId: id.toString() },
-      ],
+      items: [{ EntityId: id }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   drop(event: CdkDragDrop<any[]>) {

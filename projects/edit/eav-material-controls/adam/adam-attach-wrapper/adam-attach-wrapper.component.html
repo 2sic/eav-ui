@@ -3,7 +3,7 @@
     <ng-container #fieldComponent></ng-container>
   </div>
   <adam-browser (openUpload)="openUpload()" [config]="config" [group]="group" class="u-shadow-top" [ngClass]="{
-      'adam-browser-container--short u-hide-scrollbar': !fullScreenAdamBrowser,
+      'adam-browser-container--short u-hide-scrollbar': !fullscreenAdam,
       'u-display-none': adamDisabled$ | async
     }">
   </adam-browser>

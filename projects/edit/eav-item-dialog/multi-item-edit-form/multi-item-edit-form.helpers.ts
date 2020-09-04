@@ -14,7 +14,7 @@ export function calculateIsParentDialog(route: ActivatedRoute) {
   return editDialogCount === 1;
 }
 
-export function sortLanguages(primaryLangKey: string, languages: Language[]): Language[] {
+export function sortLanguages(primaryLangKey: string, languages: Language[]) {
   if (languages.length === 0) { return languages; }
 
   let primaryLang: Language;
@@ -39,7 +39,7 @@ export function sortLanguages(primaryLangKey: string, languages: Language[]): La
   }
 }
 
-function alphabetCompare(a: Language, b: Language): number {
+function alphabetCompare(a: Language, b: Language) {
   if (a.key < b.key) { return -1; }
   if (a.key > b.key) { return 1; }
   return 0;

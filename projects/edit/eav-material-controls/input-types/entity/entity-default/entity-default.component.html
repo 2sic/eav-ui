@@ -6,6 +6,8 @@
   label: label$ | async,
   placeholder: placeholder$ | async,
   required: required$ | async,
+  invalid: invalid$ | async,
+  touched: control.touched,
   disabled: disabled$ | async,
   freeTextMode: freeTextMode$ | async,
   settings: settings$ | async,
@@ -13,7 +15,8 @@
   availableEntities: config.entityCache$ | async,
   disableAddNew: disableAddNew$ | async,
   isExpanded: isExpanded$ | async,
-  error: error$ | async
+  error: error$ | async,
+  showValidation: showValidation$ | async
 } as data">
   <app-entity-default-list
     *ngIf="!data.freeTextMode && data.selectedEntities.length && (!data.settings.AllowMultiValue || (data.settings.AllowMultiValue && data.isExpanded))"
@@ -24,9 +27,10 @@
   </app-entity-default-list>
 
   <app-entity-default-search [config]="config" [group]="group" [control]="control" [label]="data.label"
-    [placeholder]="data.placeholder" [required]="data.required" [disabled]="data.disabled"
-    [freeTextMode]="data.freeTextMode" [settings]="data.settings" [selectedEntities]="data.selectedEntities"
-    [availableEntities]="data.availableEntities" [disableAddNew]="data.disableAddNew" [error]="data.error"
-    (toggleFreeTextMode)="toggleFreeTextMode()" (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
+    [placeholder]="data.placeholder" [required]="data.required" [invalid]="data.invalid" [touched]="data.touched"
+    [disabled]="data.disabled" [freeTextMode]="data.freeTextMode" [settings]="data.settings"
+    [selectedEntities]="data.selectedEntities" [availableEntities]="data.availableEntities"
+    [disableAddNew]="data.disableAddNew" [error]="data.error" (toggleFreeTextMode)="toggleFreeTextMode()"
+    (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
   </app-entity-default-search>
 </ng-container>

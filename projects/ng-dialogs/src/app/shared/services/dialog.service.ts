@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Context } from './context';
 import { EditForm } from '../models/edit-form.model';
+import { DialogTypeConstants } from '../constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyFa, keyRequestToken, keyDebug, keyUserCanDesign, keyUserCanDevelop, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
 
@@ -10,16 +11,10 @@ export class DialogService {
   constructor(private context: Context) { }
 
   openCodeFile(path: string) {
+    const dialog = DialogTypeConstants.Develop;
     const form: EditForm = {
-      items: [
-        { Path: path }
-      ]
+      items: [{ Path: path }]
     };
-    this.openCode(form);
-  }
-
-  private openCode(form: EditForm) {
-    const dialog = 'develop';
     const oldHref = sessionStorage.getItem(keyUrl);
     const oldUrl = new URL(oldHref);
     const newHref = oldUrl.origin + oldUrl.pathname + oldUrl.search;
@@ -49,8 +44,11 @@ export class DialogService {
     window.open(url, '_blank');
   }
 
-  openQueryDesigner(form: EditForm, queryId: number) {
-    const dialog = 'pipeline-designer';
+  openQueryDesigner(queryId: number) {
+    const dialog = DialogTypeConstants.PipelineDesigner;
+    const form: EditForm = {
+      items: [{ EntityId: queryId }],
+    };
     const oldHref = sessionStorage.getItem(keyUrl);
     const oldUrl = new URL(oldHref);
     const newHref = oldUrl.origin + oldUrl.pathname + oldUrl.search;

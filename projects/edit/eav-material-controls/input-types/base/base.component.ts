@@ -1,6 +1,6 @@
-import { Input, OnInit } from '@angular/core';
+import { Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, startWith, filter, distinctUntilChanged } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -10,7 +10,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
-export class BaseComponent<T> implements Field, OnInit {
+export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
@@ -21,9 +21,11 @@ export class BaseComponent<T> implements Field, OnInit {
   value$: Observable<T>;
   disabled$: Observable<boolean>;
   required$: Observable<boolean>;
+  invalid$: Observable<boolean>;
   showValidation$: Observable<AbstractControl>;
+  subscription = new Subscription();
 
-  constructor(private eavService: EavService, private validationMessagesService: ValidationMessagesService) { }
+  constructor(public eavService: EavService, public validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
@@ -31,6 +33,7 @@ export class BaseComponent<T> implements Field, OnInit {
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
+    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
     this.showValidation$ = this.validationMessagesService.showValidation$.pipe(filter(control => control === this.control));
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
     // this.value$ = this.control.valueChanges.pipe(
@@ -39,13 +42,13 @@ export class BaseComponent<T> implements Field, OnInit {
     // this.status$ = this.control.statusChanges.pipe(
     //   startWith(this.control.status)
     // );
-    this.value$ = this.eavService.formSetValueChange$.pipe(
+    this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(formSet => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
+    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),
@@ -53,5 +56,9 @@ export class BaseComponent<T> implements Field, OnInit {
       startWith(this.control.disabled),
       distinctUntilChanged(),
     );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

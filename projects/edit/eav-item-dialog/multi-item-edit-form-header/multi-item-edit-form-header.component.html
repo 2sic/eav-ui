@@ -1,20 +1,17 @@
 <mat-card class="header">
-  <button mat-icon-button class="header__exit-button" matTooltip="{{ 'Form.Buttons.Exit.Tip' | translate }}"
-    *ngIf="isParentDialog" (click)="closeDialog()">
-    <mat-icon>clear</mat-icon>
-  </button>
-  <button mat-icon-button class="header__exit-button" matTooltip="{{ 'Form.Buttons.Return.Tip' | translate }}"
-    *ngIf="!isParentDialog" (click)="closeDialog()">
-    <mat-icon>arrow_back</mat-icon>
+  <button mat-icon-button class="header__exit-button" (click)="close()"
+    [matTooltip]="(isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
+    <mat-icon>{{ isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
   <div class="header__langs">
-    <app-eav-language-switcher *ngIf="languages.length > 0" [formId]="formId" [formsAreValid]="formsAreValid"
-      [allControlsAreDisabled]="allControlsAreDisabled"></app-eav-language-switcher>
+    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId" [formsAreValid]="formsAreValid"
+      [allControlsAreDisabled]="allControlsAreDisabled">
+    </app-eav-language-switcher>
   </div>
 
-  <button mat-button class="header__publish-button" matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}"
-    (click)="openSaveStatusDialog()">
+  <button mat-button class="header__publish-button" (click)="openSaveStatusDialog()"
+    matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">
     <span class="header__publish-mode">
       {{ 'SaveMode.Label' | translate }}
       <b>{{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}</b>

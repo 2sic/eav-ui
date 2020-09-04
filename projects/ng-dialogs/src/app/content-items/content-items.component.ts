@@ -29,7 +29,7 @@ import { buildFilterModel } from './content-items.helpers';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-content-items',
@@ -90,7 +90,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   onGridReady(params: GridReadyEvent) {
@@ -113,18 +112,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   editItem(params: CellClickedEvent) {
-    let form: EditForm;
-    if (params === null) {
-      form = {
-        items: [{ ContentTypeName: this.contentTypeStaticName }],
-      };
-    } else {
-      const item: ContentItem = params.data;
-      form = {
-        items: [{ EntityId: item.Id.toString() }],
-      };
-    }
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const item: ContentItem = params?.data;
+    const form: EditForm = {
+      items: [
+        item == null
+          ? { ContentTypeName: this.contentTypeStaticName }
+          : { EntityId: item.Id }
+      ],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   exportContent() {
@@ -192,7 +189,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         },
       }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   debugFilter() {
@@ -289,7 +287,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeStaticName, DuplicateEntity: item.Id }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private export(item: ContentItem) {

@@ -1,72 +1,54 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Language } from '../../shared/models/eav';
-import { MultiItemEditFormComponent } from '../multi-item-edit-form/multi-item-edit-form.component';
 import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { PublishMode } from '../multi-item-edit-form/multi-item-edit-form.constants';
 
 @Component({
   selector: 'app-multi-item-edit-form-header',
   templateUrl: './multi-item-edit-form-header.component.html',
-  styleUrls: ['./multi-item-edit-form-header.component.scss']
+  styleUrls: ['./multi-item-edit-form-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MultiItemEditFormHeaderComponent implements OnInit, OnDestroy {
+export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() formId: number;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;
+  @Input() publishMode: PublishMode;
+  @Output() closeDialog = new EventEmitter<null>();
+  @Output() setPublishMode = new EventEmitter<PublishMode>();
 
-  private subscriptions: Subscription[] = [];
-  languages: Language[];
+  hasLanguages$: Observable<boolean>;
 
-  constructor(
-    public multiFormDialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
-    private dialog: MatDialog,
-    private languageService: LanguageService,
-  ) { }
+  constructor(private dialog: MatDialog, private languageService: LanguageService) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.languageService.entities$.subscribe(languages => { this.languages = languages; }),
-    );
+    this.hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+  close() {
+    this.closeDialog.emit();
   }
 
-  // has 3 modes: show, hide, branch (where branch is a hidden, linked clone)
-  get publishMode() {
-    return this.multiFormDialogRef.componentInstance.publishMode;
-  }
-
-  closeDialog() {
-    this.multiFormDialogRef.componentInstance.closeDialog();
-  }
-
-  public openSaveStatusDialog() {
-    // Open dialog
+  openSaveStatusDialog() {
     const dialogRef = this.dialog.open(SaveStatusDialogComponent, {
       panelClass: 'c-save-status-dialog',
       autoFocus: false,
       width: '350px',
-      // height: '80vh',
-      // position: <DialogPosition>{ top: '10px', bottom: '10px' , left: '24px', right: '24px'},
+      data: this.publishMode
     });
-    // spm add dialog and subdialog events through a helper
     dialogRef.keydownEvents().subscribe(e => {
-      // CTRL + S
-      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault(); // spm don't open browser default save
-      }
+      const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
+      if (!CTRL_S) { return; }
+      e.preventDefault();
     });
-
-    dialogRef.componentInstance.publishMode = this.multiFormDialogRef.componentInstance.publishMode;
-    // Close dialog
-    dialogRef.afterClosed().subscribe(result => {
-      this.multiFormDialogRef.componentInstance.publishMode = dialogRef.componentInstance.publishMode;
+    dialogRef.afterClosed().subscribe((res: PublishMode) => {
+      if (res == null) { return; }
+      this.setPublishMode.emit(res);
     });
   }
 }

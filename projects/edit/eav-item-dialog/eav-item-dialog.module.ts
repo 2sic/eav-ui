@@ -26,7 +26,7 @@ import { EavMaterialControlsModule } from '../eav-material-controls/eav-material
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 import { LoadIconsService } from '../shared/services/load-icons.service';
-import { BuildFieldsService } from './item-edit-form/item-edit-form-services/build-fields.service';
+import { BuildFieldsService } from './item-edit-form/build-fields.service';
 
 @NgModule({
   declarations: [

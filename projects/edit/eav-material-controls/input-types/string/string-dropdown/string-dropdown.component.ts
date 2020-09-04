@@ -24,8 +24,7 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
   enableTextEntry$: Observable<boolean>;
   dropdownOptions$: Observable<DropdownOption[]>;
   freeTextMode$: Observable<boolean>;
-
-  private freeTextMode$$ = new BehaviorSubject(undefined);
+  private toggleFreeText$ = new BehaviorSubject(false);
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -34,29 +33,26 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
   ngOnInit() {
     super.ngOnInit();
     this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
-    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(
-      map(combined => {
-        const value = combined[0];
-        const settings = combined[1];
-        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
-        return dropdownOptions;
-      }),
-    );
-    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.freeTextMode$$]).pipe(
-      map(combined => {
-        const enableTextEntry = combined[0];
-        const freeTextMode = combined[1];
-        if (!enableTextEntry) { return false; }
-        return freeTextMode;
-      }),
-    );
+    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(map(combined => {
+      const value = combined[0];
+      const settings = combined[1];
+      const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
+      return dropdownOptions;
+    }));
+    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(map(combined => {
+      const enableTextEntry = combined[0];
+      const freeTextMode = combined[1];
+      if (!enableTextEntry) { return false; }
+      return freeTextMode;
+    }));
   }
 
   ngOnDestroy() {
-    this.freeTextMode$$.complete();
+    this.toggleFreeText$.complete();
+    super.ngOnDestroy();
   }
 
-  setFreeTextMode(value: boolean) {
-    this.freeTextMode$$.next(value);
+  toggleFreeTextMode() {
+    this.toggleFreeText$.next(!this.toggleFreeText$.value);
   }
 }

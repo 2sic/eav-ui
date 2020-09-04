@@ -4,7 +4,7 @@
       [ngClass]="(settings.EnableCreate && settings.EntityType && !selectedEntities.length && !settings.AllowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
       <div [hidden]="!settings.AllowMultiValue && selectedEntities.length">
         <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
-          'mat-form-field-invalid': control.invalid && control.touched
+          'mat-form-field-invalid': invalid && touched
         }">
           <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled || !settings.EnableAddExisting" (blur)="control.markAsTouched()"
@@ -14,7 +14,7 @@
             <mat-icon>arrow_drop_down</mat-icon>
           </button>
           <a matSuffix *ngIf="settings.EnableTextEntry" fxLayoutAlign="center center" appClickStopPropagation
-            (click)="!disabled && toggleFreeText()">
+            (click)="toggleFreeText()">
             <button mat-icon-button [disabled]="disabled">
               <mat-icon [matTooltip]="'Fields.String.Freetext' | translate">text_fields</mat-icon>
             </button>
@@ -22,7 +22,7 @@
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
           </a>
-          <mat-label [ngClass]="{ 'mat-error': control.invalid && control.touched }">
+          <mat-label [ngClass]="{ 'mat-error': invalid && touched }">
             {{ settings.AllowMultiValue ? ('Fields.Entity.Choose' | translate) : label }}
             {{ required ? '*': '' }}
           </mat-label>
@@ -51,7 +51,7 @@
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
   <input matInput [required]="required" [formControlName]="config.field.name" [placeholder]="placeholder">
 
-  <a matSuffix appClickStopPropagation (click)="!disabled && toggleFreeText()">
+  <a matSuffix appClickStopPropagation (click)="toggleFreeText()">
     <button mat-icon-button [disabled]="disabled">
       <mat-icon>arrow_drop_down</mat-icon>
     </button>

@@ -1,44 +1,47 @@
 <mat-card class="shadow-bottom-z-1"
-    [ngClass]="fieldConfig.isParentGroup ? 'mat-card-group-parent' :'mat-card-group-child'">
-    <div fxLayout="row" fxLayoutAlign="start center"
-        [ngClass]="fieldConfig.isParentGroup ? 'mat-card-header-group-parent' :'mat-card-header-group-child'">
+  [ngClass]="fieldConfig.isParentGroup ? 'mat-card-group-parent' : 'mat-card-group-child'">
+  <div fxLayout="row" fxLayoutAlign="start center"
+    [ngClass]="fieldConfig.isParentGroup ? 'mat-card-header-group-parent' : 'mat-card-header-group-child'" *ngIf="{
+      collapse: collapse$ | async,
+      itemTitle: itemTitle$ | async,
+      currentLanguage: currentLanguage$ | async,
+      defaultLanguage: defaultLanguage$ | async,
+      slotCanBeEmpty: slotCanBeEmpty$ | async,
+      slotIsEmpty: slotIsEmpty$ | async
+    } as data">
 
-        <div fxFlex="auto" fxLayoutAlign="start center" (click)="collapse = !collapse">
-            <div fxLayoutAlign="start center" class="mat-card-title-group"
-                [ngClass]="fieldConfig.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
-                <mat-icon *ngIf="collapse">keyboard_arrow_down</mat-icon>
-                <mat-icon *ngIf="!collapse">keyboard_arrow_up</mat-icon>
-                <span class="title" *ngIf="fieldConfig.isParentGroup">{{
-                    itemTitle
-                    ? itemTitle
-                    : 'ItemCard.DefaultTitle' | translate
-                }}</span>
-                <span class="title" *ngIf="!fieldConfig.isParentGroup">{{
-                    config.field.label
-                    ? config.field.label
-                    : 'ItemCard.DefaultTitle' | translate
-                }}</span>
-            </div>
-        </div>
-        <mat-slide-toggle fxLayoutAlign="start center" *ngIf="slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
-            [checked]="slotIsUsedChecked" [disabled]="currentLanguage !== defaultLanguage"
-            matTooltip="{{ (slotIsUsedChecked ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate }}">
-        </mat-slide-toggle>
-        <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
-            [group]="group"></app-translate-group-menu>
+    <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
+      <div fxLayoutAlign="start center" class="mat-card-title-group"
+        [ngClass]="fieldConfig.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
+        <mat-icon>
+          {{ data.collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+        </mat-icon>
+        <span class="title">
+          {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
+        </span>
+      </div>
     </div>
-    <mat-card-content [ngStyle]="{ 'display': collapse ? 'none' : 'block' }"
-        [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' :'mat-card-content-group-child'">
-        <div class="mdc-layout-grid">
-            <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="description">
-                    <div class="description" [innerHtml]='description | safeHtml'
-                        (mouseenter)="changeAnchorTarget($event)"></div>
-                </div>
-                <div class="mdc-layout-grid__cell--span-12">
-                    <ng-container #fieldComponent></ng-container>
-                </div>
-            </div>
+    <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
+      [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
+      [matTooltip]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
+      [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
+    </mat-slide-toggle>
+    <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
+      [group]="group">
+    </app-translate-group-menu>
+  </div>
+
+  <mat-card-content [ngStyle]="{ 'display': (collapse$ | async) ? 'none' : 'block' }"
+    [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' : 'mat-card-content-group-child'">
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="description$ | async">
+          <div class="description" appChangeAnchorTarget [innerHtml]="(description$ | async) | safeHtml"></div>
         </div>
-    </mat-card-content>
+        <div class="mdc-layout-grid__cell--span-12">
+          <ng-container #fieldComponent></ng-container>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>

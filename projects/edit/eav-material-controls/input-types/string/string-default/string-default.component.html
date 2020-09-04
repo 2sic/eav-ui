@@ -8,13 +8,14 @@
 } as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
-      'textarea-field': data.rowCount > 1
-    }">
+    'textarea-field': data.rowCount > 1
+  }">
     <input matInput *ngIf="data.rowCount <= 1" [formControlName]="config.field.name" [placeholder]="data.placeholder"
       [required]="data.required">
 
     <textarea matInput *ngIf="data.rowCount > 1" [formControlName]="config.field.name" [rows]="data.rowCount"
-      [placeholder]="data.placeholder" [required]="data.required"></textarea>
+      [placeholder]="data.placeholder" [required]="data.required">
+    </textarea>
 
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>

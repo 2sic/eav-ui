@@ -1,32 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { VersioningOptions } from '../../../shared/models/eav/versioning-options';
+import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { PublishMode, PublishModeConstants } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.constants';
 
 @Component({
   selector: 'app-save-status-dialog',
   templateUrl: './save-status-dialog.component.html',
-  styleUrls: ['./save-status-dialog.component.scss']
+  styleUrls: ['./save-status-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SaveStatusDialogComponent implements OnInit {
-  versioningOptions: VersioningOptions;
-  publishMode: 'branch' | 'show' | 'hide';
+  publishMode: PublishMode;
+  Modes = PublishModeConstants;
 
-  constructor(public dialogRef: MatDialogRef<SaveStatusDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<SaveStatusDialogComponent>, @Inject(MAT_DIALOG_DATA) private data: PublishMode) { }
 
-  ngOnInit() { }
-
-  publishEntry() {
-    this.publishMode = 'show';
-    this.dialogRef.close();
+  ngOnInit() {
+    this.publishMode = this.data;
   }
 
-  hideEntry() {
-    this.publishMode = 'hide';
-    this.dialogRef.close();
-  }
-
-  saveAsDraftEntry() {
-    this.publishMode = 'branch';
-    this.dialogRef.close();
+  setMode(mode: PublishMode) {
+    this.dialogRef.close(mode);
   }
 }

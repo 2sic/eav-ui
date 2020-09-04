@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -8,131 +9,85 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { Language } from '../../../shared/models/eav';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { I18nKeyConstants } from './link-to-other-language.constants';
+import { findI18nKey, findTranslationLink } from './link-to-other-language.helpers';
 
 @Component({
   selector: 'app-link-to-other-language',
   templateUrl: './link-to-other-language.component.html',
-  styleUrls: ['./link-to-other-language.component.scss']
+  styleUrls: ['./link-to-other-language.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
-  showLanguages = false;
-  selectedOption: LinkToOtherLanguageData;
-
   languages$: Observable<Language[]>;
-  languages: Language[];
-  currentLanguage$: Observable<string>;
-  currentLanguage = '';
-
-  /** key to translation root of the currently selected option */
-  languageList18nRoot = '';
-
-  private subscriptions: Subscription[] = [];
+  selected$: BehaviorSubject<LinkToOtherLanguageData>;
+  showLanguages$: BehaviorSubject<boolean>;
+  i18nRoot$: BehaviorSubject<string>;
+  TranslationLinks = TranslationLinkConstants;
+  I18nKeys = I18nKeyConstants;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: LinkToOtherLanguageData,
+    @Inject(MAT_DIALOG_DATA) public dialogData: LinkToOtherLanguageData,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
   ) {
-    this.selectedOption = this.data;
+    this.selected$ = new BehaviorSubject({ ...this.dialogData });
+    this.showLanguages$ = new BehaviorSubject(this.dialogData.language !== '');
+
+    const i18nKey = findI18nKey(this.dialogData.linkType);
+    this.i18nRoot$ = new BehaviorSubject(`LangMenu.Dialog.${i18nKey}`);
   }
 
   ngOnInit() {
-    angularConsoleLog('this.selectedOption', this.selectedOption);
-    this.loadlanguagesFromStore();
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(subscriber => subscriber.unsubscribe());
-  }
-
-  /**
-   * Load languages from store and subscribe to languages
-   */
-  private loadlanguagesFromStore() {
-    this.languages$ = this.languageService.entities$;
-    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.data.formId);
-
-    this.subscriptions.push(
-      this.currentLanguage$.subscribe(currentLanguage => {
-        this.currentLanguage = currentLanguage;
-      }),
-      this.languages$.subscribe(languages => {
-        this.languages = languages.filter(lang => lang.key !== this.currentLanguage);
+    this.languages$ = combineLatest([
+      this.languageService.entities$,
+      this.languageInstanceService.getCurrentLanguage(this.dialogData.formId)
+    ]).pipe(
+      map(combined => {
+        const languages = combined[0];
+        const currentLanguage = combined[1];
+        return languages.filter(lang => lang.key !== currentLanguage);
       })
     );
   }
 
+  ngOnDestroy() {
+    this.selected$.complete();
+    this.showLanguages$.complete();
+    this.i18nRoot$.complete();
+  }
+
   select(i18nKey: string) {
-    this.showLanguages = !(
-      i18nKey === 'FromPrimary' || i18nKey === 'NoTranslate'
+    const showLanguages = (i18nKey !== I18nKeyConstants.FromPrimary && i18nKey !== I18nKeyConstants.NoTranslate);
+    const newSelected: LinkToOtherLanguageData = { ...this.selected$.value };
+
+    if (!showLanguages) { newSelected.language = ''; }
+    newSelected.linkType = findTranslationLink(i18nKey);
+
+    this.showLanguages$.next(showLanguages);
+    this.selected$.next(newSelected);
+    this.i18nRoot$.next(`LangMenu.Dialog.${i18nKey}`);
+  }
+
+  selectLanguage(language: string) {
+    this.selected$.next({ ...this.selected$.value, language });
+  }
+
+  isOkDisabled(selected: LinkToOtherLanguageData) {
+    const disabled = selected.language === ''
+      && selected.linkType !== TranslationLinkConstants.Translate
+      && selected.linkType !== TranslationLinkConstants.DontTranslate;
+    return disabled;
+  }
+
+  isLanguageDisabled(languageKey: string) {
+    if (!this.dialogData.attributes) { return true; }
+
+    const hasTranslation = LocalizationHelper.isEditableTranslationExist(
+      this.dialogData.attributes[this.dialogData.attributeKey],
+      languageKey,
+      this.dialogData.defaultLanguage
     );
-    if (!this.showLanguages) {
-      this.selectedOption.language = '';
-    }
-
-    switch (i18nKey) {
-      case 'FromPrimary':
-        this.selectedOption.linkType = TranslationLinkConstants.Translate;
-        break;
-      case 'NoTranslate':
-        this.selectedOption.linkType =
-          TranslationLinkConstants.DontTranslate;
-        break;
-      case 'LinkReadOnly':
-        this.selectedOption.linkType =
-          TranslationLinkConstants.LinkReadOnly;
-        break;
-      case 'LinkShared':
-        this.selectedOption.linkType =
-          TranslationLinkConstants.LinkReadWrite;
-        break;
-      case 'FromOther':
-        this.selectedOption.linkType =
-          TranslationLinkConstants.LinkCopyFrom;
-        break;
-    }
-    this.languageList18nRoot = 'LangMenu.Dialog.' + i18nKey;
-  }
-
-  selectLanguage(lang: string) {
-    this.selectedOption.language = lang;
-  }
-
-  okButtonDisabled() {
-    return (
-      this.selectedOption.language === '' &&
-      this.selectedOption.linkType !== TranslationLinkConstants.Translate &&
-      this.selectedOption.linkType !==
-      TranslationLinkConstants.DontTranslate
-    );
-  }
-
-  linkOtherLanguage() {
-    angularConsoleLog(this.selectedOption);
-  }
-
-  disableLanguage(languageKey: string): boolean {
-    const isCurrentLanguage = languageKey === this.currentLanguage;
-    if (isCurrentLanguage) {
-      return true;
-    }
-
-    const hasTranslation = this.hasTranslation(languageKey);
-    if (!hasTranslation) {
-      return true;
-    }
-
-    return false;
-  }
-
-  hasTranslation(languageKey: string): boolean {
-    return this.data.attributes
-      ? LocalizationHelper.isEditableTranslationExist(
-        this.data.attributes[this.data.attributeKey],
-        languageKey,
-        this.data.defaultLanguage
-      )
-      : false;
+    return !hasTranslation;
   }
 }

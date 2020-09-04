@@ -1,33 +1,32 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-adam-attach-wrapper',
   templateUrl: './adam-attach-wrapper.component.html',
-  styleUrls: ['./adam-attach-wrapper.component.scss']
+  styleUrls: ['./adam-attach-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestroy, AfterViewInit {
+export class AdamAttachWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('invisibleClickable') invisibleClickableReference: ElementRef;
+  @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-
-  fullScreenAdamBrowser: boolean;
+  fullscreenAdam: boolean;
   adamDisabled$ = new BehaviorSubject(true);
 
-  private subscription = new Subscription();
-
-  constructor() { }
+  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
-    this.fullScreenAdamBrowser = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
+    super.ngOnInit();
+    this.fullscreenAdam = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
   }
 
   ngAfterViewInit() {
@@ -38,13 +37,11 @@ export class AdamAttachWrapperComponent implements FieldWrapper, OnInit, OnDestr
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.adamDisabled$.complete();
+    super.ngOnDestroy();
   }
 
-  /** triger click on clickable element for load open */
   openUpload() {
-    angularConsoleLog('openUpload click');
-    this.invisibleClickableReference.nativeElement.click();
+    this.invisibleClickableRef.nativeElement.click();
   }
 }

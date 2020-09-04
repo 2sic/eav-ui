@@ -50,7 +50,6 @@ export class HandleErrorsInterceptor implements HttpInterceptor {
       }
 
       if (msg && msg.indexOf('Controller') === 0 && msg.indexOf('not found') > 0) {
-        // tslint:disable-next-line:max-line-length
         infoText += '\n\nTip from 2sxc: you probably spelled the controller name wrong or forgot to remove the word \'controller\' from the call in JS. To call a controller called \'DemoController\' only use \'Demo\'.';
       }
       infoText += '\n\nif you are an advanced user you can learn more about what went wrong - discover how on 2sxc.org/help?tag=debug';

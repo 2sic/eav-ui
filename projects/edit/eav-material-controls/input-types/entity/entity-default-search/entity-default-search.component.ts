@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -26,6 +25,8 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Input() label: string;
   @Input() placeholder: string;
   @Input() required: boolean;
+  @Input() invalid: boolean;
+  @Input() touched: boolean;
   @Input() disabled: boolean;
   @Input() freeTextMode: boolean;
   @Input() settings: FieldSettings;
@@ -66,6 +67,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   }
 
   toggleFreeText() {
+    if (this.disabled) { return; }
     this.toggleFreeTextMode.emit();
   }
 

@@ -1,53 +1,63 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Input, AfterViewInit, ElementRef, OnDestroy, NgZone } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ElementRef, OnDestroy, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { AdamItem } from '../../../../edit-types';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { ExpandableFieldService } from '../../../shared/services/expandable-field.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { EavService } from '../../../shared/services/eav.service';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
   templateUrl: './hyperlink-library-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
-  animations: [ContentExpandAnimation]
+  animations: [ContentExpandAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+// tslint:disable-next-line:max-line-length
+export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') backdropRef: ElementRef;
   @ViewChild('dialog') dialogRef: ElementRef;
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
 
-  dialogIsOpen = false;
-  control: AbstractControl;
-  private subscription = new Subscription();
+  open$: Observable<boolean>;
+  adamItems$ = new BehaviorSubject<AdamItem[]>([]);
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
-  get bottomPixels() { return window.innerWidth > 600 ? '100px' : '50px'; }
-
   constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
-    private expandableFieldService: ExpandableFieldService,
-  ) { }
+    private editRoutingService: EditRoutingService,
+  ) {
+    super(eavService, validationMessagesService);
+  }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
-    this.subscription.add(this.expandableFieldService.getObservable().subscribe(expandedFieldId => {
-      const dialogShouldBeOpen = (this.config.field.index === expandedFieldId);
-      if (dialogShouldBeOpen === this.dialogIsOpen) { return; }
-      this.dialogIsOpen = dialogShouldBeOpen;
-    }));
+    super.ngOnInit();
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngAfterViewInit() {
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
+    this.subscription.add(this.config.adam.items$.subscribe(items => {
+      this.adamItems$.next(items);
+    }));
+  }
+
+  ngOnDestroy() {
+    this.dropzoneDraggingHelper.detach();
+    this.adamItems$.complete();
+    super.ngOnDestroy();
+  }
+
+  calculateBottomPixels() {
+    return window.innerWidth > 600 ? '100px' : '50px';
   }
 
   trackByFn(index: number, item: AdamItem) {
@@ -56,17 +66,10 @@ export class HyperlinkLibraryExpandableWrapperComponent implements FieldWrapper,
 
   expandDialog() {
     if (this.config.field.disabled) { return; }
-    angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent expandDialog');
-    this.expandableFieldService.expand(true, this.config.field.index, this.config.form.formId);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
   }
 
   closeDialog() {
-    angularConsoleLog('HyperlinkLibraryExpandableWrapperComponent closeDialog');
-    this.expandableFieldService.expand(false, this.config.field.index, this.config.form.formId);
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.dropzoneDraggingHelper.detach();
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 }

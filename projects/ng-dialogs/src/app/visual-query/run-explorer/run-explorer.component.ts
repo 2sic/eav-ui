@@ -1,7 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Context } from '../../shared/services/context';
 import { calculateWarnings } from './run-explorer.helpers';
+import { VisualQueryService } from '../services/visual-query.service';
+import { PipelineModel } from '../models/pipeline.model';
 
 @Component({
   selector: 'app-run-explorer',
@@ -9,26 +13,21 @@ import { calculateWarnings } from './run-explorer.helpers';
   styleUrls: ['./run-explorer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RunExplorerComponent implements OnInit, OnChanges {
-  @Input() queryDef: any;
-  @Output() editPipelineEntity: EventEmitter<null> = new EventEmitter();
-  @Output() saveAndRun: EventEmitter<{ save: boolean, run: boolean }> = new EventEmitter();
-  @Output() repaint: EventEmitter<null> = new EventEmitter();
-  warnings: any[];
+export class RunExplorerComponent implements OnInit {
+  pipelineModel$: Observable<PipelineModel>;
+  warnings$: Observable<string[]>;
 
-  constructor(private context: Context, ) { }
+  constructor(private context: Context, private visualQueryService: VisualQueryService) { }
 
   ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.queryDef?.currentValue) {
-      this.warnings = calculateWarnings(this.queryDef.data, this.context);
-    }
+    this.pipelineModel$ = this.visualQueryService.pipelineModel$;
+    this.warnings$ = this.visualQueryService.pipelineModel$.pipe(
+      map(pipelineModel => calculateWarnings(pipelineModel, this.context)),
+    );
   }
 
   editPipeline() {
-    this.editPipelineEntity.emit();
+    this.visualQueryService.editPipelineEntity();
   }
 
   openParamsHelp() {
@@ -36,11 +35,7 @@ export class RunExplorerComponent implements OnInit, OnChanges {
   }
 
   saveAndRunQuery(save: boolean, run: boolean) {
-    this.saveAndRun.emit({ save, run });
-  }
-
-  doRepaint() {
-    this.repaint.emit();
+    this.visualQueryService.saveAndRun(save, run);
   }
 
 }

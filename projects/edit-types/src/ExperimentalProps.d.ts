@@ -11,7 +11,7 @@ export interface ExperimentalProps {
   allInputTypeNames: InputTypeName[];
   formGroup: FormGroup;
   translateService: TranslateService; // for WYSIWYG
-  expandedField$: Observable<number>;
+  isExpanded$: Observable<boolean>;
   dropzone: Dropzone;
   adam: Adam;
 

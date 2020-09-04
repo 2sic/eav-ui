@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { View } from '../models/view.model';
@@ -20,7 +20,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { paramEncode } from '../../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-views',
@@ -136,7 +136,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   private fetchTemplates() {
@@ -155,18 +154,16 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   editView(params: CellClickedEvent) {
-    let form: EditForm;
-    if (params === null) {
-      form = {
-        items: [{ ContentTypeName: eavConstants.contentTypes.template }],
-      };
-    } else {
-      const view: View = params.data;
-      form = {
-        items: [{ EntityId: view.Id.toString() }],
-      };
-    }
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    const view: View = params?.data;
+    const form: EditForm = {
+      items: [
+        view == null
+          ? { ContentTypeName: eavConstants.contentTypes.template }
+          : { EntityId: view.Id }
+      ],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   editPolymorphisms() {
@@ -174,12 +171,13 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
     const form: EditForm = {
       items: [
-        this.polymorphism.Id
-          ? { EntityId: this.polymorphism.Id.toString() }
-          : { ContentTypeName: this.polymorphism.TypeName }
-      ]
+        !this.polymorphism.Id
+          ? { ContentTypeName: this.polymorphism.TypeName }
+          : { EntityId: this.polymorphism.Id }
+      ],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route.firstChild });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private idValueGetter(params: ValueGetterParams) {

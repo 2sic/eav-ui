@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
@@ -13,7 +12,7 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -30,13 +29,11 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     validationMessagesService: ValidationMessagesService,
     entityService: EntityService,
     translate: TranslateService,
-    router: Router,
-    route: ActivatedRoute,
-    expandableFieldService: ExpandableFieldService,
+    editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     queryService: QueryService,
   ) {
-    super(eavService, validationMessagesService, entityService, translate, router, route, expandableFieldService, snackBar, queryService);
+    super(eavService, validationMessagesService, entityService, translate, editRoutingService, snackBar, queryService);
   }
 
   ngOnInit() {

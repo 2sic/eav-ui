@@ -53,12 +53,11 @@ export class ContentTypesService {
     }) as Observable<boolean>;
   }
 
-  getDetails(contentTypeName: string, config: any) {
+  getDetails(contentTypeName: string, config: { [key: string]: string }) {
     return this.http.get(
       this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/GetSingle'),
-      // spm TODO: this code is faulty because config never gets assigned to params
-      Object.assign({}, config, { params: { appid: this.context.appId, contentTypeStaticName: contentTypeName } })
-    ) as Observable<any>;
+      { params: { ...config, appid: this.context.appId.toString(), contentTypeStaticName: contentTypeName } }
+    ) as Observable<ContentType>;
   }
 
 }

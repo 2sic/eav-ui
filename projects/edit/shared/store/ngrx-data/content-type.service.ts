@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ContentType } from '../../models/eav';
@@ -19,7 +18,7 @@ export class ContentTypeService extends EntityCollectionServiceBase<ContentType>
   }
 
   /** Get content type observable from the store */
-  public getContentTypeById(id: string): Observable<ContentType> {
+  public getContentTypeById(id: string) {
     return this.entities$.pipe(
       map(contentTypes => contentTypes.find(contentType => contentType.contentType.id === id))
       // maybe add distinctUntilChanged()

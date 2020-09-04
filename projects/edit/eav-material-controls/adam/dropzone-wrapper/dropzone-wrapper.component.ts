@@ -1,51 +1,44 @@
-import { Component, OnInit, ViewContainerRef, Input, ViewChild, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { filter, map, startWith, distinctUntilChanged } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { EavConfiguration } from '../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../shared/models/eav-configuration';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';
 import { DropzoneConfigExt, AdamPostResponse } from '../../../../edit-types';
+import { BaseComponent } from '../../input-types/base/base.component';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-dropzone-wrapper',
   templateUrl: './dropzone-wrapper.component.html',
-  styleUrls: ['./dropzone-wrapper.component.scss']
+  styleUrls: ['./dropzone-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild(DropzoneDirective) dropzoneRef?: DropzoneDirective;
+  @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
-
-  control: AbstractControl;
-  disabled$: Observable<boolean>;
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
   dropzoneDisabled$: Observable<boolean>;
+  private eavConfig: EavConfig;
 
-  private eavConfig: EavConfiguration;
-
-  constructor(private eavService: EavService, private dnnContext: DnnContext, private zone: NgZone) {
-    this.eavConfig = this.eavService.getEavConfiguration();
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    private dnnContext: DnnContext,
+    private zone: NgZone,
+  ) {
+    super(eavService, validationMessagesService);
+    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
-    this.disabled$ = this.eavService.formDisabledChanged$$.asObservable().pipe(
-      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
-        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
-      ),
-      map(formSet => this.control.disabled),
-      startWith(this.control.disabled),
-      distinctUntilChanged(),
-    );
+    super.ngOnInit();
     this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(map(combined => {
       const controlDisabled = combined[0];
       const dropzoneConfig = combined[1];
@@ -80,10 +73,11 @@ export class DropzoneWrapperComponent implements FieldWrapper, OnInit, AfterView
 
   ngOnDestroy() {
     this.dropzoneConfig$.complete();
+    super.ngOnDestroy();
   }
 
   onUploadError(args: any) {
-    angularConsoleLog('onUploadError:', args);
+    angularConsoleLog('Dropzone upload error. Args:', args);
     this.dropzoneRef.reset();
   }
 

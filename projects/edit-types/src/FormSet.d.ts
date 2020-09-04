@@ -1,4 +1,4 @@
-export class FormSet {
+export class FormValueSet {
   formId: number;
   entityGuid: string;
   entityValues: { [name: string]: any };

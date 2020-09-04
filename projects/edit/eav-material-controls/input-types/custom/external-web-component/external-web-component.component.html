@@ -1,2 +1,8 @@
-<mat-spinner *ngIf="loadingSpinner" color="accent"></mat-spinner>
-<app-connector [config]="config" [group]="group" *ngIf="!loadingSpinner && shouldShowConnector"></app-connector>
+<ng-container *ngIf="{
+  loading: loading$ | async,
+  isExpanded: isExpanded$ | async,
+  showValidation: showValidation$ | async
+} as data">
+  <mat-spinner *ngIf="data.loading" color="accent"></mat-spinner>
+  <app-connector [config]="config" [group]="group" *ngIf="!data.loading && data.isExpanded"></app-connector>
+</ng-container>

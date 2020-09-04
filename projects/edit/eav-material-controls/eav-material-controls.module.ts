@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -42,7 +43,7 @@ import {
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
   NumberDefaultComponent,
-  HyperlinkDefaultPagepickerComponent,
+  PagepickerComponent,
   StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
@@ -52,9 +53,6 @@ import { EavLanguageSwitcherComponent } from './localization/eav-language-switch
 import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
-import { FilterPipe } from '../shared/pipes/filter.pipe';
-import { OrderByPipe } from '../shared/pipes/orderby.pipe';
-import { FileEndingFilterPipe } from '../shared/pipes/file-ending-filter.pipe';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
@@ -69,10 +67,8 @@ import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-w
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
 import { EntityDefaultSearchComponent } from './input-types/entity/entity-default-search/entity-default-search.component';
 import { EntityQueryComponent } from './input-types/entity/entity-query/entity-query.component';
-// tslint:disable-next-line:max-line-length
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
-// tslint:disable-next-line:max-line-length
 import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
@@ -80,6 +76,7 @@ import { ExternalWebComponentComponent } from './input-types/custom/external-web
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { CustomDefaultComponent } from './input-types/custom/custom-default/custom-default.component';
 import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
+import { ChangeAnchorTargetDirective } from '../shared/directives/change-anchor-target.directive';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { AssetsService } from '../shared/services/assets.service';
 import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
@@ -107,12 +104,10 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     AdamAttachWrapperComponent,
     HyperlinkLibraryComponent,
     EavLanguageSwitcherComponent,
-    FilterPipe,
-    OrderByPipe,
-    FileEndingFilterPipe,
     PasteClipboardImageDirective,
+    ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
-    HyperlinkDefaultPagepickerComponent,
+    PagepickerComponent,
     WebFormBridgeDirective,
     SaveStatusDialogComponent,
     ExpandableWrapperComponent,
@@ -165,6 +160,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     ReactiveFormsModule,
     MatRippleModule,
     MatChipsModule,
+    ScrollingModule,
     TranslateModule,
   ],
   entryComponents: [
@@ -181,7 +177,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     ExpandableWrapperComponent,
     HiddenWrapperComponent,
     HyperlinkDefaultComponent,
-    HyperlinkDefaultPagepickerComponent,
+    PagepickerComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
     SaveStatusDialogComponent,

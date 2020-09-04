@@ -1,8 +1,8 @@
-import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild } from '@angular/core';
+import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { filter, take, skip } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
+import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { ContentType, Item } from '../../shared/models/eav';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -12,44 +12,28 @@ import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { EavConfiguration } from '../../shared/models/eav-configuration';
-import { BuildFieldsService } from './item-edit-form-services/build-fields.service';
+import { BuildFieldsService } from './build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
-import { FormSet } from '../../../edit-types';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
-  styleUrls: ['./item-edit-form.component.scss']
+  styleUrls: ['./item-edit-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemEditFormComponent implements OnInit, OnDestroy {
+export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
-  @Input() formId: number;
-  @Input()
-  set item(value: Item) {
-    this.itemBehaviorSubject$.next(value);
-  }
-  get item(): Item {
-    return this.itemBehaviorSubject$.getValue();
-  }
-  @Output() itemFormValueChange: EventEmitter<any> = new EventEmitter<any>();
-
-  get allControlsAreDisabled() {
-    return this.checkAreAllControlsDisabled();
-  }
-
-  private eavConfig: EavConfiguration;
-  private defaultLanguage$: Observable<string>;
-  private defaultLanguage: string;
-  private currentLanguage$: Observable<string>;
-  currentLanguage: string;
-  private subscriptions: Subscription[] = [];
-  private itemBehaviorSubject$: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
+  @Input() item: Item;
+  @Input() private formId: number;
+  @Output() private itemFormValueChange = new EventEmitter<void>();
 
   contentType$: Observable<ContentType>;
   itemFields$: Observable<FieldConfigSet[]>;
-  formIsValid = false;
+  currentLanguage: string;
+
+  private defaultLanguage: string;
+  private subscription = new Subscription();
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -58,29 +42,52 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
-  }
+  ) { }
 
   ngOnInit() {
-    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.formId);
-    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
-    this.setInitialValues();
-    this.subscribeToChanges();
+    this.subscription.add(
+      this.languageInstanceService.getDefaultLanguage(this.formId).subscribe(defaultLang => {
+        this.defaultLanguage = defaultLang;
+      })
+    );
+
+    this.subscription.add(
+      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(currentLang => {
+        this.currentLanguage = currentLang;
+        this.setFormValues();
+      })
+    );
+
+    // create input fields from content type
+    const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
+    this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
+    this.itemFields$ = this.buildFieldsService.buildFields(
+      this.contentType$,
+      this.item,
+      this.formId,
+      this.currentLanguage,
+      this.defaultLanguage,
+    );
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.item != null) {
+      this.setFormValues();
+    }
   }
 
   /** Observe is item form is saved */
-  formSaveObservable(): Observable<Action> {
-    return this.actions$
-      .pipe(ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
-        filter((action: fromItems.SaveItemAttributesValuesAction) =>
-          this.item.entity.id === 0
-            ? this.item.entity.guid === action.item.entity.guid
-            : this.item.entity.id === action.item.entity.id));
+  formSaveObservable() {
+    return this.actions$.pipe(
+      ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
+      filter((action: fromItems.SaveItemAttributesValuesAction) =>
+        this.item.entity.id === 0 ? this.item.entity.guid === action.item.entity.guid : this.item.entity.id === action.item.entity.id
+      ),
+    ) as Observable<Action>;
   }
 
   /**
@@ -89,72 +96,58 @@ export class ItemEditFormComponent implements OnInit, OnDestroy {
    */
   formValueChange(values: { [key: string]: any }) {
     this.itemService.updateItemAttributesValues(
-      this.item.entity.id, values, this.currentLanguage,
-      this.defaultLanguage, this.item.entity.guid
+      this.item.entity.id,
+      values,
+      this.currentLanguage,
+      this.defaultLanguage,
+      this.item.entity.guid,
     );
 
-    // emit event to parent
     this.itemFormValueChange.emit();
   }
 
-  submit(values: { [key: string]: any }) {
-    if (this.form.form.valid || this.allControlsAreDisabled || (this.item.header.Group && this.item.header.Group.SlotCanBeEmpty)) {
-      // spm Double check if we should update values one last time before submitting
+  submit() {
+    if (this.form.form.valid || this.checkAreAllControlsDisabled() || (this.item.header.Group && this.item.header.Group.SlotCanBeEmpty)) {
       this.eavService.saveItem(this.item);
     }
   }
 
-  private checkAreAllControlsDisabled(): boolean {
+  checkAreAllControlsDisabled() {
     let allDisabled = true;
-    Object.keys(this.form.form.controls).forEach(key => {
+    const controlKeys = Object.keys(this.form.form.controls);
+    for (const key of controlKeys) {
       if (!this.form.form.controls[key].disabled) {
         allDisabled = false;
+        break;
       }
-    });
+    }
     return allDisabled;
   }
 
-  private setFormValues = (item: Item, emit: boolean) => {
-    if (this.form) {
-      const formValues: { [name: string]: any } = {};
-      Object.keys(item.entity.attributes).forEach(attributeKey => {
-        formValues[attributeKey] = LocalizationHelper.translate(this.currentLanguage,
-          this.defaultLanguage, item.entity.attributes[attributeKey], null);
-      });
+  private setFormValues() {
+    if (!this.form) { return; }
 
-      // spm true only on language change?
-      if (this.form.valueIsChanged(formValues)) {
-        // set new values to form
-        this.form.patchValue(formValues, emit);
-      }
-      // important to be after patchValue
-      const formSet: FormSet = {
-        formId: this.formId,
-        entityGuid: this.item.entity.guid,
-        entityValues: formValues
-      };
-      this.eavService.triggerFormSetValueChange(formSet);
+    const formValues: { [name: string]: any } = {};
+    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+      formValues[attributeKey] = LocalizationHelper.translate(
+        this.currentLanguage,
+        this.defaultLanguage,
+        this.item.entity.attributes[attributeKey],
+        null,
+      );
+    });
+
+    // spm true only on language change?
+    if (this.form.valueIsChanged(formValues)) {
+      // set new values to form
+      this.form.patchValue(formValues, false);
     }
+    // important to be after patchValue
+    this.eavService.formValueChange$.next({
+      formId: this.formId,
+      entityGuid: this.item.entity.guid,
+      entityValues: formValues,
+    });
   }
 
-  private setInitialValues() {
-    this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; });
-    this.currentLanguage$.pipe(take(1)).subscribe(currentLang => { this.currentLanguage = currentLang; });
-    const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
-    this.contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
-    // create input fields from content type
-    this.itemFields$ = this.buildFieldsService.buildFields(this.contentType$, this.item, this.formId, this.currentLanguage,
-      this.defaultLanguage);
-  }
-
-  private subscribeToChanges() {
-    this.subscriptions.push(
-      this.itemBehaviorSubject$.subscribe((item: Item) => { this.setFormValues(item, false); }),
-      this.defaultLanguage$.pipe(skip(1)).subscribe(defaultLang => { this.defaultLanguage = defaultLang; }),
-      this.currentLanguage$.pipe(skip(1)).subscribe(currentLang => {
-        this.currentLanguage = currentLang;
-        this.setFormValues(this.item, false);
-      }),
-    );
-  }
 }

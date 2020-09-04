@@ -1,10 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'empty-default',
   templateUrl: './empty-default.component.html',
-  styleUrls: ['./empty-default.component.scss']
+  styleUrls: ['./empty-default.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EmptyDefaultComponent {
+export class EmptyDefaultComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
 }

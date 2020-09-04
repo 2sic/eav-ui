@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { EavConfiguration } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-configuration';
 import { EavService } from './eav.service';
 import { UrlHelper } from '../helpers/url-helper';
 declare const sxcVersion: string;
@@ -19,13 +19,13 @@ export interface LoadFile {
 
 @Injectable()
 export class ScriptsLoaderService {
-  private eavConfig: EavConfiguration;
+  private eavConfig: EavConfig;
   private loadedFiles: LoadFile[] = [];
 
   constructor(
     private eavService: EavService,
   ) {
-    this.eavConfig = this.eavService.getEavConfiguration();
+    this.eavConfig = this.eavService.getEavConfig();
   }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */

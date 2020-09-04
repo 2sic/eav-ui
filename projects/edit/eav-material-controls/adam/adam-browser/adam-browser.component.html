@@ -92,9 +92,8 @@
               </div>
             </div>
             <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
-              (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
-              matTooltip="{{ item._metadataContentType }}: {{ item.MetadataId }}" appClickStopPropagation
-              *ngIf="item._metadataContentType">local_offer</mat-icon>
+              (click)="editItemMetadata(item)" matTooltip="{{ item._metadataContentType }}: {{ item.MetadataId }}"
+              appClickStopPropagation *ngIf="item._metadataContentType">local_offer</mat-icon>
           </div>
         </ng-container>
 
@@ -139,8 +138,7 @@
               </a>
             </div>
             <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
-              (click)="item.MetadataId > 0 ? editItemMetadata(item.MetadataId) : addItemMetadata(item)"
-              *ngIf="item._metadataContentType" appClickStopPropagation
+              (click)="editItemMetadata(item)" *ngIf="item._metadataContentType" appClickStopPropagation
               matTooltip="{{ item._metadataContentType }}: {{ item.MetadataId }}">local_offer</mat-icon>
 
             <div class="dz-success-mark">

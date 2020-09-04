@@ -1,12 +1,10 @@
 import { ActivatedRoute } from '@angular/router';
 
-import { EavConfiguration } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-configuration';
 import { VersioningOptions } from '../models/eav/versioning-options';
-// tslint:disable-next-line:max-line-length
 import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { paramDecode } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 export class UrlHelper {
 
@@ -22,15 +20,16 @@ export class UrlHelper {
 
   /** Create EavConfiguration from sessionStorage */
   static getEavConfiguration(route: ActivatedRoute, context: Context) {
-    const editFormData: EditForm = JSON.parse(paramDecode(route.snapshot.params.items));
-    return new EavConfiguration(
+    const form = convertUrlToForm(route.snapshot.params.items);
+    const editItems = JSON.stringify(form.items);
+    return new EavConfig(
       context.zoneId.toString(),
       context.appId.toString(),
       context.appRoot,
       context.contentBlockId.toString(),
       sessionStorage.getItem(keyDebug),
       sessionStorage.getItem(keyDialog),
-      JSON.stringify(editFormData.items),
+      editItems,
       sessionStorage.getItem(keyLang),
       sessionStorage.getItem(keyLangPri),
       sessionStorage.getItem(keyLangs),
@@ -87,7 +86,7 @@ export class UrlHelper {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  static getUrlPrefix(area: string, eavConfig: EavConfiguration) {
+  static getUrlPrefix(area: string, eavConfig: EavConfig) {
     let result = '';
 
     if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar

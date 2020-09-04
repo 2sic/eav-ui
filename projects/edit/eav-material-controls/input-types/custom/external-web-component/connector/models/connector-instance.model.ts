@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../../../../../../edit-types';
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
-import { EavConfiguration } from '../../../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../../../shared/models/eav-configuration';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
 declare const sxcVersion: string;
 
@@ -18,7 +18,7 @@ export class ConnectorInstance<T> implements Connector<T> {
     value$: Observable<T>,
     public field: FieldConfig,
     public _experimental: ExperimentalProps,
-    eavConfig: EavConfiguration,
+    eavConfig: EavConfig,
   ) {
     this.data = new ConnectorDataInstance<T>(_connectorHost, value$);
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
@@ -50,7 +50,7 @@ export class ConnectorInstance<T> implements Connector<T> {
     };
   }
 
-  resolveTokens(src: string, eavConfig: EavConfiguration) {
+  resolveTokens(src: string, eavConfig: EavConfig) {
     src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
       .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
       .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
@@ -100,8 +100,8 @@ export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
 }
 
 /** Props and methods available to the connector to communicate with the host */
-export class ConnectorHost<T> {
+export interface ConnectorHost<T> {
+  forceConnectorSave$: Observable<null>;
   update: (value: T) => void;
   expand: (expand: boolean, componentTag?: string) => void;
-  forceConnectorSave$: Observable<null>;
 }

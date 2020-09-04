@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, take, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -15,14 +14,14 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { EavConfiguration } from '../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../shared/models/eav-configuration';
 import { SelectedEntity } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { paramEncode } from '../../../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { Helper } from '../../../../shared/helpers/helper';
-import { ExpandableFieldService } from '../../../../shared/services/expandable-field.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { calculateSelectedEntities } from './entity-default.helpers';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -37,14 +36,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   useQuery = false;
   contentTypeMask: FieldMaskService;
-  error$ = new BehaviorSubject<string>('');
-  freeTextMode$ = new BehaviorSubject<boolean>(false);
-  disableAddNew$ = new BehaviorSubject<boolean>(true);
+  error$ = new BehaviorSubject('');
+  freeTextMode$ = new BehaviorSubject(false);
+  disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  eavConfig: EavConfiguration;
-  subscription = new Subscription();
-  private hasChild: boolean;
+  eavConfig: EavConfig;
   private separator: string;
 
   constructor(
@@ -52,14 +49,11 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     validationMessagesService: ValidationMessagesService,
     private entityService: EntityService,
     public translate: TranslateService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private expandableFieldService: ExpandableFieldService,
+    private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
   ) {
     super(eavService, validationMessagesService);
-    this.eavConfig = eavService.getEavConfiguration();
-    this.hasChild = !!this.route.snapshot.firstChild;
+    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {
@@ -71,39 +65,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
       const fieldValue = combined[0];
       const availableEntities = combined[1];
-      let selectedEntities: SelectedEntity[];
 
-      if (typeof fieldValue === 'string') {
-        const names = Helper.convertValueToArray(fieldValue, this.separator);
-        selectedEntities = names.map(name => {
-          const selectedEntity: SelectedEntity = {
-            value: name,
-            label: name,
-            tooltip: `${name} (${name})`,
-            isFreeTextOrNotFound: true,
-          };
-          return selectedEntity;
-        });
-      } else {
-        selectedEntities = fieldValue.map(guid => {
-          const entity = availableEntities.find(e => e.Value === guid);
-          const label = (guid == null) ? 'empty slot' : entity?.Text || this.translate.instant('Fields.Entity.EntityNotFound');
-          const selectedEntity: SelectedEntity = {
-            value: guid,
-            label,
-            tooltip: `${label} (${guid})`,
-            isFreeTextOrNotFound: !entity,
-          };
-          return selectedEntity;
-        });
-      }
-
-      return selectedEntities;
+      const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+      return selected;
     }));
 
-    this.isExpanded$ = this.expandableFieldService
-      .getObservable()
-      .pipe(map(expandedFieldId => this.config.field.index === expandedFieldId));
+    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
 
     this.subscription.add(this.settings$.subscribe(settings => {
       this.contentTypeMask?.destroy();
@@ -131,7 +98,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   toggleFreeTextMode() {
@@ -164,7 +131,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     // if we can't add, then we only need one...
     const filterText = enableAddExisting ? null : this.control.value;
     this.entityService.getAvailableEntities(filterText, contentTypeName).subscribe(items => {
-      this.config.cache = items;
       this.config.entityCache$.next(items);
     });
   }
@@ -187,23 +153,23 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   editEntity(entityGuid: string) {
+    let form: EditForm;
     if (entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
-      const form: EditForm = {
+      form = {
         items: [{ ContentTypeName: contentTypeName }],
       };
-      this.expandableFieldService.openWithUpdate(this.config.field.index, form);
     } else {
       let availableEntities: EntityInfo[];
       this.config.entityCache$.pipe(take(1)).subscribe(entities => {
         availableEntities = entities;
       });
       const entity = availableEntities.find(e => e.Value === entityGuid);
-      const form: EditForm = {
-        items: [{ EntityId: entity.Id.toString() }],
+      form = {
+        items: [{ EntityId: entity.Id }],
       };
-      this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
     }
+    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
   deleteEntity(entityGuid: string) {
@@ -239,30 +205,15 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-      const hadChild = this.hasChild;
-      this.hasChild = !!this.route.snapshot.firstChild;
-      if (!this.hasChild && hadChild) {
-        const expandedFieldId = this.route.snapshot.paramMap.get('expandedFieldId');
-        const updateFieldId = this.route.snapshot.paramMap.get('updateFieldId');
-        const thisId = this.config.field.index.toString();
-
-        if (expandedFieldId != null && expandedFieldId !== thisId) { return; }
-        if (updateFieldId != null && updateFieldId !== thisId) { return; }
-
-        const navigation = this.router.getCurrentNavigation();
-        const editResult = navigation.extras?.state;
-        if (editResult) {
-          const newItemGuid = Object.keys(editResult)[0];
-          this.addSelected(newItemGuid);
-        }
-        this.fetchAvailableEntities();
-
-        if (updateFieldId != null && updateFieldId === thisId) {
-          this.expandableFieldService.openWithUpdate(this.config.field.index, null);
-        }
-      }
+    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(() => {
+      this.fetchAvailableEntities();
     }));
+    this.subscription.add(
+      this.editRoutingService.childFormResult(this.config.field.index, this.config.entity.entityGuid).subscribe(result => {
+        const newItemGuid = Object.keys(result)[0];
+        this.addSelected(newItemGuid);
+      })
+    );
   }
 
   private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {

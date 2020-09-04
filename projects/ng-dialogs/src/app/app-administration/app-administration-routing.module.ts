@@ -17,7 +17,7 @@ const appAdministrationRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: EmptyRouteComponent },
+      { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home' } },
       {
         path: 'data', component: EmptyRouteComponent, children: [
           {
@@ -28,68 +28,98 @@ const appAdministrationRoutes: Routes = [
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
-          { path: ':scope/add', component: DialogEntryComponent, data: { dialog: editContentTypeDialog } },
-          { path: ':scope/:id/edit', component: DialogEntryComponent, data: { dialog: editContentTypeDialog } },
+          {
+            path: ':scope/add',
+            component: DialogEntryComponent,
+            data: { dialog: editContentTypeDialog, title: 'Add Content Type' },
+          },
+          {
+            path: ':scope/:id/edit',
+            component: DialogEntryComponent,
+            data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
+          },
           {
             path: 'fields/:contentTypeStaticName',
-            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule)
+            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+            data: { title: 'Content Type Fields' },
           },
           {
             path: 'export/:contentTypeStaticName',
-            loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
+            loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule),
+            data: { title: 'Export Items' },
           },
-          { path: ':contentTypeStaticName/import', component: DialogEntryComponent, data: { dialog: contentImportDialog } },
+          {
+            path: ':contentTypeStaticName/import',
+            component: DialogEntryComponent,
+            data: { dialog: contentImportDialog, title: 'Import Items' },
+          },
           {
             path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule)
+            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
+            data: { title: 'Permission' },
           },
-        ]
+        ],
+        data: { title: 'App Data' },
       },
       {
         path: 'queries', component: EmptyRouteComponent, children: [
-          { path: 'import', component: DialogEntryComponent, data: { dialog: importQueryDialog } },
+          {
+            path: 'import',
+            component: DialogEntryComponent,
+            data: { dialog: importQueryDialog, title: 'Import Query' }
+          },
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            data: { title: 'Edit Query Name and Description' },
           },
           {
             path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule)
+            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
+            data: { title: 'Query Permissions' },
           },
-        ]
+        ],
+        data: { title: 'App Queries' },
       },
       {
         path: 'views', component: EmptyRouteComponent, children: [
           { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            data: { title: 'Edit View' },
           },
           {
             path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule)
+            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
+            data: { title: 'View Permissions' },
           },
-        ]
+        ],
+        data: { title: 'App Views' },
       },
-      { path: 'web-api', component: EmptyRouteComponent },
+      { path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, },
       {
         path: 'app', component: EmptyRouteComponent, children: [
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            data: { title: 'Edit App Properties' },
           },
           {
             path: 'fields/:contentTypeStaticName',
-            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule)
+            loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
+            data: { title: 'Edit Fields of App Settings & Resources' },
           },
           {
             path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule)
+            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
+            data: { title: 'App Permission' },
           },
-          { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog } },
-          { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog } },
-          { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog } },
-        ]
+          { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
+          { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
+          { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
+        ],
+        data: { title: 'Manage App' },
       },
     ]
   },

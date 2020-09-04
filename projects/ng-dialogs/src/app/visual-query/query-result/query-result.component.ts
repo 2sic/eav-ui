@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+import { QueryResultDialogData } from './query-result.models';
+import { PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models/pipeline-result.model';
+
 @Component({
   selector: 'app-query-result',
   templateUrl: './query-result.component.html',
@@ -8,14 +11,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueryResultComponent implements OnInit {
-  testParameters: any;
+  testParameters: string;
   timeUsed: number;
   ticksUsed: number;
-  result: any;
-  sources: any;
-  streams: any;
+  result: PipelineResultQuery;
+  sources: PipelineResultSources;
+  streams: PipelineResultStream[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<QueryResultComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: QueryResultDialogData, private dialogRef: MatDialogRef<QueryResultComponent>) { }
 
   ngOnInit() {
     this.testParameters = this.data.testParameters;

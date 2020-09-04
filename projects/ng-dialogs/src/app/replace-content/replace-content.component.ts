@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
-import { ContentGroup, ContentGroupAdd } from '../manage-content-list/models/content-group.model';
+import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { EditForm } from '../shared/models/edit-form.model';
-import { paramEncode } from '../shared/helpers/url-prep.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 
 @Component({
   selector: 'app-replace-content',
@@ -50,7 +50,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   save() {
@@ -65,7 +64,8 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: this.item.id }],
     };
-    this.router.navigate([`edit/${paramEncode(JSON.stringify(form))}`], { relativeTo: this.route });
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   closeDialog() {

@@ -1,8 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { angularConsoleLog } from '../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { EavConfiguration } from '../edit/shared/models/eav-configuration';
+import { EavConfig } from '../edit/shared/models/eav-configuration';
 
 /**
  * Create a new FieldMaskService instance and access result with resolve
@@ -28,7 +27,7 @@ export class FieldMaskService {
     model: { [key: string]: AbstractControl; },
     private changeEvent: (newValue: string) => any,
     overloadPreCleanValues: (key: string, value: string) => string,
-    private eavConfig?: EavConfiguration,
+    private eavConfig?: EavConfig,
   ) {
     this.mask = mask;
     this.model = model;
@@ -83,7 +82,6 @@ export class FieldMaskService {
 
   /** Change-event - will only fire if it really changes */
   private onChange() {
-    angularConsoleLog('FieldMaskService onChange called');
     const maybeNew = this.resolve();
     if (this.value !== maybeNew) {
       this.changeEvent(maybeNew);
@@ -93,7 +91,6 @@ export class FieldMaskService {
 
   /** Add watcher and execute onChange */
   private watchAllFields() {
-    angularConsoleLog('FieldMaskService watchAllFields called');
     // add a watch for each field in the field-mask
     this.fields.forEach(field => {
       if (!this.model[field]) { return; }

@@ -1,12 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="start center" class="mat-card-header-group-child">
-  <div fxFlex="auto" fxLayoutAlign="start center" (click)="collapseField = !collapseField" class="mat-caption">
-    <div *ngIf="enableCollapseField" fxLayoutAlign="start center" class="mat-caption field-title">
-      <mat-icon *ngIf="collapseField">keyboard_arrow_down</mat-icon>
-      <mat-icon *ngIf="!collapseField">keyboard_arrow_up</mat-icon>
-      <span>{{config.field.label }}&nbsp;{{config.field.required? '*': '' }}</span>
+  <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()" class="mat-caption">
+    <div fxLayoutAlign="start center" class="mat-caption field-title">
+      <mat-icon> {{ (collapse$ | async) ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</mat-icon>
+      <span>{{ label$ | async }}&nbsp;{{ (required$ | async) ? '*': '' }}</span>
     </div>
   </div>
 </div>
-<div style="padding-top: 8px;" [ngStyle]="{ 'display': !(collapseField && enableCollapseField) ? 'block' : 'none' }">
+<div style="padding-top: 8px;" [ngStyle]="{ 'display': !(collapse$ | async) ? 'block' : 'none' }">
   <ng-container #fieldComponent></ng-container>
 </div>

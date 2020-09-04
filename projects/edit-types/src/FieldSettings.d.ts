@@ -73,6 +73,7 @@ interface StringFontIconPicker extends String {
   CssPrefix: string;
   PreviewCss: string;
   Files: string;
+  ShowPrefix?: boolean;
 }
 
 /** @Number */

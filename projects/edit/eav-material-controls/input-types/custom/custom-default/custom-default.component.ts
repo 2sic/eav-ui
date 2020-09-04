@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { BaseComponent } from '../../base/base.component';
@@ -14,8 +14,17 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 })
 @InputType({
 })
-export class CustomDefaultComponent extends BaseComponent<null> {
+export class CustomDefaultComponent extends BaseComponent<null> implements OnInit, OnDestroy {
+
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
+  }
+
+  ngOnInit() {
+    super.ngOnInit();
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }

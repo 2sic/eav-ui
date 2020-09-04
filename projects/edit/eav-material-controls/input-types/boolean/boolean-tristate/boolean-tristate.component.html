@@ -5,8 +5,8 @@
 
   <div [formGroup]="group">
     <mat-slide-toggle [disabled]="disabled$ | async" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
-    'toggle-false': data.value === false,
-    'toggle-null': data.value === null
+      'toggle-false': data.value === false,
+      'toggle-null': data.value === null
     }">
       {{ label$ | async }}
     </mat-slide-toggle>

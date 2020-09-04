@@ -1,5 +1,4 @@
-<div *ngIf="(contentType$ | async)">
-  <app-eav-form [config]="itemFields$ | async" (formSubmit)="submit($event)"
-    (formValueChange)="formValueChange($event)">
+<div *ngIf="contentType$ | async">
+  <app-eav-form [config]="itemFields$ | async" (formSubmit)="submit()" (formValueChange)="formValueChange($event)">
   </app-eav-form>
 </div>

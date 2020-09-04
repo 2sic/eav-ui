@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -9,12 +8,13 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { PagePickerResult } from '../../../../shared/models/dnn-bridge/dnn-bridge-connector';
+import { PagePickerResult } from '../../dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { BaseComponent } from '../../base/base.component';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { Preview } from './hyperlink-default.models';
 import { FieldSettings } from '../../../../../edit-types';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,10 +29,16 @@ import { FieldSettings } from '../../../../../edit-types';
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   buttons$: Observable<string>;
-  preview$ = new BehaviorSubject<Preview>(null);
-  open$ = new BehaviorSubject(false);
-
-  private subscription = new Subscription();
+  open$: Observable<boolean>;
+  preview$ = new BehaviorSubject<Preview>({
+    url: '',
+    thumbnailUrl: '',
+    thumbnailPreviewUrl: '',
+    floatingText: '',
+    isImage: false,
+    isKnownType: false,
+    icon: '',
+  });
 
   constructor(
     eavService: EavService,
@@ -40,7 +46,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private dialog: MatDialog,
-    private route: ActivatedRoute,
+    private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
   }
@@ -48,22 +54,18 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   ngOnInit() {
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.subscription.add(this.settings$.subscribe(settings => {
       this.attachAdam(settings);
     }));
     this.subscription.add(this.value$.subscribe(value => {
       this.setLink(value);
     }));
-    this.subscription.add(this.route.params.subscribe(params => {
-      const isOpen = this.config.field.index.toString() === params.expandedFieldId;
-      this.open$.next(isOpen);
-    }));
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
     this.preview$.complete();
-    this.open$.complete();
+    super.ngOnDestroy();
   }
 
   // #region dnn-page picker dialog

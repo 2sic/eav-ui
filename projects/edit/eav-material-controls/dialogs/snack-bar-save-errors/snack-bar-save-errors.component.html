@@ -1,7 +1,7 @@
 <div class="save-errors-container">
   <div>{{ 'Errors.SaveErrors' | translate }}</div>
   <br />
-  <div *ngFor="let fieldError of fieldErrors;">
-    <span>{{ fieldError.field }}<span>: {{ fieldError.message | translate }}</span></span>
+  <div *ngFor="let error of fieldErrors;">
+    <span>{{ error.field }}<span>: {{ error.message | translate }}</span></span>
   </div>
 </div>

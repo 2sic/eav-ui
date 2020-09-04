@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 @InputType({
   wrapper: [WrappersConstants.EavLocalizationWrapper],
 })
-export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit {
+export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -38,5 +38,9 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
       }
       return label;
     }));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 }
