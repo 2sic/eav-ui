@@ -47,9 +47,9 @@ export function convertFormToUrl(form: EditForm) {
 export function convertUrlToForm(formUrl: string) {
   const form: EditForm = { items: [] };
   const items = formUrl.split(',');
-  const isNumber = /^[0-9]*$/g;
 
   for (const item of items) {
+    const isNumber = /^[0-9]*$/g;
     if (isNumber.test(item)) {
       // Edit Item
       const editItem: EditItem = { EntityId: parseInt(item, 10) };
