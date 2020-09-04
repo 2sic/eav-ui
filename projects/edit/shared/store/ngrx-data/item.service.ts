@@ -11,6 +11,7 @@ import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { InputTypeService } from './input-type.service';
 import { ContentTypeService } from './content-type.service';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
+import { SaveResult } from '../../models/eav/save-result.model';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -25,8 +26,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     });
   }
 
-  public updateItemId(itemData: { [key: string]: number }) {
-    // itemData: { e92f626e-aca6-43d1-a509-c79aa744b4fa: 10483 }
+  public updateItemId(itemData: SaveResult) {
     const guid = Object.keys(itemData)[0];
     const entityId = itemData[guid];
     let oldItem: Item;

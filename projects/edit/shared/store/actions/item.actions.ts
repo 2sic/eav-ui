@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 
 import { Item } from '../../models/eav/item';
+import { SaveResult } from '../../models/eav/save-result.model';
 
 // Item Attributes
 export const SAVE_ITEM_ATTRIBUTES_VALUES = '[Item] SAVE_ITEM_ATTRIBUTES_VALUES';
@@ -15,13 +16,11 @@ export class SaveItemAttributesValuesAction implements Action {
 
 export class SaveItemAttributesValuesSuccessAction implements Action {
   readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS;
-  // TODO: finish this with true values
-  constructor(public data: any) { }
+  constructor(public data: SaveResult) { }
 }
 
 export class SaveItemAttributesValuesErrorAction implements Action {
   readonly type = SAVE_ITEM_ATTRIBUTES_VALUES_ERROR;
-  // TODO: finish this with true values
   constructor(public error: any) { }
 }
 

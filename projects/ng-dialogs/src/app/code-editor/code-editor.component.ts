@@ -186,8 +186,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   private stopClose(e: BeforeUnloadEvent) {
     if (this.savedCode === this.view.Code) { return; }
-    e.preventDefault(); // Cancel the event
-    e.returnValue = ''; // Chrome requires returnValue to be set
+    e.preventDefault();
+    e.returnValue = ''; // fix for Chrome
   }
 
   private keyboardSave(e: KeyboardEvent) {

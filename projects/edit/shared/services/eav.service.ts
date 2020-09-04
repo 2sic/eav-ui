@@ -6,13 +6,16 @@ import { Observable, Subject } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Item } from '../models/eav/item';
-import { UrlHelper } from '../helpers/url-helper';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
 import { EavConfig } from '../models/eav-configuration';
 import { FormValueSet, FormDisabledSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { SaveResult } from '../models/eav/save-result.model';
+import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { VersioningOptions } from '../models/eav/versioning-options';
+import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 
 @Injectable()
 export class EavService implements OnDestroy {
@@ -29,7 +32,12 @@ export class EavService implements OnDestroy {
 
   private eavConfig: EavConfig;
 
-  constructor(private http: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
+  constructor(
+    private http: HttpClient,
+    private store: Store<fromStore.EavState>,
+    private dnnContext: DnnContext,
+    private context: Context,
+  ) { }
 
   ngOnDestroy() {
     this.forceConnectorSave$.complete();
@@ -41,19 +49,45 @@ export class EavService implements OnDestroy {
     return this.eavConfig;
   }
 
-  setEavConfiguration(route: ActivatedRoute, context: Context) {
-    this.eavConfig = UrlHelper.getEavConfiguration(route, context);
+  /** Create EavConfiguration from sessionStorage */
+  setEavConfig(route: ActivatedRoute) {
+    const form = convertUrlToForm(route.snapshot.params.items);
+    const editItems = JSON.stringify(form.items);
+
+    this.eavConfig = new EavConfig(
+      this.context.zoneId.toString(),
+      this.context.appId.toString(),
+      this.context.appRoot,
+      this.context.contentBlockId.toString(),
+      sessionStorage.getItem(keyDebug),
+      sessionStorage.getItem(keyDialog),
+      editItems,
+      sessionStorage.getItem(keyLang),
+      sessionStorage.getItem(keyLangPri),
+      sessionStorage.getItem(keyLangs),
+      this.context.moduleId.toString(),
+      sessionStorage.getItem(keyMode),
+      sessionStorage.getItem(keyPartOfPage),
+      sessionStorage.getItem(keyPortalRoot),
+      sessionStorage.getItem(keyPublishing),
+      this.context.tabId.toString(),
+      this.context.requestToken.toString(),
+      sessionStorage.getItem(keyWebsiteRoot),
+      this.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
+    );
   }
 
-  loadAllDataForForm(appId: string, items: string | any) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items) as Observable<any>;
+  fetchFormData(items: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ui/load'), items, {
+      params: { appId: this.context.appId.toString() }
+    }) as Observable<EavFormData>;
   }
 
   saveItem(item: Item) {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(item));
   }
 
-  saveItemSuccess(data: any) {
+  saveItemSuccess(data: SaveResult) {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesSuccessAction(data));
   }
 
@@ -61,10 +95,29 @@ export class EavService implements OnDestroy {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesErrorAction(error));
   }
 
-  savemany(appId: string, partOfPage: string, body: string) {
-    return this.http.post(
-      this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`),
-      body
-    ) as Observable<SaveResult>;
+  saveFormData(partOfPage: string, body: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ui/save'), body, {
+      params: { appId: this.context.appId.toString(), partOfPage }
+    }) as Observable<SaveResult>;
   }
+
+  private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
+    if (!partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+
+    const publish = publishing || '';
+    switch (publish) {
+      case '':
+      case 'DraftOptional':
+        return { show: true, hide: true, branch: true };
+      case 'DraftRequired':
+        return { branch: true, hide: true };
+      default: {
+        console.error('invalid versioning requiremenets: ' + publish);
+        return {};
+      }
+    }
+  }
+
 }

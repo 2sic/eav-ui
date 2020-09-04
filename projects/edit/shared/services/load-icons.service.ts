@@ -42,10 +42,7 @@ export class LoadIconsService {
     { name: 'sitemap', html: sitemap },
   ];
 
-  constructor(
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-  ) { }
+  constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
 
   load() {
     this.icons.forEach(icon => {

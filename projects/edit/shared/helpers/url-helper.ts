@@ -1,10 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
-
 import { EavConfig } from '../models/eav-configuration';
-import { VersioningOptions } from '../models/eav/versioning-options';
-import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
-import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 
 export class UrlHelper {
 
@@ -16,48 +10,6 @@ export class UrlHelper {
       }
     });
     return queryParams;
-  }
-
-  /** Create EavConfiguration from sessionStorage */
-  static getEavConfiguration(route: ActivatedRoute, context: Context) {
-    const form = convertUrlToForm(route.snapshot.params.items);
-    const editItems = JSON.stringify(form.items);
-    return new EavConfig(
-      context.zoneId.toString(),
-      context.appId.toString(),
-      context.appRoot,
-      context.contentBlockId.toString(),
-      sessionStorage.getItem(keyDebug),
-      sessionStorage.getItem(keyDialog),
-      editItems,
-      sessionStorage.getItem(keyLang),
-      sessionStorage.getItem(keyLangPri),
-      sessionStorage.getItem(keyLangs),
-      context.moduleId.toString(),
-      sessionStorage.getItem(keyMode),
-      sessionStorage.getItem(keyPartOfPage),
-      sessionStorage.getItem(keyPortalRoot),
-      sessionStorage.getItem(keyPublishing),
-      context.tabId.toString(),
-      context.requestToken.toString(),
-      sessionStorage.getItem(keyWebsiteRoot),
-      UrlHelper.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
-    );
-  }
-
-  private static getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
-    if (!partOfPage) { return { show: true, hide: true, branch: true }; }
-
-    const req = publishing || '';
-    switch (req) {
-      case '':
-      case 'DraftOptional': return { show: true, hide: true, branch: true };
-      case 'DraftRequired': return { branch: true, hide: true };
-      default: {
-        console.error('invalid versioning requiremenets: ' + req.toString());
-        return {};
-      }
-    }
   }
 
   /** https://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters/1099670#1099670 */
