@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Type } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { Context } from '../../services/context';
 import { DialogConfig } from '../../models/dialog-config.model';
@@ -13,10 +14,10 @@ import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
   styleUrls: ['./dialog-entry.component.scss']
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private subscription = new Subscription();
-  private dialogRef: MatDialogRef<any, any>;
-  private dialogConfig: DialogConfig;
-  private component: Type<any>;
+  /** Forces change detection when dialog is async loaded */
+  loaded$ = new BehaviorSubject<boolean>(false);
+
+  private dialogRef: MatDialogRef<any>;
 
   constructor(
     private dialog: MatDialog,
@@ -24,39 +25,38 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-  ) {
-    this.dialogConfig = this.route.snapshot.data.dialog;
-    if (!this.dialogConfig) {
+  ) { }
+
+  ngOnInit() {
+    const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
+    if (dialogConfig == null) {
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
     }
-  }
+    angularConsoleLog('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
-  async ngOnInit() {
-    angularConsoleLog('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
-    this.component = await this.dialogConfig.getComponent();
-    if (this.dialogConfig.initContext) {
-      this.context.init(this.route);
-    }
+    dialogConfig.getComponent().then(component => {
+      if (dialogConfig.initContext) {
+        this.context.init(this.route);
+      }
 
-    this.dialogRef = this.dialog.open(this.component, {
-      backdropClass: 'dialog-backdrop',
-      panelClass: [
-        'dialog-panel',
-        `dialog-panel-${this.dialogConfig.panelSize}`,
-        this.dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
-        ...(this.dialogConfig.panelClass ? this.dialogConfig.panelClass : []),
-      ],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
-      // Real top margin is overwritten in css e.g. dialog-panel-large
-      position: { top: '0' }
-    });
+      this.dialogRef = this.dialog.open(component, {
+        backdropClass: 'dialog-backdrop',
+        panelClass: [
+          'dialog-panel',
+          `dialog-panel-${dialogConfig.panelSize}`,
+          dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
+          ...(dialogConfig.panelClass ? dialogConfig.panelClass : []),
+        ],
+        viewContainerRef: this.viewContainerRef,
+        autoFocus: false,
+        closeOnNavigation: false,
+        // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+        // Real top margin is overwritten in css e.g. dialog-panel-large
+        position: { top: '0' }
+      });
 
-    this.subscription.add(
-      this.dialogRef.afterClosed().subscribe((data: any) => {
-        angularConsoleLog('Dialog was closed:', this.dialogConfig.name, 'Data:', data);
+      this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {
+        angularConsoleLog('Dialog was closed:', dialogConfig.name, 'Data:', data);
 
         if (this.route.pathFromRoot.length <= 3) {
           try {
@@ -70,17 +70,15 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         } else {
           this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
         }
-      })
-    );
+      });
+
+      this.loaded$.next(true);
+    });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.subscription = null;
-    this.dialogConfig = null;
-    this.component = null;
+    this.loaded$.complete();
     this.dialogRef.close();
-    this.dialogRef = null;
   }
 
 }

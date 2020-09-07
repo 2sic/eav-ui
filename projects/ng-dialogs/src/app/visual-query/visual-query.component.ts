@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Context } from '../shared/services/context';
@@ -10,8 +10,7 @@ import { VisualQueryService } from './services/visual-query.service';
   templateUrl: './visual-query.component.html',
   styleUrls: ['./visual-query.component.scss'],
   providers: [VisualQueryService],
-  // spm TODO: this component can't be onPush yet because EditDialog (editPipelineEntity) doesn't work
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisualQueryComponent implements OnInit {
   @ViewChild(PlumbEditorComponent) plumbEditor: PlumbEditorComponent;

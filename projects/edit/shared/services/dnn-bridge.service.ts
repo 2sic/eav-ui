@@ -20,7 +20,7 @@ export class DnnBridgeService {
       dialogType: type,
     };
 
-    let dialogRef: MatDialogRef<any, any>;
+    let dialogRef: MatDialogRef<PagepickerComponent>;
     connector.valueChanged = (value: any) => {
       dialogRef.close();
       callback(value);

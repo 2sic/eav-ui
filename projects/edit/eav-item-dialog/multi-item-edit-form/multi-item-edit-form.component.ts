@@ -73,7 +73,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<MultiItemEditFormComponent, any>,
+    private dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
