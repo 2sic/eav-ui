@@ -10,7 +10,7 @@ export class LanguageService extends EntityCollectionServiceBase<Language> {
   }
 
   /** Load available languages in ngrx-data */
-  public loadLanguages(languages: Language[]) {
+  loadLanguages(languages: Language[]) {
     this.addAllToCache(languages);
   }
 }

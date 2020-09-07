@@ -12,13 +12,13 @@ export class ContentTypeService extends EntityCollectionServiceBase<ContentType>
   }
 
   /** Add new content types to the store */
-  public addContentTypes(rawContentTypes: JsonContentType1[]) {
+  addContentTypes(rawContentTypes: JsonContentType1[]) {
     const builtContentTypes = rawContentTypes.map(rawCT => ContentType.create(rawCT));
     this.addManyToCache(builtContentTypes);
   }
 
   /** Get content type observable from the store */
-  public getContentTypeById(id: string) {
+  getContentTypeById(id: string) {
     return this.entities$.pipe(
       map(contentTypes => contentTypes.find(contentType => contentType.contentType.id === id))
       // maybe add distinctUntilChanged()

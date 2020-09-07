@@ -1,7 +1,6 @@
 // TODO: SPM - shouldn't we move these files into this folder?
 // I assume they are not actually shared with any other code
 
-
 // 2sxc icons
 import * as contentBlock from '../../../edit/assets/icons/2sxc/content-block.svg';
 import * as fileDnn from '../../../edit/assets/icons/2sxc/file-dnn.svg';
@@ -54,8 +53,6 @@ const customTinyMceIcons: { [key: string]: string } = {
 
 export function loadCustomIcons(editor: any) {
   Object.keys(customTinyMceIcons).forEach(key => {
-    if (!customTinyMceIcons.hasOwnProperty(key)) { return; }
-
     editor.ui.registry.addIcon(
       key,
       customTinyMceIcons[key]
