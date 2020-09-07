@@ -14,7 +14,7 @@ export class AddItem {
   ContentTypeName: string;
   /** Add item as metadata to another item */
   For?: EavFor;
-  /** Deprecated 2sxc 9 Metadata object */
+  /** @deprecated 2sxc 9 Metadata object */
   Metadata?: LegacyMetadata;
   /** Prefill form with data */
   Prefill?: { [key: string]: string };
@@ -37,7 +37,7 @@ export class SourceItem {
   constructor(public Path: string) { }
 }
 
-/** Deprecated 2sxc 9 Metadata object */
+/** @deprecated 2sxc 9 Metadata object */
 export class LegacyMetadata {
   key: string;
   keyType: string;
