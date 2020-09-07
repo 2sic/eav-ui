@@ -1,5 +1,6 @@
 import { EditForm, EditItem, AddItem, GroupItem } from '../models/edit-form.model';
 import { EavFor } from '../../../../../edit/shared/models/eav';
+import { eavConstants, EavMetadataKey } from '../constants/eav.constants';
 
 export function convertFormToUrl(form: EditForm) {
   let formUrl = '';
@@ -22,6 +23,27 @@ export function convertFormToUrl(form: EditForm) {
         formUrl += '&for:n~' + addItem.For.Number + ':' + addItem.For.Target;
       } else if (addItem.For?.Guid) {
         formUrl += '&for:g~' + addItem.For.Guid + ':' + addItem.For.Target;
+      } else if (addItem.Metadata) {
+        let keyType: string;
+        switch (addItem.Metadata.keyType.toLocaleLowerCase()) {
+          case eavConstants.keyTypes.string:
+            keyType = 's';
+            break;
+          case eavConstants.keyTypes.number:
+            keyType = 'n';
+            break;
+          case eavConstants.keyTypes.guid:
+            keyType = 'g';
+            break;
+        }
+        let target: string;
+        const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
+        for (const metaKey of metadataKeys) {
+          if (addItem.Metadata.targetType !== eavConstants.metadata[metaKey].type) { continue; }
+          target = eavConstants.metadata[metaKey].target;
+          break;
+        }
+        formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target;
       }
 
       if (addItem.Prefill) {

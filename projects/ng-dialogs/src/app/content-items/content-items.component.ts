@@ -176,6 +176,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     for (const metaKey of metadataKeys) {
       if (targetType !== eavConstants.metadata[metaKey].type) { continue; }
       target = eavConstants.metadata[metaKey].target;
+      break;
     }
 
     const form: EditForm = {
