@@ -103,7 +103,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   browseCatalog() {

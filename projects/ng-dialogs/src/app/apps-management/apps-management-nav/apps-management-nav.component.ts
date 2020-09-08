@@ -41,7 +41,6 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   closeDialog() {
