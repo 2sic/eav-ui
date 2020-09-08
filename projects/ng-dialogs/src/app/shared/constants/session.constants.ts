@@ -9,7 +9,6 @@ export const keyAppRoot = prefix + 'approot';
 export const keyDebug = prefix + 'debug';
 export const keyDialog = prefix + 'dialog';
 export const keyContentType = prefix + 'contentType';
-export const keyFa = prefix + 'fa';
 export const keyItems = prefix + 'items';
 export const keyLang = prefix + 'lang';
 export const keyLangPri = prefix + 'langpri';

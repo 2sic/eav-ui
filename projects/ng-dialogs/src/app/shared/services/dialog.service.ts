@@ -4,7 +4,7 @@ import { Context } from './context';
 import { EditForm } from '../models/edit-form.model';
 import { DialogTypeConstants } from '../constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyFa, keyRequestToken, keyDebug, keyUserCanDesign, keyUserCanDevelop, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
+import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyRequestToken, keyDebug, keyUserCanDesign, keyUserCanDevelop, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
 
 @Injectable()
 export class DialogService {
@@ -33,7 +33,6 @@ export class DialogService {
       this.buildHashParam(keyUserCanDesign) +
       this.buildHashParam(keyUserCanDevelop) +
       this.buildHashParam(keyAppRoot, this.context.appRoot) +
-      this.buildHashParam(keyFa) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
       this.buildHashParam(keyItems, JSON.stringify(form.items)) +
@@ -67,7 +66,6 @@ export class DialogService {
       this.buildHashParam(keyUserCanDesign) +
       this.buildHashParam(keyUserCanDevelop) +
       this.buildHashParam(keyAppRoot, this.context.appRoot) +
-      this.buildHashParam(keyFa) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
       this.buildHashParam(keyPipelineId, queryId.toString()) +
