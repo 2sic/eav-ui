@@ -57,7 +57,6 @@ const configuration = {
   output: {
     filename: 'index.js',
     path: distPath,
-    // path: path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-custom-gps'),
   },
 };
 

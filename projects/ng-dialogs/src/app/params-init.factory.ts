@@ -1,11 +1,10 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { SxcRoot } from '@2sic.com/2sxc-typings';
-
+import { SxcRoot, JsInfo } from '@2sic.com/2sxc-typings';
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
+import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId, keyApi, keyUiRoot } from './shared/constants/session.constants';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 declare const $2sxc: SxcRoot;
@@ -109,6 +108,8 @@ function loadEnvironment() {
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
     root: sessionStorage.getItem(keyPortalRoot),
-    api: sessionStorage.getItem(keyPortalRoot) + 'desktopmodules/2sxc/api/',
-  });
+    api: sessionStorage.getItem(keyApi),
+    // new in 11.05+, so not known in old type JsInfo
+    uiRoot: sessionStorage.getItem(keyUiRoot),
+  } as any as JsInfo);
 }

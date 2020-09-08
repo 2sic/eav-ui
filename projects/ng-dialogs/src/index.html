@@ -37,7 +37,7 @@
 
       // the version to append to each asset, to ensure reload after an upgrade
       window.sxcVersion = sxcVersion;
-      // create an empty _jsApi so $2sxc can initialize - must fill afterwards!
+      // create an empty _jsApi so $2sxc won't look for the meta-header - must fill afterwards!
       window._jsApi = {};
       // first load the main 2sxc because it contains some url-param methods
       document.write('<script src="../../js/2sxc.api.min.js?sxcver=' + sxcVersion + '"></scr' + 'ipt>');
