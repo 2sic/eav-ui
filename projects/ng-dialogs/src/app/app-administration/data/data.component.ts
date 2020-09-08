@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,7 +15,6 @@ import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constan
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -26,6 +25,8 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
   styleUrls: ['./data.component.scss']
 })
 export class DataComponent implements OnInit, OnDestroy {
+  @Input() private showPermissions: boolean;
+
   contentTypes: ContentType[];
   scope: string;
   defaultScope: string;
@@ -61,7 +62,7 @@ export class DataComponent implements OnInit, OnDestroy {
       {
         width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
         cellRendererParams: {
-          enableAppPermissionsGetter: this.enableAppPermissionsGetter.bind(this),
+          showPermissionsGetter: this.showPermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
@@ -80,7 +81,6 @@ export class DataComponent implements OnInit, OnDestroy {
     ],
   };
 
-  private enableAppPermissions = false;
   private subscription = new Subscription();
   private hasChild: boolean;
 
@@ -89,7 +89,6 @@ export class DataComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private globalConfigurationService: GlobalConfigurationService,
-    private appDialogConfigService: AppDialogConfigService,
     private snackBar: MatSnackBar,
   ) {
     this.hasChild = !!this.route.snapshot.firstChild.firstChild;
@@ -97,9 +96,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.defaultScope = eavConstants.scopes.default.value;
   }
 
-  async ngOnInit() {
-    const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
-    this.enableAppPermissions = dialogSettings.Context.Enable.AppPermissions;
+  ngOnInit() {
     this.fetchScopes();
     this.fetchContentTypes();
     this.refreshOnChildClosed();
@@ -180,8 +177,8 @@ export class DataComponent implements OnInit, OnDestroy {
     return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
-  private enableAppPermissionsGetter() {
-    return this.enableAppPermissions;
+  private showPermissionsGetter() {
+    return this.showPermissions;
   }
 
   private nameCellClassGetter(params: CellClassParams) {

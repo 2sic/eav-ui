@@ -18,7 +18,7 @@
         <mat-icon>info</mat-icon>
         <span>Info</span>
       </div>
-      <app-getting-started [gettingStartedUrl]="dialogSettings.Context.App.GettingStartedUrl">
+      <app-getting-started *matTabContent [gettingStartedUrl]="dialogSettings.Context.App.GettingStartedUrl">
       </app-getting-started>
     </mat-tab>
 
@@ -27,7 +27,7 @@
         <mat-icon>menu</mat-icon>
         <span>Data</span>
       </div>
-      <app-data *matTabContent></app-data>
+      <app-data *matTabContent [showPermissions]="dialogSettings.Context.Enable.AppPermissions"></app-data>
     </mat-tab>
 
     <mat-tab *ngIf="dialogSettings.Context.Enable.Query">
@@ -59,7 +59,8 @@
         <mat-icon>settings_applications</mat-icon>
         <span>App</span>
       </div>
-      <app-app-configuration *matTabContent></app-app-configuration>
+      <app-app-configuration *matTabContent [showPermissions]="dialogSettings.Context.Enable.AppPermissions">
+      </app-app-configuration>
     </mat-tab>
   </mat-tab-group>
 </div>
