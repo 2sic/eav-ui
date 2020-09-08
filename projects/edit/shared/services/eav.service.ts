@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
+import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Item } from '../models/eav/item';
@@ -16,6 +17,7 @@ import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-it
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { VersioningOptions } from '../models/eav/versioning-options';
 import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+declare const $2sxc: SxcRoot;
 
 @Injectable()
 export class EavService implements OnDestroy {
@@ -54,27 +56,31 @@ export class EavService implements OnDestroy {
     const form = convertUrlToForm(route.snapshot.params.items);
     const editItems = JSON.stringify(form.items);
 
-    this.eavConfig = new EavConfig(
-      this.context.zoneId.toString(),
-      this.context.appId.toString(),
-      this.context.appRoot,
-      this.context.contentBlockId.toString(),
-      sessionStorage.getItem(keyDebug),
-      sessionStorage.getItem(keyDialog),
-      editItems,
-      sessionStorage.getItem(keyLang),
-      sessionStorage.getItem(keyLangPri),
-      sessionStorage.getItem(keyLangs),
-      this.context.moduleId.toString(),
-      sessionStorage.getItem(keyMode),
-      sessionStorage.getItem(keyPartOfPage),
-      sessionStorage.getItem(keyPortalRoot),
-      sessionStorage.getItem(keyPublishing),
-      this.context.tabId.toString(),
-      this.context.requestToken.toString(),
-      sessionStorage.getItem(keyWebsiteRoot),
-      this.getVersioningOptions(sessionStorage.getItem(keyPartOfPage) === 'true', sessionStorage.getItem(keyPublishing))
-    );
+    this.eavConfig = {
+      zoneId: this.context.zoneId.toString(),
+      appId: this.context.appId.toString(),
+      approot: this.context.appRoot,
+      cbid: this.context.contentBlockId.toString(),
+      debug: sessionStorage.getItem(keyDebug),
+      dialog: sessionStorage.getItem(keyDialog),
+      items: editItems,
+      lang: sessionStorage.getItem(keyLang),
+      langpri: sessionStorage.getItem(keyLangPri),
+      langs: sessionStorage.getItem(keyLangs),
+      mid: this.context.moduleId.toString(),
+      mode: sessionStorage.getItem(keyMode),
+      partOfPage: sessionStorage.getItem(keyPartOfPage),
+      portalroot: sessionStorage.getItem(keyPortalRoot),
+      publishing: sessionStorage.getItem(keyPublishing),
+      tid: this.context.tabId.toString(),
+      rvt: this.context.requestToken,
+      websiteroot: sessionStorage.getItem(keyWebsiteRoot),
+      systemroot: ($2sxc.env as any).uiRoot(),
+      versioningOptions: this.getVersioningOptions(
+        sessionStorage.getItem(keyPartOfPage) === 'true',
+        sessionStorage.getItem(keyPublishing),
+      ),
+    };
   }
 
   fetchFormData(items: string) {
