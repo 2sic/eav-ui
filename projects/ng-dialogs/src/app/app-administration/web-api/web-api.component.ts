@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 
@@ -17,8 +17,9 @@ import { defaultControllerName } from '../../shared/constants/file-names.constan
   styleUrls: ['./web-api.component.scss']
 })
 export class WebApiComponent implements OnInit {
-  webApis: WebApi[];
+  @Input() private showCode: boolean;
 
+  webApis: WebApi[];
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -36,8 +37,8 @@ export class WebApiComponent implements OnInit {
       },
       {
         width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
+          showCodeGetter: this.showCodeGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
-          onDelete: this.deleteApi.bind(this),
         } as WebApiActionsParams,
       },
     ],
@@ -95,12 +96,12 @@ export class WebApiComponent implements OnInit {
     });
   }
 
-  private openCode(api: WebApi) {
-    this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
+  private showCodeGetter() {
+    return this.showCode;
   }
 
-  private deleteApi(api: WebApi) {
-    alert('Delete api');
+  private openCode(api: WebApi) {
+    this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
   }
 
 }

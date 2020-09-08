@@ -10,10 +10,14 @@ import { ViewActionsParams } from './views-actions.models';
   styleUrls: ['./views-actions.component.scss']
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
+  showCode: boolean;
+  showPermissions: boolean;
   private params: ViewActionsParams;
 
   agInit(params: ViewActionsParams) {
     this.params = params;
+    this.showCode = this.params.showCodeGetter();
+    this.showPermissions = this.params.showPermissionsGetter();
   }
 
   refresh(params?: any): boolean {

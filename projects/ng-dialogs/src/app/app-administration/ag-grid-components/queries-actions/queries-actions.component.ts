@@ -10,10 +10,12 @@ import { QueriesActionsParams } from './queries-actions.models';
   styleUrls: ['./queries-actions.component.scss']
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
+  showPermissions: boolean;
   private params: QueriesActionsParams;
 
   agInit(params: QueriesActionsParams) {
     this.params = params;
+    this.showPermissions = this.params.showPermissionsGetter();
   }
 
   refresh(params?: any): boolean {

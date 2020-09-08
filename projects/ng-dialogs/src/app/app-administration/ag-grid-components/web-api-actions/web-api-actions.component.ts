@@ -10,10 +10,12 @@ import { WebApi } from '../../models/web-api.model';
   styleUrls: ['./web-api-actions.component.scss']
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
+  showCode: boolean;
   private params: WebApiActionsParams;
 
   agInit(params: WebApiActionsParams) {
     this.params = params;
+    this.showCode = this.params.showCodeGetter();
   }
 
   refresh(params?: any): boolean {
@@ -23,10 +25,5 @@ export class WebApiActionsComponent implements ICellRendererAngularComp {
   openCode() {
     const api: WebApi = this.params.data;
     this.params.onOpenCode(api);
-  }
-
-  deleteApi() {
-    const api: WebApi = this.params.data;
-    this.params.onDelete(api);
   }
 }

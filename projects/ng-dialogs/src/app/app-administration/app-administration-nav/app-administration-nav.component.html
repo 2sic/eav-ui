@@ -35,7 +35,8 @@
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
       </div>
-      <app-queries *matTabContent></app-queries>
+      <app-queries *matTabContent [showPermissions]="dialogSettings.Context.Enable.AppPermissions">
+      </app-queries>
     </mat-tab>
 
     <mat-tab>
@@ -43,7 +44,9 @@
         <mat-icon>layers</mat-icon>
         <span>Views</span>
       </div>
-      <app-views *matTabContent></app-views>
+      <app-views *matTabContent [showCode]="dialogSettings.Context.Enable.CodeEditor"
+        [showPermissions]="dialogSettings.Context.Enable.AppPermissions">
+      </app-views>
     </mat-tab>
 
     <mat-tab *ngIf="dialogSettings.Context.Enable.Query">
@@ -51,7 +54,8 @@
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>
       </div>
-      <app-web-api *matTabContent></app-web-api>
+      <app-web-api *matTabContent [showCode]="dialogSettings.Context.Enable.CodeEditor">
+      </app-web-api>
     </mat-tab>
 
     <mat-tab>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -28,6 +28,9 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
   styleUrls: ['./views.component.scss']
 })
 export class ViewsComponent implements OnInit, OnDestroy {
+  @Input() private showCode: boolean;
+  @Input() private showPermissions: boolean;
+
   views: View[];
   polymorphStatus: string;
   polymorphLogo = polymorphLogo;
@@ -66,6 +69,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
       {
         width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
         cellRendererParams: {
+          showCodeGetter: this.showCodeGetter.bind(this),
+          showPermissionsGetter: this.showPermissionsGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onDelete: this.deleteView.bind(this),
@@ -194,6 +199,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const view: View = params.data;
     const type = calculateViewType(view);
     return type.value;
+  }
+
+  private showCodeGetter() {
+    return this.showCode;
+  }
+
+  private showPermissionsGetter() {
+    return this.showPermissions;
   }
 
   private contentDemoValueGetter(params: ValueGetterParams) {

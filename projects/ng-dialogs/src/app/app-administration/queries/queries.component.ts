@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -23,8 +23,9 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
   styleUrls: ['./queries.component.scss']
 })
 export class QueriesComponent implements OnInit, OnDestroy {
-  queries: Query[];
+  @Input() private showPermissions: boolean;
 
+  queries: Query[];
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -44,6 +45,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       {
         width: 200, cellClass: 'secondary-action no-padding',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
+          showPermissionsGetter: this.showPermissionsGetter.bind(this),
           onEditQuery: this.editQuery.bind(this),
           onCloneQuery: this.cloneQuery.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
@@ -109,6 +111,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private idValueGetter(params: ValueGetterParams) {
     const query: Query = params.data;
     return `ID: ${query.Id}\nGUID: ${query.Guid}`;
+  }
+
+  private showPermissionsGetter() {
+    return this.showPermissions;
   }
 
   private openVisualQueryDesigner(params: CellClickedEvent) {
