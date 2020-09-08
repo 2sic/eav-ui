@@ -27,7 +27,7 @@ export class AppConfigurationComponent implements OnInit {
 
   ngOnInit() {
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-      this.showPermissions = !dialogSettings.IsContent;
+      this.showPermissions = dialogSettings.Context.Enable.AppPermissions;
     });
   }
 

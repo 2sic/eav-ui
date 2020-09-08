@@ -18,7 +18,7 @@
         <mat-icon>info</mat-icon>
         <span>Info</span>
       </div>
-      <app-getting-started [gettingStartedUrl]="dialogSettings.GettingStartedUrl">
+      <app-getting-started [gettingStartedUrl]="dialogSettings.Context.App.GettingStartedUrl">
       </app-getting-started>
     </mat-tab>
 
@@ -30,7 +30,7 @@
       <app-data *matTabContent></app-data>
     </mat-tab>
 
-    <mat-tab *ngIf="!dialogSettings.IsContent">
+    <mat-tab *ngIf="dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" matTooltip="Query Designer">
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
@@ -46,7 +46,7 @@
       <app-views *matTabContent></app-views>
     </mat-tab>
 
-    <mat-tab *ngIf="!dialogSettings.IsContent">
+    <mat-tab *ngIf="dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" matTooltip="WebApi / Data">
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>

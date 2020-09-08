@@ -61,7 +61,7 @@ export class DataComponent implements OnInit, OnDestroy {
       {
         width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
         cellRendererParams: {
-          enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
+          enableAppPermissionsGetter: this.enableAppPermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
@@ -80,7 +80,7 @@ export class DataComponent implements OnInit, OnDestroy {
     ],
   };
 
-  private enableAppFeatures = false;
+  private enableAppPermissions = false;
   private subscription = new Subscription();
   private hasChild: boolean;
 
@@ -99,7 +99,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
-    this.enableAppFeatures = !dialogSettings.IsContent;
+    this.enableAppPermissions = dialogSettings.Context.Enable.AppPermissions;
     this.fetchScopes();
     this.fetchContentTypes();
     this.refreshOnChildClosed();
@@ -180,8 +180,8 @@ export class DataComponent implements OnInit, OnDestroy {
     return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
-  private enableAppFeaturesGetter() {
-    return this.enableAppFeatures;
+  private enableAppPermissionsGetter() {
+    return this.enableAppPermissions;
   }
 
   private nameCellClassGetter(params: CellClassParams) {

@@ -17,8 +17,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
   agInit(params: DataActionsParams) {
     this.params = params;
     this.contentType = this.params.data;
-    const enableAppFeatures = this.params.enableAppFeaturesGetter();
-    this.showPermissions = enableAppFeatures && this.isGuid(this.contentType.StaticName);
+    const enableAppPermissions = this.params.enableAppPermissionsGetter();
+    this.showPermissions = enableAppPermissions && this.isGuid(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {
