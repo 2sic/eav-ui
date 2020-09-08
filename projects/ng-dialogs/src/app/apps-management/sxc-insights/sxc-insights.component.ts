@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
+
 import { SxcInsightsService } from '../services/sxc-insights.service';
 declare const $2sxc: SxcRoot;
 

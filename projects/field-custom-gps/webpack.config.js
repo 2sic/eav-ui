@@ -5,7 +5,7 @@ const setExternalSourceMaps = require('../../build-helpers/external-source-maps-
 
 // 2020-08-27 2dm changed to have multi-targets
 const multiOutput = require('../../build-helpers/multi-output');
-const distPath = path.resolve(__dirname, "../../dist/system/field-custom-gps");
+const distPath = path.resolve(__dirname, '../../dist/system/field-custom-gps');
 const targetDnn = path.resolve(multiOutput.DnnTargetFolder, './system/field-custom-gps');
 const targetAssets = path.resolve(multiOutput.AssetsTarget, './system/field-custom-gps');
 

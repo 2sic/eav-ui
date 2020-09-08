@@ -1,5 +1,6 @@
-import { VersioningOptions } from './eav/versioning-options';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
+
+import { VersioningOptions } from './eav/versioning-options';
 declare const $2sxc: SxcRoot;
 
 export class EavConfig {
@@ -26,6 +27,6 @@ export class EavConfig {
     public websiteroot: string,
     public versioningOptions: VersioningOptions,
   ) {
-    this.systemroot = ($2sxc.env as any).uiRoot(); // websiteroot + 'desktopmodules/tosic_sexycontent/';
+    this.systemroot = ($2sxc.env as any).uiRoot();
   }
 }

@@ -23,7 +23,8 @@ export const keyFilters = prefix + 'filters';
 export const keyUserCanDesign = prefix + 'user%5BcanDesign%5D';
 export const keyUserCanDevelop = prefix + 'user%5BcanDevelop%5D';
 export const keyPipelineId = prefix + 'pipelineId';
-/** Url which opened the dialog. Used for debugging */
-export const keyUrl = prefix + 'url';
 export const keyApi = prefix + 'api';
 export const keyUiRoot = prefix + 'uiRoot';
+
+/** Url which opened the dialog. Used for debugging */
+export const keyUrl = prefix + 'url';

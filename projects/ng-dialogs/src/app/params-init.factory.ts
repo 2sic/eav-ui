@@ -1,6 +1,7 @@
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { SxcRoot, JsInfo } from '@2sic.com/2sxc-typings';
+
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
