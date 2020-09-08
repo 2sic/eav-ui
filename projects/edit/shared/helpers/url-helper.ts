@@ -1,4 +1,4 @@
-import { EavConfig } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-config';
 
 export class UrlHelper {
 

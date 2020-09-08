@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavConfig } from '../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../shared/models/eav-config';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';

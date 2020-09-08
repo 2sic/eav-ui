@@ -8,7 +8,7 @@ import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operato
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
-import { EavConfig } from '../../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../../shared/models/eav-config';
 import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';

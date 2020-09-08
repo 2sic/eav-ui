@@ -9,7 +9,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Item } from '../models/eav/item';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
-import { EavConfig } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-config';
 import { FormValueSet, FormDisabledSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { SaveResult } from '../models/eav/save-result.model';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { EavConfig } from '../models/eav-configuration';
+import { EavConfig } from '../models/eav-config';
 import { EavService } from './eav.service';
 import { UrlHelper } from '../helpers/url-helper';
 declare const sxcVersion: string;

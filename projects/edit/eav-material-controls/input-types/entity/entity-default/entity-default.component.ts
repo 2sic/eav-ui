@@ -14,7 +14,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { EavConfig } from '../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../shared/models/eav-config';
 import { SelectedEntity } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';

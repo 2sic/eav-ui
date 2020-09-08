@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 
 import { DnnBridgeDialogData } from './web-form-bridge.models';
 import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfig } from '../../../../shared/models/eav-configuration';
+import { EavConfig } from '../../../../shared/models/eav-config';
 
 @Directive({ selector: '[appWebFormBridge]' })
 export class WebFormBridgeDirective implements OnInit {
