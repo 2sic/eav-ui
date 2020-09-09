@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { WebApiActionsParams } from './web-api-actions.models';
@@ -7,7 +7,8 @@ import { WebApi } from '../../models/web-api.model';
 @Component({
   selector: 'app-web-api-actions',
   templateUrl: './web-api-actions.component.html',
-  styleUrls: ['./web-api-actions.component.scss']
+  styleUrls: ['./web-api-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
   showCode: boolean;

@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { BehaviorSubject } from 'rxjs';
 
 import { WebApisService } from '../services/web-apis.service';
 import { WebApi } from '../models/web-api.model';
@@ -14,12 +15,13 @@ import { defaultControllerName } from '../../shared/constants/file-names.constan
 @Component({
   selector: 'app-web-api',
   templateUrl: './web-api.component.html',
-  styleUrls: ['./web-api.component.scss']
+  styleUrls: ['./web-api.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WebApiComponent implements OnInit {
+export class WebApiComponent implements OnInit, OnDestroy {
   @Input() private showCode: boolean;
 
-  webApis: WebApi[];
+  webApis$ = new BehaviorSubject<WebApi[]>(null);
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -55,6 +57,10 @@ export class WebApiComponent implements OnInit {
     this.fetchWebApis();
   }
 
+  ngOnDestroy() {
+    this.webApis$.complete();
+  }
+
   addController() {
     let name = prompt('Controller name:', defaultControllerName);
     if (name === null || name.length === 0) { return; }
@@ -83,7 +89,7 @@ export class WebApiComponent implements OnInit {
 
   private fetchWebApis() {
     this.webApisService.getAll().subscribe(paths => {
-      this.webApis = paths.map(path => {
+      const webApis: WebApi[] = paths.map(path => {
         const splitIndex = path.lastIndexOf('/');
         const fileExtIndex = path.lastIndexOf('.');
         const folder = path.substring(0, splitIndex);
@@ -93,6 +99,7 @@ export class WebApiComponent implements OnInit {
           name,
         };
       });
+      this.webApis$.next(webApis);
     });
   }
 
