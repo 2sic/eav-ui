@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -10,7 +10,8 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss']
+  styleUrls: ['./app-configuration.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppConfigurationComponent implements OnInit {
   @Input() showPermissions: boolean;
