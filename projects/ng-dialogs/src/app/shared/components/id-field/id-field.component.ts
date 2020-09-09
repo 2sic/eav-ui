@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,12 +8,13 @@ import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
 @Component({
   selector: 'app-id-field',
   templateUrl: './id-field.component.html',
-  styleUrls: ['./id-field.component.scss']
+  styleUrls: ['./id-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
-  private params: ICellRendererParams;
   tooltip: string;
   id: number;
+  private params: ICellRendererParams;
 
   constructor(private snackBar: MatSnackBar) { }
 

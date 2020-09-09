@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
+import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
@@ -18,10 +18,11 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
-  styleUrls: ['./apps-list.component.scss']
+  styleUrls: ['./apps-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsListComponent implements OnInit, OnDestroy {
-  apps: App[];
+  apps$ = new BehaviorSubject<App[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -66,7 +67,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
         cellRendererParams: {
           onDelete: this.deleteApp.bind(this),
-          onFlush: (app) => { this.flushApp(app); },
+          onFlush: this.flushApp.bind(this),
         } as AppsListActionsParams,
       },
       {
@@ -85,16 +86,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchAppsList();
@@ -102,6 +100,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.apps$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -131,7 +130,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private fetchAppsList() {
     this.appsListService.getAll().subscribe(apps => {
-      this.apps = apps;
+      this.apps$.next(apps);
     });
   }
 
@@ -147,9 +146,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private deleteApp(app: App) {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
-    if (result === null) {
-      return;
-    } else if (result === app.Name || result === 'yes!') {
+    if (result === null) { return; }
+    if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
       this.appsListService.delete(app.Id).subscribe(() => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
@@ -175,12 +173,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchAppsList();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+      ).subscribe(() => {
+        this.fetchAppsList();
       })
     );
   }
