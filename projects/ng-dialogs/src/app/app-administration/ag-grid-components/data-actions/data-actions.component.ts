@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { ContentType } from '../../models/content-type.model';
@@ -7,12 +7,13 @@ import { DataActionsParams } from './data-actions.models';
 @Component({
   selector: 'app-data-actions',
   templateUrl: './data-actions.component.html',
-  styleUrls: ['./data-actions.component.scss']
+  styleUrls: ['./data-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
-  private params: DataActionsParams;
   contentType: ContentType;
   showPermissions: boolean;
+  private params: DataActionsParams;
 
   agInit(params: DataActionsParams) {
     this.params = params;

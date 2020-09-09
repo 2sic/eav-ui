@@ -1,15 +1,16 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [modules]="modules" [gridOptions]="gridOptions">
+  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes$ | async" [modules]="modules"
+    [gridOptions]="gridOptions">
   </ag-grid-angular>
 
   <div class="scope-box">
-    <button mat-icon-button color="accent" matTooltip="Create a ghost content type" *ngIf="debugEnabled"
+    <button mat-icon-button color="accent" matTooltip="Create a ghost content type" *ngIf="debugEnabled$ | async"
       (click)="createGhost()">
       <mat-icon>share</mat-icon>
     </button>
     <mat-form-field appearance="standard" color="accent" class="scope-box__dropdown">
       <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
-        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
+        <mat-option *ngFor="let scopeOption of (scopeOptions$ | async)" [value]="scopeOption.value">
           {{ 'Scope: ' + scopeOption.name }}
         </mat-option>
         <mat-option value="Other">Scope: Other...</mat-option>

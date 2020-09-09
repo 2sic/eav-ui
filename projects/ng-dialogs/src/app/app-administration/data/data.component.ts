@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../models/content-type.model';
@@ -22,16 +22,17 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss']
+  styleUrls: ['./data.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataComponent implements OnInit, OnDestroy {
   @Input() private showPermissions: boolean;
 
-  contentTypes: ContentType[];
-  scope: string;
-  defaultScope: string;
-  scopeOptions: EavScopeOption[];
-  debugEnabled = false;
+  contentTypes$ = new BehaviorSubject<ContentType[]>(null);
+  scope = eavConstants.scopes.default.value;
+  defaultScope = eavConstants.scopes.default.value;
+  scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
+  debugEnabled$: Observable<boolean>;
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -82,7 +83,6 @@ export class DataComponent implements OnInit, OnDestroy {
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
@@ -90,24 +90,18 @@ export class DataComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private globalConfigurationService: GlobalConfigurationService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-    this.scope = eavConstants.scopes.default.value;
-    this.defaultScope = eavConstants.scopes.default.value;
-  }
+  ) { }
 
   ngOnInit() {
-    this.fetchScopes();
     this.fetchContentTypes();
+    this.fetchScopes();
     this.refreshOnChildClosed();
-    this.subscription.add(
-      this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
-        this.debugEnabled = debugEnabled;
-      })
-    );
+    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
   }
 
   ngOnDestroy() {
+    this.contentTypes$.complete();
+    this.scopeOptions$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -127,13 +121,13 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      this.contentTypes = contentTypes;
+      this.contentTypes$.next(contentTypes);
     });
   }
 
   private fetchScopes() {
     this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions = scopes;
+      this.scopeOptions$.next(scopes);
     });
   }
 
@@ -153,12 +147,12 @@ export class DataComponent implements OnInit, OnDestroy {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions.find(option => option.value === newScope)) {
+      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions.push(newScopeOption);
+        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
       }
     }
     this.scope = newScope;
@@ -250,12 +244,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchContentTypes();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+      ).subscribe(() => {
+        this.fetchContentTypes();
       })
     );
   }
