@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-getting-started',
   templateUrl: './getting-started.component.html',
-  styleUrls: ['./getting-started.component.scss']
+  styleUrls: ['./getting-started.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GettingStartedComponent implements OnInit {
   @Input() private gettingStartedUrl: string;
