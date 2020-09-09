@@ -36,7 +36,7 @@
         </ng-container>
         <div class="actions">
           <button mat-raised-button color="accent" (click)="activatePageLog()"
-            [disabled]="actionsDiabled || !pageLogDuration || pageLogDuration < 0">
+            [disabled]="(loading$ | async) || !pageLogDuration || pageLogDuration < 0">
             Activate
           </button>
         </div>
