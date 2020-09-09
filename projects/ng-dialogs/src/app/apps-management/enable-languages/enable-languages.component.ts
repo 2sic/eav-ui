@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
@@ -13,9 +13,10 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 @Component({
   selector: 'app-enable-languages',
   templateUrl: './enable-languages.component.html',
-  styleUrls: ['./enable-languages.component.scss']
+  styleUrls: ['./enable-languages.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EnableLanguagesComponent implements OnInit {
+export class EnableLanguagesComponent implements OnInit, OnDestroy {
   languages$ = new BehaviorSubject<EnableLanguage[]>(null);
 
   modules = AllCommunityModules;
@@ -49,6 +50,10 @@ export class EnableLanguagesComponent implements OnInit {
 
   ngOnInit() {
     this.fetchLanguages();
+  }
+
+  ngOnDestroy() {
+    this.languages$.complete();
   }
 
   private idValueGetter(params: ValueGetterParams) {

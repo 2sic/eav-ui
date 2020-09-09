@@ -33,7 +33,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   @Input() private showPermissions: boolean;
 
   views$ = new BehaviorSubject<View[]>(null);
-  polymorphStatus$ = new BehaviorSubject<string>('');
+  polymorphStatus$ = new BehaviorSubject('');
   polymorphLogo = polymorphLogo;
 
   modules = AllCommunityModules;
