@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 
@@ -8,7 +8,8 @@ import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
 @Component({
   selector: 'app-views-usage-status-filter',
   templateUrl: './views-usage-status-filter.component.html',
-  styleUrls: ['./views-usage-status-filter.component.scss']
+  styleUrls: ['./views-usage-status-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   isVisible = '';

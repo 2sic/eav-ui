@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { BehaviorSubject } from 'rxjs';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
@@ -16,12 +17,14 @@ import { ViewsUsageStatusFilterComponent } from '../../ag-grid-components/views-
 @Component({
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
-  styleUrls: ['./views-usage.component.scss']
+  styleUrls: ['./views-usage.component.scss'],
+  // spm TODO: can't be onPush yet because contains router-outlet
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewsUsageComponent implements OnInit {
-  viewUsage: ViewUsage;
-  viewTooltip: string;
-  data: ViewUsageData[];
+export class ViewsUsageComponent implements OnInit, OnDestroy {
+  viewUsage$ = new BehaviorSubject<ViewUsage>(null);
+  viewTooltip$ = new BehaviorSubject('');
+  data$ = new BehaviorSubject<ViewUsageData[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -55,22 +58,24 @@ export class ViewsUsageComponent implements OnInit {
     ],
   };
 
-  private viewGuid: string;
+  constructor(private dialogRef: MatDialogRef<ViewsUsageComponent>, private route: ActivatedRoute, private viewsService: ViewsService) { }
 
-  constructor(
-    private dialogRef: MatDialogRef<ViewsUsageComponent>,
-    private route: ActivatedRoute,
-    private viewsService: ViewsService,
-  ) {
-    this.viewGuid = this.route.snapshot.paramMap.get('guid');
+  ngOnInit() {
+    const viewGuid = this.route.snapshot.paramMap.get('guid');
+    this.viewsService.getUsage(viewGuid).subscribe(viewUsages => {
+      const viewUsage = viewUsages[0];
+      this.viewUsage$.next(viewUsage);
+      const viewTooltip = `ID: ${viewUsage.Id}\nGUID: ${viewUsage.Guid}`;
+      this.viewTooltip$.next(viewTooltip);
+      const data = buildData(viewUsage);
+      this.data$.next(data);
+    });
   }
 
-  async ngOnInit() {
-    this.viewsService.getUsage(this.viewGuid).subscribe(viewUsages => {
-      this.viewUsage = viewUsages[0];
-      this.viewTooltip = `ID: ${this.viewUsage.Id}\nGUID: ${this.viewUsage.Guid}`;
-      this.data = buildData(this.viewUsage);
-    });
+  ngOnDestroy() {
+    this.viewUsage$.complete();
+    this.viewTooltip$.complete();
+    this.data$.complete();
   }
 
   closeDialog() {

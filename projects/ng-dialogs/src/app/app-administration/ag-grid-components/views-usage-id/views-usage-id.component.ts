@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 
 @Component({
   selector: 'app-views-usage-id',
   templateUrl: './views-usage-id.component.html',
-  styleUrls: ['./views-usage-id.component.scss']
+  styleUrls: ['./views-usage-id.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   tooltip: string;
@@ -19,8 +20,8 @@ export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   agInit(params: ICellRendererParams) {
     this.tooltip = params.value;
     if (this.tooltip == null) { return; }
-    const isMultiline = this.tooltip.indexOf('\n') !== -1;
-    this.id = this.tooltip.substring(this.tooltip.indexOf(' ') + 1, isMultiline ? this.tooltip.indexOf('\n') : undefined);
+    const idPart = this.tooltip.split('\n')[0];
+    this.id = idPart.split(' ')[1];
   }
 
   refresh(params?: any): boolean {
