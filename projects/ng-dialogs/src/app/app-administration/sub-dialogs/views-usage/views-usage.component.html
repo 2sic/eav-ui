@@ -1,7 +1,7 @@
 <div class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div matTooltip="{{ viewTooltip }}">View: {{ viewUsage?.Name }}</div>
+      <div [matTooltip]="viewTooltip">View: {{ viewUsage?.Name }}</div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
