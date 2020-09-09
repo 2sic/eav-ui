@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-getting-started',
@@ -9,7 +9,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 })
 export class GettingStartedComponent implements OnInit {
   @Input() private gettingStartedUrl: string;
-  gettingStartedSafe: SafeUrl;
+  gettingStartedSafe: SafeResourceUrl;
 
   constructor(private sanitizer: DomSanitizer) { }
 

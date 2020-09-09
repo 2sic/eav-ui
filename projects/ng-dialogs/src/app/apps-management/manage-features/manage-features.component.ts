@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { BehaviorSubject, fromEvent, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../models/feature.model';
@@ -8,7 +10,6 @@ import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesConfigService } from '../services/features-config.service';
-import { ElementEventListener } from '../../../../../shared/element-event-listener.model';
 import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -17,14 +18,14 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 @Component({
   selector: 'app-manage-features',
   templateUrl: './manage-features.component.html',
-  styleUrls: ['./manage-features.component.scss']
+  styleUrls: ['./manage-features.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
-  features: Feature[];
-  showManagement = false;
-  showSpinner = false;
-  managementUrl: SafeUrl;
-  managementListener: ElementEventListener;
+  features$ = new BehaviorSubject<Feature[]>(null);
+  showManagement$ = new BehaviorSubject(false);
+  showSpinner$ = new BehaviorSubject(false);
+  managementUrl$ = new BehaviorSubject(this.sanitizer.bypassSecurityTrustResourceUrl(''));
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -67,6 +68,8 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     ],
   };
 
+  private managementSubscription: Subscription;
+
   constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
@@ -74,13 +77,17 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroyManagementListener();
+    this.features$.complete();
+    this.showManagement$.complete();
+    this.showSpinner$.complete();
+    this.managementUrl$.complete();
+    this.managementSubscription?.unsubscribe();
   }
 
   toggleManagement() {
-    this.showManagement = !this.showManagement;
-    this.destroyManagementListener();
-    if (this.showManagement) {
+    this.showManagement$.next(!this.showManagement$.value);
+    this.managementSubscription?.unsubscribe();
+    if (this.showManagement$.value) {
       this.openManagement();
     }
   }
@@ -94,60 +101,47 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     window.open(`https://2sxc.org/r/f/${params.value}`, '_blank');
   }
 
+  private valueGetterDateTime(params: ValueGetterParams) {
+    const rawValue: string = params.data[params.colDef.field];
+    if (!rawValue) { return null; }
+    return rawValue.substring(0, 19).replace('T', ' '); // remove 'Z' and replace 'T'
+  }
+
   private fetchFeatures() {
     this.featuresConfigService.getAll().subscribe(features => {
-      this.features = features;
+      this.features$.next(features);
     });
   }
 
   private openManagement() {
-    this.showSpinner = true;
-    this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(''); // reset url
+    this.showSpinner$.next(true);
+    this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl('')); // reset url
 
     this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
-      this.showSpinner = false;
+      this.showSpinner$.next(false);
 
-      if (url.indexOf('error: user needs host permissions') > -1) {
-        this.showManagement = false;
+      if (url.includes('error: user needs host permissions')) {
+        this.showManagement$.next(false);
         throw new Error('User needs host permissions!');
       }
 
-      this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      const managementCallbackBound = this.managementCallback.bind(this);
-      // event to receive message from iframe
-      window.addEventListener('message', managementCallbackBound);
-      this.managementListener = { element: window, type: 'message', listener: managementCallbackBound };
+      this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+
+      /** This should await callbacks from the iframe and if it gets a valid callback containing a json, it should send it to the server */
+      this.managementSubscription = fromEvent(window, 'message').pipe(take(1)).subscribe((event: MessageEvent) => {
+        if (typeof event.data === 'undefined') { return; }
+        if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
+
+        try {
+          const features: ManageFeaturesMessageData = event.data;
+          const featuresString = JSON.stringify(features);
+          this.featuresConfigService.saveFeatures(featuresString).subscribe(res => {
+            this.showManagement$.next(false);
+            this.fetchFeatures();
+          });
+        } catch (e) { }
+      });
     });
   }
 
-  /** This should await callbacks from the iframe and if it gets a valid callback containing a json, it should send it to the server */
-  private managementCallback(event: MessageEvent) {
-    this.destroyManagementListener();
-    if (typeof (event.data) === 'undefined') { return; }
-    if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
-
-    try {
-      const features: ManageFeaturesMessageData = event.data;
-      const featuresString = JSON.stringify(features);
-      this.featuresConfigService.saveFeatures(featuresString).subscribe(result => {
-        this.showManagement = false;
-        this.fetchFeatures();
-      });
-    } catch (e) { }
-  }
-
-  private destroyManagementListener() {
-    if (this.managementListener) {
-      this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);
-      this.managementListener = null;
-    }
-  }
-
-  private valueGetterDateTime(params: ValueGetterParams) {
-    const rawValue: string = params.data[params.colDef.field];
-    if (!rawValue) { return null; }
-
-    // remove 'Z' and replace 'T'
-    return rawValue.substring(0, 19).replace('T', ' ');
-  }
 }

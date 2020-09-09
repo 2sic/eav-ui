@@ -1,13 +1,22 @@
-<div class="grid-wrapper mat-tab-grid-wrapper" [ngClass]="{ 'iframe-wrapper': showManagement }">
-  <ag-grid-angular class="ag-theme-material" [ngClass]="{ 'force-hide': showManagement }" [rowData]="features"
-    [modules]="modules" [gridOptions]="gridOptions">
-  </ag-grid-angular>
+<ng-container *ngIf="{
+  features: features$ | async,
+  showManagement: showManagement$ | async,
+  showSpinner: showSpinner$ | async,
+  managementUrl: managementUrl$ | async
+} as data">
 
-  <mat-spinner class="spinner" *ngIf="showSpinner" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+  <div class="grid-wrapper mat-tab-grid-wrapper" [ngClass]="{ 'iframe-wrapper': data.showManagement }">
+    <ag-grid-angular class="ag-theme-material" [ngClass]="{ 'force-hide': data.showManagement }"
+      [rowData]="data.features" [modules]="modules" [gridOptions]="gridOptions">
+    </ag-grid-angular>
 
-  <iframe class="iframe" *ngIf="showManagement" [src]="managementUrl"></iframe>
+    <mat-spinner class="spinner" *ngIf="data.showSpinner" mode="indeterminate" diameter="20" color="accent">
+    </mat-spinner>
 
-  <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Manage features" (click)="toggleManagement()">
-    <mat-icon>tune</mat-icon>
-  </button>
-</div>
+    <iframe class="iframe" *ngIf="data.showManagement" [src]="data.managementUrl"></iframe>
+
+    <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Manage features" (click)="toggleManagement()">
+      <mat-icon>tune</mat-icon>
+    </button>
+  </div>
+</ng-container>
