@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { EnableLanguagesService } from '../services/enable-languages.service';
@@ -15,7 +16,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
   styleUrls: ['./enable-languages.component.scss']
 })
 export class EnableLanguagesComponent implements OnInit {
-  languages: EnableLanguage[];
+  languages$ = new BehaviorSubject<EnableLanguage[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -68,7 +69,7 @@ export class EnableLanguagesComponent implements OnInit {
 
   private fetchLanguages() {
     this.languagesService.getAll().subscribe(languages => {
-      this.languages = languages;
+      this.languages$.next(languages);
     });
   }
 }
