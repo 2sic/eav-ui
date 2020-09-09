@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { PermissionsService } from './services/permissions.service';
@@ -19,10 +19,12 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  styleUrls: ['./permissions.component.scss']
+  styleUrls: ['./permissions.component.scss'],
+  // spm TODO: can't be onPush yet because contains router-outlet
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
-  permissions: Permission[];
+  permissions$ = new BehaviorSubject<Permission[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -62,10 +64,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
-  private targetType: number;
-  private keyType: string;
-  private key: string;
+  private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+  private keyType = this.route.snapshot.paramMap.get('keyType');
+  private key = this.route.snapshot.paramMap.get('key');
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
@@ -73,19 +74,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
-    this.targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
-    this.keyType = this.route.snapshot.paramMap.get('keyType');
-    this.key = this.route.snapshot.paramMap.get('key');
     this.fetchPermissions();
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
+    this.permissions$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -100,7 +97,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   private fetchPermissions() {
     this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
-      this.permissions = permissions;
+      this.permissions$.next(permissions);
     });
   }
 
@@ -146,12 +143,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchPermissions();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+      ).subscribe(() => {
+        this.fetchPermissions();
       })
     );
   }
