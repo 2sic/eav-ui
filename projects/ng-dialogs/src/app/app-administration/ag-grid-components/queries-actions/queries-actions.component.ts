@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { Query } from '../../models/query.model';
@@ -7,7 +7,8 @@ import { QueriesActionsParams } from './queries-actions.models';
 @Component({
   selector: 'app-queries-actions',
   templateUrl: './queries-actions.component.html',
-  styleUrls: ['./queries-actions.component.scss']
+  styleUrls: ['./queries-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
   showPermissions: boolean;

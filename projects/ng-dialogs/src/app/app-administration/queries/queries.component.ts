@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { Query } from '../models/query.model';
@@ -20,12 +20,13 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-queries',
   templateUrl: './queries.component.html',
-  styleUrls: ['./queries.component.scss']
+  styleUrls: ['./queries.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesComponent implements OnInit, OnDestroy {
   @Input() private showPermissions: boolean;
 
-  queries: Query[];
+  queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -61,7 +62,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
@@ -70,9 +70,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchQueries();
@@ -80,12 +78,13 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.queries$.complete();
     this.subscription.unsubscribe();
   }
 
   private fetchQueries() {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
-      this.queries = queries;
+      this.queries$.next(queries);
     });
   }
 
@@ -152,12 +151,14 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchQueries();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+      ).subscribe(() => {
+        this.fetchQueries();
       })
     );
   }
