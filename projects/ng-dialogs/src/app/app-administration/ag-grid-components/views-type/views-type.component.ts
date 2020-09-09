@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { calculateViewType } from '../../views/views.helpers';
@@ -6,7 +6,8 @@ import { calculateViewType } from '../../views/views.helpers';
 @Component({
   selector: 'app-views-type',
   templateUrl: './views-type.component.html',
-  styleUrls: ['./views-type.component.scss']
+  styleUrls: ['./views-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsTypeComponent implements ICellRendererAngularComp {
   value: boolean;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { View } from '../../models/view.model';
@@ -7,7 +7,8 @@ import { ViewActionsParams } from './views-actions.models';
 @Component({
   selector: 'app-views-actions',
   templateUrl: './views-actions.component.html',
-  styleUrls: ['./views-actions.component.scss']
+  styleUrls: ['./views-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
   showCode: boolean;
