@@ -39,12 +39,12 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
 
   ngOnInit() {
     super.ngOnInit();
-    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(map(combined => {
-      const controlDisabled = combined[0];
-      const dropzoneConfig = combined[1];
-      const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-      return controlDisabled || dropzoneDisabled;
-    }));
+    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(
+      map(([controlDisabled, dropzoneConfig]) => {
+        const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
+        return controlDisabled || dropzoneDisabled;
+      }),
+    );
 
     this.config.dropzone = {
       setConfig: (config) => {

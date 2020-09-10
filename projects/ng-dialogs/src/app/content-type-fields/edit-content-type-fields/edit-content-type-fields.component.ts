@@ -66,11 +66,11 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
 
-    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(joined => {
-      this.contentType = joined[0];
-      const allFields = joined[1];
-      this.dataTypes = joined[2];
-      this.inputTypeOptions = joined[3];
+    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(([contentType, fields, dataTypes, inputTypes]) => {
+      this.contentType = contentType;
+      const allFields = fields;
+      this.dataTypes = dataTypes;
+      this.inputTypeOptions = inputTypes;
 
       if (this.editMode) {
         const editField = allFields.find(field => field.Id === editFieldId);

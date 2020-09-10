@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Subscription, Subject } from 'rxjs';
-import { map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { map, distinctUntilChanged, filter, startWith, pairwise } from 'rxjs/operators';
 
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
@@ -14,7 +14,6 @@ export class EditRoutingService implements OnDestroy {
   private route: ActivatedRoute;
   private subscription = new Subscription();
   private childFormResult$ = new Subject<ChildFormResult>();
-  private hasChild: boolean;
 
   constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
 
@@ -25,7 +24,6 @@ export class EditRoutingService implements OnDestroy {
 
   init(route: ActivatedRoute, formId: number) {
     this.route = route;
-    this.hasChild = !!this.route.snapshot.firstChild;
     this.initHideHeader(formId);
     this.initChildFormResult();
   }
@@ -107,12 +105,11 @@ export class EditRoutingService implements OnDestroy {
     this.subscription.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
-        filter((event: NavigationEnd) => {
-          const hadChild = this.hasChild;
-          this.hasChild = !!this.route.snapshot.firstChild;
-          return !this.hasChild && hadChild;
-        }),
-        map((event: NavigationEnd) => {
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+        map(() => {
           const params = this.route.snapshot.params as EditParams;
           const hasDetails = params.detailsEntityGuid != null && params.detailsFieldId != null;
           const updateEntityGuid = hasDetails ? params.detailsEntityGuid : params.updateEntityGuid;

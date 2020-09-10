@@ -228,15 +228,13 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.slide$ = merge(
         this.languageInstanceService.getCurrentLanguage(this.formId).pipe(
           pairwise(),
-          map(combined => {
-            const previous = combined[0];
-            const current = combined[1];
+          map(([previousLang, currentLang]) => {
             let languages: Language[];
             this.languageService.entities$.pipe(take(1)).subscribe(langs => {
               languages = langs;
             });
-            const previousLangIndex = languages.findIndex(l => l.key === previous);
-            const currentLangIndex = languages.findIndex(l => l.key === current);
+            const previousLangIndex = languages.findIndex(lang => lang.key === previousLang);
+            const currentLangIndex = languages.findIndex(lang => lang.key === currentLang);
             const slide = (previousLangIndex > currentLangIndex) ? 'previous' : 'next';
             return slide;
           }),

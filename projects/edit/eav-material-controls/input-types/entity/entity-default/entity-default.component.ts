@@ -62,13 +62,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     this.settings$ = this.settings$.pipe(map(settings => this.calculateSettings(settings)));
     this.separator = this.config.field.settings$.value.Separator;
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
-      const fieldValue = combined[0];
-      const availableEntities = combined[1];
-
-      const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
-      return selected;
-    }));
+    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(
+      map(([fieldValue, availableEntities]) => {
+        const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+        return selected;
+      }),
+    );
 
     this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
 

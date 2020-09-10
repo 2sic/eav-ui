@@ -148,7 +148,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         startWith(!!this.route.snapshot.firstChild),
         map(() => !!this.route.snapshot.firstChild),
         pairwise(),
-        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
       ).subscribe(() => {
         this.fetchPermissions();
       })

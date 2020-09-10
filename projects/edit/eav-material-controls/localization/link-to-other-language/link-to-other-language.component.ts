@@ -43,11 +43,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
       this.languageService.entities$,
       this.languageInstanceService.getCurrentLanguage(this.dialogData.formId)
     ]).pipe(
-      map(combined => {
-        const languages = combined[0];
-        const currentLanguage = combined[1];
-        return languages.filter(lang => lang.key !== currentLanguage);
-      })
+      map(([languages, currentLanguage]) => languages.filter(lang => lang.key !== currentLanguage)),
     );
   }
 

@@ -33,18 +33,18 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
   ngOnInit() {
     super.ngOnInit();
     this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
-    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(map(combined => {
-      const value = combined[0];
-      const settings = combined[1];
-      const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
-      return dropdownOptions;
-    }));
-    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(map(combined => {
-      const enableTextEntry = combined[0];
-      const freeTextMode = combined[1];
-      if (!enableTextEntry) { return false; }
-      return freeTextMode;
-    }));
+    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(
+      map(([value, settings]) => {
+        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
+        return dropdownOptions;
+      }),
+    );
+    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(
+      map(([enableTextEntry, freeTextMode]) => {
+        if (!enableTextEntry) { return false; }
+        return freeTextMode;
+      }),
+    );
   }
 
   ngOnDestroy() {

@@ -51,9 +51,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.templateModel$ = combineLatest([this.visualQueryService.pipelineModel$, this.visualQueryService.dataSources$]).pipe(
-      map(combined => {
-        const pipelineModel = combined[0];
-        const dataSources = combined[1];
+      map(([pipelineModel, dataSources]) => {
         if (pipelineModel == null || dataSources == null) { return; }
 
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
@@ -76,9 +74,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
     this.subscription.add(
-      combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(combined => {
-        const scriptLoaded = combined[0] === true;
-        const domDataSourcesLoaded = combined[1] === true;
+      combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
         if (!scriptLoaded || !domDataSourcesLoaded) { return; }
 
         this.plumber?.destroy();

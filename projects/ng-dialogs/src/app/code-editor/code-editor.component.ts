@@ -55,15 +55,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    forkJoin({
-      view: this.sourceService.get(this.viewKey),
-      templates: this.sourceService.getTemplates(),
-    }).subscribe(result => {
-      this.view = result.view;
+    const view$ = this.sourceService.get(this.viewKey);
+    const templates$ = this.sourceService.getTemplates();
+    forkJoin([view$, templates$]).subscribe(([view, templates]) => {
+      this.view = view;
       this.savedCode = this.view.Code;
       this.titleService.setTitle(`${this.view.FileName} - Code Editor`);
-      this.templates = result.templates;
-      this.showCodeAndEditionWarnings(result.view, result.templates);
+      this.templates = templates;
+      this.showCodeAndEditionWarnings(view, templates);
 
       this.snippetsService.getSnippets(this.view).then(res => {
         this.explorerSnipps = res.sets;

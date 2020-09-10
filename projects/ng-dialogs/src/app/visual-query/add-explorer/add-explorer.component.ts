@@ -28,11 +28,8 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sorted$ = combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-      map(combined => {
-        const dataSources = combined[0];
-        const difficulty = combined[1];
+      map(([dataSources, difficulty]) => {
         if (dataSources == null) { return; }
-
         const sorted = filterAndSortDataSources(dataSources, difficulty);
         return sorted;
       }),

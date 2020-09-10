@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { ReplaceOption } from './models/replace-option.model';
@@ -24,7 +24,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   contentTypeName: string;
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
@@ -33,7 +32,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
     this.item = {
       id: null,
       guid: this.route.snapshot.paramMap.get('guid'),
@@ -93,16 +91,18 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.getConfig();
-          const navigation = this.router.getCurrentNavigation();
-          const editResult = navigation.extras?.state;
-          if (editResult) {
-            this.item.id = editResult[Object.keys(editResult)[0]];
-          }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.getConfig();
+        const navigation = this.router.getCurrentNavigation();
+        const editResult = navigation.extras?.state;
+        if (editResult) {
+          this.item.id = editResult[Object.keys(editResult)[0]];
         }
       })
     );

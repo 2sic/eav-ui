@@ -43,13 +43,12 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   }
 
   ngAfterViewInit() {
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
-      const fieldValue = combined[0];
-      const availableEntities = combined[1];
-
-      const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
-      return selected;
-    }));
+    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(
+      map(([fieldValue, availableEntities]) => {
+        const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+        return selected;
+      }),
+    );
   }
 
   ngOnDestroy() {

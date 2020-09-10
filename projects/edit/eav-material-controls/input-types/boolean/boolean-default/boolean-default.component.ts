@@ -26,18 +26,17 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
 
   ngOnInit() {
     super.ngOnInit();
-    this.label$ = combineLatest([this.value$, this.settings$, this.label$]).pipe(map(combined => {
-      const value = combined[0];
-      const settings = combined[1];
-      const label = combined[2];
-      if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
-        return settings.TitleTrue;
-      }
-      if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
-        return settings.TitleFalse;
-      }
-      return label;
-    }));
+    this.label$ = combineLatest([this.value$, this.settings$, this.label$]).pipe(
+      map(([value, settings, label]) => {
+        if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
+          return settings.TitleTrue;
+        }
+        if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
+          return settings.TitleFalse;
+        }
+        return label;
+      }),
+    );
   }
 
   ngOnDestroy() {

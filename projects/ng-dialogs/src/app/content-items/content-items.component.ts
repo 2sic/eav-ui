@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../app-administration/models/content-type.model';
@@ -56,7 +56,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private gridApi: GridApi;
   private contentTypeStaticName: string;
   private subscription = new Subscription();
-  private hasChild: boolean;
   private columnDefs: ColDef[];
 
   constructor(
@@ -69,7 +68,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
   ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
     this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   }
 
@@ -205,12 +203,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchItems();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchItems();
       })
     );
   }

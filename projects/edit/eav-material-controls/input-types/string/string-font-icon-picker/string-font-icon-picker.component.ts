@@ -47,15 +47,15 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
       });
     }));
     this.previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
-    this.filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(map(combined => {
-      const search = combined[0];
-      const iconList = combined[1];
-      // if we have a filter param, use it, otherwise don't filter
-      const filtered = search
-        ? iconList.filter(icon => icon.search?.includes(search.toLowerCase()) ?? false)
-        : iconList;
-      return filtered;
-    }));
+    this.filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
+      map(([search, iconList]) => {
+        // if we have a filter param, use it, otherwise don't filter
+        const filtered = search
+          ? iconList.filter(icon => icon.search?.includes(search.toLowerCase()) ?? false)
+          : iconList;
+        return filtered;
+      }),
+    );
   }
 
   ngOnDestroy() {

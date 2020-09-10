@@ -4,7 +4,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, startWith, map, pairwise } from 'rxjs/operators';
 
 import { ContentGroupService } from './services/content-group.service';
 import { EditForm } from '../shared/models/edit-form.model';
@@ -25,7 +25,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private contentGroup: ContentGroup;
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ManageContentListComponent>,
@@ -34,7 +33,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackBar: MatSnackBar,
   ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
     this.contentGroup = {
       id: null,
       guid: this.route.snapshot.paramMap.get('guid'),
@@ -116,13 +114,15 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchList();
-          this.fetchHeader();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchList();
+        this.fetchHeader();
       })
     );
   }
