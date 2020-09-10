@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ContentExport } from '../app-administration/models/content-export.model';
 import { ContentExportService } from '../app-administration/services/content-export.service';
 import { Language } from '../../../../edit/shared/models/eav/language';
-import { keyLangs, keyLangPri } from '../shared/constants/session.constants';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 
 @Component({
   selector: 'app-content-export',
@@ -16,7 +16,7 @@ export class ContentExportComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
   formValues: ContentExport;
-  languages: Language[] = JSON.parse(sessionStorage.getItem(keyLangs));
+  languages: Language[];
   itemIds: number[];
   hasIdList = false;
 
@@ -24,23 +24,29 @@ export class ContentExportComponent implements OnInit {
     private dialogRef: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
     private contentExportService: ContentExportService,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
     const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
     this.hasIdList = !!selectedIds;
     if (this.hasIdList) {
       this.itemIds = selectedIds.split(',').map(id => parseInt(id, 10));
     }
-    this.formValues = {
-      defaultLanguage: sessionStorage.getItem(keyLangPri),
-      contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
-      language: '',
-      recordExport: this.hasIdList ? 'Selection' : 'All',
-      languageReferences: 'Link',
-      resourcesReferences: 'Link',
-    };
   }
 
   ngOnInit() {
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      const languages = dialogSettings.Context.Language.All;
+      this.languages = Object.keys(languages).map(key => ({ key, name: languages[key] }));
+
+      this.formValues = {
+        defaultLanguage: dialogSettings.Context.Language.Primary,
+        contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
+        language: '',
+        recordExport: this.hasIdList ? 'Selection' : 'All',
+        languageReferences: 'Link',
+        resourcesReferences: 'Link',
+      };
+    });
   }
 
   exportContent() {
