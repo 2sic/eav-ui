@@ -113,7 +113,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.dialogBackdropClickSubscribe();
     this.saveFormMessagesSubscribe();
     this.formSetValueChangeSubscribe();
-    this.checkFormsState();
   }
 
   ngAfterViewChecked() {

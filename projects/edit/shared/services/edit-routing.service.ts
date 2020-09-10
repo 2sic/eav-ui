@@ -17,6 +17,7 @@ export class EditRoutingService implements OnDestroy {
 
   constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
 
+  // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
     this.childFormResult$.complete();
     this.subscription.unsubscribe();

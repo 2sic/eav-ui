@@ -41,6 +41,7 @@ export class EavService implements OnDestroy {
     private context: Context,
   ) { }
 
+  // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
     this.forceConnectorSave$.complete();
     this.formValueChange$.complete();

@@ -250,7 +250,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     if (action === 'delete' && !valueArray.length) {
       setTimeout(() => {
         this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
-      }, 0);
+      });
     }
   }
 
