@@ -25,7 +25,7 @@ export class VisualQueryService implements OnDestroy {
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
 
-  private pipelineId: number;
+  private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
   private doRefresh = false;
   private subscription = new Subscription();
 
@@ -40,10 +40,7 @@ export class VisualQueryService implements OnDestroy {
     private zone: NgZone,
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
-  ) {
-    const pipelineId = this.route.snapshot.paramMap.get('pipelineId');
-    this.pipelineId = parseInt(pipelineId, 10);
-  }
+  ) { }
 
   ngOnDestroy() {
     this.pipelineModel$.complete();

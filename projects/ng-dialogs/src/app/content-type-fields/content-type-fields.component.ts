@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, BehaviorSubject, forkJoin } from 'rxjs';
+import { filter, startWith, map, pairwise, mergeMap, share } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
 import { GridReadyEvent, AllCommunityModules, GridOptions, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 
@@ -26,11 +26,13 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
-  styleUrls: ['./content-type-fields.component.scss']
+  styleUrls: ['./content-type-fields.component.scss'],
+  // spm TODO: can't be on push because contains router-outlet
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
-  contentType: ContentType;
-  fields: Field[];
+  contentType$ = new BehaviorSubject<ContentType>(null);
+  fields$ = new BehaviorSubject<Field[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -87,9 +89,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private sortApplied = false;
   private filterApplied = false;
   private rowDragSuppressed = false;
-  private contentTypeStaticName: string;
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
@@ -98,19 +99,16 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  }
+  ) { }
 
-  async ngOnInit() {
-    this.contentType = await this.contentTypesService.retrieveContentType(this.contentTypeStaticName).toPromise();
-    await this.fetchFields();
+  ngOnInit() {
+    this.fetchFields();
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
+    this.fields$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -124,12 +122,12 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   onRowDragEnd(event: RowDragEvent) {
     this.gridApi.setSuppressRowDrag(true);
-    const idArray = this.fields.map(field => field.Id);
-    this.contentTypesFieldsService.reOrder(idArray, this.contentType).subscribe(async res => {
-      await this.fetchFields();
-      this.changeDetectorRef.detectChanges();
-      this.gridApi.setEnableCellTextSelection(true);
-      this.gridApi.setSuppressRowDrag(false);
+    const idArray = this.fields$.value.map(field => field.Id);
+    this.contentTypesFieldsService.reOrder(idArray, this.contentType$.value).subscribe(res => {
+      this.fetchFields(() => {
+        this.gridApi.setEnableCellTextSelection(true);
+        this.gridApi.setSuppressRowDrag(false);
+      });
     });
   }
 
@@ -141,10 +139,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     if (rowNeedsToMove) {
       const movingData: Field = movingNode.data;
       const overData: Field = overNode.data;
-      const fromIndex = this.fields.indexOf(movingData);
-      const toIndex = this.fields.indexOf(overData);
-      this.moveInArray(this.fields, fromIndex, toIndex);
-      this.gridApi.setRowData(this.fields);
+      const newFields = [...this.fields$.value];
+      const fromIndex = newFields.indexOf(movingData);
+      const toIndex = newFields.indexOf(overData);
+      this.moveInArray(newFields, fromIndex, toIndex);
+      this.fields$.next(newFields);
       this.gridApi.clearFocusedCell();
     }
   }
@@ -193,8 +192,21 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     return inputType;
   }
 
-  private async fetchFields() {
-    this.fields = await this.contentTypesFieldsService.getFields(this.contentType).toPromise();
+  private fetchFields(callback?: () => void) {
+    if (this.contentType$.value == null) {
+      const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName).pipe(share());
+      const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
+      forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
+        this.contentType$.next(contentType);
+        this.fields$.next(fields);
+        if (callback != null) { callback(); }
+      });
+    } else {
+      this.contentTypesFieldsService.getFields(this.contentType$.value).subscribe(fields => {
+        this.fields$.next(fields);
+        if (callback != null) { callback(); }
+      });
+    }
   }
 
   private editFieldMetadata(params: CellClickedEvent) {
@@ -203,7 +215,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       items: [
         this.createItemDefinition(field, 'All'),
         this.createItemDefinition(field, field.Type),
-        this.createItemDefinition(field, field.InputType)
+        this.createItemDefinition(field, field.InputType),
       ],
     };
     const formUrl = convertFormToUrl(form);
@@ -226,7 +238,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private setTitle(params: CellClickedEvent) {
     const field: Field = params.data;
     this.snackBar.open('Setting title...');
-    this.contentTypesFieldsService.setTitle(field, this.contentType).subscribe(() => {
+    this.contentTypesFieldsService.setTitle(field, this.contentType$.value).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
       this.fetchFields();
     });
@@ -249,7 +261,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       if (newName === field.StaticName) { return; }
     }
     this.snackBar.open('Saving...');
-    this.contentTypesFieldsService.rename(field, this.contentType, newName).subscribe(() => {
+    this.contentTypesFieldsService.rename(field, this.contentType$.value, newName).subscribe(() => {
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.fetchFields();
     });
@@ -258,7 +270,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private delete(field: Field) {
     if (!confirm(`Are you sure you want to delete '${field.StaticName}' (${field.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
-    this.contentTypesFieldsService.delete(field, this.contentType).subscribe(res => {
+    this.contentTypesFieldsService.delete(field, this.contentType$.value).subscribe(res => {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchFields();
     });
@@ -273,12 +285,14 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchFields();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+      ).subscribe(() => {
+        this.fetchFields();
       })
     );
   }

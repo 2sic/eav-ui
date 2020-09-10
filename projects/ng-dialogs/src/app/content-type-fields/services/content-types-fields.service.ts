@@ -37,7 +37,7 @@ export class ContentTypesFieldsService {
       ) as Observable<FieldInputTypeOption[]>;
   }
 
-  getFields(contentType: ContentType): Observable<Field[]> {
+  getFields(contentType: ContentType) {
     return this.http
       .get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
         params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
