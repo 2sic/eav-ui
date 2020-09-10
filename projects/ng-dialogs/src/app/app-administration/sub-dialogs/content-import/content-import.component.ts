@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
 import { ContentImportService } from '../../services/content-import.service';
-import { keyLangPri } from '../../../shared/constants/session.constants';
+import { AppDialogConfigService } from '../../services/app-dialog-config.service';
 
 @Component({
   selector: 'app-content-import',
@@ -41,23 +41,26 @@ export class ContentImportComponent implements OnInit {
     private dialogRef: MatDialogRef<ContentImportComponent>,
     private route: ActivatedRoute,
     private contentImportService: ContentImportService,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
     this.viewStateSelected = this.viewStates.default;
-    this.formValues = {
-      defaultLanguage: sessionStorage.getItem(keyLangPri),
-      contentType: this.route.snapshot.paramMap.get('contentTypeStaticName'),
-      file: null,
-      resourcesReferences: 'Keep',
-      clearEntities: 'None',
-    };
   }
 
   ngOnInit() {
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      this.formValues = {
+        defaultLanguage: dialogSettings.Context.Language.Primary,
+        contentType: this.route.snapshot.paramMap.get('contentTypeStaticName'),
+        file: null,
+        resourcesReferences: 'Keep',
+        clearEntities: 'None',
+      };
+    });
   }
 
   async evaluateContent() {
     this.viewStateSelected = this.viewStates.waiting;
-    return (await this.contentImportService.evaluateContent(this.formValues)).subscribe(result => {
+    (await this.contentImportService.evaluateContent(this.formValues)).subscribe(result => {
       this.evaluationResult = result;
       this.viewStateSelected = this.viewStates.evaluated;
     });
@@ -65,7 +68,7 @@ export class ContentImportComponent implements OnInit {
 
   async importContent() {
     this.viewStateSelected = this.viewStates.waiting;
-    return (await this.contentImportService.importContent(this.formValues)).subscribe(result => {
+    (await this.contentImportService.importContent(this.formValues)).subscribe(result => {
       this.importResult = result;
       this.viewStateSelected = this.viewStates.imported;
     });
