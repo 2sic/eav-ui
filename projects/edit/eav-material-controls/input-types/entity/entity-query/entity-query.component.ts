@@ -42,16 +42,18 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
   ngOnInit() {
     super.ngOnInit();
 
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.paramsMask?.destroy();
-      this.paramsMask = new FieldMaskService(
-        settings.UrlParameters,
-        this.group.controls,
-        this.fetchAvailableEntities.bind(this),
-        null,
-        this.eavConfig,
-      );
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.paramsMask?.destroy();
+        this.paramsMask = new FieldMaskService(
+          settings.UrlParameters,
+          this.group.controls,
+          this.fetchAvailableEntities.bind(this),
+          null,
+          this.eavConfig,
+        );
+      })
+    );
 
     this.fetchAvailableEntities();
   }

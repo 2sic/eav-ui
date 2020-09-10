@@ -42,14 +42,16 @@ export class ConnectorHelper {
     this.eavConfig = eavService.getEavConfig();
     this.control = this.group.controls[this.config.field.name];
 
-    this.subscription.add(this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-      map(formSet => this.control.value),
-      startWith(this.control.value),
-      distinctUntilChanged(),
-    ).subscribe(newValue => {
-      this.value$.next(newValue);
-    }));
+    this.subscription.add(
+      this.eavService.formValueChange$.pipe(
+        filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+        map(formSet => this.control.value),
+        startWith(this.control.value),
+        distinctUntilChanged(),
+      ).subscribe(newValue => {
+        this.value$.next(newValue);
+      })
+    );
 
     this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();

@@ -30,10 +30,12 @@ export class AdamAttachWrapperComponent extends BaseComponent<any> implements Fi
   }
 
   ngAfterViewInit() {
-    this.subscription.add(this.config.adam.getConfig$().subscribe(adamConfig => {
-      if (adamConfig == null) { return; }
-      this.adamDisabled$.next(adamConfig.disabled);
-    }));
+    this.subscription.add(
+      this.config.adam.getConfig$().subscribe(adamConfig => {
+        if (adamConfig == null) { return; }
+        this.adamDisabled$.next(adamConfig.disabled);
+      })
+    );
   }
 
   ngOnDestroy() {

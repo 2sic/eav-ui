@@ -99,9 +99,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       },
       addFullPath: (item) => { this.adamService.addFullPath(item); }
     };
-    this.subscription.add(this.adamConfig$.subscribe(adamConfig => {
-      this.fetchItems();
-    }));
+    this.subscription.add(
+      this.adamConfig$.subscribe(adamConfig => {
+        this.fetchItems();
+      })
+    );
     this.expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
@@ -348,9 +350,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(result => {
-      this.fetchItems();
-    }));
+    this.subscription.add(
+      this.editRoutingService.childFormClosed().subscribe(result => {
+        this.fetchItems();
+      })
+    );
   }
 
 }

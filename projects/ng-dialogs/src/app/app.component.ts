@@ -41,21 +41,23 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
     // Mostly copied from https://blog.bitsrc.io/dynamic-page-titles-in-angular-98ce20b5c334
     // Routes need a data: { title: '...' } for this to work
     const appTitle = this.titleService.getTitle(); // initial title when loading the page
-    this.subscription.add(this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => {
-        let child = this.activatedRoute.firstChild;
-        while (child.firstChild) {
-          child = child.firstChild;
-        }
-        if (child.snapshot.data['title']) {
-          return child.snapshot.data['title'];
-        }
-        return appTitle;
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          let child = this.activatedRoute.firstChild;
+          while (child.firstChild) {
+            child = child.firstChild;
+          }
+          if (child.snapshot.data['title']) {
+            return child.snapshot.data['title'];
+          }
+          return appTitle;
+        }),
+      ).subscribe((title: string) => {
+        this.titleService.setTitle(title);
       })
-    ).subscribe((title: string) => {
-      this.titleService.setTitle(title);
-    }));
+    );
   }
 
   ngOnDestroy() {

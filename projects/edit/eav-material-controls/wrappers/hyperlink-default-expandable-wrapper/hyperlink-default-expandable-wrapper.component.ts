@@ -56,9 +56,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.value$.subscribe(value => {
-      this.setLink(value);
-    }));
+    this.subscription.add(
+      this.value$.subscribe(value => {
+        this.setLink(value);
+      })
+    );
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));

@@ -55,12 +55,16 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.attachAdam(settings);
-    }));
-    this.subscription.add(this.value$.subscribe(value => {
-      this.setLink(value);
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.attachAdam(settings);
+      })
+    );
+    this.subscription.add(
+      this.value$.subscribe(value => {
+        this.setLink(value);
+      })
+    );
   }
 
   ngOnDestroy() {

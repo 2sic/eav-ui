@@ -47,13 +47,15 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) {
     this.dialogRef.disableClose = true;
-    this.subscription.add(this.dialogRef.backdropClick().subscribe(event => {
-      if (this.form.dirty) {
-        const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-        if (!confirmed) { return; }
-      }
-      this.closeDialog();
-    }));
+    this.subscription.add(
+      this.dialogRef.backdropClick().subscribe(event => {
+        if (this.form.dirty) {
+          const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
+          if (!confirmed) { return; }
+        }
+        this.closeDialog();
+      })
+    );
   }
 
   ngOnInit() {

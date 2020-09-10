@@ -36,16 +36,18 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.settings$.subscribe(settings => {
-      const files = settings.Files || '';
-      const cssPrefix = settings.CssPrefix || '';
-      const showPrefix = settings.ShowPrefix || false;
-      // load each file (usually CSS) in the settings
-      this.scriptsLoaderService.load(files.split('\n'), () => {
-        const newIconOptions = findAllIconsInCss(cssPrefix, showPrefix);
-        this.iconOptions$.next(newIconOptions);
-      });
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        const files = settings.Files || '';
+        const cssPrefix = settings.CssPrefix || '';
+        const showPrefix = settings.ShowPrefix || false;
+        // load each file (usually CSS) in the settings
+        this.scriptsLoaderService.load(files.split('\n'), () => {
+          const newIconOptions = findAllIconsInCss(cssPrefix, showPrefix);
+          this.iconOptions$.next(newIconOptions);
+        });
+      })
+    );
     this.previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
     this.filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
       map(([search, iconList]) => {

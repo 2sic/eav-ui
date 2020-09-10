@@ -31,24 +31,28 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.autoGenerateMask = settings.AutoGenerateMask || null;
-      this.allowSlashes = settings.AllowSlashes || false;
-      if (this.fieldMaskService != null) {
-        this.fieldMaskService.destroy();
-        this.fieldMaskService = null;
-      }
-      this.fieldMaskService = new FieldMaskService(this.autoGenerateMask, this.group.controls,
-        this.onSourcesChanged.bind(this), this.preClean);
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.autoGenerateMask = settings.AutoGenerateMask || null;
+        this.allowSlashes = settings.AllowSlashes || false;
+        if (this.fieldMaskService != null) {
+          this.fieldMaskService.destroy();
+          this.fieldMaskService = null;
+        }
+        this.fieldMaskService = new FieldMaskService(this.autoGenerateMask, this.group.controls,
+          this.onSourcesChanged.bind(this), this.preClean);
+      })
+    );
 
     // set initial value
     this.onSourcesChanged(this.fieldMaskService.resolve());
 
     // clean on value change
-    this.subscription.add(this.control.valueChanges.subscribe(value => {
-      this.clean(false);
-    }));
+    this.subscription.add(
+      this.control.valueChanges.subscribe(value => {
+        this.clean(false);
+      })
+    );
   }
 
   ngOnDestroy() {

@@ -84,13 +84,15 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       return settings.Notes != null ? settings.Notes : '';
     }));
 
-    this.subscription.add(this.currentLanguage$.subscribe(currentLanguage => {
-      let defaultLanguage: string;
-      this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
-        defaultLanguage = defaultLang;
-      });
-      this.translateAllConfiguration(currentLanguage, defaultLanguage);
-    }));
+    this.subscription.add(
+      this.currentLanguage$.subscribe(currentLanguage => {
+        let defaultLanguage: string;
+        this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
+          defaultLanguage = defaultLang;
+        });
+        this.translateAllConfiguration(currentLanguage, defaultLanguage);
+      })
+    );
   }
 
   ngOnDestroy() {

@@ -45,9 +45,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscription.add(this.config.adam.items$.subscribe(items => {
-      this.adamItems$.next(items);
-    }));
+    this.subscription.add(
+      this.config.adam.items$.subscribe(items => {
+        this.adamItems$.next(items);
+      })
+    );
   }
 
   ngOnDestroy() {

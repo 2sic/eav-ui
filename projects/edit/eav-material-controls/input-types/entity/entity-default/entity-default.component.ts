@@ -71,16 +71,18 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
 
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.contentTypeMask?.destroy();
-      this.contentTypeMask = new FieldMaskService(
-        settings.EntityType,
-        this.group.controls,
-        !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
-        null,
-        this.eavConfig,
-      );
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.contentTypeMask?.destroy();
+        this.contentTypeMask = new FieldMaskService(
+          settings.EntityType,
+          this.group.controls,
+          !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
+          null,
+          this.eavConfig,
+        );
+      })
+    );
 
     if (!this.useQuery) {
       this.fetchAvailableEntities();
@@ -204,9 +206,11 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(() => {
-      this.fetchAvailableEntities();
-    }));
+    this.subscription.add(
+      this.editRoutingService.childFormClosed().subscribe(() => {
+        this.fetchAvailableEntities();
+      })
+    );
     this.subscription.add(
       this.editRoutingService.childFormResult(this.config.field.index, this.config.entity.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];

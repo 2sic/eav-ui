@@ -31,10 +31,12 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.attachAdam(settings);
-      this.attachAdamValidator(settings.Required);
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.attachAdam(settings);
+        this.attachAdamValidator(settings.Required);
+      })
+    );
   }
 
   ngOnDestroy() {
