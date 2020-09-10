@@ -21,7 +21,6 @@ import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
-import { EavConfig } from '../../shared/models/eav-config';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -67,7 +66,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private formErrors: { [key: string]: string }[] = [];
   private formsAreDirty: { [key: string]: boolean } = {};
   private formSaveAllObservables$: Observable<Action>[] = [];
-  private eavConfig: EavConfig;
   private createMode = false;
   private formIsSaved = false;
   private subscriptions: Subscription[] = [];
@@ -92,8 +90,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private editRoutingService: EditRoutingService,
   ) {
     this.eavService.setEavConfig(this.route);
-    this.eavConfig = this.eavService.getEavConfig();
-    const isoLangCode = this.eavConfig.lang.split('-')[0];
+    const isoLangCode = this.eavService.eavConfig.lang.split('-')[0];
     this.translate.use(isoLangCode);
 
     this.editRoutingService.init(this.route, this.formId);
@@ -102,10 +99,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     // Load language data only for parent dialog to not overwrite languages when opening child dialogs
     this.isParentDialog = calculateIsParentDialog(this.route);
     if (this.isParentDialog) {
-      const sortedLanguages = sortLanguages(this.eavConfig.langpri, JSON.parse(this.eavConfig.langs));
+      const sortedLanguages = sortLanguages(this.eavService.eavConfig.langpri, JSON.parse(this.eavService.eavConfig.langs));
       this.languageService.loadLanguages(sortedLanguages);
     }
-    this.languageInstanceService.addLanguageInstance(this.formId, this.eavConfig.lang, this.eavConfig.langpri, this.eavConfig.lang, false);
+    this.languageInstanceService.addLanguageInstance(this.formId, this.eavService.eavConfig.lang,
+      this.eavService.eavConfig.langpri, this.eavService.eavConfig.lang, false);
   }
 
   ngOnInit() {
@@ -161,8 +159,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   setPublishMode(publishMode: PublishMode) {
     // if publish mode is prohibited, revert to default
-    if (this.eavConfig.versioningOptions[publishMode] == null) {
-      publishMode = Object.keys(this.eavConfig.versioningOptions)[0] as PublishMode;
+    if (this.eavService.eavConfig.versioningOptions[publishMode] == null) {
+      publishMode = Object.keys(this.eavService.eavConfig.versioningOptions)[0] as PublishMode;
     }
     this.publishMode$.next(publishMode);
   }
@@ -212,7 +210,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   private fetchFormData() {
-    this.eavService.fetchFormData(this.eavConfig.items).subscribe(formData => {
+    this.eavService.fetchFormData(this.eavService.eavConfig.items).subscribe(formData => {
       this.itemService.loadItems(formData.Items);
       // we assume that input type and content type data won't change between loading parent and child forms
       this.inputTypeService.addInputTypes(formData.InputTypes);
@@ -247,17 +245,17 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       );
 
       // if current language !== default language check whether default language has value in all items
-      if (this.eavConfig.lang !== this.eavConfig.langpri) {
+      if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langpri) {
         const valuesExistInDefaultLanguage = this.itemService.valuesExistInDefaultLanguage(
           formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)),
-          this.eavConfig.langpri,
+          this.eavService.eavConfig.langpri,
           this.inputTypeService,
           this.contentTypeService,
         );
         if (!valuesExistInDefaultLanguage) {
-          this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavConfig.langpri);
+          this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavService.eavConfig.langpri);
           this.snackBar.open(
-            this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavConfig.langpri }),
+            this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langpri }),
             null,
             { duration: 5000 },
           );
@@ -443,7 +441,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
               IsPublished: this.publishMode$.value === PublishModeConstants.Show,
               DraftShouldBranch: this.publishMode$.value === PublishModeConstants.Branch,
             };
-            return this.eavService.saveFormData(this.eavConfig.partOfPage, JSON.stringify(body)).pipe(
+            return this.eavService.saveFormData(this.eavService.eavConfig.partOfPage, JSON.stringify(body)).pipe(
               map(data => {
                 this.eavService.saveItemSuccess(data);
               }),

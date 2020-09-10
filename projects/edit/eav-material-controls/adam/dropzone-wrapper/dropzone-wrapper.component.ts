@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavConfig } from '../../../shared/models/eav-config';
 import { EavService } from '../../../shared/services/eav.service';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';
@@ -25,7 +24,6 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
 
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
   dropzoneDisabled$: Observable<boolean>;
-  private eavConfig: EavConfig;
 
   constructor(
     eavService: EavService,
@@ -34,7 +32,6 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService);
-    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {
@@ -101,7 +98,7 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const appId = this.eavConfig.appId;
+    const appId = this.eavService.eavConfig.appId;
 
     const startDisabled = this.config.field.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);

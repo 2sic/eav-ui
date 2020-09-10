@@ -32,7 +32,7 @@ export class EavService implements OnDestroy {
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
   formDisabledChange$ = new Subject<FormDisabledSet>();
 
-  private eavConfig: EavConfig;
+  eavConfig: EavConfig;
 
   constructor(
     private http: HttpClient,
@@ -45,10 +45,6 @@ export class EavService implements OnDestroy {
     this.forceConnectorSave$.complete();
     this.formValueChange$.complete();
     this.formDisabledChange$.complete();
-  }
-
-  getEavConfig() {
-    return this.eavConfig;
   }
 
   /** Create EavConfiguration from sessionStorage */

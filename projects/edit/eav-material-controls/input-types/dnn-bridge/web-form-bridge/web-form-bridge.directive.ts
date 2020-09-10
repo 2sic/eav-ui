@@ -5,23 +5,23 @@ import { take } from 'rxjs/operators';
 
 import { DnnBridgeDialogData } from './web-form-bridge.models';
 import { EavService } from '../../../../shared/services/eav.service';
-import { EavConfig } from '../../../../shared/models/eav-config';
 
 @Directive({ selector: '[appWebFormBridge]' })
 export class WebFormBridgeDirective implements OnInit {
-  private eavConfig: EavConfig;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData, eavService: EavService, private elementRef: ElementRef) {
-    this.eavConfig = eavService.getEavConfig();
-  }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData,
+    private eavService: EavService,
+    private elementRef: ElementRef,
+  ) { }
 
   ngOnInit() {
     const bridge = this.dialogData.connector;
     const type = this.dialogData.type;
     const element = this.elementRef.nativeElement;
 
-    const webFormsBridgeUrl = this.eavConfig.portalroot + 'Default.aspx?tabid=' +
-      this.eavConfig.tid + '&ctl=webformsbridge&mid=' + this.eavConfig.mid +
+    const webFormsBridgeUrl = this.eavService.eavConfig.portalroot + 'Default.aspx?tabid=' +
+      this.eavService.eavConfig.tid + '&ctl=webformsbridge&mid=' + this.eavService.eavConfig.mid +
       '&dnnprintmode=true&SkinSrc=%5bG%5dSkins%2f_default%2fNo+Skin&ContainerSrc=%5bG%5dContainers%2f_default%2fNo+Container';
 
     const params = !bridge.params

@@ -6,11 +6,11 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { DnnBridgeConnector, DnnBridgeDialogData } from '../../eav-material-controls/input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { PagepickerComponent } from '../../eav-material-controls/input-types/dnn-bridge/hyperlink-default-pagepicker/pagepicker.component';
-import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
+import { EavService } from './eav.service';
 
 @Injectable()
 export class DnnBridgeService {
-  constructor(private http: HttpClient, private dnnContext: DnnContext, private context: Context) { }
+  constructor(private http: HttpClient, private dnnContext: DnnContext, private eavService: EavService) { }
 
   open(oldValue: any, params: any, callback: any, dialog: MatDialog) {
     const type = 'pagepicker';
@@ -48,7 +48,7 @@ export class DnnBridgeService {
         ...(guid && { guid }),
         ...(contentType && { contentType }),
         ...(field && { field }),
-        appid: this.context.appId.toString(),
+        appid: this.eavService.eavConfig.appId.toString(),
       }
     }) as Observable<string>;
   }

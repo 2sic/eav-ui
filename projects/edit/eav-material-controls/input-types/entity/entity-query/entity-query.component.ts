@@ -50,7 +50,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
           this.group.controls,
           this.fetchAvailableEntities.bind(this),
           null,
-          this.eavConfig,
+          this.eavService.eavConfig,
         );
       })
     );
