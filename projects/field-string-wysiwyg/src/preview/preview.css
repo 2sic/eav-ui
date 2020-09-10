@@ -1,6 +1,7 @@
 .wysiwyg-preview {
   height: 96px;
   user-select: none;
+  overflow: hidden;
 }
 
 .wysiwyg-preview:not(.disabled) {
