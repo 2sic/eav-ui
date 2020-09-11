@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Item } from '../models/eav/item';
@@ -15,7 +14,6 @@ import { SaveResult } from '../models/eav/save-result.model';
 import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { VersioningOptions } from '../models/eav/versioning-options';
 import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
-declare const $2sxc: SxcRoot;
 
 @Injectable()
 export class EavService implements OnDestroy {
@@ -60,7 +58,7 @@ export class EavService implements OnDestroy {
       partOfPage: sessionStorage.getItem(keyPartOfPage),
       portalRoot: sessionStorage.getItem(keyPortalRoot),
       tabId: this.context.tabId.toString(),
-      systemRoot: ($2sxc.env as any).uiRoot(),
+      systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(
         sessionStorage.getItem(keyPartOfPage) === 'true',
         sessionStorage.getItem(keyPublishing),

@@ -15,7 +15,6 @@ export const keyPublishing = prefix + 'publishing';
 export const keyFilters = prefix + 'filters';
 export const keyPipelineId = prefix + 'pipelineId';
 export const keyApi = prefix + 'api';
-export const keyUiRoot = prefix + 'uiRoot';
 
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
