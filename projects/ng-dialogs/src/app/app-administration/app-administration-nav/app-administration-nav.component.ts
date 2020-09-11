@@ -8,7 +8,6 @@ import { filter } from 'rxjs/operators';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
-import { Context } from '../../shared/services/context';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -28,12 +27,10 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private globalConfigurationService: GlobalConfigurationService,
-    private context: Context,
   ) { }
 
   ngOnInit() {
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-      this.context.appRoot = dialogSettings.Context.App.Url;
       if (!dialogSettings.Context.Enable.Query) {
         this.tabs = this.tabs.filter(tab => tab !== 'queries' && tab !== 'web-api');
       }

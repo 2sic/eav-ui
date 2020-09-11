@@ -4,7 +4,7 @@ import { Context } from './context';
 import { EditForm } from '../models/edit-form.model';
 import { DialogTypeConstants } from '../constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyLang, keyLangPri, keyLangs, keyPortalRoot, keyWebsiteRoot, keyPartOfPage, keyAppRoot, keyRequestToken, keyDebug, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
+import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyPortalRoot, keyPartOfPage, keyRequestToken, keyDebug, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
 
 @Injectable()
 export class DialogService {
@@ -24,13 +24,8 @@ export class DialogService {
       this.buildHashParam(keyTabId, this.context.tabId.toString()) +
       this.buildHashParam(keyModuleId, this.context.moduleId.toString()) +
       this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()) +
-      this.buildHashParam(keyLang) +
-      this.buildHashParam(keyLangPri) +
-      this.buildHashParam(keyLangs) +
       this.buildHashParam(keyPortalRoot) +
-      this.buildHashParam(keyWebsiteRoot) +
       this.buildHashParam(keyPartOfPage) +
-      this.buildHashParam(keyAppRoot, this.context.appRoot) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
       this.buildHashParam(keyItems, JSON.stringify(form.items)) +
@@ -55,13 +50,8 @@ export class DialogService {
       this.buildHashParam(keyTabId, this.context.tabId.toString()) +
       this.buildHashParam(keyModuleId, this.context.moduleId.toString()) +
       this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()) +
-      this.buildHashParam(keyLang) +
-      this.buildHashParam(keyLangPri) +
-      this.buildHashParam(keyLangs) +
       this.buildHashParam(keyPortalRoot) +
-      this.buildHashParam(keyWebsiteRoot) +
       this.buildHashParam(keyPartOfPage) +
-      this.buildHashParam(keyAppRoot, this.context.appRoot) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
       this.buildHashParam(keyPipelineId, queryId.toString()) +
