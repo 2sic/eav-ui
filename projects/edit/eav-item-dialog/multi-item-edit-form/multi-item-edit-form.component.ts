@@ -240,9 +240,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         }
       }
 
-      this.items$ = this.itemService.selectItemsByIdList(
-        formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id))
-      );
+      this.items$ = this.itemService
+        .selectItemsByIdList(formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)))
+        // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
+        // Remove if calculating fields gets faster
+        .pipe(delay(0));
       this.items$.pipe(take(1)).subscribe(items => {
         if (items?.length > 0 && items[0].entity.id === 0) {
           this.createMode = true;
