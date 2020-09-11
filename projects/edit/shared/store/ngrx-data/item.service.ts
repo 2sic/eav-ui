@@ -201,7 +201,6 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   /** Select items from store by id array list */
   selectItemsByIdList(idsList: (number | string)[]) {
     return this.entities$.pipe(
-      delay(0),
       map(items =>
         items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
       ),

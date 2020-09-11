@@ -33,6 +33,8 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
+import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { EditParams } from '../../edit-matcher.models';
 
 @Component({
   selector: 'app-multi-item-edit-form',
@@ -44,7 +46,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
   @ViewChild('slideable') private slideableRef: ElementRef<HTMLDivElement>;
 
-  isParentDialog: boolean;
+  isParentDialog = calculateIsParentDialog(this.route);
   formId = Math.floor(Math.random() * 99999);
   formsAreValid$ = new BehaviorSubject(false);
   allControlsAreDisabled$ = new BehaviorSubject(true);
@@ -52,7 +54,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   publishMode$ = new BehaviorSubject<PublishMode>('hide');
   reduceSaveButton$ = new BehaviorSubject(false);
-  hideHeader$: Observable<boolean>;
+  hideHeader$ = this.languageInstanceService.getHideHeader(this.formId);
   debugEnabled$ = this.globalConfigurationService.getDebugEnabled().pipe(
     tap(debugEnabled => {
       if (this.debugInfoIsOpen$.value && !debugEnabled) {
@@ -62,6 +64,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   );
   debugInfoIsOpen$ = new BehaviorSubject(false);
   slide$: Observable<string>;
+  eavConfigLoaded$ = new BehaviorSubject(false);
 
   private formErrors: { [key: string]: string }[] = [];
   private formsAreDirty: { [key: string]: boolean } = {};
@@ -89,35 +92,18 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
   ) {
-    this.eavService.setEavConfig(this.route);
-    const isoLangCode = this.eavService.eavConfig.lang.split('-')[0];
-    this.translate.use(isoLangCode);
-
     this.editRoutingService.init(this.route, this.formId);
     this.loadIconsService.load();
-
-    // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    this.isParentDialog = calculateIsParentDialog(this.route);
-    if (this.isParentDialog) {
-      const sortedLanguages = sortLanguages(this.eavService.eavConfig.langpri, JSON.parse(this.eavService.eavConfig.langs));
-      this.languageService.loadLanguages(sortedLanguages);
-    }
-    this.languageInstanceService.addLanguageInstance(this.formId, this.eavService.eavConfig.lang,
-      this.eavService.eavConfig.langpri, this.eavService.eavConfig.lang, false);
   }
 
   ngOnInit() {
-    setTimeout(() => { this.reduceSaveButton$.next(true); }, 5000);
     this.fetchFormData();
-    this.languageChangeSubscribe();
-    this.dialogBackdropClickSubscribe();
-    this.saveFormMessagesSubscribe();
-    this.formSetValueChangeSubscribe();
   }
 
   ngAfterViewChecked() {
     this.attachAllSaveFormObservables();
     this.changeDetectorRef.detectChanges(); // 2020-06-19 SPM TODO: remove when form is stable. ATM a whole lot of stuff breaks without it
+    this.initSlider();
   }
 
   ngOnDestroy() {
@@ -126,6 +112,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.formsAreValid$.complete();
     this.allControlsAreDisabled$.complete();
     this.publishMode$.complete();
+    this.eavConfigLoaded$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
 
@@ -209,39 +196,34 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   private fetchFormData() {
-    this.eavService.fetchFormData(this.eavService.eavConfig.items).subscribe(formData => {
+    const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
+    const editItems = JSON.stringify(form.items);
+    this.eavService.fetchFormData(editItems).subscribe(formData => {
+      setTimeout(() => { this.reduceSaveButton$.next(true); }, 5000);
       this.itemService.loadItems(formData.Items);
       // we assume that input type and content type data won't change between loading parent and child forms
       this.inputTypeService.addInputTypes(formData.InputTypes);
       this.contentTypeService.addContentTypes(formData.ContentTypes);
       this.featureService.loadFeatures(formData.Features);
 
+      this.eavService.setEavConfig(formData.Context);
+      this.eavConfigLoaded$.next(true);
+      const isoLangCode = this.eavService.eavConfig.lang.split('-')[0];
+      this.translate.use(isoLangCode);
+      // Load language data only for parent dialog to not overwrite languages when opening child dialogs
+      if (this.isParentDialog) {
+        const langs = this.eavService.eavConfig.langs;
+        const eavLangs: Language[] = Object.keys(langs).map(key => ({ key, name: langs[key] }));
+        const sortedLanguages = sortLanguages(this.eavService.eavConfig.langpri, eavLangs);
+        this.languageService.loadLanguages(sortedLanguages);
+      }
+      this.languageInstanceService.addLanguageInstance(this.formId, this.eavService.eavConfig.lang,
+        this.eavService.eavConfig.langpri, this.eavService.eavConfig.lang, false);
+
       const publishMode: PublishMode = formData.DraftShouldBranch
         ? PublishModeConstants.Branch
         : formData.IsPublished ? PublishModeConstants.Show : PublishModeConstants.Hide;
       this.setPublishMode(publishMode);
-
-      this.hideHeader$ = this.languageInstanceService.getHideHeader(this.formId);
-      this.slide$ = merge(
-        this.languageInstanceService.getCurrentLanguage(this.formId).pipe(
-          pairwise(),
-          map(([previousLang, currentLang]) => {
-            let languages: Language[];
-            this.languageService.entities$.pipe(take(1)).subscribe(langs => {
-              languages = langs;
-            });
-            const previousLangIndex = languages.findIndex(lang => lang.key === previousLang);
-            const currentLangIndex = languages.findIndex(lang => lang.key === currentLang);
-            const slide = (previousLangIndex > currentLangIndex) ? 'previous' : 'next';
-            return slide;
-          }),
-        ),
-        fromEvent(this.slideableRef.nativeElement, 'animationend').pipe(
-          filter((event: AnimationEvent) => event.animationName === 'move-next' || event.animationName === 'move-previous'),
-          map(() => ''),
-          delay(0), // small delay because animationend fires a bit too early
-        ),
-      );
 
       // if current language !== default language check whether default language has value in all items
       if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langpri) {
@@ -253,11 +235,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         );
         if (!valuesExistInDefaultLanguage) {
           this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavService.eavConfig.langpri);
-          this.snackBar.open(
-            this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langpri }),
-            null,
-            { duration: 5000 },
-          );
+          const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langpri });
+          this.snackBar.open(message, null, { duration: 5000 });
         }
       }
 
@@ -269,7 +248,36 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
           this.createMode = true;
         }
       });
+
+      this.languageChangeSubscribe();
+      this.dialogBackdropClickSubscribe();
+      this.saveFormMessagesSubscribe();
+      this.formSetValueChangeSubscribe();
     });
+  }
+
+  private initSlider() {
+    if (this.slideableRef == null || this.slide$ != null) { return; }
+    this.slide$ = merge(
+      this.languageInstanceService.getCurrentLanguage(this.formId).pipe(
+        pairwise(),
+        map(([previousLang, currentLang]) => {
+          let languages: Language[];
+          this.languageService.entities$.pipe(take(1)).subscribe(langs => {
+            languages = langs;
+          });
+          const previousLangIndex = languages.findIndex(lang => lang.key === previousLang);
+          const currentLangIndex = languages.findIndex(lang => lang.key === currentLang);
+          const slide = (previousLangIndex > currentLangIndex) ? 'previous' : 'next';
+          return slide;
+        }),
+      ),
+      fromEvent(this.slideableRef.nativeElement, 'animationend').pipe(
+        filter((event: AnimationEvent) => event.animationName === 'move-next' || event.animationName === 'move-previous'),
+        map(() => ''),
+        delay(0), // small delay because animationend fires a bit too early
+      ),
+    );
   }
 
   private languageChangeSubscribe() {
@@ -440,7 +448,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
               IsPublished: this.publishMode$.value === PublishModeConstants.Show,
               DraftShouldBranch: this.publishMode$.value === PublishModeConstants.Branch,
             };
-            return this.eavService.saveFormData(this.eavService.eavConfig.partOfPage, JSON.stringify(body)).pipe(
+            return this.eavService.saveFormData(JSON.stringify(body)).pipe(
               map(data => {
                 this.eavService.saveItemSuccess(data);
               }),

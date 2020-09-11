@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
@@ -13,10 +12,10 @@ import { EavConfig } from '../models/eav-config';
 import { FormValueSet, FormDisabledSet } from '../../../edit-types';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { SaveResult } from '../models/eav/save-result.model';
-import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { VersioningOptions } from '../models/eav/versioning-options';
-import { keyDebug, keyDialog, keyLang, keyLangPri, keyLangs, keyMode, keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+// tslint:disable-next-line:max-line-length
+import { keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 declare const $2sxc: SxcRoot;
 
 @Injectable()
@@ -38,6 +37,7 @@ export class EavService implements OnDestroy {
     private http: HttpClient,
     private store: Store<fromStore.EavState>,
     private dnnContext: DnnContext,
+    /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
     private context: Context,
   ) { }
 
@@ -49,26 +49,18 @@ export class EavService implements OnDestroy {
   }
 
   /** Create EavConfiguration from sessionStorage */
-  setEavConfig(route: ActivatedRoute) {
-    const form = convertUrlToForm(route.snapshot.params.items);
-    const editItems = JSON.stringify(form.items);
-
+  setEavConfig(editDialogContext: EditDialogContext) {
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
-      approot: this.context.appRoot,
+      approot: editDialogContext.App.Url,
       cbid: this.context.contentBlockId.toString(),
-      debug: sessionStorage.getItem(keyDebug),
-      dialog: sessionStorage.getItem(keyDialog),
-      items: editItems,
-      lang: sessionStorage.getItem(keyLang),
-      langpri: sessionStorage.getItem(keyLangPri),
-      langs: sessionStorage.getItem(keyLangs),
+      lang: editDialogContext.Language.Current,
+      langpri: editDialogContext.Language.Primary,
+      langs: editDialogContext.Language.All,
       mid: this.context.moduleId.toString(),
-      mode: sessionStorage.getItem(keyMode),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
       portalroot: sessionStorage.getItem(keyPortalRoot),
-      publishing: sessionStorage.getItem(keyPublishing),
       tid: this.context.tabId.toString(),
       rvt: this.context.requestToken,
       websiteroot: sessionStorage.getItem(keyWebsiteRoot),
@@ -98,9 +90,9 @@ export class EavService implements OnDestroy {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesErrorAction(error));
   }
 
-  saveFormData(partOfPage: string, body: string) {
+  saveFormData(body: string) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ui/save'), body, {
-      params: { appId: this.context.appId.toString(), partOfPage }
+      params: { appId: this.eavConfig.appId.toString(), partOfPage: this.eavConfig.partOfPage }
     }) as Observable<SaveResult>;
   }
 

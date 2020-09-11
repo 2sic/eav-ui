@@ -1,3 +1,4 @@
+import { EditDialogAllLangs } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { VersioningOptions } from './eav/versioning-options';
 
 export interface EavConfig {
@@ -5,17 +6,12 @@ export interface EavConfig {
   appId: string;
   approot: string;
   cbid: string;
-  debug: string;
-  dialog: string;
-  items: string;
   lang: string;
   langpri: string;
-  langs: string;
+  langs: EditDialogAllLangs;
   mid: string;
-  mode: string;
   partOfPage: string;
   portalroot: string;
-  publishing: string;
   tid: string;
   rvt: string;
   websiteroot: string;
