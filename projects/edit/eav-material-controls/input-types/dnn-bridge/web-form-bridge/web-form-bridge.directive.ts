@@ -20,8 +20,8 @@ export class WebFormBridgeDirective implements OnInit {
     const type = this.dialogData.type;
     const element = this.elementRef.nativeElement;
 
-    const webFormsBridgeUrl = this.eavService.eavConfig.portalroot + 'Default.aspx?tabid=' +
-      this.eavService.eavConfig.tid + '&ctl=webformsbridge&mid=' + this.eavService.eavConfig.mid +
+    const webFormsBridgeUrl = this.eavService.eavConfig.portalRoot + 'Default.aspx?tabid=' +
+      this.eavService.eavConfig.tabId + '&ctl=webformsbridge&mid=' + this.eavService.eavConfig.moduleId +
       '&dnnprintmode=true&SkinSrc=%5bG%5dSkins%2f_default%2fNo+Skin&ContainerSrc=%5bG%5dContainers%2f_default%2fNo+Container';
 
     const params = !bridge.params

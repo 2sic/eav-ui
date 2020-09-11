@@ -14,8 +14,7 @@ import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { SaveResult } from '../models/eav/save-result.model';
 import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { VersioningOptions } from '../models/eav/versioning-options';
-// tslint:disable-next-line:max-line-length
-import { keyPartOfPage, keyPortalRoot, keyPublishing, keyWebsiteRoot } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 declare const $2sxc: SxcRoot;
 
 @Injectable()
@@ -53,18 +52,15 @@ export class EavService implements OnDestroy {
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
-      approot: editDialogContext.App.Url,
-      cbid: this.context.contentBlockId.toString(),
+      appRoot: editDialogContext.App.Url,
       lang: editDialogContext.Language.Current,
-      langpri: editDialogContext.Language.Primary,
+      langPri: editDialogContext.Language.Primary,
       langs: editDialogContext.Language.All,
-      mid: this.context.moduleId.toString(),
+      moduleId: this.context.moduleId.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
-      portalroot: sessionStorage.getItem(keyPortalRoot),
-      tid: this.context.tabId.toString(),
-      rvt: this.context.requestToken,
-      websiteroot: sessionStorage.getItem(keyWebsiteRoot),
-      systemroot: ($2sxc.env as any).uiRoot(),
+      portalRoot: sessionStorage.getItem(keyPortalRoot),
+      tabId: this.context.tabId.toString(),
+      systemRoot: ($2sxc.env as any).uiRoot(),
       versioningOptions: this.getVersioningOptions(
         sessionStorage.getItem(keyPartOfPage) === 'true',
         sessionStorage.getItem(keyPublishing),

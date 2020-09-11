@@ -4,17 +4,14 @@ import { VersioningOptions } from './eav/versioning-options';
 export interface EavConfig {
   zoneId: string;
   appId: string;
-  approot: string;
-  cbid: string;
+  appRoot: string;
   lang: string;
-  langpri: string;
+  langPri: string;
   langs: EditDialogAllLangs;
-  mid: string;
+  moduleId: string;
   partOfPage: string;
-  portalroot: string;
-  tid: string;
-  rvt: string;
-  websiteroot: string;
-  systemroot: string;
+  portalRoot: string;
+  tabId: string;
+  systemRoot: string;
   versioningOptions: VersioningOptions;
 }

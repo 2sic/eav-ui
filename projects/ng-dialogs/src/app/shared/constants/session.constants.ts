@@ -13,7 +13,6 @@ export const keyItems = prefix + 'items';
 export const keyLang = prefix + 'lang';
 export const keyLangPri = prefix + 'langpri';
 export const keyLangs = prefix + 'langs';
-export const keyMode = prefix + 'mode';
 export const keyPartOfPage = prefix + 'partOfPage';
 export const keyPortalRoot = prefix + 'portalroot';
 export const keyPublishing = prefix + 'publishing';

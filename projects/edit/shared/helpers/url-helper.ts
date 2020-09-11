@@ -41,9 +41,9 @@ export class UrlHelper {
   static getUrlPrefix(area: string, eavConfig: EavConfig) {
     let result = '';
 
-    if (area === 'system') { result = eavConfig.systemroot; }                    // used to link to JS-stuff and similar
-    if (area === 'zone') { result = eavConfig.portalroot; }                      // used to link to the site-root (like an image)
-    if (area === 'app') { result = eavConfig.approot; }                          // used to find the app-root of something inside an app
+    if (area === 'system') { result = eavConfig.systemRoot; }                    // used to link to JS-stuff and similar
+    if (area === 'zone') { result = eavConfig.portalRoot; }                      // used to link to the site-root (like an image)
+    if (area === 'app') { result = eavConfig.appRoot; }                          // used to find the app-root of something inside an app
     if (result.endsWith('/')) { result = result.substring(0, result.length - 1); }
 
     return result;

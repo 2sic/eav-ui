@@ -35,7 +35,7 @@ export class AdamService {
 
   /** Calculates full URL to an item */
   addFullPath(item: AdamItem | AdamPostResponse) {
-    const adamRoot = this.eavService.eavConfig.approot.substring(0, this.eavService.eavConfig.approot.indexOf('2sxc'));
+    const adamRoot = this.eavService.eavConfig.appRoot.substring(0, this.eavService.eavConfig.appRoot.indexOf('2sxc'));
     item.FullPath = item.Path;
     if (!item.Path?.toLowerCase().includes(adamRoot.toLowerCase())) {
       item.FullPath = adamRoot + item.Path;

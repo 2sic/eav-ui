@@ -214,11 +214,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       if (this.isParentDialog) {
         const langs = this.eavService.eavConfig.langs;
         const eavLangs: Language[] = Object.keys(langs).map(key => ({ key, name: langs[key] }));
-        const sortedLanguages = sortLanguages(this.eavService.eavConfig.langpri, eavLangs);
+        const sortedLanguages = sortLanguages(this.eavService.eavConfig.langPri, eavLangs);
         this.languageService.loadLanguages(sortedLanguages);
       }
       this.languageInstanceService.addLanguageInstance(this.formId, this.eavService.eavConfig.lang,
-        this.eavService.eavConfig.langpri, this.eavService.eavConfig.lang, false);
+        this.eavService.eavConfig.langPri, this.eavService.eavConfig.lang, false);
 
       const publishMode: PublishMode = formData.DraftShouldBranch
         ? PublishModeConstants.Branch
@@ -226,16 +226,16 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.setPublishMode(publishMode);
 
       // if current language !== default language check whether default language has value in all items
-      if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langpri) {
+      if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langPri) {
         const valuesExistInDefaultLanguage = this.itemService.valuesExistInDefaultLanguage(
           formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)),
-          this.eavService.eavConfig.langpri,
+          this.eavService.eavConfig.langPri,
           this.inputTypeService,
           this.contentTypeService,
         );
         if (!valuesExistInDefaultLanguage) {
-          this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavService.eavConfig.langpri);
-          const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langpri });
+          this.languageInstanceService.updateCurrentLanguage(this.formId, this.eavService.eavConfig.langPri);
+          const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langPri });
           this.snackBar.open(message, null, { duration: 5000 });
         }
       }
