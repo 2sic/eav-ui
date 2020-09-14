@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -72,7 +72,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     super.ngOnDestroy();
   }
 
-  // #region dnn-page picker dialog
   openPageDialog() {
     this.dnnBridgeService.open(
       this.control.value,
@@ -90,7 +89,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     if (!value) { return; }
     this.control.patchValue(`page:${value.id}`);
   }
-  // #endregion
 
   private setLink(value: string) {
     if (!value) { return; }
@@ -142,7 +140,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     return qt + result + qt;
   }
 
-  // #region adam
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
@@ -158,7 +155,15 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   private setValue(item: AdamItem | AdamPostResponse) {
-    this.control.patchValue(`file:${item.Id}`);
+    let usePath: boolean;
+    this.settings$.pipe(take(1)).subscribe(settings => {
+      usePath = settings.ServerResourceMapping === 'url';
+    });
+    if (usePath) {
+      this.control.patchValue(item.FullPath);
+    } else {
+      this.control.patchValue(`file:${item.Id}`);
+    }
   }
-  //#endregion
+
 }
