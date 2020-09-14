@@ -47,7 +47,9 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
 
   private loadAssets() {
     let inputType: InputTypeModel;
-    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
+    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => {
+      inputType = type;
+    });
 
     const assets = inputType.AngularAssets.split('\n');
     if (assets.length === 0) { return; }

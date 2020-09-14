@@ -3,7 +3,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FieldSettings } from '../../../../../edit-types';
-import { SelectedEntity } from '../entity-default/entity-default.models';
+import { SelectedEntity, DeleteEntityProps } from '../entity-default/entity-default.models';
 import { ReorderIndexes } from './entity-default-list.models';
 
 @Component({
@@ -24,7 +24,7 @@ export class EntityDefaultListComponent {
   @Output() reorder = new EventEmitter<ReorderIndexes>();
   @Output() removeSelected = new EventEmitter<number>();
   @Output() editEntity = new EventEmitter<string>();
-  @Output() deleteEntity = new EventEmitter<string>();
+  @Output() deleteEntity = new EventEmitter<DeleteEntityProps>();
 
   constructor() { }
 
@@ -49,7 +49,7 @@ export class EntityDefaultListComponent {
     this.removeSelected.emit(index);
   }
 
-  deleteItem(entityGuid: string) {
-    this.deleteEntity.emit(entityGuid);
+  deleteItem(index: number, entityGuid: string) {
+    this.deleteEntity.emit({ index, entityGuid });
   }
 }

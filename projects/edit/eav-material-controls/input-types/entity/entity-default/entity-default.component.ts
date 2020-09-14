@@ -4,7 +4,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -14,7 +14,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { SelectedEntity } from './entity-default.models';
+import { SelectedEntity, DeleteEntityProps } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
@@ -40,7 +40,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  private separator: string;
 
   constructor(
     eavService: EavService,
@@ -63,10 +62,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         this.settings$.next(settings);
       })
     );
-    this.separator = this.config.field.settings$.value.Separator;
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(
-      map(([fieldValue, availableEntities]) => {
-        const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+    this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
+      map(([fieldValue, settings, availableEntities]) => {
+        const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
         return selected;
       }),
     );
@@ -169,23 +167,20 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
   }
 
-  deleteEntity(entityGuid: string) {
-    const entity = this.config.entityCache$.value.find(e => e.Value === entityGuid);
+  deleteEntity(props: DeleteEntityProps) {
+    const entity = this.config.entityCache$.value.find(e => e.Value === props.entityGuid);
     const id = entity.Id.toString();
     const title = entity.Text;
     const contentType = this.contentTypeMask.resolve();
-    let selected: SelectedEntity[];
-    this.selectedEntities$.pipe(take(1)).subscribe(entities => {
-      selected = entities;
-    });
-    const index = selected.findIndex(e => e.value === entityGuid);
 
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+    const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
+    if (!confirmed) { return; }
+
     this.snackBar.open('Deleting...');
     this.entityService.delete(contentType, id, false).subscribe({
       next: () => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
-        this.removeSelected(index);
+        this.removeSelected(props.index);
         this.fetchAvailableEntities();
       },
       error: (err: HttpErrorResponse) => {
@@ -194,7 +189,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         this.snackBar.open('Deleting...');
         this.entityService.delete(contentType, id, true).subscribe(res2 => {
           this.snackBar.open('Deleted', null, { duration: 2000 });
-          this.removeSelected(index);
+          this.removeSelected(props.index);
           this.fetchAvailableEntities();
         });
       }
@@ -217,7 +212,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {
     const valueArray: string[] = (typeof this.control.value === 'string')
-      ? Helper.convertValueToArray(this.control.value, this.separator)
+      ? Helper.convertValueToArray(this.control.value, this.settings$.value.Separator)
       : [...this.control.value];
 
     switch (action) {
@@ -236,7 +231,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     }
 
     if (typeof this.control.value === 'string') {
-      const valueString = Helper.convertArrayToString(valueArray, this.separator);
+      const valueString = Helper.convertArrayToString(valueArray, this.settings$.value.Separator);
       this.control.patchValue(valueString);
     } else {
       this.control.patchValue(valueArray);

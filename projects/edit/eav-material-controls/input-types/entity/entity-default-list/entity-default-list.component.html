@@ -31,7 +31,7 @@
       </button>
       <button mat-icon-button *ngIf="settings.EnableDelete && !item.isFreeTextOrNotFound"
         [matTooltip]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
-        (click)="deleteItem(item.value)">
+        (click)="deleteItem(index, item.value)">
         <mat-icon>delete</mat-icon>
       </button>
       <button mat-icon-button *ngIf="settings.EnableRemove" [matTooltip]="'Fields.Entity.Remove' | translate"

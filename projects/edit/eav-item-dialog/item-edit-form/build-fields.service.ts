@@ -178,7 +178,9 @@ export class BuildFieldsService {
       // set default value if needed
       if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1 && initialValue !== '') {
         let languages: Language[] = [];
-        this.languageService.entities$.pipe(take(1)).subscribe(langs => { languages = langs; });
+        this.languageService.entities$.pipe(take(1)).subscribe(langs => {
+          languages = langs;
+        });
         initialValue = this.itemService.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
           languages, this.currentLanguage, this.defaultLanguage);
       }

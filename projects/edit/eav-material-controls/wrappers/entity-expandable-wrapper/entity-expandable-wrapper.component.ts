@@ -25,7 +25,6 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   dialogIsOpen$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  private separator: string;
 
   constructor(
     eavService: EavService,
@@ -38,14 +37,13 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   ngOnInit() {
     super.ngOnInit();
-    this.separator = this.config.field.settings$.value.Separator;
     this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngAfterViewInit() {
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(
-      map(([fieldValue, availableEntities]) => {
-        const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
+    this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
+      map(([fieldValue, settings, availableEntities]) => {
+        const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
         return selected;
       }),
     );

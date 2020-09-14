@@ -4,3 +4,8 @@ export interface SelectedEntity {
   tooltip: string;
   isFreeTextOrNotFound: boolean;
 }
+
+export interface DeleteEntityProps {
+  index: number;
+  entityGuid: string;
+}

@@ -62,7 +62,9 @@ export class InputFieldHelper {
   static calculateInputType(attribute: AttributeDef, inputTypeService: InputTypeService): CalculatedInputType {
     const inputTypeName = attribute.inputType;
     let inputType: InputType;
-    inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => { inputType = type; });
+    inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => {
+      inputType = type;
+    });
     return {
       inputType: inputTypeName,
       isExternal: inputType ? !!inputType.AngularAssets : false,
