@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
 
 import { QueryService } from '../../../../shared/services/query.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -73,10 +72,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
 
   /** Override function in superclass */
   fetchAvailableEntities() {
-    let settings: FieldSettings;
-    this.settings$.pipe(take(1)).subscribe(stngs => {
-      settings = stngs;
-    });
+    const settings = this.settings$.value;
     if (!settings.Query) {
       alert(`No query defined for ${this.config.field.name} - can't load entities`);
       return;

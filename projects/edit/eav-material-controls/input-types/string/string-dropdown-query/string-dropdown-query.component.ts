@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
 
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
@@ -56,10 +55,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   /** Override function in superclass */
   queryEntityMapping(entity: QueryEntity) {
-    let settings: FieldSettings;
-    this.settings$.pipe(take(1)).subscribe(stngs => {
-      settings = stngs;
-    });
+    const settings = this.settings$.value;
     const entityInfo: EntityInfo = {
       Id: entity.Id,
       Value: entity[settings.Value],

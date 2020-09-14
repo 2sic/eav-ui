@@ -1,6 +1,6 @@
 import { Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter, distinctUntilChanged } from 'rxjs/operators';
 
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -15,7 +15,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   @Input() group: FormGroup;
 
   control: AbstractControl;
-  settings$: Observable<FieldSettings>;
+  settings$: BehaviorSubject<FieldSettings>;
   label$: Observable<string>;
   placeholder$: Observable<string>;
   value$: Observable<T>;

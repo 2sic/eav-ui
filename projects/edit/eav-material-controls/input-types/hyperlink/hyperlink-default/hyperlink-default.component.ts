@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -141,10 +141,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   private setValue(item: AdamItem | AdamPostResponse) {
-    let usePath: boolean;
-    this.settings$.pipe(take(1)).subscribe(settings => {
-      usePath = settings.ServerResourceMapping === 'url';
-    });
+    const usePath = this.settings$.value.ServerResourceMapping === 'url';
     if (usePath) {
       this.control.patchValue(item.FullPath);
     } else {

@@ -57,7 +57,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     super.ngOnInit();
     this.config.entityCache$ = new BehaviorSubject<EntityInfo[]>([]);
 
-    this.settings$ = this.settings$.pipe(map(settings => this.calculateSettings(settings)));
+    this.settings$ = new BehaviorSubject<FieldSettings>(null);
+    this.subscription.add(
+      this.config.field.settings$.pipe(map(settings => this.calculateSettings(settings))).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
     this.separator = this.config.field.settings$.value.Separator;
     this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(
       map(([fieldValue, availableEntities]) => {
@@ -91,6 +96,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   ngOnDestroy() {
+    this.settings$.complete();
     this.error$.complete();
     this.freeTextMode$.complete();
     this.disableAddNew$.complete();
@@ -120,10 +126,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   fetchAvailableEntities() {
     this.updateAddNew();
     const contentTypeName = this.contentTypeMask.resolve();
-    let enableAddExisting: boolean;
-    this.settings$.pipe(take(1)).subscribe(settings => {
-      enableAddExisting = settings.EnableAddExisting;
-    });
+    const enableAddExisting = this.settings$.value.EnableAddExisting;
     // spm TODO: Should this work like this?
     // check if we should get all or only the selected ones...
     // if we can't add, then we only need one...
@@ -158,11 +161,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         items: [{ ContentTypeName: contentTypeName }],
       };
     } else {
-      let availableEntities: EntityInfo[];
-      this.config.entityCache$.pipe(take(1)).subscribe(entities => {
-        availableEntities = entities;
-      });
-      const entity = availableEntities.find(e => e.Value === entityGuid);
+      const entity = this.config.entityCache$.value.find(e => e.Value === entityGuid);
       form = {
         items: [{ EntityId: entity.Id }],
       };
