@@ -30,6 +30,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     part: this.route.snapshot.paramMap.get('part'),
     index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
   };
+  private reordered = false;
   private subscription = new Subscription();
 
   constructor(
@@ -97,6 +98,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     const items = [...this.items$.value];
     moveItemInArray(items, event.previousIndex, event.currentIndex);
     this.items$.next(items);
+    this.reordered = true;
   }
 
   trackByFn(index: number, item: GroupHeader) {
@@ -110,6 +112,21 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
 
   private fetchList() {
     this.contentGroupService.getList(this.contentGroup).subscribe(items => {
+      if (this.reordered) {
+        const oldIds = this.items$.value.map(item => item.Id);
+        const idsChanged = this.items$.value.length !== items.length || items.some(item => !oldIds.includes(item.Id));
+        if (!idsChanged) {
+          const sortOrder = this.items$.value.map(item => item.Index);
+          items.sort((a, b) => {
+            const aIndex = sortOrder.indexOf(a.Index);
+            const bIndex = sortOrder.indexOf(b.Index);
+            if (aIndex === -1 || bIndex === -1) { return 0; }
+            return aIndex - bIndex;
+          });
+        } else {
+          this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
+        }
+      }
       this.items$.next(items);
     });
   }
