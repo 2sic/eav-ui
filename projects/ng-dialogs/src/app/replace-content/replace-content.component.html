@@ -11,8 +11,8 @@
 <div class="options-box">
   <mat-form-field class="options-box__field" appearance="standard" color="accent">
     <mat-label>Choose item</mat-label>
-    <mat-select [(ngModel)]="item.id" name="Language">
-      <mat-option *ngFor="let option of options" [value]="option.value">{{ option.label }}</mat-option>
+    <mat-select [ngModel]="(item$ | async).id" name="Language" (ngModelChange)="selectedChanged($event)">
+      <mat-option *ngFor="let option of (options$ | async)" [value]="option.value">{{ option.label }}</mat-option>
     </mat-select>
   </mat-form-field>
   <button mat-icon-button class="options-box__copy" matTooltip="Copy" (click)="copySelected()">
