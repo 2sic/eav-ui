@@ -97,27 +97,13 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
-
-    if (!urlFromId$) {
-      const preview: Preview = {
-        url: value,
-        floatingText: '',
-        thumbnailUrl: this.thumbnailUrl(value),
-        thumbnailPreviewUrl: this.thumbnailUrl(value, 2),
-        isImage: false,
-        isKnownType: false,
-        icon: this.fileTypeService.getIconClass(value),
-      };
-      this.preview$.next(preview);
-      return;
-    }
-
-    urlFromId$.subscribe(path => {
+    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
+      const urlLowered = path.toLowerCase();
+      const isFileOrPage = urlLowered.includes('file:') || urlLowered.includes('page:');
       const preview: Preview = {
         url: path,
-        floatingText: `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}`,
+        floatingText: isFileOrPage ? `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}` : '',
         thumbnailUrl: this.thumbnailUrl(path),
         thumbnailPreviewUrl: this.thumbnailUrl(path, 2),
         isImage: this.fileTypeService.isImage(path),

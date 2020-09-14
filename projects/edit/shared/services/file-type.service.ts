@@ -34,22 +34,20 @@ export class FileTypeService {
     vcf: 'person',
   };
 
-  public getExtension = (filename: string) => {
+  getExtension(filename: string) {
     return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
   }
 
-  public getIconClass = (filename: string) => {
+  getIconClass(filename: string) {
     const ext = this.getExtension(filename);
-    return this.matExtensions[ext]
-      || this.customExtensions[ext]
-      || this.defaultIcon;
+    return this.matExtensions[ext] || this.customExtensions[ext] || this.defaultIcon;
   }
 
-  public isKnownType = (filename: string) => {
+  isKnownType(filename: string) {
     return this.matExtensions[this.getExtension(filename)] != null;
   }
 
-  public isImage = (filename: string) => {
+  isImage(filename: string) {
     return this.checkImgRegEx.test(filename);
   }
 }

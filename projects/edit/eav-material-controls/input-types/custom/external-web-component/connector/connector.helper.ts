@@ -126,16 +126,9 @@ export class ConnectorHelper {
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
-
-    if (!urlFromId$) {
-      urlCallback(value);
-      return;
-    }
-
-    urlFromId$.subscribe(data => {
-      if (!data) { return; }
-      urlCallback(data);
+    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
+      if (!path) { return; }
+      urlCallback(path);
     });
   }
 

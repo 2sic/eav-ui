@@ -39,9 +39,6 @@ export class DnnBridgeService {
   }
 
   getUrlOfId(url: string, contentType: string, guid: string, field: string) {
-    const urlLowered = url.toLowerCase();
-    if (!urlLowered.includes('file:') && !urlLowered.includes('page:')) { return; }
-
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink'), {
       params: {
         hyperlink: url,
