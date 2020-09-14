@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { filter, startWith, map, pairwise } from 'rxjs/operators';
 
 import { ContentGroupService } from './services/content-group.service';
@@ -15,15 +15,21 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 @Component({
   selector: 'app-manage-content-list',
   templateUrl: './manage-content-list.component.html',
-  styleUrls: ['./manage-content-list.component.scss']
+  styleUrls: ['./manage-content-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  items: GroupHeader[];
-  header: GroupHeader;
+  items$ = new BehaviorSubject<GroupHeader[]>(null);
+  header$ = new BehaviorSubject<GroupHeader>(null);
 
-  private contentGroup: ContentGroup;
+  private contentGroup: ContentGroup = {
+    id: null,
+    guid: this.route.snapshot.paramMap.get('guid'),
+    part: this.route.snapshot.paramMap.get('part'),
+    index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
+  };
   private subscription = new Subscription();
 
   constructor(
@@ -32,14 +38,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-  ) {
-    this.contentGroup = {
-      id: null,
-      guid: this.route.snapshot.paramMap.get('guid'),
-      part: this.route.snapshot.paramMap.get('part'),
-      index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
-    };
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchList();
@@ -48,12 +47,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.items$.complete();
+    this.header$.complete();
     this.subscription.unsubscribe();
   }
 
   saveList() {
     this.snackBar.open('Saving...');
-    this.contentGroupService.saveList(this.contentGroup, this.items).subscribe(res => {
+    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
       this.snackBar.open('Saved');
       this.closeDialog();
     });
@@ -67,7 +68,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listcontent',
-            Add: this.header.Id === 0,
+            Add: this.header$.value.Id === 0,
           },
         },
         {
@@ -75,7 +76,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listpresentation',
-            Add: this.header.Id === 0,
+            Add: this.header$.value.Id === 0,
           },
         },
       ],
@@ -93,7 +94,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.items, event.previousIndex, event.currentIndex);
+    const items = [...this.items$.value];
+    moveItemInArray(items, event.previousIndex, event.currentIndex);
+    this.items$.next(items);
+  }
+
+  trackByFn(index: number, item: GroupHeader) {
+    // we use both Index and Id because all demo items have Id=0
+    return `${item.Index}+${item.Id}`;
   }
 
   closeDialog() {
@@ -101,14 +109,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   private fetchList() {
-    this.contentGroupService.getList(this.contentGroup).subscribe(res => {
-      this.items = res;
+    this.contentGroupService.getList(this.contentGroup).subscribe(items => {
+      this.items$.next(items);
     });
   }
 
   private fetchHeader() {
-    this.contentGroupService.getHeader(this.contentGroup).subscribe(res => {
-      this.header = res;
+    this.contentGroupService.getHeader(this.contentGroup).subscribe(header => {
+      this.header$.next(header);
     });
   }
 
