@@ -5,8 +5,8 @@
   </button>
 
   <div class="header__langs">
-    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId" [formsAreValid]="formsAreValid"
-      [allControlsAreDisabled]="allControlsAreDisabled">
+    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId"
+      [disabled]="!formsAreValid && !allControlsAreDisabled">
     </app-eav-language-switcher>
   </div>
 

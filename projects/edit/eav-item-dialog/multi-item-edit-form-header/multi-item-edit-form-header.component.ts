@@ -19,8 +19,8 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;
   @Input() publishMode: PublishMode;
-  @Output() closeDialog = new EventEmitter<null>();
-  @Output() setPublishMode = new EventEmitter<PublishMode>();
+  @Output() private closeDialog = new EventEmitter<null>();
+  @Output() private setPublishMode = new EventEmitter<PublishMode>();
 
   hasLanguages$: Observable<boolean>;
 

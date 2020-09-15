@@ -1,6 +1,4 @@
 import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -19,12 +17,11 @@ import { LanguageButton, calculateLanguageButtons } from './eav-language-switche
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('scrollable') headerRef: ElementRef;
-  @ViewChild('leftShadow') leftShadowRef: ElementRef;
-  @ViewChild('rightShadow') rightShadowRef: ElementRef;
-  @Input() formId: number;
-  @Input() formsAreValid: boolean;
-  @Input() allControlsAreDisabled: boolean;
+  @ViewChild('scrollable') private headerRef: ElementRef;
+  @ViewChild('leftShadow') private leftShadowRef: ElementRef;
+  @ViewChild('rightShadow') private rightShadowRef: ElementRef;
+  @Input() private formId: number;
+  @Input() disabled: boolean;
 
   languageButtons$: Observable<LanguageButton[]>;
   currentLanguage$: Observable<string>;
@@ -37,8 +34,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private ngZone: NgZone,
-    private snackBar: MatSnackBar,
-    private translate: TranslateService,
   ) { }
 
   ngOnInit() {
@@ -53,10 +48,6 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
-  areButtonsDisabled() {
-    return !this.formsAreValid && !this.allControlsAreDisabled;
-  }
-
   ngOnDestroy() {
     this.centerSelectedService.destroy();
     this.mouseScrollHelper.destroy();
@@ -68,6 +59,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   }
 
   lngButtonClick(event: MouseEvent, language: Language) {
+    if (this.disabled) { return; }
     this.centerSelectedService.lngButtonClick(event);
 
     if (!this.centerSelectedService.stopClickIfMouseMoved()) {
@@ -75,8 +67,7 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  showError() {
-    if (!this.areButtonsDisabled()) { return; }
-    this.snackBar.open(this.translate.instant('Message.CantSwitchLanguage'), null, { duration: 2000 });
+  private areButtonsDisabled() {
+    return this.disabled;
   }
 }
