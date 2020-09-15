@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -8,7 +7,7 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { PagePickerResult } from '../../dnn-bridge/web-form-bridge/web-form-bridge.models';
+import { PagePickerResult, DnnBridgeConnectorParams } from '../../dnn-bridge/web-form-bridge/web-form-bridge.models';
 import { BaseComponent } from '../../base/base.component';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
@@ -45,7 +44,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     validationMessagesService: ValidationMessagesService,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
@@ -72,19 +70,17 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     super.ngOnDestroy();
   }
 
-  openPageDialog() {
-    this.dnnBridgeService.open(
-      this.control.value,
-      {
-        Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
-        FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : '',
-      },
-      this.processResultOfPagePicker.bind(this),
-      this.dialog,
-    );
+  openPagePicker() {
+    const settings = this.settings$.value;
+    const params: DnnBridgeConnectorParams = {
+      CurrentValue: this.control.value,
+      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
+      Paths: (settings.Paths != null) ? settings.Paths : '',
+    };
+    this.dnnBridgeService.open(params, this.pagePickerCallback.bind(this));
   }
 
-  private processResultOfPagePicker(value: PagePickerResult) {
+  private pagePickerCallback(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (!value) { return; }
     this.control.patchValue(`page:${value.id}`);

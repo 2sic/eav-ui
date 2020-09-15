@@ -43,7 +43,7 @@ import {
   StringDropdownQueryComponent,
   StringFontIconPickerComponent,
   NumberDefaultComponent,
-  PagepickerComponent,
+  DnnBridgeComponent,
   StringTemplatePickerComponent,
 } from './input-types';
 import { ValidationMessagesService } from './validators/validation-messages-service';
@@ -55,7 +55,6 @@ import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { HyperlinkLibraryComponent } from './input-types/hyperlink/hyperlink-library/hyperlink-library.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
-import { WebFormBridgeDirective } from './input-types/dnn-bridge/web-form-bridge/web-form-bridge.directive';
 import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -107,8 +106,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
-    PagepickerComponent,
-    WebFormBridgeDirective,
+    DnnBridgeComponent,
     SaveStatusDialogComponent,
     ExpandableWrapperComponent,
     SnackBarUnsavedChangesComponent,
@@ -177,7 +175,7 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
     ExpandableWrapperComponent,
     HiddenWrapperComponent,
     HyperlinkDefaultComponent,
-    PagepickerComponent,
+    DnnBridgeComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
     SaveStatusDialogComponent,

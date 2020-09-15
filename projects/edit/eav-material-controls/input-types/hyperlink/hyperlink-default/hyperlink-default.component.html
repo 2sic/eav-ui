@@ -15,7 +15,7 @@
         <mat-icon svgIcon="appleFilled"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate"
-        *ngIf="data.buttons.includes('page')" [disabled]="data.disabled" (click)="openPageDialog()">
+        *ngIf="data.buttons.includes('page')" [disabled]="data.disabled" (click)="openPagePicker()">
         <mat-icon svgIcon="sitemap"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.MoreOptions' | translate"
@@ -29,7 +29,7 @@
         <mat-icon svgIcon="appleFilled"></mat-icon>
         <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
       </button>
-      <button mat-menu-item *ngIf="data.settings.ShowPagePicker" (click)="openPageDialog()">
+      <button mat-menu-item *ngIf="data.settings.ShowPagePicker" (click)="openPagePicker()">
         <mat-icon svgIcon="sitemap"></mat-icon>
         <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
       </button>

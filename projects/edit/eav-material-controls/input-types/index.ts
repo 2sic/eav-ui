@@ -11,4 +11,4 @@ export { EmptyDefaultComponent } from './empty/empty-default/empty-default.compo
 export { NumberDefaultComponent } from './number/number-default/number-default.component';
 export { EntityDefaultComponent } from './entity/entity-default/entity-default.component';
 export { HyperlinkDefaultComponent } from './hyperlink/hyperlink-default/hyperlink-default.component';
-export { PagepickerComponent } from './dnn-bridge/hyperlink-default-pagepicker/pagepicker.component';
+export { DnnBridgeComponent } from './dnn-bridge/hyperlink-default-pagepicker/pagepicker.component';

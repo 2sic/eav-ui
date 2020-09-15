@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
@@ -44,7 +43,6 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService);
@@ -70,7 +68,6 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
-      this.dialog,
       this.zone,
     );
 

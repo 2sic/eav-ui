@@ -1,6 +1,5 @@
 import { NgZone, ElementRef } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
@@ -34,7 +33,6 @@ export class ConnectorHelper {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.field.name];
@@ -53,6 +51,13 @@ export class ConnectorHelper {
     this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
+  }
+
+  destroy() {
+    this.subscription.unsubscribe();
+    this.value$.complete();
+    this.customEl?.parentNode.removeChild(this.customEl);
+    this.customEl = null;
   }
 
   private buildConnector() {
@@ -104,22 +109,18 @@ export class ConnectorHelper {
       setFocused: (focused) => {
         this.zone.run(() => { this.config.field.focused$.next(focused); });
       },
-      openDnnDialog: (oldValue, params, callback) => {
-        this.zone.run(() => { this.openDnnDialog(oldValue, params, callback); });
+      openPagePicker: (params, callback) => {
+        this.zone.run(() => { this.dnnBridgeService.open(params, callback); });
       },
-      getUrlOfIdDnnDialog: (value, callback) => {
-        this.zone.run(() => { this.getUrlOfIdDnnDialog(value, callback); });
+      getUrlOfId: (value, callback) => {
+        this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
     };
 
     return experimentalProps;
   }
 
-  private openDnnDialog(oldValue: any, params: any, callback: any) {
-    this.dnnBridgeService.open(oldValue, params, callback, this.dialog);
-  }
-
-  private getUrlOfIdDnnDialog(value: string, urlCallback: (value: string) => any) {
+  private getUrlOfId(value: string, callback: (value: string) => void) {
     if (!value) { return; }
 
     // handle short-ID links like file:17
@@ -128,7 +129,7 @@ export class ConnectorHelper {
     const field = this.config.field.name;
     this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
-      urlCallback(path);
+      callback(path);
     });
   }
 
@@ -138,12 +139,5 @@ export class ConnectorHelper {
     if (control.value !== value) { control.patchValue(value); }
     if (!control.dirty) { control.markAsDirty(); }
     if (!control.touched) { control.markAsTouched(); }
-  }
-
-  public destroy() {
-    this.subscription.unsubscribe();
-    this.value$.complete();
-    this.customEl?.parentNode.removeChild(this.customEl);
-    this.customEl = null;
   }
 }

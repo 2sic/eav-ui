@@ -1,12 +1,17 @@
+export interface DnnBridgeDialogData {
+  connector: DnnBridgeConnector;
+}
+
 export interface DnnBridgeConnector {
-  params: any;
-  valueChanged: any;
+  params: DnnBridgeConnectorParams;
+  valueChanged: (value: any) => void;
   dialogType: string;
 }
 
-export interface DnnBridgeDialogData {
-  type: string;
-  connector: DnnBridgeConnector;
+export interface DnnBridgeConnectorParams {
+  CurrentValue: string;
+  FileFilter: string;
+  Paths: string;
 }
 
 export interface PagePickerResult {

@@ -5,7 +5,6 @@ import { buildTemplate } from '../shared/helpers';
 import * as template from './editor.html';
 import * as styles from './editor.css';
 import { TinyMceButtons } from '../config/buttons';
-import { attachDnnBridgeService } from '../connector/dnn-page-picker';
 import { attachAdam } from '../connector/adam';
 import * as skinOverrides from './oxide-skin-overrides.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
@@ -94,7 +93,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
       // tslint:disable:curly
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
@@ -128,7 +126,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.

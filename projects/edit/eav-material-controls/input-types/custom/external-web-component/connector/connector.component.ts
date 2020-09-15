@@ -1,7 +1,6 @@
 import { Component, OnDestroy, ViewChild, ElementRef, Input, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../../../shared/services/eav.service';
@@ -35,7 +34,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private zone: NgZone,
   ) { }
 
@@ -54,7 +52,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
-      this.dialog,
       this.zone,
     );
   }
