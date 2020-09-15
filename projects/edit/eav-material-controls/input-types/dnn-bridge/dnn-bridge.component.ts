@@ -34,7 +34,7 @@ export class DnnBridgeComponent implements OnInit {
 
     const paramKeys = Object.keys(connector.params);
     for (const key of paramKeys) {
-      const value = (connector.params as any)[key];
+      const value: string = (connector.params as any)[key];
       if (value == null || value === '') { continue; }
       iframeSrc += `&${key}=${encodeURIComponent(value)}`;
     }

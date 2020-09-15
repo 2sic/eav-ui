@@ -30,22 +30,20 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { CollapsibleWrapperComponent } from './wrappers';
-import {
-  BooleanDefaultComponent,
-  BooleanTristateComponent,
-  DatetimeDefaultComponent,
-  EntityDefaultComponent,
-  EmptyDefaultComponent,
-  HyperlinkDefaultComponent,
-  StringDefaultComponent,
-  StringUrlPathComponent,
-  StringDropdownComponent,
-  StringDropdownQueryComponent,
-  StringFontIconPickerComponent,
-  NumberDefaultComponent,
-  DnnBridgeComponent,
-  StringTemplatePickerComponent,
-} from './input-types';
+import { StringDefaultComponent } from './input-types/string/string-default/string-default.component';
+import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
+import { StringDropdownComponent } from './input-types/string/string-dropdown/string-dropdown.component';
+import { StringDropdownQueryComponent } from './input-types/string/string-dropdown-query/string-dropdown-query.component';
+import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
+import { StringTemplatePickerComponent } from './input-types/string/string-template-picker/string-template-picker.component';
+import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
+import { BooleanTristateComponent } from './input-types/boolean/boolean-tristate/boolean-tristate.component';
+import { DatetimeDefaultComponent } from './input-types/datetime/datetime-default/datetime-default.component';
+import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-default.component';
+import { NumberDefaultComponent } from './input-types/number/number-default/number-default.component';
+import { EntityDefaultComponent } from './input-types/entity/entity-default/entity-default.component';
+import { HyperlinkDefaultComponent } from './input-types/hyperlink/hyperlink-default/hyperlink-default.component';
+import { DnnBridgeComponent } from './input-types/dnn-bridge/dnn-bridge.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { FileTypeService } from '../shared/services/file-type.service';

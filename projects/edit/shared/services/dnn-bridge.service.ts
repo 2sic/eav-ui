@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { DnnBridgeDialogData, DnnBridgeConnectorParams } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
-import { DnnBridgeComponent } from '../../eav-material-controls/input-types';
+import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { EavService } from './eav.service';
 
 @Injectable()

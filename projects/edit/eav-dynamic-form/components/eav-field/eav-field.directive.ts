@@ -16,8 +16,18 @@ import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrapp
 import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
-// tslint:disable-next-line:max-line-length
-import { BooleanDefaultComponent, DatetimeDefaultComponent, EmptyDefaultComponent, EntityDefaultComponent, HyperlinkDefaultComponent, NumberDefaultComponent, StringDefaultComponent, StringDropdownComponent, StringDropdownQueryComponent, StringFontIconPickerComponent, StringTemplatePickerComponent, StringUrlPathComponent } from '../../../eav-material-controls/input-types';
+import { BooleanDefaultComponent } from '../../../eav-material-controls/input-types/boolean/boolean-default/boolean-default.component';
+import { DatetimeDefaultComponent } from '../../../eav-material-controls/input-types/datetime/datetime-default/datetime-default.component';
+import { EmptyDefaultComponent } from '../../../eav-material-controls/input-types/empty/empty-default/empty-default.component';
+import { EntityDefaultComponent } from '../../../eav-material-controls/input-types/entity/entity-default/entity-default.component';
+import { HyperlinkDefaultComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-default/hyperlink-default.component';
+import { NumberDefaultComponent } from '../../../eav-material-controls/input-types/number/number-default/number-default.component';
+import { StringDefaultComponent } from '../../../eav-material-controls/input-types/string/string-default/string-default.component';
+import { StringDropdownComponent } from '../../../eav-material-controls/input-types/string/string-dropdown/string-dropdown.component';
+import { StringDropdownQueryComponent } from '../../../eav-material-controls/input-types/string/string-dropdown-query/string-dropdown-query.component';
+import { StringFontIconPickerComponent } from '../../../eav-material-controls/input-types/string/string-font-icon-picker/string-font-icon-picker.component';
+import { StringTemplatePickerComponent } from '../../../eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
+import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
 import { CustomDefaultComponent } from '../../../eav-material-controls/input-types/custom/custom-default/custom-default.component';
 import { EntityContentBlockComponent } from '../../../eav-material-controls/input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
