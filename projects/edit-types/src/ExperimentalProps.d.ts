@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { InputTypeName } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
-import { DnnBridgeConnectorParams } from '../../edit/eav-material-controls/input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
+import { DnnBridgeConnectorParams } from '../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 
 export interface ExperimentalProps {
   entityGuid: string;

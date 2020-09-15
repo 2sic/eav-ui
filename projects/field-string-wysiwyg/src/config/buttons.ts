@@ -3,7 +3,7 @@ import { Guid } from '../shared/guid';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { Adam } from '../../../edit-types';
-import { DnnBridgeConnectorParams, PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 // tslint:disable: curly
 
 /** Register all kinds of buttons on TinyMce */

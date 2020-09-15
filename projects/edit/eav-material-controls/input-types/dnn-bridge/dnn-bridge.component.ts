@@ -2,13 +2,13 @@ import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/cor
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { DnnBridgeDialogData } from '../web-form-bridge/web-form-bridge.models';
-import { EavService } from '../../../../shared/services/eav.service';
+import { DnnBridgeDialogData } from './dnn-bridge.models';
+import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
-  selector: 'app-pagepicker',
-  templateUrl: './pagepicker.component.html',
-  styleUrls: ['./pagepicker.component.scss'],
+  selector: 'app-dnn-bridge',
+  templateUrl: './dnn-bridge.component.html',
+  styleUrls: ['./dnn-bridge.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DnnBridgeComponent implements OnInit {
