@@ -1,4 +1,4 @@
-import { EditDialogAllLangs } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { DialogContextAllLangs } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { VersioningOptions } from './eav/versioning-options';
 
 export interface EavConfig {
@@ -7,7 +7,7 @@ export interface EavConfig {
   appRoot: string;
   lang: string;
   langPri: string;
-  langs: EditDialogAllLangs;
+  langs: DialogContextAllLangs;
   moduleId: string;
   partOfPage: string;
   portalRoot: string;

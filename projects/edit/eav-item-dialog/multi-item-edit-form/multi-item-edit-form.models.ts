@@ -1,5 +1,6 @@
 import { JsonItem1, JsonContentType1 } from '../../shared/models/json-format-v1';
 import { InputType } from '../../shared/models/eav';
+import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 
 export interface EavFormData {
   ContentTypeItems: any[];
@@ -13,35 +14,8 @@ export interface EavFormData {
 }
 
 export interface EditDialogContext {
-  App: EditDialogApp;
-  Language: EditDialogLanguage;
-  Site: EditDialogSite;
-  System: EditDialogSystem;
-}
-
-export interface EditDialogApp {
-  GettingStartedUrl: string;
-  Id: number;
-  Identifier: unknown;
-  Name: string;
-  Url: string;
-}
-
-export interface EditDialogLanguage {
-  All: EditDialogAllLangs;
-  Current: string;
-  Primary: string;
-}
-
-export interface EditDialogAllLangs {
-  [key: string]: string;
-}
-
-export interface EditDialogSite {
-  Id: number;
-  Url: string;
-}
-
-export interface EditDialogSystem {
-  Url: string;
+  App: DialogContextApp;
+  Language: DialogContextLanguage;
+  Site: DialogContextSite;
+  System: DialogContextSystem;
 }
