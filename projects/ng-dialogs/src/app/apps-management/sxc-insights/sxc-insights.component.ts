@@ -14,7 +14,7 @@ declare const $2sxc: SxcRoot;
 })
 export class SxcInsightsComponent implements OnInit, OnDestroy {
   pageLogDuration: number;
-  positiveWholeNumber = /^[^-]\d*$/;
+  positiveWholeNumber = /^[1-9][0-9]*$/;
   loading$ = new BehaviorSubject(false);
 
   constructor(private sxcInsightsService: SxcInsightsService, private snackBar: MatSnackBar) { }
@@ -34,9 +34,14 @@ export class SxcInsightsComponent implements OnInit, OnDestroy {
     this.loading$.next(true);
     this.snackBar.open('Activating...');
     this.sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.pageLogDuration = undefined;
       this.loading$.next(false);
       this.snackBar.open(res, null, { duration: 4000 });
     });
+  }
+
+  clearFocus() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 }

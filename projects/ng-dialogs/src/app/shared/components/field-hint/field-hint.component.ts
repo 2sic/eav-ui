@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-field-hint',
   templateUrl: './field-hint.component.html',
-  styleUrls: ['./field-hint.component.scss']
+  styleUrls: ['./field-hint.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldHintComponent {
   @Input() isError = false;
