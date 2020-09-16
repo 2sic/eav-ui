@@ -106,7 +106,6 @@ export class TinyMceButtons {
             fieldStringWysiwyg.connector._experimental.getUrlOfId('page:' + value.id, (path: string) => {
               const previouslySelected = editor.selection.getContent();
               editor.insertContent('<a href=\"' + path + '\">' + (previouslySelected || value.name) + '</a>');
-              value = null;
             });
           });
         },
