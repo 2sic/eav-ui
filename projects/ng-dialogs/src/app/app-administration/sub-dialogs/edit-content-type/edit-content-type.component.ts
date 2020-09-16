@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit, HostBinding } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostBinding, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject, of, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -12,16 +13,19 @@ import { contentTypeNamePattern, contentTypeNameError } from '../../constants/co
 @Component({
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
-  styleUrls: ['./edit-content-type.component.scss']
+  styleUrls: ['./edit-content-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditContentTypeComponent implements OnInit, AfterViewInit {
+export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  scope: string;
-  id: number;
+  scope = this.route.snapshot.paramMap.get('scope');
+  id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
   contentType: ContentTypeEdit;
   lockScope = true;
   scopeOptions: EavScopeOption[];
+  disableAnimation$ = new BehaviorSubject(true);
+  loading$ = new BehaviorSubject(true);
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
 
@@ -30,22 +34,23 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private snackBar: MatSnackBar,
-  ) {
-    this.scope = this.route.snapshot.paramMap.get('scope');
-    this.id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
-  }
-
-  // Workaround for angular component issue #13870
-  disableAnimation = true;
-  ngAfterViewInit() {
-    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
-    setTimeout(() => this.disableAnimation = false);
-  }
+  ) { }
 
   ngOnInit() {
-    this.fetchScopes();
-    if (!this.id) {
-      this.contentType = {
+    const contentType$ = this.id
+      ? this.contentTypesService.retrieveContentTypes(this.scope)
+        .pipe(
+          map(contentTypes => {
+            const contentType = contentTypes.find(ct => ct.Id === this.id);
+            const contentTypeEdit: ContentTypeEdit = {
+              ...contentType,
+              ChangeStaticName: false,
+              NewStaticName: contentType.StaticName,
+            };
+            return contentTypeEdit;
+          }),
+        )
+      : of({
         ...(new ContentTypeEdit()),
         StaticName: '',
         Name: '',
@@ -53,14 +58,27 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
         Scope: this.scope,
         ChangeStaticName: false,
         NewStaticName: '',
-      };
-    } else {
-      this.fetchContentType();
-    }
+      });
+    const scopes$ = this.contentTypesService.getScopes();
+    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
+      this.contentType = contentType;
+      this.scopeOptions = scopes;
+      this.loading$.next(false);
+    });
   }
 
-  changeScope(event: MatSelectChange) {
-    let newScope: string = event.value;
+  ngOnDestroy() {
+    this.disableAnimation$.complete();
+    this.loading$.complete();
+  }
+
+  // workaround for angular component issue #13870
+  ngAfterViewInit() {
+    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
+    setTimeout(() => this.disableAnimation$.next(false));
+  }
+
+  changeScope(newScope: string) {
     if (newScope === 'Other') {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
@@ -95,22 +113,4 @@ export class EditContentTypeComponent implements OnInit, AfterViewInit {
   closeDialog() {
     this.dialogRef.close();
   }
-
-  private fetchScopes() {
-    this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions = scopes;
-    });
-  }
-
-  private fetchContentType() {
-    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      const contentType = contentTypes.find(ct => ct.Id === this.id);
-      this.contentType = {
-        ...contentType,
-        ChangeStaticName: false,
-        NewStaticName: contentType.StaticName,
-      };
-    });
-  }
-
 }
