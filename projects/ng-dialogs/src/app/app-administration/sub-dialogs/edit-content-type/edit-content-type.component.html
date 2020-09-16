@@ -61,6 +61,8 @@
 
   <div class="dialog-form-actions">
     <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid">Save</button>
+    <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">
+      Save
+    </button>
   </div>
 </form>

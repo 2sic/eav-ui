@@ -26,6 +26,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   scopeOptions: EavScopeOption[];
   disableAnimation$ = new BehaviorSubject(true);
   loading$ = new BehaviorSubject(true);
+  saving$ = new BehaviorSubject(false);
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
 
@@ -70,6 +71,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   ngOnDestroy() {
     this.disableAnimation$.complete();
     this.loading$.complete();
+    this.saving$.complete();
   }
 
   // workaround for angular component issue #13870
@@ -103,11 +105,16 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   save() {
+    this.saving$.next(true);
     this.snackBar.open('Saving...');
     this.contentTypesService.save(this.contentType).subscribe(result => {
+      this.saving$.next(false);
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 
   closeDialog() {
