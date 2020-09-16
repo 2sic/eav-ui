@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,8 +27,7 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
   styleUrls: ['./content-type-fields.component.scss'],
-  // spm TODO: can't be on push because contains router-outlet
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);

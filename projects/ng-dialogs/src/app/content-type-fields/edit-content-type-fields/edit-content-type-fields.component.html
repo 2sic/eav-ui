@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<form #ngForm="ngForm" class="dialog-form">
+<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div class="row-container" *ngFor="let field of fields; index as i">
       <div class="edit-input">
@@ -52,7 +52,9 @@
   </div>
 
   <div class="dialog-form-actions">
-    <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="save()">Save</button>
+    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">
+      Save
+    </button>
   </div>
 </form>

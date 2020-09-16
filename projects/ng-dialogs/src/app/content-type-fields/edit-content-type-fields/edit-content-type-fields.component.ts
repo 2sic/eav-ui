@@ -1,9 +1,9 @@
-import { Component, OnInit, HostBinding, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, HostBinding, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, forkJoin, of } from 'rxjs';
+import { Subscription, forkJoin, of, BehaviorSubject } from 'rxjs';
 import { map, mergeMap, share, catchError, toArray, filter, concatMap } from 'rxjs/operators';
 
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -19,7 +19,8 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 @Component({
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
-  styleUrls: ['./edit-content-type-fields.component.scss']
+  styleUrls: ['./edit-content-type-fields.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -35,6 +36,8 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   fieldNamePattern = fieldNamePattern;
   fieldNameError = fieldNameError;
   findIcon = calculateTypeIcon;
+  loading$ = new BehaviorSubject(true);
+  saving$ = new BehaviorSubject(false);
 
   private contentType: ContentType;
   private subscription = new Subscription();
@@ -94,10 +97,13 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.calculateInputTypeOptions(i);
         this.calculateHints(i);
       }
+      this.loading$.next(false);
     });
   }
 
   ngOnDestroy() {
+    this.loading$.complete();
+    this.saving$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -122,10 +128,12 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.saving$.next(true);
     this.snackBar.open('Saving...');
     if (this.editMode) {
       const field = this.fields[0];
       this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(res => {
+        this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();
       });
@@ -137,6 +145,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
         ),
         toArray(),
       ).subscribe(responses => {
+        this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();
       });
