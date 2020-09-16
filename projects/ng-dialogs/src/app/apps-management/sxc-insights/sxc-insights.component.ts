@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgForm } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 
@@ -30,18 +31,16 @@ export class SxcInsightsComponent implements OnInit, OnDestroy {
     window.open($2sxc.http.apiUrl('sys/insights/help'));
   }
 
-  activatePageLog() {
+  activatePageLog(form: NgForm) {
     this.loading$.next(true);
     this.snackBar.open('Activating...');
     this.sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
       this.loading$.next(false);
       this.snackBar.open(res, null, { duration: 4000 });
     });
-  }
-
-  clearFocus() {
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
+    form.resetForm();
   }
 }

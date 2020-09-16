@@ -21,8 +21,7 @@
       <div class="actions-box"></div>
     </mat-card-header>
     <mat-card-content>
-      <form #activateLogForm="ngForm" class="activate-log-form"
-        (ngSubmit)="activatePageLog(); clearFocus(); activateLogForm.resetForm()">
+      <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
         <div>
           This will place insights-logs in the HTML of the user output for users with ?debug=true in the url. It can
           only be activated for short periods of time.
