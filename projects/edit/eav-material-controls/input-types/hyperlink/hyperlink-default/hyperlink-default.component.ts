@@ -77,7 +77,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
       Paths: (settings.Paths != null) ? settings.Paths : '',
     };
-    this.dnnBridgeService.open(params, this.pagePickerCallback.bind(this));
+    this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
   }
 
   private pagePickerCallback(value: PagePickerResult) {

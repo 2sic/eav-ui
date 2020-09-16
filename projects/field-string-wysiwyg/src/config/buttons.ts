@@ -101,16 +101,14 @@ export class TinyMceButtons {
             FileFilter: '',
             Paths: '',
           };
-          const pagePickerCallback = (value: PagePickerResult) => {
+          fieldStringWysiwyg.connector._experimental.openPagePicker(params, (value: PagePickerResult) => {
             if (!value) { return; }
-            const urlCallback = (path: string) => {
+            fieldStringWysiwyg.connector._experimental.getUrlOfId('page:' + value.id, (path: string) => {
               const previouslySelected = editor.selection.getContent();
               editor.insertContent('<a href=\"' + path + '\">' + (previouslySelected || value.name) + '</a>');
               value = null;
-            };
-            fieldStringWysiwyg.connector._experimental.getUrlOfId('page:' + value.id, urlCallback);
-          };
-          fieldStringWysiwyg.connector._experimental.openPagePicker(params, pagePickerCallback);
+            });
+          });
         },
       },
     ];

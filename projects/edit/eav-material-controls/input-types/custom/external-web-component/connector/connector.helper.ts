@@ -110,7 +110,7 @@ export class ConnectorHelper {
         this.zone.run(() => { this.config.field.focused$.next(focused); });
       },
       openPagePicker: (params, callback) => {
-        this.zone.run(() => { this.dnnBridgeService.open(params, callback); });
+        this.zone.run(() => { this.dnnBridgeService.open('pagepicker', params, callback); });
       },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });

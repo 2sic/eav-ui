@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
-import { DnnBridgeDialogData, DnnBridgeConnectorParams } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
+import { DnnBridgeDialogData, DnnBridgeConnectorParams, DnnBridgeType } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { EavService } from './eav.service';
 
@@ -12,7 +12,7 @@ import { EavService } from './eav.service';
 export class DnnBridgeService {
   constructor(private http: HttpClient, private dnnContext: DnnContext, private eavService: EavService, private dialog: MatDialog) { }
 
-  open(params: DnnBridgeConnectorParams, callback: (value: any) => void) {
+  open(dialogType: DnnBridgeType, params: DnnBridgeConnectorParams, callback: (value: any) => void) {
     let dialogRef: MatDialogRef<DnnBridgeComponent>;
 
     const data: DnnBridgeDialogData = {
@@ -22,7 +22,7 @@ export class DnnBridgeService {
           dialogRef.close();
           callback(value);
         },
-        dialogType: 'pagepicker',
+        dialogType,
       },
     };
     dialogRef = this.dialog.open(DnnBridgeComponent, {

@@ -5,7 +5,7 @@ export interface DnnBridgeDialogData {
 export interface DnnBridgeConnector {
   params: DnnBridgeConnectorParams;
   valueChanged: (value: any) => void;
-  dialogType: string;
+  dialogType: DnnBridgeType;
 }
 
 export interface DnnBridgeConnectorParams {
@@ -13,6 +13,8 @@ export interface DnnBridgeConnectorParams {
   FileFilter: string;
   Paths: string;
 }
+
+export type DnnBridgeType = 'pagepicker';
 
 export interface PagePickerResult {
   id: string;
