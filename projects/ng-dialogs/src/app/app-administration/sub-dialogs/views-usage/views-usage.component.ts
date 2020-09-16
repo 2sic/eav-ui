@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
@@ -18,8 +18,7 @@ import { ViewsUsageStatusFilterComponent } from '../../ag-grid-components/views-
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
   styleUrls: ['./views-usage.component.scss'],
-  // spm TODO: can't be onPush yet because contains router-outlet
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(null);
