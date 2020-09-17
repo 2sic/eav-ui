@@ -1,9 +1,4 @@
-<ng-container *ngIf="{
-  features: features$ | async,
-  showManagement: showManagement$ | async,
-  showSpinner: showSpinner$ | async,
-  managementUrl: managementUrl$ | async
-} as data">
+<ng-container *ngIf="(templateVars$ | async) as data">
 
   <div class="grid-wrapper mat-tab-grid-wrapper" [ngClass]="{ 'iframe-wrapper': data.showManagement }">
     <ag-grid-angular class="ag-theme-material" [ngClass]="{ 'force-hide': data.showManagement }"

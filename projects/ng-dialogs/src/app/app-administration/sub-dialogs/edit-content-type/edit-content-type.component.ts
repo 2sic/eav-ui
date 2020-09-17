@@ -19,16 +19,20 @@ import { contentTypeNamePattern, contentTypeNameError } from '../../constants/co
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  scope = this.route.snapshot.paramMap.get('scope');
   id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
-  contentType: ContentTypeEdit;
-  lockScope = true;
-  scopeOptions: EavScopeOption[];
-  disableAnimation$ = new BehaviorSubject(true);
-  loading$ = new BehaviorSubject(true);
-  saving$ = new BehaviorSubject(false);
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
+
+  private contentType$ = new BehaviorSubject<ContentTypeEdit>(null);
+  private lockScope$ = new BehaviorSubject(true);
+  private scopeOptions$ = new BehaviorSubject<EavScopeOption[]>(null);
+  private disableAnimation$ = new BehaviorSubject(true);
+  private loading$ = new BehaviorSubject(false);
+  templateVars$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
+    map(([contentType, lockScope, scopeOptions, disableAnimation, loading]) =>
+      ({ contentType, lockScope, scopeOptions, disableAnimation, loading })),
+  );
+  private scope = this.route.snapshot.paramMap.get('scope');
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
@@ -62,16 +66,17 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
       });
     const scopes$ = this.contentTypesService.getScopes();
     combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
-      this.contentType = contentType;
-      this.scopeOptions = scopes;
-      this.loading$.next(false);
+      this.contentType$.next(contentType);
+      this.scopeOptions$.next(scopes);
     });
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
+    this.lockScope$.complete();
+    this.scopeOptions$.complete();
     this.disableAnimation$.complete();
     this.loading$.complete();
-    this.saving$.complete();
   }
 
   // workaround for angular component issue #13870
@@ -80,35 +85,39 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     setTimeout(() => this.disableAnimation$.next(false));
   }
 
+  changeContentTypeName(newName: string) {
+    this.contentType$.next({ ...this.contentType$.value, Name: newName });
+  }
+
   changeScope(newScope: string) {
     if (newScope === 'Other') {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions.find(option => option.value === newScope)) {
+      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions.push(newScopeOption);
+        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
       }
     }
-    this.contentType.Scope = newScope;
+    this.contentType$.next({ ...this.contentType$.value, Scope: newScope });
   }
 
   unlockScope(event: Event) {
     event.stopPropagation();
-    this.lockScope = !this.lockScope;
-    if (this.lockScope) {
-      this.contentType.Scope = this.scope;
+    this.lockScope$.next(!this.lockScope$.value);
+    if (this.lockScope$) {
+      this.contentType$.next({ ...this.contentType$.value, Scope: this.scope });
     }
   }
 
   save() {
-    this.saving$.next(true);
+    this.loading$.next(true);
     this.snackBar.open('Saving...');
-    this.contentTypesService.save(this.contentType).subscribe(result => {
-      this.saving$.next(false);
+    this.contentTypesService.save(this.contentType$.value).subscribe(result => {
+      this.loading$.next(false);
       this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });

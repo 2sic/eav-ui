@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Subscription, BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, startWith, map, pairwise } from 'rxjs/operators';
 
 import { ContentGroupService } from './services/content-group.service';
@@ -21,8 +21,11 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  items$ = new BehaviorSubject<GroupHeader[]>(null);
-  header$ = new BehaviorSubject<GroupHeader>(null);
+  private items$ = new BehaviorSubject<GroupHeader[]>(null);
+  private header$ = new BehaviorSubject<GroupHeader>(null);
+  templateVars$ = combineLatest([this.items$, this.header$]).pipe(
+    map(([items, header]) => ({ items, header })),
+  );
 
   private contentGroup: ContentGroup = {
     id: null,

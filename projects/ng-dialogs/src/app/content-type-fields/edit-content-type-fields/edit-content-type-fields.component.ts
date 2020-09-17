@@ -24,12 +24,11 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 })
 export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-  @ViewChild('ngForm', { read: NgForm }) form: NgForm;
+  @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
   fields: Partial<Field>[] = [];
   editMode: boolean;
   dataTypes: DataType[];
-  inputTypeOptions: FieldInputTypeOption[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
   inputTypeHints: string[] = [];
@@ -40,6 +39,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   saving$ = new BehaviorSubject(false);
 
   private contentType: ContentType;
+  private inputTypeOptions: FieldInputTypeOption[];
   private subscription = new Subscription();
 
   constructor(

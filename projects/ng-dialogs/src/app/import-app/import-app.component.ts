@@ -1,7 +1,8 @@
-import { Component, OnInit, HostBinding, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ImportAppService } from './services/import-app.service';
 import { ImportAppResult } from './models/import-app-result.model';
@@ -12,16 +13,25 @@ import { ImportAppResult } from './models/import-app-result.model';
   styleUrls: ['./import-app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImportAppComponent implements OnInit {
+export class ImportAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  isImporting$ = new BehaviorSubject(false);
-  importFile$ = new BehaviorSubject<File>(null);
-  importResult$ = new BehaviorSubject<ImportAppResult>(null);
+  private isImporting$ = new BehaviorSubject(false);
+  private importFile$ = new BehaviorSubject<File>(null);
+  private importResult$ = new BehaviorSubject<ImportAppResult>(null);
+  templateVars$ = combineLatest([this.isImporting$, this.importFile$, this.importResult$]).pipe(
+    map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
+  );
 
   constructor(private dialogRef: MatDialogRef<ImportAppComponent>, private importAppService: ImportAppService) { }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.isImporting$.complete();
+    this.importFile$.complete();
+    this.importResult$.complete();
   }
 
   importApp(changedName?: string) {

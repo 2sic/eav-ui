@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { BehaviorSubject, fromEvent, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../models/feature.model';
@@ -22,11 +22,6 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
-  features$ = new BehaviorSubject<Feature[]>(null);
-  showManagement$ = new BehaviorSubject(false);
-  showSpinner$ = new BehaviorSubject(false);
-  managementUrl$ = new BehaviorSubject(this.sanitizer.bypassSecurityTrustResourceUrl(''));
-
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -68,6 +63,13 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     ],
   };
 
+  private features$ = new BehaviorSubject<Feature[]>(null);
+  private showManagement$ = new BehaviorSubject(false);
+  private showSpinner$ = new BehaviorSubject(false);
+  private managementUrl$ = new BehaviorSubject(this.sanitizer.bypassSecurityTrustResourceUrl(''));
+  templateVars$ = combineLatest([this.features$, this.showManagement$, this.showSpinner$, this.managementUrl$]).pipe(
+    map(([features, showManagement, showSpinner, managementUrl]) => ({ features, showManagement, showSpinner, managementUrl })),
+  );
   private managementSubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }

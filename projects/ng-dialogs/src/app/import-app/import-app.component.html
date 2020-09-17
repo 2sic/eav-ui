@@ -2,11 +2,7 @@
   <div class="dialog-title-box">Import App</div>
 </div>
 
-<ng-container *ngIf="{
-  isImporting: isImporting$ | async,
-  importFile: importFile$ | async,
-  importResult: importResult$ | async
-} as data">
+<ng-container *ngIf="(templateVars$ | async) as data">
 
   <mat-spinner *ngIf="data.isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
