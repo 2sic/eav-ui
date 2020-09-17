@@ -30,7 +30,7 @@ export function paramsInitFactory(injector: Injector) {
       const paramKeys = Object.keys(queryParametersFromUrl);
       for (const key of paramKeys) {
         const value = queryParametersFromUrl[key];
-        if (value === undefined || value === null) { continue; }
+        if (value == null) { continue; }
         sessionStorage.setItem(prefix + key, value);
       }
 

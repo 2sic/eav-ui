@@ -1,4 +1,4 @@
-import { EditForm, EditItem, AddItem, GroupItem } from '../models/edit-form.model';
+import { EditForm, EditItem, AddItem, GroupItem, InnerItem } from '../models/edit-form.model';
 import { EavFor } from '../../../../../edit/shared/models/eav';
 import { eavConstants, EavMetadataKey } from '../constants/eav.constants';
 
@@ -8,7 +8,12 @@ export function convertFormToUrl(form: EditForm) {
   for (const item of form.items) {
     if (formUrl) { formUrl += ','; }
 
-    if ((item as EditItem).EntityId) {
+    if ((item as InnerItem).Parent) {
+      // Inner Item
+      const innerItem = item as InnerItem;
+      formUrl += 'inner:' + innerItem.EntityId + ':' + innerItem.Field
+        + ':' + innerItem.Parent + ':' + innerItem.Add + ':' + innerItem.Index;
+    } else if ((item as EditItem).EntityId) {
       // Edit Item
       const editItem = item as EditItem;
       formUrl += editItem.EntityId;
@@ -72,7 +77,18 @@ export function convertUrlToForm(formUrl: string) {
 
   for (const item of items) {
     const isNumber = /^[0-9]*$/g;
-    if (isNumber.test(item)) {
+    if (item.startsWith('inner:')) {
+      // Inner Item
+      const innerItemParams = item.split(':');
+      const innerItem: InnerItem = {
+        EntityId: parseInt(innerItemParams[1], 10),
+        Field: innerItemParams[2],
+        Parent: innerItemParams[3],
+        Add: innerItemParams[4] === 'true',
+        Index: parseInt(innerItemParams[5], 10),
+      };
+      form.items.push(innerItem);
+    } else if (isNumber.test(item)) {
       // Edit Item
       const editItem: EditItem = { EntityId: parseInt(item, 10) };
       form.items.push(editItem);
