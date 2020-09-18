@@ -1,9 +1,9 @@
-export class ImportAppResult {
+export interface ImportAppResult {
   Messages: ImportAppResultMessage[];
   Succeeded: boolean;
 }
 
-export class ImportAppResultMessage {
-  MessageType: number;
+export interface ImportAppResultMessage {
+  MessageType: 0 | 1 | 2;
   Text: string;
 }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
-import { ImportAppPartsResult } from '../models/import-app-parts.model';
+import { ImportAppResult } from '../../import-app/models/import-app-result.model';
 
 @Injectable()
 export class ImportAppPartsService {
@@ -17,6 +17,6 @@ export class ImportAppPartsService {
     formData.append('File', file);
     return (
       this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportContent'), formData)
-    ) as Observable<ImportAppPartsResult>;
+    ) as Observable<ImportAppResult>;
   }
 }

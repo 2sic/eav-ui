@@ -1,40 +1,74 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, ChangeDetectionStrategy, Inject, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
-import { ImportAppPartsResult } from '../../models/import-app-parts.model';
+import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
+import { ImportAppPartsDialogData } from './import-app-parts-dialog.config';
 
 @Component({
   selector: 'app-import-app-parts',
   templateUrl: './import-app-parts.component.html',
-  styleUrls: ['./import-app-parts.component.scss']
+  styleUrls: ['./import-app-parts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImportAppPartsComponent implements OnInit {
+export class ImportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  importFile: File;
-  isImporting = false;
-  importResult: ImportAppPartsResult;
+  private isImporting$ = new BehaviorSubject(false);
+  private importFile$ = new BehaviorSubject<File>(null);
+  private importResult$ = new BehaviorSubject<ImportAppResult>(null);
+  templateVars$ = combineLatest([this.isImporting$, this.importFile$, this.importResult$]).pipe(
+    map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
+  );
 
-  constructor(private dialogRef: MatDialogRef<ImportAppPartsComponent>, private importAppPartsService: ImportAppPartsService) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private dialogData: ImportAppPartsDialogData,
+    private dialogRef: MatDialogRef<ImportAppPartsComponent>,
+    private importAppPartsService: ImportAppPartsService,
+  ) { }
 
   ngOnInit() {
+    if (this.dialogData.files != null) {
+      this.importFile$.next(this.dialogData.files[0]);
+      this.importAppParts();
+    }
+  }
+
+  ngOnDestroy() {
+    this.isImporting$.complete();
+    this.importFile$.complete();
+    this.importResult$.complete();
+  }
+
+  filesDropped(files: FileList) {
+    const importFile = files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
+    this.importAppParts();
   }
 
   fileChange(event: Event) {
-    this.importFile = (event.target as HTMLInputElement).files[0];
+    const importFile = (event.target as HTMLInputElement).files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
   }
 
   importAppParts() {
-    this.isImporting = true;
-    this.importAppPartsService.importAppParts(this.importFile).subscribe({
+    this.isImporting$.next(true);
+    this.importAppPartsService.importAppParts(this.importFile$.value).subscribe({
       next: result => {
-        this.importResult = result;
-        this.isImporting = false;
+        this.isImporting$.next(false);
+        this.importResult$.next(result);
       },
       error: (error: HttpErrorResponse) => {
-        this.isImporting = false;
+        this.isImporting$.next(false);
+        this.importResult$.next({
+          Succeeded: false,
+          Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
+        });
       },
     });
   }

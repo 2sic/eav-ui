@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { PipelinesService } from '../../services/pipelines.service';
 import { ImportQueryDialogData } from './import-query-dialog.config';
+import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
 
 @Component({
   selector: 'app-import-query',
@@ -18,7 +19,7 @@ export class ImportQueryComponent implements OnInit, OnDestroy {
 
   private isImporting$ = new BehaviorSubject(false);
   private importFile$ = new BehaviorSubject<File>(null);
-  private importResult$ = new BehaviorSubject<true | string>(null);
+  private importResult$ = new BehaviorSubject<ImportAppResult>(null);
   templateVars$ = combineLatest([this.isImporting$, this.importFile$, this.importResult$]).pipe(
     map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
   );
@@ -42,18 +43,11 @@ export class ImportQueryComponent implements OnInit, OnDestroy {
     this.importResult$.complete();
   }
 
-  importQuery() {
-    this.isImporting$.next(true);
-    this.pipelinesService.importQuery(this.importFile$.value).subscribe({
-      next: res => {
-        this.isImporting$.next(false);
-        this.importResult$.next(true);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isImporting$.next(false);
-        this.importResult$.next(error.error.ExceptionMessage);
-      },
-    });
+  filesDropped(files: FileList) {
+    const importFile = files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
+    this.importQuery();
   }
 
   fileChange(event: Event) {
@@ -62,11 +56,24 @@ export class ImportQueryComponent implements OnInit, OnDestroy {
     this.importResult$.next(null);
   }
 
-  filesDropped(files: FileList) {
-    const importFile = files[0];
-    this.importFile$.next(importFile);
-    this.importResult$.next(null);
-    this.importQuery();
+  importQuery() {
+    this.isImporting$.next(true);
+    this.pipelinesService.importQuery(this.importFile$.value).subscribe({
+      next: res => {
+        this.isImporting$.next(false);
+        this.importResult$.next({
+          Succeeded: true,
+          Messages: [],
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isImporting$.next(false);
+        this.importResult$.next({
+          Succeeded: false,
+          Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
+        });
+      },
+    });
   }
 
   closeDialog() {

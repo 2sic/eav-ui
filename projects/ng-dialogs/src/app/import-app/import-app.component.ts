@@ -43,6 +43,19 @@ export class ImportAppComponent implements OnInit, OnDestroy {
     this.importResult$.complete();
   }
 
+  filesDropped(files: FileList) {
+    const importFile = files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
+    this.importApp();
+  }
+
+  fileChange(event: Event) {
+    const importFile = (event.target as HTMLInputElement).files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
+  }
+
   importApp(changedName?: string) {
     this.isImporting$.next(true);
 
@@ -61,21 +74,12 @@ export class ImportAppComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpErrorResponse) => {
         this.isImporting$.next(false);
+        this.importResult$.next({
+          Succeeded: false,
+          Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
+        });
       },
     });
-  }
-
-  fileChange(event: Event) {
-    const importFile = (event.target as HTMLInputElement).files[0];
-    this.importFile$.next(importFile);
-    this.importResult$.next(null);
-  }
-
-  filesDropped(files: FileList) {
-    const importFile = files[0];
-    this.importFile$.next(importFile);
-    this.importResult$.next(null);
-    this.importApp();
   }
 
   closeDialog() {
