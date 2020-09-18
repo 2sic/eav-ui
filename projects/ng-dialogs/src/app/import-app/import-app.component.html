@@ -14,8 +14,7 @@
 
   <div>
     <button mat-raised-button matTooltip="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">
-      <span *ngIf="!data.importFile">Select file (or drag and drop)</span>
-      <span *ngIf="data.importFile">{{ data.importFile.name }}</span>
+      <span>{{ data.importFile ? data.importFile.name : 'Select file (or drag and drop)' }}</span>
     </button>
     <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
   </div>

@@ -1,33 +1,44 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">Import Query</div>
-</div>
+<div appDragAndDrop (filesDropped)="filesDropped($event)" *ngIf="(templateVars$ | async) as data">
 
-<div [ngSwitch]="viewState">
-  <div *ngSwitchCase="1">
-    <div>
-      <button mat-raised-button matTooltip="Open file browser" (click)="fileInput.click()">
-        <span *ngIf="!importFile">Select file</span>
-        <span *ngIf="importFile">{{ importFile.name }}</span>
-      </button>
-      <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Import Query</div>
+  </div>
+
+  <mat-spinner *ngIf="data.isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+
+  <p class="dialog-description">Select a query file (json) from your computer to import.</p>
+
+  <div>
+    <button mat-raised-button matTooltip="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">
+      <span>{{ data.importFile ? data.importFile.name : 'Select file (or drag and drop)' }}</span>
+    </button>
+    <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
+  </div>
+
+  <div class="dialog-component-content fancy-scrollbar-light import-result-box" *ngIf="data.importResult != null">
+    <div *ngIf="data.importResult === true" class="sxc-message sxc-message-info">
+      The import has been done.
     </div>
+    <ng-container *ngIf="data.importResult !== true">
+      <div class="sxc-message sxc-message-error">
+        The import failed. See the messages below for more information.
+      </div>
+      <div class="sxc-message sxc-message-error">
+        {{ data.importResult }}.
+      </div>
+    </ng-container>
+  </div>
 
-    <div class="dialog-component-actions">
+  <div class="dialog-component-actions">
+    <ng-container *ngIf="data.importResult !== true">
       <button mat-raised-button (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button color="accent" [disabled]="!importFile" (click)="importQuery()">Import</button>
-    </div>
-  </div>
-  <div *ngSwitchCase="2">
-    <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-    <div class="dialog-component-actions">
-      <button mat-raised-button disabled>Cancel</button>
-      <button mat-raised-button color="accent" disabled>Import</button>
-    </div>
-  </div>
-  <div *ngSwitchCase="3">
-    <p>Import completed!</p>
-    <div class="dialog-component-actions">
+      <button mat-raised-button color="accent"
+        [disabled]="!data.importFile || data.isImporting || (data.importResult != null)" (click)="importQuery()">
+        Import
+      </button>
+    </ng-container>
+    <ng-container *ngIf="data.importResult === true">
       <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
-    </div>
+    </ng-container>
   </div>
 </div>

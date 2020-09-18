@@ -1,6 +1,6 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
   <ag-grid-angular class="ag-theme-material" [rowData]="queries$ | async" [modules]="modules"
-    [gridOptions]="gridOptions">
+    [gridOptions]="gridOptions" appDragAndDrop (filesDropped)="importQuery($event)">
   </ag-grid-angular>
 
   <eco-fab-speed-dial class="grid-fab">
@@ -11,7 +11,7 @@
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
-      <button mat-mini-fab matTooltip="Import query" (click)="importQuery()">
+      <button mat-mini-fab matTooltip="Import query (or drag and drop on the queries list)" (click)="importQuery()">
         <mat-icon>cloud_upload</mat-icon>
       </button>
       <button mat-mini-fab matTooltip="Create a new query" (click)="editQuery(null)">

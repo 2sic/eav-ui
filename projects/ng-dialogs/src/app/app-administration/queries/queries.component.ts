@@ -16,6 +16,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
 
 @Component({
   selector: 'app-queries',
@@ -88,8 +89,9 @@ export class QueriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  importQuery() {
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
+  importQuery(files?: FileList) {
+    const dialogData: ImportQueryDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   editQuery(query: Query) {
