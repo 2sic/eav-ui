@@ -30,6 +30,7 @@ import { IdFieldComponent } from '../shared/components/id-field/id-field.compone
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { ImportAppDialogData } from '../import-app/import-app-dialog.config';
 
 @Component({
   selector: 'app-content-items',
@@ -134,8 +135,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
   }
 
-  importItem() {
-    this.router.navigate(['import'], { relativeTo: this.route });
+  importItem(files?: FileList) {
+    const dialogData: ImportAppDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
   addMetadata() {

@@ -58,18 +58,15 @@ export class ImportAppComponent implements OnInit, OnDestroy {
 
   importApp(changedName?: string) {
     this.isImporting$.next(true);
-
     this.importAppService.importApp(this.importFile$.value, changedName).subscribe({
       next: result => {
         this.isImporting$.next(false);
-
         this.importResult$.next(result);
         // The app could not be installed because the app-folder already exists. Install app in a different folder?
         if (this.importResult$.value?.Messages?.[0]?.MessageType === 0) {
           const folderName = prompt(this.importResult$.value.Messages[0].Text + ' Would you like to install it using another folder name?');
-          if (folderName) {
-            this.importApp(folderName);
-          }
+          if (!folderName) { return; }
+          this.importApp(folderName);
         }
       },
       error: (error: HttpErrorResponse) => {

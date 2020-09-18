@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
@@ -24,10 +25,14 @@ export class ContentItemsService {
     }) as Observable<Field[]>;
   }
 
-  async importItem(file: File) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contentimport/import'), {
-      AppId: this.context.appId.toString(),
-      ContentBase64: await toBase64(file),
-    }) as Observable<boolean>;
+  importItem(file: File) {
+    return from(toBase64(file)).pipe(
+      mergeMap(fileBase64 => {
+        return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/contentimport/import'), {
+          AppId: this.context.appId.toString(),
+          ContentBase64: fileBase64,
+        }) as Observable<boolean>;
+      })
+    );
   }
 }

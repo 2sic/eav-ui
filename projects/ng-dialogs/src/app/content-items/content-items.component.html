@@ -12,14 +12,15 @@
 
   <div class="grid-wrapper">
     <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules" [gridOptions]="gridOptions"
-      (gridReady)="onGridReady($event)">
+      (gridReady)="onGridReady($event)" appDragAndDrop (filesDropped)="importItem($event)">
     </ag-grid-angular>
 
     <div class="actions-box">
       <button mat-icon-button matTooltip="Export" (click)="exportContent()">
         <mat-icon>cloud_download</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="Import" (click)="importItem()">
+      <button mat-icon-button matTooltip="Import a single JSON Item (or drag and drop on the items list)"
+        (click)="importItem()">
         <mat-icon>cloud_upload</mat-icon>
       </button>
       <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
