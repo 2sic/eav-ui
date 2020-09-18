@@ -14,6 +14,7 @@ import { appNamePattern, appNameError } from '../constants/app.patterns';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
 
 @Component({
   selector: 'app-apps-list',
@@ -124,8 +125,9 @@ export class AppsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  importApp() {
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
+  importApp(files?: FileList) {
+    const dialogData: ImportAppDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private fetchAppsList() {

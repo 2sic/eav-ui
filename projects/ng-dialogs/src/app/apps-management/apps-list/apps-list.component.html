@@ -1,5 +1,6 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="apps$ | async" [modules]="modules" [gridOptions]="gridOptions">
+  <ag-grid-angular class="ag-theme-material" [rowData]="apps$ | async" [modules]="modules" [gridOptions]="gridOptions"
+    appDragAndDrop (filesDropped)="importApp($event)">
   </ag-grid-angular>
 
   <eco-fab-speed-dial class="grid-fab">
@@ -13,7 +14,7 @@
       <button mat-mini-fab matTooltip="Find more apps" (click)="browseCatalog()">
         <mat-icon>search</mat-icon>
       </button>
-      <button mat-mini-fab matTooltip="Import app" (click)="importApp()">
+      <button mat-mini-fab matTooltip="Import app (or drag and drop on the apps list)" (click)="importApp()">
         <mat-icon>cloud_upload</mat-icon>
       </button>
       <button mat-mini-fab matTooltip="Create app" (click)="createApp()">

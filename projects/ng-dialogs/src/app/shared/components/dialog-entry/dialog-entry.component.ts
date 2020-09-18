@@ -17,6 +17,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
   /** Forces change detection when dialog is async loaded */
   loaded$ = new BehaviorSubject<boolean>(false);
 
+  private dialogData: { [key: string]: any; };
   private dialogRef: MatDialogRef<any>;
 
   constructor(
@@ -25,7 +26,10 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-  ) { }
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    this.dialogData = navigation?.extras?.state || {};
+  }
 
   ngOnInit() {
     const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
@@ -40,6 +44,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       }
 
       this.dialogRef = this.dialog.open(component, {
+        data: this.dialogData,
         backdropClass: 'dialog-backdrop',
         panelClass: [
           'dialog-panel',

@@ -1,11 +1,12 @@
-import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy, Inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ImportAppService } from './services/import-app.service';
 import { ImportAppResult } from './models/import-app-result.model';
+import { ImportAppDialogData } from './import-app-dialog.config';
 
 @Component({
   selector: 'app-import-app',
@@ -23,9 +24,17 @@ export class ImportAppComponent implements OnInit, OnDestroy {
     map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
   );
 
-  constructor(private dialogRef: MatDialogRef<ImportAppComponent>, private importAppService: ImportAppService) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private dialogData: ImportAppDialogData,
+    private dialogRef: MatDialogRef<ImportAppComponent>,
+    private importAppService: ImportAppService,
+  ) { }
 
   ngOnInit() {
+    if (this.dialogData.files != null) {
+      this.importFile$.next(this.dialogData.files[0]);
+      this.importApp();
+    }
   }
 
   ngOnDestroy() {
@@ -59,6 +68,14 @@ export class ImportAppComponent implements OnInit, OnDestroy {
   fileChange(event: Event) {
     const importFile = (event.target as HTMLInputElement).files[0];
     this.importFile$.next(importFile);
+    this.importResult$.next(null);
+  }
+
+  filesDropped(files: FileList) {
+    const importFile = files[0];
+    this.importFile$.next(importFile);
+    this.importResult$.next(null);
+    this.importApp();
   }
 
   closeDialog() {

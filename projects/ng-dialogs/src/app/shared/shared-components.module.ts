@@ -16,6 +16,7 @@ import { BooleanFilterComponent } from './components/boolean-filter/boolean-filt
 import { IdFieldComponent } from './components/id-field/id-field.component';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
@@ -24,6 +25,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     DialogEntryComponent,
     FieldHintComponent,
     ClickStopPropagationDirective,
+    DragAndDropDirective,
     MousedownStopPropagationDirective,
     BooleanFilterComponent,
     IdFieldComponent,
@@ -50,6 +52,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     DialogEntryComponent,
     FieldHintComponent,
     ClickStopPropagationDirective,
+    DragAndDropDirective,
     MousedownStopPropagationDirective,
     BooleanFilterComponent,
     SafeHtmlPipe,
