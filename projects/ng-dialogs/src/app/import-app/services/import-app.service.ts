@@ -6,6 +6,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Context } from '../../shared/services/context';
 import { ImportAppResult } from '../models/import-app-result.model';
 
+export const webApiAppRoot = 'admin/app/';
+
 @Injectable()
 export class ImportAppService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
@@ -16,6 +18,6 @@ export class ImportAppService {
     formData.append('ZoneId', this.context.zoneId.toString());
     formData.append('File', file);
     formData.append('Name', changedName ? changedName : '');
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportApp'), formData) as Observable<ImportAppResult>;
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'ImportApp'), formData) as Observable<ImportAppResult>;
   }
 }
