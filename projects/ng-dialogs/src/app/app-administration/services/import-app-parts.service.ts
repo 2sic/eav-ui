@@ -5,7 +5,6 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { Context } from '../../shared/services/context';
 import { ImportAppResult } from '../../import-app/models/import-app-result.model';
-import { webApiAppRoot } from '../../import-app/services/import-app.service';
 
 export const webApiAppPartsRoot = 'admin/appParts/';
 

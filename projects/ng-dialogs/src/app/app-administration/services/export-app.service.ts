@@ -12,13 +12,13 @@ export class ExportAppService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAppInfo() {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'GetAppInfo'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Statistics'), {
       params: { appid: this.context.appId.toString(), zoneId: this.context.zoneId.toString() },
     }) as Observable<AppInfo>;
   }
 
   exportApp(includeContentGroups: boolean, resetAppGuid: boolean) {
-    const url = this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'ExportApp')
+    const url = this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Export')
       + '?appId=' + this.context.appId
       + '&zoneId=' + this.context.zoneId
       + '&includeContentGroups=' + includeContentGroups
@@ -28,7 +28,7 @@ export class ExportAppService {
   }
 
   exportForVersionControl(includeContentGroups: boolean, resetAppGuid: boolean) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'SaveToDotData'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'SaveData'), {
       params: {
         appid: this.context.appId.toString(),
         zoneId: this.context.zoneId.toString(),
