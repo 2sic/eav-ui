@@ -11,7 +11,7 @@ export class EntitiesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   delete(type: string, id: number, tryForce: boolean) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
+    return this.http.delete(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
       params: { contentType: type, id: id.toString(), appId: this.context.appId.toString(), force: tryForce.toString() },
     }) as Observable<null>;
   }
