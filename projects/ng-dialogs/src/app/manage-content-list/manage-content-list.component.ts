@@ -56,6 +56,10 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   saveList() {
     this.snackBar.open('Saving...');
     this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
@@ -107,10 +111,6 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   trackByFn(index: number, item: GroupHeader) {
     // we use both Index and Id because all demo items have Id=0
     return `${item.Index}+${item.Id}`;
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   private fetchList() {

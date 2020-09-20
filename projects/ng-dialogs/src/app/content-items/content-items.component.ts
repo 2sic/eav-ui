@@ -85,6 +85,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   onGridReady(params: GridReadyEvent) {
     this.gridApi$.next(params.api);
   }
@@ -210,10 +214,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   debugFilter() {
     console.warn('Current filter:', this.gridApi$.value.getFilterModel());
     alert('Check console for filter information');
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   private refreshOnChildClosed() {

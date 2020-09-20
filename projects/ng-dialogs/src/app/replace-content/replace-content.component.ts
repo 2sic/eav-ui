@@ -51,6 +51,10 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   selectedChanged(id: number) {
     this.item$.next({ ...this.item$.value, id });
   }
@@ -69,10 +73,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   private getConfig() {

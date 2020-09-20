@@ -111,6 +111,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
   }
@@ -175,10 +179,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       this.rowDragSuppressed = false;
       this.gridApi.setSuppressRowDrag(false);
     }
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   add() {

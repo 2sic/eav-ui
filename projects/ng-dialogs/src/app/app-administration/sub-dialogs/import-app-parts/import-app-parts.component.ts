@@ -43,6 +43,10 @@ export class ImportAppPartsComponent implements OnInit, OnDestroy {
     this.importResult$.complete();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   filesDropped(files: FileList) {
     const importFile = files[0];
     this.importFile$.next(importFile);
@@ -71,9 +75,5 @@ export class ImportAppPartsComponent implements OnInit, OnDestroy {
         });
       },
     });
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 }

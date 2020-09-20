@@ -49,6 +49,10 @@ export class ContentExportComponent implements OnInit {
     });
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   exportContent() {
     this.contentExportService.exportContent(this.formValues,
       this.hasIdList && this.formValues.recordExport === 'Selection' ? this.itemIds : null);
@@ -57,9 +61,4 @@ export class ContentExportComponent implements OnInit {
   exportJson() {
     this.contentExportService.exportJson(this.formValues.contentTypeStaticName);
   }
-
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
 }

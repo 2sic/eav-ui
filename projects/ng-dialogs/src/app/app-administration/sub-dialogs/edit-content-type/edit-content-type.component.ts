@@ -85,6 +85,10 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     setTimeout(() => this.disableAnimation$.next(false));
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   changeContentTypeName(newName: string) {
     this.contentType$.next({ ...this.contentType$.value, Name: newName });
   }
@@ -124,9 +128,5 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 }

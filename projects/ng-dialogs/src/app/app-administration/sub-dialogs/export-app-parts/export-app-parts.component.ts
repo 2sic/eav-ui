@@ -32,6 +32,10 @@ export class ExportAppPartsComponent implements OnInit {
     this.fetchContentInfo();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   exportAppParts() {
     this.isExporting = true;
     // spm TODO: maybe optimize these functions to not loop content types and entities multiple times for no reason
@@ -70,10 +74,6 @@ export class ExportAppPartsComponent implements OnInit {
       this.exportScope = eavConstants.scopes.default.value;
       this.fetchContentInfo();
     }
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   private fetchScopes() {
