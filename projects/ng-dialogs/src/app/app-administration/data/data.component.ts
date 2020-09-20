@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { filter, startWith, map, pairwise } from 'rxjs/operators';
@@ -121,6 +120,10 @@ export class DataComponent implements OnInit, OnDestroy {
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
       this.contentTypes$.next(contentTypes);
+      if (this.scope !== this.defaultScope) {
+        const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
+        this.snackBar.open(message, null, { duration: 2000 });
+      }
     });
   }
 
@@ -140,8 +143,7 @@ export class DataComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeScope(event: MatSelectChange) {
-    let newScope: string = event.value;
+  changeScope(newScope: string) {
     if (newScope === 'Other') {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
@@ -156,13 +158,6 @@ export class DataComponent implements OnInit, OnDestroy {
     }
     this.scope = newScope;
     this.fetchContentTypes();
-    if (this.scope !== this.defaultScope) {
-      this.snackBar.open(
-        'Warning! You are in a special scope. Changing things here could easily break functionality',
-        null,
-        { duration: 2000 }
-      );
-    }
   }
 
   private idValueGetter(params: ValueGetterParams) {

@@ -17,14 +17,13 @@ export class ExportAppPartsService {
   }
 
   exportParts(contentTypeIds: number[], entityIds: number[], templateIds: number[]) {
-    window.open(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ExportContent')
+    const url = this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ExportContent')
       + '?appId=' + this.context.appId.toString()
       + '&zoneId=' + this.context.zoneId.toString()
       + '&contentTypeIdsString=' + contentTypeIds.join(';')
       + '&entityIdsString=' + entityIds.join(';')
-      + '&templateIdsString=' + templateIds.join(';'),
-      '_self',
-      '',
-    );
+      + '&templateIdsString=' + templateIds.join(';');
+
+    window.open(url, '_self', '');
   }
 }

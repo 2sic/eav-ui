@@ -13,20 +13,21 @@
   <div class="edit-input">
     <mat-form-field appearance="standard" color="accent">
       <mat-label>Scope</mat-label>
-      <mat-select [ngModel]="exportScope" name="Scope" (selectionChange)="changeScope($event)" [disabled]="lockScope">
+      <mat-select [ngModel]="exportScope" name="Scope" (ngModelChange)="changeScope($event)" [disabled]="lockScope">
         <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
           {{ scopeOption.name }}
         </mat-option>
         <mat-option value="Other">Other...</mat-option>
       </mat-select>
       <button mat-icon-button type="button" matSuffix [matTooltip]="lockScope ? 'Unlock' : 'Lock'">
-        <mat-icon *ngIf="lockScope" (click)="unlockScope($event)">lock</mat-icon>
-        <mat-icon *ngIf="!lockScope" (click)="unlockScope($event)">lock_open</mat-icon>
+        <mat-icon appClickStopPropagation (click)="unlockScope($event)">
+          {{ lockScope ? 'lock' : 'lock_open' }}
+        </mat-icon>
       </button>
     </mat-form-field>
     <app-field-hint>
       The scope should almost never be changed -
-      <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+      <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
     </app-field-hint>
   </div>
 

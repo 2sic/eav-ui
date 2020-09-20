@@ -9,7 +9,7 @@
       <mat-icon>share</mat-icon>
     </button>
     <mat-form-field appearance="standard" color="accent" class="scope-box__dropdown">
-      <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
+      <mat-select [ngModel]="scope" name="Scope" (ngModelChange)="changeScope($event)">
         <mat-option *ngFor="let scopeOption of (scopeOptions$ | async)" [value]="scopeOption.value">
           {{ 'Scope: ' + scopeOption.name }}
         </mat-option>

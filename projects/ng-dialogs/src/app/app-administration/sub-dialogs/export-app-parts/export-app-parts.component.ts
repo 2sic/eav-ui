@@ -1,6 +1,5 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
@@ -49,8 +48,7 @@ export class ExportAppPartsComponent implements OnInit {
     this.isExporting = false;
   }
 
-  changeScope(event: MatSelectChange) {
-    let newScope: string = event.value;
+  changeScope(newScope: string) {
     if (newScope === 'Other') {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
@@ -67,8 +65,7 @@ export class ExportAppPartsComponent implements OnInit {
     this.fetchContentInfo();
   }
 
-  unlockScope(event: Event) {
-    event.stopPropagation();
+  unlockScope() {
     this.lockScope = !this.lockScope;
     if (this.lockScope) {
       this.exportScope = eavConstants.scopes.default.value;

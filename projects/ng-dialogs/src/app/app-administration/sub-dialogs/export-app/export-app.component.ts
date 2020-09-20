@@ -1,8 +1,8 @@
 import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
@@ -24,8 +24,6 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     map(([appInfo, isExporting]) => ({ appInfo, isExporting })),
   );
 
-  private subscription = new Subscription();
-
   constructor(private dialogRef: MatDialogRef<ExportAppComponent>, private exportAppService: ExportAppService, private zone: NgZone) { }
 
   ngOnInit() {
@@ -37,7 +35,6 @@ export class ExportAppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.appInfo$.complete();
     this.isExporting$.complete();
-    this.subscription.unsubscribe();
   }
 
   closeDialog() {
@@ -46,12 +43,8 @@ export class ExportAppComponent implements OnInit, OnDestroy {
 
   exportApp() {
     this.isExporting$.next(true);
-    const exportAppWindow = this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
-    this.subscription.add(
-      fromEvent(exportAppWindow, 'load').pipe(take(1)).subscribe(event => {
-        this.zone.run(() => { this.isExporting$.next(false); });
-      })
-    );
+    this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
+    this.isExporting$.next(false);
   }
 
   exportGit() {
