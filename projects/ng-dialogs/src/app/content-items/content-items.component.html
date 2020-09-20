@@ -1,7 +1,7 @@
 <div class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ contentType?.Name }} Data</div>
+      <div>{{ (contentType$ | async)?.Name }} Data</div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -11,8 +11,8 @@
   <router-outlet></router-outlet>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="items" [modules]="modules" [gridOptions]="gridOptions"
-      (gridReady)="onGridReady($event)" appDragAndDrop (filesDropped)="importItem($event)">
+    <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [modules]="modules"
+      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop (filesDropped)="importItem($event)">
     </ag-grid-angular>
 
     <div class="actions-box">

@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, startWith, map, pairwise, take } from 'rxjs/operators';
 import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
 
 import { ContentType } from '../app-administration/models/content-type.model';
@@ -31,15 +31,17 @@ import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper'
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { ImportAppDialogData } from '../import-app/import-app-dialog.config';
+import { AgGridFilterModel } from './models/ag-grid-filter.model';
 
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss']
+  styleUrls: ['./content-items.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
-  contentType: ContentType;
-  items: ContentItem[];
+  contentType$ = new BehaviorSubject<ContentType>(null);
+  items$ = new BehaviorSubject<ContentItem[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -54,10 +56,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     },
   };
 
-  private gridApi: GridApi;
-  private contentTypeStaticName: string;
+  private gridApi$ = new BehaviorSubject<GridApi>(null);
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private subscription = new Subscription();
-  private columnDefs: ColDef[];
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
@@ -68,46 +69,58 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
-  ) {
-    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
+    this.fetchColumns();
     this.refreshOnChildClosed();
-    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      this.columnDefs = this.buildColumnDefs(columns);
-      this.gridApi?.setColumnDefs(this.columnDefs);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
-      if (filterModel) {
-        angularConsoleLog('Will try to apply filter:', filterModel);
-        this.gridApi.setFilterModel(filterModel);
-      }
-    });
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
+    this.items$.complete();
+    this.gridApi$.complete();
     this.subscription.unsubscribe();
   }
 
   onGridReady(params: GridReadyEvent) {
-    this.gridApi = params.api;
-    if (this.columnDefs) {
-      this.gridApi.setColumnDefs(this.columnDefs);
-    }
+    this.gridApi$.next(params.api);
   }
 
   private fetchContentType() {
     this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
-      this.contentType = contentType;
+      this.contentType$.next(contentType);
     });
   }
 
   private fetchItems() {
     this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      this.items = items;
+      this.items$.next(items);
     });
+  }
+
+  private fetchColumns() {
+    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
+      const columnDefs = this.buildColumnDefs(columns);
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
+      if (this.gridApi$.value) {
+        this.setColumnDefs(columnDefs, filterModel);
+      } else {
+        this.gridApi$.pipe(take(1)).subscribe(gridApi => {
+          this.setColumnDefs(columnDefs, filterModel);
+        });
+      }
+    });
+  }
+
+  private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
+    this.gridApi$.value.setColumnDefs(columnDefs);
+    if (filterModel) {
+      angularConsoleLog('Will try to apply filter:', filterModel);
+      this.gridApi$.value.setFilterModel(filterModel);
+    }
   }
 
   editItem(params: CellClickedEvent) {
@@ -124,11 +137,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   exportContent() {
-    const filterModel = this.gridApi.getFilterModel();
+    const filterModel = this.gridApi$.value.getFilterModel();
     const hasFilters = Object.keys(filterModel).length > 0;
     const ids: number[] = [];
     if (hasFilters) {
-      this.gridApi.forEachNodeAfterFilterAndSort(rowNode => {
+      this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
         ids.push((rowNode.data as ContentItem).Id);
       });
     }
@@ -195,7 +208,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.gridApi.getFilterModel());
+    console.warn('Current filter:', this.gridApi$.value.getFilterModel());
     alert('Check console for filter information');
   }
 
