@@ -28,7 +28,7 @@ export class SxcInsightsComponent implements OnInit, OnDestroy {
   }
 
   openInsights() {
-    window.open($2sxc.http.apiUrl('sys/insights/help'));
+    window.open($2sxc.http.apiUrl('sys/insights/help'), '_blank');
   }
 
   activatePageLog(form: NgForm) {

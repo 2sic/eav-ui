@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 
 import { ContentItemsActionsParams } from './content-items-actions.models';
@@ -7,11 +7,12 @@ import { ContentItem } from '../../models/content-item.model';
 @Component({
   selector: 'app-content-items-actions',
   templateUrl: './content-items-actions.component.html',
-  styleUrls: ['./content-items-actions.component.scss']
+  styleUrls: ['./content-items-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
-  params: ContentItemsActionsParams;
-  item: ContentItem;
+  private params: ContentItemsActionsParams;
+  private item: ContentItem;
 
   agInit(params: ContentItemsActionsParams) {
     this.params = params;
@@ -30,7 +31,7 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
     this.params.onExport(this.item);
   }
 
-  delete() {
+  deleteItem() {
     this.params.onDelete(this.item);
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@a
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { filter, startWith, map, pairwise } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
 
@@ -32,7 +32,7 @@ export class DataComponent implements OnInit, OnDestroy {
   scope = eavConstants.scopes.default.value;
   defaultScope = eavConstants.scopes.default.value;
   scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
-  debugEnabled$: Observable<boolean>;
+  debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -96,7 +96,6 @@ export class DataComponent implements OnInit, OnDestroy {
     this.fetchContentTypes();
     this.fetchScopes();
     this.refreshOnChildClosed();
-    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
   }
 
   ngOnDestroy() {

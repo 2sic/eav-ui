@@ -32,5 +32,4 @@ export class QueryResultComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
   }
-
 }

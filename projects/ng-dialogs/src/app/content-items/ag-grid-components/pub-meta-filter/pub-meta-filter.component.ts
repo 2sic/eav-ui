@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 
@@ -7,7 +7,8 @@ import { PubMetaFilterModel, PubMeta } from './pub-meta-filter.model';
 @Component({
   selector: 'app-pub-meta-filter',
   templateUrl: './pub-meta-filter.component.html',
-  styleUrls: ['./pub-meta-filter.component.scss']
+  styleUrls: ['./pub-meta-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PubMetaFilterComponent implements IFilterAngularComp {
   published = '';

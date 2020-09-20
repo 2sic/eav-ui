@@ -106,7 +106,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   browseCatalog() {
-    window.open('http://2sxc.org/apps');
+    window.open('https://2sxc.org/apps', '_blank');
   }
 
   createApp() {

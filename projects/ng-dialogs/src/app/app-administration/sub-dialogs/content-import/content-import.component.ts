@@ -58,6 +58,10 @@ export class ContentImportComponent implements OnInit {
     });
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   async evaluateContent() {
     this.viewStateSelected = this.viewStates.waiting;
     (await this.contentImportService.evaluateContent(this.formValues)).subscribe(result => {
@@ -77,10 +81,6 @@ export class ContentImportComponent implements OnInit {
   back() {
     this.viewStateSelected = this.viewStates.default;
     this.evaluationResult = undefined;
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   fileChange(event: Event) {
