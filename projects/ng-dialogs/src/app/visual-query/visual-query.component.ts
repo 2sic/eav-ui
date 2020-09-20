@@ -34,7 +34,7 @@ export class VisualQueryComponent implements OnInit {
   }
 
   openHelp() {
-    window.open('http://2sxc.org/help', '_blank');
+    window.open('https://2sxc.org/help', '_blank');
   }
 
 }

@@ -27,7 +27,7 @@ export class ContentItemsEntityComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  // htmlencode strings (source: http://stackoverflow.com/a/7124052)
+  // htmlencode strings (source: https://stackoverflow.com/a/7124052)
   private htmlEncode(text: string) {
     return text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
