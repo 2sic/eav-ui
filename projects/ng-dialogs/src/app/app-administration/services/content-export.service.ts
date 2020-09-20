@@ -3,6 +3,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 
 import { ContentExport } from '../models/content-export.model';
 import { Context } from '../../shared/services/context';
+import { webApiTypeRoot } from './content-types.service';
+import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
 
 @Injectable()
 export class ContentExportService {
@@ -24,7 +26,7 @@ export class ContentExportService {
   }
 
   exportJson(typeName: string) {
-    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/DownloadTypeAsJson')
+    const url = this.dnnContext.$2sxc.http.apiUrl(webApiTypeRoot + 'Json')
       + '?appId=' + this.context.appId
       + '&name=' + typeName;
 
@@ -32,7 +34,7 @@ export class ContentExportService {
   }
 
   exportEntity(id: number, prefix: string, metadata: boolean) {
-    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/DownloadEntityAsJson')
+    const url = this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'Json')
       + '?appId=' + this.context.appId
       + '&id=' + id
       + '&prefix=' + prefix
