@@ -12,7 +12,7 @@ export class ContentExportService {
 
   exportContent(values: ContentExport, selectedIds: number[]) {
     const selectedIdsString = selectedIds ? '&selectedids=' + selectedIds.join() : '';
-    const url = this.dnnContext.$2sxc.http.apiUrl('eav/ContentExport/ExportContent')
+    const url = this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'Download')
       + '?appId=' + this.context.appId
       + '&language=' + values.language
       + '&defaultLanguage=' + values.defaultLanguage
