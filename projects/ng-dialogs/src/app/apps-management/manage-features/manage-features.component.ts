@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
 
 import { Feature } from '../models/feature.model';
@@ -70,12 +70,13 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   templateVars$ = combineLatest([this.features$, this.showManagement$, this.showSpinner$, this.managementUrl$]).pipe(
     map(([features, showManagement, showSpinner, managementUrl]) => ({ features, showManagement, showSpinner, managementUrl })),
   );
-  private managementSubscription: Subscription;
+  private subscription = new Subscription();
 
   constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();
+    this.subscribeToMessages();
   }
 
   ngOnDestroy() {
@@ -83,15 +84,23 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     this.showManagement$.complete();
     this.showSpinner$.complete();
     this.managementUrl$.complete();
-    this.managementSubscription?.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   toggleManagement() {
     this.showManagement$.next(!this.showManagement$.value);
-    this.managementSubscription?.unsubscribe();
-    if (this.showManagement$.value) {
-      this.openManagement();
-    }
+    if (!this.showManagement$.value) { return; }
+
+    this.showSpinner$.next(true);
+    this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl('')); // reset url
+    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
+      this.showSpinner$.next(false);
+      if (url.includes('error: user needs host permissions')) {
+        this.showManagement$.next(false);
+        throw new Error('User needs host permissions!');
+      }
+      this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+    });
   }
 
   private idValueGetter(params: ValueGetterParams) {
@@ -115,35 +124,21 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openManagement() {
-    this.showSpinner$.next(true);
-    this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl('')); // reset url
-
-    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
-      this.showSpinner$.next(false);
-
-      if (url.includes('error: user needs host permissions')) {
-        this.showManagement$.next(false);
-        throw new Error('User needs host permissions!');
-      }
-
-      this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-
-      /** This should await callbacks from the iframe and if it gets a valid callback containing a json, it should send it to the server */
-      this.managementSubscription = fromEvent(window, 'message').pipe(take(1)).subscribe((event: MessageEvent) => {
-        if (typeof event.data === 'undefined') { return; }
-        if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
-
-        try {
-          const features: ManageFeaturesMessageData = event.data;
-          const featuresString = JSON.stringify(features);
-          this.featuresConfigService.saveFeatures(featuresString).subscribe(res => {
-            this.showManagement$.next(false);
-            this.fetchFeatures();
-          });
-        } catch (e) { }
-      });
-    });
+  /** Waits for a json message from the iframe and sends it to the server */
+  private subscribeToMessages() {
+    this.subscription.add(
+      fromEvent(window, 'message').pipe(
+        filter((event: MessageEvent) => this.showManagement$.value),
+        filter(event => event.origin.endsWith('2sxc.org') === true),
+        filter(event => event.data != null),
+      ).subscribe(event => {
+        const features: ManageFeaturesMessageData = event.data;
+        const featuresString = JSON.stringify(features);
+        this.featuresConfigService.saveFeatures(featuresString).subscribe(res => {
+          this.showManagement$.next(false);
+          this.fetchFeatures();
+        });
+      })
+    );
   }
-
 }

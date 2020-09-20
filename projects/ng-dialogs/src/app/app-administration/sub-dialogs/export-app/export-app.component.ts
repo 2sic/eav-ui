@@ -40,6 +40,10 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   exportApp() {
     this.isExporting$.next(true);
     const exportAppWindow = this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
@@ -61,9 +65,5 @@ export class ExportAppComponent implements OnInit, OnDestroy {
         this.isExporting$.next(false);
       },
     });
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 }
