@@ -8,19 +8,21 @@ import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { Field } from '../../content-type-fields/models/field.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
+import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
+import { webApiEntityRoot } from 'projects/edit';
 
 @Injectable()
 export class ContentItemsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentTypeStaticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/GetAllOfTypeForAdmin'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot), {
       params: { appId: this.context.appId.toString(), contentType: contentTypeStaticName }
     }) as Observable<ContentItem[]>;
   }
 
   getColumns(contentTypeStaticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
       params: { appId: this.context.appId.toString(), staticName: contentTypeStaticName }
     }) as Observable<Field[]>;
   }

@@ -6,10 +6,10 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
+import { webApiEntityList } from 'projects/edit';
 
 const webApiQueryRoot = 'admin/query/';
 const webApiQueryImport = webApiQueryRoot + 'import';
-const webApiQueryEntities = 'eav/Entities/GetEntities';
 const webApiQueryClone = webApiQueryRoot + 'Clone';
 const webApiQueryDelete = webApiQueryRoot + 'Delete';
 export const webApiQueryRun = webApiQueryRoot + 'Run';
@@ -22,7 +22,7 @@ export class PipelinesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentType: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiQueryEntities), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
       params: { appId: this.context.appId.toString(), contentType }
     }) as Observable<Query[]>;
   }

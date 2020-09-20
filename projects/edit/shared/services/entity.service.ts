@@ -6,6 +6,9 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { EntityInfo } from '../models/eav/entity-info';
 import { EavService } from './eav.service';
 
+export const webApiEntityRoot = 'admin/entity/';
+export const webApiEntityList = webApiEntityRoot + 'list';
+
 @Injectable()
 export class EntityService {
   constructor(private http: HttpClient, private eavService: EavService, private dnnContext: DnnContext) { }
@@ -17,7 +20,7 @@ export class EntityService {
   }
 
   delete(contentType: string, entityId: string, force: boolean) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/entities/delete'), {
+    return this.http.delete(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
       params: { contentType, id: entityId, appId: this.eavService.eavConfig.appId.toString(), force: force.toString() },
     }) as Observable<null>;
   }

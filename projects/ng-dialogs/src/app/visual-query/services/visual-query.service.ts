@@ -153,7 +153,7 @@ export class VisualQueryService implements OnDestroy {
       }
 
       // Check if the type exists, and if yes, create new Entity
-      this.contentTypesService.getDetails(contentTypeName, { ignoreErrors: 'true' }).subscribe({
+      this.contentTypesService.retrieveContentType(contentTypeName /*, { ignoreErrors: 'true' } */).subscribe({
         next: contentType => {
           const form: EditForm = {
             items: [{
