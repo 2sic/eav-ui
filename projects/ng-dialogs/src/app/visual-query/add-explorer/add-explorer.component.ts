@@ -1,12 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 import { DataSource } from '../models/data-sources.model';
 import { SortedDataSources } from '../models/data-sources.model';
 import { VisualQueryService } from '../services/visual-query.service';
+import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 
 @Component({
   selector: 'app-add-explorer',

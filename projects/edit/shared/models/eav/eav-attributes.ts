@@ -1,8 +1,8 @@
-import { EavValues } from './eav-values';
-import { Attributes1 } from '../json-format-v1/attributes1';
-import { EavValue } from './eav-value';
-import { EavEntity } from './eav-entity';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { Attributes1 } from '../json-format-v1/attributes1';
+import { EavEntity } from './eav-entity';
+import { EavValue } from './eav-value';
+import { EavValues } from './eav-values';
 
 export class EavAttributes {
   [key: string]: EavValues<any>;

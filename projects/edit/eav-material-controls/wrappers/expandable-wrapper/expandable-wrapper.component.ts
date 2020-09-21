@@ -1,20 +1,19 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
-import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
+import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { EavService } from '../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
-import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
+import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 @Component({
   selector: 'app-expandable-wrapper',

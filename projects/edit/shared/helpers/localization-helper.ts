@@ -1,12 +1,11 @@
 
 import { take } from 'rxjs/operators';
-
-import { EavValue, EavAttributes, EavDimensions } from '../models/eav';
 import { FieldSettings } from '../../../edit-types';
-import { EavValues } from '../models/eav/eav-values';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputTypeService } from '../store/ngrx-data/input-type.service';
+import { EavAttributes, EavDimensions, EavValue } from '../models/eav';
+import { EavValues } from '../models/eav/eav-values';
 import { CalculatedInputType } from '../models/input-field-models';
+import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class LocalizationHelper {
   /**

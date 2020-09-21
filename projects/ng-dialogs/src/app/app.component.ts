@@ -1,13 +1,12 @@
-import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
-import { keyModuleId, keyContentBlockId } from './shared/constants/session.constants';
 
 @Component({
   selector: 'app-root',

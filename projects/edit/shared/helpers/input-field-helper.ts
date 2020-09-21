@@ -1,13 +1,13 @@
 import { take } from 'rxjs/operators';
-import { FieldConfigSet, FieldConfigGroup } from '../../eav-dynamic-form/model/field-config';
-import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { AttributeDef } from '../models/eav/attribute-def';
-import { EavHeader, Item, InputType } from '../models/eav';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
+import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../constants/wrappers.constants';
+import { EavHeader, InputType, Item } from '../models/eav';
+import { AttributeDef } from '../models/eav/attribute-def';
 import { CalculatedInputType } from '../models/input-field-models';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
-import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 
 export class InputFieldHelper {
   /** This is attribute type (not attribute inputType) */

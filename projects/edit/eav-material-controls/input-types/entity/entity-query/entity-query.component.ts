@@ -1,18 +1,17 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-
-import { QueryService } from '../../../../shared/services/query.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EntityDefaultComponent } from '../entity-default/entity-default.component';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { EntityService } from '../../../../shared/services/entity.service';
 import { FieldSettings } from '../../../../../edit-types';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { QueryEntity } from './entity-query.models';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
+import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EavService } from '../../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { EntityService } from '../../../../shared/services/entity.service';
+import { QueryService } from '../../../../shared/services/query.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { QueryEntity } from './entity-query.models';
 
 @Component({
   // tslint:disable-next-line:component-selector

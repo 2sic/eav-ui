@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { contentItemsDialog } from './content-items-dialog.config';
+import { RouterModule, Routes } from '@angular/router';
 import { edit } from '../../../../edit/edit.matcher';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentItemImportDialog } from './ag-grid-components/content-item-import/content-item-import-dialog.config';
+import { contentItemsDialog } from './content-items-dialog.config';
 
 const routes: Routes = [
   {

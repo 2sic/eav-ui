@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
+import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
-import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 
 @Component({
   selector: 'app-app-administration-nav',

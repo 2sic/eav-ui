@@ -1,5 +1,5 @@
-import { Attribute1 } from './attribute1';
 import { EavAttributes } from '../eav';
+import { Attribute1 } from './attribute1';
 import { Value1 } from './value1';
 
 export class Attributes1<T> {

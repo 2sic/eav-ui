@@ -1,37 +1,36 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, startWith, map, pairwise, take } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
-
+import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { ContentItemsService } from './services/content-items.service';
-import { ContentItem } from './models/content-item.model';
-import { Field } from '../content-type-fields/models/field.model';
-import { EditForm } from '../shared/models/edit-form.model';
-import { EntitiesService } from './services/entities.service';
 import { ContentExportService } from '../app-administration/services/content-export.service';
-import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav.constants';
-import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { ExtendedColDef } from './models/extended-col-def.model';
-import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { Field } from '../content-type-fields/models/field.model';
+import { ImportAppDialogData } from '../import-app/import-app-dialog.config';
+import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
+import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
+import { keyFilters } from '../shared/constants/session.constants';
+import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
+import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
-import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
-import { keyFilters } from '../shared/constants/session.constants';
 import { buildFilterModel } from './content-items.helpers';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
-import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { ImportAppDialogData } from '../import-app/import-app-dialog.config';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
+import { ContentItem } from './models/content-item.model';
+import { ExtendedColDef } from './models/extended-col-def.model';
+import { ContentItemsService } from './services/content-items.service';
+import { EntitiesService } from './services/entities.service';
 
 @Component({
   selector: 'app-content-items',

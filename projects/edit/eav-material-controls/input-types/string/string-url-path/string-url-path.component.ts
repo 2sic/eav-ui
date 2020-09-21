@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-
-import { Helper } from '../../../../shared/helpers/helper';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
+import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { BaseComponent } from '../../base/base.component';
+import { Helper } from '../../../../shared/helpers/helper';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   // tslint:disable-next-line:component-selector

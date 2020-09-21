@@ -67,12 +67,12 @@
       "as-needed"
     ],
     "object-literal-sort-keys": false,
-    "ordered-imports": false,
+    "ordered-imports": true,
     "quotemark": [
       true,
       "single"
     ],
-    "trailing-comma": false,
+    "trailing-comma": true,
     "no-conflicting-lifecycle": true,
     "no-host-metadata-property": true,
     "no-input-rename": true,

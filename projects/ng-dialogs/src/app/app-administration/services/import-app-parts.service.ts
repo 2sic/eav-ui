@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
-import { Context } from '../../shared/services/context';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ImportAppResult } from '../../import-app/models/import-app-result.model';
+import { Context } from '../../shared/services/context';
 
 export const webApiAppPartsRoot = 'admin/appParts/';
 

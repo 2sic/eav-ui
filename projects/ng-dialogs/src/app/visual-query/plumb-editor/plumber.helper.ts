@@ -1,6 +1,7 @@
 import { DataSource } from '../models/data-sources.model';
-import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
 import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
+
 export const dataSrcIdPrefix = 'dataSource_';
 type PlumbType = any;
 declare const jsPlumb: PlumbType;

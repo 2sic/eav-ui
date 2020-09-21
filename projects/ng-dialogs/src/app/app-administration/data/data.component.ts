@@ -1,22 +1,21 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
-
-import { ContentType } from '../models/content-type.model';
-import { ContentTypesService } from '../services/content-types.service';
-import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
-import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
-import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
-import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
+import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
+import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
+import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { ContentType } from '../models/content-type.model';
+import { ContentTypesService } from '../services/content-types.service';
 
 @Component({
   selector: 'app-data',

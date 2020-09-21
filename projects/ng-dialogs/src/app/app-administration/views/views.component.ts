@@ -1,26 +1,25 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
-import { View } from '../models/view.model';
-import { calculateViewType } from './views.helpers';
-import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
-import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
-import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
-import { ViewsService } from '../services/views.service';
-import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { DialogService } from '../../shared/services/dialog.service';
-import { Polymorphism } from '../models/polymorphism.model';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DialogService } from '../../shared/services/dialog.service';
+import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
+import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
+import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
+import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
+import { Polymorphism } from '../models/polymorphism.model';
+import { View } from '../models/view.model';
+import { ViewsService } from '../services/views.service';
+import { calculateViewType } from './views.helpers';
 
 @Component({
   selector: 'app-views',

@@ -1,8 +1,7 @@
-import { ActionReducerMap, ActionReducer, MetaReducer, } from '@ngrx/store';
-
+import { ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 import * as fromGlobalConfiguration from './global-configuration.reducer';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 
 export interface EavState {
   globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;

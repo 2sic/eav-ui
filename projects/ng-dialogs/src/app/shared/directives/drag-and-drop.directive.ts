@@ -1,4 +1,4 @@
-import { Directive, Input, Output, EventEmitter, HostListener, ElementRef, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 
 @Directive({ selector: '[appDragAndDrop]' })

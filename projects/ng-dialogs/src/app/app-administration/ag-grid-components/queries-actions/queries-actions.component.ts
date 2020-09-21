@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Query } from '../../models/query.model';
 import { QueriesActionsParams } from './queries-actions.models';
 

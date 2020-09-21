@@ -1,16 +1,15 @@
-import { Component, OnInit, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-
-import { ContentGroupService } from './services/content-group.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { ContentGroupService } from './services/content-group.service';
 
 @Component({
   selector: 'app-manage-content-list',

@@ -1,6 +1,6 @@
-import { EavEntity } from './eav-entity';
 import { AttributeDef1 } from '../json-format-v1/attribute-def1';
 import { EavAttributes } from './eav-attributes';
+import { EavEntity } from './eav-entity';
 
 export class AttributeDef {
   name: string;

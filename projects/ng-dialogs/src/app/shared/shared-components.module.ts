@@ -1,22 +1,21 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatRippleModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-
-import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
-import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
-import { FieldHintComponent } from './components/field-hint/field-hint.component';
-import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { RouterModule } from '@angular/router';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
+import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
+import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
+import { FieldHintComponent } from './components/field-hint/field-hint.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
+import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
-import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({

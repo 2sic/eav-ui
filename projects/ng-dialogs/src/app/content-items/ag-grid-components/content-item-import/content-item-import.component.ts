@@ -1,12 +1,11 @@
-import { Component, OnInit, HostBinding, OnDestroy, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { ContentItemsService } from '../../services/content-items.service';
-import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
 import { ImportAppDialogData } from '../../../import-app/import-app-dialog.config';
+import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
+import { ContentItemsService } from '../../services/content-items.service';
 
 @Component({
   selector: 'app-content-item-import',

@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
+import { edit } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { manageContentListDialog } from './manage-content-list-dialog.config';
-import { edit } from '../../../../edit/edit.matcher';
 
 const routes: Routes = [
   {

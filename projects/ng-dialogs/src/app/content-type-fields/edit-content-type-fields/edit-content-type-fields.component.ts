@@ -1,20 +1,19 @@
-import { Component, OnInit, HostBinding, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, forkJoin, of, BehaviorSubject } from 'rxjs';
-import { map, mergeMap, share, catchError, toArray, filter, concatMap } from 'rxjs/operators';
-
-import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
+import { catchError, concatMap, filter, map, mergeMap, share, toArray } from 'rxjs/operators';
+import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { Field, FieldInputTypeOption } from '../models/field.model';
-import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { fieldNamePattern, fieldNameError } from '../../app-administration/constants/field-name.patterns';
-import { calculateTypeIcon } from '../content-type-fields.helpers';
-import { InputTypeConstants } from '../constants/input-type.constants';
+import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { DataTypeConstants } from '../constants/data-type.constants';
+import { InputTypeConstants } from '../constants/input-type.constants';
+import { calculateTypeIcon } from '../content-type-fields.helpers';
+import { Field, FieldInputTypeOption } from '../models/field.model';
+import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 
 @Component({
   selector: 'app-edit-content-type-fields',

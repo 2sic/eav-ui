@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../models/field.model';
-import { Context } from '../../shared/services/context';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
+import { Context } from '../../shared/services/context';
+import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../models/field.model';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = webApiFieldsRoot + 'all';

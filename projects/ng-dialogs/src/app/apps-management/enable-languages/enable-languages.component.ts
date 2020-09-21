@@ -1,14 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
-import { EnableLanguagesService } from '../services/enable-languages.service';
-import { EnableLanguage } from '../models/enable-language.model';
-import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
+import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
+import { EnableLanguage } from '../models/enable-language.model';
+import { EnableLanguagesService } from '../services/enable-languages.service';
 
 @Component({
   selector: 'app-enable-languages',

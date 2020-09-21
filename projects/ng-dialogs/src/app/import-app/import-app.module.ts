@@ -1,14 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule } from '@angular/material/dialog';
+import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
-import { ImportAppRoutingModule } from './import-app-routing.module';
-import { ImportAppComponent } from './import-app.component';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { ImportAppRoutingModule } from './import-app-routing.module';
+import { ImportAppComponent } from './import-app.component';
 import { ImportAppService } from './services/import-app.service';
 
 @NgModule({

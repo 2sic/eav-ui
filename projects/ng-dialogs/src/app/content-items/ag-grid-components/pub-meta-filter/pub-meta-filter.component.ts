@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
-
-import { PubMetaFilterModel, PubMeta } from './pub-meta-filter.model';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { PubMeta, PubMetaFilterModel } from './pub-meta-filter.model';
 
 @Component({
   selector: 'app-pub-meta-filter',

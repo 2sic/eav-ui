@@ -1,15 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { IconOption } from './string-font-icon-picker.models';
-import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
-import { findAllIconsInCss } from './string-font-icon-picker.helpers';
+import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { findAllIconsInCss } from './string-font-icon-picker.helpers';
+import { IconOption } from './string-font-icon-picker.models';
 
 @Component({
   // tslint:disable-next-line:component-selector

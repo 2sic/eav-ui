@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
-import { ContentType, ContentTypeEdit } from '../models/content-type.model';
-import { Context } from '../../shared/services/context';
 import { EavScopeOption } from '../../shared/constants/eav.constants';
+import { Context } from '../../shared/services/context';
+import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 
 export const webApiTypeRoot = 'admin/type/';
 
@@ -55,7 +54,7 @@ export class ContentTypesService {
 
   createGhost(sourceStaticName: string) {
     return this.http.post(this.apiUrl(webApiTypeRoot + 'addghost'),
-    null, {
+      null, {
       params: { appid: this.context.appId.toString(), sourceStaticName },
     }) as Observable<boolean>;
   }

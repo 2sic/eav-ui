@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { take, map, delay, distinctUntilChanged } from 'rxjs/operators';
-
-import { Item, EavValue, EavDimensions, Language, EavHeader, EavValues, ContentType } from '../../models/eav';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
-import { JsonItem1 } from '../../models/json-format-v1';
-import { LocalizationHelper } from '../../helpers/localization-helper';
-import { AttributeDef } from '../../models/eav/attribute-def';
-import { InputFieldHelper } from '../../helpers/input-field-helper';
-import { InputTypeService } from './input-type.service';
-import { ContentTypeService } from './content-type.service';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
+import { InputFieldHelper } from '../../helpers/input-field-helper';
+import { LocalizationHelper } from '../../helpers/localization-helper';
+import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
+import { AttributeDef } from '../../models/eav/attribute-def';
 import { SaveResult } from '../../models/eav/save-result.model';
+import { JsonItem1 } from '../../models/json-format-v1';
+import { ContentTypeService } from './content-type.service';
+import { InputTypeService } from './input-type.service';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {

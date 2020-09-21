@@ -1,14 +1,13 @@
-import { Component, OnInit, AfterViewInit, HostBinding, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, of, combineLatest } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
-import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
-import { contentTypeNamePattern, contentTypeNameError } from '../../constants/content-type.patterns';
 
 @Component({
   selector: 'app-edit-content-type',

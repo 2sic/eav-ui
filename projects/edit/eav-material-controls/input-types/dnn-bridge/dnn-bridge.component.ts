@@ -1,9 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-import { DnnBridgeDialogData } from './dnn-bridge.models';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { EavService } from '../../../shared/services/eav.service';
+import { DnnBridgeDialogData } from './dnn-bridge.models';
 
 @Component({
   selector: 'app-dnn-bridge',

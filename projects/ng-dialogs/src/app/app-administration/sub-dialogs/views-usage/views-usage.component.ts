@@ -1,18 +1,17 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { ViewsService } from '../../services/views.service';
-import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsUsageIdComponent } from '../../ag-grid-components/views-usage-id/views-usage-id.component';
-import { ViewUsageData } from '../../models/view-usage-data.model';
-import { buildData } from './views-usage.helpers';
-// tslint:disable-next-line:max-line-length
-import { blockIdValueGetter, moduleIdValueGetter, pageIdValueGetter, moduleIdClassGetter, pageIdClassGetter, nameClassGetter, onNameClicked, statusCellRenderer } from './views-usage-grid.helpers';
 import { ViewsUsageStatusFilterComponent } from '../../ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
+import { ViewUsageData } from '../../models/view-usage-data.model';
+import { ViewUsage } from '../../models/view-usage.model';
+import { ViewsService } from '../../services/views.service';
+// tslint:disable-next-line:max-line-length
+import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClassGetter, onNameClicked, pageIdClassGetter, pageIdValueGetter, statusCellRenderer } from './views-usage-grid.helpers';
+import { buildData } from './views-usage.helpers';
 
 @Component({
   selector: 'app-views-usage',

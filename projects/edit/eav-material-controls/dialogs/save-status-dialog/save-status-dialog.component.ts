@@ -1,6 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
 import { PublishMode, PublishModeConstants } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.constants';
 
 @Component({

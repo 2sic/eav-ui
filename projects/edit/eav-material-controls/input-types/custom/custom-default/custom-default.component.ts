@@ -1,9 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
-
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   // tslint:disable-next-line:component-selector

@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Context } from '../../shared/services/context';
 
 const webApiRoot = 'admin/metadata/get';

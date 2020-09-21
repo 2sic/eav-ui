@@ -1,7 +1,7 @@
-import { AttributeDef } from './attribute-def';
-import { EavEntity } from './eav-entity';
 import { ContentTypeDef1 } from '../json-format-v1/content-type-def1';
+import { AttributeDef } from './attribute-def';
 import { EavAttributes } from './eav-attributes';
+import { EavEntity } from './eav-entity';
 
 export class ContentTypeDef {
   id: string;

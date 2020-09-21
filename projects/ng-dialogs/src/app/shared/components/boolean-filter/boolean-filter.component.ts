@@ -1,7 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BooleanFilterModel } from './boolean-filter.model';
 
 @Component({

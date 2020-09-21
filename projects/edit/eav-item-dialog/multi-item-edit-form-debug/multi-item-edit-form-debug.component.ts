@@ -1,8 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Item } from '../../shared/models/eav';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
+
 declare const sxcVersion: string;
 
 @Component({

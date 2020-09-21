@@ -1,6 +1,6 @@
-import { EditForm, EditItem, AddItem, GroupItem, InnerItem } from '../models/edit-form.model';
 import { EavFor } from '../../../../../edit/shared/models/eav';
 import { eavConstants, EavMetadataKey } from '../constants/eav.constants';
+import { AddItem, EditForm, EditItem, GroupItem, InnerItem } from '../models/edit-form.model';
 
 export function convertFormToUrl(form: EditForm) {
   let formUrl = '';

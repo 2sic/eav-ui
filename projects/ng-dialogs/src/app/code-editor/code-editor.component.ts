@@ -1,20 +1,19 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { forkJoin } from 'rxjs';
-
-import { Context } from '../shared/services/context';
-import { keyItems } from '../shared/constants/session.constants';
-import { SourceService } from './services/source.service';
-import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
-import { SourceView } from './models/source-view.model';
-import { ElementEventListener } from '../../../../shared/element-event-listener.model';
-import { SnippetsService } from './services/snippets.service';
-import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
-import { DialogService } from '../shared/services/dialog.service';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
-import { defaultTemplateName, defaultControllerName } from '../shared/constants/file-names.constants';
+import { ElementEventListener } from '../../../../shared/element-event-listener.model';
+import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
+import { keyItems } from '../shared/constants/session.constants';
+import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
+import { Context } from '../shared/services/context';
+import { DialogService } from '../shared/services/dialog.service';
+import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
+import { SourceView } from './models/source-view.model';
+import { SnippetsService } from './services/snippets.service';
+import { SourceService } from './services/source.service';
 
 @Component({
   selector: 'app-code-editor',

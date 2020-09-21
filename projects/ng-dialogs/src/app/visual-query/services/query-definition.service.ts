@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Context } from '../../shared/services/context';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, PipelineModel, PipelineDataSource, PipelineResult } from '../models';
 import { webApiQueryDataSources, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { Context } from '../../shared/services/context';
+import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
 
 @Injectable()
 export class QueryDefinitionService {

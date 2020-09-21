@@ -1,23 +1,22 @@
-import { Injectable, ViewContainerRef, NgZone, OnDestroy } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subscription, fromEvent, Subject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
-
-import { PipelineModel, PipelineDataSource, StreamWire, VisualDesignerData } from '../models/pipeline.model';
-import { QueryDefinitionService } from './query-definition.service';
-import { DataSource, DataSourceMetadata } from '../models/data-sources.model';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { QueryResultDialogData } from '../query-result/query-result.models';
-import { QueryResultComponent } from '../query-result/query-result.component';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { MetadataService } from '../../permissions/services/metadata.service';
+import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { MetadataService } from '../../permissions/services/metadata.service';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DataSource, DataSourceMetadata } from '../models/data-sources.model';
 import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
+import { QueryResultComponent } from '../query-result/query-result.component';
+import { QueryResultDialogData } from '../query-result/query-result.models';
+import { QueryDefinitionService } from './query-definition.service';
 
 @Injectable()
 export class VisualQueryService implements OnDestroy {

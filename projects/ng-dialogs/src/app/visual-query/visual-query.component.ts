@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { Context } from '../shared/services/context';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
 import { VisualQueryService } from './services/visual-query.service';

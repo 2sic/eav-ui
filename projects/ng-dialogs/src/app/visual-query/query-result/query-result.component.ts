@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-import { QueryResultDialogData } from './query-result.models';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models/pipeline-result.model';
+import { QueryResultDialogData } from './query-result.models';
 
 @Component({
   selector: 'app-query-result',

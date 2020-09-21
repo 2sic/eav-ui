@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { Context } from '../../shared/services/context';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { Context } from '../../shared/services/context';
 
 @Component({
   selector: 'app-app-configuration',

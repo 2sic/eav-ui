@@ -1,6 +1,6 @@
 // import { JsonHeader1 } from '../json-format-v1/json-header1';
-import { EavGroupAssignment } from './eav-group-assignment';
 import { EavEntity } from './eav-entity';
+import { EavGroupAssignment } from './eav-group-assignment';
 
 export class EavHeader {
   V: number;

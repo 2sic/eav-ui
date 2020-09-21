@@ -1,18 +1,17 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, OnDestroy, AfterViewInit, ElementRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../shared/services/eav.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { PagePickerResult, DnnBridgeConnectorParams } from '../../input-types/dnn-bridge/dnn-bridge.models';
+import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FileTypeService } from '../../../shared/services/file-type.service';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dnn-bridge/dnn-bridge.models';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',

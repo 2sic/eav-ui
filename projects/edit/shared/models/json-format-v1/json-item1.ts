@@ -1,7 +1,7 @@
-import { Entity1 } from './entity1';
+import { EavHeader } from '../eav';
 // import { JsonHeader1 } from './json-header1';
 import { Item } from '../eav/item';
-import { EavHeader } from '../eav';
+import { Entity1 } from './entity1';
 
 export class JsonItem1 {
   // Header: JsonHeader1;

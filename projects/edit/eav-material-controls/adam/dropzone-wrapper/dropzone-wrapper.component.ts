@@ -1,16 +1,15 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { DropzoneDirective } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { AfterViewInit, ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { DropzoneDirective } from 'ngx-dropzone-wrapper';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { DropzoneConfigInstance } from './dropzone-wrapper.models';
-import { DropzoneConfigExt, AdamPostResponse } from '../../../../edit-types';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { DropzoneConfigInstance } from './dropzone-wrapper.models';
 
 @Component({
   selector: 'app-dropzone-wrapper',

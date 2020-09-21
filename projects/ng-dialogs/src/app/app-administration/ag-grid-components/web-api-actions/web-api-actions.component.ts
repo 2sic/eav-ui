@@ -1,8 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
-import { WebApiActionsParams } from './web-api-actions.models';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { WebApi } from '../../models/web-api.model';
+import { WebApiActionsParams } from './web-api-actions.models';
 
 @Component({
   selector: 'app-web-api-actions',

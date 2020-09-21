@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-
-import { Context } from './context';
-import { EditForm } from '../models/edit-form.model';
 import { DialogTypeConstants } from '../constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyTabId, keyModuleId, keyContentBlockId, keyPortalRoot, keyPartOfPage, keyRequestToken, keyDebug, keyUrl, prefix, keyDialog, keyItems, keyPipelineId } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyPortalRoot, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { EditForm } from '../models/edit-form.model';
+import { Context } from './context';
 
 @Injectable()
 export class DialogService {

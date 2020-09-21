@@ -1,10 +1,10 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, Input, ElementRef, NgZone, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnDestroy, forwardRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { aceOptions } from './ace-options';
 import { Ace, Editor } from './ace.model';
+
 declare const ace: Ace;
 
 @Component({

@@ -1,21 +1,20 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
-
-import { Query } from '../models/query.model';
-import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
-import { PipelinesService } from '../services/pipelines.service';
-import { ContentExportService } from '../services/content-export.service';
-import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DialogService } from '../../shared/services/dialog.service';
+import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
+import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
+import { Query } from '../models/query.model';
+import { ContentExportService } from '../services/content-export.service';
+import { PipelinesService } from '../services/pipelines.service';
 import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
 
 @Component({

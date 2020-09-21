@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { NgForm } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
 import { SxcRoot } from '@2sic.com/2sxc-typings';
-
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject } from 'rxjs';
 import { SxcInsightsService } from '../services/sxc-insights.service';
+
 declare const $2sxc: SxcRoot;
 
 @Component({

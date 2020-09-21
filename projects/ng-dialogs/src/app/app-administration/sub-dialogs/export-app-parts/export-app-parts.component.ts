@@ -1,10 +1,9 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-
-import { ExportAppPartsService } from '../../services/export-app-parts.service';
-import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
+import { ExportAppPartsService } from '../../services/export-app-parts.service';
 
 @Component({
   selector: 'app-export-app-parts',

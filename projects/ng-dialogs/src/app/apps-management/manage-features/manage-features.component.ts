@@ -1,19 +1,18 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
-
-import { Feature } from '../models/feature.model';
-import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
-import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
-import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
-import { FeaturesConfigService } from '../services/features-config.service';
-import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
+import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
+import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
+import { Feature } from '../models/feature.model';
+import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
+import { FeaturesConfigService } from '../services/features-config.service';
 
 @Component({
   selector: 'app-manage-features',

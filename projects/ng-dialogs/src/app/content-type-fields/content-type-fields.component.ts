@@ -1,27 +1,26 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+// tslint:disable-next-line:max-line-length
+import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject, forkJoin } from 'rxjs';
-import { filter, startWith, map, pairwise, mergeMap, share } from 'rxjs/operators';
-// tslint:disable-next-line:max-line-length
-import { GridReadyEvent, AllCommunityModules, GridOptions, RowDragEvent, GridApi, CellClickedEvent, SortChangedEvent, FilterChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
-import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { ContentTypesFieldsService } from './services/content-types-fields.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
+import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
+import { fieldNameError, fieldNamePattern } from '../app-administration/constants/field-name.patterns';
 import { ContentType } from '../app-administration/models/content-type.model';
-import { Field } from './models/field.model';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { EditForm, AddItem, EditItem } from '../shared/models/edit-form.model';
-import { fieldNamePattern, fieldNameError } from '../app-administration/constants/field-name.patterns';
-import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
+import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
-import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { Field } from './models/field.model';
+import { ContentTypesFieldsService } from './services/content-types-fields.service';
 
 @Component({
   selector: 'app-content-type-fields',

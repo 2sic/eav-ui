@@ -1,9 +1,8 @@
-import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, HostBinding, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { AppInfo } from '../../models/app-info.model';
 import { ExportAppService } from '../../services/export-app.service';
 

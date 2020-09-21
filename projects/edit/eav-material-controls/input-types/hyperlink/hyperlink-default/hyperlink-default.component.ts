@@ -1,19 +1,18 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { PagePickerResult, DnnBridgeConnectorParams } from '../../dnn-bridge/dnn-bridge.models';
-import { BaseComponent } from '../../base/base.component';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
-import { Preview } from './hyperlink-default.models';
-import { FieldSettings } from '../../../../../edit-types';
+import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
+import { Preview } from './hyperlink-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector

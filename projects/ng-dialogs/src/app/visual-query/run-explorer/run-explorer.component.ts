@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { Context } from '../../shared/services/context';
-import { calculateWarnings } from './run-explorer.helpers';
-import { VisualQueryService } from '../services/visual-query.service';
 import { PipelineModel } from '../models/pipeline.model';
+import { VisualQueryService } from '../services/visual-query.service';
+import { calculateWarnings } from './run-explorer.helpers';
 
 @Component({
   selector: 'app-run-explorer',

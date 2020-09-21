@@ -1,19 +1,18 @@
-import { NgZone, ElementRef } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { ElementRef, NgZone } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
-
+import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators';
+import { EavCustomInputField, ExperimentalProps, InputTypeName } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
-import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
-import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
+import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
-import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
-import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
+import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
 export class ConnectorHelper {
   private control: AbstractControl;

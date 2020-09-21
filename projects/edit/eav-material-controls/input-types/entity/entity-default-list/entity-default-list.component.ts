@@ -1,9 +1,8 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FieldSettings } from '../../../../../edit-types';
-import { SelectedEntity, DeleteEntityProps } from '../entity-default/entity-default.models';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { DeleteEntityProps, SelectedEntity } from '../entity-default/entity-default.models';
 import { ReorderIndexes } from './entity-default-list.models';
 
 @Component({

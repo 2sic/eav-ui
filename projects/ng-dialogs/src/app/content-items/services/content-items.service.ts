@@ -1,16 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { webApiEntityList } from 'projects/edit';
 import { from, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
+import { Field } from '../../content-type-fields/models/field.model';
+import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
+import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
-import { Field } from '../../content-type-fields/models/field.model';
-import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
-import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
-import { webApiEntityList } from 'projects/edit';
-import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
 
 @Injectable()
 export class ContentItemsService {

@@ -1,10 +1,9 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-
+import { ActivatedRoute } from '@angular/router';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
-import { ContentImportService } from '../../services/content-import.service';
 import { AppDialogConfigService } from '../../services/app-dialog-config.service';
+import { ContentImportService } from '../../services/content-import.service';
 
 @Component({
   selector: 'app-content-import',

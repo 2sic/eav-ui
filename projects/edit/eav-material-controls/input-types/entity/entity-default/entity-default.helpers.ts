@@ -1,8 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
-
 import { Helper } from '../../../../shared/helpers/helper';
-import { SelectedEntity } from './entity-default.models';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { SelectedEntity } from './entity-default.models';
 
 export function calculateSelectedEntities(
   fieldValue: string | string[],

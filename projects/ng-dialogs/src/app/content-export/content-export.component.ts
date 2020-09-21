@@ -1,11 +1,10 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-
-import { ContentExport } from '../app-administration/models/content-export.model';
-import { ContentExportService } from '../app-administration/services/content-export.service';
 import { Language } from '../../../../edit/shared/models/eav/language';
+import { ContentExport } from '../app-administration/models/content-export.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { ContentExportService } from '../app-administration/services/content-export.service';
 
 @Component({
   selector: 'app-content-export',

@@ -1,26 +1,25 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { BaseComponent } from '../../base/base.component';
-import { EavService } from '../../../../shared/services/eav.service';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { FieldSettings } from '../../../../../edit-types';
-import { SelectedEntity, DeleteEntityProps } from './entity-default.models';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { FieldMaskService } from '../../../../../shared/field-mask.service';
+import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { Helper } from '../../../../shared/helpers/helper';
+import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EavService } from '../../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { EntityService } from '../../../../shared/services/entity.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
-import { Helper } from '../../../../shared/helpers/helper';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { calculateSelectedEntities } from './entity-default.helpers';
+import { DeleteEntityProps, SelectedEntity } from './entity-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector

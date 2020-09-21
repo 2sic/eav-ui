@@ -1,20 +1,19 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
-
-import { App } from '../models/app.model';
-import { AppsListService } from '../services/apps-list.service';
-import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
-import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
-import { appNamePattern, appNameError } from '../constants/app.patterns';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
+import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
+import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
+import { appNameError, appNamePattern } from '../constants/app.patterns';
+import { App } from '../models/app.model';
+import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-apps-list',

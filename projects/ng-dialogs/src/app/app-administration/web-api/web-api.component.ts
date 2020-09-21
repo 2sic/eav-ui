@@ -1,16 +1,15 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
-
-import { WebApisService } from '../services/web-apis.service';
-import { WebApi } from '../models/web-api.model';
-import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
+import { DialogService } from '../../shared/services/dialog.service';
+import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
+import { WebApi } from '../models/web-api.model';
+import { WebApisService } from '../services/web-apis.service';
 
 @Component({
   selector: 'app-web-api',

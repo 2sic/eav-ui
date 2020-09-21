@@ -1,41 +1,38 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-
-import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
-import { FieldWrapper } from '../../model/field-wrapper';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-
-// components
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
-import { CollapsibleFieldWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
 import { DropzoneWrapperComponent } from '../../../eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
+import { BooleanDefaultComponent } from '../../../eav-material-controls/input-types/boolean/boolean-default/boolean-default.component';
+import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
+import { CustomDefaultComponent } from '../../../eav-material-controls/input-types/custom/custom-default/custom-default.component';
+import { CustomJsonEditorComponent } from '../../../eav-material-controls/input-types/custom/custom-json-editor/custom-json-editor.component';
+import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
+import { DatetimeDefaultComponent } from '../../../eav-material-controls/input-types/datetime/datetime-default/datetime-default.component';
+import { EmptyDefaultComponent } from '../../../eav-material-controls/input-types/empty/empty-default/empty-default.component';
+import { EntityContentBlockComponent } from '../../../eav-material-controls/input-types/entity/entity-content-blocks/entity-content-blocks.component';
+import { EntityDefaultComponent } from '../../../eav-material-controls/input-types/entity/entity-default/entity-default.component';
+import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
+import { HyperlinkDefaultComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-default/hyperlink-default.component';
+import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
+import { NumberDefaultComponent } from '../../../eav-material-controls/input-types/number/number-default/number-default.component';
+import { StringDefaultComponent } from '../../../eav-material-controls/input-types/string/string-default/string-default.component';
+import { StringDropdownQueryComponent } from '../../../eav-material-controls/input-types/string/string-dropdown-query/string-dropdown-query.component';
+import { StringDropdownComponent } from '../../../eav-material-controls/input-types/string/string-dropdown/string-dropdown.component';
+import { StringFontIconPickerComponent } from '../../../eav-material-controls/input-types/string/string-font-icon-picker/string-font-icon-picker.component';
+import { StringTemplatePickerComponent } from '../../../eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
+import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
+import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
+import { CollapsibleFieldWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 import { EavLocalizationComponent } from '../../../eav-material-controls/wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { EntityExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
-import { BooleanDefaultComponent } from '../../../eav-material-controls/input-types/boolean/boolean-default/boolean-default.component';
-import { DatetimeDefaultComponent } from '../../../eav-material-controls/input-types/datetime/datetime-default/datetime-default.component';
-import { EmptyDefaultComponent } from '../../../eav-material-controls/input-types/empty/empty-default/empty-default.component';
-import { EntityDefaultComponent } from '../../../eav-material-controls/input-types/entity/entity-default/entity-default.component';
-import { HyperlinkDefaultComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-default/hyperlink-default.component';
-import { NumberDefaultComponent } from '../../../eav-material-controls/input-types/number/number-default/number-default.component';
-import { StringDefaultComponent } from '../../../eav-material-controls/input-types/string/string-default/string-default.component';
-import { StringDropdownComponent } from '../../../eav-material-controls/input-types/string/string-dropdown/string-dropdown.component';
-import { StringDropdownQueryComponent } from '../../../eav-material-controls/input-types/string/string-dropdown-query/string-dropdown-query.component';
-import { StringFontIconPickerComponent } from '../../../eav-material-controls/input-types/string/string-font-icon-picker/string-font-icon-picker.component';
-import { StringTemplatePickerComponent } from '../../../eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
-import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
-import { CustomDefaultComponent } from '../../../eav-material-controls/input-types/custom/custom-default/custom-default.component';
-import { EntityContentBlockComponent } from '../../../eav-material-controls/input-types/entity/entity-content-blocks/entity-content-blocks.component';
-import { EntityQueryComponent } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.component';
-import { ExternalWebComponentComponent } from '../../../eav-material-controls/input-types/custom/external-web-component/external-web-component.component';
-import { HyperlinkLibraryComponent } from '../../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.component';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { BooleanTristateComponent } from '../../../eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
-import { CustomJsonEditorComponent } from '../../../eav-material-controls/input-types/custom/custom-json-editor/custom-json-editor.component';
+import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
+import { FieldWrapper } from '../../model/field-wrapper';
 
 @Directive({ selector: '[appEavField]' })
 export class EavFieldDirective implements OnInit {

@@ -1,15 +1,14 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectionStrategy, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription, combineLatest, BehaviorSubject, Observable } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { QueryDefinitionService } from '../services/query-definition.service';
-import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
-import { PlumbEditorTemplateModel } from './plumb-editor.models';
-import { Plumber, dataSrcIdPrefix } from './plumber.helper';
+import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
+import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
+import { PlumbEditorTemplateModel } from './plumb-editor.models';
+import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 

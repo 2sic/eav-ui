@@ -1,9 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
-
 import { Context } from '../../shared/services/context';
 
 @Component({

@@ -1,14 +1,13 @@
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy, OnInit, NgZone, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { Language } from '../../../shared/models/eav';
-import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { CenterSelectedHelper } from './eav-language-switcher-services/center-selected-helper';
+import { calculateLanguageButtons, LanguageButton } from './eav-language-switcher-services/eav-language-switcher.helpers';
+import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
 import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
-import { LanguageButton, calculateLanguageButtons } from './eav-language-switcher-services/eav-language-switcher.helpers';
 
 @Component({
   selector: 'app-eav-language-switcher',

@@ -1,19 +1,18 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ContentGroupService } from '../manage-content-list/services/content-group.service';
+import { Context } from '../shared/services/context';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ReplaceContentRoutingModule } from './replace-content-routing.module';
 import { ReplaceContentComponent } from './replace-content.component';
-import { SharedComponentsModule } from '../shared/shared-components.module';
-import { Context } from '../shared/services/context';
-import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 
 @NgModule({
   declarations: [

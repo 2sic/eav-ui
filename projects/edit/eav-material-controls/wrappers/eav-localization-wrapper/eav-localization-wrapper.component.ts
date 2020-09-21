@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { BaseComponent } from '../../input-types/base/base.component';
 import { EavService } from '../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({

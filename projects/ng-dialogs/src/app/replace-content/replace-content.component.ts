@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy, HostBinding, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-
-import { ContentGroupService } from '../manage-content-list/services/content-group.service';
-import { ReplaceOption } from './models/replace-option.model';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
-import { EditForm } from '../shared/models/edit-form.model';
+import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { EditForm } from '../shared/models/edit-form.model';
+import { ReplaceOption } from './models/replace-option.model';
 
 @Component({
   selector: 'app-replace-content',

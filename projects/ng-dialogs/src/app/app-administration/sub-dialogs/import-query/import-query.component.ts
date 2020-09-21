@@ -1,12 +1,11 @@
-import { Component, OnInit, HostBinding, ChangeDetectionStrategy, OnDestroy, Inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-
+import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
 import { PipelinesService } from '../../services/pipelines.service';
 import { ImportQueryDialogData } from './import-query-dialog.config';
-import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
 
 @Component({
   selector: 'app-import-query',

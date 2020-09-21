@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
-import { webApiAppRoot } from '../../import-app/services/import-app.service';
 
 @Injectable()
 export class AppsListService {

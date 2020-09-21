@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Context } from '../../shared/services/context';
-import { View } from '../models/view.model';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
+import { View } from '../models/view.model';
 
 const webApiViewRoot = 'admin/view/';
 const webApiViews = webApiViewRoot + 'all';

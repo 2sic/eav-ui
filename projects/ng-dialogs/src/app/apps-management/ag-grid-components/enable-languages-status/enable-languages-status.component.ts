@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { EnableLanguage } from '../../models/enable-language.model';
 import { EnableLanguagesStatusParams } from './enable-languages-status.models';
 

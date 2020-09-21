@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-
-import { Context } from '../../services/context';
-import { DialogConfig } from '../../models/dialog-config.model';
 import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
+import { DialogConfig } from '../../models/dialog-config.model';
+import { Context } from '../../services/context';
 
 @Component({
   selector: 'app-dialog-entry',

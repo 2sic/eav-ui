@@ -1,6 +1,6 @@
-import { JsonItem1, JsonContentType1 } from '../../shared/models/json-format-v1';
-import { InputType } from '../../shared/models/eav';
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
+import { InputType } from '../../shared/models/eav';
+import { JsonContentType1, JsonItem1 } from '../../shared/models/json-format-v1';
 
 export interface EavFormData {
   ContentTypeItems: any[];

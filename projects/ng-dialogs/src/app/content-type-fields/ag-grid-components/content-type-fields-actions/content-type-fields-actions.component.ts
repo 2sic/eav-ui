@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
-import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { Field } from '../../models/field.model';
-import { InputTypeConstants } from '../../constants/input-type.constants';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DataTypeConstants } from '../../constants/data-type.constants';
+import { InputTypeConstants } from '../../constants/input-type.constants';
+import { Field } from '../../models/field.model';
+import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
 
 @Component({
   selector: 'app-content-type-fields-actions',

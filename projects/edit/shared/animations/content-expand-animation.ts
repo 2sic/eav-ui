@@ -1,4 +1,4 @@
-import { trigger, state, transition, style, animate, keyframes } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 
 export const ContentExpandAnimation = [
     trigger('itemShrinkAnimation', [

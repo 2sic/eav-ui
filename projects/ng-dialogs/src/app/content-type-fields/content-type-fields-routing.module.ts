@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
+import { edit } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
 import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
-import { edit } from '../../../../edit/edit.matcher';
 
 const routes: Routes = [
   {

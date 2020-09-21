@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { App } from '../../models/app.model';
 import { AppsListActionsParams } from './apps-list-actions.models';
 

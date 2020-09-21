@@ -1,14 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { BaseComponent } from '../../base/base.component';
-import { DropdownOption } from './string-dropdown.models';
-import { calculateDropdownOptions } from './string-dropdown.helpers';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { calculateDropdownOptions } from './string-dropdown.helpers';
+import { DropdownOption } from './string-dropdown.models';
 
 @Component({
   // tslint:disable-next-line:component-selector

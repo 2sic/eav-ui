@@ -1,5 +1,4 @@
-import { UrlSegment, UrlMatchResult } from '@angular/router';
-
+import { UrlMatchResult, UrlSegment } from '@angular/router';
 import { EditPosParams } from './edit-matcher.models';
 
 /**

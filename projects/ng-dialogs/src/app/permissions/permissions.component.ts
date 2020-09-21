@@ -1,20 +1,19 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, BehaviorSubject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
-import { PermissionsService } from './services/permissions.service';
-import { Permission } from './models/permission.model';
-import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
-import { EditForm } from '../shared/models/edit-form.model';
-import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { EditForm } from '../shared/models/edit-form.model';
+import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
+import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
+import { Permission } from './models/permission.model';
+import { PermissionsService } from './services/permissions.service';
 
 @Component({
   selector: 'app-permissions',

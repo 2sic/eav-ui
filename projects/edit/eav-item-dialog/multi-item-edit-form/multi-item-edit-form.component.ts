@@ -1,40 +1,39 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, QueryList, ViewChildren, ChangeDetectorRef, OnDestroy, AfterViewChecked, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Action } from '@ngrx/store';
+import { ActivatedRoute } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, zip, of, Subscription, BehaviorSubject, merge, fromEvent } from 'rxjs';
-import { switchMap, map, tap, catchError, take, pairwise, filter, delay } from 'rxjs/operators';
 import 'reflect-metadata';
-
-import * as fromItems from '../../shared/store/actions/item.actions';
-import { Item, Language } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
-import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
-import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
-import { EavService } from '../../shared/services/eav.service';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
-import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
-import { JsonItem1 } from '../../shared/models/json-format-v1';
-import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
-import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
-import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
-import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
-import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
-import { LoadIconsService } from '../../shared/services/load-icons.service';
-import { sortLanguages, calculateIsParentDialog } from './multi-item-edit-form.helpers';
-import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { BehaviorSubject, fromEvent, merge, Observable, of, Subscription, zip } from 'rxjs';
+import { catchError, delay, filter, map, pairwise, switchMap, take, tap } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
-import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
+import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
+import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditParams } from '../../edit-matcher.models';
+import { Item, Language } from '../../shared/models/eav';
+import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
+import { JsonItem1 } from '../../shared/models/json-format-v1';
+import { EavService } from '../../shared/services/eav.service';
+import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
+import { LoadIconsService } from '../../shared/services/load-icons.service';
+import * as fromItems from '../../shared/store/actions/item.actions';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
+import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
+import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
+import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
+import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
+import { calculateIsParentDialog, sortLanguages } from './multi-item-edit-form.helpers';
 
 @Component({
   selector: 'app-multi-item-edit-form',

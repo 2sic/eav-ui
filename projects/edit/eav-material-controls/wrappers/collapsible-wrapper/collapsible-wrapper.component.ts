@@ -1,15 +1,14 @@
-import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavHeader, ContentType } from '../../../shared/models/eav';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
-import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { ContentType, EavHeader } from '../../../shared/models/eav';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 
 @Component({

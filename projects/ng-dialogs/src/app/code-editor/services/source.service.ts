@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
 import { Context } from '../../shared/services/context';
 import { SourceView } from '../models/source-view.model';
-import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 
 @Injectable()
 export class SourceService {

@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
+import { edit } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
-import { edit } from '../../../../edit/edit.matcher';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
-import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { contentImportDialog } from './sub-dialogs/content-import/content-import-dialog.config';
-import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
-import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
+import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
+import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
 import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
+import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
 const appAdministrationRoutes: Routes = [

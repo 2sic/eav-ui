@@ -1,12 +1,11 @@
 
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { AdamItem, AdamConfig, AdamPostResponse } from '../../../edit-types';
-import { SanitizeService } from './sanitize.service';
+import { AdamConfig, AdamItem, AdamPostResponse } from '../../../edit-types';
 import { EavService } from '../../shared/services/eav.service';
+import { SanitizeService } from './sanitize.service';
 
 @Injectable()
 export class AdamService {
