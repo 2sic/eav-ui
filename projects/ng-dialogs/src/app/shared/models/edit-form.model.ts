@@ -39,6 +39,7 @@ export class InnerItem {
   Field: string;
   Index: number;
   Parent: string;
+  Prefill?: { [key: string]: string };
 }
 
 export class SourceItem {

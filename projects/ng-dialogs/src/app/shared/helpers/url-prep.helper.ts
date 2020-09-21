@@ -13,6 +13,12 @@ export function convertFormToUrl(form: EditForm) {
       const innerItem = item as InnerItem;
       formUrl += 'inner:' + innerItem.EntityId + ':' + innerItem.Field
         + ':' + innerItem.Parent + ':' + innerItem.Add + ':' + innerItem.Index;
+      if (innerItem.Prefill) {
+        const keys = Object.keys(innerItem.Prefill);
+        for (const key of keys) {
+          formUrl += '&prefill:' + key + '~' + paramEncode(innerItem.Prefill[key].toString());
+        }
+      }
     } else if ((item as EditItem).EntityId) {
       // Edit Item
       const editItem = item as EditItem;
@@ -54,7 +60,7 @@ export function convertFormToUrl(form: EditForm) {
       if (addItem.Prefill) {
         const keys = Object.keys(addItem.Prefill);
         for (const key of keys) {
-          formUrl += '&prefill:' + key + '~' + paramEncode(addItem.Prefill[key]);
+          formUrl += '&prefill:' + key + '~' + paramEncode(addItem.Prefill[key].toString());
         }
       }
 
@@ -79,14 +85,27 @@ export function convertUrlToForm(formUrl: string) {
     const isNumber = /^[0-9]*$/g;
     if (item.startsWith('inner:')) {
       // Inner Item
-      const innerItemParams = item.split(':');
-      const innerItem: InnerItem = {
-        EntityId: parseInt(innerItemParams[1], 10),
-        Field: innerItemParams[2],
-        Parent: innerItemParams[3],
-        Add: innerItemParams[4] === 'true',
-        Index: parseInt(innerItemParams[5], 10),
-      };
+      const innerItem = {} as InnerItem;
+      const options = item.split('&');
+
+      for (const option of options) {
+        if (option.startsWith('inner:')) {
+          const innerItemParams = item.split(':');
+          innerItem.EntityId = parseInt(innerItemParams[1], 10);
+          innerItem.Field = innerItemParams[2];
+          innerItem.Parent = innerItemParams[3];
+          innerItem.Add = innerItemParams[4] === 'true';
+          innerItem.Index = parseInt(innerItemParams[5], 10);
+        } else if (option.startsWith('prefill:')) {
+          if (innerItem.Prefill == null) {
+            innerItem.Prefill = {};
+          }
+          const prefillParams = option.split(':');
+          const key = prefillParams[1].split('~')[0];
+          const value = paramDecode(prefillParams[1].split('~')[1]);
+          innerItem.Prefill[key] = value;
+        }
+      }
       form.items.push(innerItem);
     } else if (isNumber.test(item)) {
       // Edit Item
