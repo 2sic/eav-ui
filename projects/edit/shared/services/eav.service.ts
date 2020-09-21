@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
 import { Item } from '../models/eav/item';
 import * as itemActions from '../store/actions/item.actions';
 import * as fromStore from '../store';
@@ -14,6 +13,8 @@ import { SaveResult } from '../models/eav/save-result.model';
 import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { VersioningOptions } from '../models/eav/versioning-options';
 import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+
+export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
 export class EavService implements OnDestroy {
@@ -67,7 +68,7 @@ export class EavService implements OnDestroy {
   }
 
   fetchFormData(items: string) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ui/load'), items, {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId.toString() }
     }) as Observable<EavFormData>;
   }
@@ -85,7 +86,7 @@ export class EavService implements OnDestroy {
   }
 
   saveFormData(body: string) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ui/save'), body, {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), body, {
       params: { appId: this.eavConfig.appId.toString(), partOfPage: this.eavConfig.partOfPage }
     }) as Observable<SaveResult>;
   }
