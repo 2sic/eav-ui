@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -10,7 +10,8 @@ import { Context } from '../../services/context';
 @Component({
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
-  styleUrls: ['./dialog-entry.component.scss']
+  styleUrls: ['./dialog-entry.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
   /** Forces change detection when dialog is async loaded */

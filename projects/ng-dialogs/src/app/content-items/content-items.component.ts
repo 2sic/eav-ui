@@ -36,7 +36,7 @@ import { EntitiesService } from './services/entities.service';
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
   styleUrls: ['./content-items.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);

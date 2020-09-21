@@ -12,7 +12,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   selector: 'app-app-administration-nav',
   templateUrl: './app-administration-nav.component.html',
   styleUrls: ['./app-administration-nav.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   private tabIndex$ = new BehaviorSubject<number>(null);

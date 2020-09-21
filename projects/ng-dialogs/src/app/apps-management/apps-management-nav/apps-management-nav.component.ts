@@ -9,7 +9,7 @@ import { Context } from '../../shared/services/context';
   selector: 'app-apps-management-nav',
   templateUrl: './apps-management-nav.component.html',
   styleUrls: ['./apps-management-nav.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsManagementNavComponent implements OnInit {
   zoneId = this.context.zoneId;
