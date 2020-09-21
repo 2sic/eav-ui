@@ -1,5 +1,7 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -8,16 +10,21 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
 @Component({
   selector: 'app-export-app-parts',
   templateUrl: './export-app-parts.component.html',
-  styleUrls: ['./export-app-parts.component.scss']
+  styleUrls: ['./export-app-parts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExportAppPartsComponent implements OnInit {
+export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
   scopeOptions: EavScopeOption[];
   lockScope = true;
-  isExporting = false;
+  private loading$ = new BehaviorSubject(false);
+  private isExporting$ = new BehaviorSubject(false);
+  templateVars$ = combineLatest([this.loading$, this.isExporting$]).pipe(
+    map(([loading, isExporting]) => ({ loading, isExporting })),
+  );
 
   constructor(
     private dialogRef: MatDialogRef<ExportAppPartsComponent>,
@@ -30,12 +37,17 @@ export class ExportAppPartsComponent implements OnInit {
     this.fetchContentInfo();
   }
 
+  ngOnDestroy() {
+    this.loading$.complete();
+    this.isExporting$.complete();
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }
 
   exportAppParts() {
-    this.isExporting = true;
+    this.isExporting$.next(true);
     // spm TODO: maybe optimize these functions to not loop content types and entities multiple times for no reason
     // spm TODO: figure out how to capture window loading to disable export button
     const contentTypeIds = this.selectedContentTypes().map(contentType => contentType.Id);
@@ -44,7 +56,7 @@ export class ExportAppPartsComponent implements OnInit {
     entityIds = entityIds.concat(templateIds);
 
     this.exportAppPartsService.exportParts(contentTypeIds, entityIds, templateIds);
-    this.isExporting = false;
+    this.isExporting$.next(false);
   }
 
   changeScope(newScope: string) {
@@ -73,14 +85,18 @@ export class ExportAppPartsComponent implements OnInit {
   }
 
   private fetchScopes() {
+    this.loading$.next(true);
     this.contentTypesService.getScopes().subscribe(scopes => {
       this.scopeOptions = scopes;
+      this.loading$.next(false);
     });
   }
 
   private fetchContentInfo() {
+    this.loading$.next(true);
     this.exportAppPartsService.getContentInfo(this.exportScope).subscribe(contentInfo => {
       this.contentInfo = contentInfo;
+      this.loading$.next(false);
     });
   }
 
