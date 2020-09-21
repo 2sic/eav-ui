@@ -25,6 +25,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DataActionsComponent } from './ag-grid-components/data-actions/data-actions.component';
 import { DataFieldsComponent } from './ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from './ag-grid-components/data-items/data-items.component';
+import { DataLabelComponent } from './ag-grid-components/data-label.component.ts/data-label.component';
 import { QueriesActionsComponent } from './ag-grid-components/queries-actions/queries-actions.component';
 import { ViewsActionsComponent } from './ag-grid-components/views-actions/views-actions.component';
 import { ViewsShowComponent } from './ag-grid-components/views-show/views-show.component';
@@ -70,6 +71,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
+    DataLabelComponent,
     QueriesActionsComponent,
     ViewsTypeComponent,
     ViewsShowComponent,
@@ -90,6 +92,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,
+    DataLabelComponent,
     QueriesActionsComponent,
     ViewsTypeComponent,
     ViewsShowComponent,

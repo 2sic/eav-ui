@@ -14,8 +14,11 @@ import { DataActionsComponent } from '../ag-grid-components/data-actions/data-ac
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { DataLabelComponent } from '../ag-grid-components/data-label.component.ts/data-label.component';
+import { DataLabelParams } from '../ag-grid-components/data-label.component.ts/data-label.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
+import { ContentImportDialogData } from '../sub-dialogs/content-import/content-import-dialog.config';
 
 @Component({
   selector: 'app-data',
@@ -37,6 +40,7 @@ export class DataComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     frameworkComponents: {
       idFieldComponent: IdFieldComponent,
+      dataLabelComponent: DataLabelComponent,
       dataItemsComponent: DataItemsComponent,
       dataFieldsComponent: DataFieldsComponent,
       dataActionsComponent: DataActionsComponent,
@@ -48,7 +52,10 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this), cellRenderer: 'dataLabelComponent',
+        cellRendererParams: {
+          onFilesDropped: this.openImport.bind(this),
+        } as DataLabelParams,
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -215,8 +222,9 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
-  private openImport(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
+  private openImport(contentType: ContentType, files?: FileList) {
+    const dialogData: ContentImportDialogData = { files };
+    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private openPermissions(contentType: ContentType) {
