@@ -34,7 +34,7 @@ export class AppsListService {
   }
 
   flushCache(appId: number) {
-    return this.http.get(this.apiUrl('app-sys/system/flushcache'), {
+    return this.http.get(this.apiUrl(webApiAppRoot + 'flushcache'), {
       params: { zoneId: this.context.zoneId.toString(), appId: appId.toString() },
     }) as Observable<null>;
   }
