@@ -6,6 +6,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ContentImport, ImportContentRequest, EvaluateContentResult, ImportContentResult } from '../models/content-import.model';
 import { Context } from '../../shared/services/context';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
+import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
 
 @Injectable()
 export class ContentImportService {
@@ -21,7 +22,7 @@ export class ContentImportService {
       ClearEntities: formValues.clearEntities,
     };
     return (
-      this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/EvaluateContent'), requestData)
+      this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlPreview'), requestData)
     ) as Observable<EvaluateContentResult>;
   }
 
@@ -35,7 +36,7 @@ export class ContentImportService {
       ClearEntities: formValues.clearEntities,
     };
     return (
-      this.http.post(this.dnnContext.$2sxc.http.apiUrl('eav/ContentImport/ImportContent'), requestData)
+      this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlUpload'), requestData)
     ) as Observable<ImportContentResult>;
   }
 }
