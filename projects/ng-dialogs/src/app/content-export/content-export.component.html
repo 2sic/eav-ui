@@ -8,7 +8,7 @@
   <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
 </p>
 
-<form #ngForm="ngForm" class="dialog-form" *ngIf="languages && formValues">
+<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div>
       <mat-form-field appearance="standard" color="accent">
@@ -26,8 +26,9 @@
         <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
         </mat-radio-button>
         <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
-        <mat-radio-button *ngIf="hasIdList" value="Selection">Export selected {{ itemIds.length }}
-          items</mat-radio-button>
+        <mat-radio-button *ngIf="hasIdList" value="Selection">
+          Export selected {{ itemIds.length }} items
+        </mat-radio-button>
       </mat-radio-group>
     </div>
 

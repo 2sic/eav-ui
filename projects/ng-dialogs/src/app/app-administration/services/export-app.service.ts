@@ -23,7 +23,7 @@ export class ExportAppService {
       + '&includeContentGroups=' + includeContentGroups
       + '&resetAppGuid=' + resetAppGuid;
 
-    window.open(url, '_self', '');
+    window.open(url, '_blank', '');
   }
 
   exportForVersionControl(includeContentGroups: boolean, resetAppGuid: boolean) {

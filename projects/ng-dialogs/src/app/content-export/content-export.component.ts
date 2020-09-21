@@ -1,6 +1,7 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { Language } from '../../../../edit/shared/models/eav/language';
 import { ContentExport } from '../app-administration/models/content-export.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
@@ -9,15 +10,17 @@ import { ContentExportService } from '../app-administration/services/content-exp
 @Component({
   selector: 'app-content-export',
   templateUrl: './content-export.component.html',
-  styleUrls: ['./content-export.component.scss']
+  styleUrls: ['./content-export.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContentExportComponent implements OnInit {
+export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   formValues: ContentExport;
   languages: Language[];
   itemIds: number[];
   hasIdList = false;
+  loading$ = new BehaviorSubject(false);
 
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
@@ -33,6 +36,7 @@ export class ContentExportComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loading$.next(true);
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
       const languages = dialogSettings.Context.Language.All;
       this.languages = Object.keys(languages).map(key => ({ key, name: languages[key] }));
@@ -45,7 +49,12 @@ export class ContentExportComponent implements OnInit {
         languageReferences: 'Link',
         resourcesReferences: 'Link',
       };
+      this.loading$.next(false);
     });
+  }
+
+  ngOnDestroy() {
+    this.loading$.complete();
   }
 
   closeDialog() {

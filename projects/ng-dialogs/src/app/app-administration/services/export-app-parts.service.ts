@@ -24,6 +24,6 @@ export class ExportAppPartsService {
       + '&entityIdsString=' + entityIds.join(';')
       + '&templateIdsString=' + templateIds.join(';');
 
-    window.open(url, '_self', '');
+    window.open(url, '_blank', '');
   }
 }
