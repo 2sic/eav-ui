@@ -22,7 +22,6 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;
   @Input() filename: string;
   @Input() snippets: any[];
-  @Input() insertSnippet: any;
   /** If value changes editor will be resized */
   @Input() toggleResize: boolean;
 
@@ -58,14 +57,14 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
         setTimeout(() => { this.editor.resize(); }, 50);
       });
     }
-    const snippet = changes.insertSnippet?.currentValue;
-    if (snippet) {
-      this.zone.runOutsideAngular(() => {
-        const snippetManager = ace.require('ace/snippets').snippetManager;
-        snippetManager.insertSnippet(this.editor, snippet);
-        this.editor.focus();
-      });
-    }
+  }
+
+  insertSnippet(snippet: any) {
+    this.zone.runOutsideAngular(() => {
+      const snippetManager = ace.require('ace/snippets').snippetManager;
+      snippetManager.insertSnippet(this.editor, snippet);
+      this.editor.focus();
+    });
   }
 
   writeValue(value: string) {
