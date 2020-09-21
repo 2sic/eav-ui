@@ -9,7 +9,7 @@
   <p class="dialog-description">
     {{
       data.item.add
-      ? 'Add existing content-item to this list.'
+      ? 'Select a content-item to add to this list.'
       : 'By replacing a content-item you can make other content appear in the slot of the original content.'
     }}
   </p>
@@ -28,6 +28,6 @@
 
   <div class="dialog-component-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" (click)="save()">Save</button>
+    <button mat-raised-button color="accent" [disabled]="!data.item.id" (click)="save()">Save</button>
   </div>
 </ng-container>
