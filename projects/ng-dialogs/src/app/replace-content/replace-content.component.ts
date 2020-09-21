@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } fr
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
@@ -19,14 +19,17 @@ import { ReplaceOption } from './models/replace-option.model';
 export class ReplaceContentComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  item$ = new BehaviorSubject<ContentGroupAdd>({
+  private item$ = new BehaviorSubject<ContentGroupAdd>({
     id: null,
     guid: this.route.snapshot.paramMap.get('guid'),
     part: this.route.snapshot.paramMap.get('part'),
     index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
     add: !!this.route.snapshot.queryParamMap.get('add'),
   });
-  options$ = new BehaviorSubject<ReplaceOption[]>(null);
+  private options$ = new BehaviorSubject<ReplaceOption[]>(null);
+  templateVars$ = combineLatest([this.item$, this.options$]).pipe(
+    map(([item, options]) => ({ item, options })),
+  );
 
   private contentTypeName: string;
   private subscription = new Subscription();

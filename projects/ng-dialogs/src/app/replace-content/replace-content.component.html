@@ -1,26 +1,33 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">Replace Content Item</div>
-</div>
+<ng-container *ngIf="(templateVars$ | async) as data">
 
-<router-outlet></router-outlet>
+  <div mat-dialog-title>
+    <div class="dialog-title-box">{{ data.item.add ? 'Add Existing Item' : 'Replace Content Item' }}</div>
+  </div>
 
-<p class="dialog-description">
-  By replacing a content-item you can make a other content appear in the slot of the original content.
-</p>
+  <router-outlet></router-outlet>
 
-<div class="options-box">
-  <mat-form-field class="options-box__field" appearance="standard" color="accent">
-    <mat-label>Choose item</mat-label>
-    <mat-select [ngModel]="(item$ | async).id" name="Language" (ngModelChange)="selectedChanged($event)">
-      <mat-option *ngFor="let option of (options$ | async)" [value]="option.value">{{ option.label }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-icon-button class="options-box__copy" matTooltip="Copy" (click)="copySelected()">
-    <mat-icon>file_copy</mat-icon>
-  </button>
-</div>
+  <p class="dialog-description">
+    {{
+      data.item.add
+      ? 'Add existing content-item to this list.'
+      : 'By replacing a content-item you can make other content appear in the slot of the original content.'
+    }}
+  </p>
 
-<div class="dialog-component-actions">
-  <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button color="accent" (click)="save()">Save</button>
-</div>
+  <div class="options-box">
+    <mat-form-field class="options-box__field" appearance="standard" color="accent">
+      <mat-label>Choose item</mat-label>
+      <mat-select [ngModel]="data.item.id" name="Language" (ngModelChange)="selectedChanged($event)">
+        <mat-option *ngFor="let option of data.options" [value]="option.value">{{ option.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-icon-button class="options-box__copy" matTooltip="Copy" (click)="copySelected()">
+      <mat-icon>file_copy</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-component-actions">
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" (click)="save()">Save</button>
+  </div>
+</ng-container>
