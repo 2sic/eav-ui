@@ -1,4 +1,4 @@
-<div class="dialog-form-wrapper" appDragAndDrop (filesDropped)="filesDropped($event)"
+<div class="dialog-form-wrapper" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)"
   *ngIf="(templateVars$ | async) as data">
 
   <div mat-dialog-title>

@@ -1,4 +1,5 @@
-<div appDragAndDrop (filesDropped)="filesDropped($event)" *ngIf="(templateVars$ | async) as data">
+<div appDragAndDrop [allowedFileTypes]="'json'" (filesDropped)="filesDropped($event)"
+  *ngIf="(templateVars$ | async) as data">
 
   <div mat-dialog-title>
     <div class="dialog-title-box">Import a single JSON Item</div>

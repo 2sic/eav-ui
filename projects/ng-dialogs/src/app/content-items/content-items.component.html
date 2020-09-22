@@ -12,7 +12,8 @@
 
   <div class="grid-wrapper">
     <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [modules]="modules"
-      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop (filesDropped)="importItem($event)">
+      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'json'"
+      (filesDropped)="importItem($event)">
     </ag-grid-angular>
 
     <div class="actions-box">

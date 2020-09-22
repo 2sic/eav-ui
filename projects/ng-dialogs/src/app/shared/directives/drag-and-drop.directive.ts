@@ -93,8 +93,8 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
     if (files.length !== filtered.length) {
       const allowedTypesString = this.allowedFileTypes.replace(/\,/g, '\n');
       const message = filtered.length
-        ? 'Some files were filtered out.\nThis drop location only accepts these file types:\n' + allowedTypesString
-        : 'This drop location only accepts these file types:\n' + allowedTypesString;
+        ? 'Some files were filtered out.\nThis drop location only accepts file types:\n' + allowedTypesString
+        : 'This drop location only accepts file types:\n' + allowedTypesString;
       alert(message);
     }
     return filtered;

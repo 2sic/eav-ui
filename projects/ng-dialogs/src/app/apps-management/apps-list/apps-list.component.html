@@ -1,6 +1,6 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
   <ag-grid-angular class="ag-theme-material" [rowData]="apps$ | async" [modules]="modules" [gridOptions]="gridOptions"
-    appDragAndDrop (filesDropped)="importApp($event)">
+    appDragAndDrop [allowedFileTypes]="'zip'" (filesDropped)="importApp($event)">
   </ag-grid-angular>
 
   <eco-fab-speed-dial class="grid-fab">
