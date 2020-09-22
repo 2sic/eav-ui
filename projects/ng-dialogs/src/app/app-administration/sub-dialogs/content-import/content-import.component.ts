@@ -102,7 +102,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     this.formValues.file = (event.target as HTMLInputElement).files[0];
   }
 
-  filesDropped(files: FileList) {
+  filesDropped(files: File[]) {
     const importFile = files[0];
     this.formValues.file = importFile;
   }

@@ -13,5 +13,5 @@ export const contentImportDialog: DialogConfig = {
 };
 
 export interface ContentImportDialogData {
-  files?: FileList;
+  files?: File[];
 }

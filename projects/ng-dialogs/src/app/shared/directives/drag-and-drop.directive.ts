@@ -4,7 +4,9 @@ import { fromEvent, Subscription } from 'rxjs';
 @Directive({ selector: '[appDragAndDrop]' })
 export class DragAndDropDirective implements OnInit, OnDestroy {
   @Input() private markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
-  @Output() private filesDropped = new EventEmitter<FileList>();
+  /** Comma separated file types, e.g. 'txt,doc,docx' */
+  @Input() private allowedFileTypes = '';
+  @Output() private filesDropped = new EventEmitter<File[]>();
 
   private element: HTMLElement;
   private dropAreaClass = 'eav-droparea';
@@ -53,7 +55,9 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
     event.stopPropagation();
     this.clearTimeouts();
     this.element.classList.remove(this.dragClass);
-    const files = event.dataTransfer.files;
+    const fileList = event.dataTransfer.files;
+    let files = this.convertToArray(fileList);
+    files = this.filterTypes(files, this.allowedFileTypes);
     if (files.length > 0) {
       this.filesDropped.emit(files);
     }
@@ -64,5 +68,35 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
       clearTimeout(timeout);
     }
     this.timeouts = [];
+  }
+
+  private convertToArray(fileList: FileList) {
+    const fileArray: File[] = [];
+    for (let i = 0, length = fileList.length; i < length; i++) {
+      fileArray.push(fileList[i]);
+    }
+    return fileArray;
+  }
+
+  private filterTypes(files: File[], allowedFileTypes: string) {
+    if (allowedFileTypes === '') { return files; }
+
+    const allowedTypes = allowedFileTypes.split(',').map(type => type.toLocaleLowerCase());
+    const filtered = files.filter(file => {
+      const extIndex = file.name.lastIndexOf('.');
+      if (extIndex <= 0) { return false; }
+      const ext = file.name.substring(extIndex + 1).toLocaleLowerCase();
+      const allowed = allowedTypes.includes(ext);
+      return allowed;
+    });
+
+    if (files.length !== filtered.length) {
+      const allowedTypesString = this.allowedFileTypes.replace(/\,/g, '\n');
+      const message = filtered.length
+        ? 'Some files were filtered out.\nThis drop location only accepts these file types:\n' + allowedTypesString
+        : 'This drop location only accepts these file types:\n' + allowedTypesString;
+      alert(message);
+    }
+    return filtered;
   }
 }

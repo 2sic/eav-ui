@@ -124,7 +124,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  importApp(files?: FileList) {
+  importApp(files?: File[]) {
     const dialogData: ImportAppDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }

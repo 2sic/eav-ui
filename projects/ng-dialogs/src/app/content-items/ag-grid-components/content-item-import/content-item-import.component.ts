@@ -46,7 +46,7 @@ export class ContentItemImportComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  filesDropped(files: FileList) {
+  filesDropped(files: File[]) {
     const importFile = files[0];
     this.importFile$.next(importFile);
     this.importResult$.next(null);

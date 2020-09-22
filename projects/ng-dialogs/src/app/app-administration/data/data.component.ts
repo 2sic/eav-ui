@@ -2,20 +2,19 @@ import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions, Va
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { BehaviorSubject, from, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
+import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
-import { DataLabelComponent } from '../ag-grid-components/data-label.component.ts/data-label.component';
-import { DataLabelParams } from '../ag-grid-components/data-label.component.ts/data-label.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ContentImportDialogData } from '../sub-dialogs/content-import/content-import-dialog.config';
@@ -40,7 +39,6 @@ export class DataComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     frameworkComponents: {
       idFieldComponent: IdFieldComponent,
-      dataLabelComponent: DataLabelComponent,
       dataItemsComponent: DataItemsComponent,
       dataFieldsComponent: DataFieldsComponent,
       dataActionsComponent: DataActionsComponent,
@@ -52,10 +50,7 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this), cellRenderer: 'dataLabelComponent',
-        cellRendererParams: {
-          onFilesDropped: this.openImport.bind(this),
-        } as DataLabelParams,
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -107,6 +102,19 @@ export class DataComponent implements OnInit, OnDestroy {
     this.contentTypes$.complete();
     this.scopeOptions$.complete();
     this.subscription.unsubscribe();
+  }
+
+  filesDropped(files: File[]) {
+    from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
+      const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
+      const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
+      if (contentType == null) {
+        alert('Cannot autodetect Content Type. Please open Content Type Import dialog manually.');
+        return;
+      }
+      const dialogData: ContentImportDialogData = { files };
+      this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: dialogData });
+    });
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -222,9 +230,8 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
-  private openImport(contentType: ContentType, files?: FileList) {
-    const dialogData: ContentImportDialogData = { files };
-    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: dialogData });
+  private openImport(contentType: ContentType) {
+    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
   }
 
   private openPermissions(contentType: ContentType) {

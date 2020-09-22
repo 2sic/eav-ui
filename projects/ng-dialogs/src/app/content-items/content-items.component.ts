@@ -151,7 +151,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
   }
 
-  importItem(files?: FileList) {
+  importItem(files?: File[]) {
     const dialogData: ImportAppDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }

@@ -88,7 +88,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  importQuery(files?: FileList) {
+  importQuery(files?: File[]) {
     const dialogData: ImportQueryDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }

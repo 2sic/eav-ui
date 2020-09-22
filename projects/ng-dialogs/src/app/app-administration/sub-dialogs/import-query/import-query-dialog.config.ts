@@ -13,5 +13,5 @@ export const importQueryDialog: DialogConfig = {
 };
 
 export interface ImportQueryDialogData {
-  files?: FileList;
+  files?: File[];
 }

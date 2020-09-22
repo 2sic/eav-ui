@@ -13,5 +13,5 @@ export const importAppPartsDialog: DialogConfig = {
 };
 
 export interface ImportAppPartsDialogData {
-  files?: FileList;
+  files?: File[];
 }
