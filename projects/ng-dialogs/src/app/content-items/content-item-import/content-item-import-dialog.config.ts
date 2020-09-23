@@ -1,4 +1,4 @@
-import { DialogConfig } from '../../../shared/models/dialog-config.model';
+import { DialogConfig } from '../../shared/models/dialog-config.model';
 
 export const contentItemImportDialog: DialogConfig = {
   name: 'IMPORT_CONTENT_ITEM_DIALOG',

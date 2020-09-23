@@ -4,10 +4,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ContentType } from '../../../app-administration/models/content-type.model';
-import { ContentTypesService } from '../../../app-administration/services/content-types.service';
-import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
-import { ContentItemsService } from '../../services/content-items.service';
+import { ContentType } from '../../app-administration/models/content-type.model';
+import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { ImportAppResult } from '../../import-app/models/import-app-result.model';
+import { ContentItemsService } from '../services/content-items.service';
 import { ContentItemImportDialogData } from './content-item-import-dialog.config';
 
 @Component({

@@ -17,11 +17,11 @@ import { ContentExportService } from '../app-administration/services/content-exp
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { ContentItemImportComponent } from './ag-grid-components/content-item-import/content-item-import.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
+import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
 import { ContentItemsService } from './services/content-items.service';
