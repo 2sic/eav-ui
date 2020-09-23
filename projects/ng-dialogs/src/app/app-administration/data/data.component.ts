@@ -139,7 +139,7 @@ export class DataComponent implements OnInit, OnDestroy {
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
       if (contentType.UsesSharedDef) { return; }
-      this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`${this.scope}/${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
 

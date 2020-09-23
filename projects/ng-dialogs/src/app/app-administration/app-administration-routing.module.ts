@@ -40,7 +40,7 @@ const appAdministrationRoutes: Routes = [
             data: { dialog: editContentTypeDialog, title: 'Add Content Type' },
           },
           {
-            path: ':scope/:id/edit',
+            path: ':scope/:contentTypeStaticName/edit',
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },

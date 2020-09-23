@@ -18,7 +18,7 @@ import { ContentTypesService } from '../../services/content-types.service';
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  id = parseInt(this.route.snapshot.paramMap.get('id'), 10);
+  contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
 
@@ -41,11 +41,10 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   ) { }
 
   ngOnInit() {
-    const contentType$ = this.id
-      ? this.contentTypesService.retrieveContentTypes(this.scope)
+    const contentType$ = this.contentTypeStaticName
+      ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
         .pipe(
-          map(contentTypes => {
-            const contentType = contentTypes.find(ct => ct.Id === this.id);
+          map(contentType => {
             const contentTypeEdit: ContentTypeEdit = {
               ...contentType,
               ChangeStaticName: false,
