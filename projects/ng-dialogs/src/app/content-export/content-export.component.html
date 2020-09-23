@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">Export Content / Data</div>
+  <div class="dialog-title-box">{{ (contentType$ | async)?.Name }} Export Data</div>
 </div>
 
 <p class="dialog-description">

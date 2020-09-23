@@ -15,7 +15,7 @@ export const webApiFieldsAll = webApiFieldsRoot + 'all';
 export class ContentTypesFieldsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  private apiUrl(name: string): string {
+  private apiUrl(name: string) {
     return this.dnnContext.$2sxc.http.apiUrl(name);
   }
 

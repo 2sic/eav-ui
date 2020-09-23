@@ -2,10 +2,7 @@
   *ngIf="(templateVars$ | async) as data">
 
   <div mat-dialog-title>
-    <div class="dialog-title-box">
-      Import Content / Data
-      <ng-container *ngIf="data.viewStateSelected > 0">Step {{ data.viewStateSelected }} of 3</ng-container>
-    </div>
+    <div class="dialog-title-box">{{ data.contentType?.Name }} Import Data</div>
   </div>
 
   <p class="dialog-description">

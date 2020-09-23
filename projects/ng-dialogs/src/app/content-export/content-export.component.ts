@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import { Language } from '../../../../edit/shared/models/eav/language';
 import { ContentExport } from '../app-administration/models/content-export.model';
+import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentExportService } from '../app-administration/services/content-export.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 
 @Component({
   selector: 'app-content-export',
@@ -21,12 +23,16 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   itemIds: number[];
   hasIdList = false;
   loading$ = new BehaviorSubject(false);
+  contentType$ = new BehaviorSubject<ContentType>(null);
+
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   constructor(
     private dialogRef: MatDialogRef<ContentExportComponent>,
     private route: ActivatedRoute,
     private contentExportService: ContentExportService,
     private appDialogConfigService: AppDialogConfigService,
+    private contentTypesService: ContentTypesService,
   ) {
     const selectedIds = this.route.snapshot.paramMap.get('selectedIds');
     this.hasIdList = !!selectedIds;
@@ -37,13 +43,16 @@ export class ContentExportComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading$.next(true);
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+    const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
+    const dialogSettings$ = this.appDialogConfigService.getDialogSettings();
+    forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
+      this.contentType$.next(contentType);
       const languages = dialogSettings.Context.Language.All;
       this.languages = Object.keys(languages).map(key => ({ key, name: languages[key] }));
 
       this.formValues = {
         defaultLanguage: dialogSettings.Context.Language.Primary,
-        contentTypeStaticName: this.route.snapshot.paramMap.get('contentTypeStaticName'),
+        contentTypeStaticName: this.contentTypeStaticName,
         language: '',
         recordExport: this.hasIdList ? 'Selection' : 'All',
         languageReferences: 'Link',
@@ -54,6 +63,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
     this.loading$.complete();
   }
 

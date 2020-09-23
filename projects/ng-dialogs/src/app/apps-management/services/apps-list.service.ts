@@ -10,7 +10,7 @@ import { App } from '../models/app.model';
 export class AppsListService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  private apiUrl(name: string): string {
+  private apiUrl(name: string) {
     return this.dnnContext.$2sxc.http.apiUrl(name);
   }
 

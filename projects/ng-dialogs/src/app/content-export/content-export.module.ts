@@ -8,7 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentExportService } from '../app-administration/services/content-export.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ContentExportRoutingModule } from './content-export-routing.module';
@@ -37,6 +39,8 @@ import { ContentExportComponent } from './content-export.component';
   providers: [
     Context,
     ContentExportService,
+    AppDialogConfigService,
+    ContentTypesService,
   ]
 })
 export class ContentExportModule { }

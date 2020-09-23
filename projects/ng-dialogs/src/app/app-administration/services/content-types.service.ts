@@ -13,7 +13,7 @@ export const webApiTypeRoot = 'admin/type/';
 export class ContentTypesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  private apiUrl(name: string): string {
+  private apiUrl(name: string) {
     return this.dnnContext.$2sxc.http.apiUrl(name);
   }
 
@@ -58,13 +58,5 @@ export class ContentTypesService {
       params: { appid: this.context.appId.toString(), sourceStaticName },
     }) as Observable<boolean>;
   }
-
-  // dropped, internally it's the same as get
-  // getDetails(contentTypeName: string, config: { [key: string]: string }) {
-  //   return this.http.get(
-  //     this.dnnContext.$2sxc.http.apiUrl(webApiTypeRoot + 'GetSingle'),
-  //     { params: { ...config, appid: this.context.appId.toString(), contentTypeStaticName: contentTypeName } }
-  //   ) as Observable<ContentType>;
-  // }
 
 }

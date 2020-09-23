@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
+import { ContentType } from '../../models/content-type.model';
 import { AppDialogConfigService } from '../../services/app-dialog-config.service';
 import { ContentImportService } from '../../services/content-import.service';
+import { ContentTypesService } from '../../services/content-types.service';
 import { ContentImportDialogData } from './content-import-dialog.config';
 
 @Component({
@@ -18,6 +20,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   formValues: ContentImport;
+  private contentType$ = new BehaviorSubject<ContentType>(null);
   private loading$ = new BehaviorSubject(false);
   private viewStates = {
     waiting: 0,
@@ -28,9 +31,11 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   private viewStateSelected$ = new BehaviorSubject<number>(this.viewStates.default);
   private evaluationResult$ = new BehaviorSubject<EvaluateContentResult>(null);
   private importResult$ = new BehaviorSubject<ImportContentResult>(null);
-  templateVars$ = combineLatest([this.loading$, this.viewStateSelected$, this.evaluationResult$, this.importResult$]).pipe(
-    map(([loading, viewStateSelected, evaluationResult, importResult]) =>
-      ({ loading, viewStateSelected, evaluationResult, importResult })),
+  templateVars$ = combineLatest([
+    this.contentType$, this.loading$, this.viewStateSelected$, this.evaluationResult$, this.importResult$,
+  ]).pipe(
+    map(([contentType, loading, viewStateSelected, evaluationResult, importResult]) =>
+      ({ contentType, loading, viewStateSelected, evaluationResult, importResult })),
   );
   errors: { [key: string]: string } = {
     0: 'Unknown error occured.',
@@ -44,20 +49,26 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     8: 'Value cannot be read, because of it has an invalid format.'
   };
 
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: ContentImportDialogData,
     private dialogRef: MatDialogRef<ContentImportComponent>,
     private route: ActivatedRoute,
     private contentImportService: ContentImportService,
     private appDialogConfigService: AppDialogConfigService,
+    private contentTypesService: ContentTypesService,
   ) { }
 
   ngOnInit() {
     this.loading$.next(true);
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+    const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName);
+    const dialogSettings$ = this.appDialogConfigService.getDialogSettings();
+    forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
+      this.contentType$.next(contentType);
       this.formValues = {
         defaultLanguage: dialogSettings.Context.Language.Primary,
-        contentType: this.route.snapshot.paramMap.get('contentTypeStaticName'),
+        contentType: this.contentTypeStaticName,
         file: this.dialogData.files != null ? this.dialogData.files[0] : null,
         resourcesReferences: 'Keep',
         clearEntities: 'None',
@@ -67,6 +78,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
     this.loading$.complete();
     this.viewStateSelected$.complete();
     this.evaluationResult$.complete();
