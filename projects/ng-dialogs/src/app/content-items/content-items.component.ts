@@ -111,7 +111,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       if (this.gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
       } else {
-        this.gridApi$.pipe(take(1)).subscribe(gridApi => {
+        this.gridApi$.pipe(
+          filter(gridApi => gridApi != null), // firefox does web requests faster than drawing grid and getting gridApi
+          take(1),
+        ).subscribe(gridApi => {
           this.setColumnDefs(columnDefs, filterModel);
         });
       }
