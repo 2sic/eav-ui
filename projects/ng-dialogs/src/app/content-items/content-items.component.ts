@@ -10,7 +10,6 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentExportService } from '../app-administration/services/content-export.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Field } from '../content-type-fields/models/field.model';
-import { ImportAppDialogData } from '../import-app/import-app-dialog.config';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -19,6 +18,7 @@ import { keyFilters } from '../shared/constants/session.constants';
 import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
+import { ContentItemImportDialogData } from './ag-grid-components/content-item-import/content-item-import-dialog.config';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
@@ -152,7 +152,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   importItem(files?: File[]) {
-    const dialogData: ImportAppDialogData = { files };
+    const dialogData: ContentItemImportDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
