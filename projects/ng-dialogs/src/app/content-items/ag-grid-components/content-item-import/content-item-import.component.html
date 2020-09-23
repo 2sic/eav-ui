@@ -2,12 +2,12 @@
   *ngIf="(templateVars$ | async) as data">
 
   <div mat-dialog-title>
-    <div class="dialog-title-box">Import a single JSON Item</div>
+    <div class="dialog-title-box">{{ (contentType$ | async)?.Name }} Import Single Item</div>
   </div>
 
   <mat-spinner *ngIf="data.isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
-  <p class="dialog-description">Select a single JSON item from your computer to import.</p>
+  <p class="dialog-description">Select an item file (json) from your computer to import.</p>
 
   <div>
     <button mat-raised-button matTooltip="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">
