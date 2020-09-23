@@ -9,6 +9,7 @@ import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-cont
 import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
 import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
 import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
+import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
@@ -19,6 +20,11 @@ const appAdministrationRoutes: Routes = [
       { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home' } },
       {
         path: 'data', component: EmptyRouteComponent, children: [
+          {
+            path: 'import',
+            component: DialogEntryComponent,
+            data: { dialog: importContentTypeDialog, title: 'Import Content Type' },
+          },
           {
             path: 'items/:contentTypeStaticName',
             loadChildren: () => import('../content-items/content-items.module').then(m => m.ContentItemsModule)

@@ -1,9 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { EavScopeOption } from '../../shared/constants/eav.constants';
+import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 
@@ -50,6 +51,17 @@ export class ContentTypesService {
     return this.http.delete(this.apiUrl(webApiTypeRoot + 'delete'), {
       params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
     }) as Observable<boolean>;
+  }
+
+  import(file: File) {
+    return from(toBase64(file)).pipe(
+      mergeMap(fileBase64 => {
+        return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), {
+          AppId: this.context.appId.toString(),
+          ContentBase64: fileBase64,
+        }) as Observable<boolean>;
+      })
+    );
   }
 
   createGhost(sourceStaticName: string) {

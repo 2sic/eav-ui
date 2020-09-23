@@ -18,6 +18,7 @@ import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ContentImportDialogData } from '../sub-dialogs/content-import/content-import-dialog.config';
+import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
 
 @Component({
   selector: 'app-data',
@@ -105,17 +106,27 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   filesDropped(files: File[]) {
-    from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
-      const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
-      const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
-      if (contentType == null) {
-        const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
-        this.snackBar.open(message, null, { duration: 5000 });
-        return;
-      }
-      const dialogData: ContentImportDialogData = { files };
-      this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: dialogData });
-    });
+    const importFile = files[0];
+    const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
+    switch (ext) {
+      case 'xml':
+        from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
+          const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
+          const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
+          if (contentType == null) {
+            const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
+            this.snackBar.open(message, null, { duration: 5000 });
+            return;
+          }
+          const contentImportData: ContentImportDialogData = { files };
+          this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: contentImportData });
+        });
+        break;
+      case 'json':
+        const importContentTypeData: ImportContentTypeDialogData = { files };
+        this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
+        break;
+    }
   }
 
   private showContentItems(params: CellClickedEvent) {

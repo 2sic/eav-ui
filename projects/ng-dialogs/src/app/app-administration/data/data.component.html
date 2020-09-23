@@ -1,6 +1,6 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
   <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes$ | async" [modules]="modules"
-    [gridOptions]="gridOptions" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
+    [gridOptions]="gridOptions" appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
   </ag-grid-angular>
 
   <div class="scope-box">
