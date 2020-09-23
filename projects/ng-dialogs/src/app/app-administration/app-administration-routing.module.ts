@@ -11,6 +11,7 @@ import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.conf
 import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-parts-dialog.config';
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
+import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
 const appAdministrationRoutes: Routes = [
@@ -88,6 +89,11 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'views', component: EmptyRouteComponent, children: [
+          {
+            path: 'import',
+            component: DialogEntryComponent,
+            data: { dialog: importViewDialog, title: 'Import View' },
+          },
           { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,

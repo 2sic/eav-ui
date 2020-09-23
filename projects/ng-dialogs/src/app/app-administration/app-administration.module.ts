@@ -55,6 +55,7 @@ import { ExportAppComponent } from './sub-dialogs/export-app/export-app.componen
 import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-app-parts.component';
 import { ImportContentTypeComponent } from './sub-dialogs/import-content-type/import-content-type.component';
 import { ImportQueryComponent } from './sub-dialogs/import-query/import-query.component';
+import { ImportViewComponent } from './sub-dialogs/import-view/import-view.component';
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
@@ -86,6 +87,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsUsageIdComponent,
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
+    ImportViewComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -107,6 +109,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsUsageIdComponent,
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
+    ImportViewComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

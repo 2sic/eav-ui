@@ -19,6 +19,7 @@ import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.
 import { Polymorphism } from '../models/polymorphism.model';
 import { View } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
+import { ImportViewDialogData } from '../sub-dialogs/import-view/import-view-dialog.config';
 import { calculateViewType } from './views.helpers';
 
 @Component({
@@ -140,6 +141,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.views$.complete();
     this.polymorphStatus$.complete();
     this.subscription.unsubscribe();
+  }
+
+  filesDropped(files: File[]) {
+    const importViewData: ImportViewDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importViewData });
   }
 
   private fetchTemplates() {
