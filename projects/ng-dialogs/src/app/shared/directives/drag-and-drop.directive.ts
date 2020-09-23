@@ -1,4 +1,5 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent, Subscription } from 'rxjs';
 
 @Directive({ selector: '[appDragAndDrop]' })
@@ -15,7 +16,7 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
   private timeouts: number[] = [];
   private subscription = new Subscription();
 
-  constructor(elementRef: ElementRef, private zone: NgZone) {
+  constructor(elementRef: ElementRef, private zone: NgZone, private snackBar: MatSnackBar) {
     this.element = elementRef.nativeElement;
   }
 
@@ -91,11 +92,11 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
     });
 
     if (files.length !== filtered.length) {
-      const allowedTypesString = this.allowedFileTypes.replace(/\,/g, '\n');
+      const allowedTypesString = this.allowedFileTypes.replace(/\,/g, ', ');
       const message = filtered.length
-        ? 'Some files were filtered out.\nThis drop location only accepts file types:\n' + allowedTypesString
-        : 'This drop location only accepts file types:\n' + allowedTypesString;
-      alert(message);
+        ? 'Some files were filtered out. This drop location only accepts file types: ' + allowedTypesString
+        : 'This drop location only accepts file types: ' + allowedTypesString;
+      this.snackBar.open(message, null, { duration: 5000 });
     }
     return filtered;
   }

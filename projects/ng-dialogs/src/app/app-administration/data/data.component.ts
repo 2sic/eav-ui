@@ -109,7 +109,8 @@ export class DataComponent implements OnInit, OnDestroy {
       const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
       const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
       if (contentType == null) {
-        alert('Cannot autodetect Content Type. Please open Content Type Import dialog manually.');
+        const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
+        this.snackBar.open(message, null, { duration: 5000 });
         return;
       }
       const dialogData: ContentImportDialogData = { files };

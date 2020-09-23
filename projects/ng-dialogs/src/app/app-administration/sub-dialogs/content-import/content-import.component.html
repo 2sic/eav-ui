@@ -22,7 +22,7 @@
         <div class="dialog-form-content fancy-scrollbar-light">
           <div>
             <button mat-raised-button matTooltip="Open file browser" (click)="fileInput.click()">
-              <span>{{ formValues.file ? formValues.file.name : 'Select file (or drag and drop)' }}</span>
+              <span>{{ formValues.file ? formValues.file.name : 'Select or drop file' }}</span>
             </button>
             <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
           </div>
