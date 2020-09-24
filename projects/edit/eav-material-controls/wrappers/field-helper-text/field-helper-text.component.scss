@@ -17,6 +17,10 @@
       }
     }
 
+    &--hyperlink-default-wrapper-fix {
+      min-height: 22px;
+    }
+
     &-hint {
       color: rgba($editUI-foreground-color, 0.44);
 

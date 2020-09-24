@@ -15,6 +15,7 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() disableError = false;
+  @Input() hyperlinkDefaultWrapperFix = false;
 
   isFullText = false;
   description$: Observable<string>;

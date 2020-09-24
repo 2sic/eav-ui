@@ -104,7 +104,8 @@
       </div>
       <!-- helper text and adam text -->
       <div class="c__helper-wrapper">
-        <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group">
+        <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group"
+          [hyperlinkDefaultWrapperFix]="true">
         </app-field-helper-text>
         <div *ngIf="data.adamButton" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
