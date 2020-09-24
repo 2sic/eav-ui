@@ -1,10 +1,10 @@
-import { EavCustomInputField, Connector } from '../../../edit-types';
-import { customGpsIcons, buildTemplate, parseLatLng } from '../shared/helpers';
-import { defaultCoordinates } from '../shared/constants';
-import * as template from './preview.html';
-import * as styles from './preview.css';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { defaultCoordinates } from '../shared/constants';
+import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
+import * as styles from './preview.css';
+import * as template from './preview.html';
 
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
   connector: Connector<string>;

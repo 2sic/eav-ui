@@ -1,18 +1,18 @@
 import { Subscription } from 'rxjs';
 
-import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate } from '../shared/helpers';
-import * as template from './editor.html';
-import * as styles from './editor.css';
-import { TinyMceButtons } from '../config/buttons';
-import { attachAdam } from '../connector/adam';
-import * as skinOverrides from './oxide-skin-overrides.scss';
-import { fixMenuPositions } from './fix-menu-positions.helper';
-import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { TinyMceButtons } from '../config/buttons';
+import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
+import { attachAdam } from '../connector/adam';
+import { buildTemplate } from '../shared/helpers';
+import * as styles from './editor.css';
+import * as template from './editor.html';
+import { fixMenuPositions } from './fix-menu-positions.helper';
+import * as skinOverrides from './oxide-skin-overrides.scss';
 declare const tinymce: any;
 
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
