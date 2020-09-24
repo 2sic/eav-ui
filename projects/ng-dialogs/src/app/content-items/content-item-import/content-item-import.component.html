@@ -17,10 +17,10 @@
   </div>
 
   <div class="dialog-component-content fancy-scrollbar-light import-result-box" *ngIf="data.importResult">
-    <div *ngIf="data.importResult.Succeeded" class="sxc-message sxc-message-info">
+    <div *ngIf="data.importResult.Success" class="sxc-message sxc-message-info">
       The import has been done. See the messages below for more information.
     </div>
-    <div *ngIf="!data.importResult.Succeeded" class="sxc-message sxc-message-error">
+    <div *ngIf="!data.importResult.Success" class="sxc-message sxc-message-error">
       The import failed. See the messages below for more information.
     </div>
     <div *ngFor="let message of data.importResult.Messages" class="sxc-message" [ngClass]="{
@@ -33,14 +33,14 @@
   </div>
 
   <div class="dialog-component-actions">
-    <ng-container *ngIf="!data.importResult?.Succeeded">
+    <ng-container *ngIf="!data.importResult?.Success">
       <button mat-raised-button (click)="closeDialog()">Cancel</button>
       <button mat-raised-button color="accent" [disabled]="!data.importFile || data.isImporting || data.importResult"
         (click)="importContentItem()">
         Import
       </button>
     </ng-container>
-    <ng-container *ngIf="data.importResult?.Succeeded">
+    <ng-container *ngIf="data.importResult?.Success">
       <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
     </ng-container>
   </div>

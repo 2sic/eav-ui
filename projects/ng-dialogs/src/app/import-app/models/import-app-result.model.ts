@@ -1,6 +1,6 @@
 export interface ImportAppResult {
   Messages: ImportAppResultMessage[];
-  Succeeded: boolean;
+  Success: boolean;
 }
 
 export interface ImportAppResultMessage {

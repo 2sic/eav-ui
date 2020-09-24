@@ -69,7 +69,7 @@ export class ImportAppPartsComponent implements OnInit, OnDestroy {
       error: (error: HttpErrorResponse) => {
         this.isImporting$.next(false);
         this.importResult$.next({
-          Succeeded: false,
+          Success: false,
           Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
         });
       },

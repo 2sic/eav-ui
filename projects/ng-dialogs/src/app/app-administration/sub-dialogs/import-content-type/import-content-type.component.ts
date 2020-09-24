@@ -65,14 +65,14 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
       next: res => {
         this.isImporting$.next(false);
         this.importResult$.next({
-          Succeeded: true,
+          Success: true,
           Messages: [],
         });
       },
       error: (error: HttpErrorResponse) => {
         this.isImporting$.next(false);
         this.importResult$.next({
-          Succeeded: false,
+          Success: false,
           Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
         });
       },

@@ -69,7 +69,7 @@
       <ng-container *ngSwitchCase="2">
         <ng-container *ngIf="data.evaluationResult">
           <!-- DETAILS / STATISTICS -->
-          <div *ngIf="data.evaluationResult.Succeeded" class="dialog-component-content fancy-scrollbar-light">
+          <div *ngIf="data.evaluationResult.Success" class="dialog-component-content fancy-scrollbar-light">
             <p class="evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
             <p class="evaluation__title">File contains:</p>
             <ul class="evaluation__content">
@@ -90,7 +90,7 @@
           </div>
           <!-- END DETAILS / STATISTICS -->
           <!-- ERRORS -->
-          <div *ngIf="!data.evaluationResult.Succeeded" class="dialog-component-content fancy-scrollbar-light">
+          <div *ngIf="!data.evaluationResult.Success" class="dialog-component-content fancy-scrollbar-light">
             <p class="evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
             <ul class="evaluation__content">
               <li *ngFor="let error of data.evaluationResult.Detail">
@@ -104,7 +104,7 @@
           <!-- END ERRORS -->
           <div class="dialog-component-actions">
             <button mat-raised-button (click)="back()">Back</button>
-            <button mat-raised-button color="accent" [disabled]="!data.evaluationResult.Succeeded"
+            <button mat-raised-button color="accent" [disabled]="!data.evaluationResult.Success"
               (click)="importContent()">
               Import
             </button>
@@ -116,8 +116,8 @@
       <!-- IMPORT RESULT -->
       <div *ngSwitchCase="3">
         <div *ngIf="data.importResult" class="progress-message">
-          <p *ngIf="data.importResult.Succeeded">Import done.</p>
-          <p *ngIf="!data.importResult.Succeeded">Import failed.</p>
+          <p *ngIf="data.importResult.Success">Import done.</p>
+          <p *ngIf="!data.importResult.Success">Import failed.</p>
         </div>
         <div class="dialog-component-actions">
           <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>

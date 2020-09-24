@@ -16,7 +16,7 @@ export class ImportContentRequest {
 }
 
 export class EvaluateContentResult {
-  Succeeded: boolean;
+  Success: boolean;
   Detail: EvaluateContentResultDetail;
 }
 
@@ -32,6 +32,6 @@ export class EvaluateContentResultDetail {
 }
 
 export class ImportContentResult {
-  Succeeded: boolean;
+  Success: boolean;
   Detail: any;
 }
