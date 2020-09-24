@@ -53,9 +53,11 @@ export class ContentTypesService {
     }) as Observable<boolean>;
   }
 
-  import(file: File) {
+  import(files: File[]) {
     const formData = new FormData();
-    formData.append('File', file);
+    for (const file of files) {
+      formData.append('File', file);
+    }
     return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), formData, {
       params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
     }) as Observable<ImportAppResult>;

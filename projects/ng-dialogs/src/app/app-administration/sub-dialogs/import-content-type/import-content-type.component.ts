@@ -18,10 +18,10 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   private isImporting$ = new BehaviorSubject(false);
-  private importFile$ = new BehaviorSubject<File>(null);
+  private importFiles$ = new BehaviorSubject<File[]>(null);
   private importResult$ = new BehaviorSubject<ImportAppResult>(null);
-  templateVars$ = combineLatest([this.isImporting$, this.importFile$, this.importResult$]).pipe(
-    map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
+  templateVars$ = combineLatest([this.isImporting$, this.importFiles$, this.importResult$]).pipe(
+    map(([isImporting, importFiles, importResult]) => ({ isImporting, importFiles, importResult })),
   );
 
   constructor(
@@ -33,14 +33,14 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.dialogData.files != null) {
-      this.importFile$.next(this.dialogData.files[0]);
+      this.importFiles$.next(this.dialogData.files);
       this.importContentType();
     }
   }
 
   ngOnDestroy() {
     this.isImporting$.complete();
-    this.importFile$.complete();
+    this.importFiles$.complete();
     this.importResult$.complete();
   }
 
@@ -49,21 +49,27 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
   }
 
   filesDropped(files: File[]) {
-    const importFile = files[0];
-    this.importFile$.next(importFile);
+    this.importFiles$.next(files);
     this.importResult$.next(null);
     this.importContentType();
   }
 
-  fileChange(event: Event) {
-    const importFile = (event.target as HTMLInputElement).files[0];
-    this.importFile$.next(importFile);
+  filesChange(event: Event) {
+    const fileList = (event.target as HTMLInputElement).files;
+    let files: File[] = null;
+    if (fileList.length) {
+      files = [];
+      for (let i = 0, length = fileList.length; i < length; i++) {
+        files.push(fileList[i]);
+      }
+    }
+    this.importFiles$.next(files);
     this.importResult$.next(null);
   }
 
   importContentType() {
     this.isImporting$.next(true);
-    this.contentTypesService.import(this.importFile$.value).subscribe({
+    this.contentTypesService.import(this.importFiles$.value).subscribe({
       next: result => {
         this.isImporting$.next(false);
         this.importResult$.next(result);
