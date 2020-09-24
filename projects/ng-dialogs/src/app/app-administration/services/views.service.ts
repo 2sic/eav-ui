@@ -1,9 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
+import { Observable } from 'rxjs';
+import { ImportAppResult } from '../../import-app/models/import-app-result.model';
 import { Context } from '../../shared/services/context';
 import { Polymorphism } from '../models/polymorphism.model';
 import { ViewUsage } from '../models/view-usage.model';
@@ -33,14 +32,11 @@ export class ViewsService {
   }
 
   import(file: File) {
-    return from(toBase64(file)).pipe(
-      mergeMap(fileBase64 => {
-        return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiViewImport), {
-          AppId: this.context.appId.toString(),
-          ContentBase64: fileBase64,
-        }) as Observable<boolean>;
-      })
-    );
+    const formData = new FormData();
+    formData.append('File', file);
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiViewImport), formData, {
+      params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
+    }) as Observable<ImportAppResult>;
   }
 
   getPolymorphism() {

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -25,6 +26,7 @@ import { ImportAppService } from './services/import-app.service';
     MatDialogModule,
     MatButtonModule,
     MatTooltipModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,

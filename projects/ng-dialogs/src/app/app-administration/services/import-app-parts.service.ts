@@ -14,13 +14,8 @@ export class ImportAppPartsService {
   importAppParts(file: File) {
     const formData = new FormData();
     formData.append('File', file);
-    return (
-      this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppPartsRoot + 'Import'), formData, {
-        params: {
-          appId: this.context.appId.toString(),
-          zoneId: this.context.zoneId.toString()
-        }
-      })
-    ) as Observable<ImportAppResult>;
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppPartsRoot + 'Import'), formData, {
+      params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
+    }) as Observable<ImportAppResult>;
   }
 }

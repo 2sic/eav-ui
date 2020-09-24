@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ImportAppResult } from '../../../import-app/models/import-app-result.model';
@@ -27,6 +28,7 @@ export class ImportViewComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) private dialogData: ImportViewDialogData,
     private dialogRef: MatDialogRef<ImportViewComponent>,
     private viewsService: ViewsService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -62,19 +64,14 @@ export class ImportViewComponent implements OnInit, OnDestroy {
   importView() {
     this.isImporting$.next(true);
     this.viewsService.import(this.importFile$.value).subscribe({
-      next: res => {
+      next: result => {
         this.isImporting$.next(false);
-        this.importResult$.next({
-          Success: true,
-          Messages: [],
-        });
+        this.importResult$.next(result);
       },
       error: (error: HttpErrorResponse) => {
         this.isImporting$.next(false);
-        this.importResult$.next({
-          Success: false,
-          Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
-        });
+        this.importResult$.next(null);
+        this.snackBar.open('Import failed. Please check console for more information', null, { duration: 3000 });
       },
     });
   }

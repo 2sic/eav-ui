@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -35,6 +36,7 @@ export class ContentItemImportComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private contentItemsService: ContentItemsService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -83,10 +85,8 @@ export class ContentItemImportComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpErrorResponse) => {
         this.isImporting$.next(false);
-        this.importResult$.next({
-          Success: false,
-          Messages: [{ Text: error.error.ExceptionMessage, MessageType: 2 }],
-        });
+        this.importResult$.next(null);
+        this.snackBar.open('Import failed. Please check console for more information', null, { duration: 3000 });
       }
     });
   }

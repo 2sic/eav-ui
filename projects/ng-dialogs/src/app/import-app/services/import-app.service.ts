@@ -13,16 +13,10 @@ export class ImportAppService {
 
   importApp(file: File, changedName: string) {
     const formData = new FormData();
-    // formData.append('AppId', this.context.appId.toString());
-    // formData.append('ZoneId', this.context.zoneId.toString());
     formData.append('File', file);
     formData.append('Name', changedName ? changedName : '');
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Import'), formData,
-      {
-        params: {
-          // appId: this.context.appId.toString(),
-          zoneId: this.context.zoneId.toString(),
-        }
-      }) as Observable<ImportAppResult>;
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Import'), formData, {
+      params: { zoneId: this.context.zoneId.toString() }
+    }) as Observable<ImportAppResult>;
   }
 }

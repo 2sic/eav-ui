@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
@@ -131,6 +132,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatCardModule,
     MatRippleModule,
     EcoFabSpeedDialModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,
