@@ -13,7 +13,7 @@ import { Context } from '../../shared/services/context';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppConfigurationComponent implements OnInit {
-  @Input() showPermissions: boolean;
+  @Input() enablePermissions: boolean;
   eavConstants = eavConstants;
 
   constructor(

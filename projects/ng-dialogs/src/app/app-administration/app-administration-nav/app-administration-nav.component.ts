@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
@@ -15,10 +15,10 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
-  private tabIndex$ = new BehaviorSubject<number>(null);
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-  templateVars$ = combineLatest([this.tabIndex$, this.dialogSettings$]).pipe(
-    map(([tabIndex, dialogSettings]) => ({ tabIndex, dialogSettings })),
+  private tabIndex$ = new BehaviorSubject<number>(null);
+  templateVars$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
+    map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
   );
 
   private tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs have to match template and filter below
@@ -37,22 +37,23 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
       if (!dialogSettings.Context.Enable.Query) {
         this.tabs = this.tabs.filter(tab => tab !== 'queries' && tab !== 'web-api');
       }
-      const tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path); // set tab initially
-      this.tabIndex$.next(tabIndex);
-      this.dialogSettings$.next(dialogSettings); // needed to filter tabs
+      this.dialogSettings$.next(dialogSettings);
+      this.subscription.add(
+        this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd),
+          map(() => this.route.snapshot.firstChild.url[0].path),
+          startWith(this.route.snapshot.firstChild.url[0].path),
+        ).subscribe(path => {
+          const tabIndex = this.tabs.indexOf(path);
+          this.tabIndex$.next(tabIndex);
+        })
+      );
     });
-    this.subscription.add(
-      // change tab when route changed
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
-        const tabIndex = this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path);
-        this.tabIndex$.next(tabIndex);
-      })
-    );
   }
 
   ngOnDestroy() {
-    this.tabIndex$.complete();
     this.dialogSettings$.complete();
+    this.tabIndex$.complete();
     this.subscription.unsubscribe();
   }
 
