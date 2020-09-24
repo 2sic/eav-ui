@@ -1,5 +1,4 @@
 import { Subscription } from 'rxjs';
-
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
@@ -13,8 +12,8 @@ import * as styles from './editor.css';
 import * as template from './editor.html';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './oxide-skin-overrides.scss';
-declare const tinymce: any;
 
+declare const tinymce: any;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';

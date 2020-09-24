@@ -1,4 +1,3 @@
-// google material icons
 import * as mapMarker from '../../../edit/assets/icons/font-awesome/map-marker-alt-solid.svg';
 
 export const customGpsIcons = {
