@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
@@ -14,9 +13,6 @@ import { Context } from '../../services/context';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  /** Forces change detection when dialog is async loaded */
-  loaded$ = new BehaviorSubject<boolean>(false);
-
   private dialogData: { [key: string]: any; };
   private dialogRef: MatDialogRef<any>;
 
@@ -26,6 +22,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     const navigation = this.router.getCurrentNavigation();
     this.dialogData = navigation?.extras?.state || {};
@@ -77,12 +74,11 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.loaded$.next(true);
+      this.changeDetectorRef.markForCheck();
     });
   }
 
   ngOnDestroy() {
-    this.loaded$.complete();
     this.dialogRef.close();
   }
 

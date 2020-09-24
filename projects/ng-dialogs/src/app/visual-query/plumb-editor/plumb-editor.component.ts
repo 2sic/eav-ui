@@ -35,7 +35,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private visualQueryService: VisualQueryService,
     private queryDefinitionService: QueryDefinitionService,
-    private cd: ChangeDetectorRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -56,7 +56,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
         // This wipes dom entirely and gives us new elements
         this.hardReset = true;
-        this.cd.detectChanges();
+        this.changeDetectorRef.detectChanges();
         this.hardReset = false;
         const templateModel: PlumbEditorTemplateModel = {
           pipelineDataSources: pipelineModel.DataSources,

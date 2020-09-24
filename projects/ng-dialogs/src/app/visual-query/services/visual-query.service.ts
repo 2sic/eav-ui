@@ -1,4 +1,4 @@
-import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -39,6 +39,7 @@ export class VisualQueryService implements OnDestroy {
     private zone: NgZone,
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnDestroy() {
@@ -208,6 +209,7 @@ export class VisualQueryService implements OnDestroy {
           // Real top margin is overwritten in css e.g. dialog-panel-large
           position: { top: '0' },
         });
+        this.changeDetectorRef.markForCheck();
         console.warn(pipelineResult);
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
       },

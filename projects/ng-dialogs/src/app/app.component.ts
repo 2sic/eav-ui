@@ -1,5 +1,5 @@
 import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -11,7 +11,8 @@ import { Context } from './shared/services/context';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
