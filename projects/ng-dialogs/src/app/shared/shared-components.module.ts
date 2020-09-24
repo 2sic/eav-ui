@@ -16,6 +16,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
@@ -29,6 +30,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     BooleanFilterComponent,
     IdFieldComponent,
     SafeHtmlPipe,
+    SafeResourceUrlPipe,
   ],
   entryComponents: [
     BooleanFilterComponent,
@@ -55,6 +57,7 @@ import { SafeHtmlPipe } from './pipes/safe-html.pipe';
     MousedownStopPropagationDirective,
     BooleanFilterComponent,
     SafeHtmlPipe,
+    SafeResourceUrlPipe,
   ]
 })
 export class SharedComponentsModule { }

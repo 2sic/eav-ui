@@ -1,6 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -65,13 +64,13 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   private features$ = new BehaviorSubject<Feature[]>(null);
   private showManagement$ = new BehaviorSubject(false);
   private showSpinner$ = new BehaviorSubject(false);
-  private managementUrl$ = new BehaviorSubject(this.sanitizer.bypassSecurityTrustResourceUrl(''));
+  private managementUrl$ = new BehaviorSubject<string>(null);
   templateVars$ = combineLatest([this.features$, this.showManagement$, this.showSpinner$, this.managementUrl$]).pipe(
     map(([features, showManagement, showSpinner, managementUrl]) => ({ features, showManagement, showSpinner, managementUrl })),
   );
   private subscription = new Subscription();
 
-  constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
+  constructor(private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();
@@ -91,14 +90,14 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     if (!this.showManagement$.value) { return; }
 
     this.showSpinner$.next(true);
-    this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl('')); // reset url
+    this.managementUrl$.next(null); // reset url
     this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
       this.showSpinner$.next(false);
       if (url.includes('error: user needs host permissions')) {
         this.showManagement$.next(false);
         throw new Error('User needs host permissions!');
       }
-      this.managementUrl$.next(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      this.managementUrl$.next(url);
     });
   }
 

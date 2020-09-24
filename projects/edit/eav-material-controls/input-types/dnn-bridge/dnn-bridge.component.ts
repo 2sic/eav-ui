@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { EavService } from '../../../shared/services/eav.service';
 import { DnnBridgeDialogData } from './dnn-bridge.models';
 
@@ -11,12 +10,11 @@ import { DnnBridgeDialogData } from './dnn-bridge.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DnnBridgeComponent implements OnInit {
-  iframeSrc: SafeResourceUrl;
+  iframeSrc: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData,
     private eavService: EavService,
-    private sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -38,7 +36,7 @@ export class DnnBridgeComponent implements OnInit {
       iframeSrc += `&${key}=${encodeURIComponent(value)}`;
     }
 
-    this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(iframeSrc);
+    this.iframeSrc = iframeSrc;
   }
 
   iframeLoaded(event: Event) {

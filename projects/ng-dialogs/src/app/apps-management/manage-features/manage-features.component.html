@@ -8,7 +8,7 @@
     <mat-spinner class="spinner" *ngIf="data.showSpinner" mode="indeterminate" diameter="20" color="accent">
     </mat-spinner>
 
-    <iframe class="iframe" *ngIf="data.showManagement" [src]="data.managementUrl"></iframe>
+    <iframe class="iframe" *ngIf="data.showManagement" [src]="data.managementUrl | safeResourceUrl"></iframe>
 
     <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Manage features" (click)="toggleManagement()">
       <mat-icon>tune</mat-icon>
