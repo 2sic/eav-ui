@@ -10,12 +10,12 @@ import { WebApiActionsParams } from './web-api-actions.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
-  showCode: boolean;
+  enableCode: boolean;
   private params: WebApiActionsParams;
 
   agInit(params: WebApiActionsParams) {
     this.params = params;
-    this.showCode = this.params.showCodeGetter();
+    this.enableCode = this.params.enableCodeGetter();
   }
 
   refresh(params?: any): boolean {

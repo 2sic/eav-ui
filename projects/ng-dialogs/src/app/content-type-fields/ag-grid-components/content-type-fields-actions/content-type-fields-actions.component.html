@@ -8,7 +8,7 @@
   <div class="like-button disabled" *ngIf="field.IsTitle">
     <mat-icon>delete</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="showPermissions"
+  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="enablePermissions"
     (click)="openPermissions()">
     <mat-icon>person</mat-icon>
   </div>

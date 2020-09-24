@@ -8,11 +8,11 @@
   <div class="like-button highlight" matRipple matTooltip="Export" (click)="exportQuery()">
     <mat-icon>cloud_download</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple *ngIf="showPermissions" matTooltip="Permissions"
+  <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
     (click)="openPermissions()">
     <mat-icon>person</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!showPermissions">
+  <div class="like-button disabled" *ngIf="!enablePermissions">
     <mat-icon>person</mat-icon>
   </div>
   <div class="like-button highlight" matRipple matTooltip="Delete" (click)="deleteQuery()">

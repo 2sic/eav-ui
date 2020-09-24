@@ -24,7 +24,7 @@ import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesComponent implements OnInit, OnDestroy {
-  @Input() private showPermissions: boolean;
+  @Input() private enablePermissions: boolean;
 
   queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;
@@ -46,7 +46,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       {
         width: 200, cellClass: 'secondary-action no-padding',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
-          showPermissionsGetter: this.showPermissionsGetter.bind(this),
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onEditQuery: this.editQuery.bind(this),
           onCloneQuery: this.cloneQuery.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
@@ -113,8 +113,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
     return `ID: ${query.Id}\nGUID: ${query.Guid}`;
   }
 
-  private showPermissionsGetter() {
-    return this.showPermissions;
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
   }
 
   private openVisualQueryDesigner(params: CellClickedEvent) {

@@ -13,13 +13,13 @@ import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.mo
 })
 export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
   field: Field;
-  showPermissions: boolean;
+  enablePermissions: boolean;
   private params: ContentTypeFieldsActionsParams;
 
   agInit(params: ContentTypeFieldsActionsParams) {
     this.params = params;
     this.field = this.params.data;
-    this.showPermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
+    this.enablePermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
   }
 
   refresh(params?: any): boolean {

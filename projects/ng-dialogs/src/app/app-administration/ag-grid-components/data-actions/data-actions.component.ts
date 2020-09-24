@@ -11,14 +11,14 @@ import { DataActionsParams } from './data-actions.models';
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
   contentType: ContentType;
-  showPermissions: boolean;
+  enablePermissions: boolean;
   private params: DataActionsParams;
 
   agInit(params: DataActionsParams) {
     this.params = params;
     this.contentType = this.params.data;
-    const showPermissions = this.params.showPermissionsGetter();
-    this.showPermissions = showPermissions && this.isGuid(this.contentType.StaticName);
+    const enablePermissions = this.params.enablePermissionsGetter();
+    this.enablePermissions = enablePermissions && this.isGuid(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {

@@ -27,7 +27,7 @@
         <mat-icon>menu</mat-icon>
         <span>Data</span>
       </div>
-      <app-data *matTabContent [showPermissions]="data.dialogSettings.Context.Enable.AppPermissions"></app-data>
+      <app-data *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"></app-data>
     </mat-tab>
 
     <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
@@ -35,7 +35,7 @@
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
       </div>
-      <app-queries *matTabContent [showPermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      <app-queries *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
       </app-queries>
     </mat-tab>
 
@@ -44,8 +44,8 @@
         <mat-icon>layers</mat-icon>
         <span>Views</span>
       </div>
-      <app-views *matTabContent [showCode]="data.dialogSettings.Context.Enable.CodeEditor"
-        [showPermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      <app-views *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor"
+        [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
       </app-views>
     </mat-tab>
 
@@ -54,7 +54,7 @@
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>
       </div>
-      <app-web-api *matTabContent [showCode]="data.dialogSettings.Context.Enable.CodeEditor">
+      <app-web-api *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor">
       </app-web-api>
     </mat-tab>
 

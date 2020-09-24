@@ -10,14 +10,14 @@ import { ViewActionsParams } from './views-actions.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
-  showCode: boolean;
-  showPermissions: boolean;
+  enableCode: boolean;
+  enablePermissions: boolean;
   private params: ViewActionsParams;
 
   agInit(params: ViewActionsParams) {
     this.params = params;
-    this.showCode = this.params.showCodeGetter();
-    this.showPermissions = this.params.showPermissionsGetter();
+    this.enableCode = this.params.enableCodeGetter();
+    this.enablePermissions = this.params.enablePermissionsGetter();
   }
 
   refresh(params?: any): boolean {

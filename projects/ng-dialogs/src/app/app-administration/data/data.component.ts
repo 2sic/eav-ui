@@ -27,7 +27,7 @@ import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataComponent implements OnInit, OnDestroy {
-  @Input() private showPermissions: boolean;
+  @Input() private enablePermissions: boolean;
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(null);
   scope = eavConstants.scopes.default.value;
@@ -64,7 +64,7 @@ export class DataComponent implements OnInit, OnDestroy {
       {
         width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
         cellRendererParams: {
-          showPermissionsGetter: this.showPermissionsGetter.bind(this),
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
@@ -191,8 +191,8 @@ export class DataComponent implements OnInit, OnDestroy {
     return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
-  private showPermissionsGetter() {
-    return this.showPermissions;
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
   }
 
   private nameCellClassGetter(params: CellClassParams) {

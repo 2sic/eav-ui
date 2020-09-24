@@ -1,15 +1,15 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="showCode" matTooltip="Code" (click)="openCode()">
+  <div class="like-button highlight" matRipple *ngIf="enableCode" matTooltip="Code" (click)="openCode()">
     <mat-icon>code</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!showCode">
+  <div class="like-button disabled" *ngIf="!enableCode">
     <mat-icon>code</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple *ngIf="showPermissions" matTooltip="Permissions"
+  <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
     (click)="openPermissions()">
     <mat-icon>person</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!showPermissions">
+  <div class="like-button disabled" *ngIf="!enablePermissions">
     <mat-icon>person</mat-icon>
   </div>
   <div class="like-button highlight" matRipple matTooltip="Delete" (click)="deleteView()">

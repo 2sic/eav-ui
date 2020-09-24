@@ -10,12 +10,12 @@ import { QueriesActionsParams } from './queries-actions.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
-  showPermissions: boolean;
+  enablePermissions: boolean;
   private params: QueriesActionsParams;
 
   agInit(params: QueriesActionsParams) {
     this.params = params;
-    this.showPermissions = this.params.showPermissionsGetter();
+    this.enablePermissions = this.params.enablePermissionsGetter();
   }
 
   refresh(params?: any): boolean {

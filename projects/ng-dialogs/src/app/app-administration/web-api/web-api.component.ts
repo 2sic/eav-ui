@@ -18,7 +18,7 @@ import { WebApisService } from '../services/web-apis.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebApiComponent implements OnInit, OnDestroy {
-  @Input() private showCode: boolean;
+  @Input() private enableCode: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(null);
   modules = AllCommunityModules;
@@ -38,7 +38,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
       },
       {
         width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
-          showCodeGetter: this.showCodeGetter.bind(this),
+          enableCodeGetter: this.enableCodeGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
         } as WebApiActionsParams,
       },
@@ -102,8 +102,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
     });
   }
 
-  private showCodeGetter() {
-    return this.showCode;
+  private enableCodeGetter() {
+    return this.enableCode;
   }
 
   private openCode(api: WebApi) {

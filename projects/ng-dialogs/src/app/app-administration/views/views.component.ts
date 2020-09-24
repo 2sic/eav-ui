@@ -29,8 +29,8 @@ import { calculateViewType } from './views.helpers';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsComponent implements OnInit, OnDestroy {
-  @Input() private showCode: boolean;
-  @Input() private showPermissions: boolean;
+  @Input() private enableCode: boolean;
+  @Input() private enablePermissions: boolean;
 
   views$ = new BehaviorSubject<View[]>(null);
   polymorphStatus$ = new BehaviorSubject('');
@@ -70,8 +70,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
       {
         width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
         cellRendererParams: {
-          showCodeGetter: this.showCodeGetter.bind(this),
-          showPermissionsGetter: this.showPermissionsGetter.bind(this),
+          enableCodeGetter: this.enableCodeGetter.bind(this),
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onDelete: this.deleteView.bind(this),
@@ -207,12 +207,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
     return type.value;
   }
 
-  private showCodeGetter() {
-    return this.showCode;
+  private enableCodeGetter() {
+    return this.enableCode;
   }
 
-  private showPermissionsGetter() {
-    return this.showPermissions;
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
   }
 
   private contentDemoValueGetter(params: ValueGetterParams) {
