@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">{{ (contentType$ | async)?.Name }} Export Data</div>
+  <div class="dialog-title-box">Export "{{ (contentType$ | async)?.Name }}"</div>
 </div>
 
 <p class="dialog-description">
@@ -58,10 +58,10 @@
   <div class="dialog-form-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
     <button mat-raised-button [disabled]="!ngForm.form.valid" (click)="exportJson()">
-      Export Type Definition as Json (for developers)
+      Export Type
     </button>
     <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
-      Export
+      Export Data
     </button>
   </div>
 </form>
