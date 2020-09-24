@@ -1,10 +1,9 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { EavScopeOption } from '../../shared/constants/eav.constants';
-import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 
@@ -56,18 +55,13 @@ export class ContentTypesService {
   import(file: File) {
     const formData = new FormData();
     formData.append('File', file);
-    return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), formData,
-    {
-      params: {
-        appId: this.context.appId.toString(),
-        zoneId: this.context.zoneId.toString(),
-      }
+    return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), formData, {
+      params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
     }) as Observable<boolean>;
   }
 
   createGhost(sourceStaticName: string) {
-    return this.http.post(this.apiUrl(webApiTypeRoot + 'addghost'),
-      null, {
+    return this.http.post(this.apiUrl(webApiTypeRoot + 'addghost'), null, {
       params: { appid: this.context.appId.toString(), sourceStaticName },
     }) as Observable<boolean>;
   }
