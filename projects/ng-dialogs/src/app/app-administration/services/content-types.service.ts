@@ -54,14 +54,15 @@ export class ContentTypesService {
   }
 
   import(file: File) {
-    return from(toBase64(file)).pipe(
-      mergeMap(fileBase64 => {
-        return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), {
-          AppId: this.context.appId.toString(),
-          ContentBase64: fileBase64,
-        }) as Observable<boolean>;
-      })
-    );
+    const formData = new FormData();
+    formData.append('File', file);
+    return this.http.post(this.apiUrl(webApiTypeRoot + 'import'), formData,
+    {
+      params: {
+        appId: this.context.appId.toString(),
+        zoneId: this.context.zoneId.toString(),
+      }
+    }) as Observable<boolean>;
   }
 
   createGhost(sourceStaticName: string) {
