@@ -73,7 +73,8 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
 
   private convertToArray(fileList: FileList) {
     const fileArray: File[] = [];
-    for (let i = 0, length = fileList.length; i < length; i++) {
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < fileList.length; i++) {
       fileArray.push(fileList[i]);
     }
     return fileArray;

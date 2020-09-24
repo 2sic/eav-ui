@@ -59,7 +59,8 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
     let files: File[] = null;
     if (fileList.length) {
       files = [];
-      for (let i = 0, length = fileList.length; i < length; i++) {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < fileList.length; i++) {
         files.push(fileList[i]);
       }
     }
