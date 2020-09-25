@@ -68,16 +68,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (event) => { this.openUsage(event); }
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
-        cellRendererParams: {
-          enableCodeGetter: this.enableCodeGetter.bind(this),
-          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
-          onOpenCode: this.openCode.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onDelete: this.deleteView.bind(this),
-        } as ViewActionsParams,
-      },
-      {
         headerName: 'Url Key', field: 'ViewNameInUrl', flex: 1, minWidth: 150, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
@@ -116,6 +106,16 @@ export class ViewsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Default', field: 'ListPresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          enableCodeGetter: this.enableCodeGetter.bind(this),
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
+          onOpenCode: this.openCode.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onDelete: this.deleteView.bind(this),
+        } as ViewActionsParams,
       },
     ],
   };
