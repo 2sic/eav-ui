@@ -65,20 +65,20 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         onCellClicked: this.changeInputType.bind(this), valueGetter: this.inputTypeValueGetter,
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent',
-        cellRendererParams: {
-          onRename: this.rename.bind(this),
-          onDelete: this.delete.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-        } as ContentTypeFieldsActionsParams,
-      },
-      {
         headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
         headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          onRename: this.rename.bind(this),
+          onDelete: this.delete.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+        } as ContentTypeFieldsActionsParams,
       },
     ],
   };
