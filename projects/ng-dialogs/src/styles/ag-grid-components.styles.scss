@@ -59,3 +59,15 @@
     text-shadow: none;
   }
 }
+
+.grid-more-dialog-panel {
+  .mat-dialog-container {
+    padding: 16px 12px 2px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+}
+
+.grid-more-dialog-backdrop {
+  opacity: 0;
+}

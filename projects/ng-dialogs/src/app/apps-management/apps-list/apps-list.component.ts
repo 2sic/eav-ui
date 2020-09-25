@@ -64,13 +64,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
         },
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
-        cellRendererParams: {
-          onDelete: this.deleteApp.bind(this),
-          onFlush: this.flushApp.bind(this),
-        } as AppsListActionsParams,
-      },
-      {
         headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
@@ -81,6 +74,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
       {
         headerName: 'Items', field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
         filter: 'agNumberColumnFilter',
+      },
+      {
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          onDelete: this.deleteApp.bind(this),
+          onFlush: this.flushApp.bind(this),
+        } as AppsListActionsParams,
       },
     ],
   };

@@ -1,11 +1,14 @@
 <div class="actions-component">
-  <div class="like-button highlight" matTooltip="Flush cache" (click)="flushCache()">
+  <div class="like-button highlight" matRipple matTooltip="Flush cache" (click)="flushCache()">
     <mat-icon>cached</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple *ngIf="app.IsApp" matTooltip="Delete" (click)="deleteApp()">
-    <mat-icon>delete</mat-icon>
-  </div>
-  <div class="like-button disabled" *ngIf="!app.IsApp">
-    <mat-icon>delete</mat-icon>
+  <div class="like-button highlight" matRipple matTooltip="More" (click)="openMoreDialog(moreTemplate, 1)">
+    <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
+
+<ng-template #moreTemplate>
+  <button mat-icon-button matTooltip="Delete" [disabled]="!app.IsApp" (click)="deleteApp()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-template>
