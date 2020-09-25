@@ -7,15 +7,6 @@
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple matTooltip="Export" (click)="openExport()">
-    <mat-icon>cloud_download</mat-icon>
-  </div>
-
-  <div class="like-button highlight" matRipple matTooltip="Import (or drop file on the content types list)"
-    (click)="openImport()">
-    <mat-icon>cloud_upload</mat-icon>
-  </div>
-
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
     (click)="openPermissions()">
     <mat-icon>person</mat-icon>
@@ -24,11 +15,19 @@
     <mat-icon>person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" matTooltip="Delete"
-    (click)="deleteContentType()">
-    <mat-icon>delete</mat-icon>
-  </div>
-  <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
-    <mat-icon>delete</mat-icon>
+  <div class="like-button highlight" matRipple matTooltip="More" (click)="openMoreDialog(moreTemplate, 3)">
+    <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
+
+<ng-template #moreTemplate>
+  <button mat-icon-button matTooltip="Export" (click)="openExport()">
+    <mat-icon>cloud_download</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Import (or drop file on the content types list)" (click)="openImport()">
+    <mat-icon>cloud_upload</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Delete" [disabled]="contentType.UsesSharedDef" (click)="deleteContentType()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-template>

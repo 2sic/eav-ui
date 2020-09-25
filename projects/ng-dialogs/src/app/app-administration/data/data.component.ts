@@ -62,7 +62,15 @@ export class DataComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
       },
       {
-        width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
+        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
+      },
+      {
+        headerName: 'Description', field: 'Metadata.Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
         cellRendererParams: {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
@@ -71,14 +79,6 @@ export class DataComponent implements OnInit, OnDestroy {
           onOpenPermissions: this.openPermissions.bind(this),
           onDelete: this.deleteContentType.bind(this),
         } as DataActionsParams,
-      },
-      {
-        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
-      },
-      {
-        headerName: 'Description', field: 'Metadata.Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
       },
     ],
   };
