@@ -41,12 +41,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent',
-        cellRendererParams: {
-          onDelete: this.deletePermission.bind(this),
-        } as PermissionsActionsParams,
-      },
-      {
         headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
@@ -57,6 +51,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          onDelete: this.deletePermission.bind(this),
+        } as PermissionsActionsParams,
       },
     ],
   };
