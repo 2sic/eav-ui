@@ -1,5 +1,7 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { openMoreMenu } from '../../../shared/helpers/open-more-menu.helper';
 import { Query } from '../../models/query.model';
 import { QueriesActionsParams } from './queries-actions.models';
 
@@ -12,6 +14,9 @@ import { QueriesActionsParams } from './queries-actions.models';
 export class QueriesActionsComponent implements ICellRendererAngularComp {
   enablePermissions: boolean;
   private params: QueriesActionsParams;
+  private moreDialogRef: MatDialogRef<any>;
+
+  constructor(private dialog: MatDialog, private viewContainerRef: ViewContainerRef) { }
 
   agInit(params: QueriesActionsParams) {
     this.params = params;
@@ -27,23 +32,33 @@ export class QueriesActionsComponent implements ICellRendererAngularComp {
     this.params.onEditQuery(query);
   }
 
-  cloneQuery() {
-    const query: Query = this.params.data;
-    this.params.onCloneQuery(query);
-  }
-
-  exportQuery() {
-    const query: Query = this.params.data;
-    this.params.onExportQuery(query);
-  }
-
   openPermissions() {
     const query: Query = this.params.data;
     this.params.onOpenPermissions(query);
   }
 
+  openMoreDialog(templateRef: TemplateRef<any>, buttons: number) {
+    this.moreDialogRef = openMoreMenu(templateRef, buttons, this.dialog, this.viewContainerRef);
+  }
+
+  cloneQuery() {
+    const query: Query = this.params.data;
+    this.params.onCloneQuery(query);
+    this.moreDialogRef.close();
+    this.moreDialogRef = null;
+  }
+
+  exportQuery() {
+    const query: Query = this.params.data;
+    this.params.onExportQuery(query);
+    this.moreDialogRef.close();
+    this.moreDialogRef = null;
+  }
+
   deleteQuery() {
     const query: Query = this.params.data;
     this.params.onDelete(query);
+    this.moreDialogRef.close();
+    this.moreDialogRef = null;
   }
 }

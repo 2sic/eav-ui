@@ -44,7 +44,11 @@ export class QueriesComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
       },
       {
-        width: 200, cellClass: 'secondary-action no-padding',
+        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onEditQuery: this.editQuery.bind(this),
@@ -53,10 +57,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
           onExportQuery: this.exportQuery.bind(this),
           onDelete: this.deleteQuery.bind(this),
         } as QueriesActionsParams,
-      },
-      {
-        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
       },
     ],
   };
