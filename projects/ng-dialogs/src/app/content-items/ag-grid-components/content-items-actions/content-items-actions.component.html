@@ -5,7 +5,13 @@
   <div class="like-button highlight" matRipple matTooltip="Export" (click)="export()">
     <mat-icon>cloud_download</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Delete" (click)="deleteItem()">
-    <mat-icon>delete</mat-icon>
+  <div class="like-button highlight" matRipple matTooltip="More" (click)="openMoreDialog(moreTemplate, 1)">
+    <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
+
+<ng-template #moreTemplate>
+  <button mat-icon-button matTooltip="Delete" (click)="deleteItem()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-template>

@@ -247,17 +247,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
-        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent',
+        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
+        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
+      },
+      {
+        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
-      },
-      {
-        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
-        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
     ];
     for (const column of columns) {
