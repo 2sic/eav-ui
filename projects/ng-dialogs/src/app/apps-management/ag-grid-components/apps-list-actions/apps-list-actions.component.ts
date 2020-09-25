@@ -1,6 +1,7 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ChangeDetectionStrategy, Component, TemplateRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { take } from 'rxjs/operators';
 import { openMoreMenu } from '../../../shared/helpers/open-more-menu.helper';
 import { App } from '../../models/app.model';
 import { AppsListActionsParams } from './apps-list-actions.models';
@@ -33,11 +34,11 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
 
   openMoreDialog(templateRef: TemplateRef<any>, buttons: number) {
     this.moreDialogRef = openMoreMenu(templateRef, buttons, this.dialog, this.viewContainerRef);
+    this.moreDialogRef.afterClosed().pipe(take(1)).subscribe(() => { this.moreDialogRef = null; });
   }
 
   deleteApp() {
     this.params.onDelete(this.app);
     this.moreDialogRef.close();
-    this.moreDialogRef = null;
   }
 }
