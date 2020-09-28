@@ -97,7 +97,8 @@
   "ItemCard": {
     "DefaultTitle": "Edit item",
     "SlotUsedTrue": "this item is open for editing. Click here to lock / remove it and revert to default.",
-    "SlotUsedFalse": "this item is locked and will stay empty/default. The values are shown for your convenience. Click here to unlock if needed."
+    "SlotUsedFalse": "this item is locked and will stay empty/default. The values are shown for your convenience. Click here to unlock if needed.",
+    "CopyHint": "(copy)"
   },
   "ValidationMessage": {
     "NotValid": "Not valid",
