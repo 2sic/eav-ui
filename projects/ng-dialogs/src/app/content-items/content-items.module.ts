@@ -7,6 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -61,6 +62,7 @@ import { EntitiesService } from './services/entities.service';
     MatRippleModule,
     MatSnackBarModule,
     EcoFabSpeedDialModule,
+    MatMenuModule,
   ],
   providers: [
     Context,

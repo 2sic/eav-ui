@@ -2,13 +2,14 @@
   <div class="like-button highlight" matRipple matTooltip="Flush cache" (click)="flushCache()">
     <mat-icon>cached</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="More" (click)="openMoreDialog(moreTemplate, 1)">
+  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
-<ng-template #moreTemplate>
-  <button mat-icon-button matTooltip="Delete" [disabled]="!app.IsApp" (click)="deleteApp()">
+<mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item [disabled]="!app.IsApp" (click)="deleteApp()">
     <mat-icon>delete</mat-icon>
+    <span>Delete</span>
   </button>
-</ng-template>
+</mat-menu>

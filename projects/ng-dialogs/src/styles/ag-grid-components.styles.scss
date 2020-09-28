@@ -60,14 +60,18 @@
   }
 }
 
-.grid-more-dialog-panel {
-  .mat-dialog-container {
-    padding: 16px 12px 2px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
-  }
-}
+.grid-more-menu {
+  .mat-menu-item {
+    &:not([disabled]) {
+      .mat-icon {
+        color: initial;
+      }
+    }
 
-.grid-more-dialog-backdrop {
-  opacity: 0;
+    &[disabled] {
+      .mat-icon {
+        color: inherit;
+      }
+    }
+  }
 }

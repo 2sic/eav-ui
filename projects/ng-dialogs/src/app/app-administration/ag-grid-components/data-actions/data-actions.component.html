@@ -15,19 +15,22 @@
     <mat-icon>person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple matTooltip="More" (click)="openMoreDialog(moreTemplate, 3)">
+  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
-<ng-template #moreTemplate>
-  <button mat-icon-button matTooltip="Export" (click)="openExport()">
+<mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="openExport()">
     <mat-icon>cloud_download</mat-icon>
+    <span>Export</span>
   </button>
-  <button mat-icon-button matTooltip="Import (or drop file on the content types list)" (click)="openImport()">
+  <button mat-menu-item (click)="openImport()">
     <mat-icon>cloud_upload</mat-icon>
+    <span>Import</span>
   </button>
-  <button mat-icon-button matTooltip="Delete" [disabled]="contentType.UsesSharedDef" (click)="deleteContentType()">
+  <button mat-menu-item [disabled]="contentType.UsesSharedDef" (click)="deleteContentType()">
     <mat-icon>delete</mat-icon>
+    <span>Delete</span>
   </button>
-</ng-template>
+</mat-menu>

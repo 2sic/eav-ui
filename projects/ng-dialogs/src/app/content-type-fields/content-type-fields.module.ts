@@ -7,6 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -53,6 +54,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     MatSelectModule,
     MatRippleModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
   providers: [
     Context,

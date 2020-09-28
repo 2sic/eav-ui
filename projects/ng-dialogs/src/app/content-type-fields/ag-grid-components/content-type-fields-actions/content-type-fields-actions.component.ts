@@ -1,7 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { openMoreMenu } from '../../../shared/helpers/open-more-menu.helper';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DataTypeConstants } from '../../constants/data-type.constants';
 import { InputTypeConstants } from '../../constants/input-type.constants';
 import { Field } from '../../models/field.model';
@@ -17,9 +15,8 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   field: Field;
   enablePermissions: boolean;
   private params: ContentTypeFieldsActionsParams;
-  private moreDialogRef: MatDialogRef<any>;
 
-  constructor(private dialog: MatDialog, private viewContainerRef: ViewContainerRef) { }
+  constructor() { }
 
   agInit(params: ContentTypeFieldsActionsParams) {
     this.params = params;
@@ -39,12 +36,7 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
     this.params.onOpenPermissions(this.field);
   }
 
-  openMoreDialog(templateRef: TemplateRef<any>, buttons: number) {
-    this.moreDialogRef = openMoreMenu(templateRef, buttons, this.dialog, this.viewContainerRef);
-  }
-
   deleteField() {
     this.params.onDelete(this.field);
-    this.moreDialogRef.close();
   }
 }

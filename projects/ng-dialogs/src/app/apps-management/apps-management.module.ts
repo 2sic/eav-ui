@@ -8,6 +8,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -75,6 +76,7 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     MatCardModule,
     FormsModule,
     MatInputModule,
+    MatMenuModule,
   ],
   providers: [
     Context,
