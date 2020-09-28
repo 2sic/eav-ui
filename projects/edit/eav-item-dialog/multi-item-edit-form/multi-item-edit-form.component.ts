@@ -22,7 +22,7 @@ import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
-import { GlobalConfigurationService } from '../../shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../shared/services/global-configuration.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -54,7 +54,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   publishMode$ = new BehaviorSubject<PublishMode>('hide');
   reduceSaveButton$ = new BehaviorSubject(false);
   hideHeader$ = this.languageInstanceService.getHideHeader(this.formId);
-  debugEnabled$ = this.globalConfigurationService.getDebugEnabled().pipe(
+  debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
     tap(debugEnabled => {
       if (this.debugInfoIsOpen$.value && !debugEnabled) {
         this.debugInfoIsOpen$.next(false);
@@ -77,7 +77,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypeService: ContentTypeService,
-    private globalConfigurationService: GlobalConfigurationService,
+    private globalConfigService: GlobalConfigService,
     private eavService: EavService,
     private featureService: FeatureService,
     private inputTypeService: InputTypeService,
@@ -129,7 +129,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   toggleDebugEnabled(event: MouseEvent) {
     const CTRL_SHIFT_ALT_CLICK = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
     if (CTRL_SHIFT_ALT_CLICK) {
-      this.globalConfigurationService.toggleDebugEnabled();
+      this.globalConfigService.toggleDebugEnabled();
     }
   }
 

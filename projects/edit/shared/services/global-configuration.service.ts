@@ -8,15 +8,14 @@ import * as fromStore from '../store';
 import * as GlobalConfigurationActions from '../store/actions/global-configuration.actions';
 
 @Injectable({ providedIn: 'root' })
-export class GlobalConfigurationService {
-
+export class GlobalConfigService {
   constructor(private store: Store<fromStore.EavState>, private snackBar: MatSnackBar) { }
 
-  public loadDebugEnabled(debugEnabled: boolean) {
+  loadDebugEnabled(debugEnabled: boolean) {
     this.store.dispatch(GlobalConfigurationActions.loadDebugEnabled({ debugEnabled }));
   }
 
-  public toggleDebugEnabled() {
+  toggleDebugEnabled() {
     this.store.dispatch(GlobalConfigurationActions.toggleDebugEnabled());
     let debugEnabled: boolean;
     this.store.select(fromStore.selectDebugEnabled).pipe(take(1)).subscribe(enabled => {
@@ -33,7 +32,7 @@ export class GlobalConfigurationService {
     }
   }
 
-  public getDebugEnabled(): Observable<boolean> {
+  getDebugEnabled(): Observable<boolean> {
     return this.store.select(fromStore.selectDebugEnabled);
   }
 }

@@ -4,7 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
-import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
@@ -29,7 +29,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
     private appDialogConfigService: AppDialogConfigService,
     private router: Router,
     private route: ActivatedRoute,
-    private globalConfigurationService: GlobalConfigurationService,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnInit() {
@@ -68,6 +68,6 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
 
   toggleDebugEnabled(event: MouseEvent) {
     const enableDebugEvent = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
-    if (enableDebugEvent) { this.globalConfigurationService.toggleDebugEnabled(); }
+    if (enableDebugEvent) { this.globalConfigService.toggleDebugEnabled(); }
   }
 }

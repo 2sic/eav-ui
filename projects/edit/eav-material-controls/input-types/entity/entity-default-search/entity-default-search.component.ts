@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../../../shared/services/global-configuration.service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 
 @Component({
@@ -41,10 +41,10 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   filteredEntities: EntityInfo[] = [];
   debugEnabled$: Observable<boolean>;
 
-  constructor(private translate: TranslateService, private globalConfigurationService: GlobalConfigurationService) { }
+  constructor(private translate: TranslateService, private globalConfigService: GlobalConfigService) { }
 
   ngOnInit() {
-    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    this.debugEnabled$ = this.globalConfigService.getDebugEnabled();
   }
 
   ngOnChanges(changes: SimpleChanges) {

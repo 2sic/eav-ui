@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
-import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
@@ -33,7 +33,7 @@ export class DataComponent implements OnInit, OnDestroy {
   scope = eavConstants.scopes.default.value;
   defaultScope = eavConstants.scopes.default.value;
   scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
-  debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+  debugEnabled$ = this.globalConfigService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -90,7 +90,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
-    private globalConfigurationService: GlobalConfigurationService,
+    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
   ) { }
 
