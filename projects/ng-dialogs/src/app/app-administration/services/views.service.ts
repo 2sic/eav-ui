@@ -41,8 +41,9 @@ export class ViewsService {
 
   export(id: number) {
     const url = this.dnnContext.$2sxc.http.apiUrl(webApiViewRoot + 'json')
-    + '?appId=' + this.context.appId
-    + '&viewId=' + id;
+      + '?appId=' + this.context.appId
+      + '&viewId=' + id;
+
     window.open(url, '_blank', '');
   }
 

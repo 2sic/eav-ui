@@ -36,6 +36,11 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     this.params.onOpenPermissions(view);
   }
 
+  exportView() {
+    const view: View = this.params.data;
+    this.params.onExport(view);
+  }
+
   deleteView() {
     const view: View = this.params.data;
     this.params.onDelete(view);

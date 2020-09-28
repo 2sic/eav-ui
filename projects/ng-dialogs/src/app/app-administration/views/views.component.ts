@@ -3,7 +3,6 @@ import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams }
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { GlobalConfigurationService } from 'projects/edit';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -36,7 +35,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
   views$ = new BehaviorSubject<View[]>(null);
   polymorphStatus$ = new BehaviorSubject('');
   polymorphLogo = polymorphLogo;
-  debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -116,6 +114,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
+          onExport: this.exportView.bind(this),
           onDelete: this.deleteView.bind(this),
         } as ViewActionsParams,
       },
@@ -131,7 +130,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private globalConfigurationService: GlobalConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -194,11 +192,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  exportView() {
-    alert('export view');
-    this.viewsService.export(83847);
-  }
-
   private idValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return `ID: ${view.Id}\nGUID: ${view.Guid}`;
@@ -259,6 +252,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private exportView(view: View) {
+    this.viewsService.export(view.Id);
+  }
+
   private deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
@@ -282,5 +279,4 @@ export class ViewsComponent implements OnInit, OnDestroy {
       })
     );
   }
-
 }

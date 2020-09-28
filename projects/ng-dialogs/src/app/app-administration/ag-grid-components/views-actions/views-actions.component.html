@@ -20,6 +20,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="exportView()">
+    <mat-icon>cloud_download</mat-icon>
+    <span>Export</span>
+  </button>
   <button mat-menu-item (click)="deleteView()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
