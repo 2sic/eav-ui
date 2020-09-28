@@ -74,9 +74,10 @@ export class DataComponent implements OnInit, OnDestroy {
         cellRendererParams: {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onEdit: this.editContentType.bind(this),
           onOpenExport: this.openExport.bind(this),
           onOpenImport: this.openImport.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
           onDelete: this.deleteContentType.bind(this),
         } as DataActionsParams,
       },
