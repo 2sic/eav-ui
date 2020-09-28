@@ -1,7 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ChangeDetectionStrategy, Component, TemplateRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { take } from 'rxjs/operators';
 import { openMoreMenu } from '../../../shared/helpers/open-more-menu.helper';
 import { ContentItem } from '../../models/content-item.model';
 import { ContentItemsActionsParams } from './content-items-actions.models';
@@ -38,7 +37,6 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
 
   openMoreDialog(templateRef: TemplateRef<any>, buttons: number) {
     this.moreDialogRef = openMoreMenu(templateRef, buttons, this.dialog, this.viewContainerRef);
-    this.moreDialogRef.afterClosed().pipe(take(1)).subscribe(() => { this.moreDialogRef = null; });
   }
 
   deleteItem() {
