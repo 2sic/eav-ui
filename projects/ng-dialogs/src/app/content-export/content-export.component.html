@@ -57,9 +57,6 @@
 
   <div class="dialog-form-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button [disabled]="!ngForm.form.valid" (click)="exportJson()">
-      Export Type
-    </button>
     <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
       Export Data
     </button>

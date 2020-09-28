@@ -144,7 +144,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  filesDropped(files: File[]) {
+  importView(files?: File[]) {
     const importViewData: ImportViewDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importViewData });
   }

@@ -7,7 +7,7 @@
 
   <mat-spinner *ngIf="data.isImporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
-  <p class="dialog-description">Select a content type definition files (json) from your computer to import.</p>
+  <p class="dialog-description">Select Content Type definition files (json) from your computer to import.</p>
 
   <div>
     <button mat-raised-button matTooltip="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">

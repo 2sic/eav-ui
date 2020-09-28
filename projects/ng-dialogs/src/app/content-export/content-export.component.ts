@@ -75,8 +75,4 @@ export class ContentExportComponent implements OnInit, OnDestroy {
     this.contentExportService.exportContent(this.formValues,
       this.hasIdList && this.formValues.recordExport === 'Selection' ? this.itemIds : null);
   }
-
-  exportJson() {
-    this.contentExportService.exportJson(this.formValues.contentTypeStaticName);
-  }
 }

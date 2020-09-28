@@ -16,6 +16,7 @@ import { DataActionsParams } from '../ag-grid-components/data-actions/data-actio
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
 import { ContentType } from '../models/content-type.model';
+import { ContentExportService } from '../services/content-export.service';
 import { ContentTypesService } from '../services/content-types.service';
 import { ContentImportDialogData } from '../sub-dialogs/content-import/content-import-dialog.config';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
@@ -76,8 +77,9 @@ export class DataComponent implements OnInit, OnDestroy {
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onEdit: this.editContentType.bind(this),
-          onOpenExport: this.openExport.bind(this),
-          onOpenImport: this.openImport.bind(this),
+          onTypeExport: this.exportType.bind(this),
+          onOpenDataExport: this.openDataExport.bind(this),
+          onOpenDataImport: this.openDataImport.bind(this),
           onDelete: this.deleteContentType.bind(this),
         } as DataActionsParams,
       },
@@ -92,6 +94,7 @@ export class DataComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
+    private contentExportService: ContentExportService,
   ) { }
 
   ngOnInit() {
@@ -128,6 +131,10 @@ export class DataComponent implements OnInit, OnDestroy {
         this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
         break;
     }
+  }
+
+  importType() {
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -239,11 +246,15 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private openExport(contentType: ContentType) {
+  private exportType(contentType: ContentType) {
+    this.contentExportService.exportJson(contentType.StaticName);
+  }
+
+  private openDataExport(contentType: ContentType) {
     this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
-  private openImport(contentType: ContentType) {
+  private openDataImport(contentType: ContentType) {
     this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
   }
 

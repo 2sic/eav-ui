@@ -13,8 +13,7 @@
   eavConfigLoaded: eavConfigLoaded$ | async
 } as data">
 
-  <div mat-dialog-container style="position: relative" *ngIf="data.eavConfigLoaded"
-    (click)="toggleDebugEnabled($event)">
+  <div mat-dialog-container style="position: relative" appToggleDebug *ngIf="data.eavConfigLoaded">
     <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
       <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
         [formsAreValid]="data.formsAreValid" [allControlsAreDisabled]="data.allControlsAreDisabled"

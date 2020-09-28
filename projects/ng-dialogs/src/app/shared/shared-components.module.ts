@@ -15,6 +15,7 @@ import { IdFieldComponent } from './components/id-field/id-field.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
+import { ToggleDebugDirective } from './directives/toggle-debug.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
 
@@ -31,6 +32,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     IdFieldComponent,
     SafeHtmlPipe,
     SafeResourceUrlPipe,
+    ToggleDebugDirective,
   ],
   entryComponents: [
     BooleanFilterComponent,
@@ -58,6 +60,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     BooleanFilterComponent,
     SafeHtmlPipe,
     SafeResourceUrlPipe,
+    ToggleDebugDirective,
   ]
 })
 export class SharedComponentsModule { }

@@ -126,13 +126,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     }
   }
 
-  toggleDebugEnabled(event: MouseEvent) {
-    const CTRL_SHIFT_ALT_CLICK = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
-    if (CTRL_SHIFT_ALT_CLICK) {
-      this.globalConfigService.toggleDebugEnabled();
-    }
-  }
-
   /** Close form dialog or if close is disabled show a message */
   closeDialog(saveResult?: any) {
     if (this.dialogRef.disableClose) {

@@ -1,4 +1,4 @@
-<div class="nav-component-wrapper">
+<div appToggleDebug class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>{{ (contentType$ | async)?.Name }} Data</div>
@@ -17,17 +17,26 @@
     </ag-grid-angular>
 
     <div class="actions-box">
-      <button mat-icon-button matTooltip="Export" (click)="exportContent()">
+      <button mat-button matTooltip="Export xml list" (click)="exportContent()">
         <mat-icon>cloud_download</mat-icon>
+        <span>Data</span>
       </button>
-      <button mat-icon-button matTooltip="Import single item (or drop file on the items list)" (click)="importItem()">
+      <button mat-button class="force-hide" matTooltip="Import xml list" (click)="importContent()">
         <mat-icon>cloud_upload</mat-icon>
+        <span>Data</span>
       </button>
-      <button mat-icon-button matTooltip="Add metadata" (click)="addMetadata()">
+      <button mat-button matTooltip="Import single json item" (click)="importItem()">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>Item</span>
+      </button>
+      <button mat-button matTooltip="Add metadata to entity" (click)="addMetadata()">
         <mat-icon>local_offer</mat-icon>
+        <span>Metadata</span>
       </button>
-      <button mat-icon-button matTooltip="Debug filter" (click)="debugFilter()">
+      <button mat-button color="accent" matTooltip="Print filter to console" *ngIf="debugEnabled$ | async"
+        (click)="debugFilter()">
         <mat-icon>filter_list</mat-icon>
+        <span>Filter</span>
       </button>
     </div>
 

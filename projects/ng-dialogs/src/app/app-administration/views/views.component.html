@@ -1,12 +1,17 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
   <ag-grid-angular class="ag-theme-material" [rowData]="views$ | async" [modules]="modules" [gridOptions]="gridOptions"
-    appDragAndDrop [allowedFileTypes]="'json'" (filesDropped)="filesDropped($event)">
+    appDragAndDrop [allowedFileTypes]="'json'" (filesDropped)="importView($event)">
   </ag-grid-angular>
 
   <div class="more-actions-box">
-    <button mat-raised-button matTooltip="Configure Polymorphism" (click)="editPolymorphisms()">
+    <button mat-button matTooltip="Configure polymorphism" (click)="editPolymorphisms()">
       <img class="polymorph-logo" [src]="polymorphLogo">
       <span>Polymorphism {{ polymorphStatus$ | async }}</span>
+    </button>
+
+    <button mat-button matTooltip="Import view" (click)="importView()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>View</span>
     </button>
   </div>
 

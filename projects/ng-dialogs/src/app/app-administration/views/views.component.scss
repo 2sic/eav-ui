@@ -2,10 +2,16 @@
   margin-right: 66px;
   display: flex;
   align-items: flex-end;
-}
 
-.polymorph-logo {
-  width: 24px;
-  height: 24px;
-  margin-right: 4px;
+  .mat-button {
+    .polymorph-logo {
+      width: 24px;
+      height: 24px;
+      margin-right: 4px;
+    }
+
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
 }

@@ -17,6 +17,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 import { LoadIconsService } from '../shared/services/load-icons.service';
@@ -54,6 +55,7 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
     MatDividerModule,
     FlexLayoutModule,
     TranslateModule,
+    SharedComponentsModule,
   ],
   entryComponents: [
     MultiItemEditFormComponent

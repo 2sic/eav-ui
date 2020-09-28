@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../edit';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentExportService } from '../app-administration/services/content-export.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -41,6 +42,7 @@ import { EntitiesService } from './services/entities.service';
 export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);
   items$ = new BehaviorSubject<ContentItem[]>(null);
+  debugEnabled$ = this.globalConfigService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -68,6 +70,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnInit() {
@@ -152,6 +155,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       });
     }
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
+  }
+
+  importContent() {
   }
 
   importItem(files?: File[]) {
