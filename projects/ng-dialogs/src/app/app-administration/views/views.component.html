@@ -8,6 +8,13 @@
       <img class="polymorph-logo" [src]="polymorphLogo">
       <span>Polymorphism {{ polymorphStatus$ | async }}</span>
     </button>
+
+    <!-- experimental -->
+    <button mat-icon-button color="accent" matTooltip="experimental export" *ngIf="debugEnabled$ | async"
+    (click)="exportView()">
+    <mat-icon>cloud_download</mat-icon>
+    </button>
+
   </div>
 
   <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new view" (click)="editView(null)">

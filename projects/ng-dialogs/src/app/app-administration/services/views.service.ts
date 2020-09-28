@@ -39,6 +39,13 @@ export class ViewsService {
     }) as Observable<ImportAppResult>;
   }
 
+  export(id: number) {
+    const url = this.dnnContext.$2sxc.http.apiUrl(webApiViewRoot + 'json')
+    + '?appId=' + this.context.appId
+    + '&viewId=' + id;
+    window.open(url, '_blank', '');
+  }
+
   getPolymorphism() {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiViewPolymorph), {
       params: { appId: this.context.appId.toString() }

@@ -3,6 +3,7 @@ import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams }
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { GlobalConfigurationService } from 'projects/edit';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -35,6 +36,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   views$ = new BehaviorSubject<View[]>(null);
   polymorphStatus$ = new BehaviorSubject('');
   polymorphLogo = polymorphLogo;
+  debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -129,6 +131,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private globalConfigurationService: GlobalConfigurationService,
   ) { }
 
   ngOnInit() {
@@ -189,6 +192,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+  }
+
+  exportView() {
+    alert('export view');
+    this.viewsService.export(83847);
   }
 
   private idValueGetter(params: ValueGetterParams) {
