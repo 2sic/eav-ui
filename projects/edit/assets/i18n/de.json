@@ -97,7 +97,8 @@
   "ItemCard": {
     "DefaultTitle": "Element bearbeiten",
     "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
-    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
+    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten.",
+    "CopyHint": "(Kopie)"
   },
   "ValidationMessage": {
     "NotValid": "Ungültig",
