@@ -1,5 +1,8 @@
-<mat-card class="shadow-bottom-z-1"
-  [ngClass]="fieldConfig.isParentGroup ? 'mat-card-group-parent' : 'mat-card-group-child'">
+<mat-card class="shadow-bottom-z-1" [ngClass]="{
+  'mat-card-group-parent': fieldConfig.isParentGroup,
+  'mat-card-group-child': !fieldConfig.isParentGroup,
+  'force-hide': !((visibleInEditUI$ | async) === true)
+}">
   <div fxLayout="row" fxLayoutAlign="start center"
     [ngClass]="fieldConfig.isParentGroup ? 'mat-card-header-group-parent' : 'mat-card-header-group-child'" *ngIf="{
       collapse: collapse$ | async,

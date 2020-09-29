@@ -23,6 +23,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   @Input() group: FormGroup;
 
   fieldConfig: FieldConfigGroup;
+  visibleInEditUI$: Observable<boolean>;
   collapse$ = new BehaviorSubject(false);
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
@@ -42,6 +43,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   ngOnInit() {
     this.fieldConfig = this.config.field as FieldConfigGroup;
+    this.visibleInEditUI$ = this.fieldConfig.settings$.pipe(map(settings => (settings.VisibleInEditUI === false) ? false : true));
     this.header$ = this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
 
     this.collapse$.next(this.fieldConfig.settings$.value.DefaultCollapsed || false);
