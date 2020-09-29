@@ -114,6 +114,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
+          onClone: this.cloneView.bind(this),
           onExport: this.exportView.bind(this),
           onDelete: this.deleteView.bind(this),
         } as ViewActionsParams,
@@ -250,6 +251,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
       [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${view.Guid}`],
       { relativeTo: this.route.firstChild }
     );
+  }
+
+  private cloneView(view: View) {
+    const form: EditForm = {
+      items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private exportView(view: View) {

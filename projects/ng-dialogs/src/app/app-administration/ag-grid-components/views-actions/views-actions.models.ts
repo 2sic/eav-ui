@@ -1,5 +1,4 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-
 import { View } from '../../models/view.model';
 
 export interface ViewActionsParams extends ICellRendererParams {
@@ -7,6 +6,7 @@ export interface ViewActionsParams extends ICellRendererParams {
   enablePermissionsGetter(): boolean;
   onOpenCode(view: View): void;
   onOpenPermissions(view: View): void;
+  onClone(view: View): void;
   onExport(view: View): void;
   onDelete(view: View): void;
 }
