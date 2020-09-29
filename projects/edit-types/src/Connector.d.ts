@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-
 import { ConnectorData } from './ConnectorData';
 import { FieldConfig } from './FieldConfig';
 import { ExperimentalProps } from './ExperimentalProps';

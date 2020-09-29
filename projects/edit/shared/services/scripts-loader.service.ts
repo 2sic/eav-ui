@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { UrlHelper } from '../helpers/url-helper';
 import { EavService } from './eav.service';
 

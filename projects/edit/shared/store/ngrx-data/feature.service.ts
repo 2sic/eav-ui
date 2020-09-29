@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { take } from 'rxjs/operators';
-
 import { Feature } from '../../models/feature/feature';
 
 @Injectable({ providedIn: 'root' })

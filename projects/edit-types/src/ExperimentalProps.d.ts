@@ -1,7 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-
 import { InputTypeName } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';

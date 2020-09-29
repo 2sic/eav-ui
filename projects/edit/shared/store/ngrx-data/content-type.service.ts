@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map } from 'rxjs/operators';
-
 import { ContentType } from '../../models/eav';
 import { JsonContentType1 } from '../../models/json-format-v1';
 

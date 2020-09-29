@@ -1,7 +1,3 @@
-import { Injectable } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
-
 import appleFilled from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48-filled.svg';
 import apple from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48.svg';
 import draftBranch from '!raw-loader!../../assets/icons/font-awesome/draft-branch.svg';
@@ -19,6 +15,9 @@ import file from '!raw-loader!../../assets/icons/font-awesome/file.svg';
 import folderPlus from '!raw-loader!../../assets/icons/font-awesome/folder-plus.svg';
 import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
 import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
+import { Injectable } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable()
 export class LoadIconsService {

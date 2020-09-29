@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map } from 'rxjs/operators';
-
 import { InputType } from '../../models/eav';
 
 @Injectable({ providedIn: 'root' })

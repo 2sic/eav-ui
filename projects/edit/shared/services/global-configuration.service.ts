@@ -3,7 +3,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-
 import * as fromStore from '../store';
 import * as GlobalConfigurationActions from '../store/actions/global-configuration.actions';
 

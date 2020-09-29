@@ -1,6 +1,5 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-
 import { EavConfig } from '../edit/shared/models/eav-config';
 
 /**
