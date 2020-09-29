@@ -5,7 +5,11 @@
 
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
     (click)="openPermissions()">
-    <mat-icon>person</mat-icon>
+    <mat-icon [matBadge]="query._Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="query._Permissions.Count">
+      person
+    </mat-icon>
+    <mat-icon *ngIf="!query._Permissions.Count">person</mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="!enablePermissions">
     <mat-icon>person</mat-icon>

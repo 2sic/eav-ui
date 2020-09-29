@@ -10,6 +10,7 @@ import { ViewActionsParams } from './views-actions.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
+  view: View;
   enableCode: boolean;
   enablePermissions: boolean;
   private params: ViewActionsParams;
@@ -18,6 +19,7 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
 
   agInit(params: ViewActionsParams) {
     this.params = params;
+    this.view = this.params.data;
     this.enableCode = this.params.enableCodeGetter();
     this.enablePermissions = this.params.enablePermissionsGetter();
   }
@@ -27,22 +29,18 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
   }
 
   openCode() {
-    const view: View = this.params.data;
-    this.params.onOpenCode(view);
+    this.params.onOpenCode(this.view);
   }
 
   openPermissions() {
-    const view: View = this.params.data;
-    this.params.onOpenPermissions(view);
+    this.params.onOpenPermissions(this.view);
   }
 
   exportView() {
-    const view: View = this.params.data;
-    this.params.onExport(view);
+    this.params.onExport(this.view);
   }
 
   deleteView() {
-    const view: View = this.params.data;
-    this.params.onDelete(view);
+    this.params.onDelete(this.view);
   }
 }

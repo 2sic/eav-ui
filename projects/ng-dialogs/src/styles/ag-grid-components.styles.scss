@@ -1,6 +1,10 @@
 .actions-component {
   display: flex;
   height: 100%;
+
+  .accent {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
 }
 
 .chip-component {

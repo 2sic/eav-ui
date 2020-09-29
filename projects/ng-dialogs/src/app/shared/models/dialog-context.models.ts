@@ -1,8 +1,11 @@
+import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+
 export interface DialogContextApp {
   GettingStartedUrl: string;
   Id: number;
   Identifier: unknown;
   Name: string;
+  Permissions: PermissionsCount;
   Url: string;
 }
 

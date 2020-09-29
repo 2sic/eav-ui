@@ -11,12 +11,14 @@ import { QueriesActionsParams } from './queries-actions.models';
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
   enablePermissions: boolean;
+  query: Query;
   private params: QueriesActionsParams;
 
   constructor() { }
 
   agInit(params: QueriesActionsParams) {
     this.params = params;
+    this.query = this.params.data;
     this.enablePermissions = this.params.enablePermissionsGetter();
   }
 
@@ -25,27 +27,22 @@ export class QueriesActionsComponent implements ICellRendererAngularComp {
   }
 
   editQuery() {
-    const query: Query = this.params.data;
-    this.params.onEditQuery(query);
+    this.params.onEditQuery(this.query);
   }
 
   openPermissions() {
-    const query: Query = this.params.data;
-    this.params.onOpenPermissions(query);
+    this.params.onOpenPermissions(this.query);
   }
 
   cloneQuery() {
-    const query: Query = this.params.data;
-    this.params.onCloneQuery(query);
+    this.params.onCloneQuery(this.query);
   }
 
   exportQuery() {
-    const query: Query = this.params.data;
-    this.params.onExportQuery(query);
+    this.params.onExportQuery(this.query);
   }
 
   deleteQuery() {
-    const query: Query = this.params.data;
-    this.params.onDelete(query);
+    this.params.onDelete(this.query);
   }
 }

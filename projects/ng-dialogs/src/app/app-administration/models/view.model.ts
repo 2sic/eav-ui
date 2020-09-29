@@ -1,3 +1,5 @@
+import { PermissionsCount } from './permissions-count.model';
+
 export class View {
   ContentType: ViewEntity;
   Guid: string;
@@ -8,12 +10,12 @@ export class View {
   ListContentType: ViewEntity;
   ListPresentationType: ViewEntity;
   Name: string;
+  Permissions: PermissionsCount;
   PresentationType: ViewEntity;
   TemplatePath: string;
-  ViewNameInUrl: string;
-
   /** How often this is used in ContentBlocks */
   Used: number;
+  ViewNameInUrl: string;
 }
 
 export class ViewEntity {

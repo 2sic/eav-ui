@@ -63,7 +63,7 @@
         <mat-icon>settings_applications</mat-icon>
         <span>App</span>
       </div>
-      <app-app-configuration *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      <app-app-configuration *matTabContent [dialogSettings]="data.dialogSettings">
       </app-app-configuration>
     </mat-tab>
   </mat-tab-group>

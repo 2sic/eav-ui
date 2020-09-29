@@ -5,6 +5,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { DialogSettings } from '../models/dialog-settings.model';
 
 @Component({
   selector: 'app-app-configuration',
@@ -13,7 +14,7 @@ import { Context } from '../../shared/services/context';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppConfigurationComponent implements OnInit {
-  @Input() enablePermissions: boolean;
+  @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
 
   constructor(
