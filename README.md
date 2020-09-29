@@ -1,6 +1,8 @@
-# EavItemDialog Angular 9
+# 2sxc / EAV Admin and Edit Dialogs
 
 This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
+
+It's built using Angular 10. 
 
 ## Projects
 
