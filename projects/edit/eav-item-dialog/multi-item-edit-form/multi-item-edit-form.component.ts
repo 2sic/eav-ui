@@ -47,6 +47,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   isParentDialog = calculateIsParentDialog(this.route);
   formId = Math.floor(Math.random() * 99999);
+  isCopy$ = new BehaviorSubject(false);
   formsAreValid$ = new BehaviorSubject(false);
   allControlsAreDisabled$ = new BehaviorSubject(true);
   items$: Observable<Item[]>;
@@ -106,6 +107,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   ngOnDestroy() {
+    this.isCopy$.complete();
     this.reduceSaveButton$.complete();
     this.debugInfoIsOpen$.complete();
     this.formsAreValid$.complete();
@@ -238,8 +240,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         // Remove if calculating fields gets faster
         .pipe(delay(0));
       this.items$.pipe(take(1)).subscribe(items => {
-        if (items?.length > 0 && items[0].entity.id === 0) {
+        if (items?.[0].entity.id === 0) {
           this.createMode = true;
+          if (items[0].header.DuplicateEntity != null) {
+            this.isCopy$.next(true);
+          }
         }
       });
 

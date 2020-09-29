@@ -4,6 +4,8 @@
     <mat-icon>{{ isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
+  <div *ngIf="isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
+
   <div class="header__langs">
     <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId"
       [disabled]="!formsAreValid && !allControlsAreDisabled">

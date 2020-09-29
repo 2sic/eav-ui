@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
@@ -14,6 +13,7 @@ import { PublishMode } from '../multi-item-edit-form/multi-item-edit-form.consta
 })
 export class MultiItemEditFormHeaderComponent implements OnInit {
   @Input() formId: number;
+  @Input() isCopy: boolean;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
   @Input() isParentDialog: boolean;
@@ -21,12 +21,11 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   @Output() private closeDialog = new EventEmitter<null>();
   @Output() private setPublishMode = new EventEmitter<PublishMode>();
 
-  hasLanguages$: Observable<boolean>;
+  hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
 
   constructor(private dialog: MatDialog, private languageService: LanguageService) { }
 
   ngOnInit() {
-    this.hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
   }
 
   close() {

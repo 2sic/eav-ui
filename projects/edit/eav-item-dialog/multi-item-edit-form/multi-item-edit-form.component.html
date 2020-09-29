@@ -2,6 +2,7 @@
 
 <ng-container *ngIf="{
   items: items$ | async,
+  isCopy: isCopy$ | async,
   formsAreValid: formsAreValid$ | async,
   allControlsAreDisabled: allControlsAreDisabled$ | async,
   publishMode: publishMode$ | async,
@@ -15,7 +16,7 @@
 
   <div mat-dialog-container style="position: relative" appToggleDebug *ngIf="data.eavConfigLoaded">
     <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
-      <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
+      <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId" [isCopy]="data.isCopy"
         [formsAreValid]="data.formsAreValid" [allControlsAreDisabled]="data.allControlsAreDisabled"
         [isParentDialog]="isParentDialog" [publishMode]="data.publishMode" (closeDialog)="closeDialog()"
         (setPublishMode)="setPublishMode($event)">
