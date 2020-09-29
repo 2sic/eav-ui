@@ -1,24 +1,26 @@
-import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
 import { DataActionsParams } from './data-actions.models';
 
 @Component({
   selector: 'app-data-actions',
   templateUrl: './data-actions.component.html',
-  styleUrls: ['./data-actions.component.scss']
+  styleUrls: ['./data-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
-  private params: DataActionsParams;
   contentType: ContentType;
-  showPermissions: boolean;
+  enablePermissions: boolean;
+  private params: DataActionsParams;
+
+  constructor() { }
 
   agInit(params: DataActionsParams) {
     this.params = params;
     this.contentType = this.params.data;
-    const enableAppFeatures = this.params.enableAppFeaturesGetter();
-    this.showPermissions = enableAppFeatures && this.isGuid(this.contentType.StaticName);
+    const enablePermissions = this.params.enablePermissionsGetter();
+    this.enablePermissions = enablePermissions && this.isGuid(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {
@@ -29,16 +31,24 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.onCreateOrEditMetadata(this.contentType);
   }
 
-  openExport() {
-    this.params.onOpenExport(this.contentType);
-  }
-
-  openImport() {
-    this.params.onOpenImport(this.contentType);
-  }
-
   openPermissions() {
     this.params.onOpenPermissions(this.contentType);
+  }
+
+  editContentType() {
+    this.params.onEdit(this.contentType);
+  }
+
+  exportType() {
+    this.params.onTypeExport(this.contentType);
+  }
+
+  openDataExport() {
+    this.params.onOpenDataExport(this.contentType);
+  }
+
+  openDataImport() {
+    this.params.onOpenDataImport(this.contentType);
   }
 
   deleteContentType() {

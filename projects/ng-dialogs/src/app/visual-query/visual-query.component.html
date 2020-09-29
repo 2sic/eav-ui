@@ -1,3 +1,5 @@
+<router-outlet></router-outlet>
+
 <div class="editor-root">
   <div class="editor-side-toolbar">
     <div class="button" matTooltip="Run" [ngClass]="{ 'active': activeExplorer === explorer.run }"
@@ -12,7 +14,6 @@
     <div class="button" matTooltip="Help" (click)="openHelp()">
       <mat-icon>help_outline</mat-icon>
     </div>
-    <router-outlet></router-outlet>
   </div>
 
   <app-run-explorer [hidden]="activeExplorer !== explorer.run"></app-run-explorer>

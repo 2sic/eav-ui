@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-
 import { AdamItem } from './AdamItem';
 import { AdamConfig } from './AdamConfig';
 import { AdamPostResponse } from './AdamPostResponse';

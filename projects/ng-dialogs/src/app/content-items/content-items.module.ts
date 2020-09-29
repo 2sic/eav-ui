@@ -1,32 +1,32 @@
-import { NgModule } from '@angular/core';
+import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRippleModule } from '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { AgGridModule } from '@ag-grid-community/angular';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
-
-import { ContentItemsRoutingModule } from './content-items-routing.module';
-import { ContentItemsComponent } from './content-items.component';
-import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ContentExportService } from '../content-export/services/content-export.service';
+import { Context } from '../shared/services/context';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
-import { ContentItemImportComponent } from './ag-grid-components/content-item-import/content-item-import.component';
-import { SharedComponentsModule } from '../shared/shared-components.module';
-import { Context } from '../shared/services/context';
+import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
+import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
+import { ContentItemsRoutingModule } from './content-items-routing.module';
+import { ContentItemsComponent } from './content-items.component';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
-import { ContentExportService } from '../app-administration/services/content-export.service';
-import { ContentTypesService } from '../app-administration/services/content-types.service';
 
 @NgModule({
   declarations: [
@@ -62,6 +62,7 @@ import { ContentTypesService } from '../app-administration/services/content-type
     MatRippleModule,
     MatSnackBarModule,
     EcoFabSpeedDialModule,
+    MatMenuModule,
   ],
   providers: [
     Context,

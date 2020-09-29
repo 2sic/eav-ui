@@ -1,28 +1,28 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
-import { PermissionsService } from './services/permissions.service';
-import { Permission } from './models/permission.model';
-import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
-import { EditForm } from '../shared/models/edit-form.model';
-import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { EditForm } from '../shared/models/edit-form.model';
+import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
+import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
+import { Permission } from './models/permission.model';
+import { PermissionsService } from './services/permissions.service';
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  styleUrls: ['./permissions.component.scss']
+  styleUrls: ['./permissions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
-  permissions: Permission[];
+  permissions$ = new BehaviorSubject<Permission[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -41,12 +41,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent',
-        cellRendererParams: {
-          onDelete: this.deletePermission.bind(this),
-        } as PermissionsActionsParams,
-      },
-      {
         headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
@@ -58,14 +52,19 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
+      {
+        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          onDelete: this.deletePermission.bind(this),
+        } as PermissionsActionsParams,
+      },
     ],
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
-  private targetType: number;
-  private keyType: string;
-  private key: string;
+  private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+  private keyType = this.route.snapshot.paramMap.get('keyType');
+  private key = this.route.snapshot.paramMap.get('key');
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
@@ -73,19 +72,15 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
-    this.targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
-    this.keyType = this.route.snapshot.paramMap.get('keyType');
-    this.key = this.route.snapshot.paramMap.get('key');
     this.fetchPermissions();
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
+    this.permissions$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -100,7 +95,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   private fetchPermissions() {
     this.permissionsService.getAll(this.targetType, this.keyType, this.key).subscribe(permissions => {
-      this.permissions = permissions;
+      this.permissions$.next(permissions);
     });
   }
 
@@ -146,12 +141,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchPermissions();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchPermissions();
       })
     );
   }

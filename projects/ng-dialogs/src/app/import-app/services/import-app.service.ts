@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Context } from '../../shared/services/context';
 import { ImportAppResult } from '../models/import-app-result.model';
+
+export const webApiAppRoot = 'admin/app/';
 
 @Injectable()
 export class ImportAppService {
@@ -12,10 +13,10 @@ export class ImportAppService {
 
   importApp(file: File, changedName: string) {
     const formData = new FormData();
-    formData.append('AppId', this.context.appId.toString());
-    formData.append('ZoneId', this.context.zoneId.toString());
     formData.append('File', file);
     formData.append('Name', changedName ? changedName : '');
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl('app-sys/ImportExport/ImportApp'), formData) as Observable<ImportAppResult>;
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Import'), formData, {
+      params: { zoneId: this.context.zoneId.toString() }
+    }) as Observable<ImportAppResult>;
   }
 }

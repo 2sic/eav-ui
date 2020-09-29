@@ -1,29 +1,28 @@
 
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { AdamItem, AdamConfig, AdamPostResponse } from '../../../edit-types';
+import { AdamConfig, AdamItem, AdamPostResponse } from '../../../edit-types';
+import { EavService } from '../../shared/services/eav.service';
 import { SanitizeService } from './sanitize.service';
-import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 
 @Injectable()
 export class AdamService {
-  constructor(private http: HttpClient, private sanitizeSvc: SanitizeService, private context: Context) { }
+  constructor(private http: HttpClient, private sanitizeSvc: SanitizeService, private eavService: EavService) { }
 
   getAll(url: string, config: AdamConfig) {
     return (this.http.get(url + '/items', {
       params: {
         subfolder: config.subfolder,
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.context.appId.toString(),
+        appId: this.eavService.eavConfig.appId.toString(),
       }
     }) as Observable<AdamItem[]>)
       .pipe(
         map(items => {
           // items can be null if folder isn't created when user doesn't have required access rights,
-          // e.g. public (not loggen in) user
+          // e.g. public (not logged in) user
           if (items == null) { return items; }
           for (const item of items) {
             this.addFullPath(item);
@@ -35,7 +34,7 @@ export class AdamService {
 
   /** Calculates full URL to an item */
   addFullPath(item: AdamItem | AdamPostResponse) {
-    const adamRoot = this.context.appRoot.substring(0, this.context.appRoot.indexOf('2sxc'));
+    const adamRoot = this.eavService.eavConfig.appRoot.substring(0, this.eavService.eavConfig.appRoot.indexOf('2sxc'));
     item.FullPath = item.Path;
     if (!item.Path?.toLowerCase().includes(adamRoot.toLowerCase())) {
       item.FullPath = adamRoot + item.Path;
@@ -48,7 +47,7 @@ export class AdamService {
         subfolder: config.subfolder,
         newFolder: this.sanitizeSvc.sanitizeName(newfolder),
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.context.appId.toString(),
+        appId: this.eavService.eavConfig.appId.toString(),
       }
     }) as Observable<AdamItem[]>;
   }
@@ -61,7 +60,7 @@ export class AdamService {
         id: item.Id.toString(),
         usePortalRoot: config.usePortalRoot.toString(),
         newName: this.sanitizeSvc.sanitizeName(newName),
-        appId: this.context.appId.toString(),
+        appId: this.eavService.eavConfig.appId.toString(),
       }
     }) as Observable<boolean>;
   }
@@ -73,7 +72,7 @@ export class AdamService {
         isFolder: item.IsFolder.toString(),
         id: item.Id.toString(),
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.context.appId.toString(),
+        appId: this.eavService.eavConfig.appId.toString(),
       }
     }) as Observable<boolean>;
   }

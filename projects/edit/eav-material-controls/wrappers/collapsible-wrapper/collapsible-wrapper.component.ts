@@ -1,15 +1,14 @@
-import { Component, ViewChild, ViewContainerRef, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavHeader, ContentType } from '../../../shared/models/eav';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
-import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { ContentType, EavHeader } from '../../../shared/models/eav';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 
 @Component({
@@ -24,6 +23,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   @Input() group: FormGroup;
 
   fieldConfig: FieldConfigGroup;
+  visibleInEditUI$: Observable<boolean>;
   collapse$ = new BehaviorSubject(false);
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
@@ -43,6 +43,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
   ngOnInit() {
     this.fieldConfig = this.config.field as FieldConfigGroup;
+    this.visibleInEditUI$ = this.fieldConfig.settings$.pipe(map(settings => (settings.VisibleInEditUI === false) ? false : true));
     this.header$ = this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
 
     this.collapse$.next(this.fieldConfig.settings$.value.DefaultCollapsed || false);
@@ -84,13 +85,15 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       return settings.Notes != null ? settings.Notes : '';
     }));
 
-    this.subscription.add(this.currentLanguage$.subscribe(currentLanguage => {
-      let defaultLanguage: string;
-      this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
-        defaultLanguage = defaultLang;
-      });
-      this.translateAllConfiguration(currentLanguage, defaultLanguage);
-    }));
+    this.subscription.add(
+      this.currentLanguage$.subscribe(currentLanguage => {
+        let defaultLanguage: string;
+        this.defaultLanguage$.pipe(take(1)).subscribe(defaultLang => {
+          defaultLanguage = defaultLang;
+        });
+        this.translateAllConfiguration(currentLanguage, defaultLanguage);
+      })
+    );
   }
 
   ngOnDestroy() {

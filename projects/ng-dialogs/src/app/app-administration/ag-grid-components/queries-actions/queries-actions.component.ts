@@ -1,19 +1,25 @@
-import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Query } from '../../models/query.model';
 import { QueriesActionsParams } from './queries-actions.models';
 
 @Component({
   selector: 'app-queries-actions',
   templateUrl: './queries-actions.component.html',
-  styleUrls: ['./queries-actions.component.scss']
+  styleUrls: ['./queries-actions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
+  enablePermissions: boolean;
+  query: Query;
   private params: QueriesActionsParams;
+
+  constructor() { }
 
   agInit(params: QueriesActionsParams) {
     this.params = params;
+    this.query = this.params.data;
+    this.enablePermissions = this.params.enablePermissionsGetter();
   }
 
   refresh(params?: any): boolean {
@@ -21,27 +27,22 @@ export class QueriesActionsComponent implements ICellRendererAngularComp {
   }
 
   editQuery() {
-    const query: Query = this.params.data;
-    this.params.onEditQuery(query);
-  }
-
-  cloneQuery() {
-    const query: Query = this.params.data;
-    this.params.onCloneQuery(query);
-  }
-
-  exportQuery() {
-    const query: Query = this.params.data;
-    this.params.onExportQuery(query);
+    this.params.onEditQuery(this.query);
   }
 
   openPermissions() {
-    const query: Query = this.params.data;
-    this.params.onOpenPermissions(query);
+    this.params.onOpenPermissions(this.query);
+  }
+
+  cloneQuery() {
+    this.params.onCloneQuery(this.query);
+  }
+
+  exportQuery() {
+    this.params.onExportQuery(this.query);
   }
 
   deleteQuery() {
-    const query: Query = this.params.data;
-    this.params.onDelete(query);
+    this.params.onDelete(this.query);
   }
 }

@@ -1,12 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 import { DataSource } from '../models/data-sources.model';
 import { SortedDataSources } from '../models/data-sources.model';
 import { VisualQueryService } from '../services/visual-query.service';
+import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 
 @Component({
   selector: 'app-add-explorer',
@@ -28,11 +27,8 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sorted$ = combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-      map(combined => {
-        const dataSources = combined[0];
-        const difficulty = combined[1];
+      map(([dataSources, difficulty]) => {
         if (dataSources == null) { return; }
-
         const sorted = filterAndSortDataSources(dataSources, difficulty);
         return sorted;
       }),

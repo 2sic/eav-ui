@@ -1,24 +1,23 @@
-import { BrowserModule, Title } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EntityDataModule } from '@ngrx/data';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EntityDataModule } from '@ngrx/data';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { metaReducers, reducers } from '../../../edit/shared/store';
+import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { Context } from './shared/services/context';
 import { paramsInitFactory } from './params-init.factory';
-import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
-import { metaReducers, reducers } from '../../../edit/shared/store';
-import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
 import { HandleErrorsInterceptor } from './shared/interceptors/handle-errors.interceptor';
+import { SetHeadersInterceptor } from './shared/interceptors/set-headers.interceptor';
+import { Context } from './shared/services/context';
 
 @NgModule({
   declarations: [

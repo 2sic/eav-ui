@@ -1,5 +1,4 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-
 import { App } from '../../models/app.model';
 
 export interface AppsListActionsParams extends ICellRendererParams {

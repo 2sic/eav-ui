@@ -1,7 +1,7 @@
 <div class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div matTooltip="{{ viewTooltip }}">View: {{ viewUsage?.Name }}</div>
+      <div [matTooltip]="viewTooltip$ | async">View: {{ (viewUsage$ | async)?.Name }}</div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -18,7 +18,8 @@
   <router-outlet></router-outlet>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="data" [modules]="modules" [gridOptions]="gridOptions">
+    <ag-grid-angular class="ag-theme-material" [rowData]="data$ | async" [modules]="modules"
+      [gridOptions]="gridOptions">
     </ag-grid-angular>
   </div>
 </div>

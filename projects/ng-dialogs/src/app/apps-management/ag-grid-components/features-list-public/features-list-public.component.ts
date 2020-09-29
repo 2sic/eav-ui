@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-features-list-public',
   templateUrl: './features-list-public.component.html',
-  styleUrls: ['./features-list-public.component.scss']
+  styleUrls: ['./features-list-public.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeaturesListPublicComponent implements ICellRendererAngularComp {
   value: boolean;

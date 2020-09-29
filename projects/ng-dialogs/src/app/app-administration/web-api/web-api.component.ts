@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-
-import { WebApisService } from '../services/web-apis.service';
-import { WebApi } from '../models/web-api.model';
-import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject } from 'rxjs';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
-import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
+import { DialogService } from '../../shared/services/dialog.service';
+import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
+import { WebApi } from '../models/web-api.model';
+import { WebApisService } from '../services/web-apis.service';
 
 @Component({
   selector: 'app-web-api',
   templateUrl: './web-api.component.html',
-  styleUrls: ['./web-api.component.scss']
+  styleUrls: ['./web-api.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WebApiComponent implements OnInit {
-  webApis: WebApi[];
+export class WebApiComponent implements OnInit, OnDestroy {
+  @Input() private enableCode: boolean;
 
+  webApis$ = new BehaviorSubject<WebApi[]>(null);
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -35,9 +37,10 @@ export class WebApiComponent implements OnInit {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', cellRendererParams: {
+        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
+        cellRendererParams: {
+          enableCodeGetter: this.enableCodeGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
-          onDelete: this.deleteApi.bind(this),
         } as WebApiActionsParams,
       },
     ],
@@ -52,6 +55,10 @@ export class WebApiComponent implements OnInit {
 
   ngOnInit() {
     this.fetchWebApis();
+  }
+
+  ngOnDestroy() {
+    this.webApis$.complete();
   }
 
   addController() {
@@ -82,7 +89,7 @@ export class WebApiComponent implements OnInit {
 
   private fetchWebApis() {
     this.webApisService.getAll().subscribe(paths => {
-      this.webApis = paths.map(path => {
+      const webApis: WebApi[] = paths.map(path => {
         const splitIndex = path.lastIndexOf('/');
         const fileExtIndex = path.lastIndexOf('.');
         const folder = path.substring(0, splitIndex);
@@ -92,15 +99,16 @@ export class WebApiComponent implements OnInit {
           name,
         };
       });
+      this.webApis$.next(webApis);
     });
+  }
+
+  private enableCodeGetter() {
+    return this.enableCode;
   }
 
   private openCode(api: WebApi) {
     this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
-  }
-
-  private deleteApi(api: WebApi) {
-    alert('Delete api');
   }
 
 }

@@ -1,23 +1,22 @@
-import { Injectable, ViewContainerRef, NgZone, OnDestroy } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subscription, fromEvent, Subject } from 'rxjs';
-import { filter, startWith, map, pairwise } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
-
-import { PipelineModel, PipelineDataSource, StreamWire, VisualDesignerData } from '../models/pipeline.model';
-import { QueryDefinitionService } from './query-definition.service';
-import { DataSource, DataSourceMetadata } from '../models/data-sources.model';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { QueryResultDialogData } from '../query-result/query-result.models';
-import { QueryResultComponent } from '../query-result/query-result.component';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { MetadataService } from '../../permissions/services/metadata.service';
+import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { MetadataService } from '../../permissions/services/metadata.service';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DataSource, DataSourceMetadata } from '../models/data-sources.model';
 import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
+import { QueryResultComponent } from '../query-result/query-result.component';
+import { QueryResultDialogData } from '../query-result/query-result.models';
+import { QueryDefinitionService } from './query-definition.service';
 
 @Injectable()
 export class VisualQueryService implements OnDestroy {
@@ -25,7 +24,7 @@ export class VisualQueryService implements OnDestroy {
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
 
-  private pipelineId: number;
+  private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
   private doRefresh = false;
   private subscription = new Subscription();
 
@@ -40,10 +39,8 @@ export class VisualQueryService implements OnDestroy {
     private zone: NgZone,
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
-  ) {
-    const pipelineId = this.route.snapshot.paramMap.get('pipelineId');
-    this.pipelineId = parseInt(pipelineId, 10);
-  }
+    private changeDetectorRef: ChangeDetectorRef,
+  ) { }
 
   ngOnDestroy() {
     this.pipelineModel$.complete();
@@ -156,7 +153,7 @@ export class VisualQueryService implements OnDestroy {
       }
 
       // Check if the type exists, and if yes, create new Entity
-      this.contentTypesService.getDetails(contentTypeName, { ignoreErrors: 'true' }).subscribe({
+      this.contentTypesService.retrieveContentType(contentTypeName /*, { ignoreErrors: 'true' } */).subscribe({
         next: contentType => {
           const form: EditForm = {
             items: [{
@@ -212,6 +209,7 @@ export class VisualQueryService implements OnDestroy {
           // Real top margin is overwritten in css e.g. dialog-panel-large
           position: { top: '0' },
         });
+        this.changeDetectorRef.markForCheck();
         console.warn(pipelineResult);
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
       },
@@ -264,7 +262,7 @@ export class VisualQueryService implements OnDestroy {
         startWith(!!this.route.snapshot.firstChild),
         map(() => !!this.route.snapshot.firstChild),
         pairwise(),
-        filter(hadAndHasChild => hadAndHasChild[0] && !hadAndHasChild[1]),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
         filter(() => {
           const refresh = this.doRefresh;
           this.doRefresh = false;

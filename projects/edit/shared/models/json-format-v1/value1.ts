@@ -1,5 +1,5 @@
-import { EavValues } from '../eav';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { EavValues } from '../eav';
 
 export class Value1<T> {
   [key: string]: T;

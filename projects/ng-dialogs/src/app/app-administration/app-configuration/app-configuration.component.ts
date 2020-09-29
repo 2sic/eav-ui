@@ -1,34 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { Context } from '../../shared/services/context';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
-import { EditForm } from '../../shared/models/edit-form.model';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { Context } from '../../shared/services/context';
+import { DialogSettings } from '../models/dialog-settings.model';
 
 @Component({
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss']
+  styleUrls: ['./app-configuration.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppConfigurationComponent implements OnInit {
+  @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
-  showPermissions = false;
 
   constructor(
     private contentItemsService: ContentItemsService,
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-    private appDialogConfigService: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-      this.showPermissions = !dialogSettings.IsContent;
-    });
   }
 
   edit(staticName: string) {

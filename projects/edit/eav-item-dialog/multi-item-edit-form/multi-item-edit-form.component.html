@@ -1,45 +1,60 @@
 <router-outlet></router-outlet>
 
-<div mat-dialog-container *ngIf="(items$ | async)?.length > 0" (click)="toggleDebugEnabled($event)"
-  style="position: relative">
-  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': hideHeader }">
-    <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId"
-      [formsAreValid]="formsAreValid$ | async" [allControlsAreDisabled]="allControlsAreDisabled$ | async"
-      [isParentDialog]="isParentDialog" [publishMode]="publishMode$ | async" (closeDialog)="closeDialog()"
-      (setPublishMode)="setPublishMode1($event)">
-    </app-multi-item-edit-form-header>
-  </div>
-  <div style="position: relative">
-    <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
-      'debug-enabled': debugEnabled,
-      'debug-info-is-open': debugInfoIsOpen,
-      'hide-header-height-fix': hideHeader
-    }">
-      <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
-          <div #slideable class="mdc-layout-grid__cell--span-12">
-            <div *ngFor="let item of (items$ | async); trackBy:trackByFn">
-              <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange($event)">
-              </app-item-edit-form>
+<ng-container *ngIf="{
+  items: items$ | async,
+  isCopy: isCopy$ | async,
+  formsAreValid: formsAreValid$ | async,
+  allControlsAreDisabled: allControlsAreDisabled$ | async,
+  publishMode: publishMode$ | async,
+  reduceSaveButton: reduceSaveButton$ | async,
+  debugEnabled: debugEnabled$ | async,
+  debugInfoIsOpen: debugInfoIsOpen$ | async,
+  hideHeader: hideHeader$ | async,
+  slide: slide$ | async,
+  eavConfigLoaded: eavConfigLoaded$ | async
+} as data">
+
+  <div mat-dialog-container style="position: relative" appToggleDebug *ngIf="data.eavConfigLoaded">
+    <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
+      <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId" [isCopy]="data.isCopy"
+        [formsAreValid]="data.formsAreValid" [allControlsAreDisabled]="data.allControlsAreDisabled"
+        [isParentDialog]="isParentDialog" [publishMode]="data.publishMode" (closeDialog)="closeDialog()"
+        (setPublishMode)="setPublishMode($event)">
+      </app-multi-item-edit-form-header>
+    </div>
+    <div style="position: relative">
+      <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+        'debug-enabled': data.debugEnabled,
+        'debug-info-is-open': data.debugInfoIsOpen,
+        'hide-header-height-fix': data.hideHeader
+      }">
+        <div class="mdc-layout-grid">
+          <div class="mdc-layout-grid__inner">
+            <div #slideable class="mdc-layout-grid__cell--span-12" [ngClass]="data.slide">
+              <div *ngFor="let item of data.items; trackBy: trackByFn">
+                <app-item-edit-form [item]="item" [formId]="formId" (itemFormValueChange)="formValueChange()">
+                </app-item-edit-form>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="c-multi-item-dialog__save-container">
-        <div class="c-multi-item-dialog__save-button">
-          <button mat-fab class="mat-elevation-z24" [matTooltip]="'Form.Buttons.Save.Tip' | translate" [ngClass]="{
-            'mat-fab--compact' : extendedSaveButtonIsReduced,
-            'mat-fab--extended' : !extendedSaveButtonIsReduced,
-            'mat-fab--disabled' : !(formsAreValid$ | async) && !(allControlsAreDisabled$ | async)
-          }" (click)="saveAll(true)">
-            <mat-icon>done</mat-icon>
-            {{ extendedSaveButtonIsReduced ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
-          </button>
+        <div class="c-multi-item-dialog__save-container">
+          <div class="c-multi-item-dialog__save-button">
+            <button mat-fab class="mat-elevation-z24" [matTooltip]="'Form.Buttons.Save.Tip' | translate" [ngClass]="{
+              'mat-fab--compact' : data.reduceSaveButton,
+              'mat-fab--extended' : !data.reduceSaveButton,
+              'mat-fab--disabled' : !data.formsAreValid && !data.allControlsAreDisabled
+            }" (click)="saveAll(true)">
+              <mat-icon>done</mat-icon>
+              {{ data.reduceSaveButton ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
+    <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="data.debugEnabled"
+      (debugInfoOpened)="debugInfoOpened($event)">
+    </app-multi-item-edit-form-debug>
   </div>
-  <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="debugEnabled" (debugInfoOpened)="debugInfoOpened($event)">
-  </app-multi-item-edit-form-debug>
-</div>
+</ng-container>

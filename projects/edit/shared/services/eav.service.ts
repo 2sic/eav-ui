@@ -1,18 +1,20 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
-import { Item } from '../models/eav/item';
-import { UrlHelper } from '../helpers/url-helper';
-import * as itemActions from '../store/actions/item.actions';
-import * as fromStore from '../store';
-import { EavConfig } from '../models/eav-configuration';
-import { FormValueSet, FormDisabledSet } from '../../../edit-types';
+import { FormDisabledSet, FormValueSet } from '../../../edit-types';
+import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
+import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { EavConfig } from '../models/eav-config';
+import { Item } from '../models/eav/item';
 import { SaveResult } from '../models/eav/save-result.model';
+import { VersioningOptions } from '../models/eav/versioning-options';
+import * as fromStore from '../store';
+import * as itemActions from '../store/actions/item.actions';
+
+export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
 export class EavService implements OnDestroy {
@@ -27,33 +29,55 @@ export class EavService implements OnDestroy {
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
   formDisabledChange$ = new Subject<FormDisabledSet>();
 
-  private eavConfig: EavConfig;
+  eavConfig: EavConfig;
 
-  constructor(private http: HttpClient, private store: Store<fromStore.EavState>, private dnnContext: DnnContext) { }
+  constructor(
+    private http: HttpClient,
+    private store: Store<fromStore.EavState>,
+    private dnnContext: DnnContext,
+    /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
+    private context: Context,
+  ) { }
 
+  // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
     this.forceConnectorSave$.complete();
     this.formValueChange$.complete();
     this.formDisabledChange$.complete();
   }
 
-  getEavConfig() {
-    return this.eavConfig;
+  /** Create EavConfiguration from sessionStorage */
+  setEavConfig(editDialogContext: EditDialogContext) {
+    this.eavConfig = {
+      zoneId: this.context.zoneId.toString(),
+      appId: this.context.appId.toString(),
+      appRoot: editDialogContext.App.Url,
+      lang: editDialogContext.Language.Current,
+      langPri: editDialogContext.Language.Primary,
+      langs: editDialogContext.Language.All,
+      moduleId: this.context.moduleId.toString(),
+      partOfPage: sessionStorage.getItem(keyPartOfPage),
+      portalRoot: sessionStorage.getItem(keyPortalRoot),
+      tabId: this.context.tabId.toString(),
+      systemRoot: window.location.pathname.split('/dist/')[0] + '/',
+      versioningOptions: this.getVersioningOptions(
+        sessionStorage.getItem(keyPartOfPage) === 'true',
+        sessionStorage.getItem(keyPublishing),
+      ),
+    };
   }
 
-  setEavConfiguration(route: ActivatedRoute, context: Context) {
-    this.eavConfig = UrlHelper.getEavConfiguration(route, context);
-  }
-
-  loadAllDataForForm(appId: string, items: string | any) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(`eav/ui/load?appId=${appId}`), items) as Observable<any>;
+  fetchFormData(items: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
+      params: { appId: this.context.appId.toString() }
+    }) as Observable<EavFormData>;
   }
 
   saveItem(item: Item) {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(item));
   }
 
-  saveItemSuccess(data: any) {
+  saveItemSuccess(data: SaveResult) {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesSuccessAction(data));
   }
 
@@ -61,10 +85,29 @@ export class EavService implements OnDestroy {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesErrorAction(error));
   }
 
-  savemany(appId: string, partOfPage: string, body: string) {
-    return this.http.post(
-      this.dnnContext.$2sxc.http.apiUrl(`eav/ui/save?appId=${appId}&partOfPage=${partOfPage}`),
-      body
-    ) as Observable<SaveResult>;
+  saveFormData(body: string) {
+    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), body, {
+      params: { appId: this.eavConfig.appId.toString(), partOfPage: this.eavConfig.partOfPage }
+    }) as Observable<SaveResult>;
   }
+
+  private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
+    if (!partOfPage) {
+      return { show: true, hide: true, branch: true };
+    }
+
+    const publish = publishing || '';
+    switch (publish) {
+      case '':
+      case 'DraftOptional':
+        return { show: true, hide: true, branch: true };
+      case 'DraftRequired':
+        return { branch: true, hide: true };
+      default: {
+        console.error('invalid versioning requiremenets: ' + publish);
+        return {};
+      }
+    }
+  }
+
 }

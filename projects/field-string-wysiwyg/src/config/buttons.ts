@@ -1,8 +1,9 @@
+import { Adam } from '../../../edit-types';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
-import { Adam } from '../../../edit-types';
 // tslint:disable: curly
 
 /** Register all kinds of buttons on TinyMce */
@@ -80,7 +81,7 @@ export class TinyMceButtons {
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
   // TODO: SPM this should be typed, and then it should be .adam.toggle
-  static linksGroups(editor: any, fieldStringWysiwyg: any) {
+  static linksGroups(editor: any, fieldStringWysiwyg: FieldStringWysiwygEditor) {
     const linkButton = editor.ui.registry.getAll().buttons.link;
     const linkgroupItems = [
       {
@@ -94,7 +95,20 @@ export class TinyMceButtons {
         text: 'Link.Page.Tooltip',
         tooltip: 'Link.Page.Tooltip',
         icon: 'custom-sitemap',
-        value: (api: any) => { fieldStringWysiwyg.openDnnDialog('pagepicker'); },
+        value: (api: any) => {
+          const params: DnnBridgeConnectorParams = {
+            CurrentValue: '',
+            FileFilter: '',
+            Paths: '',
+          };
+          fieldStringWysiwyg.connector._experimental.openPagePicker(params, (value: PagePickerResult) => {
+            if (!value) { return; }
+            fieldStringWysiwyg.connector._experimental.getUrlOfId('page:' + value.id, (path: string) => {
+              const previouslySelected = editor.selection.getContent();
+              editor.insertContent('<a href=\"' + path + '\">' + (previouslySelected || value.name) + '</a>');
+            });
+          });
+        },
       },
     ];
     const linkgroupProItems = [...linkgroupItems];

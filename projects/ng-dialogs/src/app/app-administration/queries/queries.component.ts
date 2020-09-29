@@ -1,30 +1,32 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
-
-import { Query } from '../models/query.model';
-import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
-import { PipelinesService } from '../services/pipelines.service';
-import { ContentExportService } from '../services/content-export.service';
-import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ContentExportService } from '../../content-export/services/content-export.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { DialogService } from '../../shared/services/dialog.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DialogService } from '../../shared/services/dialog.service';
+import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
+import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
+import { Query } from '../models/query.model';
+import { PipelinesService } from '../services/pipelines.service';
+import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
 
 @Component({
   selector: 'app-queries',
   templateUrl: './queries.component.html',
-  styleUrls: ['./queries.component.scss']
+  styleUrls: ['./queries.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesComponent implements OnInit, OnDestroy {
-  queries: Query[];
+  @Input() private enablePermissions: boolean;
 
+  queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -42,8 +44,13 @@ export class QueriesComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
       },
       {
-        width: 200, cellClass: 'secondary-action no-padding',
+        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter',
+      },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onEditQuery: this.editQuery.bind(this),
           onCloneQuery: this.cloneQuery.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
@@ -51,15 +58,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
           onDelete: this.deleteQuery.bind(this),
         } as QueriesActionsParams,
       },
-      {
-        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
-      },
     ],
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
@@ -68,9 +70,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchQueries();
@@ -78,17 +78,19 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.queries$.complete();
     this.subscription.unsubscribe();
   }
 
   private fetchQueries() {
     this.pipelinesService.getAll(eavConstants.contentTypes.query).subscribe((queries: Query[]) => {
-      this.queries = queries;
+      this.queries$.next(queries);
     });
   }
 
-  importQuery() {
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
+  importQuery(files?: File[]) {
+    const dialogData: ImportQueryDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   editQuery(query: Query) {
@@ -109,6 +111,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private idValueGetter(params: ValueGetterParams) {
     const query: Query = params.data;
     return `ID: ${query.Id}\nGUID: ${query.Guid}`;
+  }
+
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
   }
 
   private openVisualQueryDesigner(params: CellClickedEvent) {
@@ -146,12 +152,14 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchQueries();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchQueries();
       })
     );
   }

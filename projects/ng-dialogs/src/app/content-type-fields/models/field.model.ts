@@ -1,14 +1,16 @@
+import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+
 export class Field {
-  Id: number;
-  SortOrder: number;
-  Type: string;
-  InputType: string;
-  StaticName: string;
-  IsTitle: boolean;
   AttributeId: number;
-  Metadata: FieldMetadata;
+  Id: number;
+  InputType: string;
   InputTypeConfig: FieldInputTypeConfig;
-  I18nKey: string;
+  IsTitle: boolean;
+  Metadata: FieldMetadata;
+  Permissions: PermissionsCount;
+  SortOrder: number;
+  StaticName: string;
+  Type: string;
 }
 
 export class FieldMetadata {

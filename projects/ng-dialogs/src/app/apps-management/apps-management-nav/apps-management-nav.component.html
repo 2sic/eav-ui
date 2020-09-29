@@ -11,7 +11,8 @@
   <router-outlet></router-outlet>
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-  <mat-tab-group dynamicHeight color="accent" (selectedTabChange)="changeTab($event)" [selectedIndex]="tabIndex">
+  <mat-tab-group dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
+    [selectedIndex]="tabIndex$ | async">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" matTooltip="Apps">
         <mat-icon>star_border</mat-icon>
@@ -29,7 +30,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="These settings apply to all zones/portals">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Features">
         <mat-icon>tune</mat-icon>
         <span>Features</span>
       </div>
@@ -37,7 +38,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Insights">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="2sxc Insights">
         <mat-icon>speed</mat-icon>
         <span>2sxc Insights</span>
       </div>

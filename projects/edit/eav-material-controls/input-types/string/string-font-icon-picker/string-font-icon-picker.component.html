@@ -1,5 +1,6 @@
 <ng-container *ngIf="{
   value: value$ | async,
+  filteredIcons: filteredIcons$ | async,
   disabled: disabled$ | async,
   previewCss: previewCss$ | async,
   showValidation: showValidation$ | async
@@ -13,14 +14,15 @@
     </div>
 
     <mat-autocomplete #auto="matAutocomplete">
-      <cdk-virtual-scroll-viewport itemSize="48" style="height: 256px" minBufferPx="500" maxBufferPx="1000">
-        <mat-option *cdkVirtualFor="let icon of filteredIcons$ | async" [value]="icon.class">
+      <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+        [style.height.px]="data.filteredIcons.length < 6 ? data.filteredIcons.length * 48 : 240">
+        <mat-option *cdkVirtualFor="let icon of data.filteredIcons" [value]="icon.class">
           <div class="icon-option">
             <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
             <span>{{ icon.label }}</span>
           </div>
         </mat-option>
-    </cdk-virtual-scroll-viewport>
+      </cdk-virtual-scroll-viewport>
     </mat-autocomplete>
 
     <mat-label>{{ label$ | async }}</mat-label>

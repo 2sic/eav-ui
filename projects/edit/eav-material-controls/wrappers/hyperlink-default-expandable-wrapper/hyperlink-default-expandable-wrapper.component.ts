@@ -1,19 +1,17 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, OnDestroy, AfterViewInit, ElementRef, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { FileTypeService } from '../../../shared/services/file-type.service';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../shared/services/eav.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { PagePickerResult } from '../../input-types/dnn-bridge/web-form-bridge/web-form-bridge.models';
+import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FileTypeService } from '../../../shared/services/file-type.service';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dnn-bridge/dnn-bridge.models';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -48,7 +46,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
-    private dialog: MatDialog,
     private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
@@ -56,9 +53,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.value$.subscribe(value => {
-      this.setLink(value);
-    }));
+    this.subscription.add(
+      this.value$.subscribe(value => {
+        this.setLink(value);
+      })
+    );
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
@@ -96,19 +95,17 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
   }
 
-  openPageDialog() {
-    this.dnnBridgeService.open(
-      this.control.value,
-      {
-        Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
-        FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : ''
-      },
-      this.processResultOfPagePicker.bind(this),
-      this.dialog
-    );
+  openPagePicker() {
+    const settings = this.settings$.value;
+    const params: DnnBridgeConnectorParams = {
+      CurrentValue: this.control.value,
+      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
+      Paths: (settings.Paths != null) ? settings.Paths : '',
+    };
+    this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
   }
 
-  private processResultOfPagePicker(value: PagePickerResult) {
+  private pagePickerCallback(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (!value) { return; }
     this.control.patchValue(`page:${value.id}`);
@@ -121,27 +118,13 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
-
-    if (!urlFromId$) {
-      const preview: Preview = {
-        url: value,
-        floatingText: '',
-        thumbnailUrl: this.thumbnailUrl(value, 1, true),
-        thumbnailPreviewUrl: this.thumbnailUrl(value, 2, false),
-        isImage: false,
-        isKnownType: false,
-        icon: this.fileTypeService.getIconClass(value),
-      };
-      this.preview$.next(preview);
-      return;
-    }
-
-    urlFromId$.subscribe(path => {
+    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
+      const urlLowered = path.toLowerCase();
+      const isFileOrPage = urlLowered.includes('file:') || urlLowered.includes('page:');
       const preview: Preview = {
         url: path,
-        floatingText: `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}`,
+        floatingText: isFileOrPage ? `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}` : '',
         thumbnailUrl: this.thumbnailUrl(path, 1, true),
         thumbnailPreviewUrl: this.thumbnailUrl(path, 2, false),
         isImage: this.fileTypeService.isImage(path),

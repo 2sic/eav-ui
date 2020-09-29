@@ -1,15 +1,14 @@
 
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-
+import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { EntityService } from '../../../../shared/services/entity.service';
-import { EntityDefaultComponent } from '../entity-default/entity-default.component';
-import { FieldSettings } from '../../../../../edit-types';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { EntityService } from '../../../../shared/services/entity.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 
 @Component({
   // tslint:disable-next-line:component-selector

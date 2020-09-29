@@ -1,20 +1,18 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
+import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { PagePickerResult } from '../../dnn-bridge/web-form-bridge/web-form-bridge.models';
-import { BaseComponent } from '../../base/base.component';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
-import { Preview } from './hyperlink-default.models';
-import { FieldSettings } from '../../../../../edit-types';
+import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { FileTypeService } from '../../../../shared/services/file-type.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
+import { Preview } from './hyperlink-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -45,7 +43,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     validationMessagesService: ValidationMessagesService,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private editRoutingService: EditRoutingService,
   ) {
     super(eavService, validationMessagesService);
@@ -55,12 +52,16 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     super.ngOnInit();
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.attachAdam(settings);
-    }));
-    this.subscription.add(this.value$.subscribe(value => {
-      this.setLink(value);
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.attachAdam(settings);
+      })
+    );
+    this.subscription.add(
+      this.value$.subscribe(value => {
+        this.setLink(value);
+      })
+    );
   }
 
   ngOnDestroy() {
@@ -68,25 +69,21 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     super.ngOnDestroy();
   }
 
-  // #region dnn-page picker dialog
-  openPageDialog() {
-    this.dnnBridgeService.open(
-      this.control.value,
-      {
-        Paths: this.config.field.settings.Paths ? this.config.field.settings.Paths : '',
-        FileFilter: this.config.field.settings.FileFilter ? this.config.field.settings.FileFilter : '',
-      },
-      this.processResultOfPagePicker.bind(this),
-      this.dialog,
-    );
+  openPagePicker() {
+    const settings = this.settings$.value;
+    const params: DnnBridgeConnectorParams = {
+      CurrentValue: this.control.value,
+      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
+      Paths: (settings.Paths != null) ? settings.Paths : '',
+    };
+    this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
   }
 
-  private processResultOfPagePicker(value: PagePickerResult) {
+  private pagePickerCallback(value: PagePickerResult) {
     // Convert to page:xyz format (if it wasn't cancelled)
     if (!value) { return; }
     this.control.patchValue(`page:${value.id}`);
   }
-  // #endregion
 
   private setLink(value: string) {
     if (!value) { return; }
@@ -95,27 +92,13 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
-
-    if (!urlFromId$) {
-      const preview: Preview = {
-        url: value,
-        floatingText: '',
-        thumbnailUrl: this.thumbnailUrl(value),
-        thumbnailPreviewUrl: this.thumbnailUrl(value, 2),
-        isImage: false,
-        isKnownType: false,
-        icon: this.fileTypeService.getIconClass(value),
-      };
-      this.preview$.next(preview);
-      return;
-    }
-
-    urlFromId$.subscribe(path => {
+    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
+      const urlLowered = path.toLowerCase();
+      const isFileOrPage = urlLowered.includes('file:') || urlLowered.includes('page:');
       const preview: Preview = {
         url: path,
-        floatingText: `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}`,
+        floatingText: isFileOrPage ? `.../${path.substring(path.lastIndexOf('/') + 1, path.length)}` : '',
         thumbnailUrl: this.thumbnailUrl(path),
         thumbnailPreviewUrl: this.thumbnailUrl(path, 2),
         isImage: this.fileTypeService.isImage(path),
@@ -138,7 +121,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     return qt + result + qt;
   }
 
-  // #region adam
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
@@ -154,7 +136,12 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   private setValue(item: AdamItem | AdamPostResponse) {
-    this.control.patchValue(`file:${item.Id}`);
+    const usePath = this.settings$.value.ServerResourceMapping === 'url';
+    if (usePath) {
+      this.control.patchValue(item.FullPath);
+    } else {
+      this.control.patchValue(`file:${item.Id}`);
+    }
   }
-  //#endregion
+
 }

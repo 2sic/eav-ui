@@ -1,0 +1,27 @@
+.eav-dragging .eav-droparea {
+  &.eav-droparea-fill {
+    background-color: $dropzone-background !important;
+  }
+
+  &.eav-droparea-shadow {
+    box-shadow: 0 0 5px 5px $dropzone-background !important;
+  }
+
+  &.eav-droparea-outline {
+    outline: 2px dashed $dropzone-background !important;
+  }
+}
+
+.eav-droparea.eav-dragover {
+  &.eav-droparea-fill {
+    background-color: $dropzone-active-background !important;
+  }
+
+  &.eav-droparea-shadow {
+    box-shadow: 0 0 5px 5px $dropzone-active-background !important;
+  }
+
+  &.eav-droparea-outline {
+    outline: 2px dashed $dropzone-active-background !important;
+  }
+}

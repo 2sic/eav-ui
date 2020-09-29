@@ -1,18 +1,18 @@
-import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DnnAppComponent, Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
+import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
 import { Context } from './shared/services/context';
-import { keyModuleId, keyContentBlockId } from './shared/constants/session.constants';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
@@ -41,21 +41,23 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
     // Mostly copied from https://blog.bitsrc.io/dynamic-page-titles-in-angular-98ce20b5c334
     // Routes need a data: { title: '...' } for this to work
     const appTitle = this.titleService.getTitle(); // initial title when loading the page
-    this.subscription.add(this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => {
-        let child = this.activatedRoute.firstChild;
-        while (child.firstChild) {
-          child = child.firstChild;
-        }
-        if (child.snapshot.data['title']) {
-          return child.snapshot.data['title'];
-        }
-        return appTitle;
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => {
+          let child = this.activatedRoute.firstChild;
+          while (child.firstChild) {
+            child = child.firstChild;
+          }
+          if (child.snapshot.data['title']) {
+            return child.snapshot.data['title'];
+          }
+          return appTitle;
+        }),
+      ).subscribe((title: string) => {
+        this.titleService.setTitle(title);
       })
-    ).subscribe((title: string) => {
-      this.titleService.setTitle(title);
-    }));
+    );
   }
 
   ngOnDestroy() {

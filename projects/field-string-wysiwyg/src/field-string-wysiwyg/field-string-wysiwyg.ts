@@ -1,8 +1,8 @@
-import { EavCustomInputField, Connector } from '../../../edit-types';
-import { wysiwygPreviewTag, FieldStringWysiwygPreview } from '../preview/preview';
-import { wysiwygEditorTag, FieldStringWysiwygEditor } from '../editor/editor';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
+import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.css';
 
 const wysiwygTag = 'field-string-wysiwyg';

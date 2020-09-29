@@ -1,17 +1,15 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { DropzoneDirective } from 'ngx-dropzone-wrapper';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
-import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavConfig } from '../../../shared/models/eav-configuration';
-import { EavService } from '../../../shared/services/eav.service';
+import { AfterViewInit, ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { DropzoneDirective } from 'ngx-dropzone-wrapper';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { DropzoneConfigInstance } from './dropzone-wrapper.models';
-import { DropzoneConfigExt, AdamPostResponse } from '../../../../edit-types';
+import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
+import { EavService } from '../../../shared/services/eav.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { DropzoneConfigInstance } from './dropzone-wrapper.models';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -25,7 +23,6 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
 
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
   dropzoneDisabled$: Observable<boolean>;
-  private eavConfig: EavConfig;
 
   constructor(
     eavService: EavService,
@@ -34,17 +31,16 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService);
-    this.eavConfig = eavService.getEavConfig();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(map(combined => {
-      const controlDisabled = combined[0];
-      const dropzoneConfig = combined[1];
-      const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
-      return controlDisabled || dropzoneDisabled;
-    }));
+    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(
+      map(([controlDisabled, dropzoneConfig]) => {
+        const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
+        return controlDisabled || dropzoneDisabled;
+      }),
+    );
 
     this.config.dropzone = {
       setConfig: (config) => {
@@ -101,7 +97,7 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const appId = this.eavConfig.appId;
+    const appId = this.eavService.eavConfig.appId;
 
     const startDisabled = this.config.field.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);

@@ -1,14 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { BaseComponent } from '../../base/base.component';
-import { DropdownOption } from './string-dropdown.models';
-import { calculateDropdownOptions } from './string-dropdown.helpers';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { calculateDropdownOptions } from './string-dropdown.helpers';
+import { DropdownOption } from './string-dropdown.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,18 +32,18 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
   ngOnInit() {
     super.ngOnInit();
     this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
-    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(map(combined => {
-      const value = combined[0];
-      const settings = combined[1];
-      const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
-      return dropdownOptions;
-    }));
-    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(map(combined => {
-      const enableTextEntry = combined[0];
-      const freeTextMode = combined[1];
-      if (!enableTextEntry) { return false; }
-      return freeTextMode;
-    }));
+    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(
+      map(([value, settings]) => {
+        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
+        return dropdownOptions;
+      }),
+    );
+    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(
+      map(([enableTextEntry, freeTextMode]) => {
+        if (!enableTextEntry) { return false; }
+        return freeTextMode;
+      }),
+    );
   }
 
   ngOnDestroy() {

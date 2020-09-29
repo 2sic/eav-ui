@@ -1,5 +1,4 @@
 import { ActivatedRoute } from '@angular/router';
-
 import { Language } from '../../shared/models/eav';
 
 export function calculateIsParentDialog(route: ActivatedRoute) {

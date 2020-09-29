@@ -1,14 +1,14 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">Export Content / Data</div>
+  <div class="dialog-title-box">Export {{ (contentType$ | async)?.Name }}</div>
 </div>
 
 <p class="dialog-description">
   This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
   export the schema that you can then fill in using Excel. Please visit
-  <a href="http://2sxc.org/help" target="_blank">http://2sxc.org/help</a> for more instructions.
+  <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
 </p>
 
-<form #ngForm="ngForm" class="dialog-form">
+<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div>
       <mat-form-field appearance="standard" color="accent">
@@ -26,8 +26,9 @@
         <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
         </mat-radio-button>
         <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
-        <mat-radio-button *ngIf="hasIdList" value="Selection">Export selected {{itemIds.length}}
-          items</mat-radio-button>
+        <mat-radio-button *ngIf="hasIdList" value="Selection">
+          Export selected {{ itemIds.length }} items
+        </mat-radio-button>
       </mat-radio-group>
     </div>
 
@@ -56,11 +57,8 @@
 
   <div class="dialog-form-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button [disabled]="!ngForm.form.valid" (click)="exportJson()">
-      Export Type Definition as Json (for developers)
-    </button>
     <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
-      Export
+      Export Data
     </button>
   </div>
 </form>

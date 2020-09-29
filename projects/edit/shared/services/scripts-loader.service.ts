@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { EavConfig } from '../models/eav-configuration';
-import { EavService } from './eav.service';
 import { UrlHelper } from '../helpers/url-helper';
+import { EavService } from './eav.service';
+
 declare const sxcVersion: string;
 
 export const FileTypeConstants = {
@@ -19,14 +18,9 @@ export interface LoadFile {
 
 @Injectable()
 export class ScriptsLoaderService {
-  private eavConfig: EavConfig;
   private loadedFiles: LoadFile[] = [];
 
-  constructor(
-    private eavService: EavService,
-  ) {
-    this.eavConfig = this.eavService.getEavConfig();
-  }
+  constructor(private eavService: EavService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
   public load(scripts: string[], callback: () => any) {
@@ -104,8 +98,8 @@ export class ScriptsLoaderService {
   }
 
   private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', this.eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', this.eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', this.eavConfig));
+    return url.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', this.eavService.eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', this.eavService.eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', this.eavService.eavConfig));
   }
 }

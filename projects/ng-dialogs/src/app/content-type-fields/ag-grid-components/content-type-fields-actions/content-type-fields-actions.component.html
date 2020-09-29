@@ -2,14 +2,27 @@
   <div class="like-button highlight" matRipple matTooltip="Rename" (click)="rename()">
     <mat-icon>settings</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Delete" *ngIf="!field.IsTitle" (click)="delete()">
-    <mat-icon>delete</mat-icon>
-  </div>
-  <div class="like-button disabled" *ngIf="field.IsTitle">
-    <mat-icon>delete</mat-icon>
-  </div>
-  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="showPermissions"
+
+  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="enablePermissions"
     (click)="openPermissions()">
+    <mat-icon [matBadge]="field.Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="field.Permissions.Count">
+      person
+    </mat-icon>
+    <mat-icon *ngIf="!field.Permissions.Count">person</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="!enablePermissions">
     <mat-icon>person</mat-icon>
   </div>
+
+  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
+    <mat-icon>more_horiz</mat-icon>
+  </div>
 </div>
+
+<mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item [disabled]="field.IsTitle" (click)="deleteField()">
+    <mat-icon>delete</mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

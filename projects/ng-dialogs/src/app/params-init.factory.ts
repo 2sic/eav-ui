@@ -1,13 +1,13 @@
+import { JsInfo, SxcRoot } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { SxcRoot } from '@2sic.com/2sxc-typings';
-
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyZoneId, keyAppId, keyDialog, keyTabId, keyRequestToken, keyPortalRoot, keyItems, keyContentType, keyUrl, prefix, keyPipelineId } from './shared/constants/session.constants';
-import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyPortalRoot, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
+import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
+
 declare const $2sxc: SxcRoot;
 
 export function paramsInitFactory(injector: Injector) {
@@ -30,7 +30,7 @@ export function paramsInitFactory(injector: Injector) {
       const paramKeys = Object.keys(queryParametersFromUrl);
       for (const key of paramKeys) {
         const value = queryParametersFromUrl[key];
-        if (value === undefined || value === null) { continue; }
+        if (value == null) { continue; }
         sessionStorage.setItem(prefix + key, value);
       }
 
@@ -109,6 +109,6 @@ function loadEnvironment() {
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
     root: sessionStorage.getItem(keyPortalRoot),
-    api: sessionStorage.getItem(keyPortalRoot) + 'desktopmodules/2sxc/api/',
-  });
+    api: sessionStorage.getItem(keyApi),
+  } as any as JsInfo);
 }

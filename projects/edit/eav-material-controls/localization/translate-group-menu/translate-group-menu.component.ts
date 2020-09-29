@@ -1,25 +1,24 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription, BehaviorSubject, of } from 'rxjs';
-import { filter, map, startWith, distinctUntilChanged } from 'rxjs/operators';
 import isEqual from 'lodash-es/isEqual';
-
-import { EavValue, EavAttributes, EavValues, EavDimensions, Item, ContentType } from '../../../shared/models/eav';
-import { FieldConfigSet, FieldConfigGroup } from '../../../eav-dynamic-form/model/field-config';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
+import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { ContentType, EavAttributes, EavDimensions, EavValue, EavValues, Item } from '../../../shared/models/eav';
+import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
+import { EavService } from '../../../shared/services/eav.service';
+import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
+import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
-import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
-import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { ValidationHelper } from '../../validators/validation-helper';
+import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
-import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
-import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { EavService } from '../../../shared/services/eav.service';
 
 @Component({
   selector: 'app-translate-group-menu',

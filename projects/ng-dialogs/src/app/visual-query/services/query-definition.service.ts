@@ -1,21 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { Context } from '../../shared/services/context';
+import { webApiQueryDataSources, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { PipelineModel, PipelineDataSource } from '../models/pipeline.model';
-import { DataSource } from '../models/data-sources.model';
-import { PipelineResult } from '../models/pipeline-result.model';
+import { Context } from '../../shared/services/context';
+import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
 
 @Injectable()
 export class QueryDefinitionService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   fetchPipeline(pipelineEntityId: number) {
-    const pipelineModel$ = this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetPipeline'), {
+    const pipelineModel$ = this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiQueryGet), {
       params: { appId: this.context.appId.toString(), id: pipelineEntityId.toString() }
     }) as Observable<PipelineModel>;
 
@@ -73,7 +71,7 @@ export class QueryDefinitionService {
 
   fetchDataSources() {
     const dataSources$ = this.http.get(
-      this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/GetInstalledDataSources')
+      this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources)
     ) as Observable<DataSource[]>;
     return dataSources$.pipe(
       map(dataSources => {
@@ -120,7 +118,7 @@ export class QueryDefinitionService {
     const pipeline = pipelineModel.Pipeline;
     const dataSources = pipelineModel.DataSources;
     const pipelineModel$ = this.http.post(
-      this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/SavePipeline'),
+      this.dnnContext.$2sxc.http.apiUrl(webApiQuerySave),
       { pipeline, dataSources },
       { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId.toString() } }
     ) as Observable<PipelineModel>;
@@ -134,7 +132,7 @@ export class QueryDefinitionService {
   }
 
   runPipeline(id: number) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/PipelineDesigner/QueryPipeline'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiQueryRun), {
       params: { appId: this.context.appId.toString(), id: id.toString() }
     }) as Observable<PipelineResult>;
   }

@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
-
-import { Connector, ConnectorData, FieldConfig, ExperimentalProps } from '../../../../../../../edit-types';
+import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../../../../../../edit-types';
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
-import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
-import { EavConfig } from '../../../../../../shared/models/eav-configuration';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
+import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
+import { EavConfig } from '../../../../../../shared/models/eav-config';
+
 declare const sxcVersion: string;
 
 export class ConnectorInstance<T> implements Connector<T> {

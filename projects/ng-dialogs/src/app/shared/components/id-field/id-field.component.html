@@ -1,4 +1,4 @@
-<div matRipple class="id-box highlight" matTooltip="{{ tooltip }}" (click)="copy()">
+<div matRipple class="id-box highlight" [matTooltip]="tooltip" (click)="copy()">
   <span class="id">{{ id }}</span>
   <mat-icon class="icon">file_copy</mat-icon>
 </div>

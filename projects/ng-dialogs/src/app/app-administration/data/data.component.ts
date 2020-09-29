@@ -1,36 +1,40 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSelectChange } from '@angular/material/select';
+import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, CellClassParams } from '@ag-grid-community/all-modules';
-
-import { ContentType } from '../models/content-type.model';
-import { ContentTypesService } from '../services/content-types.service';
-import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
-import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
-import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
-import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
-import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { GlobalConfigurationService } from '../../../../../edit/shared/services/global-configuration.service';
-import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, from, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
+import { ContentExportService } from '../../content-export/services/content-export.service';
+import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
+import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
+import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
+import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
+import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { ContentType } from '../models/content-type.model';
+import { ContentTypesService } from '../services/content-types.service';
+import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
 
 @Component({
   selector: 'app-data',
   templateUrl: './data.component.html',
-  styleUrls: ['./data.component.scss']
+  styleUrls: ['./data.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataComponent implements OnInit, OnDestroy {
-  contentTypes: ContentType[];
-  scope: string;
-  defaultScope: string;
-  scopeOptions: EavScopeOption[];
-  debugEnabled = false;
+  @Input() private enablePermissions: boolean;
+
+  contentTypes$ = new BehaviorSubject<ContentType[]>(null);
+  scope = eavConstants.scopes.default.value;
+  defaultScope = eavConstants.scopes.default.value;
+  scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
+  debugEnabled$ = this.globalConfigService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -59,17 +63,6 @@ export class DataComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
       },
       {
-        width: 200, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent',
-        cellRendererParams: {
-          enableAppFeaturesGetter: this.enableAppFeaturesGetter.bind(this),
-          onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
-          onOpenExport: this.openExport.bind(this),
-          onOpenImport: this.openImport.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onDelete: this.deleteContentType.bind(this),
-        } as DataActionsParams,
-      },
-      {
         headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
       },
@@ -77,41 +70,70 @@ export class DataComponent implements OnInit, OnDestroy {
         headerName: 'Description', field: 'Metadata.Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
+          onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onEdit: this.editContentType.bind(this),
+          onTypeExport: this.exportType.bind(this),
+          onOpenDataExport: this.openDataExport.bind(this),
+          onOpenDataImport: this.openDataImport.bind(this),
+          onDelete: this.deleteContentType.bind(this),
+        } as DataActionsParams,
+      },
     ],
   };
 
-  private enableAppFeatures = false;
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
-    private globalConfigurationService: GlobalConfigurationService,
-    private appDialogConfigService: AppDialogConfigService,
+    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-    this.scope = eavConstants.scopes.default.value;
-    this.defaultScope = eavConstants.scopes.default.value;
-  }
+    private contentExportService: ContentExportService,
+  ) { }
 
-  async ngOnInit() {
-    const dialogSettings = await this.appDialogConfigService.getDialogSettings().toPromise();
-    this.enableAppFeatures = !dialogSettings.IsContent;
-    this.fetchScopes();
+  ngOnInit() {
     this.fetchContentTypes();
+    this.fetchScopes();
     this.refreshOnChildClosed();
-    this.subscription.add(
-      this.globalConfigurationService.getDebugEnabled().subscribe(debugEnabled => {
-        this.debugEnabled = debugEnabled;
-      })
-    );
   }
 
   ngOnDestroy() {
+    this.contentTypes$.complete();
+    this.scopeOptions$.complete();
     this.subscription.unsubscribe();
+  }
+
+  filesDropped(files: File[]) {
+    const importFile = files[0];
+    const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
+    switch (ext) {
+      case 'xml':
+        from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
+          const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
+          const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
+          if (contentType == null) {
+            const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;
+            this.snackBar.open(message, null, { duration: 5000 });
+            return;
+          }
+          this.openDataImport(contentType, files);
+        });
+        break;
+      case 'json':
+        this.importType(files);
+        break;
+    }
+  }
+
+  importType(files?: File[]) {
+    const importContentTypeData: ImportContentTypeDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -124,19 +146,23 @@ export class DataComponent implements OnInit, OnDestroy {
       this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
     } else {
       if (contentType.UsesSharedDef) { return; }
-      this.router.navigate([`${this.scope}/${contentType.Id}/edit`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`${this.scope}/${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
 
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
-      this.contentTypes = contentTypes;
+      this.contentTypes$.next(contentTypes);
+      if (this.scope !== this.defaultScope) {
+        const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
+        this.snackBar.open(message, null, { duration: 2000 });
+      }
     });
   }
 
   private fetchScopes() {
     this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions = scopes;
+      this.scopeOptions$.next(scopes);
     });
   }
 
@@ -150,29 +176,21 @@ export class DataComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeScope(event: MatSelectChange) {
-    let newScope: string = event.value;
+  changeScope(newScope: string) {
     if (newScope === 'Other') {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions.find(option => option.value === newScope)) {
+      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
         const newScopeOption: EavScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions.push(newScopeOption);
+        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
       }
     }
     this.scope = newScope;
     this.fetchContentTypes();
-    if (this.scope !== this.defaultScope) {
-      this.snackBar.open(
-        'Warning! You are in a special scope. Changing things here could easily break functionality',
-        null,
-        { duration: 2000 }
-      );
-    }
   }
 
   private idValueGetter(params: ValueGetterParams) {
@@ -180,8 +198,8 @@ export class DataComponent implements OnInit, OnDestroy {
     return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
-  private enableAppFeaturesGetter() {
-    return this.enableAppFeatures;
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
   }
 
   private nameCellClassGetter(params: CellClassParams) {
@@ -227,12 +245,17 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private openExport(contentType: ContentType) {
+  private exportType(contentType: ContentType) {
+    this.contentExportService.exportJson(contentType.StaticName);
+  }
+
+  private openDataExport(contentType: ContentType) {
     this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
-  private openImport(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
+  private openDataImport(contentType: ContentType, files?: File[]) {
+    const contentImportData: ContentImportDialogData = { files };
+    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: contentImportData });
   }
 
   private openPermissions(contentType: ContentType) {
@@ -253,12 +276,14 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchContentTypes();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchContentTypes();
       })
     );
   }

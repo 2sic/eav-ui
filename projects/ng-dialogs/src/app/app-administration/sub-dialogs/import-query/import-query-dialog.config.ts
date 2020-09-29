@@ -11,3 +11,7 @@ export const importQueryDialog: DialogConfig = {
     return ImportQueryComponent;
   }
 };
+
+export interface ImportQueryDialogData {
+  files?: File[];
+}

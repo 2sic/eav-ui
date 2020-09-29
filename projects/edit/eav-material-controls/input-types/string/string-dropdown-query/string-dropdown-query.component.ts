@@ -1,18 +1,16 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
-
+import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
+import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EavService } from '../../../../shared/services/eav.service';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { QueryService } from '../../../../shared/services/query.service';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { FieldSettings } from '../../../../../edit-types';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -56,10 +54,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   /** Override function in superclass */
   queryEntityMapping(entity: QueryEntity) {
-    let settings: FieldSettings;
-    this.settings$.pipe(take(1)).subscribe(stngs => {
-      settings = stngs;
-    });
+    const settings = this.settings$.value;
     const entityInfo: EntityInfo = {
       Id: entity.Id,
       Value: entity[settings.Value],

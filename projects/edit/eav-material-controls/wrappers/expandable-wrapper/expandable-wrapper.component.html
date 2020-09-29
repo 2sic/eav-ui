@@ -11,11 +11,11 @@
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="!(open$ | async) ? 'open' : 'closed'">
+      <div [@itemShrinkAnimation]="(open$ | async) ? 'closed' : 'open'">
       </div>
       <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
         [@contentExpandAnimation]="{
-          value: !(open$ | async) ? 'closed' : 'expanded',
+          value: (open$ | async) ? 'expanded' : 'closed',
           params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>

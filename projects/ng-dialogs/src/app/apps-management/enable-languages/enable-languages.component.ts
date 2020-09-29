@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
-import { EnableLanguagesService } from '../services/enable-languages.service';
-import { EnableLanguage } from '../models/enable-language.model';
-import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
+import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
+import { EnableLanguage } from '../models/enable-language.model';
+import { EnableLanguagesService } from '../services/enable-languages.service';
 
 @Component({
   selector: 'app-enable-languages',
   templateUrl: './enable-languages.component.html',
-  styleUrls: ['./enable-languages.component.scss']
+  styleUrls: ['./enable-languages.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EnableLanguagesComponent implements OnInit {
-  languages: EnableLanguage[];
+export class EnableLanguagesComponent implements OnInit, OnDestroy {
+  languages$ = new BehaviorSubject<EnableLanguage[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -50,6 +51,10 @@ export class EnableLanguagesComponent implements OnInit {
     this.fetchLanguages();
   }
 
+  ngOnDestroy() {
+    this.languages$.complete();
+  }
+
   private idValueGetter(params: ValueGetterParams) {
     const language: EnableLanguage = params.data;
     return `ID: ${language.Code}`;
@@ -68,7 +73,7 @@ export class EnableLanguagesComponent implements OnInit {
 
   private fetchLanguages() {
     this.languagesService.getAll().subscribe(languages => {
-      this.languages = languages;
+      this.languages$.next(languages);
     });
   }
 }

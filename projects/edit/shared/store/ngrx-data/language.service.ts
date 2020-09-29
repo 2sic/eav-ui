@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-
 import { Language } from '../../models/eav';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +9,7 @@ export class LanguageService extends EntityCollectionServiceBase<Language> {
   }
 
   /** Load available languages in ngrx-data */
-  public loadLanguages(languages: Language[]) {
+  loadLanguages(languages: Language[]) {
     this.addAllToCache(languages);
   }
 }

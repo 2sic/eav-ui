@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { contentItemsDialog } from './content-items-dialog.config';
+import { RouterModule, Routes } from '@angular/router';
 import { edit } from '../../../../edit/edit.matcher';
-import { contentItemImportDialog } from './ag-grid-components/content-item-import/content-item-import-dialog.config';
+import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { contentItemImportDialog } from './content-item-import/content-item-import-dialog.config';
+import { contentItemsDialog } from './content-items-dialog.config';
 
 const routes: Routes = [
   {
@@ -18,6 +17,11 @@ const routes: Routes = [
         loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
       },
       { path: 'import', component: DialogEntryComponent, data: { dialog: contentItemImportDialog } },
+      {
+        path: ':contentTypeStaticName/import',
+        loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
+        data: { title: 'Import Items' },
+      },
       {
         matcher: edit,
         loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)

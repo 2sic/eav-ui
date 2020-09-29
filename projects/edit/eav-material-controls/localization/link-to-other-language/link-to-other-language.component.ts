@@ -1,14 +1,13 @@
-import { Component, OnInit, Inject, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
-import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { Language } from '../../../shared/models/eav';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
+import { Language } from '../../../shared/models/eav';
+import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { I18nKeyConstants } from './link-to-other-language.constants';
 import { findI18nKey, findTranslationLink } from './link-to-other-language.helpers';
 
@@ -43,11 +42,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
       this.languageService.entities$,
       this.languageInstanceService.getCurrentLanguage(this.dialogData.formId)
     ]).pipe(
-      map(combined => {
-        const languages = combined[0];
-        const currentLanguage = combined[1];
-        return languages.filter(lang => lang.key !== currentLanguage);
-      })
+      map(([languages, currentLanguage]) => languages.filter(lang => lang.key !== currentLanguage)),
     );
   }
 

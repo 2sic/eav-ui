@@ -1,35 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
-import { View } from '../models/view.model';
-import { calculateViewType } from './views.helpers';
-import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
-import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
-import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
-import { ViewsService } from '../services/views.service';
-import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
-import { EditForm } from '../../shared/models/edit-form.model';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
-import { DialogService } from '../../shared/services/dialog.service';
-import { Polymorphism } from '../models/polymorphism.model';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { DialogService } from '../../shared/services/dialog.service';
+import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
+import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
+import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
+import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
+import { Polymorphism } from '../models/polymorphism.model';
+import { View } from '../models/view.model';
+import { ViewsService } from '../services/views.service';
+import { ImportViewDialogData } from '../sub-dialogs/import-view/import-view-dialog.config';
+import { calculateViewType } from './views.helpers';
 
 @Component({
   selector: 'app-views',
   templateUrl: './views.component.html',
-  styleUrls: ['./views.component.scss']
+  styleUrls: ['./views.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsComponent implements OnInit, OnDestroy {
-  views: View[];
-  polymorphStatus: string;
+  @Input() private enableCode: boolean;
+  @Input() private enablePermissions: boolean;
+
+  views$ = new BehaviorSubject<View[]>(null);
+  polymorphStatus$ = new BehaviorSubject('');
   polymorphLogo = polymorphLogo;
 
   modules = AllCommunityModules;
@@ -62,14 +66,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Used', field: 'Used', width: 70, headerClass: 'dense', cellClass: 'primary-action highlight',
         sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (event) => { this.openUsage(event); }
-      },
-      {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent',
-        cellRendererParams: {
-          onOpenCode: this.openCode.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onDelete: this.deleteView.bind(this),
-        } as ViewActionsParams,
       },
       {
         headerName: 'Url Key', field: 'ViewNameInUrl', flex: 1, minWidth: 150, cellClass: 'no-outline',
@@ -111,11 +107,22 @@ export class ViewsComponent implements OnInit, OnDestroy {
         headerName: 'Default', field: 'ListPresentationType.DemoId', flex: 1, minWidth: 150, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
       },
+      {
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          enableCodeGetter: this.enableCodeGetter.bind(this),
+          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
+          onOpenCode: this.openCode.bind(this),
+          onOpenPermissions: this.openPermissions.bind(this),
+          onClone: this.cloneView.bind(this),
+          onExport: this.exportView.bind(this),
+          onDelete: this.deleteView.bind(this),
+        } as ViewActionsParams,
+      },
     ],
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
   private polymorphism: Polymorphism;
 
   constructor(
@@ -124,9 +131,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchTemplates();
@@ -135,21 +140,29 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.views$.complete();
+    this.polymorphStatus$.complete();
     this.subscription.unsubscribe();
+  }
+
+  importView(files?: File[]) {
+    const importViewData: ImportViewDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importViewData });
   }
 
   private fetchTemplates() {
     this.viewsService.getAll().subscribe(views => {
-      this.views = views;
+      this.views$.next(views);
     });
   }
 
   private fetchPolymorphism() {
     this.viewsService.getPolymorphism().subscribe(polymorphism => {
       this.polymorphism = polymorphism;
-      this.polymorphStatus = (polymorphism.Id === null)
+      const polymorphStatus = (polymorphism.Id === null)
         ? 'not configured'
         : (polymorphism.Resolver === null ? 'disabled' : 'using ' + polymorphism.Resolver);
+      this.polymorphStatus$.next(polymorphStatus);
     });
   }
 
@@ -196,6 +209,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
     return type.value;
   }
 
+  private enableCodeGetter() {
+    return this.enableCode;
+  }
+
+  private enablePermissionsGetter() {
+    return this.enablePermissions;
+  }
+
   private contentDemoValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return `${view.ContentType.DemoId} ${view.ContentType.DemoTitle}`;
@@ -232,6 +253,18 @@ export class ViewsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private cloneView(view: View) {
+    const form: EditForm = {
+      items: [{ ContentTypeName: eavConstants.contentTypes.template, DuplicateEntity: view.Id }],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+  }
+
+  private exportView(view: View) {
+    this.viewsService.export(view.Id);
+  }
+
   private deleteView(view: View) {
     if (!confirm(`Delete '${view.Name}' (${view.Id})?`)) { return; }
     this.snackBar.open('Deleting...');
@@ -243,15 +276,16 @@ export class ViewsComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchTemplates();
-          this.fetchPolymorphism();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchTemplates();
+        this.fetchPolymorphism();
       })
     );
   }
-
 }

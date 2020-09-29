@@ -1,20 +1,19 @@
-import { EventEmitter, Input, OnDestroy, OnInit, Output, Component, ViewChild, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
-import { Action } from '@ngrx/store';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-
-import { ContentType, Item } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-import { EavService } from '../../shared/services/eav.service';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
-import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import * as fromItems from '../../shared/store/actions/item.actions';
-import { BuildFieldsService } from './build-fields.service';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
+import { LocalizationHelper } from '../../shared/helpers/localization-helper';
+import { ContentType, Item } from '../../shared/models/eav';
+import { EavService } from '../../shared/services/eav.service';
+import * as fromItems from '../../shared/store/actions/item.actions';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
+import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
+import { BuildFieldsService } from './build-fields.service';
 
 @Component({
   selector: 'app-item-edit-form',

@@ -1,42 +1,44 @@
-import { Component, OnInit, HostBinding, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription, forkJoin, of } from 'rxjs';
-import { map, mergeMap, share, catchError, toArray, filter, concatMap } from 'rxjs/operators';
-
-import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
+import { catchError, concatMap, filter, map, mergeMap, share, toArray } from 'rxjs/operators';
+import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
-import { Field, FieldInputTypeOption } from '../models/field.model';
-import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
-import { fieldNamePattern, fieldNameError } from '../../app-administration/constants/field-name.patterns';
-import { calculateTypeIcon } from '../content-type-fields.helpers';
-import { InputTypeConstants } from '../constants/input-type.constants';
+import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { DataTypeConstants } from '../constants/data-type.constants';
+import { InputTypeConstants } from '../constants/input-type.constants';
+import { calculateTypeIcon } from '../content-type-fields.helpers';
+import { Field, FieldInputTypeOption } from '../models/field.model';
+import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 
 @Component({
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
-  styleUrls: ['./edit-content-type-fields.component.scss']
+  styleUrls: ['./edit-content-type-fields.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-  @ViewChild('ngForm', { read: NgForm }) form: NgForm;
+  @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
   fields: Partial<Field>[] = [];
   editMode: boolean;
   dataTypes: DataType[];
-  inputTypeOptions: FieldInputTypeOption[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
   inputTypeHints: string[] = [];
   fieldNamePattern = fieldNamePattern;
   fieldNameError = fieldNameError;
   findIcon = calculateTypeIcon;
+  loading$ = new BehaviorSubject(true);
+  saving$ = new BehaviorSubject(false);
 
   private contentType: ContentType;
+  private inputTypeOptions: FieldInputTypeOption[];
   private subscription = new Subscription();
 
   constructor(
@@ -47,13 +49,15 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) {
     this.dialogRef.disableClose = true;
-    this.subscription.add(this.dialogRef.backdropClick().subscribe(event => {
-      if (this.form.dirty) {
-        const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
-        if (!confirmed) { return; }
-      }
-      this.closeDialog();
-    }));
+    this.subscription.add(
+      this.dialogRef.backdropClick().subscribe(event => {
+        if (this.form.dirty) {
+          const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
+          if (!confirmed) { return; }
+        }
+        this.closeDialog();
+      })
+    );
   }
 
   ngOnInit() {
@@ -66,11 +70,11 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
 
-    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(joined => {
-      this.contentType = joined[0];
-      const allFields = joined[1];
-      this.dataTypes = joined[2];
-      this.inputTypeOptions = joined[3];
+    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(([contentType, fields, dataTypes, inputTypes]) => {
+      this.contentType = contentType;
+      const allFields = fields;
+      this.dataTypes = dataTypes;
+      this.inputTypeOptions = inputTypes;
 
       if (this.editMode) {
         const editField = allFields.find(field => field.Id === editFieldId);
@@ -92,10 +96,13 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
         this.calculateInputTypeOptions(i);
         this.calculateHints(i);
       }
+      this.loading$.next(false);
     });
   }
 
   ngOnDestroy() {
+    this.loading$.complete();
+    this.saving$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -120,10 +127,12 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.saving$.next(true);
     this.snackBar.open('Saving...');
     if (this.editMode) {
       const field = this.fields[0];
       this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(res => {
+        this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();
       });
@@ -135,6 +144,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
         ),
         toArray(),
       ).subscribe(responses => {
+        this.saving$.next(false);
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.closeDialog();
       });

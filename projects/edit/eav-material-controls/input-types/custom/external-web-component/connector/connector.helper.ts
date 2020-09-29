@@ -1,24 +1,20 @@
-import { NgZone, ElementRef } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { ElementRef, NgZone } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { take, filter, map, distinctUntilChanged, startWith } from 'rxjs/operators';
-
+import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators';
+import { EavCustomInputField, ExperimentalProps, InputTypeName } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
-import { EavConfig } from '../../../../../shared/models/eav-configuration';
-import { ConnectorInstance, ConnectorHost } from './models/connector-instance.model';
-import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
+import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
-import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
-import { ExperimentalProps, InputTypeName, EavCustomInputField } from '../../../../../../edit-types';
+import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
 export class ConnectorHelper {
-  private eavConfig: EavConfig;
   private control: AbstractControl;
   private customEl: EavCustomInputField<any>;
   private value$ = new BehaviorSubject<any>(null);
@@ -36,24 +32,31 @@ export class ConnectorHelper {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private zone: NgZone,
   ) {
-    this.eavConfig = eavService.getEavConfig();
     this.control = this.group.controls[this.config.field.name];
 
-    this.subscription.add(this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-      map(formSet => this.control.value),
-      startWith(this.control.value),
-      distinctUntilChanged(),
-    ).subscribe(newValue => {
-      this.value$.next(newValue);
-    }));
+    this.subscription.add(
+      this.eavService.formValueChange$.pipe(
+        filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+        map(formSet => this.control.value),
+        startWith(this.control.value),
+        distinctUntilChanged(),
+      ).subscribe(newValue => {
+        this.value$.next(newValue);
+      })
+    );
 
     this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
+  }
+
+  destroy() {
+    this.subscription.unsubscribe();
+    this.value$.complete();
+    this.customEl?.parentNode.removeChild(this.customEl);
+    this.customEl = null;
   }
 
   private buildConnector() {
@@ -64,7 +67,7 @@ export class ConnectorHelper {
       this.value$.asObservable(),
       this.config.field,
       experimental,
-      this.eavConfig,
+      this.eavService.eavConfig,
     );
     return connector;
   }
@@ -105,38 +108,27 @@ export class ConnectorHelper {
       setFocused: (focused) => {
         this.zone.run(() => { this.config.field.focused$.next(focused); });
       },
-      openDnnDialog: (oldValue, params, callback) => {
-        this.zone.run(() => { this.openDnnDialog(oldValue, params, callback); });
+      openPagePicker: (params, callback) => {
+        this.zone.run(() => { this.dnnBridgeService.open('pagepicker', params, callback); });
       },
-      getUrlOfIdDnnDialog: (value, callback) => {
-        this.zone.run(() => { this.getUrlOfIdDnnDialog(value, callback); });
+      getUrlOfId: (value, callback) => {
+        this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
     };
 
     return experimentalProps;
   }
 
-  private openDnnDialog(oldValue: any, params: any, callback: any) {
-    this.dnnBridgeService.open(oldValue, params, callback, this.dialog);
-  }
-
-  private getUrlOfIdDnnDialog(value: string, urlCallback: (value: string) => any) {
+  private getUrlOfId(value: string, callback: (value: string) => void) {
     if (!value) { return; }
 
     // handle short-ID links like file:17
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
     const field = this.config.field.name;
-    const urlFromId$ = this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field);
-
-    if (!urlFromId$) {
-      urlCallback(value);
-      return;
-    }
-
-    urlFromId$.subscribe(data => {
-      if (!data) { return; }
-      urlCallback(data);
+    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
+      if (!path) { return; }
+      callback(path);
     });
   }
 
@@ -146,12 +138,5 @@ export class ConnectorHelper {
     if (control.value !== value) { control.patchValue(value); }
     if (!control.dirty) { control.markAsDirty(); }
     if (!control.touched) { control.markAsTouched(); }
-  }
-
-  public destroy() {
-    this.subscription.unsubscribe();
-    this.value$.complete();
-    this.customEl?.parentNode.removeChild(this.customEl);
-    this.customEl = null;
   }
 }

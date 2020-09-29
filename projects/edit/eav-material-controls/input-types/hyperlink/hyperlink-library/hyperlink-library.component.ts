@@ -1,13 +1,12 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-
+import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { CustomValidators } from '../../../validators/custom-validators';
-import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { CustomValidators } from '../../../validators/custom-validators';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
-import { FieldSettings } from '../../../../../edit-types';
+import { BaseComponent } from '../../base/base.component';
 import { AdamControl } from './hyperlink-library.models';
 
 @Component({
@@ -31,10 +30,12 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(this.settings$.subscribe(settings => {
-      this.attachAdam(settings);
-      this.attachAdamValidator(settings.Required);
-    }));
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        this.attachAdam(settings);
+        this.attachAdamValidator(settings.Required);
+      })
+    );
   }
 
   ngOnDestroy() {

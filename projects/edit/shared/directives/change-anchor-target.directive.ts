@@ -1,4 +1,4 @@
-import { Directive, ElementRef, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core';
 
 @Directive({ selector: '[appChangeAnchorTarget]' })
 export class ChangeAnchorTargetDirective implements OnInit, OnDestroy {

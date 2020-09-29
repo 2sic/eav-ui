@@ -1,31 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams, CellClickedEvent } from '@ag-grid-community/all-modules';
-
-import { Feature } from '../models/feature.model';
-import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
-import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
-import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
-import { FeaturesConfigService } from '../services/features-config.service';
-import { ElementEventListener } from '../../../../../shared/element-event-listener.model';
-import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
+import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
+import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
+import { Feature } from '../models/feature.model';
+import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
+import { FeaturesConfigService } from '../services/features-config.service';
 
 @Component({
   selector: 'app-manage-features',
   templateUrl: './manage-features.component.html',
-  styleUrls: ['./manage-features.component.scss']
+  styleUrls: ['./manage-features.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
-  features: Feature[];
-  showManagement = false;
-  showSpinner = false;
-  managementUrl: SafeUrl;
-  managementListener: ElementEventListener;
-
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -67,22 +61,44 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     ],
   };
 
-  constructor(private sanitizer: DomSanitizer, private featuresConfigService: FeaturesConfigService) { }
+  private features$ = new BehaviorSubject<Feature[]>(null);
+  private showManagement$ = new BehaviorSubject(false);
+  private showSpinner$ = new BehaviorSubject(false);
+  private managementUrl$ = new BehaviorSubject<string>(null);
+  templateVars$ = combineLatest([this.features$, this.showManagement$, this.showSpinner$, this.managementUrl$]).pipe(
+    map(([features, showManagement, showSpinner, managementUrl]) => ({ features, showManagement, showSpinner, managementUrl })),
+  );
+  private subscription = new Subscription();
+
+  constructor(private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();
+    this.subscribeToMessages();
   }
 
   ngOnDestroy() {
-    this.destroyManagementListener();
+    this.features$.complete();
+    this.showManagement$.complete();
+    this.showSpinner$.complete();
+    this.managementUrl$.complete();
+    this.subscription.unsubscribe();
   }
 
   toggleManagement() {
-    this.showManagement = !this.showManagement;
-    this.destroyManagementListener();
-    if (this.showManagement) {
-      this.openManagement();
-    }
+    this.showManagement$.next(!this.showManagement$.value);
+    if (!this.showManagement$.value) { return; }
+
+    this.showSpinner$.next(true);
+    this.managementUrl$.next(null); // reset url
+    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
+      this.showSpinner$.next(false);
+      if (url.includes('error: user needs host permissions')) {
+        this.showManagement$.next(false);
+        throw new Error('User needs host permissions!');
+      }
+      this.managementUrl$.next(url);
+    });
   }
 
   private idValueGetter(params: ValueGetterParams) {
@@ -94,60 +110,33 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     window.open(`https://2sxc.org/r/f/${params.value}`, '_blank');
   }
 
-  private fetchFeatures() {
-    this.featuresConfigService.getAll().subscribe(features => {
-      this.features = features;
-    });
-  }
-
-  private openManagement() {
-    this.showSpinner = true;
-    this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(''); // reset url
-
-    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
-      this.showSpinner = false;
-
-      if (url.indexOf('error: user needs host permissions') > -1) {
-        this.showManagement = false;
-        throw new Error('User needs host permissions!');
-      }
-
-      this.managementUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      const managementCallbackBound = this.managementCallback.bind(this);
-      // event to receive message from iframe
-      window.addEventListener('message', managementCallbackBound);
-      this.managementListener = { element: window, type: 'message', listener: managementCallbackBound };
-    });
-  }
-
-  /** This should await callbacks from the iframe and if it gets a valid callback containing a json, it should send it to the server */
-  private managementCallback(event: MessageEvent) {
-    this.destroyManagementListener();
-    if (typeof (event.data) === 'undefined') { return; }
-    if (event.origin.endsWith('2sxc.org') === false) { return; } // something from an unknown domain, let's ignore it
-
-    try {
-      const features: ManageFeaturesMessageData = event.data;
-      const featuresString = JSON.stringify(features);
-      this.featuresConfigService.saveFeatures(featuresString).subscribe(result => {
-        this.showManagement = false;
-        this.fetchFeatures();
-      });
-    } catch (e) { }
-  }
-
-  private destroyManagementListener() {
-    if (this.managementListener) {
-      this.managementListener.element.removeEventListener(this.managementListener.type, this.managementListener.listener);
-      this.managementListener = null;
-    }
-  }
-
   private valueGetterDateTime(params: ValueGetterParams) {
     const rawValue: string = params.data[params.colDef.field];
     if (!rawValue) { return null; }
+    return rawValue.substring(0, 19).replace('T', ' '); // remove 'Z' and replace 'T'
+  }
 
-    // remove 'Z' and replace 'T'
-    return rawValue.substring(0, 19).replace('T', ' ');
+  private fetchFeatures() {
+    this.featuresConfigService.getAll().subscribe(features => {
+      this.features$.next(features);
+    });
+  }
+
+  /** Waits for a json message from the iframe and sends it to the server */
+  private subscribeToMessages() {
+    this.subscription.add(
+      fromEvent(window, 'message').pipe(
+        filter((event: MessageEvent) => this.showManagement$.value),
+        filter(event => event.origin.endsWith('2sxc.org') === true),
+        filter(event => event.data != null),
+      ).subscribe(event => {
+        const features: ManageFeaturesMessageData = event.data;
+        const featuresString = JSON.stringify(features);
+        this.featuresConfigService.saveFeatures(featuresString).subscribe(res => {
+          this.showManagement$.next(false);
+          this.fetchFeatures();
+        });
+      })
+    );
   }
 }

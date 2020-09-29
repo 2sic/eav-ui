@@ -1,11 +1,11 @@
-import { TinyMceTranslations } from './translations';
 import { Connector } from '../../../edit-types';
-import { DefaultPlugins, DefaultOptions, DefaultPaste } from './defaults';
+import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
 import * as contentStyle from '../editor/tinymce-content.css';
-import { TinyMceToolbars } from './toolbars';
-import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { AddOnSettings } from './defaults/add-on-settings';
+import { TinyMceToolbars } from './toolbars';
+import { TinyMceTranslations } from './translations';
 // tslint:disable: curly
 
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -53,7 +53,7 @@ export class TinyMceConfigurator {
 
   private warnAboutCommonSettingsIssues() {
     const contentCss = this.connector.field.settings.ContentCss;
-    if (contentCss && contentCss?.toLocaleLowerCase().indexOf('file:') >= 0 )
+    if (contentCss && contentCss?.toLocaleLowerCase().indexOf('file:') >= 0)
       console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
   }
 

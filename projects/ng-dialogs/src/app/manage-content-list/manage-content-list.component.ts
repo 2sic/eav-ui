@@ -1,31 +1,39 @@
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-
-import { ContentGroupService } from './services/content-group.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { ContentGroupService } from './services/content-group.service';
 
 @Component({
   selector: 'app-manage-content-list',
   templateUrl: './manage-content-list.component.html',
-  styleUrls: ['./manage-content-list.component.scss']
+  styleUrls: ['./manage-content-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  items: GroupHeader[];
-  header: GroupHeader;
+  private items$ = new BehaviorSubject<GroupHeader[]>(null);
+  private header$ = new BehaviorSubject<GroupHeader>(null);
+  templateVars$ = combineLatest([this.items$, this.header$]).pipe(
+    map(([items, header]) => ({ items, header })),
+  );
 
-  private contentGroup: ContentGroup;
+  private contentGroup: ContentGroup = {
+    id: null,
+    guid: this.route.snapshot.paramMap.get('guid'),
+    part: this.route.snapshot.paramMap.get('part'),
+    index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
+  };
+  private reordered = false;
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<ManageContentListComponent>,
@@ -33,15 +41,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-    this.contentGroup = {
-      id: null,
-      guid: this.route.snapshot.paramMap.get('guid'),
-      part: this.route.snapshot.paramMap.get('part'),
-      index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
-    };
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchList();
@@ -50,12 +50,18 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.items$.complete();
+    this.header$.complete();
     this.subscription.unsubscribe();
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 
   saveList() {
     this.snackBar.open('Saving...');
-    this.contentGroupService.saveList(this.contentGroup, this.items).subscribe(res => {
+    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
       this.snackBar.open('Saved');
       this.closeDialog();
     });
@@ -69,7 +75,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listcontent',
-            Add: this.header.Id === 0,
+            Add: this.header$.value.Id === 0,
           },
         },
         {
@@ -77,7 +83,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
             Guid: this.contentGroup.guid,
             Index: 0,
             Part: 'listpresentation',
-            Add: this.header.Id === 0,
+            Add: this.header$.value.Id === 0,
           },
         },
       ],
@@ -95,34 +101,55 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.items, event.previousIndex, event.currentIndex);
+    const items = [...this.items$.value];
+    moveItemInArray(items, event.previousIndex, event.currentIndex);
+    this.items$.next(items);
+    this.reordered = true;
   }
 
-  closeDialog() {
-    this.dialogRef.close();
+  trackByFn(index: number, item: GroupHeader) {
+    // we use both Index and Id because all demo items have Id=0
+    return `${item.Index}+${item.Id}`;
   }
 
   private fetchList() {
-    this.contentGroupService.getList(this.contentGroup).subscribe(res => {
-      this.items = res;
+    this.contentGroupService.getList(this.contentGroup).subscribe(items => {
+      if (this.reordered) {
+        const oldIds = this.items$.value.map(item => item.Id);
+        const idsChanged = this.items$.value.length !== items.length || items.some(item => !oldIds.includes(item.Id));
+        if (!idsChanged) {
+          const sortOrder = this.items$.value.map(item => item.Index);
+          items.sort((a, b) => {
+            const aIndex = sortOrder.indexOf(a.Index);
+            const bIndex = sortOrder.indexOf(b.Index);
+            if (aIndex === -1 || bIndex === -1) { return 0; }
+            return aIndex - bIndex;
+          });
+        } else {
+          this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
+        }
+      }
+      this.items$.next(items);
     });
   }
 
   private fetchHeader() {
-    this.contentGroupService.getHeader(this.contentGroup).subscribe(res => {
-      this.header = res;
+    this.contentGroupService.getHeader(this.contentGroup).subscribe(header => {
+      this.header$.next(header);
     });
   }
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchList();
-          this.fetchHeader();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchList();
+        this.fetchHeader();
       })
     );
   }

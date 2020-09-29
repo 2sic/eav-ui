@@ -1,12 +1,14 @@
+import { PermissionsCount } from './permissions-count.model';
+
 export class ContentType {
   Description: string;
   Fields: number;
-  I18nKey: string;
   Id: number;
   Items: number;
   Label: string;
   Metadata: ContentTypeMetadata;
   Name: string;
+  Permissions: PermissionsCount;
   Scope: string;
   SharedDefId: number;
   StaticName: string;

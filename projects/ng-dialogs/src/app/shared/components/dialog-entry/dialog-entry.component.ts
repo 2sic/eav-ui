@@ -1,22 +1,20 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, Type } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
-
-import { Context } from '../../services/context';
-import { DialogConfig } from '../../models/dialog-config.model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
+import { DialogConfig } from '../../models/dialog-config.model';
+import { Context } from '../../services/context';
 
 @Component({
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
-  styleUrls: ['./dialog-entry.component.scss']
+  styleUrls: ['./dialog-entry.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private subscription = new Subscription();
-  private dialogRef: MatDialogRef<any, any>;
-  private dialogConfig: DialogConfig;
-  private component: Type<any>;
+  private dialogData: { [key: string]: any; };
+  private dialogRef: MatDialogRef<any>;
 
   constructor(
     private dialog: MatDialog,
@@ -24,39 +22,43 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
-    this.dialogConfig = this.route.snapshot.data.dialog;
-    if (!this.dialogConfig) {
-      throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
-    }
+    const navigation = this.router.getCurrentNavigation();
+    this.dialogData = navigation?.extras?.state || {};
   }
 
-  async ngOnInit() {
-    angularConsoleLog('Open dialog:', this.dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
-    this.component = await this.dialogConfig.getComponent();
-    if (this.dialogConfig.initContext) {
-      this.context.init(this.route);
+  ngOnInit() {
+    const dialogConfig: DialogConfig = this.route.snapshot.data.dialog;
+    if (dialogConfig == null) {
+      throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
     }
+    angularConsoleLog('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
-    this.dialogRef = this.dialog.open(this.component, {
-      backdropClass: 'dialog-backdrop',
-      panelClass: [
-        'dialog-panel',
-        `dialog-panel-${this.dialogConfig.panelSize}`,
-        this.dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
-        ...(this.dialogConfig.panelClass ? this.dialogConfig.panelClass : []),
-      ],
-      viewContainerRef: this.viewContainerRef,
-      autoFocus: false,
-      closeOnNavigation: false,
-      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
-      // Real top margin is overwritten in css e.g. dialog-panel-large
-      position: { top: '0' }
-    });
+    dialogConfig.getComponent().then(component => {
+      if (dialogConfig.initContext) {
+        this.context.init(this.route);
+      }
 
-    this.subscription.add(
-      this.dialogRef.afterClosed().subscribe((data: any) => {
-        angularConsoleLog('Dialog was closed:', this.dialogConfig.name, 'Data:', data);
+      this.dialogRef = this.dialog.open(component, {
+        data: this.dialogData,
+        backdropClass: 'dialog-backdrop',
+        panelClass: [
+          'dialog-panel',
+          `dialog-panel-${dialogConfig.panelSize}`,
+          dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
+          ...(dialogConfig.panelClass ? dialogConfig.panelClass : []),
+        ],
+        viewContainerRef: this.viewContainerRef,
+        autoFocus: false,
+        closeOnNavigation: false,
+        // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+        // Real top margin is overwritten in css e.g. dialog-panel-large
+        position: { top: '0' }
+      });
+
+      this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {
+        angularConsoleLog('Dialog was closed:', dialogConfig.name, 'Data:', data);
 
         if (this.route.pathFromRoot.length <= 3) {
           try {
@@ -70,17 +72,14 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
         } else {
           this.router.navigate(['./'], { relativeTo: this.route.parent.parent, state: data });
         }
-      })
-    );
+      });
+
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.subscription = null;
-    this.dialogConfig = null;
-    this.component = null;
     this.dialogRef.close();
-    this.dialogRef = null;
   }
 
 }

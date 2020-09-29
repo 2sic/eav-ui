@@ -1,16 +1,15 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-
+import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../shared/models/eav';
-import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
-import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
+import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -47,7 +46,9 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
 
   private loadAssets() {
     let inputType: InputTypeModel;
-    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => { inputType = type; });
+    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => {
+      inputType = type;
+    });
 
     const assets = inputType.AngularAssets.split('\n');
     if (assets.length === 0) { return; }

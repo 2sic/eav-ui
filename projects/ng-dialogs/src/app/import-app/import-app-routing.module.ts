@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { importAppDialog } from './import-app-dialog.config';
 

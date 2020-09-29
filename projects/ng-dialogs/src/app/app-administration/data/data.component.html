@@ -1,20 +1,28 @@
 <div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes" [modules]="modules" [gridOptions]="gridOptions">
+  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes$ | async" [modules]="modules"
+    [gridOptions]="gridOptions" appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
   </ag-grid-angular>
 
   <div class="scope-box">
-    <button mat-icon-button color="accent" matTooltip="Create a ghost content type" *ngIf="debugEnabled"
-      (click)="createGhost()">
-      <mat-icon>share</mat-icon>
-    </button>
     <mat-form-field appearance="standard" color="accent" class="scope-box__dropdown">
-      <mat-select [ngModel]="scope" name="Scope" (selectionChange)="changeScope($event)">
-        <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
+      <mat-select [ngModel]="scope" name="Scope" (ngModelChange)="changeScope($event)">
+        <mat-option *ngFor="let scopeOption of (scopeOptions$ | async)" [value]="scopeOption.value">
           {{ 'Scope: ' + scopeOption.name }}
         </mat-option>
         <mat-option value="Other">Scope: Other...</mat-option>
       </mat-select>
     </mat-form-field>
+
+    <button mat-button matTooltip="Import content type" (click)="importType()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>Content Type</span>
+    </button>
+
+    <button mat-button color="accent" matTooltip="Create a ghost content type" *ngIf="debugEnabled$ | async"
+      (click)="createGhost()">
+      <mat-icon>share</mat-icon>
+      <span>Ghost</span>
+    </button>
   </div>
 
   <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new content type"

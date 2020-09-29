@@ -1,11 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 /** This service ensures that multiple SnackBars are shown one after another. */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class SnackBarStackService implements OnDestroy {
   private defaultDuration = 3000;
   private processingMessage = false;
@@ -18,13 +16,13 @@ export class SnackBarStackService implements OnDestroy {
    * @returns observable that fires if the action is triggered.
    * Service will complete the observable
    */
-  add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }): Observable<void> {
-    const triggered = new Subject<void>();
-    this.messageQueue.push({ message, action, config, triggered });
+  add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }) {
+    const triggered$ = new Subject<void>();
+    this.messageQueue.push({ message, action, config, triggered$ });
     if (!this.processingMessage) {
       this.showSnackBar();
     }
-    return triggered.asObservable();
+    return triggered$.asObservable();
   }
 
   private showSnackBar() {
@@ -39,17 +37,18 @@ export class SnackBarStackService implements OnDestroy {
 
     const snackBarRef = this.snackBar.open(nextMsg.message, nextMsg.action, nextMsg.config);
     snackBarRef.afterDismissed().subscribe(() => {
-      nextMsg.triggered.complete();
+      nextMsg.triggered$.complete();
       this.showSnackBar();
     });
     snackBarRef.onAction().subscribe(() => {
-      nextMsg.triggered.next();
+      nextMsg.triggered$.next();
     });
   }
 
+  // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
     for (const message of this.messageQueue) {
-      message.triggered.complete();
+      message.triggered$.complete();
     }
     this.messageQueue = null;
   }
@@ -59,5 +58,5 @@ class SnackBarData {
   message: string;
   action: string;
   config: MatSnackBarConfig<any>;
-  triggered: Subject<void>;
+  triggered$: Subject<void>;
 }

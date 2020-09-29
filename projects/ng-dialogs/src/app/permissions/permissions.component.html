@@ -11,7 +11,8 @@
   <router-outlet></router-outlet>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="permissions" [modules]="modules" [gridOptions]="gridOptions">
+    <ag-grid-angular class="ag-theme-material" [rowData]="permissions$ | async" [modules]="modules"
+      [gridOptions]="gridOptions">
     </ag-grid-angular>
 
     <button mat-fab mat-elevation-z24 class="grid-fab" matTooltip="Create a new permission"

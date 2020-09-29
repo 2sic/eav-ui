@@ -21,7 +21,7 @@
     },
     {
       "type": "npm",
-      "script": "dev-main-watch",
+      "script": "dev-main",
       "problemMatcher": []
     },
     {
@@ -36,7 +36,7 @@
     },
     {
       "type": "npm",
-      "script": "dev-all-watch",
+      "script": "all",
       "group": "build",
       "problemMatcher": []
     },

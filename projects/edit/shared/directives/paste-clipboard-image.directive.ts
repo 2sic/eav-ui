@@ -1,11 +1,10 @@
-import { Directive, Input, ElementRef, OnInit, OnDestroy } from '@angular/core';
-
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { FeatureService } from '../store/ngrx-data/feature.service';
-import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
-import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { ElementEventListener } from '../../../shared/element-event-listener.model';
+import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
+import { FeatureService } from '../store/ngrx-data/feature.service';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {

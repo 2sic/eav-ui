@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-
-import { SourceView } from '../models/source-view.model';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { DialogService } from '../../shared/services/dialog.service';
-import { calculateTree, toggleInArray } from './code-templates.helpers';
+import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
+import { calculateTree, toggleInArray } from './code-templates.helpers';
 
 @Component({
   selector: 'app-code-templates',

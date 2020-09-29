@@ -97,7 +97,8 @@
   "ItemCard": {
     "DefaultTitle": "Bewerk item",
     "SlotUsedTrue": "dit item is open voor bewerken. Klik hier om te vergrendelen / verwijder het an keer terug naar de standaard.",
-    "SlotUsedFalse": "dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig."
+    "SlotUsedFalse": "dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig.",
+    "CopyHint": "(copy)"
   },
   "ValidationMessage": {
     "NotValid": "Not valid",

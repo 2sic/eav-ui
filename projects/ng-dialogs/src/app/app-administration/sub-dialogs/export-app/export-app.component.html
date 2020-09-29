@@ -1,53 +1,65 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">Export app</div>
-</div>
+<ng-container *ngIf="(templateVars$ | async) as data">
 
-<p class="dialog-description">
-  Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
-  For further help visit <a href="http://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
-</p>
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Export app</div>
+  </div>
 
-<div class="dialog-component-content fancy-scrollbar-light" *ngIf="appInfo">
-  <p class="app-info__title">Specs</p>
-  <ul class="app-info__content">
-    <li>Name: {{appInfo.Name}}</li>
-    <li>Guid: {{appInfo.Guid}}</li>
-    <li>Version: {{appInfo.Version}}</li>
-  </ul>
+  <mat-spinner *ngIf="data.isExporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
-  <p class="app-info__title">Contains</p>
-  <ul class="app-info__content">
-    <li>{{appInfo.EntitiesCount}} entities</li>
-    <li>{{appInfo.LanguagesCount}} languages</li>
-    <li>
-      {{appInfo.TemplatesCount}} templates (Token: {{appInfo.HasTokenTemplates}}, Razor: {{appInfo.HasRazorTemplates}})
-    </li>
-    <li>{{appInfo.TransferableFilesCount}} files to export</li>
-    <li>{{appInfo.FilesCount}} files in the app folder totally</li>
-  </ul>
+  <p class="dialog-description">
+    Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
+    For further help visit <a href="https://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
+  </p>
 
-  <div class="options-wrapper">
-    <div class="option-box">
-      <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid">
-        <span class="option-box__text">
-          Include all content-groups to re-import the app in an exact copy of this site.
-          Only select this option when you copy an entire DNN site.
-        </span>
-      </mat-checkbox>
-    </div>
-    <div class="option-box">
-      <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups">
-        <span class="option-box__text">
-          Reset the app GUID to zero. You only need this option for special tutorial apps, and usually must not select
-          it.
-        </span>
-      </mat-checkbox>
+  <div class="dialog-component-content fancy-scrollbar-light" *ngIf="data.appInfo">
+    <p class="app-info__title">Specs</p>
+    <ul class="app-info__content">
+      <li>Name: {{ data.appInfo.Name }}</li>
+      <li>Guid: {{ data.appInfo.Guid }}</li>
+      <li>Version: {{ data.appInfo.Version }}</li>
+    </ul>
+
+    <p class="app-info__title">Contains</p>
+    <ul class="app-info__content">
+      <li>{{ data.appInfo.EntitiesCount }} entities</li>
+      <li>{{ data.appInfo.LanguagesCount }} languages</li>
+      <li>
+        {{ data.appInfo.TemplatesCount }} templates (Token: {{ data.appInfo.HasTokenTemplates }}, Razor:
+        {{ data.appInfo.HasRazorTemplates }})
+      </li>
+      <li>{{ data.appInfo.TransferableFilesCount }} files to export</li>
+      <li>{{ data.appInfo.FilesCount }} files in the app folder totally</li>
+    </ul>
+
+    <div class="options-wrapper">
+      <div class="option-box">
+        <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || data.isExporting">
+          <span class="option-box__text">
+            Include all content-groups to re-import the app in an exact copy of this site.
+            Only select this option when you copy an entire DNN site.
+          </span>
+        </mat-checkbox>
+      </div>
+      <div class="option-box">
+        <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups || data.isExporting">
+          <span class="option-box__text">
+            Reset the app GUID to zero. You only need this option for special tutorial apps,
+            and usually must not select it.
+          </span>
+        </mat-checkbox>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="dialog-component-actions">
-  <button mat-raised-button [disabled]="isExporting" (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button [disabled]="isExporting" (click)="exportGit()">Export Data for Github versioning</button>
-  <button mat-raised-button color="accent" [disabled]="isExporting" (click)="exportApp()">Export App</button>
-</div>
+  <div class="dialog-component-actions">
+    <button mat-raised-button [disabled]="data.isExporting" (click)="closeDialog()">
+      Cancel
+    </button>
+    <button mat-raised-button [disabled]="data.isExporting" (click)="exportGit()">
+      Export Data for Github versioning
+    </button>
+    <button mat-raised-button color="accent" [disabled]="data.isExporting" (click)="exportApp()">
+      Export App
+    </button>
+  </div>
+</ng-container>

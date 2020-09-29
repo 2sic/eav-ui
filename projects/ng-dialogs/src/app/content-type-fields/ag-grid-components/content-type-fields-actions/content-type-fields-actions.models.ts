@@ -1,5 +1,4 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-
 import { Field } from '../../models/field.model';
 
 export interface ContentTypeFieldsActionsParams extends ICellRendererParams {

@@ -1,13 +1,12 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ElementRef, OnDestroy, NgZone, ChangeDetectionStrategy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { AdamItem } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { AdamItem } from '../../../../edit-types';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { EavService } from '../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
@@ -45,9 +44,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
-    this.subscription.add(this.config.adam.items$.subscribe(items => {
-      this.adamItems$.next(items);
-    }));
+    this.subscription.add(
+      this.config.adam.items$.subscribe(items => {
+        this.adamItems$.next(items);
+      })
+    );
   }
 
   ngOnDestroy() {

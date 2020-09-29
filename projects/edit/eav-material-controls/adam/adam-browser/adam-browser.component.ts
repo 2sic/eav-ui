@@ -1,22 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, NgZone } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { FormGroup, AbstractControl } from '@angular/forms';
-import { Observable, Subscription, BehaviorSubject } from 'rxjs';
-import { filter, map, startWith, distinctUntilChanged } from 'rxjs/operators';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-
-import { AdamService } from '../adam.service';
-import { FileTypeService } from '../../../shared/services/file-type.service';
-import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
-import { AdamConfigInstance } from './adam-browser.models';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
-import { UrlHelper } from '../../../shared/helpers/url-helper';
-import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { UrlHelper } from '../../../shared/helpers/url-helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { AdamItem, AdamConfig, DropzoneConfigExt } from '../../../../edit-types';
+import { FileTypeService } from '../../../shared/services/file-type.service';
+import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
+import { AdamService } from '../adam.service';
+import { AdamConfigInstance } from './adam-browser.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -99,9 +98,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       },
       addFullPath: (item) => { this.adamService.addFullPath(item); }
     };
-    this.subscription.add(this.adamConfig$.subscribe(adamConfig => {
-      this.fetchItems();
-    }));
+    this.subscription.add(
+      this.adamConfig$.subscribe(adamConfig => {
+        this.fetchItems();
+      })
+    );
     this.expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
@@ -348,9 +349,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private refreshOnChildClosed() {
-    this.subscription.add(this.editRoutingService.childFormClosed().subscribe(result => {
-      this.fetchItems();
-    }));
+    this.subscription.add(
+      this.editRoutingService.childFormClosed().subscribe(result => {
+        this.fetchItems();
+      })
+    );
   }
 
 }

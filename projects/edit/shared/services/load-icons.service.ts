@@ -1,11 +1,6 @@
-import { Injectable } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
-
-import apple from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48.svg';
 import appleFilled from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48-filled.svg';
+import apple from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48.svg';
 import draftBranch from '!raw-loader!../../assets/icons/font-awesome/draft-branch.svg';
-import file from '!raw-loader!../../assets/icons/font-awesome/file.svg';
 import fileArchive from '!raw-loader!../../assets/icons/font-awesome/file-archive.svg';
 import fileAudio from '!raw-loader!../../assets/icons/font-awesome/file-audio.svg';
 import fileCode from '!raw-loader!../../assets/icons/font-awesome/file-code.svg';
@@ -16,9 +11,13 @@ import filePowerpoint from '!raw-loader!../../assets/icons/font-awesome/file-pow
 import fileText from '!raw-loader!../../assets/icons/font-awesome/file-text.svg';
 import fileVideo from '!raw-loader!../../assets/icons/font-awesome/file-video.svg';
 import fileWord from '!raw-loader!../../assets/icons/font-awesome/file-word.svg';
-import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
+import file from '!raw-loader!../../assets/icons/font-awesome/file.svg';
 import folderPlus from '!raw-loader!../../assets/icons/font-awesome/folder-plus.svg';
+import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
 import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
+import { Injectable } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable()
 export class LoadIconsService {
@@ -42,10 +41,7 @@ export class LoadIconsService {
     { name: 'sitemap', html: sitemap },
   ];
 
-  constructor(
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-  ) { }
+  constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
 
   load() {
     this.icons.forEach(icon => {

@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-
 import { TreeItem } from '../models/tree-item.model';
 
 /** Sorts folders before files */

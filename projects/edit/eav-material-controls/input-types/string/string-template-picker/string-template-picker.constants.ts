@@ -1,5 +1,5 @@
+import { defaultTemplateName, defaultTokenName } from '../../../../../ng-dialogs/src/app/shared/constants/file-names.constants';
 import { TemplateTypes } from './string-template-picker.models';
-import { defaultTokenName, defaultTemplateName } from '../../../../../ng-dialogs/src/app/shared/constants/file-names.constants';
 
 export const templateTypes: TemplateTypes = {
   Token: {

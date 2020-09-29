@@ -1,6 +1,6 @@
-import { Injectable, SkipSelf, Optional } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyZoneId, keyAppId, keyTabId, keyContentBlockId, keyModuleId, keyRequestToken, prefix, keyAppRoot } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix } from '../constants/session.constants';
 import { angularConsoleLog } from '../helpers/angular-console-log.helper';
 
 /** The context provides information */
@@ -29,15 +29,6 @@ export class Context {
     return (this._appId != null) ? this._appId : (this._appId = this.routeNum(keyAppId) || this.parent.appId);
   }
   private _appId: number;
-
-  /** Root of the current App */
-  get appRoot(): string {
-    return (this._appRoot != null) ? this._appRoot : (this._appRoot = this.parent.appRoot);
-  }
-  set appRoot(path: string) {
-    this._appRoot = path;
-  }
-  private _appRoot: string;
 
   /**
    * The request verification token for http requests.
@@ -99,7 +90,6 @@ export class Context {
 
     // optional global things
     this._appId = this.sessionNumber(keyAppId);
-    this._appRoot = sessionStorage.getItem(keyAppRoot);
 
     this.ready = true;
     angularConsoleLog('Context.initRoot', this);
@@ -138,7 +128,6 @@ export class Context {
   private clearCachedValues() {
     this._zoneId = null;
     this._appId = null;
-    this._appRoot = null;
     this._rvt = null;
     this._tabId = null;
     this._contentBlockId = null;

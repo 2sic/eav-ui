@@ -5,23 +5,16 @@ export const keyTabId = prefix + 'tid';
 export const keyContentBlockId = prefix + 'cbid';
 export const keyModuleId = prefix + 'mid';
 export const keyAppId = prefix + 'appId';
-export const keyAppRoot = prefix + 'approot';
 export const keyDebug = prefix + 'debug';
 export const keyDialog = prefix + 'dialog';
 export const keyContentType = prefix + 'contentType';
-export const keyFa = prefix + 'fa';
 export const keyItems = prefix + 'items';
-export const keyLang = prefix + 'lang';
-export const keyLangPri = prefix + 'langpri';
-export const keyLangs = prefix + 'langs';
-export const keyMode = prefix + 'mode';
 export const keyPartOfPage = prefix + 'partOfPage';
 export const keyPortalRoot = prefix + 'portalroot';
 export const keyPublishing = prefix + 'publishing';
-export const keyWebsiteRoot = prefix + 'websiteroot';
 export const keyFilters = prefix + 'filters';
-export const keyUserCanDesign = prefix + 'user%5BcanDesign%5D';
-export const keyUserCanDevelop = prefix + 'user%5BcanDevelop%5D';
 export const keyPipelineId = prefix + 'pipelineId';
+export const keyApi = prefix + 'api';
+
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';

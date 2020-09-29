@@ -6,7 +6,7 @@ const setExternalSourceMaps = require('../../build-helpers/external-source-maps-
 
 // 2020-08-27 2dm changed to have multi-targets
 const multiOutput = require('../../build-helpers/multi-output');
-const distWysiwyg = path.resolve(__dirname, "../../dist/system/field-string-wysiwyg");
+const distWysiwyg = path.resolve(__dirname, '../../dist/system/field-string-wysiwyg');
 const targetDnnWysiwyg = path.resolve(multiOutput.DnnTargetFolder, './system/field-string-wysiwyg');
 const targetAssetsWysiwyg = path.resolve(multiOutput.AssetsTarget, './system/field-string-wysiwyg');
 
@@ -85,7 +85,7 @@ const configuration = {
   },
   output: {
     filename: 'index.js',
-    path: distWysiwyg, // path.resolve(__dirname, '../../../2sxc-dnn742/Website/DesktopModules/ToSIC_SexyContent/system/field-string-wysiwyg'),
+    path: distWysiwyg,
   },
 };
 

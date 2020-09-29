@@ -1,7 +1,7 @@
-<div class="nav-component-wrapper" (click)="toggleDebugEnabled($event)">
+<div class="nav-component-wrapper" appToggleDebug *ngIf="(templateVars$ | async) as data">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ app?.Name }} Admin</div>
+      <div>{{ data.dialogSettings?.Context.App.Name }} Admin</div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -11,31 +11,32 @@
   <router-outlet></router-outlet>
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-  <mat-tab-group dynamicHeight color="accent" *ngIf="dialogSettings" (selectedTabChange)="changeTab($event)"
-    [selectedIndex]="tabIndex">
+  <mat-tab-group dynamicHeight color="accent" *ngIf="data.dialogSettings && data.tabIndex != null"
+    (selectedTabChange)="changeTab($event)" [selectedIndex]="data.tabIndex">
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Getting Started">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="App Info">
         <mat-icon>info</mat-icon>
         <span>Info</span>
       </div>
-      <app-getting-started [gettingStartedUrl]="dialogSettings.GettingStartedUrl">
+      <app-getting-started *matTabContent [gettingStartedUrl]="data.dialogSettings.Context.App.GettingStartedUrl">
       </app-getting-started>
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Content">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Data / Content">
         <mat-icon>menu</mat-icon>
         <span>Data</span>
       </div>
-      <app-data *matTabContent></app-data>
+      <app-data *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"></app-data>
     </mat-tab>
 
-    <mat-tab *ngIf="!dialogSettings.IsContent">
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Query Designer">
+    <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Queries / Visual Query Designer">
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
       </div>
-      <app-queries *matTabContent></app-queries>
+      <app-queries *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      </app-queries>
     </mat-tab>
 
     <mat-tab>
@@ -43,15 +44,18 @@
         <mat-icon>layers</mat-icon>
         <span>Views</span>
       </div>
-      <app-views *matTabContent></app-views>
+      <app-views *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor"
+        [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      </app-views>
     </mat-tab>
 
-    <mat-tab *ngIf="!dialogSettings.IsContent">
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="WebApi / Data">
+    <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="WebApi">
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>
       </div>
-      <app-web-api *matTabContent></app-web-api>
+      <app-web-api *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor">
+      </app-web-api>
     </mat-tab>
 
     <mat-tab>
@@ -59,7 +63,8 @@
         <mat-icon>settings_applications</mat-icon>
         <span>App</span>
       </div>
-      <app-app-configuration *matTabContent></app-app-configuration>
+      <app-app-configuration *matTabContent [dialogSettings]="data.dialogSettings">
+      </app-app-configuration>
     </mat-tab>
   </mat-tab-group>
 </div>

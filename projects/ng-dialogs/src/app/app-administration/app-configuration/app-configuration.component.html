@@ -55,12 +55,17 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card *ngIf="showPermissions" class="mat-elevation-z2">
+  <mat-card class="mat-elevation-z2">
     <mat-card-header>
       <mat-card-title>App Permissions</mat-card-title>
       <div class="actions-box">
-        <button mat-icon-button matTooltip="Edit permissions" (click)="openPermissions()">
-          <mat-icon>person</mat-icon>
+        <button mat-icon-button matTooltip="Edit permissions" [disabled]="!dialogSettings.Context.Enable.AppPermissions"
+          (click)="openPermissions()">
+          <mat-icon [matBadge]="dialogSettings.Context.App.Permissions.Count" matBadgePosition="after"
+            matBadgeColor="accent" matBadgeSize="small" *ngIf="dialogSettings.Context.App.Permissions.Count">
+            person
+          </mat-icon>
+          <mat-icon *ngIf="!dialogSettings.Context.App.Permissions.Count">person</mat-icon>
         </button>
       </div>
     </mat-card-header>

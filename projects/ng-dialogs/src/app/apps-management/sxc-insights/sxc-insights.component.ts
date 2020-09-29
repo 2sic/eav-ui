@@ -1,34 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { SxcRoot } from '@2sic.com/2sxc-typings';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { BehaviorSubject } from 'rxjs';
 import { SxcInsightsService } from '../services/sxc-insights.service';
+
+declare const $2sxc: SxcRoot;
 
 @Component({
   selector: 'app-sxc-insights',
   templateUrl: './sxc-insights.component.html',
-  styleUrls: ['./sxc-insights.component.scss']
+  styleUrls: ['./sxc-insights.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SxcInsightsComponent implements OnInit {
+export class SxcInsightsComponent implements OnInit, OnDestroy {
   pageLogDuration: number;
-  positiveWholeNumber = /^[^-]\d*$/;
-  actionsDiabled = false;
+  positiveWholeNumber = /^[1-9][0-9]*$/;
+  loading$ = new BehaviorSubject(false);
 
   constructor(private sxcInsightsService: SxcInsightsService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
 
-  openInsights() {
-    window.open('/desktopmodules/2sxc/api/sys/insights/help');
+  ngOnDestroy() {
+    this.loading$.complete();
   }
 
-  activatePageLog() {
-    this.actionsDiabled = true;
+  openInsights() {
+    window.open($2sxc.http.apiUrl('sys/insights/help'), '_blank');
+  }
+
+  activatePageLog(form: NgForm) {
+    this.loading$.next(true);
     this.snackBar.open('Activating...');
     this.sxcInsightsService.activatePageLog(this.pageLogDuration).subscribe(res => {
-      this.pageLogDuration = undefined;
-      this.actionsDiabled = false;
+      this.loading$.next(false);
       this.snackBar.open(res, null, { duration: 4000 });
     });
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    form.resetForm();
   }
 }

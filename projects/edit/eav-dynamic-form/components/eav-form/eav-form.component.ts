@@ -1,9 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-
-import { FieldConfigSet, FieldConfigGroup } from '../../model/field-config';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 
 @Component({
   selector: 'app-eav-form',

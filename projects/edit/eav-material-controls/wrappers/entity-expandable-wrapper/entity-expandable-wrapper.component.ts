@@ -1,16 +1,15 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, AfterViewInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
+import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { EavService } from '../../../shared/services/eav.service';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
+import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
+import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-entity-expandable-wrapper',
@@ -25,7 +24,6 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   dialogIsOpen$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  private separator: string;
 
   constructor(
     eavService: EavService,
@@ -38,18 +36,16 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   ngOnInit() {
     super.ngOnInit();
-    this.separator = this.config.field.settings$.value.Separator;
     this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
   }
 
   ngAfterViewInit() {
-    this.selectedEntities$ = combineLatest([this.value$, this.config.entityCache$]).pipe(map(combined => {
-      const fieldValue = combined[0];
-      const availableEntities = combined[1];
-
-      const selected = calculateSelectedEntities(fieldValue, this.separator, availableEntities, this.translate);
-      return selected;
-    }));
+    this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
+      map(([fieldValue, settings, availableEntities]) => {
+        const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
+        return selected;
+      }),
+    );
   }
 
   ngOnDestroy() {

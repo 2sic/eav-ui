@@ -1,10 +1,10 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, Input, ElementRef, NgZone, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnDestroy, forwardRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { aceOptions } from './ace-options';
 import { Ace, Editor } from './ace.model';
+
 declare const ace: Ace;
 
 @Component({
@@ -22,7 +22,6 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;
   @Input() filename: string;
   @Input() snippets: any[];
-  @Input() insertSnippet: any;
   /** If value changes editor will be resized */
   @Input() toggleResize: boolean;
 
@@ -58,14 +57,14 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
         setTimeout(() => { this.editor.resize(); }, 50);
       });
     }
-    const snippet = changes.insertSnippet?.currentValue;
-    if (snippet) {
-      this.zone.runOutsideAngular(() => {
-        const snippetManager = ace.require('ace/snippets').snippetManager;
-        snippetManager.insertSnippet(this.editor, snippet);
-        this.editor.focus();
-      });
-    }
+  }
+
+  insertSnippet(snippet: any) {
+    this.zone.runOutsideAngular(() => {
+      const snippetManager = ace.require('ace/snippets').snippetManager;
+      snippetManager.insertSnippet(this.editor, snippet);
+      this.editor.focus();
+    });
   }
 
   writeValue(value: string) {

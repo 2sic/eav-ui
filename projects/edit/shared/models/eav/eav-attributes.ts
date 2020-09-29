@@ -1,8 +1,8 @@
-import { EavValues } from './eav-values';
-import { Attributes1 } from '../json-format-v1/attributes1';
-import { EavValue } from './eav-value';
-import { EavEntity } from './eav-entity';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { Attributes1 } from '../json-format-v1/attributes1';
+import { EavEntity } from './eav-entity';
+import { EavValue } from './eav-value';
+import { EavValues } from './eav-values';
 
 export class EavAttributes {
   [key: string]: EavValues<any>;
@@ -13,16 +13,12 @@ export class EavAttributes {
 
     // Loop trough attributes types - String, Boolean ...
     Object.keys(attributes1).forEach(attributes1Key => {
-      if (attributes1.hasOwnProperty(attributes1Key)) {
-        const attribute1 = attributes1[attributes1Key];
-        // Loop trough attribute - Description, Name ...
-        Object.keys(attribute1).forEach(attribute1Key => {
-          if (attribute1.hasOwnProperty(attribute1Key)) {
-            // Creates new EavValue for specified type
-            newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key], attributes1Key);
-          }
-        });
-      }
+      const attribute1 = attributes1[attributes1Key];
+      // Loop trough attribute - Description, Name ...
+      Object.keys(attribute1).forEach(attribute1Key => {
+        // Creates new EavValue for specified type
+        newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key], attributes1Key);
+      });
     });
     angularConsoleLog('created attributes: ', newEavAtribute);
     return newEavAtribute;

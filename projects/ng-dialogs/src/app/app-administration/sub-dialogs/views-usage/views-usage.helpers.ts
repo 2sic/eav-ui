@@ -1,5 +1,5 @@
-import { ViewUsage } from '../../models/view-usage.model';
 import { ViewUsageData } from '../../models/view-usage-data.model';
+import { ViewUsage } from '../../models/view-usage.model';
 
 export function buildData(viewUsage: ViewUsage) {
   const data: ViewUsageData[] = [];

@@ -1,19 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-getting-started',
   templateUrl: './getting-started.component.html',
-  styleUrls: ['./getting-started.component.scss']
+  styleUrls: ['./getting-started.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GettingStartedComponent implements OnInit {
   @Input() gettingStartedUrl: string;
-  gettingStartedSafe: SafeUrl;
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor() { }
 
   ngOnInit() {
-    this.gettingStartedSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.gettingStartedUrl);
   }
 
 }

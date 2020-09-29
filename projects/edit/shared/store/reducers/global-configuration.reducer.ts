@@ -1,5 +1,4 @@
 import { Action, createReducer, on } from '@ngrx/store';
-
 import { keyDebug } from '../../../../ng-dialogs/src/app/shared/constants/session.constants';
 import * as GlobalConfigurationActions from '../actions/global-configuration.actions';
 

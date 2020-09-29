@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
-
+import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { calculateTypeIcon } from '../../content-type-fields.helpers';
 
 @Component({
   selector: 'app-content-type-fields-type',
   templateUrl: './content-type-fields-type.component.html',
-  styleUrls: ['./content-type-fields-type.component.scss']
+  styleUrls: ['./content-type-fields-type.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTypeFieldsTypeComponent implements ICellRendererAngularComp {
   value: string;

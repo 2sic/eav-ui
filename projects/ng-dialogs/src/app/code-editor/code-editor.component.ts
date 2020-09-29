@@ -1,41 +1,46 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { forkJoin } from 'rxjs';
-
-import { Context } from '../shared/services/context';
-import { keyItems } from '../shared/constants/session.constants';
-import { SourceService } from './services/source.service';
-import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
-import { SourceView } from './models/source-view.model';
-import { ElementEventListener } from '../../../../shared/element-event-listener.model';
-import { SnippetsService } from './services/snippets.service';
-import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
-import { DialogService } from '../shared/services/dialog.service';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
-import { defaultTemplateName, defaultControllerName } from '../shared/constants/file-names.constants';
+import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
+import { keyItems } from '../shared/constants/session.constants';
+import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
+import { Context } from '../shared/services/context';
+import { DialogService } from '../shared/services/dialog.service';
+import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
+import { AceEditorComponent } from './ace-editor/ace-editor.component';
+import { SourceView } from './models/source-view.model';
+import { SnippetsService } from './services/snippets.service';
+import { SourceService } from './services/source.service';
 
 @Component({
   selector: 'app-code-editor',
   templateUrl: './code-editor.component.html',
-  styleUrls: ['./code-editor.component.scss']
+  styleUrls: ['./code-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
+  @ViewChild(AceEditorComponent) private aceEditorRef: AceEditorComponent;
+
   explorer = {
     templates: 'templates',
     snippets: 'snippets'
   };
   activeExplorer = this.explorer.templates;
-  view: SourceView;
-  templates: string[];
-  explorerSnipps: any;
-  editorSnipps: any;
-  insertSnipp: any;
+  private view$ = new BehaviorSubject<SourceView>(null);
+  private templates$ = new BehaviorSubject<string[]>(null);
+  private explorerSnipps$ = new BehaviorSubject<any>(null);
+  private editorSnipps$ = new BehaviorSubject<any>(null);
+  templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$]).pipe(
+    map(([view, templates, explorerSnipps, editorSnipps]) => ({ view, templates, explorerSnipps, editorSnipps })),
+  );
 
   private viewKey: number | string; // templateId or path
-  private eventListeners: ElementEventListener[] = [];
   private savedCode: string;
+  private subscription = new Subscription();
 
   constructor(
     private context: Context,
@@ -55,25 +60,28 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    forkJoin({
-      view: this.sourceService.get(this.viewKey),
-      templates: this.sourceService.getTemplates(),
-    }).subscribe(result => {
-      this.view = result.view;
-      this.savedCode = this.view.Code;
-      this.titleService.setTitle(`${this.view.FileName} - Code Editor`);
-      this.templates = result.templates;
-      this.showCodeAndEditionWarnings(result.view, result.templates);
+    const view$ = this.sourceService.get(this.viewKey);
+    const templates$ = this.sourceService.getTemplates();
+    forkJoin([view$, templates$]).subscribe(([view, templates]) => {
+      this.view$.next(view);
+      this.savedCode = this.view$.value.Code;
+      this.titleService.setTitle(`${this.view$.value.FileName} - Code Editor`);
+      this.templates$.next(templates);
+      this.showCodeAndEditionWarnings(view, templates);
 
-      this.snippetsService.getSnippets(this.view).then(res => {
-        this.explorerSnipps = res.sets;
-        this.editorSnipps = res.list;
+      this.snippetsService.getSnippets(this.view$.value).then(res => {
+        this.explorerSnipps$.next(res.sets);
+        this.editorSnipps$.next(res.list);
       });
     });
   }
 
   ngOnDestroy() {
-    this.detachListeners();
+    this.view$.complete();
+    this.templates$.complete();
+    this.explorerSnipps$.complete();
+    this.editorSnipps$.complete();
+    this.subscription.unsubscribe();
   }
 
   toggleExplorer(explorer: string) {
@@ -100,19 +108,23 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
     this.sourceService.createTemplate(name).subscribe(res => {
       this.sourceService.getTemplates().subscribe(files => {
-        this.templates = files;
+        this.templates$.next(files);
       });
     });
   }
 
   changeInsertSnipp(snippet: any) {
-    this.insertSnipp = snippet;
+    this.aceEditorRef.insertSnippet(snippet);
+  }
+
+  codeChanged(code: string) {
+    this.view$.next({ ...this.view$.value, Code: code });
   }
 
   save() {
     this.snackBar.open('Saving...');
-    let codeToSave = this.view.Code;
-    this.sourceService.save(this.viewKey, this.view).subscribe({
+    let codeToSave = this.view$.value.Code;
+    this.sourceService.save(this.viewKey, this.view$.value).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
@@ -166,35 +178,21 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   private attachListeners() {
     this.zone.runOutsideAngular(() => {
-      const closing = this.stopClose.bind(this);
-      const save = this.keyboardSave.bind(this);
-      window.addEventListener('beforeunload', closing);
-      window.addEventListener('keydown', save);
-      this.eventListeners.push({ element: window, type: 'beforeunload', listener: closing });
-      this.eventListeners.push({ element: window, type: 'keydown', listener: save });
+      this.subscription.add(
+        fromEvent(window, 'beforeunload').subscribe((event: BeforeUnloadEvent) => {
+          if (this.savedCode === this.view$.value.Code) { return; }
+          event.preventDefault();
+          event.returnValue = ''; // fix for Chrome
+        })
+      );
+      this.subscription.add(
+        fromEvent(window, 'keydown').subscribe((event: KeyboardEvent) => {
+          const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
+          if (!CTRL_S) { return; }
+          event.preventDefault();
+          this.zone.run(() => { this.save(); });
+        })
+      );
     });
   }
-
-  private detachListeners() {
-    this.zone.runOutsideAngular(() => {
-      this.eventListeners.forEach(listener => {
-        listener.element.removeEventListener(listener.type, listener.listener);
-      });
-      this.eventListeners = null;
-    });
-  }
-
-  private stopClose(e: BeforeUnloadEvent) {
-    if (this.savedCode === this.view.Code) { return; }
-    e.preventDefault(); // Cancel the event
-    e.returnValue = ''; // Chrome requires returnValue to be set
-  }
-
-  private keyboardSave(e: KeyboardEvent) {
-    const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
-    if (!CTRL_S) { return; }
-    e.preventDefault();
-    this.zone.run(() => { this.save(); });
-  }
-
 }

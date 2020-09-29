@@ -1,27 +1,28 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { AllCommunityModules, GridOptions, CellClickedEvent, ValueGetterParams, ICellRendererParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-import { App } from '../models/app.model';
-import { AppsListService } from '../services/apps-list.service';
-import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
-import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
-import { appNamePattern, appNameError } from '../constants/app.patterns';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
+import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
+import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
+import { appNameError, appNamePattern } from '../constants/app.patterns';
+import { App } from '../models/app.model';
+import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
-  styleUrls: ['./apps-list.component.scss']
+  styleUrls: ['./apps-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsListComponent implements OnInit, OnDestroy {
-  apps: App[];
+  apps$ = new BehaviorSubject<App[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -63,13 +64,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
         },
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent',
-        cellRendererParams: {
-          onDelete: this.deleteApp.bind(this),
-          onFlush: (app) => { this.flushApp(app); },
-        } as AppsListActionsParams,
-      },
-      {
         headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter',
       },
@@ -81,20 +75,24 @@ export class AppsListComponent implements OnInit, OnDestroy {
         headerName: 'Items', field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
         filter: 'agNumberColumnFilter',
       },
+      {
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          onDelete: this.deleteApp.bind(this),
+          onFlush: this.flushApp.bind(this),
+        } as AppsListActionsParams,
+      },
     ],
   };
 
   private subscription = new Subscription();
-  private hasChild: boolean;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchAppsList();
@@ -102,12 +100,12 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.apps$.complete();
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 
   browseCatalog() {
-    window.open('http://2sxc.org/apps');
+    window.open('https://2sxc.org/apps', '_blank');
   }
 
   createApp() {
@@ -126,13 +124,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  importApp() {
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
+  importApp(files?: File[]) {
+    const dialogData: ImportAppDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private fetchAppsList() {
     this.appsListService.getAll().subscribe(apps => {
-      this.apps = apps;
+      this.apps$.next(apps);
     });
   }
 
@@ -148,9 +147,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private deleteApp(app: App) {
     const result = prompt(`This cannot be undone. To really delete this app, type 'yes!' or type/paste the app-name here. Are you sure want to delete '${app.Name}' (${app.Id})?`);
-    if (result === null) {
-      return;
-    } else if (result === app.Name || result === 'yes!') {
+    if (result === null) { return; }
+    if (result === app.Name || result === 'yes!') {
       this.snackBar.open('Deleting...');
       this.appsListService.delete(app.Id).subscribe(() => {
         this.snackBar.open('Deleted', null, { duration: 2000 });
@@ -176,12 +174,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchAppsList();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchAppsList();
       })
     );
   }

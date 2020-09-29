@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
@@ -16,6 +15,7 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() disableError = false;
+  @Input() hyperlinkDefaultWrapperFix = false;
 
   isFullText = false;
   description$: Observable<string>;

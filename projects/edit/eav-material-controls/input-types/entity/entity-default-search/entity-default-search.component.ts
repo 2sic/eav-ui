@@ -1,14 +1,13 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-
-import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { FieldSettings } from '../../../../../edit-types';
+import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { GlobalConfigService } from '../../../../shared/services/global-configuration.service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
-import { GlobalConfigurationService } from '../../../../shared/services/global-configuration.service';
 
 @Component({
   selector: 'app-entity-default-search',
@@ -42,10 +41,10 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   filteredEntities: EntityInfo[] = [];
   debugEnabled$: Observable<boolean>;
 
-  constructor(private translate: TranslateService, private globalConfigurationService: GlobalConfigurationService) { }
+  constructor(private translate: TranslateService, private globalConfigService: GlobalConfigService) { }
 
   ngOnInit() {
-    this.debugEnabled$ = this.globalConfigurationService.getDebugEnabled();
+    this.debugEnabled$ = this.globalConfigService.getDebugEnabled();
   }
 
   ngOnChanges(changes: SimpleChanges) {

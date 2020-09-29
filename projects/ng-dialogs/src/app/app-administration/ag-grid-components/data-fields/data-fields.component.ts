@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
-import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
-
+import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
 
 @Component({
   selector: 'app-data-fields',
   templateUrl: './data-fields.component.html',
-  styleUrls: ['./data-fields.component.scss']
+  styleUrls: ['./data-fields.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
   contentType: ContentType;

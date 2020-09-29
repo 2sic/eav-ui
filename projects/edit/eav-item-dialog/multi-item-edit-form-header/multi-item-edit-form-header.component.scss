@@ -16,7 +16,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 
   &__exit-button {
-    margin-right: 12px;
     width: 30px;
     height: 30px;
     flex-shrink: 0;
@@ -30,7 +29,12 @@
     }
   }
 
+  &__copy {
+    cursor: default;
+  }
+
   &__langs {
+    margin-left: 12px;
     flex-grow: 1;
     overflow: hidden;
     height: 100%;

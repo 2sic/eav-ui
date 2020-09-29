@@ -11,10 +11,10 @@
       </mat-card>
     </div>
     <div>
-      <div [@itemShrinkAnimation]="!(dialogIsOpen$ | async) ? 'open' : 'closed'">
+      <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
       </div>
       <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="{
-        value: !(dialogIsOpen$ | async) ? 'closed' : 'expanded',
+        value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
       }">
         <div class="mdc-layout-grid">

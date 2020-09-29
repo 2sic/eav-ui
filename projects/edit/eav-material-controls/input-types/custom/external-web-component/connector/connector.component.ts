@@ -1,17 +1,15 @@
-import { Component, OnDestroy, ViewChild, ElementRef, Input, NgZone, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
-
+import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { EavService } from '../../../../../shared/services/eav.service';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
+import { EavService } from '../../../../../shared/services/eav.service';
+import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
-import { ConnectorHelper } from './connector.helper';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
-import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
-import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { ConnectorHelper } from './connector.helper';
 
 @Component({
   selector: 'app-connector',
@@ -35,7 +33,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private dialog: MatDialog,
     private zone: NgZone,
   ) { }
 
@@ -54,7 +51,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
-      this.dialog,
       this.zone,
     );
   }

@@ -1,6 +1,6 @@
-import { GuiTypes, TypeInfos, TypeInfo } from './plumb-editor.models';
-import { PipelineDataSource } from '../models/pipeline.model';
 import { DataSource } from '../models/data-sources.model';
+import { PipelineDataSource } from '../models/pipeline.model';
+import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
   Cache: { name: 'Cache', icon: 'history', notes: 'Caching of data' },

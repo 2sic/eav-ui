@@ -1,5 +1,5 @@
-import { ContentTypeDef1 } from './content-type-def1';
 import { EavHeader } from '../eav';
+import { ContentTypeDef1 } from './content-type-def1';
 // import { JsonHeader1 } from './json-header1';
 
 export class JsonContentType1 {

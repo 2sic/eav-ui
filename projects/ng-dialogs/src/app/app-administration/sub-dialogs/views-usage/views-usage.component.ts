@@ -1,27 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialogRef } from '@angular/material/dialog';
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { ViewsService } from '../../services/views.service';
-import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsUsageIdComponent } from '../../ag-grid-components/views-usage-id/views-usage-id.component';
-import { ViewUsageData } from '../../models/view-usage-data.model';
-import { buildData } from './views-usage.helpers';
-// tslint:disable-next-line:max-line-length
-import { blockIdValueGetter, moduleIdValueGetter, pageIdValueGetter, moduleIdClassGetter, pageIdClassGetter, nameClassGetter, onNameClicked, statusCellRenderer } from './views-usage-grid.helpers';
 import { ViewsUsageStatusFilterComponent } from '../../ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
+import { ViewUsageData } from '../../models/view-usage-data.model';
+import { ViewUsage } from '../../models/view-usage.model';
+import { ViewsService } from '../../services/views.service';
+// tslint:disable-next-line:max-line-length
+import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClassGetter, onNameClicked, pageIdClassGetter, pageIdValueGetter, statusCellRenderer } from './views-usage-grid.helpers';
+import { buildData } from './views-usage.helpers';
 
 @Component({
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
-  styleUrls: ['./views-usage.component.scss']
+  styleUrls: ['./views-usage.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewsUsageComponent implements OnInit {
-  viewUsage: ViewUsage;
-  viewTooltip: string;
-  data: ViewUsageData[];
+export class ViewsUsageComponent implements OnInit, OnDestroy {
+  viewUsage$ = new BehaviorSubject<ViewUsage>(null);
+  viewTooltip$ = new BehaviorSubject('');
+  data$ = new BehaviorSubject<ViewUsageData[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -55,22 +56,24 @@ export class ViewsUsageComponent implements OnInit {
     ],
   };
 
-  private viewGuid: string;
+  constructor(private dialogRef: MatDialogRef<ViewsUsageComponent>, private route: ActivatedRoute, private viewsService: ViewsService) { }
 
-  constructor(
-    private dialogRef: MatDialogRef<ViewsUsageComponent>,
-    private route: ActivatedRoute,
-    private viewsService: ViewsService,
-  ) {
-    this.viewGuid = this.route.snapshot.paramMap.get('guid');
+  ngOnInit() {
+    const viewGuid = this.route.snapshot.paramMap.get('guid');
+    this.viewsService.getUsage(viewGuid).subscribe(viewUsages => {
+      const viewUsage = viewUsages[0];
+      this.viewUsage$.next(viewUsage);
+      const viewTooltip = `ID: ${viewUsage.Id}\nGUID: ${viewUsage.Guid}`;
+      this.viewTooltip$.next(viewTooltip);
+      const data = buildData(viewUsage);
+      this.data$.next(data);
+    });
   }
 
-  async ngOnInit() {
-    this.viewsService.getUsage(this.viewGuid).subscribe(viewUsages => {
-      this.viewUsage = viewUsages[0];
-      this.viewTooltip = `ID: ${this.viewUsage.Id}\nGUID: ${this.viewUsage.Guid}`;
-      this.data = buildData(this.viewUsage);
-    });
+  ngOnDestroy() {
+    this.viewUsage$.complete();
+    this.viewTooltip$.complete();
+    this.data$.complete();
   }
 
   closeDialog() {

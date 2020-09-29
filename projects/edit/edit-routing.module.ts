@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../ng-dialogs/src/app/shared/components/dialog-entry/dialog-entry.component';
-import { edit } from './edit.matcher';
 import { editDialog } from './eav-item-dialog/multi-item-edit-form/edit-dialog.config';
+import { edit } from './edit.matcher';
 
 const editRoutes: Routes = [
   {

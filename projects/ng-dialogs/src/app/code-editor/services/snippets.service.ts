@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { TranslateService } from '@ngx-translate/core';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
-
-import { SourceView } from '../models/source-view.model';
-import { Snippet } from '../models/snippet.model';
-import { Field } from '../../content-type-fields/models/field.model';
 import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
+import { Field } from '../../content-type-fields/models/field.model';
+import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
+import { Snippet } from '../models/snippet.model';
+import { SourceView } from '../models/source-view.model';
 
 @Injectable()
 export class SnippetsService {
@@ -221,7 +221,7 @@ export class SnippetsService {
   }
 
   private getFields(appId: number, staticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('eav/contenttype/getfields'), {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
       params: { appid: appId.toString(), staticName },
     })
       .toPromise()

@@ -6,6 +6,6 @@
     </div>
   </div>
 </div>
-<div style="padding-top: 8px;" [ngStyle]="{ 'display': !(collapse$ | async) ? 'block' : 'none' }">
+<div style="padding-top: 8px;" [ngStyle]="{ 'display': (collapse$ | async) ? 'none' : 'block' }">
   <ng-container #fieldComponent></ng-container>
 </div>

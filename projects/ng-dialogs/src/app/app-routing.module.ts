@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
 import { editRoot } from '../../../edit/edit.matcher';
 
 const appRoutes: Routes = [
@@ -65,6 +64,11 @@ const appRoutes: Routes = [
     path: ':zoneId/:appId/export/:contentTypeStaticName/:selectedIds',
     loadChildren: () => import('./content-export/content-export.module').then(m => m.ContentExportModule),
     data: { title: 'Export Items' },
+  },
+  {
+    path: ':zoneId/:appId/import/:contentTypeStaticName',
+    loadChildren: () => import('./content-import/content-import.module').then(m => m.ContentImportModule),
+    data: { title: 'Import Items' },
   },
   {
     path: ':zoneId/:appId/permissions/:type/:keyType/:key',

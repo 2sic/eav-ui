@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, ElementRef, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { BaseComponent } from '../../input-types/base/base.component';
+import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
+import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
@@ -30,10 +29,12 @@ export class AdamAttachWrapperComponent extends BaseComponent<any> implements Fi
   }
 
   ngAfterViewInit() {
-    this.subscription.add(this.config.adam.getConfig$().subscribe(adamConfig => {
-      if (adamConfig == null) { return; }
-      this.adamDisabled$.next(adamConfig.disabled);
-    }));
+    this.subscription.add(
+      this.config.adam.getConfig$().subscribe(adamConfig => {
+        if (adamConfig == null) { return; }
+        this.adamDisabled$.next(adamConfig.disabled);
+      })
+    );
   }
 
   ngOnDestroy() {

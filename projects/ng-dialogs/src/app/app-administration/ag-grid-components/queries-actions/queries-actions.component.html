@@ -2,16 +2,35 @@
   <div class="like-button highlight" matRipple matTooltip="Edit" (click)="editQuery()">
     <mat-icon>edit</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Copy" (click)="cloneQuery()">
-    <mat-icon>file_copy</mat-icon>
+
+  <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
+    (click)="openPermissions()">
+    <mat-icon [matBadge]="query._Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="query._Permissions.Count">
+      person
+    </mat-icon>
+    <mat-icon *ngIf="!query._Permissions.Count">person</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Export" (click)="exportQuery()">
-    <mat-icon>cloud_download</mat-icon>
-  </div>
-  <div class="like-button highlight" matRipple matTooltip="Permissions" (click)="openPermissions()">
+  <div class="like-button disabled" *ngIf="!enablePermissions">
     <mat-icon>person</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple matTooltip="Delete" (click)="deleteQuery()">
-    <mat-icon>delete</mat-icon>
+
+  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
+    <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
+
+<mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="cloneQuery()">
+    <mat-icon>file_copy</mat-icon>
+    <span>Copy</span>
+  </button>
+  <button mat-menu-item (click)="exportQuery()">
+    <mat-icon>cloud_download</mat-icon>
+    <span>Export</span>
+  </button>
+  <button mat-menu-item (click)="deleteQuery()">
+    <mat-icon>delete</mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

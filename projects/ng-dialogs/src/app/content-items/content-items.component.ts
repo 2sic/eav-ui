@@ -1,44 +1,49 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { ColDef, AllCommunityModules, GridOptions, GridReadyEvent, CellClickedEvent, GridApi, ValueGetterParams } from '@ag-grid-community/all-modules';
-
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../edit';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { ContentItemsService } from './services/content-items.service';
-import { ContentItem } from './models/content-item.model';
+import { ContentExportService } from '../content-export/services/content-export.service';
+import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { Field } from '../content-type-fields/models/field.model';
+import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
+import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
+import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
+import { keyFilters } from '../shared/constants/session.constants';
+import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
-import { EntitiesService } from './services/entities.service';
-import { ContentExportService } from '../app-administration/services/content-export.service';
-import { eavConstants, EavMetadataKey, EavKeyTypeKey } from '../shared/constants/eav.constants';
-import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { ExtendedColDef } from './models/extended-col-def.model';
-import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
+import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
-import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
-import { keyFilters } from '../shared/constants/session.constants';
+import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
 import { buildFilterModel } from './content-items.helpers';
-import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
-import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
+import { AgGridFilterModel } from './models/ag-grid-filter.model';
+import { ContentItem } from './models/content-item.model';
+import { ExtendedColDef } from './models/extended-col-def.model';
+import { ContentItemsService } from './services/content-items.service';
+import { EntitiesService } from './services/entities.service';
 
 @Component({
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
-  styleUrls: ['./content-items.component.scss']
+  styleUrls: ['./content-items.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
-  contentType: ContentType;
-  items: ContentItem[];
+  contentType$ = new BehaviorSubject<ContentType>(null);
+  items$ = new BehaviorSubject<ContentItem[]>(null);
+  debugEnabled$ = this.globalConfigService.getDebugEnabled();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -53,11 +58,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     },
   };
 
-  private gridApi: GridApi;
-  private contentTypeStaticName: string;
+  private gridApi$ = new BehaviorSubject<GridApi>(null);
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private subscription = new Subscription();
-  private hasChild: boolean;
-  private columnDefs: ColDef[];
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
@@ -68,47 +71,66 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
-  ) {
-    this.hasChild = !!this.route.snapshot.firstChild;
-    this.contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  }
+    private globalConfigService: GlobalConfigService,
+  ) { }
 
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
+    this.fetchColumns();
     this.refreshOnChildClosed();
-    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
-      this.columnDefs = this.buildColumnDefs(columns);
-      this.gridApi?.setColumnDefs(this.columnDefs);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
-      if (filterModel) {
-        angularConsoleLog('Will try to apply filter:', filterModel);
-        this.gridApi.setFilterModel(filterModel);
-      }
-    });
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
+    this.items$.complete();
+    this.gridApi$.complete();
     this.subscription.unsubscribe();
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
   onGridReady(params: GridReadyEvent) {
-    this.gridApi = params.api;
-    if (this.columnDefs) {
-      this.gridApi.setColumnDefs(this.columnDefs);
-    }
+    this.gridApi$.next(params.api);
   }
 
   private fetchContentType() {
     this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
-      this.contentType = contentType;
+      this.contentType$.next(contentType);
     });
   }
 
   private fetchItems() {
     this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      this.items = items;
+      this.items$.next(items);
     });
+  }
+
+  private fetchColumns() {
+    this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
+      const columnDefs = this.buildColumnDefs(columns);
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
+      if (this.gridApi$.value) {
+        this.setColumnDefs(columnDefs, filterModel);
+      } else {
+        this.gridApi$.pipe(
+          filter(gridApi => gridApi != null), // firefox does web requests faster than drawing grid and getting gridApi
+          take(1),
+        ).subscribe(gridApi => {
+          this.setColumnDefs(columnDefs, filterModel);
+        });
+      }
+    });
+  }
+
+  private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
+    this.gridApi$.value.setColumnDefs(columnDefs);
+    if (filterModel) {
+      angularConsoleLog('Will try to apply filter:', filterModel);
+      this.gridApi$.value.setFilterModel(filterModel);
+    }
   }
 
   editItem(params: CellClickedEvent) {
@@ -125,19 +147,38 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   exportContent() {
-    const filterModel = this.gridApi.getFilterModel();
+    const filterModel = this.gridApi$.value.getFilterModel();
     const hasFilters = Object.keys(filterModel).length > 0;
     const ids: number[] = [];
     if (hasFilters) {
-      this.gridApi.forEachNodeAfterFilterAndSort(rowNode => {
+      this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
         ids.push((rowNode.data as ContentItem).Id);
       });
     }
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
   }
 
-  importItem() {
-    this.router.navigate(['import'], { relativeTo: this.route });
+  filesDropped(files: File[]) {
+    const importFile = files[0];
+    const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
+    switch (ext) {
+      case 'xml':
+        this.importContent(files);
+        break;
+      case 'json':
+        this.importItem(files);
+        break;
+    }
+  }
+
+  importContent(files?: File[]) {
+    const dialogData: ContentImportDialogData = { files };
+    this.router.navigate([`${this.contentTypeStaticName}/import`], { relativeTo: this.route, state: dialogData });
+  }
+
+  importItem(files?: File[]) {
+    const dialogData: ContentItemImportDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
   addMetadata() {
@@ -176,6 +217,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     for (const metaKey of metadataKeys) {
       if (targetType !== eavConstants.metadata[metaKey].type) { continue; }
       target = eavConstants.metadata[metaKey].target;
+      break;
     }
 
     const form: EditForm = {
@@ -194,22 +236,20 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   debugFilter() {
-    console.warn('Current filter:', this.gridApi.getFilterModel());
+    console.warn('Current filter:', this.gridApi$.value.getFilterModel());
     alert('Check console for filter information');
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
   }
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-        const hadChild = this.hasChild;
-        this.hasChild = !!this.route.snapshot.firstChild;
-        if (!this.hasChild && hadChild) {
-          this.fetchItems();
-        }
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchItems();
       })
     );
   }
@@ -229,17 +269,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
-        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent',
+        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
+        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
+      },
+      {
+        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
-      },
-      {
-        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
-        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
     ];
     for (const column of columns) {

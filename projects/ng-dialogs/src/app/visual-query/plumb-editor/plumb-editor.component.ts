@@ -1,15 +1,14 @@
 // tslint:disable-next-line:max-line-length
-import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectionStrategy, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription, combineLatest, BehaviorSubject, Observable } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { QueryDefinitionService } from '../services/query-definition.service';
-import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
-import { PlumbEditorTemplateModel } from './plumb-editor.models';
-import { Plumber, dataSrcIdPrefix } from './plumber.helper';
+import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
+import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
+import { PlumbEditorTemplateModel } from './plumb-editor.models';
+import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
 
@@ -36,7 +35,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private visualQueryService: VisualQueryService,
     private queryDefinitionService: QueryDefinitionService,
-    private cd: ChangeDetectorRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -51,15 +50,13 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.templateModel$ = combineLatest([this.visualQueryService.pipelineModel$, this.visualQueryService.dataSources$]).pipe(
-      map(combined => {
-        const pipelineModel = combined[0];
-        const dataSources = combined[1];
+      map(([pipelineModel, dataSources]) => {
         if (pipelineModel == null || dataSources == null) { return; }
 
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
         // This wipes dom entirely and gives us new elements
         this.hardReset = true;
-        this.cd.detectChanges();
+        this.changeDetectorRef.detectChanges();
         this.hardReset = false;
         const templateModel: PlumbEditorTemplateModel = {
           pipelineDataSources: pipelineModel.DataSources,
@@ -76,9 +73,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const domDataSourcesLoaded$ = this.domDataSourcesRef.changes.pipe(map(() => true));
 
     this.subscription.add(
-      combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(combined => {
-        const scriptLoaded = combined[0] === true;
-        const domDataSourcesLoaded = combined[1] === true;
+      combineLatest([this.scriptLoaded$, domDataSourcesLoaded$]).subscribe(([scriptLoaded, domDataSourcesLoaded]) => {
         if (!scriptLoaded || !domDataSourcesLoaded) { return; }
 
         this.plumber?.destroy();

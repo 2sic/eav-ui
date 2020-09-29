@@ -1,11 +1,10 @@
 import { Subscription } from 'rxjs';
-
-import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate } from '../shared/helpers';
-import * as template from './preview.html';
-import * as styles from './preview.css';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { buildTemplate } from '../shared/helpers';
+import * as styles from './preview.css';
+import * as template from './preview.html';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 

@@ -1,5 +1,5 @@
+import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
 import { webpackConsoleLog } from '../../../../shared/webpack-console-log.helper';
-import { Dropzone, Adam, AdamPostResponse } from '../../../../edit-types';
 
 export class DefaultPaste {
 

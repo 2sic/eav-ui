@@ -2,7 +2,7 @@ import { EavFor } from '../../../../../edit/shared/models/eav';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export class EditForm {
-  constructor(public items: (AddItem | EditItem | GroupItem | SourceItem)[]) { }
+  constructor(public items: (AddItem | EditItem | GroupItem | InnerItem | SourceItem)[]) { }
 }
 
 export class EditItem {
@@ -14,6 +14,8 @@ export class AddItem {
   ContentTypeName: string;
   /** Add item as metadata to another item */
   For?: EavFor;
+  /** @deprecated 2sxc 9 Metadata object */
+  Metadata?: LegacyMetadata;
   /** Prefill form with data */
   Prefill?: { [key: string]: string };
   /** Prefill form with data from another entity */
@@ -31,6 +33,22 @@ export class GroupItemGroup {
   Add: boolean;
 }
 
+export class InnerItem {
+  Add: boolean;
+  EntityId: number;
+  Field: string;
+  Index: number;
+  Parent: string;
+  Prefill?: { [key: string]: string };
+}
+
 export class SourceItem {
   constructor(public Path: string) { }
+}
+
+/** @deprecated 2sxc 9 Metadata object */
+export class LegacyMetadata {
+  key: string;
+  keyType: string;
+  targetType: number;
 }

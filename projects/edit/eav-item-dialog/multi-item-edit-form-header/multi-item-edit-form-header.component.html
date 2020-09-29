@@ -4,14 +4,16 @@
     <mat-icon>{{ isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
+  <div *ngIf="isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
+
   <div class="header__langs">
-    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId" [formsAreValid]="formsAreValid"
-      [allControlsAreDisabled]="allControlsAreDisabled">
+    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId"
+      [disabled]="!formsAreValid && !allControlsAreDisabled">
     </app-eav-language-switcher>
   </div>
 
   <button mat-button class="header__publish-button" (click)="openSaveStatusDialog()"
-    matTooltip="{{ 'SaveMode.' + publishMode + '.Tip' | translate }}">
+    [matTooltip]="'SaveMode.' + publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'SaveMode.Label' | translate }}
       <b>{{ ('SaveMode.' + publishMode | translate: '').toUpperCase() }}</b>

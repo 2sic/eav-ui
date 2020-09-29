@@ -1,6 +1,6 @@
 import { createSelector } from '@ngrx/store';
-import { GlobalConfigurationState } from '../reducers/global-configuration.reducer';
 import { EavState } from '../reducers';
+import { GlobalConfigurationState } from '../reducers/global-configuration.reducer';
 
 export const selectGlobalConfiguration = (state: EavState) => state.globalConfiguration;
 

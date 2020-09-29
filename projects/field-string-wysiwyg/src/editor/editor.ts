@@ -1,21 +1,19 @@
 import { Subscription } from 'rxjs';
-
-import { EavCustomInputField, Connector } from '../../../edit-types';
-import { buildTemplate } from '../shared/helpers';
-import * as template from './editor.html';
-import * as styles from './editor.css';
-import { TinyMceButtons } from '../config/buttons';
-import { attachDnnBridgeService } from '../connector/dnn-page-picker';
-import { attachAdam } from '../connector/adam';
-import * as skinOverrides from './oxide-skin-overrides.scss';
-import { fixMenuPositions } from './fix-menu-positions.helper';
-import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { TinyMceButtons } from '../config/buttons';
+import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
-declare const tinymce: any;
+import { attachAdam } from '../connector/adam';
+import { buildTemplate } from '../shared/helpers';
+import * as styles from './editor.css';
+import * as template from './editor.html';
+import { fixMenuPositions } from './fix-menu-positions.helper';
+import * as skinOverrides from './oxide-skin-overrides.scss';
 
+declare const tinymce: any;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
@@ -94,7 +92,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
       // tslint:disable:curly
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
@@ -128,7 +125,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
       webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disablePagePicker) attachDnnBridgeService(this, editor);
       if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.

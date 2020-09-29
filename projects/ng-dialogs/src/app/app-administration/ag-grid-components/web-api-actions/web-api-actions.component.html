@@ -1,9 +1,8 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple matTooltip="Code" (click)="openCode()">
+  <div class="like-button highlight" matRipple *ngIf="enableCode" matTooltip="Code" (click)="openCode()">
     <mat-icon>code</mat-icon>
   </div>
-  <div class="like-button highlight not-implemented" style="display: none;" matRipple matTooltip="Delete"
-    (click)="deleteApi()">
-    <mat-icon>delete</mat-icon>
+  <div class="like-button disabled" *ngIf="!enableCode">
+    <mat-icon>code</mat-icon>
   </div>
 </div>

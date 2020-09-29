@@ -1,14 +1,13 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
+import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { AssetsService } from '../../../../shared/services/assets.service';
-import { templateTypes } from './string-template-picker.constants';
-import { BaseComponent } from '../../base/base.component';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
+import { BaseComponent } from '../../base/base.component';
+import { templateTypes } from './string-template-picker.constants';
 
 @Component({
   // tslint:disable-next-line:component-selector

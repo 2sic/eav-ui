@@ -1,6 +1,10 @@
 .actions-component {
   display: flex;
   height: 100%;
+
+  .accent {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
 }
 
 .chip-component {
@@ -57,5 +61,21 @@
     justify-content: center;
     user-select: none;
     text-shadow: none;
+  }
+}
+
+.grid-more-menu {
+  .mat-menu-item {
+    &:not([disabled]) {
+      .mat-icon {
+        color: initial;
+      }
+    }
+
+    &[disabled] {
+      .mat-icon {
+        color: inherit;
+      }
+    }
   }
 }
