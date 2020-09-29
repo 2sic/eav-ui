@@ -1,9 +1,9 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Injectable } from '@angular/core';
 import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
+import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
 import { Context } from '../../shared/services/context';
 import { ContentExport } from '../models/content-export.model';
-import { webApiTypeRoot } from './content-types.service';
 
 @Injectable()
 export class ContentExportService {

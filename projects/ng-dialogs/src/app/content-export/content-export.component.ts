@@ -3,11 +3,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { Language } from '../../../../edit/shared/models/eav/language';
-import { ContentExport } from '../app-administration/models/content-export.model';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
-import { ContentExportService } from '../app-administration/services/content-export.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ContentExport } from './models/content-export.model';
+import { ContentExportService } from './services/content-export.service';
 
 @Component({
   selector: 'app-content-export',

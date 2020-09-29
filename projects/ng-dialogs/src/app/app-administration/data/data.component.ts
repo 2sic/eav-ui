@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
+import { ContentExportService } from '../../content-export/services/content-export.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
@@ -16,7 +17,6 @@ import { DataActionsParams } from '../ag-grid-components/data-actions/data-actio
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
 import { ContentType } from '../models/content-type.model';
-import { ContentExportService } from '../services/content-export.service';
 import { ContentTypesService } from '../services/content-types.service';
 import { ContentImportDialogData } from '../sub-dialogs/content-import/content-import-dialog.config';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';

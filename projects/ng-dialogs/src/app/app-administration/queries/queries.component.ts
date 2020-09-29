@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ContentExportService } from '../../content-export/services/content-export.service';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -13,7 +14,6 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
 import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
 import { Query } from '../models/query.model';
-import { ContentExportService } from '../services/content-export.service';
 import { PipelinesService } from '../services/pipelines.service';
 import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
 
