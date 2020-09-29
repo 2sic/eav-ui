@@ -56,8 +56,8 @@ const appAdministrationRoutes: Routes = [
           },
           {
             path: ':contentTypeStaticName/import',
-            component: DialogEntryComponent,
-            data: { dialog: contentImportDialog, title: 'Import Items' },
+            loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
+            data: { title: 'Import Items' },
           },
           {
             path: 'permissions/:type/:keyType/:key',

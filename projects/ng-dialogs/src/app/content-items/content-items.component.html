@@ -12,8 +12,8 @@
 
   <div class="grid-wrapper">
     <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [modules]="modules"
-      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'json'"
-      (filesDropped)="importItem($event)">
+      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
+      (filesDropped)="filesDropped($event)">
     </ag-grid-angular>
 
     <div class="actions-box">
@@ -21,7 +21,7 @@
         <mat-icon>cloud_download</mat-icon>
         <span>Data</span>
       </button>
-      <button mat-button class="force-hide" matTooltip="Import xml list" (click)="importContent()">
+      <button mat-button matTooltip="Import xml list" (click)="importContent()">
         <mat-icon>cloud_upload</mat-icon>
         <span>Data</span>
       </button>

@@ -66,6 +66,11 @@ const appRoutes: Routes = [
     data: { title: 'Export Items' },
   },
   {
+    path: ':zoneId/:appId/import/:contentTypeStaticName',
+    loadChildren: () => import('./content-import/content-import.module').then(m => m.ContentImportModule),
+    data: { title: 'Import Items' },
+  },
+  {
     path: ':zoneId/:appId/permissions/:type/:keyType/:key',
     loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule),
     data: { title: 'Permissions' },

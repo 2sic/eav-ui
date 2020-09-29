@@ -10,6 +10,7 @@ import { GlobalConfigService } from '../../../../edit';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
+import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { Field } from '../content-type-fields/models/field.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
@@ -157,7 +158,22 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
   }
 
-  importContent() {
+  filesDropped(files: File[]) {
+    const importFile = files[0];
+    const ext = importFile.name.substring(importFile.name.lastIndexOf('.') + 1).toLocaleLowerCase();
+    switch (ext) {
+      case 'xml':
+        this.importContent(files);
+        break;
+      case 'json':
+        this.importItem(files);
+        break;
+    }
+  }
+
+  importContent(files?: File[]) {
+    const dialogData: ContentImportDialogData = { files };
+    this.router.navigate([`${this.contentTypeStaticName}/import`], { relativeTo: this.route, state: dialogData });
   }
 
   importItem(files?: File[]) {

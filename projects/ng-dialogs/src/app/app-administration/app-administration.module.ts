@@ -22,8 +22,6 @@ import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { AppsListService } from '../apps-management/services/apps-list.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
-import { ContentImportComponent } from '../content-import/content-import.component';
-import { ContentImportService } from '../content-import/services/content-import.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
@@ -80,7 +78,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
-    ContentImportComponent,
     ImportQueryComponent,
     ExportAppComponent,
     ExportAppPartsComponent,
@@ -102,7 +99,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsShowComponent,
     ViewsActionsComponent,
     EditContentTypeComponent,
-    ContentImportComponent,
     ImportQueryComponent,
     ExportAppComponent,
     ExportAppPartsComponent,
@@ -145,7 +141,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     PipelinesService,
     ViewsService,
     ContentExportService,
-    ContentImportService,
     WebApisService,
     ContentItemsService,
     ExportAppService,

@@ -122,19 +122,18 @@ export class DataComponent implements OnInit, OnDestroy {
             this.snackBar.open(message, null, { duration: 5000 });
             return;
           }
-          const contentImportData: ContentImportDialogData = { files };
-          this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: contentImportData });
+          this.openDataImport(contentType, files);
         });
         break;
       case 'json':
-        const importContentTypeData: ImportContentTypeDialogData = { files };
-        this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
+        this.importType(files);
         break;
     }
   }
 
-  importType() {
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild });
+  importType(files?: File[]) {
+    const importContentTypeData: ImportContentTypeDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
   }
 
   private showContentItems(params: CellClickedEvent) {
@@ -254,8 +253,9 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`export/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
-  private openDataImport(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild });
+  private openDataImport(contentType: ContentType, files?: File[]) {
+    const contentImportData: ContentImportDialogData = { files };
+    this.router.navigate([`${contentType.StaticName}/import`], { relativeTo: this.route.firstChild, state: contentImportData });
   }
 
   private openPermissions(contentType: ContentType) {

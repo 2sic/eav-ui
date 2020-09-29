@@ -18,6 +18,11 @@ const routes: Routes = [
       },
       { path: 'import', component: DialogEntryComponent, data: { dialog: contentItemImportDialog } },
       {
+        path: ':contentTypeStaticName/import',
+        loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
+        data: { title: 'Import Items' },
+      },
+      {
         matcher: edit,
         loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
       },
