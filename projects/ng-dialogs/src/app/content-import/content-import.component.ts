@@ -3,12 +3,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ContentImport, EvaluateContentResult, ImportContentResult } from '../../models/content-import.model';
-import { ContentType } from '../../models/content-type.model';
-import { AppDialogConfigService } from '../../services/app-dialog-config.service';
-import { ContentImportService } from '../../services/content-import.service';
-import { ContentTypesService } from '../../services/content-types.service';
+import { ContentType } from '../app-administration/models/content-type.model';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentImportDialogData } from './content-import-dialog.config';
+import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
+import { ContentImportService } from './services/content-import.service';
 
 @Component({
   selector: 'app-content-import',
