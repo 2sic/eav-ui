@@ -17,7 +17,12 @@ export function attachAdam(editor: any, adam: Adam) {
 function insertContent(item: AdamItem | AdamPostResponse, editor: any, adam: Adam) {
   const imageMode = adam.getConfig().showImagesOnly;
   const selected = editor.selection.getContent();
-  const fileName = item.Name.substring(0, item.Name.lastIndexOf('.'));
+
+  let fileName = item.Name;
+  const extIndex = fileName.lastIndexOf('.');
+  if (extIndex > 0) {
+    fileName = fileName.substring(0, extIndex);
+  }
 
   const content = imageMode
     ? `${selected}<img src="${item.FullPath}" alt="${fileName}">`
