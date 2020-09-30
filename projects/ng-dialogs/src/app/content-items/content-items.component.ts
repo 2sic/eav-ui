@@ -278,6 +278,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
+          onOpenSnippets: this.openSnippets.bind(this),
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
       },
@@ -333,6 +334,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private export(item: ContentItem) {
     this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
+  }
+
+  private openSnippets(item: ContentItem) {
+    this.router.navigate([`${item.Id}/snippets`], { relativeTo: this.route });
   }
 
   private delete(item: ContentItem) {

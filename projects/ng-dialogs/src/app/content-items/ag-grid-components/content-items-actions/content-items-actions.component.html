@@ -11,6 +11,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="openSnippets()">
+    <mat-icon>code</mat-icon>
+    <span>Snippets</span>
+  </button>
   <button mat-menu-item (click)="deleteItem()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>

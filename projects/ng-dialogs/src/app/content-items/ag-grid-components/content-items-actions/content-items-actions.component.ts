@@ -32,6 +32,10 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
     this.params.onExport(this.item);
   }
 
+  openSnippets() {
+    this.params.onOpenSnippets(this.item);
+  }
+
   deleteItem() {
     this.params.onDelete(this.item);
   }
