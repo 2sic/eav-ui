@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit } from '../../../../edit/edit.matcher';
-import { contentImportDialog } from '../content-import/content-import-dialog.config';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
+import { contentTypeSnippetsDialog } from './sub-dialogs/content-type-snippets/content-type-snippets-dialog.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
 import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
@@ -43,6 +43,11 @@ const appAdministrationRoutes: Routes = [
             path: ':scope/:contentTypeStaticName/edit',
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
+          },
+          {
+            path: ':contentTypeStaticName/snippets',
+            component: DialogEntryComponent,
+            data: { dialog: contentTypeSnippetsDialog, title: 'Content Type Snippets' },
           },
           {
             path: 'fields/:contentTypeStaticName',

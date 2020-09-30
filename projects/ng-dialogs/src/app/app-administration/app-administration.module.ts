@@ -50,6 +50,7 @@ import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
 import { WebApisService } from './services/web-apis.service';
+import { ContentTypeSnippetsComponent } from './sub-dialogs/content-type-snippets/content-type-snippets.component';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
 import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
 import { ExportAppComponent } from './sub-dialogs/export-app/export-app.component';
@@ -88,6 +89,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
     ImportViewComponent,
+    ContentTypeSnippetsComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -109,6 +111,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
     ImportViewComponent,
+    ContentTypeSnippetsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
