@@ -1,4 +1,4 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { EavService } from '../../../shared/services/eav.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
+@Directive()
 export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
