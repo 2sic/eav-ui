@@ -19,9 +19,9 @@ function insertContent(item: AdamItem | AdamPostResponse, editor: any, adam: Ada
   const selected = editor.selection.getContent();
 
   let fileName = item.Name;
-  const typeIndex = fileName.lastIndexOf('.');
-  if (typeIndex > 0) {
-    fileName = fileName.substring(0, typeIndex);
+  const extIndex = fileName.lastIndexOf('.');
+  if (extIndex > 0) {
+    fileName = fileName.substring(0, extIndex);
   }
 
   const content = imageMode
