@@ -48,6 +48,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   isParentDialog = calculateIsParentDialog(this.route);
   formId = Math.floor(Math.random() * 99999);
   isCopy$ = new BehaviorSubject(false);
+  enableHistory$ = new BehaviorSubject(false);
   formsAreValid$ = new BehaviorSubject(false);
   allControlsAreDisabled$ = new BehaviorSubject(true);
   items$: Observable<Item[]>;
@@ -108,6 +109,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   ngOnDestroy() {
     this.isCopy$.complete();
+    this.enableHistory$.complete();
     this.reduceSaveButton$.complete();
     this.debugInfoIsOpen$.complete();
     this.formsAreValid$.complete();
@@ -246,6 +248,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             this.isCopy$.next(true);
           }
         }
+        const enableHistory = !this.createMode && this.route.snapshot.data.history !== false;
+        this.enableHistory$.next(enableHistory);
       });
 
       this.languageChangeSubscribe();

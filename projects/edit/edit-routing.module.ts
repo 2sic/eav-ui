@@ -9,8 +9,12 @@ const editRoutes: Routes = [
     path: '', component: DialogEntryComponent, data: { dialog: editDialog }, children: [
       {
         matcher: edit,
-        loadChildren: () => import('./edit.module').then(m => m.EditModule)
+        loadChildren: () => import('./edit.module').then(m => m.EditModule),
       },
+      {
+        path: 'history/:itemId',
+        loadChildren: () => import('../ng-dialogs/src/app/item-history/item-history.module').then(m => m.ItemHistoryModule),
+      }
     ]
   },
 ];

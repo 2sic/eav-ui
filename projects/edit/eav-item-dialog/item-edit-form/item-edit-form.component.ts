@@ -25,6 +25,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
   @Input() item: Item;
   @Input() private formId: number;
+  @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   contentType$: Observable<ContentType>;
@@ -66,6 +67,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       this.formId,
       this.currentLanguage,
       this.defaultLanguage,
+      this.enableHistory,
     );
   }
 

@@ -82,7 +82,7 @@ const appAdministrationRoutes: Routes = [
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
-            data: { title: 'Edit Query Name and Description' },
+            data: { title: 'Edit Query Name and Description', history: false },
           },
           {
             path: 'permissions/:type/:keyType/:key',

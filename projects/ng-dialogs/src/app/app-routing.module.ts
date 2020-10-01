@@ -49,6 +49,10 @@ const appRoutes: Routes = [
     data: { title: 'Fields' },
   },
   {
+    path: ':zoneId/:appId/history/:itemId',
+    loadChildren: () => import('./item-history/item-history.module').then(m => m.ItemHistoryModule),
+  },
+  {
     matcher: editRoot,
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule),
     data: { title: 'Edit Item' },
