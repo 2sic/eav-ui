@@ -65,7 +65,7 @@ export function paramsInitFactory(injector: Injector) {
           break;
         case DialogTypeConstants.ItemHistory:
           const historyItems: EditItem[] = JSON.parse(items);
-          router.navigate([`${zoneId}/${appId}/history/${historyItems[0].EntityId}`]);
+          router.navigate([`${zoneId}/${appId}/versions/${historyItems[0].EntityId}`]);
           break;
         case DialogTypeConstants.Develop:
           router.navigate([`${zoneId}/${appId}/code`]);

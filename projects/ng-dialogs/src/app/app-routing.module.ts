@@ -49,7 +49,7 @@ const appRoutes: Routes = [
     data: { title: 'Fields' },
   },
   {
-    path: ':zoneId/:appId/history/:itemId',
+    path: ':zoneId/:appId/versions/:itemId',
     loadChildren: () => import('./item-history/item-history.module').then(m => m.ItemHistoryModule),
   },
   {

@@ -12,7 +12,7 @@ const editRoutes: Routes = [
         loadChildren: () => import('./edit.module').then(m => m.EditModule),
       },
       {
-        path: 'history/:itemId',
+        path: 'versions/:itemId',
         loadChildren: () => import('../ng-dialogs/src/app/item-history/item-history.module').then(m => m.ItemHistoryModule),
       }
     ]

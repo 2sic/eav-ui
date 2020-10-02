@@ -118,7 +118,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   openHistory() {
-    this.router.navigate([`history/${this.config.entity.entityId}`], { relativeTo: this.route });
+    this.router.navigate([`versions/${this.config.entity.entityId}`], { relativeTo: this.route });
   }
 
   private translateAllConfiguration(currentLanguage: string, defaultLanguage: string) {
