@@ -1,13 +1,174 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">Content Type Snippets</div>
+  <!-- 2dm @ SPM - why do titles need a class to look like a title? -->
+  <div class="dialog-title-box">Using REST with {{ contentTypeStaticName }} </div>
 </div>
+<mat-dialog-content class="fancy-scrollbar-light">
+  <p class="dialog-description">
+    All data can easily be used in JavaScript using a REST API.
+  </p>
 
-<p class="dialog-description">Description.</p>
+  <p>
+    <!-- this should look like an important info -->
+    <em>
+      Important: As a host-user you can always access these REST endpoints, but
+      if you want to use them in a public UI, you must remember to set the
+      permissions to allow this.
+    </em>
+  </p>
 
-<div class="dialog-component-content fancy-scrollbar-light">
-  Snippets
-</div>
+  <div>
+    <app-selector-with-help #scenarioPicker label="Choose Scenario" [items]="scenarios">
+    </app-selector-with-help>
 
-<div class="dialog-component-actions">
-  <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
-</div>
+    <app-selector-with-help #environmentPicker [hidden]="modeInternal" label="Choose DNN Version" [items]="environments">
+    </app-selector-with-help>
+  </div>
+
+  <ng-container *ngIf="modeInternal; then internal; else external"></ng-container>
+
+  <!-- <div class="dialog-component-content fancy-scrollbar-light">
+    Snippets
+  </div> -->
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <!-- <div class="dialog-component-actions"> -->
+    <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
+  <!-- </div> -->
+</mat-dialog-actions>
+
+
+
+
+
+
+
+<ng-template #internal>
+  <mat-tab-group>
+    <mat-tab label="Virtual REST URLs">
+      <ng-template matTabContent>
+        <div>
+          Virtual REST URLs are shorter URLs, which are automatically resolved
+          to the full length (based on the dnn-version, current portal, etc.)
+          thanks to $2sxc. This happens when you use the
+          <a href="https://github.com/2sic/2sxc/wiki/javascript-sxc-webapi" target="_blank">
+            $2sxc.webApi(...)
+          </a>
+          or if you use
+          <a href="https://www.npmjs.com/package/@2sic.com/dnn-sxc-angular" target="_blank">
+            dnn-sxc-angular (npm package)
+          </a>
+          (which also passes url-resolving through $2sxc).
+        </div>
+
+        <ng-container *ngTemplateOutlet="restUrls"></ng-container>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="JS Calls using $2sxc">
+      <ng-template matTabContent>
+        <p>
+            First you must get the <code>sxc</code> controller for the current module instance.
+            The easiest way is to let <code>$2sxc</code> find it, by giving it a html-tag before running any additional code.
+            $2sxc will then automatically look up everything and return a fully configured controller.
+            Note that this is just an example, you will probably do this differently and not use a global variable (bad practice).
+        </p>
+        <pre>
+// this assumes a tag like &lt;div id='myGalleryTag'&gt; in your code
+var mySxc = $2sxc(document.getElementById('myGalleryTag'));
+        </pre>
+
+        <p>
+          Then...
+        </p>
+        <pre>
+
+/** get all items - this returns a promise
+* so you can do getAll().then(...)
+*/
+function getAll() {{ '{' }}
+return mySxc.webApi.get('');
+{{ '}' }}
+
+function getOne(id) {{ '{' }}
+return mySxc.webApi.get('' + '/' + id);
+{{ '}' }}
+        </pre>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</ng-template>
+
+<ng-template #external>
+  <mat-tab-group>
+    <mat-tab label="Full REST URLs">
+      <ng-template matTabContent>
+        <ng-container *ngTemplateOutlet="restUrls"></ng-container>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="JS Calls using $2sxc">
+      <ng-template matTabContent>
+todo
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</ng-template>
+
+<ng-template #restUrls>
+  <mat-list>
+    <mat-list-item>
+      <h3 matLine>Read list of all items</h3>
+      <div matLine>
+        <code>GET</code>: <code>{{ root$ | async }}</code>
+      </div>
+      <button mat-raised-button (click)="callApiGet(root$)">
+        execute call
+      </button>
+      <a
+        *ngIf="(currentScenario | async)?.key === 'external'"
+        [href]="root$ | async"
+        target="_blank"
+      >
+        open
+      </a>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item>
+      <h3 matLine>Read a single item #27</h3>
+      <div matLine>
+        <code>GET</code>: <code>{{ root$ | async }}/27</code>
+      </div>
+      <button mat-raised-button (click)="callApiGet(root$, '27')">
+        execute call
+      </button>
+      <a
+        *ngIf="(currentScenario | async)?.key === 'external'"
+        [href]="root$ | async"
+        target="_blank"
+      >
+        open
+      </a>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item>
+      <h3 matLine>Create an item</h3>
+      <div matLine>
+        <code>POST</code>: <code>{{ root$ | async }}</code>
+      </div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item>
+      <h3 matLine>Update the item #27</h3>
+      <div matLine>
+        <code>POST</code>: <code>{{ root$ | async }}/27</code>
+      </div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <mat-list-item>
+      <h3 matLine>Delete the item #27</h3>
+      <div matLine>
+        <code>DELETE</code>: <code>{{ root$ | async }}/27</code>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</ng-template>

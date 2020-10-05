@@ -247,7 +247,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openSnippets(contentType: ContentType) {
-    this.router.navigate([`${contentType.StaticName}/snippets`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`${contentType.Name}/snippets`], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {

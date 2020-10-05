@@ -61,6 +61,8 @@ import { ImportViewComponent } from './sub-dialogs/import-view/import-view.compo
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
+import { SelectorWithHelpComponent } from '../dev-rest/selector-with-help/selector-with-help.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -90,6 +92,9 @@ import { WebApiComponent } from './web-api/web-api.component';
     ImportContentTypeComponent,
     ImportViewComponent,
     ContentTypeSnippetsComponent,
+
+    // new 2020-10-05 2dm - should later be in an own component
+    SelectorWithHelpComponent,
   ],
   entryComponents: [
     AppAdministrationNavComponent,
@@ -136,6 +141,11 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
+
+
+    // new 2020-10-05 2dm - should later be in an own component
+    MatListModule,
+    MatIconModule,
   ],
   providers: [
     Context,

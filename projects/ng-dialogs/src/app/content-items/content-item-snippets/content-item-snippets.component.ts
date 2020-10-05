@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ContentItemSnippetsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
+  public contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
   private itemId = this.route.snapshot.paramMap.get('itemId');
 
   constructor(private dialogRef: MatDialogRef<ContentItemSnippetsComponent>, private route: ActivatedRoute) { }

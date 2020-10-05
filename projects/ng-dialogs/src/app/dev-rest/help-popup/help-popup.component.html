@@ -1,0 +1,12 @@
+<mat-dialog-title>
+  {{data.name}}
+</mat-dialog-title>
+
+<mat-dialog-content class="fancy-scrollbar-light">
+  <p>
+    {{ data.body }}
+  </p>
+  <p *ngIf="data.notes">
+    <em>{{ data.notes }}</em>
+  </p>
+</mat-dialog-content>
