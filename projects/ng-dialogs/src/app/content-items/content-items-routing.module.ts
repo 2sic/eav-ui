@@ -18,7 +18,7 @@ const routes: Routes = [
         loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
       },
       { path: 'import', component: DialogEntryComponent, data: { dialog: contentItemImportDialog } },
-      { path: ':itemId/snippets', component: DialogEntryComponent, data: { dialog: contentItemSnippetsDialog } },
+      { path: ':itemId/restapi', component: DialogEntryComponent, data: { dialog: contentItemSnippetsDialog } },
       {
         path: ':contentTypeStaticName/import',
         loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),

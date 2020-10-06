@@ -10,17 +10,17 @@ import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData, S
 const pathToContent = 'app/{appname}/content/{typename}';
 
 @Component({
-  selector: 'app-content-type-snippets',
-  templateUrl: './content-type-snippets.component.html',
-  styleUrls: ['./content-type-snippets.component.scss'],
+  selector: 'app-dev-rest',
+  templateUrl: './dev-rest.component.html',
+  styleUrls: ['./dev-rest.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContentTypeSnippetsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DevRestComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('scenarioPicker') scenarioPicker: SelectorWithHelpComponent;
   @ViewChild('environmentPicker') envPicker: SelectorWithHelpComponent;
 
-  public contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   /** name of the type to show REST infos about */
   typeName$: Observable<string>;
@@ -43,12 +43,12 @@ export class ContentTypeSnippetsComponent implements OnInit, OnDestroy, AfterVie
   modeInternal = true;
 
   constructor(
-    private dialogRef: MatDialogRef<ContentTypeSnippetsComponent>,
+    private dialogRef: MatDialogRef<DevRestComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private cdRef: ChangeDetectorRef
-    ) {
+  ) {
     this.typeName$ = from(this.route.snapshot.paramMap.get('contentTypeStaticName'));
   }
 
@@ -95,9 +95,9 @@ export class ContentTypeSnippetsComponent implements OnInit, OnDestroy, AfterVie
       map(([t, s, scenario]) => {
         const internal = scenario === AccessScenarios[0];
         return (internal ? '' : (s as EnvironmentSelectorData).rootPath)
-            + pathToContent
-              .replace('{typename}', t)
-              .replace('{appname}', internal ? 'auto' : appName);
+          + pathToContent
+            .replace('{typename}', t)
+            .replace('{appname}', internal ? 'auto' : appName);
       })
     );
 

@@ -77,7 +77,7 @@ export class DataComponent implements OnInit, OnDestroy {
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onEdit: this.editContentType.bind(this),
-          onOpenSnippets: this.openSnippets.bind(this),
+          onOpenRestApi: this.openRestApi.bind(this),
           onTypeExport: this.exportType.bind(this),
           onOpenDataExport: this.openDataExport.bind(this),
           onOpenDataImport: this.openDataImport.bind(this),
@@ -246,8 +246,8 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private openSnippets(contentType: ContentType) {
-    this.router.navigate([`${contentType.Name}/snippets`], { relativeTo: this.route.firstChild });
+  private openRestApi(contentType: ContentType) {
+    this.router.navigate([`${contentType.Name}/restapi`], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {

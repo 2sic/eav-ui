@@ -32,8 +32,8 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
     this.params.onExport(this.item);
   }
 
-  openSnippets() {
-    this.params.onOpenSnippets(this.item);
+  openRestApi() {
+    this.params.onOpenRestApi(this.item);
   }
 
   deleteItem() {

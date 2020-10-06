@@ -11,6 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
@@ -23,6 +24,7 @@ import { SanitizeService } from '../../../../edit/eav-material-controls/adam/san
 import { AppsListService } from '../apps-management/services/apps-list.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
+import { SelectorWithHelpComponent } from '../dev-rest/selector-with-help/selector-with-help.component';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -50,7 +52,7 @@ import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
 import { WebApisService } from './services/web-apis.service';
-import { ContentTypeSnippetsComponent } from './sub-dialogs/content-type-snippets/content-type-snippets.component';
+import { DevRestComponent } from './sub-dialogs/dev-rest/dev-rest.component';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
 import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
 import { ExportAppComponent } from './sub-dialogs/export-app/export-app.component';
@@ -61,8 +63,6 @@ import { ImportViewComponent } from './sub-dialogs/import-view/import-view.compo
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
-import { SelectorWithHelpComponent } from '../dev-rest/selector-with-help/selector-with-help.component';
-import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -91,9 +91,9 @@ import { MatListModule } from '@angular/material/list';
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
     ImportViewComponent,
-    ContentTypeSnippetsComponent,
 
     // new 2020-10-05 2dm - should later be in an own component
+    DevRestComponent,
     SelectorWithHelpComponent,
   ],
   entryComponents: [
@@ -116,7 +116,9 @@ import { MatListModule } from '@angular/material/list';
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
     ImportViewComponent,
-    ContentTypeSnippetsComponent,
+
+    // new 2020-10-05 spm - should later be in an own component
+    DevRestComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -141,7 +143,6 @@ import { MatListModule } from '@angular/material/list';
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
-
 
     // new 2020-10-05 2dm - should later be in an own component
     MatListModule,
