@@ -4,7 +4,6 @@ import { edit } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
-import { devRestDialog } from './sub-dialogs/dev-rest/dev-rest-dialog.config';
 import { editContentTypeDialog } from './sub-dialogs/edit-content-type/edit-content-type-dialog.config';
 import { exportAppPartsDialog } from './sub-dialogs/export-app-parts/export-app-parts-dialog.config';
 import { exportAppDialog } from './sub-dialogs/export-app/export-app-dialog.config';
@@ -45,9 +44,8 @@ const appAdministrationRoutes: Routes = [
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
           {
-            path: ':contentTypeStaticName/restapi',
-            component: DialogEntryComponent,
-            data: { dialog: devRestDialog, title: 'REST API' },
+            path: 'restapi/:contentTypeStaticName',
+            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
           },
           {
             path: 'fields/:contentTypeStaticName',

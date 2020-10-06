@@ -20,7 +20,8 @@
     <app-selector-with-help #scenarioPicker label="Choose Scenario" [items]="scenarios">
     </app-selector-with-help>
 
-    <app-selector-with-help #environmentPicker [hidden]="modeInternal" label="Choose DNN Version" [items]="environments">
+    <app-selector-with-help #environmentPicker [hidden]="modeInternal" label="Choose DNN Version"
+      [items]="environments">
     </app-selector-with-help>
   </div>
 
@@ -34,7 +35,7 @@
 
 <mat-dialog-actions>
   <!-- <div class="dialog-component-actions"> -->
-    <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
+  <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
   <!-- </div> -->
 </mat-dialog-actions>
 
@@ -68,10 +69,12 @@
     <mat-tab label="JS Calls using $2sxc">
       <ng-template matTabContent>
         <p>
-            First you must get the <code>sxc</code> controller for the current module instance.
-            The easiest way is to let <code>$2sxc</code> find it, by giving it a html-tag before running any additional code.
-            $2sxc will then automatically look up everything and return a fully configured controller.
-            Note that this is just an example, you will probably do this differently and not use a global variable (bad practice).
+          First you must get the <code>sxc</code> controller for the current module instance.
+          The easiest way is to let <code>$2sxc</code> find it, by giving it a html-tag before running any additional
+          code.
+          $2sxc will then automatically look up everything and return a fully configured controller.
+          Note that this is just an example, you will probably do this differently and not use a global variable (bad
+          practice).
         </p>
         <pre>
 // this assumes a tag like &lt;div id='myGalleryTag'&gt; in your code
@@ -108,7 +111,7 @@ return mySxc.webApi.get('' + '/' + id);
     </mat-tab>
     <mat-tab label="JS Calls using $2sxc">
       <ng-template matTabContent>
-todo
+        todo
       </ng-template>
     </mat-tab>
   </mat-tab-group>
@@ -124,11 +127,7 @@ todo
       <button mat-raised-button (click)="callApiGet(root$)">
         execute call
       </button>
-      <a
-        *ngIf="(currentScenario | async)?.key === 'external'"
-        [href]="root$ | async"
-        target="_blank"
-      >
+      <a *ngIf="(currentScenario | async)?.key === 'external'" [href]="root$ | async" target="_blank">
         open
       </a>
     </mat-list-item>
@@ -138,14 +137,10 @@ todo
       <div matLine>
         <code>GET</code>: <code>{{ root$ | async }}/27</code>
       </div>
-      <button mat-raised-button (click)="callApiGet(root$, '27')">
+      <button mat-raised-button (click)="callApiGet(root$)">
         execute call
       </button>
-      <a
-        *ngIf="(currentScenario | async)?.key === 'external'"
-        [href]="root$ | async"
-        target="_blank"
-      >
+      <a *ngIf="(currentScenario | async)?.key === 'external'" [href]="root$ | async" target="_blank">
         open
       </a>
     </mat-list-item>

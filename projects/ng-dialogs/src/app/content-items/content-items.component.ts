@@ -337,7 +337,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(item: ContentItem) {
-    this.router.navigate([`${item.Id}/restapi`], { relativeTo: this.route });
+    this.router.navigate([`restapi/${this.contentTypeStaticName}/${item.Id}`], { relativeTo: this.route });
   }
 
   private delete(item: ContentItem) {

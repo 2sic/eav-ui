@@ -23,7 +23,6 @@ import { ContentItemsEntityComponent } from './ag-grid-components/content-items-
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
-import { ContentItemSnippetsComponent } from './content-item-snippets/content-item-snippets.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
 import { ContentItemsService } from './services/content-items.service';
@@ -37,7 +36,6 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
     ContentItemImportComponent,
-    ContentItemSnippetsComponent,
   ],
   entryComponents: [
     ContentItemsComponent,
@@ -46,7 +44,6 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
     ContentItemImportComponent,
-    ContentItemSnippetsComponent,
   ],
   imports: [
     CommonModule,

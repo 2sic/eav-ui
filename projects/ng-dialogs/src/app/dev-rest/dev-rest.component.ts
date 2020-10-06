@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, from, Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
-import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData, SelectorWithHelpComponent } from '../../../dev-rest';
+import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData, SelectorWithHelpComponent } from '.';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 

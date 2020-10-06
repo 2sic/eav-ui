@@ -247,7 +247,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(contentType: ContentType) {
-    this.router.navigate([`${contentType.Name}/restapi`], { relativeTo: this.route.firstChild });
+    this.router.navigate([`restapi/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {
