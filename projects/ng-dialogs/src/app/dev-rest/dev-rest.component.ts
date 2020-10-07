@@ -1,3 +1,4 @@
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -10,6 +11,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { Context } from '../shared/services/context';
 import { ItemResult } from './dev-rest.models';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -63,6 +65,10 @@ export class DevRestComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private contentTypesService: ContentTypesService,
     private appDialogConfigService: AppDialogConfigService,
+    /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
+    private context: Context,
+    /** dnn-sxc-angular context. Used to resolve urls */
+    private dnnContext: DnnContext,
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
