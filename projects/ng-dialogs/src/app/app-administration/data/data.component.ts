@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { GlobalConfigService } from '../../../../../edit/shared/services/global-
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
@@ -48,7 +49,10 @@ export class DataComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: ContentType) => `ID: ${paramsData.Id}\nGUID: ${paramsData.StaticName}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
@@ -192,11 +196,6 @@ export class DataComponent implements OnInit, OnDestroy {
     }
     this.scope = newScope;
     this.fetchContentTypes();
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const contentType: ContentType = params.data;
-    return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
   }
 
   private enablePermissionsGetter() {

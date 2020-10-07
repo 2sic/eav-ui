@@ -4,6 +4,7 @@ import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
@@ -34,7 +35,10 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: Feature) => `GUID: ${paramsData.id}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Enabled', field: 'enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
@@ -99,11 +103,6 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       }
       this.managementUrl$.next(url);
     });
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const feature: Feature = params.data;
-    return `GUID: ${feature.id}`;
   }
 
   private openFeature(params: CellClickedEvent) {

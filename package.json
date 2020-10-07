@@ -1,7 +1,7 @@
 {
   "name": "eav-item-dialog-angular",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "11.07.02",
+  "version": "11.07.03",
   "license": "MIT",
   "scripts": {
     "pre-build": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",

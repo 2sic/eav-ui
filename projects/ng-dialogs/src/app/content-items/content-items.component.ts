@@ -14,6 +14,7 @@ import { ContentImportDialogData } from '../content-import/content-import-dialog
 import { Field } from '../content-type-fields/models/field.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
@@ -258,7 +259,10 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: ContentItem) => `ID: ${paramsData.Id}\nRepoID: ${paramsData._RepositoryId}\nGUID: ${paramsData.Guid}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'no-outline',
@@ -360,11 +364,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const item: ContentItem = params.data;
-    return `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`;
   }
 
   private valueGetterStatus(params: ValueGetterParams) {
