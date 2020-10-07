@@ -1,38 +1,43 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { HelpPopupComponent, SelectorData } from '..';
+import { EnvironmentSelectorData } from '../data/environments';
+import { HelpPopupData } from '../help-popup/help-popup.models';
 
 @Component({
   selector: 'app-selector-with-help',
   templateUrl: './selector-with-help.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectorWithHelpComponent implements OnInit {
-
   @Input() label: string;
-  @Input() items: SelectorData[];
+  @Input() items: SelectorData[] | EnvironmentSelectorData[];
+  @Input() value: string;
+  @Output() private valueChange = new EventEmitter<SelectorData | EnvironmentSelectorData>();
 
-  /** currently selected scenario */
-  current$: BehaviorSubject<SelectorData>;
-
-  constructor(public dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.current$ = new BehaviorSubject<SelectorData>(this.items[0]);
   }
 
-  selectCurrent(key: string): void {
-    this.current$.next(this.items.find(as => as.key === key));
+  selectionChange(key: string) {
+    this.value = key;
+    const scenario = this.items.find(item => item.key === this.value);
+    this.valueChange.emit(scenario);
   }
 
-  showHelp(): void {
-    this.current$.pipe(take(1)).subscribe(scenario => {
-      this.dialog.open(HelpPopupComponent, {
-        width: '500px',
-        data: {name: scenario.name, body: scenario.description, notes: scenario.notes }
-      });
+  showHelp() {
+    const scenario = this.items.find(item => item.key === this.value);
+    const data: HelpPopupData = {
+      name: scenario.name,
+      body: scenario.description,
+      notes: scenario.notes,
+    };
+
+    this.dialog.open(HelpPopupComponent, {
+      width: '500px',
+      data,
+      autoFocus: false,
     });
   }
-
 }

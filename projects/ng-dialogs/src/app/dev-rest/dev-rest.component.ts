@@ -1,11 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, from, Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
-import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData, SelectorWithHelpComponent } from '.';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData } from '.';
+import { ContentType } from '../app-administration/models/content-type.model';
+import { DialogSettings } from '../app-administration/models/dialog-settings.model';
+import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
+import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { ItemResult } from './dev-rest.models';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -15,101 +20,108 @@ const pathToContent = 'app/{appname}/content/{typename}';
   styleUrls: ['./dev-rest.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DevRestComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostBinding('className') hostClass = 'dialog-component';
-  @ViewChild('scenarioPicker') scenarioPicker: SelectorWithHelpComponent;
-  @ViewChild('environmentPicker') envPicker: SelectorWithHelpComponent;
+export class DevRestComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component dialog-component--no-actions';
 
-  contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-
-  /** name of the type to show REST infos about */
-  typeName$: Observable<string>;
-
-  /** list of all known environments */
+  /** List of all known environments */
   environments = Environments;
 
-  /** currently selected environment object */
-  currentEnv: Observable<SelectorData>;
-
-  /** list of scenarios */
+  /** List of scenarios */
   scenarios = AccessScenarios;
 
-  /** currently selected scenario */
-  currentScenario: Observable<SelectorData>;
+  templateVars$: Observable<{
+    contentType: ContentType;
+    currentEnv: EnvironmentSelectorData;
+    currentScenario: SelectorData;
+    modeInternal: boolean;
+    root: string;
+  }>;
+
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+
+  /** Content Type to show REST infos about */
+  private contentType$: BehaviorSubject<ContentType>;
+
+  /** App, language, etc. */
+  private dialogSettings$: BehaviorSubject<DialogSettings>;
+
+  /** Currently selected environment object */
+  private currentEnv$: BehaviorSubject<EnvironmentSelectorData>;
+
+  /** Currently selected scenario */
+  private currentScenario$: BehaviorSubject<SelectorData>;
+
+  private modeInternal$: Observable<boolean>;
 
   /** The root path for the current request */
-  root$: Observable<string>;
-
-  modeInternal = true;
+  private root$: Observable<string>;
 
   constructor(
     private dialogRef: MatDialogRef<DevRestComponent>,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private http: HttpClient,
-    private cdRef: ChangeDetectorRef
+    private contentTypesService: ContentTypesService,
+    private appDialogConfigService: AppDialogConfigService,
   ) {
-    this.typeName$ = from(this.route.snapshot.paramMap.get('contentTypeStaticName'));
-  }
+    this.contentType$ = new BehaviorSubject<ContentType>(null);
+    this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
+    this.currentEnv$ = new BehaviorSubject<EnvironmentSelectorData>(this.environments[0]);
+    this.currentScenario$ = new BehaviorSubject<SelectorData>(this.scenarios[0]);
+    this.modeInternal$ = this.currentScenario$.pipe(map(scenario => scenario.key === 'internal'));
 
-  ngAfterViewInit(): void {
-    this.currentScenario = this.scenarioPicker.current$;
-    this.currentEnv = this.envPicker.current$;
-    this.currentScenario.subscribe(cs => this.modeInternal = cs.key === 'internal');
-    this.wireUpObservables();
-    // explicitly declare that we made changes
-    this.cdRef.detectChanges();
+    this.root$ = combineLatest([this.contentType$, this.currentEnv$, this.currentScenario$, this.dialogSettings$]).pipe(
+      map(([contentType, env, scenario, dialogSettings]) => {
+        if (contentType == null || dialogSettings == null) { return ''; }
+
+        const internal = scenario === AccessScenarios[0];
+        const root = internal ? '' : env.rootPath;
+        return root + pathToContent
+          .replace('{typename}', contentType.Name)
+          .replace('{appname}', internal ? 'auto' : dialogSettings.Context.App.Name);
+      }),
+    );
+
+    this.templateVars$ = combineLatest([this.contentType$, this.currentEnv$, this.currentScenario$, this.modeInternal$, this.root$]).pipe(
+      map(([contentType, currentEnv, currentScenario, modeInternal, root]) => ({
+        contentType,
+        currentEnv,
+        currentScenario,
+        modeInternal,
+        root,
+      })),
+    );
   }
 
   ngOnInit() {
+    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(this.contentType$);
+    this.appDialogConfigService.getDialogSettings().subscribe(this.dialogSettings$);
   }
 
   ngOnDestroy() {
+    this.contentType$.complete();
+    this.dialogSettings$.complete();
+    this.currentEnv$.complete();
+    this.currentScenario$.complete();
+  }
+
+  changeEnv(env: EnvironmentSelectorData) {
+    this.currentEnv$.next(env);
+  }
+
+  changeScenario(scenario: SelectorData) {
+    this.currentScenario$.next(scenario);
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  /** setup all observables */
-  wireUpObservables() {
-    // type name
-    // this.typeName$ = this.route.paramMap.pipe(
-    //   map((params: ParamMap) => {
-    //     return params.get('name');
-    //   })
-    // );
-
-    // extract real app-name from the app-path and provide it in the named-root
-    const appPath = '/todo/todo/spm-where-is-the-api-root/'; // this.context. this.state.rootApp || '/put-app-name-here/';
-    const appName = appPath.substring(
-      appPath.lastIndexOf('/') + 1,
-      appPath.length
-    );
-
-    this.root$ = combineLatest([
-      this.typeName$,
-      this.currentEnv,
-      this.currentScenario,
-    ]).pipe(
-      map(([t, s, scenario]) => {
-        const internal = scenario === AccessScenarios[0];
-        return (internal ? '' : (s as EnvironmentSelectorData).rootPath)
-          + pathToContent
-            .replace('{typename}', t)
-            .replace('{appname}', internal ? 'auto' : appName);
-      })
-    );
-
-  }
-
   // todo: 2dm - probably open a dialog showing the results etc.
-  callApiGet(url: Observable<string>) {
-    url.pipe(
-      take(1),
-      tap(path => console.log(path)),
-      map(path => this.http.get(path).toPromise())
-    ).subscribe();
+  callApiGet(url: string) {
+    this.http.get<ItemResult[]>(url).subscribe(res => {
+      console.log(res);
+    });
     this.openSnackBar('API call dispatched - to see it, you should have the console (F12) open.', 'API call');
   }
 

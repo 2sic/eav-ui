@@ -1,12 +1,18 @@
 <div mat-dialog-title>
-  {{data.name}}
+  <div class="dialog-title-box">
+    <div>{{ dialogData.name }}</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 </div>
 
-<mat-dialog-content class="fancy-scrollbar-light">
-  <p>
-    {{ data.body }}
+<div class="dialog-component-content fancy-scrollbar-light">
+  <p class="dialog-description">
+    {{ dialogData.body }}
   </p>
-  <p *ngIf="data.notes">
-    <em>{{ data.notes }}</em>
+
+  <p class="dialog-description" *ngIf="dialogData.notes">
+    <em>{{ dialogData.notes }}</em>
   </p>
-</mat-dialog-content>
+</div>
