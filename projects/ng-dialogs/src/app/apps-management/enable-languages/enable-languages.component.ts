@@ -1,8 +1,9 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
@@ -29,7 +30,10 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: EnableLanguage) => `ID: ${paramsData.Code}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
@@ -53,11 +57,6 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.languages$.complete();
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const language: EnableLanguage = params.data;
-    return `ID: ${language.Code}`;
   }
 
   private handleNameClicked(params: CellClickedEvent) {

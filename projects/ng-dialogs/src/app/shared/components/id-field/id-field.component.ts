@@ -1,8 +1,8 @@
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
+import { IdFieldParams } from './id-field.models';
 
 @Component({
   selector: 'app-id-field',
@@ -11,23 +11,14 @@ import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
+  id: number | string;
   tooltip: string;
-  id: number;
-  private params: ICellRendererParams;
 
   constructor(private snackBar: MatSnackBar) { }
 
-  agInit(params: ICellRendererParams) {
-    this.params = params;
-    this.tooltip = this.params.value;
-    const data: any = this.params.data;
-    if (data.Id != null) {
-      this.id = data.Id;
-    } else if (data.id != null) {
-      this.id = data.id;
-    } else if (data.Code != null) {
-      this.id = data.Code;
-    }
+  agInit(params: IdFieldParams) {
+    this.id = params.value;
+    this.tooltip = params.tooltipGetter(params.data);
   }
 
   refresh(params?: any): boolean {
