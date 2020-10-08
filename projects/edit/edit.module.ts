@@ -25,6 +25,8 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
   ],
+  entryComponents: [
+  ],
   imports: [
     EditRoutingModule,
     SharedComponentsModule,

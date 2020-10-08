@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
+import { NavigateFormResult } from '../../../../../../edit';
 import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { Context } from '../../services/context';
@@ -59,6 +60,12 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {
         angularConsoleLog('Dialog was closed:', dialogConfig.name, 'Data:', data);
+
+        const navRes = data as NavigateFormResult;
+        if (navRes?.navigateUrl != null) {
+          this.router.navigate([navRes.navigateUrl]);
+          return;
+        }
 
         if (this.route.pathFromRoot.length <= 3) {
           try {

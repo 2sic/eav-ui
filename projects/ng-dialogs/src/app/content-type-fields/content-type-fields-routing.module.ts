@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { edit } from '../../../../edit/edit.matcher';
+import { edit, refreshEdit } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
 import { editContentTypeFieldsDialog } from './edit-content-type-fields/edit-content-type-fields-dialog.config';
@@ -17,6 +17,10 @@ const routes: Routes = [
       {
         matcher: edit,
         loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+      },
+      {
+        matcher: refreshEdit,
+        loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
       },
     ]
   }

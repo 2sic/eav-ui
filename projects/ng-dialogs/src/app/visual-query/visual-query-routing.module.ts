@@ -8,7 +8,8 @@ const routes: Routes = [
     path: '', component: VisualQueryComponent, children: [
       {
         matcher: edit,
-        loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+        loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+        data: { history: false },
       },
     ]
   },

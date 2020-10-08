@@ -93,7 +93,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
   ) {
-    this.editRoutingService.init(this.route, this.formId);
+    this.editRoutingService.init(this.route, this.formId, this.dialogRef);
     this.loadIconsService.load();
   }
 
@@ -118,6 +118,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eavConfigLoaded$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    this.editRoutingService.ngOnDestroy();
 
     if (this.isParentDialog) {
       // clear the rest of the store
@@ -465,7 +466,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   /** Open snackbar when snack bar not saved */
-  public snackBarYouHaveUnsavedChanges() {
+  private snackBarYouHaveUnsavedChanges() {
     const data: UnsavedChangesSnackData = {
       save: false,
     };
@@ -483,5 +484,4 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       }
     });
   }
-
 }

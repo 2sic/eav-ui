@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../ng-dialogs/src/app/shared/components/dialog-entry/dialog-entry.component';
 import { editDialog } from './eav-item-dialog/multi-item-edit-form/edit-dialog.config';
-import { edit } from './edit.matcher';
+import { edit, refreshEdit } from './edit.matcher';
 
 const editRoutes: Routes = [
   {
@@ -10,6 +10,10 @@ const editRoutes: Routes = [
       {
         matcher: edit,
         loadChildren: () => import('./edit.module').then(m => m.EditModule),
+      },
+      {
+        matcher: refreshEdit,
+        loadChildren: () => import('./refresh-edit.module').then(m => m.RefreshEditModule)
       },
       {
         path: 'versions/:itemId',
