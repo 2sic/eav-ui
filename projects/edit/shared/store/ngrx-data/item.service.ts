@@ -21,7 +21,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   loadItems(items: JsonItem1[]) {
     items.forEach(jsonItem1 => {
       const item = Item.create(jsonItem1);
-      this.addOneToCache(item);
+      this.upsertOneInCache(item);
     });
   }
 
