@@ -1,5 +1,5 @@
-import { Version, VersionJsonParsed } from './models/raw-version.model';
-import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/version.model';
+import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/history-item.model';
+import { Version, VersionJsonParsed } from './models/version.model';
 
 export function getHistoryItems(versions: Version[], page: number, pageSize: number) {
   if (versions == null || page == null || pageSize == null) { return null; }
@@ -36,13 +36,13 @@ export function getHistoryItems(versions: Version[], page: number, pageSize: num
     });
 
     const historyItem: HistoryItem = {
-      ChangeSetId: version.ChangeSetId,
-      Attributes: allHistoryAttributes,
-      HistoryId: version.HistoryId,
-      TimeStamp: version.TimeStamp,
-      User: version.User,
-      VersionNumber: version.VersionNumber,
-      _isLastVersion: isLastVersion,
+      changeSetId: version.ChangeSetId,
+      attributes: allHistoryAttributes,
+      historyId: version.HistoryId,
+      timeStamp: version.TimeStamp,
+      user: version.User,
+      versionNumber: version.VersionNumber,
+      isLastVersion,
     };
     return historyItem;
   });

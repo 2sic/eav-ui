@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getHistoryItems } from './item-history.helpers';
 import { ItemHistoryResult } from './models/item-history-result.model';
-import { Version } from './models/raw-version.model';
+import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
 
 @Component({

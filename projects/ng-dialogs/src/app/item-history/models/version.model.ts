@@ -1,23 +1,42 @@
-export interface HistoryItem {
-  Attributes: HistoryAttribute[];
+export interface Version {
   ChangeSetId: number;
   HistoryId: number;
+  Json: string;
   TimeStamp: string;
   User: string;
   VersionNumber: number;
-  _isLastVersion: boolean;
 }
 
-export interface HistoryAttribute {
-  attributeName: string;
-  dataType: string;
-  expand: boolean;
-  hasChanged: boolean;
-  attributeValues: HistoryAttributeValue[];
+export interface VersionJsonParsed {
+  Entity: VersionEntity;
+  _: VersionUnderscore;
 }
 
-export interface HistoryAttributeValue {
-  langKey: string;
-  value: any;
-  hasChanged: boolean;
+export interface VersionEntity {
+  Attributes: VersionEntityDataTypes;
+  Guid: string;
+  Id: number;
+  Type: VersionEntityType;
+  Version: number;
+}
+
+export interface VersionEntityDataTypes {
+  [dataType: string]: VersionEntityAttributes;
+}
+
+export interface VersionEntityAttributes {
+  [attributeName: string]: VersionEntityAttributeValues;
+}
+
+export interface VersionEntityAttributeValues {
+  [langKey: string]: any;
+}
+
+export interface VersionEntityType {
+  Name: string;
+  Id: string;
+}
+
+export interface VersionUnderscore {
+  V: number;
 }

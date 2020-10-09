@@ -16,11 +16,11 @@
     <mat-accordion multi *ngIf="data.historyItems?.length > 0" class="history-tables">
       <mat-expansion-panel *ngFor="let historyItem of data.historyItems">
         <mat-expansion-panel-header>
-          <mat-panel-title>Version {{ historyItem.VersionNumber }}</mat-panel-title>
-          <mat-panel-description>{{ historyItem.TimeStamp | date:'yyyy-MM-dd hh:mm' }}</mat-panel-description>
+          <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
+          <mat-panel-description>{{ historyItem.timeStamp | date:'yyyy-MM-dd hh:mm' }}</mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class="table-row" *ngFor="let attribute of historyItem.Attributes">
+        <div class="table-row" *ngFor="let attribute of historyItem.attributes">
           <div class="table-row__main row-main" (click)="attribute.expand = !attribute.expand">
             <div class="row-main__label" [class.history-changed]="attribute.hasChanged">
               {{ attribute.attributeName }}
@@ -44,8 +44,8 @@
         </div>
 
         <div class="row-actions">
-          <button mat-raised-button color="accent" *ngIf="!historyItem._isLastVersion"
-            (click)="restore(historyItem.ChangeSetId)">
+          <button mat-raised-button color="accent" *ngIf="!historyItem.isLastVersion"
+            (click)="restore(historyItem.changeSetId)">
             Restore
           </button>
         </div>
