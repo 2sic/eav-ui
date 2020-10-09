@@ -1,51 +1,59 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">Item History</div>
-</div>
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Item History</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
 
-<p class="dialog-description">Check version history for this item and restore the version you need.</p>
+  <p class="dialog-description">Check version history for this item and restore the version you need.</p>
 
-<div class="dialog-component-content fancy-scrollbar-light" *ngIf="templateVars$ | async as data">
-  <div *ngIf="data.versions === null">Loading...</div>
-  <div *ngIf="data.versions?.length === 0">No previous versions of this item found</div>
-  <mat-accordion multi *ngIf="data.versions?.length > 0" class="history-tables">
-    <mat-expansion-panel *ngFor="let version of data.versions">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Version {{ version.VersionNumber }}</mat-panel-title>
-        <mat-panel-description>{{ version.TimeStamp | date:'yyyy-MM-dd hh:mm' }}</mat-panel-description>
-      </mat-expansion-panel-header>
+  <div class="dialog-component-content fancy-scrollbar-light">
+    <div *ngIf="data.historyItems === null">Loading...</div>
+    <div *ngIf="data.historyItems?.length === 0">No previous versions of this item found</div>
+    <mat-accordion multi *ngIf="data.historyItems?.length > 0" class="history-tables">
+      <mat-expansion-panel *ngFor="let historyItem of data.historyItems">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Version {{ historyItem.VersionNumber }}</mat-panel-title>
+          <mat-panel-description>{{ historyItem.TimeStamp | date:'yyyy-MM-dd hh:mm' }}</mat-panel-description>
+        </mat-expansion-panel-header>
 
-      <div class="table-row" *ngFor="let attribute of version.Attributes">
-        <div class="table-row__main row-main" (click)="attribute.expand = !attribute.expand">
-          <div class="row-main__label" [class.history-changed]="attribute.hasChanged">
-            {{ attribute.attributeName }}
+        <div class="table-row" *ngFor="let attribute of historyItem.Attributes">
+          <div class="table-row__main row-main" (click)="attribute.expand = !attribute.expand">
+            <div class="row-main__label" [class.history-changed]="attribute.hasChanged">
+              {{ attribute.attributeName }}
+            </div>
+            <div class="row-main__value" [class.history-changed]="attribute.hasChanged">
+              <ng-container *ngIf="!attribute.expand">{{ attribute.attributeValues[0]?.value }}</ng-container>
+            </div>
+            <div class="row-main__type">
+              <i *ngFor="let value of attribute.attributeValues">[{{ value.langKey }}]</i>
+              <i>[{{ attribute.dataType }}]</i>
+            </div>
           </div>
-          <div class="row-main__value" [class.history-changed]="attribute.hasChanged">
-            <ng-container *ngIf="!attribute.expand">{{ attribute.attributeValues[0]?.value }}</ng-container>
-          </div>
-          <div class="row-main__type">
-            <i *ngFor="let value of attribute.attributeValues">[{{ value.langKey }}]</i>
-            <i>[{{ attribute.dataType }}]</i>
+
+          <div class="table-row__details" *ngIf="attribute.expand">
+            <div class="detail-row" [class.history-changed]="value.hasChanged"
+              *ngFor="let value of attribute.attributeValues">
+              <div class="detail-row__label">{{ value.langKey }}:</div>
+              <div class="detail-row__value">{{ value.value }}</div>
+            </div>
           </div>
         </div>
 
-        <div class="table-row__details" *ngIf="attribute.expand">
-          <div class="detail-row" [class.history-changed]="value.hasChanged"
-            *ngFor="let value of attribute.attributeValues">
-            <div class="detail-row__label">{{ value.langKey }}:</div>
-            <div class="detail-row__value">{{ value.value }}</div>
-          </div>
+        <div class="row-actions">
+          <button mat-raised-button color="accent" *ngIf="!historyItem._isLastVersion"
+            (click)="restore(historyItem.ChangeSetId)">
+            Restore
+          </button>
         </div>
-      </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 
-      <div class="row-actions">
-        <button mat-raised-button *ngIf="!version._isLastVersion" (click)="restore(version.ChangeSetId)">
-          Restore
-        </button>
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
-
-<div class="dialog-component-actions">
-  <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
-</div>
+  <mat-paginator showFirstLastButtons="true" [length]="data.length" [pageSize]="data.pageSize"
+    (page)="pageChange($event)">
+  </mat-paginator>
+</ng-container>

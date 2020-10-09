@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ItemHistoryResult } from './item-history.models';
-import { Version } from './models/version.model';
+import { getHistoryItems } from './item-history.helpers';
+import { ItemHistoryResult } from './models/item-history-result.model';
+import { Version } from './models/raw-version.model';
 import { VersionsService } from './services/versions.service';
 
 @Component({
@@ -17,10 +19,19 @@ import { VersionsService } from './services/versions.service';
 export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private versions$ = new BehaviorSubject<Version[]>(null);
   private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
-  templateVars$ = combineLatest([this.versions$]).pipe(
-    map(([versions]) => ({ versions })),
+  private versions$ = new BehaviorSubject<Version[]>(null);
+  private pageSize = 10;
+  private page$ = new BehaviorSubject(1);
+  private historyItems$ = combineLatest([this.versions$, this.page$]).pipe(
+    map(([versions, page]) => getHistoryItems(versions, page, this.pageSize)),
+  );
+  templateVars$ = combineLatest([this.versions$, this.historyItems$]).pipe(
+    map(([versions, historyItems]) => ({
+      length: versions?.length,
+      pageSize: this.pageSize,
+      historyItems,
+    })),
   );
 
   constructor(
@@ -36,10 +47,15 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.versions$.complete();
+    this.page$.complete();
   }
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  pageChange(event: PageEvent) {
+    this.page$.next(event.pageIndex + 1);
   }
 
   restore(changeId: number) {

@@ -1,5 +1,5 @@
-export interface Version {
-  Attributes: VerAttribute[];
+export interface HistoryItem {
+  Attributes: HistoryAttribute[];
   ChangeSetId: number;
   HistoryId: number;
   TimeStamp: string;
@@ -8,15 +8,15 @@ export interface Version {
   _isLastVersion: boolean;
 }
 
-export interface VerAttribute {
+export interface HistoryAttribute {
   attributeName: string;
   dataType: string;
   expand: boolean;
   hasChanged: boolean;
-  attributeValues: VerAttributeValue[];
+  attributeValues: HistoryAttributeValue[];
 }
 
-export interface VerAttributeValue {
+export interface HistoryAttributeValue {
   langKey: string;
   value: any;
   hasChanged: boolean;

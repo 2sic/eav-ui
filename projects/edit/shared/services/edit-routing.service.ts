@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators';
-import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/item-history.models';
+import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { MultiItemEditFormComponent } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';

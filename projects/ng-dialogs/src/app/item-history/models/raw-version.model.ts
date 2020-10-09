@@ -1,4 +1,4 @@
-export interface RawVersion {
+export interface Version {
   ChangeSetId: number;
   HistoryId: number;
   Json: string;
@@ -7,36 +7,36 @@ export interface RawVersion {
   VersionNumber: number;
 }
 
-export interface RawVerJsonParsed {
-  Entity: RawVerEntity;
-  _: RawVerUnderscore;
+export interface VersionJsonParsed {
+  Entity: VersionEntity;
+  _: VersionUnderscore;
 }
 
-export interface RawVerEntity {
-  Attributes: RawVerEntityDataTypes;
+export interface VersionEntity {
+  Attributes: VersionEntityDataTypes;
   Guid: string;
   Id: number;
-  Type: RawVerEntityType;
+  Type: VersionEntityType;
   Version: number;
 }
 
-export interface RawVerEntityDataTypes {
-  [dataType: string]: RawVerEntityAttributes;
+export interface VersionEntityDataTypes {
+  [dataType: string]: VersionEntityAttributes;
 }
 
-export interface RawVerEntityAttributes {
-  [attributeName: string]: RawVerEntityAttributeValues;
+export interface VersionEntityAttributes {
+  [attributeName: string]: VersionEntityAttributeValues;
 }
 
-export interface RawVerEntityAttributeValues {
+export interface VersionEntityAttributeValues {
   [langKey: string]: any;
 }
 
-export interface RawVerEntityType {
+export interface VersionEntityType {
   Name: string;
   Id: string;
 }
 
-export interface RawVerUnderscore {
+export interface VersionUnderscore {
   V: number;
 }
