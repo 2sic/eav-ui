@@ -11,7 +11,6 @@ export interface HistoryItem {
 export interface HistoryAttribute {
   attributeName: string;
   dataType: string;
-  expand: boolean;
   hasChanged: boolean;
   attributeValues: HistoryAttributeValue[];
 }

@@ -26,7 +26,6 @@ export function getHistoryItems(versions: Version[], page: number, pageSize: num
         const historyAttribute: HistoryAttribute = {
           attributeName,
           dataType,
-          expand: false,
           hasChanged: JSON.stringify(attributeValues) !== JSON.stringify(previousJson?.Entity.Attributes[dataType]?.[attributeName]),
           attributeValues: historyAttributeValues,
         };

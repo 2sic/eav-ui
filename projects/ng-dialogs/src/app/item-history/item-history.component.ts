@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getHistoryItems } from './item-history.helpers';
+import { ExpandedPanels } from './models/expanded-panels.models';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
@@ -19,9 +20,12 @@ import { VersionsService } from './services/versions.service';
 export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
+  pageSize = 10;
+  expandedPanels: ExpandedPanels = {};
+  expandedAttributes: ExpandedPanels = {};
+
   private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
   private versions$ = new BehaviorSubject<Version[]>(null);
-  private pageSize = 10;
   private page$ = new BehaviorSubject(1);
   private historyItems$ = combineLatest([this.versions$, this.page$]).pipe(
     map(([versions, page]) => getHistoryItems(versions, page, this.pageSize)),
@@ -29,7 +33,6 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   templateVars$ = combineLatest([this.versions$, this.historyItems$]).pipe(
     map(([versions, historyItems]) => ({
       length: versions?.length,
-      pageSize: this.pageSize,
       historyItems,
     })),
   );
@@ -54,7 +57,17 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
+  panelExpandedChange(expand: boolean, versionNumber: number) {
+    this.expandedPanels[versionNumber] = expand;
+  }
+
+  attributeExpandedToggle(versionNumber: number, name: string) {
+    this.expandedAttributes[versionNumber + name] = !this.expandedAttributes[versionNumber + name];
+  }
+
   pageChange(event: PageEvent) {
+    this.expandedPanels = {};
+    this.expandedAttributes = {};
     this.page$.next(event.pageIndex + 1);
   }
 
