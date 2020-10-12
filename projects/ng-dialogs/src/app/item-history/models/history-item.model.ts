@@ -9,14 +9,15 @@ export interface HistoryItem {
 }
 
 export interface HistoryAttribute {
-  attributeName: string;
+  name: string;
   dataType: string;
-  hasChanged: boolean;
-  attributeValues: HistoryAttributeValue[];
+  change: 'new' | 'deleted' | 'changed' | 'none';
+  values: HistoryAttributeValue[];
 }
 
 export interface HistoryAttributeValue {
   langKey: string;
   value: any;
-  hasChanged: boolean;
+  oldValue: any;
+  change: 'new' | 'deleted' | 'changed' | 'none';
 }

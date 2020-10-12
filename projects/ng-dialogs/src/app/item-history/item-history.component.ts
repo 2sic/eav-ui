@@ -27,13 +27,15 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
   private versions$ = new BehaviorSubject<Version[]>(null);
   private page$ = new BehaviorSubject(1);
-  private historyItems$ = combineLatest([this.versions$, this.page$]).pipe(
-    map(([versions, page]) => getHistoryItems(versions, page, this.pageSize)),
+  private compareWith$: BehaviorSubject<'previous' | 'live'> = new BehaviorSubject('previous');
+  private historyItems$ = combineLatest([this.versions$, this.page$, this.compareWith$]).pipe(
+    map(([versions, page, compareWith]) => getHistoryItems(versions, page, this.pageSize, compareWith)),
   );
-  templateVars$ = combineLatest([this.versions$, this.historyItems$]).pipe(
-    map(([versions, historyItems]) => ({
+  templateVars$ = combineLatest([this.versions$, this.historyItems$, this.compareWith$]).pipe(
+    map(([versions, historyItems, compareWith]) => ({
       length: versions?.length,
       historyItems,
+      compareWith,
     })),
   );
 
@@ -50,11 +52,16 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.versions$.complete();
+    this.compareWith$.complete();
     this.page$.complete();
   }
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  compareChange(newCompareWith: 'previous' | 'live') {
+    this.compareWith$.next(newCompareWith);
   }
 
   panelExpandedChange(expand: boolean, versionNumber: number) {

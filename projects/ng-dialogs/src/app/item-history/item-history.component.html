@@ -10,11 +10,22 @@
 
   <p class="dialog-description">Check version history for this item and restore the version you need.</p>
 
+  <div *ngIf="data.historyItems?.length > 0" class="compare-box">
+    <mat-form-field appearance="standard" color="accent" class="compare-box__dropdown">
+      <mat-select [value]="data.compareWith" name="Scope" (selectionChange)="compareChange($event.value)">
+        <mat-option value="previous">Compare with: Previous</mat-option>
+        <mat-option value="live">Compare with: Live</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <div class="dialog-component-content fancy-scrollbar-light">
     <div *ngIf="data.historyItems === null">Loading...</div>
     <div *ngIf="data.historyItems?.length === 0">No previous versions of this item found</div>
+
     <mat-accordion multi *ngIf="data.historyItems?.length > 0" class="history-tables">
       <mat-expansion-panel *ngFor="let historyItem of data.historyItems"
+        [expanded]="expandedPanels[historyItem.versionNumber]"
         (expandedChange)="panelExpandedChange($event, historyItem.versionNumber)">
         <mat-expansion-panel-header>
           <mat-panel-title>Version {{ historyItem.versionNumber }}</mat-panel-title>
@@ -24,27 +35,32 @@
         <ng-container *ngIf="expandedPanels[historyItem.versionNumber]">
           <div class="table-row" *ngFor="let attribute of historyItem.attributes">
             <div class="table-row__main row-main"
-              (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.attributeName)">
-              <div class="row-main__label" [class.history-changed]="attribute.hasChanged">
-                {{ attribute.attributeName }}
+              (click)="attributeExpandedToggle(historyItem.versionNumber, attribute.name)">
+              <div class="row-main__label history-{{ attribute.change }}">
+                {{ attribute.name }}
               </div>
-              <div class="row-main__value" [class.history-changed]="attribute.hasChanged">
-                <ng-container *ngIf="!expandedAttributes[historyItem.versionNumber + attribute.attributeName]">
-                  {{ attribute.attributeValues[0]?.value }}
+              <div class="row-main__value history-{{ attribute.change }}">
+                <ng-container *ngIf="!expandedAttributes[historyItem.versionNumber + attribute.name]">
+                  {{ attribute.values[0]?.value }}
                 </ng-container>
               </div>
               <div class="row-main__type">
-                <i *ngFor="let value of attribute.attributeValues">[{{ value.langKey }}]</i>
                 <i>[{{ attribute.dataType }}]</i>
               </div>
             </div>
 
-            <div class="table-row__details"
-              *ngIf="expandedAttributes[historyItem.versionNumber + attribute.attributeName]">
-              <div class="detail-row" [class.history-changed]="value.hasChanged"
-                *ngFor="let value of attribute.attributeValues">
-                <div class="detail-row__label">{{ value.langKey }}:</div>
-                <div class="detail-row__value">{{ value.value }}</div>
+            <div class="table-row__details" *ngIf="expandedAttributes[historyItem.versionNumber + attribute.name]">
+              <div class="detail-row" *ngFor="let value of attribute.values">
+                <div class="detail-row__label history-{{ value.change }}">{{ value.langKey }}:</div>
+                <div class="detail-row__value">
+                  <div class="history-{{ value.change }}" *ngIf="value.change !== 'changed'">
+                    {{ value.change === 'deleted' ? value.oldValue : value.value }}
+                  </div>
+                  <ng-container *ngIf="value.change === 'changed'">
+                    <div class="history-new">{{ value.value }}</div>
+                    <div class="history-deleted history-deleted__value">{{ value.oldValue }}</div>
+                  </ng-container>
+                </div>
               </div>
             </div>
           </div>

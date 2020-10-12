@@ -1,3 +1,17 @@
+.compare-box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 40px;
+
+  &__dropdown {
+    width: 192px;
+    margin-top: -14px;
+    font-size: 14px;
+    height: auto;
+  }
+}
+
 .mat-accordion {
   display: block;
   padding: 4px 0;
