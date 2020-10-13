@@ -76,6 +76,7 @@
     </mat-accordion>
   </div>
 
-  <mat-paginator showFirstLastButtons="true" [length]="data.length" [pageSize]="pageSize" (page)="pageChange($event)">
+  <mat-paginator color="accent" showFirstLastButtons="true" [length]="data.length" [pageSize]="data.pageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChange($event)" *ngIf="data.historyItems?.length > 0">
   </mat-paginator>
 </ng-container>

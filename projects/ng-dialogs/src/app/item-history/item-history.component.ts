@@ -20,21 +20,23 @@ import { VersionsService } from './services/versions.service';
 export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  pageSize = 10;
+  pageSizeOptions = [10, 20, 50];
   expandedPanels: ExpandedPanels = {};
   expandedAttributes: ExpandedPanels = {};
 
   private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
   private versions$ = new BehaviorSubject<Version[]>(null);
   private page$ = new BehaviorSubject(1);
-  private compareWith$: BehaviorSubject<'previous' | 'live'> = new BehaviorSubject('previous');
-  private historyItems$ = combineLatest([this.versions$, this.page$, this.compareWith$]).pipe(
-    map(([versions, page, compareWith]) => getHistoryItems(versions, page, this.pageSize, compareWith)),
+  private pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
+  private compareWith$: BehaviorSubject<'previous' | 'live'> = new BehaviorSubject('live');
+  private historyItems$ = combineLatest([this.versions$, this.page$, this.pageSize$, this.compareWith$]).pipe(
+    map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
   );
-  templateVars$ = combineLatest([this.versions$, this.historyItems$, this.compareWith$]).pipe(
-    map(([versions, historyItems, compareWith]) => ({
+  templateVars$ = combineLatest([this.versions$, this.historyItems$, this.pageSize$, this.compareWith$]).pipe(
+    map(([versions, historyItems, pageSize, compareWith]) => ({
       length: versions?.length,
       historyItems,
+      pageSize,
       compareWith,
     })),
   );
@@ -54,6 +56,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
     this.versions$.complete();
     this.compareWith$.complete();
     this.page$.complete();
+    this.pageSize$.complete();
   }
 
   closeDialog() {
@@ -73,9 +76,16 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   }
 
   pageChange(event: PageEvent) {
-    this.expandedPanels = {};
-    this.expandedAttributes = {};
-    this.page$.next(event.pageIndex + 1);
+    const newPage = event.pageIndex + 1;
+    if (newPage !== this.page$.value) {
+      this.expandedPanels = {};
+      this.expandedAttributes = {};
+      this.page$.next(newPage);
+    }
+    const newPageSize = event.pageSize;
+    if (newPageSize !== this.pageSize$.value) {
+      this.pageSize$.next(newPageSize);
+    }
   }
 
   restore(changeId: number) {
