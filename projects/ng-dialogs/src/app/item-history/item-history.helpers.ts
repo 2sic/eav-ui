@@ -1,7 +1,8 @@
+import { CompareWith } from './models/compare-with.model';
 import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/history-item.model';
 import { Version, VersionEntityAttributeValues, VersionJsonParsed } from './models/version.model';
 
-export function getHistoryItems(versions: Version[], page: number, pageSize: number, compareWith: 'previous' | 'live') {
+export function getHistoryItems(versions: Version[], page: number, pageSize: number, compareWith: CompareWith) {
   if (versions == null || page == null || pageSize == null || compareWith == null) { return null; }
   const filtered = versions.slice((page - 1) * pageSize, page * pageSize);
 
@@ -9,7 +10,7 @@ export function getHistoryItems(versions: Version[], page: number, pageSize: num
   return historyItems;
 }
 
-function calcHistoryItems(filteredVersions: Version[], versions: Version[], compareWith: 'previous' | 'live') {
+function calcHistoryItems(filteredVersions: Version[], versions: Version[], compareWith: CompareWith) {
   return filteredVersions.map(version => {
     const historyItem: HistoryItem = {
       changeSetId: version.ChangeSetId,
@@ -24,7 +25,7 @@ function calcHistoryItems(filteredVersions: Version[], versions: Version[], comp
   });
 }
 
-function calcHistoryAttributes(version: Version, versions: Version[], compareWith: 'previous' | 'live') {
+function calcHistoryAttributes(version: Version, versions: Version[], compareWith: CompareWith) {
   const currentDataTypes = (JSON.parse(version.Json) as VersionJsonParsed).Entity.Attributes;
   const previousItem = compareWith === 'live' ? findLive(versions) : versions.find(v => v.VersionNumber === version.VersionNumber - 1);
   const previousDataTypes = previousItem ? (JSON.parse(previousItem.Json) as VersionJsonParsed).Entity.Attributes : null;

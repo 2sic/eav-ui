@@ -6,7 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { getHistoryItems } from './item-history.helpers';
-import { ExpandedPanels } from './models/expanded-panels.models';
+import { CompareWith } from './models/compare-with.model';
+import { ExpandedPanels } from './models/expanded-panels.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
@@ -28,7 +29,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   private versions$ = new BehaviorSubject<Version[]>(null);
   private page$ = new BehaviorSubject(1);
   private pageSize$ = new BehaviorSubject(this.pageSizeOptions[0]);
-  private compareWith$: BehaviorSubject<'previous' | 'live'> = new BehaviorSubject('live');
+  private compareWith$ = new BehaviorSubject<CompareWith>('live');
   private historyItems$ = combineLatest([this.versions$, this.page$, this.pageSize$, this.compareWith$]).pipe(
     map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
   );
@@ -54,16 +55,16 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.versions$.complete();
-    this.compareWith$.complete();
     this.page$.complete();
     this.pageSize$.complete();
+    this.compareWith$.complete();
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
 
-  compareChange(newCompareWith: 'previous' | 'live') {
+  compareChange(newCompareWith: CompareWith) {
     this.compareWith$.next(newCompareWith);
   }
 
