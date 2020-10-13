@@ -126,6 +126,7 @@ export class Plumber {
   private initDomDataSources() {
     for (const pipelineDataSource of this.pipelineModel.DataSources) {
       const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + dataSrcIdPrefix + pipelineDataSource.EntityGuid);
+      if (!domDataSource) { continue; }
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
       if (!dataSource) { continue; }
 
@@ -292,6 +293,13 @@ export class Plumber {
     });
 
     this.instance.bind('connection', (info: PlumbType) => {
+      if (info.sourceId === info.targetId) {
+        setTimeout(() => {
+          this.instance.deleteConnection(info.connection, { fireEvent: false });
+          setTimeout(() => { this.onConnectionsChanged(); });
+        });
+        return;
+      }
       const endpointLabel: PlumbType = info.targetEndpoint.getOverlay('endpointLabel');
       const labelPrompt: string = endpointLabel.getLabel();
       const endpoints: PlumbType[] = this.instance.getEndpoints(info.target.id);

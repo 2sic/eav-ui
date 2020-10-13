@@ -125,6 +125,11 @@ export class VisualQueryService implements OnDestroy {
   changeDataSourcePosition(pipelineDataSourceGuid: string, position: VisualDesignerData) {
     const pipelineModel = cloneDeep(this.pipelineModel$.value);
     const pipelineDataSource = pipelineModel.DataSources.find(pipelineDS => pipelineDS.EntityGuid === pipelineDataSourceGuid);
+    if (!pipelineDataSource) {
+      // spm NOTE: fixes problem where dataSource position can't be updated if dataSource with guid unsavedXX gets saved while dragging.
+      // Can happen if dataSource is just added and user drags it and save happens.
+      return;
+    }
     pipelineDataSource.VisualDesignerData = { ...pipelineDataSource.VisualDesignerData, ...position };
     this.pipelineModel$.next(pipelineModel);
   }
