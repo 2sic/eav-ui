@@ -25,6 +25,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-configuration.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
@@ -78,6 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
+    private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
     private eavService: EavService,
@@ -127,6 +129,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemService.clearCache();
       this.inputTypeService.clearCache();
       this.featureService.clearCache();
+      this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
     }
   }
@@ -200,6 +203,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemService.loadItems(formData.Items);
       // we assume that input type and content type data won't change between loading parent and child forms
       this.inputTypeService.addInputTypes(formData.InputTypes);
+      this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
       this.contentTypeService.addContentTypes(formData.ContentTypes);
       this.featureService.loadFeatures(formData.Features);
 

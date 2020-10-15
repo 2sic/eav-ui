@@ -12,6 +12,7 @@ interface All {
   Errors: unknown;
   Warnings: unknown;
   ValidationRegExJavaScript: string;
+  Calculations: string[];
   /** @deprecated */
   CustomJavaScript: string;
 }
