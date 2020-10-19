@@ -1,3 +1,5 @@
+import { ViewUsageDataModule } from './view-usage-data.model';
+
 export class ViewUsage {
   Blocks: ViewUsageBlock[];
   Guid: string;
@@ -12,13 +14,15 @@ export class ViewUsageBlock {
   Modules: ViewUsageModule[];
 }
 
-export class ViewUsageModule {
-  Id: number;
+export class ViewUsageModule extends ViewUsageDataModule {
+  // Id: number;
+  // UsageId: number;
+
   IsDeleted: boolean;
-  ModuleId: number;
+  // ModuleId: number;
   Page: ViewUsagePage;
   ShowOnAllPages: boolean;
-  Title: string;
+  // Title: string;
 }
 
 export class ViewUsagePage {

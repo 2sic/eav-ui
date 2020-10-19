@@ -15,7 +15,13 @@ export class ViewUsageDataBlock {
 
 export class ViewUsageDataModule {
   Id: number;
-  ModuleId: number;
+  // ModuleId: number;
+
+  /**
+   * This is the same as the TabModulId in DNN
+   * basically if a module is used many times, this is the use-again-id
+   */
+  UsageId: number;
   Title: string;
 }
 
