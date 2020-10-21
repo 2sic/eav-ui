@@ -3,7 +3,7 @@ import { ValidatorFn } from '@angular/forms';
 import isEmpty from 'lodash-es/isEmpty';
 import { BehaviorSubject, of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigAngular, FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
@@ -46,7 +46,8 @@ export class BuildFieldsService {
 
     return this.contentType$
       .pipe(
-        switchMap((data: ContentType) => {
+        filter(data => data != null),
+        switchMap(data => {
           // build first empty
           const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null,
             { inputType: InputTypeConstants.EmptyDefault, isExternal: false },
