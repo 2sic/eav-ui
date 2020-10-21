@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnD
 import { Actions, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
@@ -10,10 +10,13 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, Item } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { BuildFieldsService } from './build-fields.service';
+import { findFieldCalculations } from './item-edit-form.helpers';
+import { FormValues } from './item-edit-form.models';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -29,6 +32,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   contentType$: Observable<ContentType>;
+  /** spm WARNING: Do not subscribe to this twice or form will break. Items' attributes in store will get messed up */
   itemFields$: Observable<FieldConfigSet[]>;
   currentLanguage: string;
 
@@ -42,6 +46,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
+    private contentTypeItemService: ContentTypeItemService,
   ) { }
 
   ngOnInit() {
@@ -95,13 +100,15 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
    * Update NGRX/store on form value change
    * @param values key:value list of fields from form
    */
-  formValueChange(values: { [key: string]: any }) {
+  formValueChange([values, fieldConfigArray]: [FormValues, FieldConfigSet[]]) {
+    const fieldCalculations = findFieldCalculations(fieldConfigArray, this.contentTypeItemService);
     this.itemService.updateItemAttributesValues(
       this.item.entity.id,
       values,
       this.currentLanguage,
       this.defaultLanguage,
       this.item.entity.guid,
+      fieldCalculations,
     );
 
     this.itemFormValueChange.emit();

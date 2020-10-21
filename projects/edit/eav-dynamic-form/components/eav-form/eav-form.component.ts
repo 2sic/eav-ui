@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 
 @Component({
@@ -13,7 +14,7 @@ import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
   @Output() private formSubmit = new EventEmitter<void>();
-  @Output() private formValueChange = new EventEmitter<any>();
+  @Output() private formValueChange = new EventEmitter<[FormValues, FieldConfigSet[]]>();
 
   form: FormGroup = new FormGroup({});
   private subscription = new Subscription();
@@ -24,8 +25,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
     this.createControlsInFormGroup(this.config);
 
     this.subscription.add(
-      this.form.valueChanges.subscribe(val => {
-        this.formValueChange.emit(val);
+      this.form.valueChanges.subscribe((formValues: FormValues) => {
+        this.formValueChange.emit([formValues, this.config]);
       })
     );
   }

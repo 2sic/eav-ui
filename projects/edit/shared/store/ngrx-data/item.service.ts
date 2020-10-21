@@ -3,6 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
+import { FieldCalculations } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
@@ -11,6 +12,7 @@ import { SaveResult } from '../../models/eav/save-result.model';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
+import { runValueCalculations } from './item.helpers';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -92,7 +94,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any },
-    languageKey: string, defaultLanguage: string, guid: string) {
+    languageKey: string, defaultLanguage: string, guid: string, fieldCalculations: FieldCalculations) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
@@ -106,6 +108,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, updateValues, languageKey, defaultLanguage)
       }
     };
+    runValueCalculations(newItem.entity.attributes, fieldCalculations, languageKey);
     this.updateOneInCache(newItem);
   }
 
