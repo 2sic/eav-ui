@@ -1,33 +1,62 @@
-import { FieldCalculations, FormValue } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormGroup } from '@angular/forms';
+import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldFormulas } from '../../helpers/formula.models';
+import { LocalizationHelper } from '../../helpers/localization-helper';
 import { EavAttributes } from '../../models/eav';
-import { FieldFormulas, FormulaContext } from './item.models';
+import { FormulaContext, FormulaFunction } from './item.models';
 
-export function runValueCalculations(attributes: EavAttributes, fieldCalculations: FieldCalculations, langKey: string) {
-  const formulas = findValueFormulas(fieldCalculations, langKey);
-  Object.entries(formulas).forEach(([fieldName, formula]) => {
-    const fieldValues = attributes[fieldName].values.find(
-      value => !!value.dimensions.find(dimension => dimension.value === langKey || dimension.value === '*'),
-    );
-    const formulaFn: (context: FormulaContext) => FormValue = new Function('return ' + formula)();
-    fieldValues.value = formulaFn({ fieldName, fieldValue: fieldValues.value, allValues: attributes });
-  });
+export function runValueFormulas(
+  attributes: EavAttributes,
+  form: FormGroup,
+  lang: string,
+  defaultLang: string,
+  formulas: FieldFormulas,
+) {
+  if (formulas == null) { return; }
+
+  for (const [fieldName, formula] of Object.entries(formulas)) {
+    const disabled = form.controls[fieldName].disabled;
+    if (disabled) { return; }
+
+    const cleanFormula = cleanFormulaVersions(formula);
+    const formulaFn: FormulaFunction = new Function('return ' + cleanFormula)();
+
+    const fieldValues = LocalizationHelper.getBestValue(attributes[fieldName], lang, defaultLang);
+    const context: FormulaContext = {
+      data: {
+        name: fieldName,
+        value: fieldValues.value,
+        form: getFormValues(form),
+      }
+    };
+    const newValue = formulaFn(context);
+    fieldValues.value = newValue;
+  }
 }
 
-function findValueFormulas(calculations: FieldCalculations, langKey: string) {
-  const formulas: FieldFormulas = {};
-  Object.entries(calculations).forEach(([fieldName, calcItems]) => {
-    const valueCalcItems = calcItems.filter(
-      calcItem =>
-        calcItem.attributes.Target.values.find(value =>
-          !!value.dimensions.find(dimension => dimension.value === langKey || dimension.value === '*'),
-        )?.value === 'value',
-    );
-    const allValueFormulas = valueCalcItems.map(calcItem => calcItem.attributes.Formula);
-    const langFiltered = allValueFormulas.find(f =>
-      f.values.find(value => !!value.dimensions.find(dimension => dimension.value === langKey || dimension.value === '*')),
-    );
-    if (langFiltered == null) { return; }
-    formulas[fieldName] = langFiltered.values[0].value;
-  });
-  return formulas;
+function cleanFormulaVersions(formula: string) {
+  let cleanFormula = formula.trim();
+
+  // V1 cleanup
+  if (cleanFormula.startsWith('v1') || cleanFormula.startsWith('V1')) {
+    if (cleanFormula.startsWith('v1')) {
+      cleanFormula = cleanFormula.replace('v1', 'function');
+    }
+    if (cleanFormula.startsWith('V1')) {
+      cleanFormula = cleanFormula.replace('V1', 'function');
+    }
+  }
+
+  return cleanFormula;
+}
+
+/** Gets form values from controls because form.value getter doesn't return disabled fields */
+function getFormValues(form: FormGroup) {
+  const formValues: FormValues = {};
+
+  for (const [name, control] of Object.entries(form.controls)) {
+    formValues[name] = control.value;
+  }
+
+  return formValues;
 }

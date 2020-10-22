@@ -1,11 +1,13 @@
-import { EavAttributes } from '../../models/eav';
-
-export interface FieldFormulas {
-  [fieldName: string]: string;
-}
+import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export interface FormulaContext {
-  fieldName: string;
-  fieldValue: string;
-  allValues: EavAttributes;
+  data: FormulaCtxData;
 }
+
+export interface FormulaCtxData {
+  name: string;
+  value: string;
+  form: FormValues;
+}
+
+export type FormulaFunction = (context: FormulaContext) => FormValue;

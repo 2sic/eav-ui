@@ -2,9 +2,11 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnD
 import { Actions, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { findFieldFormulas } from '../../shared/helpers/formula.helpers';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, Item } from '../../shared/models/eav';
@@ -15,8 +17,6 @@ import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.se
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { BuildFieldsService } from './build-fields.service';
-import { findFieldCalculations } from './item-edit-form.helpers';
-import { FormValues } from './item-edit-form.models';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -96,19 +96,18 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     ) as Observable<Action>;
   }
 
-  /**
-   * Update NGRX/store on form value change
-   * @param values key:value list of fields from form
-   */
-  formValueChange([values, fieldConfigArray]: [FormValues, FieldConfigSet[]]) {
-    const fieldCalculations = findFieldCalculations(fieldConfigArray, this.contentTypeItemService);
+  /** Update NGRX/store on form value change */
+  formValueChange(change: FormValueChange) {
+    const valueFormulas = findFieldFormulas(
+      'value', change.fieldConfigs, this.contentTypeItemService, this.currentLanguage, this.defaultLanguage,
+    );
     this.itemService.updateItemAttributesValues(
       this.item.entity.id,
-      values,
+      this.item.entity.guid,
+      change.form,
       this.currentLanguage,
       this.defaultLanguage,
-      this.item.entity.guid,
-      fieldCalculations,
+      valueFormulas,
     );
 
     this.itemFormValueChange.emit();

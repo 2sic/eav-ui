@@ -303,4 +303,21 @@ export class LocalizationHelper {
     });
     return settingsTranslated as FieldSettings;
   }
+
+  public static getBestValue(allValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
+    const currentDimensions = [lang, `~${lang}`, '*'];
+    let bestValue = allValues.values.find(
+      eavValue => !!eavValue.dimensions.find(dimension => currentDimensions.includes(dimension.value)),
+    );
+    if (bestValue != null) { return bestValue; }
+
+    const defaultDimensions = [defaultLang, `~${defaultLang}`];
+    bestValue = allValues.values.find(
+      eavValue => !!eavValue.dimensions.find(dimension => defaultDimensions.includes(dimension.value)),
+    );
+    if (bestValue != null) { return bestValue; }
+
+    bestValue = allValues.values[0];
+    return bestValue;
+  }
 }

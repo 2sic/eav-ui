@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
-import { FieldCalculations } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldFormulas } from '../../helpers/formula.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
@@ -12,7 +13,7 @@ import { SaveResult } from '../../models/eav/save-result.model';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
-import { runValueCalculations } from './item.helpers';
+import { runValueFormulas } from './item.helpers';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -93,11 +94,17 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any },
-    languageKey: string, defaultLanguage: string, guid: string, fieldCalculations: FieldCalculations) {
+  updateItemAttributesValues(
+    entityId: number,
+    entityGuid: string,
+    form: FormGroup,
+    lang: string,
+    defaultLang: string,
+    formulas: FieldFormulas,
+  ) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === entityGuid : item.entity.id === entityId);
     });
     if (!oldItem) { return; }
 
@@ -105,10 +112,10 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, updateValues, languageKey, defaultLanguage)
+        attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, form.value, lang, defaultLang)
       }
     };
-    runValueCalculations(newItem.entity.attributes, fieldCalculations, languageKey);
+    runValueFormulas(newItem.entity.attributes, form, lang, defaultLang, formulas);
     this.updateOneInCache(newItem);
   }
 

@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
+import { FormValueChange } from './eav-form.models';
 
 @Component({
   selector: 'app-eav-form',
@@ -14,7 +15,7 @@ import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
   @Output() private formSubmit = new EventEmitter<void>();
-  @Output() private formValueChange = new EventEmitter<[FormValues, FieldConfigSet[]]>();
+  @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
   form: FormGroup = new FormGroup({});
   private subscription = new Subscription();
@@ -26,7 +27,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
-        this.formValueChange.emit([formValues, this.config]);
+        this.formValueChange.emit({ form: this.form, fieldConfigs: this.config });
       })
     );
   }
