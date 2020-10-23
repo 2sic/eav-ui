@@ -11,8 +11,8 @@ import { ChildFormResult } from './edit-routing.models';
 @Injectable()
 export class EditRoutingService implements OnDestroy {
   private route: ActivatedRoute;
-  private subscription = new Subscription();
-  private childFormResult$ = new Subject<ChildFormResult>();
+  private subscription: Subscription;
+  private childFormResult$: Subject<ChildFormResult>;
 
   constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
 
@@ -24,6 +24,8 @@ export class EditRoutingService implements OnDestroy {
 
   init(route: ActivatedRoute, formId: number) {
     this.route = route;
+    this.subscription = new Subscription();
+    this.childFormResult$ = new Subject<ChildFormResult>();
     this.initHideHeader(formId);
     this.initChildFormResult();
   }

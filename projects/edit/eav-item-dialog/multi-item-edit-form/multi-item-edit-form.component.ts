@@ -116,6 +116,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eavConfigLoaded$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    this.editRoutingService.ngOnDestroy();
 
     if (this.isParentDialog) {
       // clear the rest of the store
