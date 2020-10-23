@@ -99,12 +99,11 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   /** Update NGRX/store on form value change */
   formValueChange(change: FormValueChange) {
     const valueFormulas = findFieldFormulas(
-      'value', change.fieldConfigs, this.contentTypeItemService, this.currentLanguage, this.defaultLanguage,
+      'value', change.form, change.fieldConfigs, this.contentTypeItemService, this.currentLanguage, this.defaultLanguage,
     );
     this.itemService.updateItemAttributesValues(
-      this.item.entity.id,
       this.item.entity.guid,
-      change.form,
+      change.form.value,
       this.currentLanguage,
       this.defaultLanguage,
       valueFormulas,

@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
@@ -6,25 +7,28 @@ import { LocalizationHelper } from './localization-helper';
 
 export function findFieldFormulas(
   type: FormulaType,
+  form: FormGroup,
   fieldConfigs: FieldConfigSet[],
   contentTypeItemService: ContentTypeItemService,
   lang: string,
   defaultLang: string,
 ) {
   const calcFields: CalcFields = {};
-  findFieldsWithCalcs(calcFields, fieldConfigs);
+  findFieldsWithCalcs(calcFields, form, fieldConfigs);
   const formulas = findFormulas(calcFields, type, contentTypeItemService, lang, defaultLang);
   return formulas;
 }
 
-function findFieldsWithCalcs(calcFields: CalcFields, fieldConfigs: FieldConfigSet[]) {
+function findFieldsWithCalcs(calcFields: CalcFields, form: FormGroup, fieldConfigs: FieldConfigSet[]) {
   for (const fieldConfig of fieldConfigs) {
     const fieldConfigGroup = fieldConfig.field as FieldConfigGroup;
     if (fieldConfigGroup.fieldGroup != null) {
-      findFieldsWithCalcs(calcFields, fieldConfigGroup.fieldGroup);
+      findFieldsWithCalcs(calcFields, form, fieldConfigGroup.fieldGroup);
     } else {
+      const disabled = form.controls[fieldConfig.field.name].disabled;
+      if (disabled) { continue; }
       const calcs = fieldConfig.field.settings$.value.Calculations;
-      if (calcs == null || !calcs.length) { return; }
+      if (calcs == null || !calcs.length) { continue; }
       calcFields[fieldConfig.field.name] = calcs;
     }
   }

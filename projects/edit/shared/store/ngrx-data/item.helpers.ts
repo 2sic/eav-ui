@@ -1,36 +1,26 @@
-import { FormGroup } from '@angular/forms';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldFormulas } from '../../helpers/formula.models';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { EavAttributes } from '../../models/eav';
 import { FormulaContext, FormulaFunction } from './item.models';
 
-export function runValueFormulas(
-  attributes: EavAttributes,
-  form: FormGroup,
-  lang: string,
-  defaultLang: string,
-  formulas: FieldFormulas,
-) {
+export function runValueFormulas(attributes: EavAttributes, lang: string, defaultLang: string, formulas: FieldFormulas) {
   if (formulas == null) { return; }
 
   for (const [fieldName, formula] of Object.entries(formulas)) {
-    const disabled = form.controls[fieldName].disabled;
-    if (disabled) { return; }
-
     const cleanFormula = cleanFormulaVersions(formula);
     const formulaFn: FormulaFunction = new Function('return ' + cleanFormula)();
 
-    const fieldValues = LocalizationHelper.getBestValue(attributes[fieldName], lang, defaultLang);
+    const eavValue = LocalizationHelper.getBestValue(attributes[fieldName], lang, defaultLang);
     const context: FormulaContext = {
       data: {
         name: fieldName,
-        value: fieldValues.value,
-        form: getFormValues(form),
+        value: eavValue.value,
+        form: getFormValues(attributes, lang, defaultLang),
       }
     };
     const newValue = formulaFn(context);
-    fieldValues.value = newValue;
+    eavValue.value = newValue;
   }
 }
 
@@ -50,12 +40,11 @@ function cleanFormulaVersions(formula: string) {
   return cleanFormula;
 }
 
-/** Gets form values from controls because form.value getter doesn't return disabled fields */
-function getFormValues(form: FormGroup) {
+function getFormValues(attributes: EavAttributes, lang: string, defaultLang: string) {
   const formValues: FormValues = {};
 
-  for (const [name, control] of Object.entries(form.controls)) {
-    formValues[name] = control.value;
+  for (const [name, attribute] of Object.entries(attributes)) {
+    formValues[name] = LocalizationHelper.translate(lang, defaultLang, attribute, null);
   }
 
   return formValues;

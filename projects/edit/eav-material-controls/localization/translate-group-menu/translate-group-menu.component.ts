@@ -137,8 +137,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       this.defaultLanguage, this.defaultLanguage);
     if (defaultValue) {
       const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
-      this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey, defaultValue.value,
-        this.currentLanguage, false, this.config.entity.entityGuid, fieldType);
+      this.itemService.addAttributeValue(
+        this.config.entity.entityGuid, attributeKey, defaultValue.value, this.currentLanguage, false, fieldType,
+      );
     } else {
       angularConsoleLog(`${this.currentLanguage}: Cant copy value from ${this.defaultLanguage} because that value does not exist.`);
     }
@@ -190,18 +191,19 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       copyFromLanguageKey, this.defaultLanguage);
 
     if (attributeValueTranslation) {
-      const valueAlreadyExist: boolean = this.attributes
+      const valueAlreadyExists = this.attributes
         ? LocalizationHelper.isEditableOrReadonlyTranslationExist(this.attributes[attributeKey], this.currentLanguage, this.defaultLanguage)
         : false;
 
-      if (valueAlreadyExist) {
+      if (valueAlreadyExists) {
         // Copy attribute value where language is languageKey to value where language is current language
-        this.itemService.updateItemAttributeValue(this.config.entity.entityId, attributeKey, attributeValueTranslation.value,
-          this.currentLanguage, this.defaultLanguage, false, this.config.entity.entityGuid);
+        this.itemService.updateItemAttributeValue(this.config.entity.entityGuid, attributeKey, attributeValueTranslation.value,
+          this.currentLanguage, this.defaultLanguage, false);
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.itemService.addAttributeValue(this.config.entity.entityId, attributeKey, attributeValueTranslation.value,
-          this.currentLanguage, false, this.config.entity.entityGuid, this.config.field.type);
+        this.itemService.addAttributeValue(
+          this.config.entity.entityGuid, attributeKey, attributeValueTranslation.value, this.currentLanguage, false, this.config.field.type,
+        );
       }
     } else {
       angularConsoleLog(`${this.currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);

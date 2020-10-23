@@ -1,4 +1,3 @@
-
 import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -304,20 +303,34 @@ export class LocalizationHelper {
     return settingsTranslated as FieldSettings;
   }
 
-  public static getBestValue(allValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
-    const currentDimensions = [lang, `~${lang}`, '*'];
-    let bestValue = allValues.values.find(
-      eavValue => !!eavValue.dimensions.find(dimension => currentDimensions.includes(dimension.value)),
-    );
+  /**
+   * Find best value in priority order:
+   * 1. value for current language
+   * 2. value for all languages
+   * 3. value for default language
+   * 4. first value
+   */
+  public static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
+    let bestDimensions = [lang, `~${lang}`];
+    let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
     if (bestValue != null) { return bestValue; }
 
-    const defaultDimensions = [defaultLang, `~${defaultLang}`];
-    bestValue = allValues.values.find(
-      eavValue => !!eavValue.dimensions.find(dimension => defaultDimensions.includes(dimension.value)),
-    );
+    bestDimensions = ['*'];
+    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
     if (bestValue != null) { return bestValue; }
 
-    bestValue = allValues.values[0];
+    bestDimensions = [defaultLang, `~${defaultLang}`];
+    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    if (bestValue != null) { return bestValue; }
+
+    bestValue = eavValues.values[0];
     return bestValue;
+  }
+
+  private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): EavValue<any> {
+    const value = eavValues.values.find(
+      eavValue => !!eavValue.dimensions.find(dimension => dimensions.includes(dimension.value)),
+    );
+    return value;
   }
 }
