@@ -15,14 +15,9 @@ export class ViewUsageBlock {
 }
 
 export class ViewUsageModule extends ViewUsageDataModule {
-  // Id: number;
-  // UsageId: number;
-
   IsDeleted: boolean;
-  // ModuleId: number;
   Page: ViewUsagePage;
   ShowOnAllPages: boolean;
-  // Title: string;
 }
 
 export class ViewUsagePage {
