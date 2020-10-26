@@ -25,6 +25,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
 
+    this.formValueChange.emit({ form: this.form, fieldConfigs: this.config }); // manually run formulas when form is created
+
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
         this.formValueChange.emit({ form: this.form, fieldConfigs: this.config });
