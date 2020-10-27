@@ -12,6 +12,7 @@ import { LocalizationHelper } from '../../../shared/helpers/localization-helper'
 import { ContentType, EavAttributes, EavDimensions, EavValue, EavValues, Item } from '../../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { EavService } from '../../../shared/services/eav.service';
+import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
@@ -62,6 +63,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     private inputTypeService: InputTypeService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
+    private formulaInstance: FormulaInstanceService,
   ) { }
 
   ngOnInit() {
@@ -145,6 +147,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     }
 
     this.refreshControlConfig(attributeKey);
+    // run formulas when field is translated
+    this.itemService.runValueCalculations(this.formulaInstance);
   }
 
   linkToDefault(attributeKey: string) {
@@ -154,6 +158,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       this.config.entity.entityGuid);
 
     this.refreshControlConfig(attributeKey);
+    // run formulas when field is translated
+    this.itemService.runValueCalculations(this.formulaInstance);
   }
 
   translateAll() {
@@ -197,8 +203,9 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
       if (valueAlreadyExists) {
         // Copy attribute value where language is languageKey to value where language is current language
-        this.itemService.updateItemAttributeValue(this.config.entity.entityGuid, attributeKey, attributeValueTranslation.value,
-          this.currentLanguage, this.defaultLanguage, false);
+        this.itemService.updateItemAttributeValue(
+          this.config.entity.entityGuid, attributeKey, attributeValueTranslation.value, this.currentLanguage, this.defaultLanguage, false,
+        );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         this.itemService.addAttributeValue(
@@ -210,6 +217,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     }
 
     this.refreshControlConfig(attributeKey);
+    // run formulas when field is translated
+    this.itemService.runValueCalculations(this.formulaInstance);
   }
 
   linkReadOnlyAll(languageKey: string) {
@@ -229,6 +238,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
+    // run formulas when field is translated
+    this.itemService.runValueCalculations(this.formulaInstance);
   }
 
   linkReadWriteAll(languageKey: string) {
@@ -248,6 +259,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
+    // run formulas when field is translated
+    this.itemService.runValueCalculations(this.formulaInstance);
   }
 
   getTranslationStateClass(linkType: string) {

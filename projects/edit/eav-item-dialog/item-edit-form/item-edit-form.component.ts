@@ -6,13 +6,11 @@ import { filter } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { findFieldFormulas } from '../../shared/helpers/formula.helpers';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, Item } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
-import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -27,7 +25,7 @@ import { BuildFieldsService } from './build-fields.service';
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
   @Input() item: Item;
-  @Input() private formId: number;
+  @Input() formId: number;
   @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
@@ -46,7 +44,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
-    private contentTypeItemService: ContentTypeItemService,
   ) { }
 
   ngOnInit() {
@@ -98,17 +95,10 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   /** Update NGRX/store on form value change */
   formValueChange(change: FormValueChange) {
-    const valueFormulas = findFieldFormulas(
-      'value', change.form, change.fieldConfigs, this.contentTypeItemService, this.currentLanguage, this.defaultLanguage,
-    );
-    this.itemService.updateItemAttributesValues(
-      this.item.entity.guid,
-      change.form.value,
-      this.currentLanguage,
-      this.defaultLanguage,
-      valueFormulas,
-    );
+    this.itemService.updateItemAttributesValues(this.item.entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
 
+    // run formulas when form value is changed
+    this.itemService.runValueCalculations(change.formulaInstance);
     this.itemFormValueChange.emit();
   }
 

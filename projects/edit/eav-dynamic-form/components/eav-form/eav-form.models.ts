@@ -1,7 +1,7 @@
-import { FormGroup } from '@angular/forms';
-import { FieldConfigSet } from '../../model/field-config';
+import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 
 export interface FormValueChange {
-  form: FormGroup;
-  fieldConfigs: FieldConfigSet[];
+  formValues: FormValues;
+  formulaInstance: FormulaInstanceService;
 }

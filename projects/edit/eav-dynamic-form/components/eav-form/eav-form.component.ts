@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
+import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 import { FormValueChange } from './eav-form.models';
 
@@ -10,26 +12,31 @@ import { FormValueChange } from './eav-form.models';
   selector: 'app-eav-form',
   templateUrl: './eav-form.component.html',
   styleUrls: ['./eav-form.component.scss'],
+  providers: [FormulaInstanceService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
+  @Input() private formId: number;
+  @Input() private entityGuid: string;
   @Output() private formSubmit = new EventEmitter<void>();
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
   form: FormGroup = new FormGroup({});
   private subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private formulaInstance: FormulaInstanceService, private itemService: ItemService) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
+    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
 
-    this.formValueChange.emit({ form: this.form, fieldConfigs: this.config }); // manually run formulas when form is created
+    // run formulas when form is created
+    this.itemService.runValueCalculations(this.formulaInstance);
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
-        this.formValueChange.emit({ form: this.form, fieldConfigs: this.config });
+        this.formValueChange.emit({ formValues, formulaInstance: this.formulaInstance });
       })
     );
   }

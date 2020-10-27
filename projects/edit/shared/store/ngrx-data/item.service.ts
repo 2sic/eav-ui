@@ -4,16 +4,15 @@ import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FieldFormulas } from '../../helpers/formula.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
 import { AttributeDef } from '../../models/eav/attribute-def';
 import { SaveResult } from '../../models/eav/save-result.model';
 import { JsonItem1 } from '../../models/json-format-v1';
+import { FormulaInstanceService } from '../../services/formula-instance.service';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
-import { runValueFormulas } from './item.helpers';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<Item> {
@@ -98,7 +97,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: FormValues, lang: string, defaultLang: string, formulas: FieldFormulas) {
+  updateItemAttributesValues(entityGuid: string, newValues: FormValues, lang: string, defaultLang: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.entity.guid === entityGuid);
@@ -112,7 +111,6 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, newValues, lang, defaultLang),
       }
     };
-    runValueFormulas(newItem.entity.attributes, lang, defaultLang, formulas);
     this.updateOneInCache(newItem);
   }
 
@@ -296,5 +294,29 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       }
     }
     return defaultValue;
+  }
+
+  runValueCalculations(formulaInstance: FormulaInstanceService) {
+    const formulas = formulaInstance.findFieldFormulas('value');
+    if (formulas == null) { return; }
+
+    let oldItem: Item;
+    this.entities$.pipe(take(1)).subscribe(items => {
+      oldItem = items.find(item => item.entity.guid === formulaInstance.entityGuid);
+    });
+    if (!oldItem) { return; }
+
+    const newItem = {
+      ...oldItem,
+      entity: {
+        ...oldItem.entity,
+        attributes: LocalizationHelper.updateAttributesValues(
+          oldItem.entity.attributes, formulaInstance.form.value, formulaInstance.lang, formulaInstance.defaultLang,
+        ),
+      }
+    };
+
+    formulaInstance.runValueFormulas(newItem.entity.attributes);
+    this.updateOneInCache(newItem);
   }
 }
