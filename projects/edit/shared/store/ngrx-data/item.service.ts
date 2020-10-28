@@ -316,7 +316,8 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       }
     };
 
-    formulaInstance.runValueFormulas(newItem.entity.attributes);
+    const changed = formulaInstance.runValueFormulas(newItem.entity.attributes);
+    if (!changed) { return; }
     this.updateOneInCache(newItem);
   }
 }

@@ -56,6 +56,7 @@ export class FormulaInstanceService implements OnDestroy {
     const formulas = this.findFieldFormulas('value');
     if (formulas == null) { return; }
 
+    let changed = false;
     for (const [fieldName, formula] of Object.entries(formulas)) {
       const cleanFormula = this.cleanFormulaVersions(formula);
       const formulaFn: FormulaFunction = new Function('return ' + cleanFormula)();
@@ -69,8 +70,12 @@ export class FormulaInstanceService implements OnDestroy {
         }
       };
       const newValue = formulaFn(context);
-      eavValue.value = newValue;
+      if (eavValue.value !== newValue) {
+        eavValue.value = newValue;
+        changed = true;
+      }
     }
+    return changed;
   }
 
   private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[]) {
