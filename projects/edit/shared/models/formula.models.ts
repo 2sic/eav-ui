@@ -1,4 +1,4 @@
-export type FormulaType = 'value';
+export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
 
 export interface FieldFormulas {
   [fieldName: string]: string;
