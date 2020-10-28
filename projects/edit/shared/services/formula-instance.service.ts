@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { EavAttributes } from '../models/eav';
-import { CalcFields, FieldFormulas, FormulaType } from '../models/formula.models';
+import { CalcFields, FieldFormulas, FormulaType, LanguageChangeDisabledChecked } from '../models/formula.models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
@@ -17,12 +17,15 @@ export class FormulaInstanceService implements OnDestroy {
   entityGuid: string;
   lang = '';
   defaultLang = '';
+  valueCalculationsAfterLanguageChangeDisabledCheck$ = new Subject<void>();
   private fieldConfigs: FieldConfigSet[];
+  private languageChangeDisabledChecked: LanguageChangeDisabledChecked = {};
   private subscription: Subscription;
 
   constructor(private languageInstanceService: LanguageInstanceService, private contentTypeItemService: ContentTypeItemService) { }
 
   ngOnDestroy() {
+    this.valueCalculationsAfterLanguageChangeDisabledCheck$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -76,6 +79,25 @@ export class FormulaInstanceService implements OnDestroy {
       }
     }
     return changed;
+  }
+
+  clearLanguageChangeDisabledChecked(eavAttributes: EavAttributes) {
+    this.languageChangeDisabledChecked = {};
+    for (const attribute of Object.keys(eavAttributes)) {
+      this.languageChangeDisabledChecked[attribute] = false;
+    }
+  }
+
+  languageChangeDisabledIsChecked(attribute: string) {
+    const attributes = Object.keys(this.languageChangeDisabledChecked);
+    if (!attributes.length || !attributes.includes(attribute)) { return; }
+
+    this.languageChangeDisabledChecked[attribute] = true;
+    const allChecked = !Object.entries(this.languageChangeDisabledChecked).some(([attr, isChecked]) => !isChecked);
+    if (!allChecked) { return; }
+
+    this.languageChangeDisabledChecked = {};
+    this.valueCalculationsAfterLanguageChangeDisabledCheck$.next();
   }
 
   private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[]) {

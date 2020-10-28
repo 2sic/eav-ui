@@ -7,3 +7,7 @@ export interface FieldFormulas {
 export interface CalcFields {
   [fieldName: string]: string[];
 }
+
+export interface LanguageChangeDisabledChecked {
+  [fieldName: string]: boolean;
+}

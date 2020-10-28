@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { Item } from '../../../shared/models/eav';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 import { FormValueChange } from './eav-form.models';
 
@@ -18,18 +21,23 @@ import { FormValueChange } from './eav-form.models';
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
   @Input() private formId: number;
-  @Input() private entityGuid: string;
+  @Input() private item: Item;
   @Output() private formSubmit = new EventEmitter<void>();
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
   form: FormGroup = new FormGroup({});
   private subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder, private formulaInstance: FormulaInstanceService, private itemService: ItemService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private formulaInstance: FormulaInstanceService,
+    private itemService: ItemService,
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
-    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
+    this.formulaInstance.init(this.formId, this.form, this.item.entity.guid, this.config);
 
     // run formulas when form is created
     this.itemService.runValueCalculations(this.formulaInstance);
@@ -37,6 +45,19 @@ export class EavFormComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
         this.formValueChange.emit({ formValues, formulaInstance: this.formulaInstance });
+      })
+    );
+
+    this.subscription.add(
+      this.languageInstanceService.getCurrentLanguage(this.formId).pipe(skip(1)).subscribe(currentLang => {
+        // run formulas when language is changed and fields are checked
+        this.formulaInstance.clearLanguageChangeDisabledChecked(this.item.entity.attributes);
+      })
+    );
+    this.subscription.add(
+      this.formulaInstance.valueCalculationsAfterLanguageChangeDisabledCheck$.subscribe(() => {
+        // run formulas when language is changed and fields are checked
+        this.itemService.runValueCalculations(this.formulaInstance);
       })
     );
   }

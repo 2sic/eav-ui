@@ -378,6 +378,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
         this.currentLanguage = currentLanguage;
         this.translateAllConfiguration();
         this.refreshControlConfig(this.config.field.name);
+        this.formulaInstance.languageChangeDisabledIsChecked(this.config.field.name);
       })
     );
   }
