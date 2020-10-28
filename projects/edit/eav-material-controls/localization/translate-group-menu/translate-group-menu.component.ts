@@ -79,7 +79,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     );
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    this.attributes$ = this.itemService.selectAttributesByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
+    this.attributes$ = this.itemService.selectAttributesByEntityGuid(this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
     this.subscribeToItemFromStore();

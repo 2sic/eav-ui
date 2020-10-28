@@ -170,13 +170,10 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     this.updateOneInCache(newItem);
   }
 
-  selectAttributesByEntityId(entityId: number, guid: string) {
+  selectAttributesByEntityGuid(guid: string) {
     return this.entities$.pipe(
-      map(items => {
-        const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
-        return item ? item.entity.attributes : null;
-      }),
-      distinctUntilChanged()
+      map(items => items.find(item => item.entity.guid === guid)?.entity.attributes),
+      distinctUntilChanged(),
     );
   }
 
