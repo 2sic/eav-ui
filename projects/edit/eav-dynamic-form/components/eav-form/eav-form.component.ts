@@ -56,7 +56,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
       })
     );
     this.subscription.add(
-      this.formulaInstance.valueCalculationsAfterLanguageChangeDisabledCheck$.subscribe(() => {
+      this.formulaInstance.runCalculationsAfterLanguageChangeDisabledCheck$.subscribe(() => {
         // run formulas when language is changed and fields are checked
         this.itemService.runValueCalculations(this.formulaInstance);
         this.formulaInstance.runVisibleFormulas();

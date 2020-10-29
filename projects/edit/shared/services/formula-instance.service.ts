@@ -18,7 +18,7 @@ export class FormulaInstanceService implements OnDestroy {
   entityGuid: string;
   lang = '';
   defaultLang = '';
-  valueCalculationsAfterLanguageChangeDisabledCheck$ = new Subject<void>();
+  runCalculationsAfterLanguageChangeDisabledCheck$ = new Subject<void>();
   private formulaHidden$ = new BehaviorSubject<string[]>([]);
   private fieldConfigs: FieldConfigSet[];
   private languageChangeDisabledChecked: LanguageChangeDisabledChecked = {};
@@ -31,7 +31,7 @@ export class FormulaInstanceService implements OnDestroy {
   ) { }
 
   ngOnDestroy() {
-    this.valueCalculationsAfterLanguageChangeDisabledCheck$.complete();
+    this.runCalculationsAfterLanguageChangeDisabledCheck$.complete();
     this.formulaHidden$.complete();
     this.subscription.unsubscribe();
   }
@@ -96,12 +96,11 @@ export class FormulaInstanceService implements OnDestroy {
       return;
     }
 
+    const formulaHidden: string[] = [];
     let eavAtributes: EavAttributes;
     this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(attrs => {
       eavAtributes = attrs;
     });
-
-    const formulaHidden: string[] = [];
     const formValues = this.getFormValues(eavAtributes);
     for (const attribute of Object.keys(formulas)) {
       const formulaFn = formulas[attribute];
@@ -142,7 +141,7 @@ export class FormulaInstanceService implements OnDestroy {
     if (!allChecked) { return; }
 
     this.languageChangeDisabledChecked = {};
-    this.valueCalculationsAfterLanguageChangeDisabledCheck$.next();
+    this.runCalculationsAfterLanguageChangeDisabledCheck$.next();
   }
 
   private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[], ignoreDisabledFields: boolean) {

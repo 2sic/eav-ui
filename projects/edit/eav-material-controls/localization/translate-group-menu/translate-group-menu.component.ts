@@ -363,8 +363,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
   /** Translate a field configuration (labels, validation, ...) */
   private translateAllConfiguration() {
-    const fieldSettings = LocalizationHelper.translateSettings(this.config.field.fullSettings,
-      this.currentLanguage, this.defaultLanguage);
+    const fieldSettings = LocalizationHelper.translateSettings(this.config.field.fullSettings, this.currentLanguage, this.defaultLanguage);
     this.config.field.settings = fieldSettings;
     this.config.field.label = this.config.field.settings.Name || null;
     this.config.field.validation = ValidationHelper.getValidations(this.config.field.settings);
