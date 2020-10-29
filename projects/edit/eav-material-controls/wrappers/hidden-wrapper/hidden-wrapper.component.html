@@ -1,3 +1,3 @@
-<div [hidden]="!((visibleInEditUI$ | async) === true)">
+<div [hidden]="(hidden$ | async) === true">
   <ng-container #fieldComponent></ng-container>
 </div>

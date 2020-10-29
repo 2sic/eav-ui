@@ -41,6 +41,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     // run formulas when form is created
     this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runVisibleFormulas();
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
@@ -58,6 +59,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
       this.formulaInstance.valueCalculationsAfterLanguageChangeDisabledCheck$.subscribe(() => {
         // run formulas when language is changed and fields are checked
         this.itemService.runValueCalculations(this.formulaInstance);
+        this.formulaInstance.runVisibleFormulas();
       })
     );
   }

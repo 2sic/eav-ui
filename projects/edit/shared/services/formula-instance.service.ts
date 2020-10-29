@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { LocalizationHelper } from '../helpers/localization-helper';
@@ -9,6 +9,7 @@ import { EavAttributes } from '../models/eav';
 import { CalcFields, FieldFormulas, FormulaType, LanguageChangeDisabledChecked } from '../models/formula.models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
+import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
@@ -18,14 +19,20 @@ export class FormulaInstanceService implements OnDestroy {
   lang = '';
   defaultLang = '';
   valueCalculationsAfterLanguageChangeDisabledCheck$ = new Subject<void>();
+  private formulaHidden$ = new BehaviorSubject<string[]>([]);
   private fieldConfigs: FieldConfigSet[];
   private languageChangeDisabledChecked: LanguageChangeDisabledChecked = {};
   private subscription: Subscription;
 
-  constructor(private languageInstanceService: LanguageInstanceService, private contentTypeItemService: ContentTypeItemService) { }
+  constructor(
+    private languageInstanceService: LanguageInstanceService,
+    private contentTypeItemService: ContentTypeItemService,
+    private itemService: ItemService,
+  ) { }
 
   ngOnDestroy() {
     this.valueCalculationsAfterLanguageChangeDisabledCheck$.complete();
+    this.formulaHidden$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -48,37 +55,75 @@ export class FormulaInstanceService implements OnDestroy {
     );
   }
 
-  findFieldFormulas(type: FormulaType) {
+  findFieldFormulas(type: FormulaType, ignoreDisabledFields = false) {
     const calcFields: CalcFields = {};
-    this.findFieldsWithCalcs(calcFields, this.fieldConfigs);
+    this.findFieldsWithCalcs(calcFields, this.fieldConfigs, ignoreDisabledFields);
     const formulas = this.findFormulas(calcFields, type);
     return formulas;
   }
 
-  runValueFormulas(attributes: EavAttributes) {
+  runValueFormulas(newEavAttributes: EavAttributes) {
     const formulas = this.findFieldFormulas('value');
     if (formulas == null) { return; }
 
     let changed = false;
-    for (const [fieldName, formula] of Object.entries(formulas)) {
-      const cleanFormula = this.cleanFormulaVersions(formula);
-      const formulaFn: FormulaFunction = new Function('return ' + cleanFormula)();
-
-      const eavValue = LocalizationHelper.getBestValue(attributes[fieldName], this.lang, this.defaultLang);
+    const formValues = this.getFormValues(newEavAttributes);
+    for (const [fieldName, formulaFn] of Object.entries(formulas)) {
       const context: FormulaContext = {
         data: {
           name: fieldName,
-          value: eavValue.value,
-          form: this.getFormValues(attributes),
+          value: formValues[fieldName],
+          form: formValues,
         }
       };
       const newValue = formulaFn(context);
+
+      const eavValue = LocalizationHelper.getBestValue(newEavAttributes[fieldName], this.lang, this.defaultLang);
       if (eavValue.value !== newValue) {
         eavValue.value = newValue;
+        this.form.controls[fieldName].markAsTouched();
+        this.form.controls[fieldName].markAsDirty();
         changed = true;
       }
     }
     return changed;
+  }
+
+  runVisibleFormulas() {
+    const formulas = this.findFieldFormulas('visible', true);
+    if (formulas == null) {
+      this.formulaHidden$.next([]);
+      return;
+    }
+
+    let eavAtributes: EavAttributes;
+    this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(attrs => {
+      eavAtributes = attrs;
+    });
+
+    const formulaHidden: string[] = [];
+    const formValues = this.getFormValues(eavAtributes);
+    for (const attribute of Object.keys(formulas)) {
+      const formulaFn = formulas[attribute];
+      if (formulaFn == null) { continue; }
+
+      const context: FormulaContext = {
+        data: {
+          name: attribute,
+          value: formValues[attribute],
+          form: formValues,
+        }
+      };
+      const visible = formulaFn(context);
+      if (visible) { continue; }
+      formulaHidden.push(attribute);
+    }
+
+    this.formulaHidden$.next(formulaHidden);
+  }
+
+  getFormulaHidden(fieldName: string) {
+    return this.formulaHidden$.pipe(map(hiddenFields => hiddenFields.includes(fieldName)));
   }
 
   clearLanguageChangeDisabledChecked(eavAttributes: EavAttributes) {
@@ -100,14 +145,16 @@ export class FormulaInstanceService implements OnDestroy {
     this.valueCalculationsAfterLanguageChangeDisabledCheck$.next();
   }
 
-  private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[]) {
+  private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[], ignoreDisabledFields: boolean) {
     for (const fieldConfig of configsGroup) {
       const fieldConfigGroup = fieldConfig.field as FieldConfigGroup;
       if (fieldConfigGroup.fieldGroup != null) {
-        this.findFieldsWithCalcs(calcFields, fieldConfigGroup.fieldGroup);
+        this.findFieldsWithCalcs(calcFields, fieldConfigGroup.fieldGroup, ignoreDisabledFields);
       } else {
-        const disabled = this.form.controls[fieldConfig.field.name].disabled;
-        if (disabled) { continue; }
+        if (!ignoreDisabledFields) {
+          const disabled = this.form.controls[fieldConfig.field.name].disabled;
+          if (disabled) { continue; }
+        }
         const calcs = fieldConfig.field.settings$.value.Calculations;
         if (calcs == null || !calcs.length) { continue; }
         calcFields[fieldConfig.field.name] = calcs;
@@ -120,13 +167,14 @@ export class FormulaInstanceService implements OnDestroy {
     for (const [fieldName, calcItemGuids] of Object.entries(calcFields)) {
       for (const calcItemGuid of calcItemGuids) {
         this.contentTypeItemService.getContentTypeItemByGuid(calcItemGuid).pipe(take(1)).subscribe(calcItem => {
-          const target = LocalizationHelper.getBestValue(calcItem.attributes.Target, this.lang, this.defaultLang)?.value;
+          const target: string = LocalizationHelper.getBestValue(calcItem.attributes.Target, this.lang, this.defaultLang)?.value;
           if (target !== type) { return; }
 
-          const formula = LocalizationHelper.getBestValue(calcItem.attributes.Formula, this.lang, this.defaultLang)?.value;
+          const formula: string = LocalizationHelper.getBestValue(calcItem.attributes.Formula, this.lang, this.defaultLang)?.value;
           if (!formula) { return; }
 
-          formulas[fieldName] = formula;
+          const formulaFn = this.buildFormulaFunction(formula);
+          formulas[fieldName] = formulaFn;
         });
       }
     }
@@ -134,7 +182,7 @@ export class FormulaInstanceService implements OnDestroy {
     return formulas;
   }
 
-  private cleanFormulaVersions(formula: string) {
+  private buildFormulaFunction(formula: string): FormulaFunction {
     let cleanFormula = formula.trim();
 
     // V1 cleanup
@@ -146,8 +194,8 @@ export class FormulaInstanceService implements OnDestroy {
         cleanFormula = cleanFormula.replace('V1', 'function');
       }
     }
-
-    return cleanFormula;
+    const formulaFn: FormulaFunction = new Function('return ' + cleanFormula)();
+    return formulaFn;
   }
 
   private getFormValues(attributes: EavAttributes) {

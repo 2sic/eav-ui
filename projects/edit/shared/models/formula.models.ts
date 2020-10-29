@@ -1,7 +1,9 @@
+import { FormulaFunction } from '../store/ngrx-data/item.models';
+
 export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
 
 export interface FieldFormulas {
-  [fieldName: string]: string;
+  [fieldName: string]: FormulaFunction;
 }
 
 export interface CalcFields {

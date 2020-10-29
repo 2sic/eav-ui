@@ -99,6 +99,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
     // run formulas when form value is changed
     this.itemService.runValueCalculations(change.formulaInstance);
+    change.formulaInstance.runVisibleFormulas();
     this.itemFormValueChange.emit();
   }
 
