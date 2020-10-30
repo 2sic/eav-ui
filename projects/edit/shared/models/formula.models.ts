@@ -10,6 +10,6 @@ export interface CalcFields {
   [fieldName: string]: string[];
 }
 
-export interface LanguageChangeDisabledChecked {
+export interface LanguageChangeCheckedFields {
   [fieldName: string]: boolean;
 }

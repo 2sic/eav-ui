@@ -309,28 +309,30 @@ export class LocalizationHelper {
    * 2. value for all languages
    * 3. value for default language
    * 4. first value
+   *
+   * Similar to LocalizationHelper.translate(), but returns whole value object.
    */
-  public static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
-    let bestDimensions = [lang, `~${lang}`];
-    let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-    if (bestValue != null) { return bestValue; }
+  // public static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
+  //   let bestDimensions = [lang, `~${lang}`];
+  //   let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
 
-    bestDimensions = ['*'];
-    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-    if (bestValue != null) { return bestValue; }
+  //   bestDimensions = ['*'];
+  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
 
-    bestDimensions = [defaultLang, `~${defaultLang}`];
-    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-    if (bestValue != null) { return bestValue; }
+  //   bestDimensions = [defaultLang, `~${defaultLang}`];
+  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
 
-    bestValue = eavValues.values[0];
-    return bestValue;
-  }
+  //   bestValue = eavValues.values[0];
+  //   return bestValue;
+  // }
 
-  private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): EavValue<any> {
-    const value = eavValues.values.find(
-      eavValue => !!eavValue.dimensions.find(dimension => dimensions.includes(dimension.value)),
-    );
-    return value;
-  }
+  // private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): EavValue<any> {
+  //   const value = eavValues.values.find(
+  //     eavValue => !!eavValue.dimensions.find(dimension => dimensions.includes(dimension.value)),
+  //   );
+  //   return value;
+  // }
 }

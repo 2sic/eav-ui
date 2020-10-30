@@ -4,9 +4,7 @@ import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { Item } from '../../../shared/models/eav';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 import { FormValueChange } from './eav-form.models';
@@ -21,7 +19,7 @@ import { FormValueChange } from './eav-form.models';
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
   @Input() private formId: number;
-  @Input() private item: Item;
+  @Input() private entityGuid: string;
   @Output() private formSubmit = new EventEmitter<void>();
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
@@ -31,16 +29,15 @@ export class EavFormComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private formulaInstance: FormulaInstanceService,
-    private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
-    this.formulaInstance.init(this.formId, this.form, this.item.entity.guid, this.config);
+    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
 
     // run formulas when form is created
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
@@ -50,14 +47,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.languageInstanceService.getCurrentLanguage(this.formId).pipe(skip(1)).subscribe(currentLang => {
-        // run formulas when language is changed and fields are checked
-        this.formulaInstance.clearLanguageChangeDisabledChecked(this.item.entity.attributes);
-      })
-    );
-    this.subscription.add(
-      this.formulaInstance.runCalculationsAfterLanguageChangeDisabledCheck$.subscribe(() => {
-        // run formulas when language is changed and fields are checked
-        this.itemService.runValueCalculations(this.formulaInstance);
+        // run formulas when language is changed and fields are translated
+        this.formulaInstance.runFormulasAfterFieldsTranslated();
       })
     );
   }

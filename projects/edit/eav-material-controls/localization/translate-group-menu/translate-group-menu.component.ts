@@ -148,7 +148,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run formulas when field is translated
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
   }
 
   linkToDefault(attributeKey: string) {
@@ -159,7 +159,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run formulas when field is translated
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
   }
 
   translateAll() {
@@ -218,7 +218,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run formulas when field is translated
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
   }
 
   linkReadOnlyAll(languageKey: string) {
@@ -239,7 +239,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
     // run formulas when field is translated
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
   }
 
   linkReadWriteAll(languageKey: string) {
@@ -260,7 +260,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
     // run formulas when field is translated
-    this.itemService.runValueCalculations(this.formulaInstance);
+    this.formulaInstance.runFormulas();
   }
 
   getTranslationStateClass(linkType: string) {
@@ -377,7 +377,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
         this.currentLanguage = currentLanguage;
         this.translateAllConfiguration();
         this.refreshControlConfig(this.config.field.name);
-        this.formulaInstance.languageChangeDisabledIsChecked(this.config.field.name);
+        this.formulaInstance.fieldTranslated(this.config.field.name);
       })
     );
   }

@@ -10,7 +10,6 @@ import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Langu
 import { AttributeDef } from '../../models/eav/attribute-def';
 import { SaveResult } from '../../models/eav/save-result.model';
 import { JsonItem1 } from '../../models/json-format-v1';
-import { FormulaInstanceService } from '../../services/formula-instance.service';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
 
@@ -293,28 +292,4 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     return defaultValue;
   }
 
-  runValueCalculations(formulaInstance: FormulaInstanceService) {
-    const formulas = formulaInstance.findFieldFormulas('value');
-    if (formulas == null) { return; }
-
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.guid === formulaInstance.entityGuid);
-    });
-    if (!oldItem) { return; }
-
-    const newItem = {
-      ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributesValues(
-          oldItem.entity.attributes, formulaInstance.form.value, formulaInstance.lang, formulaInstance.defaultLang,
-        ),
-      }
-    };
-
-    const changed = formulaInstance.runValueFormulas(newItem.entity.attributes);
-    if (!changed) { return; }
-    this.updateOneInCache(newItem);
-  }
 }
