@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { LocalizationHelper } from '../helpers/localization-helper';
@@ -9,7 +9,6 @@ import { EavAttributes } from '../models/eav';
 import { CalcFields, FieldFormulas, FormulaType, LanguageChangeDisabledChecked } from '../models/formula.models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
-import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
@@ -19,20 +18,14 @@ export class FormulaInstanceService implements OnDestroy {
   lang = '';
   defaultLang = '';
   runCalculationsAfterLanguageChangeDisabledCheck$ = new Subject<void>();
-  private formulaHidden$ = new BehaviorSubject<string[]>([]);
   private fieldConfigs: FieldConfigSet[];
   private languageChangeDisabledChecked: LanguageChangeDisabledChecked = {};
   private subscription: Subscription;
 
-  constructor(
-    private languageInstanceService: LanguageInstanceService,
-    private contentTypeItemService: ContentTypeItemService,
-    private itemService: ItemService,
-  ) { }
+  constructor(private languageInstanceService: LanguageInstanceService, private contentTypeItemService: ContentTypeItemService) { }
 
   ngOnDestroy() {
     this.runCalculationsAfterLanguageChangeDisabledCheck$.complete();
-    this.formulaHidden$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -89,42 +82,6 @@ export class FormulaInstanceService implements OnDestroy {
     return changed;
   }
 
-  runVisibleFormulas() {
-    const formulas = this.findFieldFormulas('visible', true);
-    if (formulas == null) {
-      this.formulaHidden$.next([]);
-      return;
-    }
-
-    const formulaHidden: string[] = [];
-    let eavAtributes: EavAttributes;
-    this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(attrs => {
-      eavAtributes = attrs;
-    });
-    const formValues = this.getFormValues(eavAtributes);
-    for (const attribute of Object.keys(formulas)) {
-      const formulaFn = formulas[attribute];
-      if (formulaFn == null) { continue; }
-
-      const context: FormulaContext = {
-        data: {
-          name: attribute,
-          value: formValues[attribute],
-          form: formValues,
-        }
-      };
-      const visible = formulaFn(context);
-      if (visible) { continue; }
-      formulaHidden.push(attribute);
-    }
-
-    this.formulaHidden$.next(formulaHidden);
-  }
-
-  getFormulaHidden(fieldName: string) {
-    return this.formulaHidden$.pipe(map(hiddenFields => hiddenFields.includes(fieldName)));
-  }
-
   clearLanguageChangeDisabledChecked(eavAttributes: EavAttributes) {
     this.languageChangeDisabledChecked = {};
     for (const attribute of Object.keys(eavAttributes)) {
@@ -166,10 +123,10 @@ export class FormulaInstanceService implements OnDestroy {
     for (const [fieldName, calcItemGuids] of Object.entries(calcFields)) {
       for (const calcItemGuid of calcItemGuids) {
         this.contentTypeItemService.getContentTypeItemByGuid(calcItemGuid).pipe(take(1)).subscribe(calcItem => {
-          const target: string = LocalizationHelper.getBestValue(calcItem.attributes.Target, this.lang, this.defaultLang)?.value;
+          const target: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.attributes.Target, null);
           if (target !== type) { return; }
 
-          const formula: string = LocalizationHelper.getBestValue(calcItem.attributes.Formula, this.lang, this.defaultLang)?.value;
+          const formula: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.attributes.Formula, null);
           if (!formula) { return; }
 
           const formulaFn = this.buildFormulaFunction(formula);

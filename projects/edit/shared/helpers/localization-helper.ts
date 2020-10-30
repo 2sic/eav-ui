@@ -14,7 +14,7 @@ export class LocalizationHelper {
    */
   public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
     if (attributeValues) {
-      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultValue);
+      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
       // if translation exist then return translation
       if (translation) {
         return translation.value;
