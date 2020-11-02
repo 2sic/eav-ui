@@ -36,8 +36,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
     this.createControlsInFormGroup(this.config);
     this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
 
-    // run formulas when form is created
-    this.formulaInstance.runFormulas();
+    // run value formulas when form is created
+    this.formulaInstance.runValueFormulas();
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {

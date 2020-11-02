@@ -52,8 +52,8 @@ export class FormulaInstanceService implements OnDestroy {
     );
   }
 
-  runFormulas() {
-    angularConsoleLog('Run formulas');
+  runValueFormulas() {
+    angularConsoleLog('Run value formulas');
     const formulas = this.findFieldFormulas('value');
     if (formulas == null) { return; }
 
@@ -107,7 +107,7 @@ export class FormulaInstanceService implements OnDestroy {
     if (!allChecked) { return; }
 
     this.languageChangeCheckedFields = {};
-    this.runFormulas();
+    this.runValueFormulas();
   }
 
   private findFieldFormulas(type: FormulaType, ignoreDisabledFields = false) {

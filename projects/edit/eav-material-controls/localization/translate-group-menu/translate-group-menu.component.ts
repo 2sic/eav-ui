@@ -147,8 +147,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     }
 
     this.refreshControlConfig(attributeKey);
-    // run formulas when field is translated
-    this.formulaInstance.runFormulas();
+    // run value formulas when field is translated
+    this.formulaInstance.runValueFormulas();
   }
 
   linkToDefault(attributeKey: string) {
@@ -158,8 +158,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       this.config.entity.entityGuid);
 
     this.refreshControlConfig(attributeKey);
-    // run formulas when field is translated
-    this.formulaInstance.runFormulas();
+    // run value formulas when field is translated
+    this.formulaInstance.runValueFormulas();
   }
 
   translateAll() {
@@ -217,8 +217,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     }
 
     this.refreshControlConfig(attributeKey);
-    // run formulas when field is translated
-    this.formulaInstance.runFormulas();
+    // run value formulas when field is translated
+    this.formulaInstance.runValueFormulas();
   }
 
   linkReadOnlyAll(languageKey: string) {
@@ -238,8 +238,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
-    // run formulas when field is translated
-    this.formulaInstance.runFormulas();
+    // run value formulas when field is translated
+    this.formulaInstance.runValueFormulas();
   }
 
   linkReadWriteAll(languageKey: string) {
@@ -259,8 +259,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
       languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
-    // run formulas when field is translated
-    this.formulaInstance.runFormulas();
+    // run value formulas when field is translated
+    this.formulaInstance.runValueFormulas();
   }
 
   getTranslationStateClass(linkType: string) {

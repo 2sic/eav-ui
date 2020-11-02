@@ -97,8 +97,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   formValueChange(change: FormValueChange) {
     this.itemService.updateItemAttributesValues(this.item.entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
 
-    // run formulas when form value is changed
-    change.formulaInstance.runFormulas();
+    // run value formulas when form value is changed
+    change.formulaInstance.runValueFormulas();
     this.itemFormValueChange.emit();
   }
 
