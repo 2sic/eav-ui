@@ -13,3 +13,13 @@ export interface CalcFields {
 export interface LanguageChangeCheckedFields {
   [fieldName: string]: boolean;
 }
+
+export interface FieldsFormulaSettings {
+  [fieldName: string]: FormulaFieldSettings;
+}
+
+export interface FormulaFieldSettings {
+  hidden: boolean;
+  required: boolean;
+  disabled: boolean;
+}

@@ -11,6 +11,7 @@ import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ContentType, EavAttributes, EavDimensions, EavValue, EavValues, Item } from '../../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
+import { FormulaFieldSettings } from '../../../shared/models/formula.models';
 import { EavService } from '../../../shared/services/eav.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
@@ -87,6 +88,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     // subscribe to language data
     this.subscribeToCurrentLanguageFromStore();
     this.subscribeToDefaultLanguageFromStore();
+    this.subscribeToFormulaSettings();
     this.subscribeToEntityHeaderFromStore();
   }
 
@@ -148,6 +150,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
   }
 
@@ -159,6 +162,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
   }
 
@@ -218,6 +222,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
   }
 
@@ -239,6 +244,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
   }
 
@@ -260,6 +266,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
   }
 
@@ -362,8 +369,17 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   }
 
   /** Translate a field configuration (labels, validation, ...) */
-  private translateAllConfiguration() {
+  private translateAllConfiguration(formulaSettings?: FormulaFieldSettings) {
     const fieldSettings = LocalizationHelper.translateSettings(this.config.field.fullSettings, this.currentLanguage, this.defaultLanguage);
+    if (formulaSettings?.hidden) {
+      fieldSettings.VisibleInEditUI = false;
+    }
+    if (formulaSettings?.required) {
+      fieldSettings.Required = true;
+    }
+    if (formulaSettings?.disabled) {
+      fieldSettings.Disabled = true;
+    }
     this.config.field.settings = fieldSettings;
     this.config.field.label = this.config.field.settings.Name || null;
     this.config.field.validation = ValidationHelper.getValidations(this.config.field.settings);
@@ -387,6 +403,17 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       this.defaultLanguage$.subscribe(defaultLanguage => {
         this.defaultLanguage = defaultLanguage;
         this.translateAllConfiguration();
+        this.refreshControlConfig(this.config.field.name);
+      })
+    );
+  }
+
+  private subscribeToFormulaSettings() {
+    this.subscription.add(
+      this.formulaInstance.getSettings(this.config.field.name).pipe(
+        filter(formulaSettings => formulaSettings != null),
+      ).subscribe(formulaSettings => {
+        this.translateAllConfiguration(formulaSettings);
         this.refreshControlConfig(this.config.field.name);
       })
     );

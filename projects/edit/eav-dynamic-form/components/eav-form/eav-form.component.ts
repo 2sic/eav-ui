@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import { FormValueChange } from './eav-form.models';
   providers: [FormulaInstanceService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavFormComponent implements OnInit, OnDestroy {
+export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
   @Input() private formId: number;
   @Input() private entityGuid: string;
@@ -35,8 +35,11 @@ export class EavFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
     this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
+  }
 
-    // run value formulas when form is created
+  ngAfterViewInit() {
+    // run formulas when form is created
+    this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
 
     this.subscription.add(
