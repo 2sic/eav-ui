@@ -59,7 +59,7 @@ export class FormulaInstanceService implements OnDestroy {
   runSettingsFormulas() {
     angularConsoleLog('Run settings formulas');
     let eavAttributes: EavAttributes;
-    this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+    this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
     const formValues = this.getFormValues(eavAttributes);
@@ -88,7 +88,7 @@ export class FormulaInstanceService implements OnDestroy {
     if (formulas == null) { return; }
 
     let eavAttributes: EavAttributes;
-    this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+    this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
 
@@ -181,7 +181,7 @@ export class FormulaInstanceService implements OnDestroy {
   /** Runs formulas on language change after field configurations were translated */
   runFormulasAfterFieldsTranslated() {
     let eavAttributes: EavAttributes;
-    this.itemService.selectAttributesByEntityGuid(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+    this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
     this.languageChangeCheckedFields = {};

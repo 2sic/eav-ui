@@ -229,7 +229,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       // if current language !== default language check whether default language has value in all items
       if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langPri) {
         const valuesExistInDefaultLanguage = this.itemService.valuesExistInDefaultLanguage(
-          formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)),
+          formData.Items.map(item => item.Entity.Guid),
           this.eavService.eavConfig.langPri,
           this.inputTypeService,
           this.contentTypeService,
@@ -241,11 +241,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         }
       }
 
-      this.items$ = this.itemService
-        .selectItemsByIdList(formData.Items.map(item => (item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id)))
-        // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
-        // Remove if calculating fields gets faster
-        .pipe(delay(0));
+      // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
+      // Remove if calculating fields gets faster
+      this.items$ = this.itemService.selectItems(formData.Items.map(item => item.Entity.Guid)).pipe(delay(0));
+
       this.items$.pipe(take(1)).subscribe(items => {
         if (items?.[0].entity.id === 0) {
           this.createMode = true;

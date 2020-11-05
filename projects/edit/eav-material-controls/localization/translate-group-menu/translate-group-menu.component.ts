@@ -80,7 +80,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     );
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    this.attributes$ = this.itemService.selectAttributesByEntityGuid(this.config.entity.entityGuid);
+    this.attributes$ = this.itemService.selectItemAttributes(this.config.entity.entityGuid);
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
     this.subscribeToItemFromStore();
@@ -135,13 +135,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   translateUnlink(attributeKey: string) {
     if (this.isTranslateDisabled(attributeKey)) { return; }
 
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage);
     const defaultValue: EavValue<any> = LocalizationHelper.getValueTranslation(this.attributes[attributeKey],
       this.defaultLanguage, this.defaultLanguage);
     if (defaultValue) {
       const fieldType = InputFieldHelper.getFieldType(this.config, attributeKey);
-      this.itemService.addAttributeValue(
+      this.itemService.addItemAttributeValue(
         this.config.entity.entityGuid, attributeKey, defaultValue.value, this.currentLanguage, false, fieldType,
       );
     } else {
@@ -157,8 +156,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   linkToDefault(attributeKey: string) {
     if (this.isTranslateDisabled(attributeKey)) { return; }
 
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage);
 
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
@@ -212,7 +210,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        this.itemService.addAttributeValue(
+        this.itemService.addItemAttributeValue(
           this.config.entity.entityGuid, attributeKey, attributeValueTranslation.value, this.currentLanguage, false, this.config.field.type,
         );
       }
@@ -238,10 +236,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.setTranslationState(TranslationLinkConstants.LinkReadOnly, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, true, this.config.entity.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage);
+    this.itemService.addItemAttributeDimension(
+      this.config.entity.entityGuid, attributeKey, this.currentLanguage, languageKey, this.defaultLanguage, true,
+    );
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
@@ -260,10 +258,10 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     if (this.isTranslateDisabled(attributeKey)) { return; }
 
     this.setTranslationState(TranslationLinkConstants.LinkReadWrite, languageKey);
-    this.itemService.removeItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      this.config.entity.entityGuid);
-    this.itemService.addItemAttributeDimension(this.config.entity.entityId, attributeKey, this.currentLanguage,
-      languageKey, this.defaultLanguage, false, this.config.entity.entityGuid);
+    this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage);
+    this.itemService.addItemAttributeDimension(
+      this.config.entity.entityGuid, attributeKey, this.currentLanguage, languageKey, this.defaultLanguage, false,
+    );
     this.refreshControlConfig(attributeKey);
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
@@ -431,11 +429,12 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   private subscribeToEntityHeaderFromStore() {
     if (this.config.entity.header.Group && this.config.entity.header.Group.SlotCanBeEmpty) {
       this.subscription.add(
-        this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid).subscribe(header => {
+        this.itemService.selectItemHeader(this.config.entity.entityGuid).subscribe(header => {
           if (header.Group && !this.fieldConfig.isParentGroup) {
             this.headerGroupSlotIsEmpty = header.Group.SlotIsEmpty;
-            this.setControlDisable(this.attributes[this.config.field.name], this.config.field.name,
-              this.currentLanguage, this.defaultLanguage);
+            this.setControlDisable(
+              this.attributes[this.config.field.name], this.config.field.name, this.currentLanguage, this.defaultLanguage,
+            );
           }
         })
       );
@@ -445,7 +444,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   /** Fetch current item */
   private subscribeToItemFromStore() {
     this.subscription.add(
-      this.itemService.selectItemById(this.config.entity.entityId).subscribe(item => {
+      this.itemService.selectItem(this.config.entity.entityGuid).subscribe(item => {
         this.item = item;
       })
     );

@@ -87,9 +87,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   formSaveObservable() {
     return this.actions$.pipe(
       ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
-      filter((action: fromItems.SaveItemAttributesValuesAction) =>
-        this.item.entity.id === 0 ? this.item.entity.guid === action.item.entity.guid : this.item.entity.id === action.item.entity.id
-      ),
+      filter<fromItems.SaveItemAttributesValuesAction>(action => this.item.entity.guid === action.item.entity.guid),
     ) as Observable<Action>;
   }
 

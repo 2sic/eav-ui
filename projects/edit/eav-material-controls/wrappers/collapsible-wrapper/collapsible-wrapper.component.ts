@@ -47,7 +47,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   ngOnInit() {
     this.fieldConfig = this.config.field as FieldConfigGroup;
     this.visibleInEditUI$ = this.fieldConfig.settings$.pipe(map(settings => (settings.VisibleInEditUI === false) ? false : true));
-    this.header$ = this.itemService.selectHeaderByEntityId(this.config.entity.entityId, this.config.entity.entityGuid);
+    this.header$ = this.itemService.selectItemHeader(this.config.entity.entityGuid);
 
     this.collapse$.next(this.fieldConfig.settings$.value.DefaultCollapsed || false);
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
@@ -114,7 +114,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       header = hdr;
     });
     const newHeader: EavHeader = { ...header, Group: { ...header.Group, SlotIsEmpty: !header.Group.SlotIsEmpty } };
-    this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, newHeader);
+    this.itemService.updateItemHeader(this.config.entity.entityGuid, newHeader);
   }
 
   openHistory() {
