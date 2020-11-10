@@ -6,8 +6,6 @@ import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview
 import * as styles from './field-string-wysiwyg.css';
 
 const wysiwygTag = 'field-string-wysiwyg';
-const modeEdit = 'edit';
-const modePreview = 'preview';
 
 /** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
@@ -25,21 +23,21 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
-    const inline = this.calculateInline();
-    if (!inline) {
+    const previewMode = this.isPreviewMode();
+    if (previewMode) {
       this.createPreview();
     } else {
       this.createEditor();
     }
   }
 
-  private calculateInline() {
-    let inline = this.connector.field.settings?.Dialog === 'inline';
+  private isPreviewMode() {
+    let previewMode = this.connector.field.settings?.Dialog === 'dialog';
     if (this.mode != null || this.getAttribute('mode') != null) {
-      inline = this.mode === modeEdit || this.getAttribute('mode') === modeEdit;
+      previewMode = this.mode === 'preview' || this.getAttribute('mode') === 'preview';
     }
 
-    return inline;
+    return previewMode;
   }
 
   private createPreview() {
