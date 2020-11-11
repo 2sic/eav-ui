@@ -18,6 +18,7 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
+import { EntityDefaultLogic } from './entity-default-logic';
 import { calculateSelectedEntities } from './entity-default.helpers';
 import { DeleteEntityProps, SelectedEntity } from './entity-default.models';
 
@@ -39,6 +40,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
+  settingsLogic = new EntityDefaultLogic();
 
   constructor(
     eavService: EavService,
@@ -57,9 +59,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => this.calculateSettings(settings))).subscribe(settings => {
-        this.settings$.next(settings);
-      })
+      this.config.field.settings$.pipe(map(settings => this.settingsLogic.init(settings))).subscribe(this.settings$)
     );
     this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
       map(([fieldValue, settings, availableEntities]) => {
@@ -104,19 +104,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   toggleFreeTextMode() {
     this.freeTextMode$.next(!this.freeTextMode$.value);
-  }
-
-  /** Overridden in subclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = { ...settings };
-    if (fixedSettings.EntityType == null) { fixedSettings.EntityType = ''; }
-    if (fixedSettings.AllowMultiValue == null) { fixedSettings.AllowMultiValue = false; }
-    if (fixedSettings.EnableEdit == null) { fixedSettings.EnableEdit = true; }
-    if (fixedSettings.EnableCreate == null) { fixedSettings.EnableCreate = true; }
-    if (fixedSettings.EnableAddExisting == null) { fixedSettings.EnableAddExisting = true; }
-    if (fixedSettings.EnableRemove == null) { fixedSettings.EnableRemove = true; }
-    if (fixedSettings.EnableDelete == null) { fixedSettings.EnableDelete = false; }
-    return fixedSettings;
   }
 
   /** Overridden in subclass */

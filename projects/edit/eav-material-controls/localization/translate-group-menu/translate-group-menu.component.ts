@@ -11,14 +11,13 @@ import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { ContentType, EavAttributes, EavDimensions, EavValue, EavValues, Item } from '../../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
-import { FormulaFieldSettings } from '../../../shared/models/formula.models';
 import { EavService } from '../../../shared/services/eav.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { ValidationHelper } from '../../validators/validation-helper';
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
 import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 
@@ -65,6 +64,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private formulaInstance: FormulaInstanceService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
@@ -366,30 +366,11 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     }
   }
 
-  /** Translate a field configuration (labels, validation, ...) */
-  private translateAllConfiguration(formulaSettings?: FormulaFieldSettings) {
-    const fieldSettings = LocalizationHelper.translateSettings(this.config.field.fullSettings, this.currentLanguage, this.defaultLanguage);
-    if (formulaSettings?.hidden) {
-      fieldSettings.VisibleInEditUI = false;
-    }
-    if (formulaSettings?.required) {
-      fieldSettings.Required = true;
-    }
-    if (formulaSettings?.disabled) {
-      fieldSettings.Disabled = true;
-    }
-    this.config.field.settings = fieldSettings;
-    this.config.field.label = this.config.field.settings.Name || null;
-    this.config.field.validation = ValidationHelper.getValidations(this.config.field.settings);
-    this.config.field.required = ValidationHelper.isRequired(this.config.field.settings);
-    this.config.field.settings$?.next(fieldSettings); // must run after validations are recalculated
-  }
-
   private subscribeToCurrentLanguageFromStore() {
     this.subscription.add(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.currentLanguage = currentLanguage;
-        this.translateAllConfiguration();
+        this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage, this.defaultLanguage);
         this.refreshControlConfig(this.config.field.name);
         this.formulaInstance.fieldTranslated(this.config.field.name);
       })
@@ -400,7 +381,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.subscription.add(
       this.defaultLanguage$.subscribe(defaultLanguage => {
         this.defaultLanguage = defaultLanguage;
-        this.translateAllConfiguration();
+        this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage, this.defaultLanguage);
         this.refreshControlConfig(this.config.field.name);
       })
     );
@@ -411,7 +392,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
       this.formulaInstance.getSettings(this.config.field.name).pipe(
         filter(formulaSettings => formulaSettings != null),
       ).subscribe(formulaSettings => {
-        this.translateAllConfiguration(formulaSettings);
+        this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage, this.defaultLanguage, formulaSettings);
         this.refreshControlConfig(this.config.field.name);
       })
     );

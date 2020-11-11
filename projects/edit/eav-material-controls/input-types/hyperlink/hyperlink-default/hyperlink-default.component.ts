@@ -12,6 +12,7 @@ import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
+import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { Preview } from './hyperlink-default.models';
 
 @Component({
@@ -50,7 +51,12 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
+    this.settings$ = new BehaviorSubject<FieldSettings>(null);
+    const settingsLogic = new HyperlinkDefaultLogic();
+    this.subscription.add(
+      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(this.settings$)
+    );
+    this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.subscription.add(
       this.settings$.subscribe(settings => {
@@ -65,6 +71,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   ngOnDestroy() {
+    this.settings$.complete();
     this.preview$.complete();
     super.ngOnDestroy();
   }
@@ -73,8 +80,8 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const settings = this.settings$.value;
     const params: DnnBridgeConnectorParams = {
       CurrentValue: this.control.value,
-      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
-      Paths: (settings.Paths != null) ? settings.Paths : '',
+      FileFilter: settings.FileFilter,
+      Paths: settings.Paths,
     };
     this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
   }

@@ -6,6 +6,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { CustomJsonEditorLogic } from './custom-json-editor-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,7 +27,8 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.rowCount$ = this.settings$.pipe(map(settings => settings.Rows || 5));
+    const settingsLogic = new CustomJsonEditorLogic();
+    this.rowCount$ = this.settings$.pipe(map(settings => settingsLogic.init(settings).Rows));
   }
 
   ngOnDestroy() {

@@ -1,3 +1,5 @@
+import { DropdownOption } from "../../edit/eav-material-controls/input-types/string/string-dropdown/string-dropdown.models";
+
 /** @All */
 interface All {
   Name: string;
@@ -34,6 +36,7 @@ interface StringDefault extends String {
 interface StringDropdown extends String {
   DropdownValues: string;
   EnableTextEntry: boolean;
+  _options: DropdownOption[];
 }
 
 /** @string-url-path */
@@ -159,11 +162,19 @@ interface Boolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
+  _label: string;
 }
 
 /** Properties of main collapsible in the form */
 interface ContentTypeSettings {
   EditInstructions: string;
+}
+
+interface CollapsibleWrapperSettings {
+  _itemTitle: string;
+  _description: string;
+  _slotCanBeEmpty: boolean;
+  _slotIsEmpty: boolean;
 }
 
 export interface FieldSettings
@@ -183,4 +194,5 @@ export interface FieldSettings
   CustomJsonEditor,
   CustomGps,
   Boolean,
-  ContentTypeSettings { }
+  ContentTypeSettings,
+  CollapsibleWrapperSettings { }

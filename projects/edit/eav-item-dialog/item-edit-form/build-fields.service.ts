@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
-import isEmpty from 'lodash-es/isEmpty';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
-import { FieldSettings } from '../../../edit-types';
+import { filter, switchMap } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldConfigAngular, FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
-import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
+import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
-import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { ContentType, EavAttributes, InputType, Item, Language } from '../../shared/models/eav';
+import { ContentType, EavAttributes, Item } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { CalculatedInputType } from '../../shared/models/input-field-models';
+import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
@@ -25,6 +21,7 @@ export class BuildFieldsService {
   private currentLanguage: string;
   private defaultLanguage: string;
   private enableHistory: boolean;
+  private fieldsSettingsService: FieldsSettingsService;
 
   constructor(
     private itemService: ItemService,
@@ -39,6 +36,7 @@ export class BuildFieldsService {
     currentLanguage: string,
     defaultLanguage: string,
     enableHistory: boolean,
+    fieldsSettingsService: FieldsSettingsService,
   ): Observable<FieldConfigSet[]> {
     this.contentType$ = contentType$;
     this.item = item;
@@ -46,6 +44,7 @@ export class BuildFieldsService {
     this.currentLanguage = currentLanguage;
     this.defaultLanguage = defaultLanguage;
     this.enableHistory = enableHistory;
+    this.fieldsSettingsService = fieldsSettingsService;
 
     return this.contentType$
       .pipe(
@@ -107,8 +106,13 @@ export class BuildFieldsService {
     });
   }
 
-  private buildFieldConfigSet(attribute: AttributeDef, index: number, calculatedInputType: CalculatedInputType,
-    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigSet {
+  private buildFieldConfigSet(
+    attribute: AttributeDef,
+    index: number,
+    calculatedInputType: CalculatedInputType,
+    contentTypeSettings: EavAttributes,
+    isParentGroup: boolean,
+  ): FieldConfigSet {
     const entity: ItemConfig = {
       entityId: this.item.entity.id,
       entityGuid: this.item.entity.guid,
@@ -119,7 +123,11 @@ export class BuildFieldsService {
       formId: this.formId,
       enableHistory: this.enableHistory,
     };
-    const field = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, isParentGroup);
+    const field = this.fieldsSettingsService.buildFieldConfig(
+      attribute, index, calculatedInputType, contentTypeSettings, isParentGroup,
+      this.currentLanguage, this.defaultLanguage, this.item, this.inputTypeService,
+      this.languageService, this.itemService,
+    );
 
     const fieldConfigSet: FieldConfigSet = {
       field,
@@ -127,90 +135,5 @@ export class BuildFieldsService {
       form,
     };
     return fieldConfigSet;
-  }
-
-  private buildFieldConfig(attribute: AttributeDef, index: number, calculatedInputType: CalculatedInputType,
-    contentTypeSettings: EavAttributes, isParentGroup: boolean): FieldConfigAngular {
-    let fieldConfig: FieldConfigAngular;
-    let settingsTranslated: FieldSettings;
-    let fullSettings: EavAttributes;
-    const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
-
-    if (attribute) {
-      settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, this.currentLanguage, this.defaultLanguage);
-      fullSettings = attribute.settings;
-    } else if (isEmptyInputType && contentTypeSettings) {
-      settingsTranslated = LocalizationHelper.translateSettings(contentTypeSettings, this.currentLanguage, this.defaultLanguage);
-      fullSettings = contentTypeSettings;
-    }
-
-    // these settings are recalculated in translate-group-menu translateAllConfiguration
-    const name: string = attribute ? attribute.name : 'Edit Item';
-    const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
-    let inputTypeSettings: InputType;
-    const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, fullSettings);
-    this.inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      inputTypeSettings = type;
-    });
-    const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
-    const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
-
-    if (isEmptyInputType) {
-      fieldConfig = {
-        isParentGroup, // empty specific
-        fieldGroup: [], // empty specific
-        settings: settingsTranslated,
-        fullSettings,
-        wrappers,
-        isExternal: calculatedInputType.isExternal,
-        disableI18n,
-        isLastInGroup,
-        name,
-        label,
-        inputType: calculatedInputType.inputType,
-        settings$: new BehaviorSubject(settingsTranslated),
-      } as FieldConfigGroup;
-    } else {
-      const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
-      const required: boolean = ValidationHelper.isRequired(settingsTranslated);
-      let initialValue = LocalizationHelper.translate(
-        this.currentLanguage,
-        this.defaultLanguage,
-        this.item.entity.attributes[name],
-        null
-      );
-      // set default value if needed
-      if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1 && initialValue !== '') {
-        let languages: Language[] = [];
-        this.languageService.entities$.pipe(take(1)).subscribe(langs => {
-          languages = langs;
-        });
-        initialValue = this.itemService.setDefaultValue(this.item, attribute, calculatedInputType.inputType, settingsTranslated,
-          languages, this.currentLanguage, this.defaultLanguage);
-      }
-      const disabled: boolean = settingsTranslated.Disabled;
-
-      fieldConfig = {
-        initialValue, // other fields specific
-        validation: validationList, // other fields specific
-        settings: settingsTranslated,
-        fullSettings,
-        wrappers,
-        focused$: new BehaviorSubject(false),
-        isExternal: calculatedInputType.isExternal,
-        disableI18n,
-        isLastInGroup,
-        name,
-        index, // other fields specific
-        label,
-        placeholder: `Enter ${name}`,  // other fields specific
-        inputType: calculatedInputType.inputType,
-        type: attribute.type, // other fields specific
-        required, // other fields specific
-        disabled, // other fields specific
-        settings$: new BehaviorSubject(settingsTranslated),
-      };
-    }
-    return fieldConfig;
   }
 }

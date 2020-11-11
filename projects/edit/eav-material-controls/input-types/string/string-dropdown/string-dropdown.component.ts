@@ -6,7 +6,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { calculateDropdownOptions } from './string-dropdown.helpers';
+import { StringDropdownLogic } from './string-dropdown-logic';
 import { DropdownOption } from './string-dropdown.models';
 
 @Component({
@@ -31,13 +31,11 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
 
   ngOnInit() {
     super.ngOnInit();
-    this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
-    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(
-      map(([value, settings]) => {
-        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
-        return dropdownOptions;
-      }),
-    );
+    const settingsLogic = new StringDropdownLogic();
+    const fixedSettings$ = settingsLogic.update(this.settings$, this.value$);
+    this.enableTextEntry$ = fixedSettings$.pipe(map(settings => settings.EnableTextEntry));
+    this.dropdownOptions$ = fixedSettings$.pipe(map(settings => settings._options));
+
     this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(
       map(([enableTextEntry, freeTextMode]) => {
         if (!enableTextEntry) { return false; }

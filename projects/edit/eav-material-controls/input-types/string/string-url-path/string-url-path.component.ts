@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -6,6 +7,7 @@ import { Helper } from '../../../../shared/helpers/helper';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { StringUrlPathLogic } from './string-url-path-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -30,10 +32,11 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
+    const settingsLogic = new StringUrlPathLogic();
     this.subscription.add(
-      this.settings$.subscribe(settings => {
-        this.autoGenerateMask = settings.AutoGenerateMask || null;
-        this.allowSlashes = settings.AllowSlashes || false;
+      this.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+        this.autoGenerateMask = settings.AutoGenerateMask;
+        this.allowSlashes = settings.AllowSlashes;
         if (this.fieldMaskService != null) {
           this.fieldMaskService.destroy();
           this.fieldMaskService = null;

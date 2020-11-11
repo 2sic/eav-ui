@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from '../../../../../edit-types';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
@@ -11,6 +10,7 @@ import { EntityService } from '../../../../shared/services/entity.service';
 import { QueryService } from '../../../../shared/services/query.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { EntityQueryLogic } from './entity-query-logic';
 import { QueryEntity } from './entity-query.models';
 
 @Component({
@@ -23,6 +23,7 @@ import { QueryEntity } from './entity-query.models';
 @InputType({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
   useQuery = true;
+  settingsLogic = new EntityQueryLogic();
   private paramsMask: FieldMaskService;
 
   constructor(
@@ -58,15 +59,6 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
 
   ngOnDestroy() {
     super.ngOnDestroy();
-  }
-
-  /** Override function in superclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = super.calculateSettings(settings);
-    if (fixedSettings.Query == null) { fixedSettings.Query = ''; }
-    if (fixedSettings.StreamName == null || fixedSettings.StreamName === '') { fixedSettings.StreamName = 'Default'; }
-    if (fixedSettings.UrlParameters == null) { fixedSettings.UrlParameters = ''; }
-    return fixedSettings;
   }
 
   /** Override function in superclass */

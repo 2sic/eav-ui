@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { FieldSettings } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
@@ -12,6 +13,7 @@ import { BaseComponent } from '../../input-types/base/base.component';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dnn-bridge/dnn-bridge.models';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { HyperlinkDefaultExpandableWrapperLogic } from './hyperlink-default-expandable-wrapper-logic';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
@@ -59,6 +61,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
       })
     );
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.settings$ = new BehaviorSubject<FieldSettings>(null);
+    const settingsLogic = new HyperlinkDefaultExpandableWrapperLogic();
+    this.subscription.add(
+      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(this.settings$)
+    );
     this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
   }
@@ -70,6 +77,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   }
 
   ngOnDestroy() {
+    this.settings$.complete();
     this.dropzoneDraggingHelper.detach();
     this.preview$.complete();
     super.ngOnDestroy();
@@ -99,8 +107,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     const settings = this.settings$.value;
     const params: DnnBridgeConnectorParams = {
       CurrentValue: this.control.value,
-      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
-      Paths: (settings.Paths != null) ? settings.Paths : '',
+      FileFilter: settings.FileFilter,
+      Paths: settings.Paths,
     };
     this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
   }

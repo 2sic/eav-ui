@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnD
 import { Actions, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, share } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
@@ -10,6 +10,7 @@ import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, Item } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
+import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -20,6 +21,7 @@ import { BuildFieldsService } from './build-fields.service';
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss'],
+  providers: [FieldsSettingsService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
@@ -30,7 +32,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   contentType$: Observable<ContentType>;
-  /** spm WARNING: Do not subscribe to this twice or form will break. Items' attributes in store will get messed up */
   itemFields$: Observable<FieldConfigSet[]>;
   currentLanguage: string;
 
@@ -44,6 +45,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private eavService: EavService,
     private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
@@ -70,7 +72,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       this.currentLanguage,
       this.defaultLanguage,
       this.enableHistory,
-    );
+      this.fieldsSettingsService,
+    ).pipe(share());
   }
 
   ngOnDestroy() {

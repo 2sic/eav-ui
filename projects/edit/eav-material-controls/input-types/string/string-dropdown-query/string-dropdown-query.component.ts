@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityInfo } from '../../../../shared/models/eav/entity-info';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -11,6 +10,7 @@ import { QueryService } from '../../../../shared/services/query.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,6 +21,7 @@ import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
+  settingsLogic = new StringDropdownQueryLogic();
 
   constructor(
     eavService: EavService,
@@ -40,16 +41,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnDestroy() {
     super.ngOnDestroy();
-  }
-
-  /** Override function in superclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = super.calculateSettings(settings);
-    if (fixedSettings.Value == null) { fixedSettings.Value = ''; }
-    if (fixedSettings.Label == null) { fixedSettings.Label = ''; }
-    if (fixedSettings.EnableTextEntry == null) { fixedSettings.EnableTextEntry = false; }
-    if (fixedSettings.Separator == null || fixedSettings.Separator === '') { fixedSettings.Separator = ','; }
-    return fixedSettings;
   }
 
   /** Override function in superclass */

@@ -2,13 +2,13 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from '../../../../../edit-types';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -19,6 +19,7 @@ import { EntityDefaultComponent } from '../entity-default/entity-default.compone
 })
 @InputType({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
+  settingsLogic = new EntityContentBlocksLogic();
 
   constructor(
     eavService: EavService,
@@ -37,18 +38,5 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
 
   ngOnDestroy() {
     super.ngOnDestroy();
-  }
-
-  /** Override function in superclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = super.calculateSettings(settings);
-    fixedSettings.AllowMultiValue = false;
-    fixedSettings.EnableRemove = true;
-    fixedSettings.AllowMultiValue = true;
-    fixedSettings.EnableAddExisting = false;
-    fixedSettings.EnableCreate = false;
-    fixedSettings.EnableEdit = false;
-    fixedSettings.EntityType = 'ContentGroupReference';
-    return fixedSettings;
   }
 }

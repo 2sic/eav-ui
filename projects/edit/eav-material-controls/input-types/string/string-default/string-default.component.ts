@@ -6,6 +6,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { StringDefaultLogic } from './string-default-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,7 +27,8 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
-    this.rowCount$ = this.settings$.pipe(map(settings => settings.RowCount || 1));
+    const settingsLogic = new StringDefaultLogic();
+    this.rowCount$ = this.settings$.pipe(map(settings => settingsLogic.init(settings).RowCount));
   }
 
   ngOnDestroy() {
