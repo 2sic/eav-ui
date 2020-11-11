@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
-import { Observable } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
@@ -15,7 +12,6 @@ import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 
 @Injectable()
 export class BuildFieldsService {
-  private contentType$: Observable<ContentType>;
   private item: Item;
   private formId: number;
   private currentLanguage: string;
@@ -30,15 +26,14 @@ export class BuildFieldsService {
   ) { }
 
   public buildFields(
-    contentType$: Observable<ContentType>,
+    contentType: ContentType,
     item: Item,
     formId: number,
     currentLanguage: string,
     defaultLanguage: string,
     enableHistory: boolean,
     fieldsSettingsService: FieldsSettingsService,
-  ): Observable<FieldConfigSet[]> {
-    this.contentType$ = contentType$;
+  ): FieldConfigSet[] {
     this.item = item;
     this.formId = formId;
     this.currentLanguage = currentLanguage;
@@ -46,64 +41,42 @@ export class BuildFieldsService {
     this.enableHistory = enableHistory;
     this.fieldsSettingsService = fieldsSettingsService;
 
-    return this.contentType$
-      .pipe(
-        filter(data => data != null),
-        switchMap(data => {
-          // build first empty
-          const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null,
-            { inputType: InputTypeConstants.EmptyDefault, isExternal: false },
-            data.contentType.settings, true);
-          let currentFieldGroup: FieldConfigSet = parentFieldGroup;
+    // build first empty
+    const parentType: CalculatedInputType = {
+      inputType: InputTypeConstants.EmptyDefault,
+      isExternal: false
+    };
+    const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, parentType, contentType.contentType.settings, true);
+    let currentFieldGroup: FieldConfigSet = parentFieldGroup;
 
-          // loop through contentType attributes
-          data.contentType.attributes.forEach((attribute, index) => {
-            try {
-              // if input type is empty-default create new field group and than continue to add fields to that group
-              const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
-              const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
-              if (isEmptyInputType) {
-                // group-fields (empty)
-                currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType,
-                  data.contentType.settings, false);
-                const field = parentFieldGroup.field as FieldConfigGroup;
-                field.fieldGroup.push(currentFieldGroup);
-              } else {
-                // all other fields (not group empty)
-                const fieldConfigSet = this.buildFieldConfigSet(attribute, index, calculatedInputType,
-                  data.contentType.settings, null);
-                const field = currentFieldGroup.field as FieldConfigGroup;
-                field.fieldGroup.push(fieldConfigSet);
-              }
-            } catch (error) {
-              console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
-              throw error;
-            }
-          });
-          try {
-            this.calculateFieldPositionInGroup(parentFieldGroup.field as FieldConfigGroup);
-          } catch (error) {
-            console.error(`Error calculating last field in each group: ${error}`);
-          }
-          return of([parentFieldGroup]);
-        })
-      );
-  }
-
-  private calculateFieldPositionInGroup(field: FieldConfigGroup) {
-    if (!field.fieldGroup) { return; }
-
-    const childFieldSetsCount = field.fieldGroup.length;
-    if (childFieldSetsCount === 0) { return; }
-
-    const lastChildFieldSet = field.fieldGroup[childFieldSetsCount - 1];
-    if (lastChildFieldSet.field.inputType !== InputTypeConstants.EmptyDefault) {
-      lastChildFieldSet.field.isLastInGroup = true;
-    }
-
-    field.fieldGroup.forEach(childFieldSet => {
-      this.calculateFieldPositionInGroup(childFieldSet.field as FieldConfigGroup);
+    // loop through contentType attributes
+    contentType.contentType.attributes.forEach((attribute, index) => {
+      try {
+        // if input type is empty-default create new field group and than continue to add fields to that group
+        const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
+        const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
+        if (isEmptyInputType) {
+          // group-fields (empty)
+          currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType, contentType.contentType.settings, false);
+          const field = parentFieldGroup.field as FieldConfigGroup;
+          field.fieldGroup.push(currentFieldGroup);
+        } else {
+          // all other fields (not group empty)
+          const fieldConfigSet = this.buildFieldConfigSet(attribute, index, calculatedInputType, contentType.contentType.settings, null);
+          const field = currentFieldGroup.field as FieldConfigGroup;
+          field.fieldGroup.push(fieldConfigSet);
+        }
+      } catch (error) {
+        console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
+        throw error;
+      }
     });
+    try {
+      this.calculateFieldPositionInGroup(parentFieldGroup.field as FieldConfigGroup);
+    } catch (error) {
+      console.error(`Error calculating last field in each group: ${error}`);
+    }
+    return [parentFieldGroup];
   }
 
   private buildFieldConfigSet(
@@ -124,9 +97,17 @@ export class BuildFieldsService {
       enableHistory: this.enableHistory,
     };
     const field = this.fieldsSettingsService.buildFieldConfig(
-      attribute, index, calculatedInputType, contentTypeSettings, isParentGroup,
-      this.currentLanguage, this.defaultLanguage, this.item, this.inputTypeService,
-      this.languageService, this.itemService,
+      attribute,
+      index,
+      calculatedInputType,
+      contentTypeSettings,
+      isParentGroup,
+      this.currentLanguage,
+      this.defaultLanguage,
+      this.item,
+      this.inputTypeService,
+      this.languageService,
+      this.itemService,
     );
 
     const fieldConfigSet: FieldConfigSet = {
@@ -135,5 +116,21 @@ export class BuildFieldsService {
       form,
     };
     return fieldConfigSet;
+  }
+
+  private calculateFieldPositionInGroup(field: FieldConfigGroup) {
+    if (!field.fieldGroup) { return; }
+
+    const childFieldSetsCount = field.fieldGroup.length;
+    if (childFieldSetsCount === 0) { return; }
+
+    const lastChildFieldSet = field.fieldGroup[childFieldSetsCount - 1];
+    if (lastChildFieldSet.field.inputType !== InputTypeConstants.EmptyDefault) {
+      lastChildFieldSet.field.isLastInGroup = true;
+    }
+
+    field.fieldGroup.forEach(childFieldSet => {
+      this.calculateFieldPositionInGroup(childFieldSet.field as FieldConfigGroup);
+    });
   }
 }
