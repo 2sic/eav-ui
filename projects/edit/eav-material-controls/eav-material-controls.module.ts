@@ -195,7 +195,11 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     CustomDefaultComponent,
     CustomJsonEditorComponent,
   ],
-  exports: [EavLanguageSwitcherComponent],
+  exports: [
+    EavLanguageSwitcherComponent,
+    TranslateGroupMenuComponent,
+    ChangeAnchorTargetDirective,
+  ],
   providers: [
     FileTypeService,
     ValidationMessagesService,

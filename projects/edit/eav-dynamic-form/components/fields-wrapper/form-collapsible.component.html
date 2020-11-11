@@ -1,0 +1,42 @@
+<mat-card class="mat-card-group-parent shadow-bottom-z-1" *ngIf="templateVars$ | async as data">
+  <div class="mat-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
+
+    <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
+      <div fxLayoutAlign="start center" class="mat-card-title-group mat-display-1">
+        <mat-icon>
+          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+        </mat-icon>
+        <span class="title">
+          {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
+        </span>
+      </div>
+    </div>
+
+    <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
+      [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
+      [matTooltip]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
+      [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
+    </mat-slide-toggle>
+
+    <button mat-icon-button [matTooltip]="'Form.Buttons.History.Tip' | translate" *ngIf="config.form.enableHistory"
+      (click)="openHistory()">
+      <mat-icon>history</mat-icon>
+    </button>
+
+    <app-translate-group-menu fxLayoutAlign="end center" [config]="config" [group]="group">
+    </app-translate-group-menu>
+  </div>
+
+  <mat-card-content class="mat-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="data.editInstructions">
+          <div class="description" appChangeAnchorTarget [innerHtml]="data.editInstructions | safeHtml"></div>
+        </div>
+        <div class="mdc-layout-grid__cell--span-12">
+          <ng-container appEavField [config]="configs" [group]="group"></ng-container>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
