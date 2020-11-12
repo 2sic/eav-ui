@@ -1,6 +1,7 @@
 <ng-container *ngIf="{
   invalid: invalid$ | async,
-  description: description$ | async
+  description: description$ | async,
+  settings: config.field.settings$ | async
 } as data">
   <div class="c-fht__container" [ngClass]="{
     'c-fht__container--no-hint': !data.description && !(data.invalid && !disableError),
@@ -16,7 +17,7 @@
       </span>
     </mat-hint>
     <mat-error *ngIf="data.invalid && !disableError" class="mat-caption">
-      {{ getErrorMessage() | translate:{ param:config.field.settings } }}
+      {{ getErrorMessage() | translate:{ param:data.settings } }}
     </mat-error>
   </div>
 </ng-container>

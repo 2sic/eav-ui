@@ -12,7 +12,7 @@ export interface FieldConfig {
   label: string; // updated on language change
 
   /** Field placeholder text */
-  placeholder: string; // never updated atm. Probably will be
+  placeholder: string; // updated on language change
 
   /** Input type of the field. e.g. string-default, string-dropdown, etc. */
   inputType: string;

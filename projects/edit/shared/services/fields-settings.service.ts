@@ -108,7 +108,7 @@ export class FieldsSettingsService {
         name,
         index, // other fields specific
         label,
-        placeholder: `Enter ${name}`,  // other fields specific
+        placeholder: settingsTranslated.Placeholder, // other fields specific
         inputType: calculatedInputType.inputType,
         type: attribute.type, // other fields specific
         required, // other fields specific
@@ -137,9 +137,10 @@ export class FieldsSettingsService {
       fieldSettings.Disabled = true;
     }
     config.field.settings = fieldSettings;
-    config.field.label = config.field.settings.Name || null;
-    config.field.validation = ValidationHelper.getValidations(config.field.settings);
-    config.field.required = ValidationHelper.isRequired(config.field.settings);
+    config.field.label = fieldSettings.Name;
+    config.field.placeholder = fieldSettings.Placeholder;
+    config.field.validation = ValidationHelper.getValidations(fieldSettings);
+    config.field.required = ValidationHelper.isRequired(fieldSettings);
     config.field.settings$.next(fieldSettings); // must run after validations are recalculated
   }
 
@@ -147,9 +148,10 @@ export class FieldsSettingsService {
   public translateGroupSettingsAndValidation(fieldConfig: FieldConfigGroup, currentLanguage: string, defaultLanguage: string): void {
     const fieldSettings = LocalizationHelper.translateSettings(fieldConfig.fullSettings, currentLanguage, defaultLanguage);
     fieldConfig.settings = fieldSettings;
-    fieldConfig.label = fieldConfig.settings.Name || null;
-    fieldConfig.validation = ValidationHelper.getValidations(fieldConfig.settings);
-    fieldConfig.required = ValidationHelper.isRequired(fieldConfig.settings);
+    fieldConfig.label = fieldSettings.Name;
+    fieldConfig.placeholder = fieldSettings.Placeholder;
+    fieldConfig.validation = ValidationHelper.getValidations(fieldSettings);
+    fieldConfig.required = ValidationHelper.isRequired(fieldSettings);
     fieldConfig.settings$.next(fieldSettings); // must run after validations are recalculated
   }
 }
