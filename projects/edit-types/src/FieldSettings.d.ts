@@ -170,9 +170,8 @@ interface ContentTypeSettings {
   EditInstructions: string;
 }
 
-interface CollapsibleWrapperSettings {
+interface FormCollapsibleSettings {
   _itemTitle: string;
-  _description: string;
   _slotCanBeEmpty: boolean;
   _slotIsEmpty: boolean;
 }
@@ -195,4 +194,4 @@ export interface FieldSettings
   CustomGps,
   Boolean,
   ContentTypeSettings,
-  CollapsibleWrapperSettings { }
+  FormCollapsibleSettings { }

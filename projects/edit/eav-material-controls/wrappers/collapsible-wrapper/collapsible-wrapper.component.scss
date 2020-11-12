@@ -1,52 +1,22 @@
 $border-radius: 8px;
 
-.mat-card {
-  &-group-parent {
-    padding: 0;
-    margin: 0 0 0 0;
-    border-radius: $border-radius;
-
-    @media (max-width: 600px) {
-      border-radius: 4px;
-    }
-  }
-
-  &-group-child {
-    padding: 0;
-    margin: 0 0 8px 0;
-    border-radius: $border-radius;
-  }
+.mat-card-group-child {
+  padding: 0;
+  margin: 0 0 8px 0;
+  border-radius: $border-radius;
 }
 
-.mat-card-header {
-  &-group-parent {
-    padding: 24px 32px;
-    border-radius: $border-radius;
-    height: 68px;
+.mat-card-header-group-child {
+  padding: 20px 32px;
+  border-radius: $border-radius;
 
-    .title {
-      font-size: 16px;
-      font-weight: 400;
-    }
-  }
-
-  &-group-child {
-    padding: 20px 32px;
-    border-radius: $border-radius;
-
-    .title {
-      font-size: 16px;
-      font-weight: 400;
-    }
+  .title {
+    font-size: 16px;
+    font-weight: 400;
   }
 }
 
 .mat-card-content {
-  &-group-parent {
-    border-radius: $border-radius;
-    padding-bottom: 0;
-  }
-
   .description {
     font-size: 14px;
     padding-left: 16px;

@@ -1,53 +1,22 @@
-<mat-card class="shadow-bottom-z-1" [ngClass]="{
-  'mat-card-group-parent': fieldConfig.isParentGroup,
-  'mat-card-group-child': !fieldConfig.isParentGroup,
-  'force-hide': (visibleInEditUI$ | async) === false
-}">
-  <div fxLayout="row" fxLayoutAlign="start center"
-    [ngClass]="fieldConfig.isParentGroup ? 'mat-card-header-group-parent' : 'mat-card-header-group-child'" *ngIf="{
-      collapse: collapse$ | async,
-      itemTitle: itemTitle$ | async,
-      currentLanguage: currentLanguage$ | async,
-      defaultLanguage: defaultLanguage$ | async,
-      slotCanBeEmpty: slotCanBeEmpty$ | async,
-      slotIsEmpty: slotIsEmpty$ | async
-    } as data">
-
+<mat-card class="mat-card-group-child shadow-bottom-z-1" [class.force-hide]="(visibleInEditUI$ | async) === false">
+  <div fxLayout="row" fxLayoutAlign="start center" class="mat-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
-      <div fxLayoutAlign="start center" class="mat-card-title-group"
-        [ngClass]="fieldConfig.isParentGroup ? 'mat-display-1' : 'mat-body-1'">
+      <div fxLayoutAlign="start center" class="mat-card-title-group mat-body-1">
         <mat-icon>
-          {{ data.collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
-          {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
+          {{ (label$ | async) || ('ItemCard.DefaultTitle' | translate) }}
         </span>
       </div>
     </div>
-
-    <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
-      [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
-      [matTooltip]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
-    </mat-slide-toggle>
-
-    <ng-container *ngIf="fieldConfig.isParentGroup">
-      <button mat-icon-button [matTooltip]="'Form.Buttons.History.Tip' | translate" *ngIf="config.form.enableHistory"
-        (click)="openHistory()">
-        <mat-icon>history</mat-icon>
-      </button>
-
-      <app-translate-group-menu fxLayoutAlign="end center" [config]="config" [group]="group">
-      </app-translate-group-menu>
-    </ng-container>
   </div>
 
-  <mat-card-content [ngStyle]="{ 'display': (collapse$ | async) ? 'none' : 'block' }"
-    [ngClass]="fieldConfig.isParentGroup ? 'mat-card-content-group-parent' : 'mat-card-content-group-child'">
+  <mat-card-content class="mat-card-content-group-child" [style.display]="collapse ? 'none' : 'block'">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="description$ | async">
-          <div class="description" appChangeAnchorTarget [innerHtml]="(description$ | async) | safeHtml"></div>
+        <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes$ | async as notes">
+          <div class="description" appChangeAnchorTarget [innerHtml]="notes | safeHtml"></div>
         </div>
         <div class="mdc-layout-grid__cell--span-12">
           <ng-container #fieldComponent></ng-container>
