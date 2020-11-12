@@ -17,6 +17,7 @@ import { FormValueChange } from './eav-form.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input() rootConfig: FieldConfigSet;
   @Input() fieldConfigs: FieldConfigSet[];
   @Input() private formId: number;
   @Input() private entityGuid: string;

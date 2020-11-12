@@ -49,14 +49,14 @@ export class FieldsSettingsService {
     }
 
     // these settings are recalculated in translate-group-menu translateAllConfiguration
-    const name: string = attribute ? attribute.name : 'Edit Item';
-    const label: string = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
+    const name = attribute ? attribute.name : 'Edit Item';
+    const label = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     let inputTypeSettings: InputType;
     const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, fullSettings);
     inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
       inputTypeSettings = type;
     });
-    const wrappers: string[] = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
+    const wrappers = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
 
     if (isEmptyInputType) {
@@ -93,7 +93,7 @@ export class FieldsSettingsService {
           item, attribute, calculatedInputType.inputType, settingsTranslated, languages, currentLanguage, defaultLanguage,
         );
       }
-      const disabled: boolean = settingsTranslated.Disabled;
+      const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {
         initialValue, // other fields specific
@@ -140,7 +140,7 @@ export class FieldsSettingsService {
     config.field.label = config.field.settings.Name || null;
     config.field.validation = ValidationHelper.getValidations(config.field.settings);
     config.field.required = ValidationHelper.isRequired(config.field.settings);
-    config.field.settings$?.next(fieldSettings); // must run after validations are recalculated
+    config.field.settings$.next(fieldSettings); // must run after validations are recalculated
   }
 
   /** Translate group (empty field) settings and validation */
@@ -150,6 +150,6 @@ export class FieldsSettingsService {
     fieldConfig.label = fieldConfig.settings.Name || null;
     fieldConfig.validation = ValidationHelper.getValidations(fieldConfig.settings);
     fieldConfig.required = ValidationHelper.isRequired(fieldConfig.settings);
-    fieldConfig.settings$?.next(fieldSettings); // must run after validations are recalculated
+    fieldConfig.settings$.next(fieldSettings); // must run after validations are recalculated
   }
 }

@@ -29,7 +29,7 @@ import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 })
 export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy {
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() private group: FormGroup;
   @Input() toggleTranslateField: boolean;
 
   fieldConfig: FieldConfigGroup;
@@ -70,7 +70,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   ngOnInit() {
     this.fieldConfig = this.config.field as FieldConfigGroup;
     this.control = this.group.controls[this.config.field.name];
-    this.disabled$ = this.fieldConfig.isParentGroup ? of(false) : this.eavService.formDisabledChange$.asObservable().pipe(
+    this.disabled$ = this.fieldConfig.isParentGroup ? of(false) : this.eavService.formDisabledChange$.pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),

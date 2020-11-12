@@ -44,10 +44,10 @@ export class BuildFieldsService {
     // build first empty
     const parentType: CalculatedInputType = {
       inputType: InputTypeConstants.EmptyDefault,
-      isExternal: false
+      isExternal: false,
     };
-    const parentFieldGroup: FieldConfigSet = this.buildFieldConfigSet(null, null, parentType, contentType.contentType.settings, true);
-    let currentFieldGroup: FieldConfigSet = parentFieldGroup;
+    const parentFieldGroup = this.buildFieldConfigSet(null, null, parentType, contentType.contentType.settings, true);
+    let currentFieldGroup = parentFieldGroup;
 
     // loop through contentType attributes
     contentType.contentType.attributes.forEach((attribute, index) => {
@@ -76,7 +76,7 @@ export class BuildFieldsService {
     } catch (error) {
       console.error(`Error calculating last field in each group: ${error}`);
     }
-    return (parentFieldGroup.field as FieldConfigGroup).fieldGroup;
+    return [parentFieldGroup];
   }
 
   private buildFieldConfigSet(
@@ -118,19 +118,19 @@ export class BuildFieldsService {
     return fieldConfigSet;
   }
 
-  private calculateFieldPositionInGroup(field: FieldConfigGroup) {
-    if (!field.fieldGroup) { return; }
+  private calculateFieldPositionInGroup(fieldConfig: FieldConfigGroup) {
+    if (!fieldConfig.fieldGroup) { return; }
 
-    const childFieldSetsCount = field.fieldGroup.length;
-    if (childFieldSetsCount === 0) { return; }
+    const childFieldsCount = fieldConfig.fieldGroup.length;
+    if (childFieldsCount === 0) { return; }
 
-    const lastChildFieldSet = field.fieldGroup[childFieldSetsCount - 1];
-    if (lastChildFieldSet.field.inputType !== InputTypeConstants.EmptyDefault) {
-      lastChildFieldSet.field.isLastInGroup = true;
+    const lastChildConfig = fieldConfig.fieldGroup[childFieldsCount - 1];
+    if (lastChildConfig.field.inputType !== InputTypeConstants.EmptyDefault) {
+      lastChildConfig.field.isLastInGroup = true;
     }
 
-    field.fieldGroup.forEach(childFieldSet => {
-      this.calculateFieldPositionInGroup(childFieldSet.field as FieldConfigGroup);
+    fieldConfig.fieldGroup.forEach(childFieldConfig => {
+      this.calculateFieldPositionInGroup(childFieldConfig.field as FieldConfigGroup);
     });
   }
 }

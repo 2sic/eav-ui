@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { Item } from '../../shared/models/eav';
@@ -31,6 +31,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
+  rootConfig: FieldConfigSet;
   fieldConfigs: FieldConfigSet[];
   currentLanguage: string;
 
@@ -64,7 +65,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // create input fields from content type
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      this.fieldConfigs = this.buildFieldsService.buildFields(
+      const allConfigs = this.buildFieldsService.buildFields(
         contentType,
         this.item,
         this.formId,
@@ -73,6 +74,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
         this.enableHistory,
         this.fieldsSettingsService,
       );
+      this.rootConfig = allConfigs[0];
+      this.fieldConfigs = (this.rootConfig.field as FieldConfigGroup).fieldGroup;
     });
   }
 
