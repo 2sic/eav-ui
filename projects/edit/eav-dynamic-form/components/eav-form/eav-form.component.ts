@@ -17,7 +17,7 @@ import { FormValueChange } from './eav-form.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() config: FieldConfigSet[] = [];
+  @Input() fieldConfigs: FieldConfigSet[];
   @Input() private formId: number;
   @Input() private entityGuid: string;
   @Output() private formSubmit = new EventEmitter<void>();
@@ -33,8 +33,8 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.createControlsInFormGroup(this.config);
-    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
+    this.createControlsInFormGroup(this.fieldConfigs);
+    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.fieldConfigs);
   }
 
   ngAfterViewInit() {
@@ -94,9 +94,9 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** Create form from configuration */
-  private createControlsInFormGroup(fieldConfigArray: FieldConfigSet[]) {
+  private createControlsInFormGroup(fieldConfigs: FieldConfigSet[]) {
     try {
-      fieldConfigArray.forEach(fieldConfig => {
+      fieldConfigs.forEach(fieldConfig => {
         const field = fieldConfig.field as FieldConfigGroup;
         if (field.fieldGroup) {
           this.createControlsInFormGroup(field.fieldGroup);
@@ -106,20 +106,19 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       return this.form;
     } catch (error) {
-      console.error(`Error creating form controls: ${error}\nFieldConfig: ${fieldConfigArray}`);
+      console.error(`Error creating form controls: ${error}\nFieldConfig: ${fieldConfigs}`);
       throw error;
     }
   }
 
   /** Create form control */
-  private createControl(config: FieldConfigSet) {
+  private createControl(fieldConfig: FieldConfigSet) {
     try {
-      const { disabled, validation, initialValue } = config.field;
+      const { disabled, validation, initialValue } = fieldConfig.field;
       return this.formBuilder.control({ disabled, value: initialValue }, validation);
     } catch (error) {
-      console.error(`Error creating form control: ${error}\nConfig: ${config}`);
+      console.error(`Error creating form control: ${error}\nConfig: ${fieldConfig}`);
       throw error;
     }
   }
-
 }

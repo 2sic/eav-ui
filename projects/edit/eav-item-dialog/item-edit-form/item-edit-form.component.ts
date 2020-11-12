@@ -31,7 +31,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
-  itemFields: FieldConfigSet[];
+  fieldConfigs: FieldConfigSet[];
   currentLanguage: string;
 
   private defaultLanguage: string;
@@ -64,7 +64,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // create input fields from content type
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      this.itemFields = this.buildFieldsService.buildFields(
+      this.fieldConfigs = this.buildFieldsService.buildFields(
         contentType,
         this.item,
         this.formId,

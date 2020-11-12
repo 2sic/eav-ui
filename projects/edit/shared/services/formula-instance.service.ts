@@ -211,8 +211,8 @@ export class FormulaInstanceService implements OnDestroy {
     return formulas;
   }
 
-  private findFieldsWithCalcs(calcFields: CalcFields, configsGroup: FieldConfigSet[], filterDisabledFields: boolean) {
-    for (const fieldConfig of configsGroup) {
+  private findFieldsWithCalcs(calcFields: CalcFields, fieldConfigs: FieldConfigSet[], filterDisabledFields: boolean) {
+    for (const fieldConfig of fieldConfigs) {
       const fieldConfigGroup = fieldConfig.field as FieldConfigGroup;
       if (fieldConfigGroup.fieldGroup != null) {
         this.findFieldsWithCalcs(calcFields, fieldConfigGroup.fieldGroup, filterDisabledFields);

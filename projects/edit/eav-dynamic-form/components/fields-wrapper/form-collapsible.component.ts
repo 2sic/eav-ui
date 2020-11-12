@@ -17,7 +17,7 @@ import { FormCollapsibleLogic } from './form-collapsible-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormCollapsibleComponent implements OnInit {
-  @Input() configs: FieldConfigSet[];
+  @Input() fieldConfigs: FieldConfigSet[];
   @Input() group: FormGroup;
 
   config: FieldConfigSet;
@@ -41,7 +41,7 @@ export class FormCollapsibleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.config = this.configs[0];
+    this.config = this.fieldConfigs[0];
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     const header$ = this.itemService.selectItemHeader(this.config.entity.entityGuid);

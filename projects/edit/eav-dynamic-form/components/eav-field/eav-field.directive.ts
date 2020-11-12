@@ -36,7 +36,7 @@ import { FieldWrapper } from '../../model/field-wrapper';
 
 @Directive({ selector: '[appEavField]' })
 export class EavFieldDirective implements OnInit {
-  @Input() private config: FieldConfigSet[];
+  @Input() private fieldConfigs: FieldConfigSet[];
   @Input() private group: FormGroup;
 
   private components: { [key: string]: Type<any> } = {
@@ -77,9 +77,9 @@ export class EavFieldDirective implements OnInit {
     // Clear container
     this.container.clear();
 
-    this.config.forEach(controlConfiguration => {
-      angularConsoleLog('create controlConfiguration', controlConfiguration);
-      this.createFieldOrGroup(this.container, controlConfiguration);
+    this.fieldConfigs.forEach(fieldConfig => {
+      angularConsoleLog('create controlConfiguration', fieldConfig);
+      this.createFieldOrGroup(this.container, fieldConfig);
     });
   }
 

@@ -76,7 +76,7 @@ export class BuildFieldsService {
     } catch (error) {
       console.error(`Error calculating last field in each group: ${error}`);
     }
-    return [parentFieldGroup];
+    return (parentFieldGroup.field as FieldConfigGroup).fieldGroup;
   }
 
   private buildFieldConfigSet(
