@@ -109,46 +109,31 @@ return mySxc.webApi.get('' + '/' + id);
 
 
   <ng-template #restUrls>
-    <mat-list>
-      <mat-list-item>
-        <h3 matLine>Read list of all items</h3>
-        <div matLine>
-          <code>GET</code>: <code>{{ data.root }}</code>
-        </div>
-        <button mat-raised-button (click)="callApiGet(data.root)">execute call</button>
-        <a *ngIf="data.currentScenario?.key === 'external'" [href]="data.root" target="_blank">open</a>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <h3 matLine>Read a single item #27</h3>
-        <div matLine>
-          <code>GET</code>: <code>{{ data.root }}/27</code>
-        </div>
-        <button mat-raised-button (click)="callApiGet(data.root)">execute call</button>
-        <a *ngIf="data.currentScenario?.key === 'external'" [href]="data.root" target="_blank">open</a>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <h3 matLine>Create an item</h3>
-        <div matLine>
-          <code>POST</code>: <code>{{ data.root }}</code>
-        </div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <h3 matLine>Update the item #27</h3>
-        <div matLine>
-          <code>POST</code>: <code>{{ data.root }}/27</code>
-        </div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <h3 matLine>Delete the item #27</h3>
-        <div matLine>
-          <code>DELETE</code>: <code>{{ data.root }}/27</code>
-        </div>
-      </mat-list-item>
-    </mat-list>
+    <mat-accordion multi="true">
+      <mat-expansion-panel *ngFor="let apiCall of data.apiCalls">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <code>{{apiCall.verb}}</code>: <code>{{ apiCall.url }}</code>
+            <span> &nbsp;({{ apiCall.instructions }}) </span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-panel-description style="display: block;">
+          <h4>{{ apiCall.instructions }}</h4>
+          <strong>HTTP Verb: </strong> <code>{{apiCall.verb}}</code> <br>
+          <strong>{{ apiCall.virtual ? 'Virtual' : 'Absolute'}} Url: </strong> <code>{{ apiCall.url }}</code>
+
+          <ng-container *ngFor="let code of apiCall.code">
+            <h4>{{ code.title }}</h4>
+            <pre [ngStyle]="{'word-wrap': code.wrap ? '' : 'pre-wrap'}">{{ code.code }}</pre>
+          </ng-container>
+          <button *ngIf="apiCall.enableButton" mat-raised-button (click)="callApiGet(apiCall.url)">execute call</button>
+          <a *ngIf="data.currentScenario?.key === 'external'" [href]="apiCall.url" target="_blank">open</a>
+
+        </mat-panel-description>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
   </ng-template>
 
 </ng-container>

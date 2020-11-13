@@ -5,6 +5,7 @@ export interface DialogContextApp {
   Id: number;
   Identifier: unknown;
   Name: string;
+  Folder: string;
   Permissions: PermissionsCount;
   Url: string;
 }
