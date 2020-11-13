@@ -6,8 +6,10 @@ import { ContentType, EavAttributes, Item } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { CalculatedInputType } from '../../shared/models/input-field-models';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
+import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 
 @Injectable()
@@ -23,6 +25,8 @@ export class BuildFieldsService {
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
+    private contentTypeService: ContentTypeService,
   ) { }
 
   public buildFieldConfigs(
@@ -112,6 +116,9 @@ export class BuildFieldsService {
       this.inputTypeService,
       this.languageService,
       this.itemService,
+      this.formId,
+      this.languageInstanceService,
+      this.contentTypeService,
     );
 
     const fieldConfigSet: FieldConfigSet = {

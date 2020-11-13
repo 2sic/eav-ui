@@ -14,8 +14,10 @@ import { EavAttributes, InputType, Item, Language } from '../models/eav';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { FormulaFieldSettings } from '../models/formula.models';
 import { CalculatedInputType } from '../models/input-field-models';
+import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
+import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { LanguageService } from '../store/ngrx-data/language.service';
 
 @Injectable()
@@ -35,6 +37,9 @@ export class FieldsSettingsService {
     inputTypeService: InputTypeService,
     languageService: LanguageService,
     itemService: ItemService,
+    formId: number,
+    languageInstanceService: LanguageInstanceService,
+    contentTypeService: ContentTypeService,
   ): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
@@ -59,7 +64,15 @@ export class FieldsSettingsService {
     });
     const wrappers = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
-    const fieldHelper = new FieldHelper(item.entity.guid, isParentGroup, itemService);
+    const fieldHelper = new FieldHelper(
+      item.entity.guid,
+      formId,
+      isParentGroup,
+      itemService,
+      languageInstanceService,
+      contentTypeService,
+      inputTypeService,
+    );
 
     if (isEmptyInputType) {
       fieldConfig = {
