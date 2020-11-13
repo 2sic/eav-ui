@@ -65,7 +65,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // create input fields from content type
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      const allConfigs = this.buildFieldsService.buildFields(
+      const allConfigs = this.buildFieldsService.buildFieldConfigs(
         contentType,
         this.item,
         this.formId,

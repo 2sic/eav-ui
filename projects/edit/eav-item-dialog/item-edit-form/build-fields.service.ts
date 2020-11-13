@@ -25,7 +25,7 @@ export class BuildFieldsService {
     private languageService: LanguageService,
   ) { }
 
-  public buildFields(
+  public buildFieldConfigs(
     contentType: ContentType,
     item: Item,
     formId: number,
@@ -41,12 +41,24 @@ export class BuildFieldsService {
     this.enableHistory = enableHistory;
     this.fieldsSettingsService = fieldsSettingsService;
 
+    const contentTypeSettings = contentType.contentType.settings;
+    const entity: ItemConfig = {
+      entityId: this.item.entity.id,
+      entityGuid: this.item.entity.guid,
+      contentTypeId: InputFieldHelper.getContentTypeId(this.item),
+      header: this.item.header,
+    };
+    const form: FormConfig = {
+      formId: this.formId,
+      enableHistory: this.enableHistory,
+    };
+
     // build first empty
     const parentType: CalculatedInputType = {
       inputType: InputTypeConstants.EmptyDefault,
       isExternal: false,
     };
-    const parentFieldGroup = this.buildFieldConfigSet(null, null, parentType, contentType.contentType.settings, true);
+    const parentFieldGroup = this.buildFieldConfig(null, null, parentType, contentTypeSettings, true, entity, form);
     let currentFieldGroup = parentFieldGroup;
 
     // loop through contentType attributes
@@ -57,12 +69,12 @@ export class BuildFieldsService {
         const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
         if (isEmptyInputType) {
           // group-fields (empty)
-          currentFieldGroup = this.buildFieldConfigSet(attribute, index, calculatedInputType, contentType.contentType.settings, false);
+          currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false, entity, form);
           const field = parentFieldGroup.field as FieldConfigGroup;
           field.fieldGroup.push(currentFieldGroup);
         } else {
           // all other fields (not group empty)
-          const fieldConfigSet = this.buildFieldConfigSet(attribute, index, calculatedInputType, contentType.contentType.settings, null);
+          const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null, entity, form);
           const field = currentFieldGroup.field as FieldConfigGroup;
           field.fieldGroup.push(fieldConfigSet);
         }
@@ -79,23 +91,15 @@ export class BuildFieldsService {
     return [parentFieldGroup];
   }
 
-  private buildFieldConfigSet(
+  private buildFieldConfig(
     attribute: AttributeDef,
     index: number,
     calculatedInputType: CalculatedInputType,
     contentTypeSettings: EavAttributes,
     isParentGroup: boolean,
+    entity: ItemConfig,
+    form: FormConfig,
   ): FieldConfigSet {
-    const entity: ItemConfig = {
-      entityId: this.item.entity.id,
-      entityGuid: this.item.entity.guid,
-      contentTypeId: InputFieldHelper.getContentTypeId(this.item),
-      header: this.item.header,
-    };
-    const form: FormConfig = {
-      formId: this.formId,
-      enableHistory: this.enableHistory,
-    };
     const field = this.fieldsSettingsService.buildFieldConfig(
       attribute,
       index,
