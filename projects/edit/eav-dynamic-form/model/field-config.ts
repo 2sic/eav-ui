@@ -1,6 +1,7 @@
 import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Adam, Dropzone, FieldConfig, FieldSettings } from '../../../edit-types';
+import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
 
@@ -24,6 +25,7 @@ export interface FieldConfigAngular extends FieldConfig {
   disableI18n: boolean;
   isLastInGroup: boolean;
   settings$: BehaviorSubject<FieldSettings>;
+  fieldHelper: FieldHelper;
 }
 
 export interface FieldConfigGroup extends FieldConfigAngular {

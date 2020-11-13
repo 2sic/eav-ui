@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigAngular, FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
@@ -58,6 +59,7 @@ export class FieldsSettingsService {
     });
     const wrappers = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
+    const fieldHelper = new FieldHelper(item.entity.guid, isParentGroup, itemService);
 
     if (isEmptyInputType) {
       fieldConfig = {
@@ -73,6 +75,7 @@ export class FieldsSettingsService {
         label,
         inputType: calculatedInputType.inputType,
         settings$: new BehaviorSubject(settingsTranslated),
+        fieldHelper,
       } as FieldConfigGroup;
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
@@ -114,6 +117,7 @@ export class FieldsSettingsService {
         required, // other fields specific
         disabled, // other fields specific
         settings$: new BehaviorSubject(settingsTranslated),
+        fieldHelper,
       };
     }
     return fieldConfig;

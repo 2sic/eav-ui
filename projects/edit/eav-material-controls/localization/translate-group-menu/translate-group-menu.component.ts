@@ -43,7 +43,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   defaultLanguage$: Observable<string>;
   defaultLanguage = '';
   defaultLanguageMissingValue$ = new BehaviorSubject(false);
-  headerGroupSlotIsEmpty = false;
   translationState$: BehaviorSubject<LinkToOtherLanguageData> = new BehaviorSubject({
     formId: null,
     linkType: '',
@@ -330,39 +329,44 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   }
 
   /** Determine is control disabled or enabled */
-  private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string,
-    defaultLanguage: string) {
+  private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
+    if (this.fieldConfig.isParentGroup) { return; }
     // Important! if control already disabled through settings then skip
-    if (!this.config.field.disabled) {
-      // if header group slot is empty disable control
-      if (this.headerGroupSlotIsEmpty) {
-        this.group.controls[attributeKey].disable({ emitEvent: false });
-        this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-      } else if (currentLanguage === defaultLanguage) {
-        this.group.controls[attributeKey].enable({ emitEvent: false });
-        this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-      } else { // else set enable/disable depending on editable translation exist
-        if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
-          this.group.controls[attributeKey].disable({ emitEvent: false });
-          this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-          this.defaultLanguageMissingValue$.next(true);
+    if (this.config.field.disabled) { return; }
+
+    let newDisabled = this.group.controls[attributeKey].disabled;
+    const defaultLanguageMissingValue = !LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage);
+
+    if (this.config.field.fieldHelper.slotIsEmpty$.value) {
+      newDisabled = true;
+    } else if (currentLanguage === defaultLanguage) {
+      newDisabled = false;
+    } else {
+      if (defaultLanguageMissingValue) {
+        newDisabled = true;
+      } else {
+        if (this.isTranslateDisabled(attributeKey)) {
+          newDisabled = true;
+        } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
+          newDisabled = false;
+        } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
+          newDisabled = true;
         } else {
-          this.defaultLanguageMissingValue$.next(false);
-          if (this.isTranslateDisabled(attributeKey)) {
-            this.group.controls[attributeKey].disable({ emitEvent: false });
-            this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-          } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-            this.group.controls[attributeKey].enable({ emitEvent: false });
-            this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-          } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-            this.group.controls[attributeKey].disable({ emitEvent: false });
-            this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-          } else {
-            this.group.controls[attributeKey].disable({ emitEvent: false });
-            this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-          }
+          newDisabled = true;
         }
       }
+    }
+
+    if (this.group.controls[attributeKey].disabled !== newDisabled) {
+      if (newDisabled) {
+        this.group.controls[attributeKey].disable({ emitEvent: false });
+      } else {
+        this.group.controls[attributeKey].enable({ emitEvent: false });
+      }
+      this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
+    }
+    if (this.defaultLanguageMissingValue$.value !== defaultLanguageMissingValue) {
+      this.defaultLanguageMissingValue$.next(defaultLanguageMissingValue);
     }
   }
 
@@ -408,18 +412,13 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   }
 
   private subscribeToEntityHeaderFromStore() {
-    if (this.config.entity.header.Group && this.config.entity.header.Group.SlotCanBeEmpty) {
-      this.subscription.add(
-        this.itemService.selectItemHeader(this.config.entity.entityGuid).subscribe(header => {
-          if (header.Group && !this.fieldConfig.isParentGroup) {
-            this.headerGroupSlotIsEmpty = header.Group.SlotIsEmpty;
-            this.setControlDisable(
-              this.attributes[this.config.field.name], this.config.field.name, this.currentLanguage, this.defaultLanguage,
-            );
-          }
-        })
-      );
-    }
+    this.subscription.add(
+      this.config.field.fieldHelper.slotIsEmpty$.subscribe(slotIsEmpty => {
+        this.setControlDisable(
+          this.attributes[this.config.field.name], this.config.field.name, this.currentLanguage, this.defaultLanguage,
+        );
+      })
+    );
   }
 
   /** Fetch current item */
