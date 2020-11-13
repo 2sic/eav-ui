@@ -17,7 +17,6 @@ import { FormulaInstanceService } from '../../../shared/services/formula-instanc
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
-import { TranslateGroupMenuHelpers } from './translate-group-menu.helpers';
 
 @Component({
   selector: 'app-translate-group-menu',
@@ -42,8 +41,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   defaultLanguage = '';
   defaultLanguageMissingValue$ = new BehaviorSubject(false);
   translationState$: BehaviorSubject<LinkToOtherLanguageData>;
-  infoMessage$ = new BehaviorSubject<string>('');
-  infoMessageLabel$ = new BehaviorSubject<string>('');
+  infoMessage$: BehaviorSubject<string>;
+  infoMessageLabel$: BehaviorSubject<string>;
   item: Item;
   contentType: ContentType;
 
@@ -73,6 +72,8 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     this.attributes$ = this.itemService.selectItemAttributes(this.config.entity.entityGuid);
     this.translationState$ = this.config.field.fieldHelper.translationState$;
+    this.infoMessage$ = this.config.field.fieldHelper.translationInfoMessage$;
+    this.infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
     this.subscribeToAttributeValues();
     this.subscribeMenuChange();
     this.subscribeToItemFromStore();
@@ -91,8 +92,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
   ngOnDestroy() {
     this.defaultLanguageMissingValue$.complete();
-    this.infoMessage$.complete();
-    this.infoMessageLabel$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -280,7 +279,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     if (this.fieldConfig.isParentGroup) { return; }
     this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
     this.config.field.fieldHelper.readTranslationState(attributeKey);
-    this.setInfoMessage(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.config.field.fieldHelper.setTranslationInfoMessage(attributeKey);
   }
 
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
@@ -426,46 +425,5 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
         }
       })
     );
-  }
-
-  /** Set info message */
-  private setInfoMessage(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
-    // Determine whether control is disabled or enabled and info message
-    if (this.config.field.fieldHelper.isTranslateDisabled(attributeKey)) {
-      this.infoMessage$.next('');
-      this.infoMessageLabel$.next('LangMenu.InAllLanguages');
-      return;
-    } else if (!LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage)) {
-      this.infoMessage$.next(defaultLanguage);
-      this.infoMessageLabel$.next('LangMenu.MissingDefaultLangValue');
-      return;
-    }
-
-    const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage);
-    const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage);
-
-    if (editableTranslationExists || readonlyTranslationExists) {
-      let dimensions: string[] = LocalizationHelper.getValueTranslation(attributes, currentLanguage, defaultLanguage)
-        .dimensions.map(dimension => dimension.value);
-
-      dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
-
-      const isShared = dimensions.length > 0;
-      if (isShared) {
-        this.infoMessage$.next(TranslateGroupMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
-
-        if (editableTranslationExists) {
-          this.infoMessageLabel$.next('LangMenu.In');
-        } else if (readonlyTranslationExists) {
-          this.infoMessageLabel$.next('LangMenu.From');
-        }
-      } else {
-        this.infoMessage$.next('');
-        this.infoMessageLabel$.next('');
-      }
-    } else {
-      this.infoMessage$.next('');
-      this.infoMessageLabel$.next('LangMenu.UseDefault');
-    }
   }
 }

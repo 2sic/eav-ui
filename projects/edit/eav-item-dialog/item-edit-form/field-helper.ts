@@ -1,9 +1,10 @@
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { TranslateGroupMenuHelpers } from '../../eav-material-controls/localization/translate-group-menu/translate-group-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { ContentType, EavAttributes, EavDimensions, EavValues, Item } from '../../shared/models/eav';
+import { ContentType, EavAttributes, EavDimensions, Item } from '../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../shared/models/eav/link-to-other-language-data';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
@@ -17,6 +18,8 @@ export class FieldHelper {
     linkType: '',
     language: '',
   });
+  translationInfoMessage$ = new BehaviorSubject<string>('');
+  translationInfoMessageLabel$ = new BehaviorSubject<string>('');
 
   private currentLanguage$ = new BehaviorSubject<string>(null);
   private defaultLanguage$ = new BehaviorSubject<string>(null);
@@ -63,6 +66,8 @@ export class FieldHelper {
   destroy(): void {
     this.slotIsEmpty$.complete();
     this.translationState$.complete();
+    this.translationInfoMessage$.complete();
+    this.translationInfoMessageLabel$.complete();
     this.currentLanguage$.complete();
     this.defaultLanguage$.complete();
     this.item$.complete();
@@ -85,6 +90,7 @@ export class FieldHelper {
       const editableElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
         .dimensions.filter(dimension => dimension.value !== currentLanguage);
+
       if (editableElements.length > 0) {
         this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].value);
       } else {
@@ -94,6 +100,7 @@ export class FieldHelper {
       const readOnlyElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
         .dimensions.filter(dimension => dimension.value !== currentLanguage);
+
       this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].value);
     } else {
       this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
@@ -120,5 +127,50 @@ export class FieldHelper {
     const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
     const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, attributeDef.settings);
     return disableI18n;
+  }
+
+  /** Set info message */
+  setTranslationInfoMessage(attributeKey: string) {
+    const values = this.attributes$.value[attributeKey];
+    const currentLanguage = this.currentLanguage$.value;
+    const defaultLanguage = this.defaultLanguage$.value;
+
+    // determine whether control is disabled or enabled and info message
+    if (this.isTranslateDisabled(attributeKey)) {
+      this.translationInfoMessage$.next('');
+      this.translationInfoMessageLabel$.next('LangMenu.InAllLanguages');
+      return;
+    } else if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) {
+      this.translationInfoMessage$.next(defaultLanguage);
+      this.translationInfoMessageLabel$.next('LangMenu.MissingDefaultLangValue');
+      return;
+    }
+
+    const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage);
+    const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage);
+
+    if (editableTranslationExists || readonlyTranslationExists) {
+      let dimensions: string[] = LocalizationHelper.getValueTranslation(values, currentLanguage, defaultLanguage)
+        .dimensions.map(dimension => dimension.value);
+
+      dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
+
+      const isShared = dimensions.length > 0;
+      if (isShared) {
+        this.translationInfoMessage$.next(TranslateGroupMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
+
+        if (editableTranslationExists) {
+          this.translationInfoMessageLabel$.next('LangMenu.In');
+        } else if (readonlyTranslationExists) {
+          this.translationInfoMessageLabel$.next('LangMenu.From');
+        }
+      } else {
+        this.translationInfoMessage$.next('');
+        this.translationInfoMessageLabel$.next('');
+      }
+    } else {
+      this.translationInfoMessage$.next('');
+      this.translationInfoMessageLabel$.next('LangMenu.UseDefault');
+    }
   }
 }
