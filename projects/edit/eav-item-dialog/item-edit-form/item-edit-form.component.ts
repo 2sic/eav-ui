@@ -80,6 +80,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
+    this.destroyFieldConfigs(this.fieldConfigs);
     this.subscription.unsubscribe();
   }
 
@@ -151,4 +152,15 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
+  private destroyFieldConfigs(fieldConfigs: FieldConfigSet[]) {
+    for (const config of fieldConfigs) {
+      config.field.focused$?.complete();
+      config.field.settings$.complete();
+      config.field.fieldHelper.destroy();
+
+      const group = (config.field as FieldConfigGroup).fieldGroup;
+      if (!group) { return; }
+      this.destroyFieldConfigs(group);
+    }
+  }
 }
