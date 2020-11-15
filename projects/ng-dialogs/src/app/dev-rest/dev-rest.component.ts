@@ -8,15 +8,14 @@ import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { AccessScenarios, Environments, EnvironmentSelectorData, SelectorData } from '.';
+import { AccessScenarios, SelectorData } from '.';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
-import { ApiCall } from './data';
 import { ItemResult } from './data/dev-rest.models';
-import { generateApiCalls } from './generate-samples';
+import { ApiCall, generateApiCalls } from './examples';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -29,15 +28,11 @@ const pathToContent = 'app/{appname}/content/{typename}';
 export class DevRestComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component dialog-component--no-actions';
 
-  /** List of all known environments */
-  environments = Environments;
-
   /** List of scenarios */
   scenarios = AccessScenarios;
 
   templateVars$: Observable<{
     contentType: ContentType;
-    currentEnv: EnvironmentSelectorData;
     currentScenario: SelectorData;
     modeInternal: boolean;
     root: string;
@@ -45,6 +40,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
     itemGuid: string,
     apiCalls: ApiCall[],
     folder: string,
+    moduleId: number,
   }>;
 
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -54,9 +50,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   /** App, language, etc. */
   private dialogSettings$: BehaviorSubject<DialogSettings>;
-
-  /** Currently selected environment object */
-  private currentEnv$: BehaviorSubject<EnvironmentSelectorData>;
 
   /** Currently selected scenario */
   private currentScenario$: BehaviorSubject<SelectorData>;
@@ -83,7 +76,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-    this.currentEnv$ = new BehaviorSubject<EnvironmentSelectorData>(this.environments[0]);
     this.currentScenario$ = new BehaviorSubject<SelectorData>(this.scenarios[0]);
     this.modeInternal$ = this.currentScenario$.pipe(map(scenario => scenario.key === 'internal'));
 
@@ -105,29 +97,17 @@ export class DevRestComponent implements OnInit, OnDestroy {
       .pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
     // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
-    const combineForUi1 = combineLatest([
-      this.contentType$,
-      this.currentEnv$,
-      this.currentScenario$,
-      this.modeInternal$,
-    ]);
     const combineForUi2 = combineLatest([
       this.root$,
       this.itemOfThisType$,
       this.dialogSettings$.pipe(filter(d => !!d)),
     ]);
-    this.templateVars$ = combineLatest([combineForUi1, combineForUi2]
-      // this.contentType$,
-      // this.currentEnv$,
-      // this.currentScenario$,
-      // this.modeInternal$,
-      // this.root$,
-      // this.itemOfThisType$,
-      // this.dialogSettings$, //.pipe(filter(d => !d)),
-    ).pipe(
-      map(([[contentType, currentEnv, currentScenario, modeInternal], [root, item, diag]]) => ({
+    this.templateVars$ = combineLatest([
+      combineLatest([this.contentType$, this.currentScenario$, this.modeInternal$]),
+      combineForUi2,
+    ]).pipe(
+      map(([[contentType, currentScenario, modeInternal], [root, item, diag]]) => ({
         contentType,
-        currentEnv,
         currentScenario,
         modeInternal,
         root,
@@ -136,6 +116,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         // todo: SPM - why can't I get the module id here using dnnContext.moduleId
         apiCalls: generateApiCalls(context.moduleId, root, item.Id),
         folder: diag.Context.App.Folder,
+        moduleId: context.moduleId,
       })),
     );
 
@@ -149,12 +130,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.contentType$.complete();
     this.dialogSettings$.complete();
-    this.currentEnv$.complete();
     this.currentScenario$.complete();
-  }
-
-  changeEnv(env: EnvironmentSelectorData) {
-    this.currentEnv$.next(env);
   }
 
   changeScenario(scenario: SelectorData) {

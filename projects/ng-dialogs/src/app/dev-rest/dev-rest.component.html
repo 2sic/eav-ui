@@ -7,21 +7,14 @@
       </button>
     </div>
   </div>
+  <mat-dialog-content class="dialog-component-content fancy-scrollbar-light" style="height: 100%">
+    <!-- TODO: SPM - pls help so scrolling works correctly -->
+    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.currentScenario.key"
+      (valueChange)="changeScenario($event)">
+    </app-selector-with-help>
 
-  <div class="dialog-component-content fancy-scrollbar-light">
-    <div>
-      <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.currentScenario.key"
-        (valueChange)="changeScenario($event)">
-      </app-selector-with-help>
-
-      <!-- <app-selector-with-help *ngIf="!data.modeInternal" label="Choose DNN Version" [items]="environments"
-        [value]="data.currentEnv.key" (valueChange)="changeEnv($event)">
-      </app-selector-with-help> -->
-    </div>
-
-  </div>
-  <ng-container *ngTemplateOutlet="restTabs; context:{isInternal: data.modeInternal}"></ng-container>
-
+    <ng-container *ngTemplateOutlet="restTabs; context:{isInternal: data.modeInternal}"></ng-container>
+  </mat-dialog-content>
 
   <ng-template #restTabs let-isInternal="isInternal">
     <mat-tab-group color="accent">
@@ -62,10 +55,17 @@
               $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
             </a>
             or if you use
-            <a href="https://TODO:" target="_blank">
+            <a href="https://https://www.npmjs.com/package/@2sic.com/dnn-sxc-angular" target="_blank">
               dnn-sxc-angular (npm package)
             </a>
             (which also passes url-resolving through $2sxc).
+          </p>
+          <p class="dialog-description">
+            The examples below use real values to make it easier to get started.
+            The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
+            the current Module ID <code>{{ data.moduleId }}</code>
+            and the folder of the current App <code>{{ data.folder }}</code> (where needed).
+            The code also looked up an item of this type and will use it's ID <code>{{data.itemId}}</code> in the examples.
           </p>
 
           <ng-container *ngTemplateOutlet="restUrls"></ng-container>
@@ -173,7 +173,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title>
             <code>{{apiCall.verb}}</code>: <code>{{ apiCall.url }}</code>
-            <span> &nbsp;to {{ apiCall.instructions }} (expand for details & snippets) </span>
+            <span> &nbsp;to {{ apiCall.teaser }} (expand for details & snippets) </span>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-panel-description style="display: block;">
@@ -183,6 +183,7 @@
 
           <ng-container *ngFor="let code of apiCall.code">
             <h4>{{ code.title }}</h4>
+            <em>{{ code.description }}</em>
             <pre [ngStyle]="{'word-wrap': code.wrap ? '' : 'pre-wrap'}">{{ code.code }}</pre>
           </ng-container>
           <button *ngIf="apiCall.enableButton" mat-raised-button (click)="callApiGet(apiCall.url)">execute call</button>

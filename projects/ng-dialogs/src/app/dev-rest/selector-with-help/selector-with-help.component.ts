@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpPopupComponent, SelectorData } from '..';
-import { EnvironmentSelectorData } from '../data/environments';
 import { HelpPopupData } from '../help-popup/help-popup.models';
 
 @Component({
@@ -11,9 +10,9 @@ import { HelpPopupData } from '../help-popup/help-popup.models';
 })
 export class SelectorWithHelpComponent implements OnInit {
   @Input() label: string;
-  @Input() items: SelectorData[] | EnvironmentSelectorData[];
+  @Input() items: SelectorData[];
   @Input() value: string;
-  @Output() private valueChange = new EventEmitter<SelectorData | EnvironmentSelectorData>();
+  @Output() private valueChange = new EventEmitter<SelectorData>();
 
   constructor(private dialog: MatDialog) { }
 

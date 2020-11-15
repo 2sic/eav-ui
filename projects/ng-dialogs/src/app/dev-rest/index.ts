@@ -1,6 +1,5 @@
 
 export * from './data/access-scenarios';
-export * from './data/environments';
 export * from './data/selector-data';
 
 export * from './help-popup/help-popup.component';

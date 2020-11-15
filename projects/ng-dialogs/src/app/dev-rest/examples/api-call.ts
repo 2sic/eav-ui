@@ -5,6 +5,7 @@ export class ApiCall {
     public virtual: boolean,
     public verb: 'GET' | 'POST' | 'DELETE',
     public url: string,
+    public teaser: string,
     public instructions: string,
     public enableButton: boolean,
     public code: CodeSample[] = [],

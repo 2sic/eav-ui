@@ -9,6 +9,11 @@ code, pre {
   background-color: #eeeeee;
 }
 
+pre {
+  white-space: pre-wrap;
+  word-break: keep-all
+}
+
 // TODO: SPM
 // Pls help so all P / UL/OL / LI etc. have the right font size etc.
 // using variables, not repeating the definition here
