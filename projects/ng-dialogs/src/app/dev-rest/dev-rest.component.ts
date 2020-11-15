@@ -14,7 +14,9 @@ import { DialogSettings } from '../app-administration/models/dialog-settings.mod
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
+import { ApiCall } from './data';
 import { ItemResult } from './data/dev-rest.models';
+import { generateApiCalls } from './generate-samples';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -42,6 +44,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
     itemId: number,
     itemGuid: string,
     apiCalls: ApiCall[],
+    folder: string,
   }>;
 
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
@@ -101,9 +104,28 @@ export class DevRestComponent implements OnInit, OnDestroy {
       this.contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: ''}))))
       .pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
-    this.templateVars$ = combineLatest([this.contentType$, this.currentEnv$, this.currentScenario$, this.modeInternal$,
-      this.root$, this.itemOfThisType$]).pipe(
-      map(([contentType, currentEnv, currentScenario, modeInternal, root, item]) => ({
+    // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
+    const combineForUi1 = combineLatest([
+      this.contentType$,
+      this.currentEnv$,
+      this.currentScenario$,
+      this.modeInternal$,
+    ]);
+    const combineForUi2 = combineLatest([
+      this.root$,
+      this.itemOfThisType$,
+      this.dialogSettings$.pipe(filter(d => !!d)),
+    ]);
+    this.templateVars$ = combineLatest([combineForUi1, combineForUi2]
+      // this.contentType$,
+      // this.currentEnv$,
+      // this.currentScenario$,
+      // this.modeInternal$,
+      // this.root$,
+      // this.itemOfThisType$,
+      // this.dialogSettings$, //.pipe(filter(d => !d)),
+    ).pipe(
+      map(([[contentType, currentEnv, currentScenario, modeInternal], [root, item, diag]]) => ({
         contentType,
         currentEnv,
         currentScenario,
@@ -113,6 +135,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         itemGuid: item.Value,
         // todo: SPM - why can't I get the module id here using dnnContext.moduleId
         apiCalls: generateApiCalls(context.moduleId, root, item.Id),
+        folder: diag.Context.App.Folder,
       })),
     );
 
@@ -158,61 +181,5 @@ export class DevRestComponent implements OnInit, OnDestroy {
   }
 }
 
-class ApiCall {
-  constructor(
-    public virtual: boolean,
-    public verb: 'GET' | 'POST' | 'DELETE',
-    public url: string,
-    public instructions: string,
-    public enableButton: boolean,
-    public code: CodeSample[] = [],
-    ) {}
-}
 
-class CodeSample {
-  constructor(
-    public title: string,
-    public code: string,
-    public wrap = false,
-    public runInConsole = false) {
-  }
-}
-
-function generateApiCalls(moduleId: number, root: string, id: number) {
-  const virtual = root[0] !== '/';
-  root = root + '/';
-  return [
-    new ApiCall(virtual, 'GET', root, 'Read list of all items', true,
-      createGetSnippets(root, moduleId)),
-    new ApiCall(virtual, 'GET', root + id, 'Read a single item #' + id, true,
-      createGetSnippets(root + id, moduleId)),
-    new ApiCall(virtual, 'POST', root, 'Create an item', false),
-    new ApiCall(virtual, 'POST', root + id, 'Update the item #' + id, false),
-    new ApiCall(virtual, 'DELETE', root + id, 'Delete item #' + id, false)
-  ];
-}
-
-function createGetSnippets(path: string, moduleId: number): CodeSample[] {
-  return [
-    new CodeSample('Example with global $2sxc and event-context',
-      `<span onclick="$2sxc(this).webApi.get('${path}').then(data => console.log(data))">
-  get it
-</span>`),
-    new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
-      `// get the sxc-controller for this module
-var sxc = $2sxc(${moduleId});
-// now get the data in the promise
-sxc.webApi.get('${path}')
-  .then(data => {
-    console.log(data)
-  });`),
-    new CodeSample(`Same example as one-liner to run in the console`,
-      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true, true),
-    new CodeSample('Example where you get the Module-Id from Razor',
-      `// this will be replaced on the server with the ID
-var moduleId = @Dnn.Module.ModuleID;
-var sxc = $2sxc(moduleId);
-var data = sxc.webApi.get('${path}');`),
-  ];
-}
 
