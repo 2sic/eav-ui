@@ -9,14 +9,14 @@
   </div>
   <mat-dialog-content class="dialog-component-content fancy-scrollbar-light" style="height: 100%">
     <!-- TODO: SPM - pls help so scrolling works correctly -->
-    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.currentScenario.key"
+    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
       (valueChange)="changeScenario($event)">
     </app-selector-with-help>
 
-    <ng-container *ngTemplateOutlet="restTabs; context:{isInternal: data.modeInternal}"></ng-container>
+    <ng-container *ngTemplateOutlet="restTabs"></ng-container>
   </mat-dialog-content>
 
-  <ng-template #restTabs let-isInternal="isInternal">
+  <ng-template #restTabs>
     <mat-tab-group color="accent">
       <mat-tab>
         <ng-template mat-tab-label>
@@ -38,16 +38,20 @@
           Just set off HTTP <code>GET</code> requests or similar
           to the endpoint like <code>{{ data.root }}</code>. You can find the full list with example code
           in the next tabs.
-          Make sure you also read about permissions, and also about
+          Make sure you also read about permissions and HTTP headers.
+        </p>
+        <h3>Scenario: {{ data.scenario.name }}</h3>
+        <p class="dialog-description">
+          {{ data.scenario.description }}
         </p>
       </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">code</mat-icon>
-          {{ isInternal ? "Virtual " : "Absolute "}} REST URLs
+          {{ data.scenario.useVirtual ? "Virtual " : "Absolute "}} REST URLs
         </ng-template>
-          <p class="dialog-description">
+          <p class="dialog-description" *ngIf="data.scenario.useVirtual">
             Virtual REST URLs are short. They will be resolved internally
             to the full length (based on the dnn-version, current portal, etc.)
             thanks to $2sxc JS API. This happens when you use the
@@ -64,7 +68,7 @@
             The examples below use real values to make it easier to get started.
             The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
             the current Module ID <code>{{ data.moduleId }}</code>
-            and the folder of the current App <code>{{ data.folder }}</code> (where needed).
+            and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
             The code also looked up an item of this type and will use it's ID <code>{{data.itemId}}</code> in the examples.
           </p>
 
@@ -75,15 +79,26 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon class="tab-icon">person</mat-icon>
-          Permissions
+          Permissions ({{ data.contentType.Permissions.Count }})
+          <mat-icon *ngIf="data.contentType.Permissions.Count === 0">warning</mat-icon>
         </ng-template>
-          <h3>Super-Users (Host) can use all Endpoints</h3>
+          <h3>Permissions ({{ data.contentType.Permissions.Count }})</h3>
+          <p class="dialog-description">
+            This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions configured.
+          </p>
+          <p class="dialog-description warning" *ngIf="data.contentType.Permissions.Count === 0">
+            <mat-icon>warning</mat-icon>
+            Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API endpoints.
+          </p>
+
+
+          <h4>Super-Users (Host) can use all Endpoints</h4>
           <p class="dialog-description">
             As a super-user you can always access these REST endpoints, so this will make development easy.
             Just remember to change the content-type permissions when you publish your work to public pages.
           </p>
 
-          <h3>Set permissions for visitors to use this</h3>
+          <h4>Set permissions for visitors to use this</h4>
           <p class="dialog-description">
             To let JavaScript access the REST endpoints for normal users, you must set the permissions of the content-type.
             Usually you will just want to set it like <em>if user has view-permissions, let him read this content-type</em>.
@@ -91,7 +106,7 @@
             If you give write permissions, you will usually <em>only</em> want to give create, but not edit.
           </p>
 
-          <h3>Setting permissions for use outside of DNN</h3>
+          <h4>Setting permissions for use outside of DNN</h4>
           <p class="dialog-description">
             When calling API endpoints from a DNN page you will usually use the <code>$2sxc</code> or the DNN Services-Framework.
             These automatically add some HTTP-Headers (see tab about HTTP Headers) which let DNN determine that the API-Call
@@ -142,14 +157,12 @@
             These are the headers which 2sxc sometimes adds:
           </p>
           <ol>
-            <li>ContentBlockId: the unit of content we're editing/changing or</li>
-            <li>PageId: we're trying to use this new header instead of TabId, which is just an odd name. Still WIP</li>
+            <li><code>ContentBlockId</code>: the unit of content we're editing/changing or</li>
+            <li><code>PageId</code>: we're trying to use this new header instead of TabId, which is just an odd name. Still WIP</li>
           </ol>
           <h3>Usually this happens automatically</h3>
           <p class="dialog-description">
-            When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>), or you use
-            the standard dnn calls like $
-
+            When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>).
           </p>
         </mat-tab>
     </mat-tab-group>
@@ -172,8 +185,8 @@
       <mat-expansion-panel *ngFor="let apiCall of data.apiCalls">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <code>{{apiCall.verb}}</code>: <code>{{ apiCall.url }}</code>
-            <span> &nbsp;to {{ apiCall.teaser }} (expand for details & snippets) </span>
+            <code>{{apiCall.verb}}</code>: <code class="route-in-title">{{ apiCall.url }}</code>
+            <span> &nbsp;to {{ apiCall.teaser }} </span>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-panel-description style="display: block;">
@@ -187,7 +200,7 @@
             <pre [ngStyle]="{'word-wrap': code.wrap ? '' : 'pre-wrap'}">{{ code.code }}</pre>
           </ng-container>
           <button *ngIf="apiCall.enableButton" mat-raised-button (click)="callApiGet(apiCall.url)">execute call</button>
-          <a *ngIf="data.currentScenario?.key === 'external'" [href]="apiCall.url" target="_blank">open</a>
+          <a *ngIf="data.scenario.key === 'external'" [href]="apiCall.url" target="_blank">open</a>
 
         </mat-panel-description>
 

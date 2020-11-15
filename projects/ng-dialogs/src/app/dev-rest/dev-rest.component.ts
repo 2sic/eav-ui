@@ -8,14 +8,12 @@ import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { AccessScenarios, SelectorData } from '.';
+import { AllScenarios, ApiCall, generateApiCalls, Scenario } from '.';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
-import { ItemResult } from './data/dev-rest.models';
-import { ApiCall, generateApiCalls } from './examples';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -29,11 +27,11 @@ export class DevRestComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component dialog-component--no-actions';
 
   /** List of scenarios */
-  scenarios = AccessScenarios;
+  scenarios = AllScenarios;
 
   templateVars$: Observable<{
     contentType: ContentType;
-    currentScenario: SelectorData;
+    scenario: Scenario;
     modeInternal: boolean;
     root: string;
     itemId: number,
@@ -52,7 +50,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   private dialogSettings$: BehaviorSubject<DialogSettings>;
 
   /** Currently selected scenario */
-  private currentScenario$: BehaviorSubject<SelectorData>;
+  private scenario$: BehaviorSubject<Scenario>;
 
   private modeInternal$: Observable<boolean>;
 
@@ -76,18 +74,21 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-    this.currentScenario$ = new BehaviorSubject<SelectorData>(this.scenarios[0]);
-    this.modeInternal$ = this.currentScenario$.pipe(map(scenario => scenario.key === 'internal'));
+    this.scenario$ = new BehaviorSubject<Scenario>(this.scenarios[0]);
+    this.modeInternal$ = this.scenario$.pipe(map(scenario => scenario.key === 'internal'));
 
-    this.root$ = combineLatest([this.contentType$, this.currentScenario$, this.dialogSettings$]).pipe(
+    this.root$ = combineLatest([this.contentType$, this.scenario$, this.dialogSettings$]).pipe(
       map(([contentType, scenario, dialogSettings]) => {
         if (contentType == null || dialogSettings == null) { return ''; }
 
-        const internal = scenario === AccessScenarios[0];
+        // const internal = scenario === AllScenarios[0];
         const resolved = pathToContent
           .replace('{typename}', contentType.Name)
-          .replace('{appname}', internal ? 'auto' : encodeURI(dialogSettings.Context.App.Folder));
-        return internal ? resolved : dnnContext.$2sxc.http.apiUrl(resolved);
+          .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder));
+        const domainPrefix = document.location.protocol + '//' + document.location.host;
+        return scenario.useVirtual
+          ? resolved
+          : (scenario.inSameSite ? '' : domainPrefix) + dnnContext.$2sxc.http.apiUrl(resolved);
       }),
     );
 
@@ -103,20 +104,21 @@ export class DevRestComponent implements OnInit, OnDestroy {
       this.dialogSettings$.pipe(filter(d => !!d)),
     ]);
     this.templateVars$ = combineLatest([
-      combineLatest([this.contentType$, this.currentScenario$, this.modeInternal$]),
+      combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
       combineForUi2,
     ]).pipe(
-      map(([[contentType, currentScenario, modeInternal], [root, item, diag]]) => ({
+      map(([[contentType, scenario, modeInternal], [root, item, diag]]) => ({
         contentType,
-        currentScenario,
+        currentScenario: scenario,
         modeInternal,
         root,
         itemId: item.Id,
         itemGuid: item.Value,
         // todo: SPM - why can't I get the module id here using dnnContext.moduleId
-        apiCalls: generateApiCalls(context.moduleId, root, item.Id),
-        folder: diag.Context.App.Folder,
+        apiCalls: generateApiCalls(scenario, context.moduleId, root, item.Id),
+        folder: encodeURI(diag.Context.App.Folder),
         moduleId: context.moduleId,
+        scenario,
       })),
     );
 
@@ -130,11 +132,11 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.contentType$.complete();
     this.dialogSettings$.complete();
-    this.currentScenario$.complete();
+    this.scenario$.complete();
   }
 
-  changeScenario(scenario: SelectorData) {
-    this.currentScenario$.next(scenario);
+  changeScenario(scenario: Scenario) {
+    this.scenario$.next(scenario);
   }
 
   closeDialog() {
@@ -143,7 +145,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   // todo: 2dm - probably open a dialog showing the results etc.
   callApiGet(url: string) {
-    this.http.get<ItemResult[]>(url).subscribe(res => {
+    this.http.get<any>(url).subscribe(res => {
       console.log(`Called ${url} and got this:`, res);
       this.openSnackBar(`Called ${url}. You can see the full result in the F12 console`, 'API call returned');
     });

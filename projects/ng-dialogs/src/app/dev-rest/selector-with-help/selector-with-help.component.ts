@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { HelpPopupComponent, SelectorData } from '..';
+import { HelpPopupComponent } from '..';
 import { HelpPopupData } from '../help-popup/help-popup.models';
+import { Scenario } from '../scenarios';
 
 @Component({
   selector: 'app-selector-with-help',
@@ -10,9 +11,9 @@ import { HelpPopupData } from '../help-popup/help-popup.models';
 })
 export class SelectorWithHelpComponent implements OnInit {
   @Input() label: string;
-  @Input() items: SelectorData[];
+  @Input() items: Scenario[];
   @Input() value: string;
-  @Output() private valueChange = new EventEmitter<SelectorData>();
+  @Output() private valueChange = new EventEmitter<Scenario>();
 
   constructor(private dialog: MatDialog) { }
 

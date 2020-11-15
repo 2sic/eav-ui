@@ -5,5 +5,8 @@ export class CodeSample {
     public code: string,
     public wrap = false,
     public runInConsole = false) {
+
+      // the code often has a leading new-line - so we'll trim this
+      this.code = this.code.trim();
   }
 }

@@ -14,6 +14,18 @@ pre {
   word-break: keep-all
 }
 
+code.route-in-title {
+  // todo: SPM probably correct this value later on when scrolling is fixed
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+p.warning {
+  background-color: lightcoral;
+}
+
 // TODO: SPM
 // Pls help so all P / UL/OL / LI etc. have the right font size etc.
 // using variables, not repeating the definition here

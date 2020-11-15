@@ -1,29 +1,35 @@
-import { ApiCall, CodeSample } from '.';
+import { ApiCall, CodeSample, Scenario } from '..';
+    // tslint:disable: curly
 
-export function generateApiCalls(moduleId: number, root: string, id: number) {
+export function generateApiCalls(scenario: Scenario, moduleId: number, root: string, id: number) {
   const virtual = root[0] !== '/';
   root = root + '/';
+  const withId = root + id;
   return [
-    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true,
-      snippetsGet(root, moduleId)),
-    new ApiCall(virtual, 'GET', root + id, 'read one', 'Read a single item #' + id + `(with title 'TODO:')`, true,
-      snippetsGet(root + id, moduleId)),
+    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet(scenario, root, moduleId)),
+    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet(scenario, withId, moduleId)),
     new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(root, moduleId)),
-    new ApiCall(virtual, 'POST', root + id, 'update', 'Update the item #' + id, false, snippetsUpdate(root + id, moduleId)),
-    new ApiCall(virtual, 'DELETE', root + id, 'delete', 'Delete item #' + id, false, snippetsDelete(root + id, moduleId)),
+    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(withId, moduleId)),
+    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(withId, moduleId)),
   ];
 }
 
-function snippetsGet(path: string, moduleId: number): CodeSample[] {
-  return [
-    new CodeSample('Example with global $2sxc and event-context',
+function snippetsGet(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+  const virtual = path[0] !== '/';
+  const list: CodeSample[] = [];
+  if (scenario.inSameContext)
+    list.push(new CodeSample('Example with global $2sxc and event-context',
       'This example finds the context information from the HTML where an action started.',
-      `<span onclick="$2sxc(this).webApi.get('${path}').then(data => console.log(data))">
+      `
+<button onclick="$2sxc(this).webApi.get('${path}').then(data => console.log(data))">
   get it
-</span>`),
-    new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
-      `This is how you get the context when your code doesn't start with a DOM context, so you need the moduleId.`,
-      `// get the sxc-controller for this module
+</button>`));
+
+  if (scenario.in2sxc)
+      list.push(new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
+        `This is how you get the context when your code doesn't start with a DOM context, so you need the moduleId.`,
+        `
+// get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 // now get the data in the promise
 sxc.webApi.get('${path}')
@@ -32,28 +38,37 @@ sxc.webApi.get('${path}')
   });`),
     new CodeSample(`Same example as one-liner`,
       'This is the same as above, but as a one-liner so you can run it directly in the F12 console right now.',
-      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true, true),
-    new CodeSample('Example where you get the Module-Id from Razor',
+      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true, true));
+
+  if (scenario.in2sxc && scenario.inSameContext)
+    list.push(new CodeSample('Example where you get the Module-Id from Razor',
       `This example doesn't use a fixed moduleId but let's the Razor add the current moduleId when the page is rendered.`,
-      `// this will be replaced on the server with the ID
+      `
+// this will be replaced on the server with the ID
 var moduleId = @Dnn.Module.ModuleID;
 var sxc = $2sxc(moduleId);
-var data = sxc.webApi.get('${path}');`),
-    new CodeSample('Using jQuery',
+var data = sxc.webApi.get('${path}');`));
+
+  // jquery examples, they differ based on the scenario
+  const endPointGetter = virtual ? `$2sxc.http.apiUrl('${path}')` : `'${path}'`;
+  list.push(new CodeSample('Using jQuery inside DNN',
     `This example uses jQuery instead of the $2sxc to do the AJAX call.
     It shows you how to resolve the virtual path for use in other ways.`,
-    `var endpoint = $2sxc.http.apiUrl('${path}');
+    `
+var endpoint = ${endPointGetter};
 $.ajax({
   url:endpoint,
   beforeSend: $.dnnSF(${moduleId}).setModuleHeaders
 })}).then(data => {
   console.log('Got this data:', data);
-})`),
-new CodeSample('Using jQuery as single-liner (run in the console of the DNN page',
-  `The same example as above, just as single-liner so you can test it directly in the F12 console.
-  This will only work if you're on a DNN page with this module.`,
-`$.ajax({url: $2sxc.http.apiUrl('${path}'), beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`)
-  ];
+})`));
+  list.push(new CodeSample('Using jQuery as single-liner',
+    `The same example as above, just as single-liner so you can test it directly in the F12 console.
+    This will only work if you're on a DNN page with this module.`,
+    `$.ajax({url: ${endPointGetter}, beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`));
+
+  // return generated snippets
+  return list;
 }
 
 /** Snippets for basic Post-Create */
