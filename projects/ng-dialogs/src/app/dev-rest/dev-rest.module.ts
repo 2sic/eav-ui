@@ -49,7 +49,6 @@ import { DevRestComponent } from './dev-rest.component';
     Context,
     ContentTypesService,
     AppDialogConfigService,
-    // ?
     EntityService,
     EavService,
   ]

@@ -12,28 +12,27 @@ export const webApiEntityList = 'admin/entity/list';
 
 @Injectable()
 export class EntityService {
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private eavService: EavService,
-    // todo: SPM - this was using EavService before, but that resulted in an empty eavConfig in my code
-    // so I tried context like the ContentTypeService uses and that works
-    // - why? and is it bad?
     private context: Context,
-    private dnnContext: DnnContext) { }
+    private dnnContext: DnnContext,
+  ) { }
 
-  getAvailableEntities(filter: string, contentTypeName: string) {
-    return this.http.post<EntityInfo[]>(
-      this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'EntityPicker'),
-    filter,
-    // TODO: SPM - CHECK
-    { params: { contentTypeName, appId: this./*eavService.eavConfig*/context.appId.toString() },
+  getAvailableEntities(filterText: string, contentTypeName: string) {
+    // eavConfig for edit ui and context for other calls
+    const context = this.eavService.eavConfig != null ? this.eavService.eavConfig : this.context;
+    return this.http.post<EntityInfo[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'EntityPicker'), filterText, {
+      params: { contentTypeName, appId: context.appId.toString() },
     });
   }
 
   // Experimental 2dm
-  reactiveEntities(params: Observable<{contentTypeName: string, filter: string}>) {
+  reactiveEntities(params: Observable<{ contentTypeName: string; filter: string }>) {
     return params.pipe(
-      filter(p => p !== null),
-      switchMap(p => this.getAvailableEntities(p.filter, p.contentTypeName).pipe(share())));
+      filter(p => p != null),
+      switchMap(p => this.getAvailableEntities(p.filter, p.contentTypeName).pipe(share())),
+    );
   }
 
   delete(contentType: string, entityId: string, force: boolean) {

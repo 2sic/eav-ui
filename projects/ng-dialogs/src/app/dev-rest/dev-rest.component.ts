@@ -68,11 +68,11 @@ export class DevRestComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private contentTypesService: ContentTypesService,
     private appDialogConfigService: AppDialogConfigService,
-    private entityService: EntityService,
+    entityService: EntityService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
-    private context: Context,
+    context: Context,
     /** dnn-sxc-angular context. Used to resolve urls */
-    private dnnContext: DnnContext,
+    dnnContext: DnnContext,
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
@@ -96,8 +96,8 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
     // Get an item of this type for building urls
     this.itemOfThisType$ = entityService.reactiveEntities(
-      this.contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: ''}))))
-      .pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
+      this.contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: '' })))
+    ).pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
     // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
     this.templateVars$ = combineLatest([
