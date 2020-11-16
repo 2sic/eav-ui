@@ -50,7 +50,9 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.versionsService.fetchVersions(this.itemId).subscribe(this.versions$);
+    this.versionsService.fetchVersions(this.itemId).subscribe(versions => {
+      this.versions$.next(versions);
+    });
   }
 
   ngOnDestroy() {
