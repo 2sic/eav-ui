@@ -102,6 +102,9 @@
           endpoints.
         </p>
 
+        <ag-grid-angular class="ag-theme-material" [rowData]="data.permissions" [modules]="modules"
+          [gridOptions]="gridOptions" [style.height]="(33 + data.permissions.length * 48) + 'px'">
+        </ag-grid-angular>
 
         <h4>Super-Users (Host) can use all Endpoints</h4>
         <p>

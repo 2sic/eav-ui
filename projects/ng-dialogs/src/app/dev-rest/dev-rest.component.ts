@@ -1,4 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -8,16 +9,18 @@ import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { AllScenarios, ApiCall, generateApiCalls, Scenario } from '.';
+import { AllScenarios, generateApiCalls, Scenario } from '.';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Permission } from '../permissions/models/permission.model';
 import { PermissionsService } from '../permissions/services/permissions.service';
+import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { copyToClipboard } from '../shared/helpers/copy-to-clipboard.helper';
 import { Context } from '../shared/services/context';
+import { DevRestTemplateVars } from './dev-rest.models';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -32,20 +35,24 @@ const pathToContent = 'app/{appname}/content/{typename}';
 export class DevRestComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
+  /** AgGrid modules */
+  modules = AllCommunityModules;
+  /** AgGrid options */
+  gridOptions: GridOptions = {
+    ...defaultGridOptions,
+    columnDefs: [
+      { headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline' },
+      { headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'no-outline' },
+      { headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline' },
+      { headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline' },
+      { headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline' },
+    ],
+  };
+
   /** List of scenarios */
   scenarios = AllScenarios;
 
-  templateVars$: Observable<{
-    contentType: ContentType;
-    scenario: Scenario;
-    modeInternal: boolean;
-    root: string;
-    itemId: number,
-    itemGuid: string,
-    apiCalls: ApiCall[],
-    folder: string,
-    moduleId: number,
-  }>;
+  templateVars$: Observable<DevRestTemplateVars>;
 
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
@@ -111,8 +118,9 @@ export class DevRestComponent implements OnInit, OnDestroy {
     this.templateVars$ = combineLatest([
       combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
       combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]),
+      combineLatest([this.permissions$]),
     ]).pipe(
-      map(([[contentType, scenario, modeInternal], [root, item, diag]]) => ({
+      map(([[contentType, scenario, modeInternal], [root, item, diag], [permissions]]) => ({
         contentType,
         currentScenario: scenario,
         modeInternal,
@@ -123,6 +131,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         folder: encodeURI(diag.Context.App.Folder),
         moduleId: context.moduleId,
         scenario,
+        permissions,
       })),
     );
 
