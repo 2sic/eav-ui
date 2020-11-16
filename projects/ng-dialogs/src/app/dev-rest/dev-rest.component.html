@@ -8,6 +8,8 @@
     </div>
   </div>
 
+  <router-outlet></router-outlet>
+
   <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
     (valueChange)="changeScenario($event)">
   </app-selector-with-help>
@@ -95,6 +97,9 @@
         <p>
           This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions
           configured.
+          <button mat-icon-button matTooltip="Open permissions" (click)="openPermissions()">
+            <mat-icon>person</mat-icon>
+          </button>
         </p>
         <p class="warning" *ngIf="data.contentType.Permissions.Count === 0">
           <mat-icon>warning</mat-icon>

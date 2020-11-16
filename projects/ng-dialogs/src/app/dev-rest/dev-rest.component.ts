@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -76,6 +76,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogRef: MatDialogRef<DevRestComponent>,
+    private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private http: HttpClient,
@@ -169,6 +170,13 @@ export class DevRestComponent implements OnInit, OnDestroy {
       this.openSnackBar(`Called ${url}. You can see the full result in the F12 console`, 'API call returned');
     });
     this.openSnackBar(`Calling ${url}. You can see the full result in the F12 console`, 'API call sent');
+  }
+
+  openPermissions() {
+    this.router.navigate(
+      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${this.contentTypeStaticName}`],
+      { relativeTo: this.route }
+    );
   }
 
   copyCode(text: string) {

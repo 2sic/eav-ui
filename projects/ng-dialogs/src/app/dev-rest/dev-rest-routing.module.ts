@@ -4,7 +4,15 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { devRestDialog } from './dev-rest-dialog.config';
 
 const routes: Routes = [
-  { path: '', component: DialogEntryComponent, data: { dialog: devRestDialog, title: 'REST API' } }
+  {
+    path: '', component: DialogEntryComponent, data: { dialog: devRestDialog, title: 'REST API' }, children: [
+      {
+        path: 'permissions/:type/:keyType/:key',
+        loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
+        data: { title: 'Permission' },
+      },
+    ]
+  }
 ];
 
 @NgModule({
