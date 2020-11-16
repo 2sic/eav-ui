@@ -4,11 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { AllScenarios, generateApiCalls, Scenario } from '.';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
@@ -54,6 +54,8 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   templateVars$: Observable<DevRestTemplateVars>;
 
+  private targetType = eavConstants.metadata.entity.type;
+  private keyType = eavConstants.keyTypes.guid;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   /** Content Type to show REST infos about */
@@ -73,6 +75,8 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   /** The root path for the current request */
   private root$: Observable<string>;
+
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<DevRestComponent>,
@@ -115,7 +119,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
       this.contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: '' })))
     ).pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
-    // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
+    // we need to mix 2 combineLatest, because a combineLatest can only take 6 streams
     this.templateVars$ = combineLatest([
       combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
       combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]),
@@ -139,13 +143,8 @@ export class DevRestComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(this.contentType$);
-    this.appDialogConfigService.getDialogSettings().subscribe(this.dialogSettings$);
-
-    const targetType = eavConstants.metadata.entity.type;
-    const keyType = eavConstants.keyTypes.guid;
-    const key = this.contentTypeStaticName;
-    this.permissionsService.getAll(targetType, keyType, key).subscribe(this.permissions$);
+    this.fetchData();
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
@@ -153,6 +152,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
     this.dialogSettings$.complete();
     this.permissions$.complete();
     this.scenario$.complete();
+    this.subscription.unsubscribe();
   }
 
   changeScenario(scenario: Scenario) {
@@ -173,15 +173,32 @@ export class DevRestComponent implements OnInit, OnDestroy {
   }
 
   openPermissions() {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${this.contentTypeStaticName}`],
-      { relativeTo: this.route }
-    );
+    this.router.navigate([`permissions/${this.targetType}/${this.keyType}/${this.contentTypeStaticName}`], { relativeTo: this.route });
   }
 
   copyCode(text: string) {
     copyToClipboard(text);
     this.openSnackBar('Copied to clipboard');
+  }
+
+  private fetchData() {
+    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(this.contentType$);
+    this.appDialogConfigService.getDialogSettings().subscribe(this.dialogSettings$);
+    this.permissionsService.getAll(this.targetType, this.keyType, this.contentTypeStaticName).subscribe(this.permissions$);
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchData();
+      })
+    );
   }
 
   private openSnackBar(message: string, action?: string) {
