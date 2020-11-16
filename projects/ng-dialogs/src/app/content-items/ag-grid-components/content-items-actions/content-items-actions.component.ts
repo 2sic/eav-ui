@@ -32,10 +32,6 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
     this.params.onExport(this.item);
   }
 
-  openRestApi() {
-    this.params.onOpenRestApi(this.item);
-  }
-
   deleteItem() {
     this.params.onDelete(this.item);
   }

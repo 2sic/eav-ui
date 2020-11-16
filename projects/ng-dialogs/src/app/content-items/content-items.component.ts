@@ -282,7 +282,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),
-          onOpenRestApi: this.openRestApi.bind(this),
           onDelete: this.delete.bind(this),
         } as ContentItemsActionsParams,
       },
@@ -338,10 +337,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private export(item: ContentItem) {
     this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
-  }
-
-  private openRestApi(item: ContentItem) {
-    this.router.navigate([`restapi/${this.contentTypeStaticName}/${item.Id}`], { relativeTo: this.route });
   }
 
   private delete(item: ContentItem) {
