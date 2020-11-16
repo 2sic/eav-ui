@@ -59,28 +59,29 @@
           <mat-icon class="tab-icon">code</mat-icon>
           {{ data.scenario.useVirtual ? "Virtual " : "Absolute "}} REST URLs
         </ng-template>
-          <p class="dialog-description" *ngIf="data.scenario.useVirtual">
-            Virtual REST URLs are short. They will be resolved internally
-            to the full length (based on the dnn-version, current portal, etc.)
-            thanks to $2sxc JS API. This happens when you use the
-            <a href="https://docs.2sxc.org/specs/js/sxcewebapi.html" target="_blank">
-              $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
-            </a>
-            or if you use
-            <a href="https://https://www.npmjs.com/package/@2sic.com/dnn-sxc-angular" target="_blank">
-              dnn-sxc-angular (npm package)
-            </a>
-            (which also passes url-resolving through $2sxc).
-          </p>
-          <p class="dialog-description">
-            The examples below use real values to make it easier to get started.
-            The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
-            the current Module ID <code>{{ data.moduleId }}</code>
-            and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
-            The code also looked up an item of this type and will use it's ID <code>{{data.itemId}}</code> in the examples.
-          </p>
+        <p class="dialog-description" *ngIf="data.scenario.useVirtual">
+          Virtual REST URLs are short. They will be resolved internally
+          to the full length (based on the dnn-version, current portal, etc.)
+          thanks to $2sxc JS API. This happens when you use the
+          <a href="https://docs.2sxc.org/specs/js/sxcewebapi.html" target="_blank">
+            $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
+          </a>
+          or if you use
+          <a href="https://https://www.npmjs.com/package/@2sic.com/dnn-sxc-angular" target="_blank">
+            dnn-sxc-angular (npm package)
+          </a>
+          (which also passes url-resolving through $2sxc).
+        </p>
+        <p class="dialog-description">
+          The examples below use real values to make it easier to get started.
+          The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
+          the current Module ID <code>{{ data.moduleId }}</code>
+          and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
+          The code also looked up an item of this type and will use it's ID <code>{{data.itemId}}</code> in the
+          examples.
+        </p>
 
-          <ng-container *ngTemplateOutlet="restUrls"></ng-container>
+        <ng-container *ngTemplateOutlet="restUrls"></ng-container>
       </mat-tab>
 
       <!-- Permissions explained -->
@@ -90,45 +91,52 @@
           Permissions ({{ data.contentType.Permissions.Count }})
           <mat-icon *ngIf="data.contentType.Permissions.Count === 0">warning</mat-icon>
         </ng-template>
-          <h3>Permissions ({{ data.contentType.Permissions.Count }})</h3>
-          <p class="dialog-description">
-            This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions configured.
-          </p>
-          <p class="dialog-description warning" *ngIf="data.contentType.Permissions.Count === 0">
-            <mat-icon>warning</mat-icon>
-            Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API endpoints.
-          </p>
+        <h3>Permissions ({{ data.contentType.Permissions.Count }})</h3>
+        <p class="dialog-description">
+          This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions
+          configured.
+        </p>
+        <p class="dialog-description warning" *ngIf="data.contentType.Permissions.Count === 0">
+          <mat-icon>warning</mat-icon>
+          Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
+          endpoints.
+        </p>
 
 
-          <h4>Super-Users (Host) can use all Endpoints</h4>
-          <p class="dialog-description">
-            As a super-user you can always access these REST endpoints, so this will make development easy.
-            Just remember to change the content-type permissions when you publish your work to public pages.
-          </p>
+        <h4>Super-Users (Host) can use all Endpoints</h4>
+        <p class="dialog-description">
+          As a super-user you can always access these REST endpoints, so this will make development easy.
+          Just remember to change the content-type permissions when you publish your work to public pages.
+        </p>
 
-          <h4>Set permissions for visitors to use this</h4>
-          <p class="dialog-description">
-            To let JavaScript access the REST endpoints for normal users, you must set the permissions of the content-type.
-            Usually you will just want to set it like <em>if user has view-permissions, let him read this content-type</em>.
-            In rare cases (eg. JS based forms) you may also want to give it some write permissions. Just be careful.
-            If you give write permissions, you will usually <em>only</em> want to give create, but not edit.
-          </p>
+        <h4>Set permissions for visitors to use this</h4>
+        <p class="dialog-description">
+          To let JavaScript access the REST endpoints for normal users, you must set the permissions of the
+          content-type.
+          Usually you will just want to set it like <em>if user has view-permissions, let him read this
+            content-type</em>.
+          In rare cases (eg. JS based forms) you may also want to give it some write permissions. Just be careful.
+          If you give write permissions, you will usually <em>only</em> want to give create, but not edit.
+        </p>
 
-          <h4>Setting permissions for use outside of DNN</h4>
-          <p class="dialog-description">
-            When calling API endpoints from a DNN page you will usually use the <code>$2sxc</code> or the DNN Services-Framework.
-            These automatically add some HTTP-Headers (see tab about HTTP Headers) which let DNN determine that the API-Call
-            was made on a specific page/module - and DNN uses this to check the permissions.
-          </p>
-          <p class="dialog-description">
-            IF you are calling the endpoint from outside of DNN then these headers will be missing.
-            Because of this, permissions saying "If has VIEW permissions, allow read" will fail - because DNN cannot determine
-            if the user has view permissions.
-          </p>
-          <p class="dialog-description">
-            So to enable use from external, the condition must be "If has ANONYMOUS permissions, allow ...".
-            Because the ANONYMOUS check passes even if DNN doesn't know what page the module is on.
-          </p>
+        <h4>Setting permissions for use outside of DNN</h4>
+        <p class="dialog-description">
+          When calling API endpoints from a DNN page you will usually use the <code>$2sxc</code> or the DNN
+          Services-Framework.
+          These automatically add some HTTP-Headers (see tab about HTTP Headers) which let DNN determine that the
+          API-Call
+          was made on a specific page/module - and DNN uses this to check the permissions.
+        </p>
+        <p class="dialog-description">
+          IF you are calling the endpoint from outside of DNN then these headers will be missing.
+          Because of this, permissions saying "If has VIEW permissions, allow read" will fail - because DNN cannot
+          determine
+          if the user has view permissions.
+        </p>
+        <p class="dialog-description">
+          So to enable use from external, the condition must be "If has ANONYMOUS permissions, allow ...".
+          Because the ANONYMOUS check passes even if DNN doesn't know what page the module is on.
+        </p>
       </mat-tab>
 
       <!-- HTTP Headers Explained -->
@@ -137,42 +145,52 @@
           <mat-icon class="tab-icon">perm_device_information</mat-icon>
           HTTP headers and &nbsp;<code>auto</code>
         </ng-template>
-          <h3>Background</h3>
-          <p class="dialog-description">
-            It's important that you know that DNN includes special headers in HTTP requests.
-            This is to include context, so it can find what page/module you were on.
-            The platform needs this because it usually needs to know things like:
-          </p>
-          <ul>
-            <li>What website / language am I on</li>
-            <li>What module am I on, and what App is being shown (this is used to resolve the <code>/auto/</code> in the path</li>
-            <li>Does the user have VIEW / EDIT / etc. permissions</li>
-          </ul>
-          <p class="dialog-description">
-            When accessing an API from external, there is no real <em>context</em> for the call, which is why you have to replace
-            <code>/auto/</code> in the path with <code>/{{ data.folder }}/</code> instead.
-          </p>
-          <h3>Common Headers when using the API from JS on a DNN Page</h3>
-          <p class="dialog-description">
-            These are the headers which are needed in DNN by default:
-          </p>
-          <ol>
-            <li><code>TabId</code>: this is the page id, a number</li>
-            <li><code>ModuleId</code>: this is the module id, a number</li>
-            <li><code>RequestVerificationToken</code>: this is a crypto key to prove that the request originated from the same site. It's only included in POST/PUT/DELETE requests. </li>
-          </ol>
-          <p class="dialog-description">
-            These are the headers which 2sxc sometimes adds:
-          </p>
-          <ol>
-            <li><code>ContentBlockId</code>: the unit of content we're editing/changing or</li>
-            <li><code>PageId</code>: we're trying to use this new header instead of TabId, which is just an odd name. Still WIP</li>
-          </ol>
-          <h3>Usually this happens automatically</h3>
-          <p class="dialog-description">
-            When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>).
-          </p>
-        </mat-tab>
+        <h3>Background</h3>
+        <p class="dialog-description">
+          It's important that you know that DNN includes special headers in HTTP requests.
+          This is to include context, so it can find what page/module you were on.
+          The platform needs this because it usually needs to know things like:
+        </p>
+        <ul>
+          <li>What website / language am I on</li>
+          <li>
+            What module am I on, and what App is being shown (this is used to resolve the <code>/auto/</code> in the
+            path
+          </li>
+          <li>Does the user have VIEW / EDIT / etc. permissions</li>
+        </ul>
+        <p class="dialog-description">
+          When accessing an API from external, there is no real <em>context</em> for the call, which is why you have to
+          replace
+          <code>/auto/</code> in the path with <code>/{{ data.folder }}/</code> instead.
+        </p>
+        <h3>Common Headers when using the API from JS on a DNN Page</h3>
+        <p class="dialog-description">
+          These are the headers which are needed in DNN by default:
+        </p>
+        <ol>
+          <li><code>TabId</code>: this is the page id, a number</li>
+          <li><code>ModuleId</code>: this is the module id, a number</li>
+          <li>
+            <code>RequestVerificationToken</code>: this is a crypto key to prove that the request originated from the
+            same site. It's only included in POST/PUT/DELETE requests.
+          </li>
+        </ol>
+        <p class="dialog-description">
+          These are the headers which 2sxc sometimes adds:
+        </p>
+        <ol>
+          <li><code>ContentBlockId</code>: the unit of content we're editing/changing or</li>
+          <li>
+            <code>PageId</code>: we're trying to use this new header instead of TabId, which is just an odd name.
+            Still WIP
+          </li>
+        </ol>
+        <h3>Usually this happens automatically</h3>
+        <p class="dialog-description">
+          When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>).
+        </p>
+      </mat-tab>
     </mat-tab-group>
   </ng-template>
 
@@ -196,7 +214,9 @@
           </p>
           <p class="dialog-description" *ngIf="apiCall.enableButton">
             <button mat-raised-button (click)="callApiGet(apiCall.url)">Call and Output to Console</button>
-            <a *ngIf="!data.scenario.useVirtual && apiCall.browseUrl" [href]="apiCall.browseUrl" target="_blank">Open in Browser</a>
+            <a *ngIf="!data.scenario.useVirtual && apiCall.browseUrl" [href]="apiCall.browseUrl" target="_blank">
+              Open in Browser
+            </a>
           </p>
 
           <ng-container *ngFor="let code of apiCall.code">
