@@ -19,10 +19,10 @@
   <ng-template #restTabs>
     <mat-tab-group color="accent">
       <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">emoji_objects</mat-icon>
-          Introduction
-        </ng-template>
+        <div *matTabLabel class="mat-tab-label-box" matTooltip="Introduction">
+          <mat-icon>emoji_objects</mat-icon>
+          <span>Introduction</span>
+        </div>
         <p class="dialog-description">
           All data can be used in JavaScript, SPAs or anywhere with the REST API
           (see <a href="https://docs.2sxc.org/specs/web-api/intro.html" target="_blank">docs</a>).
@@ -55,10 +55,11 @@
       </mat-tab>
 
       <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">code</mat-icon>
-          {{ data.scenario.useVirtual ? "Virtual " : "Absolute "}} REST URLs
-        </ng-template>
+        <div *matTabLabel class="mat-tab-label-box"
+          [matTooltip]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+          <mat-icon>code</mat-icon>
+          <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+        </div>
         <p class="dialog-description" *ngIf="data.scenario.useVirtual">
           Virtual REST URLs are short. They will be resolved internally
           to the full length (based on the dnn-version, current portal, etc.)
@@ -86,11 +87,11 @@
 
       <!-- Permissions explained -->
       <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">person</mat-icon>
-          Permissions ({{ data.contentType.Permissions.Count }})
+        <div *matTabLabel class="mat-tab-label-box" matTooltip="Permissions">
+          <mat-icon>person</mat-icon>
+          <span>Permissions ({{ data.contentType.Permissions.Count }})</span>
           <mat-icon *ngIf="data.contentType.Permissions.Count === 0">warning</mat-icon>
-        </ng-template>
+        </div>
         <h3>Permissions ({{ data.contentType.Permissions.Count }})</h3>
         <p class="dialog-description">
           This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions
@@ -141,10 +142,10 @@
 
       <!-- HTTP Headers Explained -->
       <mat-tab>
-        <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">perm_device_information</mat-icon>
-          HTTP headers and &nbsp;<code>auto</code>
-        </ng-template>
+        <div *matTabLabel class="mat-tab-label-box" matTooltip="HTTP headers and auto">
+          <mat-icon>perm_device_information</mat-icon>
+          <span>HTTP headers and &nbsp;<code>auto</code></span>
+        </div>
         <h3>Background</h3>
         <p class="dialog-description">
           It's important that you know that DNN includes special headers in HTTP requests.
@@ -222,7 +223,13 @@
           <ng-container *ngFor="let code of apiCall.code">
             <h4>{{ code.title }}</h4>
             <p>{{ code.description }}</p>
-            <pre style="word-wrap: pre-wrap">{{ code.code }}</pre>
+            <div class="code-example">
+              <pre class="code-example__text">{{ code.code }}</pre>
+              <button mat-icon-button class="code-example__copy" matTooltip="Copy to clipboard"
+                (click)="copyCode(code.code)">
+                <mat-icon>copy</mat-icon>
+              </button>
+            </div>
             <p *ngIf="code.warning" class="warning">
               <mat-icon>warning</mat-icon>
               {{ code.warning }}

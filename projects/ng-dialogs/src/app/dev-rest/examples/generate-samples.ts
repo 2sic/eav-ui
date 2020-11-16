@@ -1,6 +1,6 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { ApiCall, CodeSample, Scenario } from '..';
-    // tslint:disable: curly
+// tslint:disable: curly
 
 export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, moduleId: number, root: string, id: number) {
   const virtual = root[0] !== '/';
@@ -29,9 +29,9 @@ function snippetsGet($2sxc: SxcRoot, scenario: Scenario, path: string, moduleId:
 </button>`));
 
   if (scenario.in2sxc)
-      list.push(new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
-        `This is how you get the context when your code doesn't start with a DOM context, so you need the moduleId.`,
-        `
+    list.push(new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
+      `This is how you get the context when your code doesn't start with a DOM context, so you need the moduleId.`,
+      `
 // get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 // now get the data in the promise
@@ -39,9 +39,9 @@ sxc.webApi.get('${path}')
   .then(data => {
     console.log(data)
   });`),
-    new CodeSample(`Same example as one-liner`,
-      'This is the same as above, but as a one-liner so you can run it directly in the F12 console right now.',
-      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true));
+      new CodeSample(`Same example as one-liner`,
+        'This is the same as above, but as a one-liner so you can run it directly in the F12 console right now.',
+        `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true));
 
   if (scenario.in2sxc && scenario.inSameContext)
     list.push(new CodeSample('Example where you get the Module-Id from Razor',
@@ -96,7 +96,7 @@ function snippetsCreate(scenario: Scenario, path: string, moduleId: number): Cod
       `This example uses the ModuleId to get the context information.
 To see other ways to get the context and headers, check out the GET examples.
 Note that this snippet doesn't use real names of properties to add.`,
-`// get the sxc-controller for this module
+      `// get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 
 // The object we'll send to get created. It's just a simple object with properties
@@ -113,8 +113,8 @@ sxc.webApi.post('${path}', newThing)
   .then(data => {
     console.log('Got this ID information: ', data)
   });`,
-  false,
-  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+      false,
+      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
   but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }
@@ -124,10 +124,10 @@ function snippetsUpdate(scenario: Scenario, path: string, moduleId: number): Cod
   const showWarning = !scenario.inSameContext;
   return [
     new CodeSample('Basic Example',
-    `This example uses the ModuleId to get the context information.
+      `This example uses the ModuleId to get the context information.
 To see other ways to get the context and headers, check out the GET examples.
 Note that this snippet doesn't use real names of properties to add.`,
-`// get the sxc-controller for this module
+      `// get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 
 // The object we'll send to update the data. It's just a simple object with properties
@@ -141,8 +141,8 @@ sxc.webApi.post('${path}', updateProperty1And2)
   .then(data => {
     console.log('Update completed', data)
   });`,
-  false,
-  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+      false,
+      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
   but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }
@@ -152,10 +152,10 @@ function snippetsDelete(scenario: Scenario, path: string, moduleId: number): Cod
   const showWarning = !scenario.inSameContext;
   return [
     new CodeSample('Basic Example',
-    `This example uses the ModuleId to get the context information.
+      `This example uses the ModuleId to get the context information.
 To see other ways to get the context and headers, check out the GET examples.
 Note that this snippet doesn't use real names of properties to add.`,
-`// get the sxc-controller for this module
+      `// get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 
 // delete the item
@@ -163,8 +163,8 @@ sxc.webApi.delete('${path}')
   .then(data => {
     console.log('Delete completed', data)
   });`,
-  false,
-  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+      false,
+      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
   but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }

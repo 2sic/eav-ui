@@ -10,5 +10,5 @@ export class ApiCall {
     public enableButton: boolean,
     public code: CodeSample[] = [],
     public browseUrl: string = null,
-    ) {}
+  ) { }
 }

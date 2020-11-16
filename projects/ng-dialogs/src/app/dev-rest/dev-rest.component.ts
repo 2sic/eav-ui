@@ -16,6 +16,7 @@ import { ContentTypesService } from '../app-administration/services/content-type
 import { Permission } from '../permissions/models/permission.model';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { eavConstants } from '../shared/constants/eav.constants';
+import { copyToClipboard } from '../shared/helpers/copy-to-clipboard.helper';
 import { Context } from '../shared/services/context';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -161,7 +162,12 @@ export class DevRestComponent implements OnInit, OnDestroy {
     this.openSnackBar(`Calling ${url}. You can see the full result in the F12 console`, 'API call sent');
   }
 
-  openSnackBar(message: string, action: string) {
+  copyCode(text: string) {
+    copyToClipboard(text);
+    this.openSnackBar('Copied to clipboard');
+  }
+
+  private openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
