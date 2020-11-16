@@ -8,9 +8,9 @@ export function generateApiCalls(scenario: Scenario, moduleId: number, root: str
   return [
     new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet(scenario, root, moduleId)),
     new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet(scenario, withId, moduleId)),
-    new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(root, moduleId)),
-    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(withId, moduleId)),
-    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(withId, moduleId)),
+    new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(scenario, root, moduleId)),
+    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(scenario, withId, moduleId)),
+    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(scenario, withId, moduleId)),
   ];
 }
 
@@ -38,7 +38,7 @@ sxc.webApi.get('${path}')
   });`),
     new CodeSample(`Same example as one-liner`,
       'This is the same as above, but as a one-liner so you can run it directly in the F12 console right now.',
-      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true, true));
+      `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true));
 
   if (scenario.in2sxc && scenario.inSameContext)
     list.push(new CodeSample('Example where you get the Module-Id from Razor',
@@ -51,10 +51,11 @@ var data = sxc.webApi.get('${path}');`));
 
   // jquery examples, they differ based on the scenario
   const endPointGetter = virtual ? `$2sxc.http.apiUrl('${path}')` : `'${path}'`;
-  list.push(new CodeSample('Using jQuery inside DNN',
-    `This example uses jQuery instead of the $2sxc to do the AJAX call.
-    It shows you how to resolve the virtual path for use in other ways.`,
-    `
+  if (scenario.inSameSite) {
+    list.push(new CodeSample('Using jQuery inside DNN',
+      `This example uses jQuery instead of the $2sxc to do the AJAX call.
+      It shows you how to resolve the virtual path for use in other ways.`,
+      `
 var endpoint = ${endPointGetter};
 $.ajax({
   url:endpoint,
@@ -62,17 +63,31 @@ $.ajax({
 })}).then(data => {
   console.log('Got this data:', data);
 })`));
-  list.push(new CodeSample('Using jQuery as single-liner',
-    `The same example as above, just as single-liner so you can test it directly in the F12 console.
-    This will only work if you're on a DNN page with this module.`,
-    `$.ajax({url: ${endPointGetter}, beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`));
+    list.push(new CodeSample('Using jQuery as single-liner',
+      `The same example as above, just as single-liner so you can test it directly in the F12 console.
+      This will only work if you're on a DNN page with this module.`,
+      `$.ajax({url: ${endPointGetter}, beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`));
+  } else {
+    list.push(new CodeSample('Using jQuery in another Site or External',
+      `This example uses jQuery and doesn't use $2sxc or the DNN ServicesFramework,
+      because they would be either missing, or give wrong context-headers.
+      IMPORTANT: This will only work if you set anonymous permissions on the content-type.`,
+      `
+var endpoint = '${path}';
+$.ajax({
+url:endpoint,
+})}).then(data => {
+  console.log('Got this data:', data);
+})`));
 
+  }
   // return generated snippets
   return list;
 }
 
 /** Snippets for basic Post-Create */
-function snippetsCreate(path: string, moduleId: number): CodeSample[] {
+function snippetsCreate(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+  const showWarning = !scenario.inSameContext;
   return [
     new CodeSample('Basic Example',
       `This example uses the ModuleId to get the context information.
@@ -94,12 +109,16 @@ var newThing = {
 sxc.webApi.post('${path}', newThing)
   .then(data => {
     console.log('Got this ID information: ', data)
-  });`),
+  });`,
+  false,
+  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }
 
 /** Snippets for basic Post-Update */
-function snippetsUpdate(path: string, moduleId: number): CodeSample[] {
+function snippetsUpdate(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+  const showWarning = !scenario.inSameContext;
   return [
     new CodeSample('Basic Example',
     `This example uses the ModuleId to get the context information.
@@ -118,12 +137,16 @@ var updateProperty1And2 = {
 sxc.webApi.post('${path}', updateProperty1And2)
   .then(data => {
     console.log('Update completed', data)
-  });`),
+  });`,
+  false,
+  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }
 
 /** Snippets for basic Post-Update */
-function snippetsDelete(path: string, moduleId: number): CodeSample[] {
+function snippetsDelete(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+  const showWarning = !scenario.inSameContext;
   return [
     new CodeSample('Basic Example',
     `This example uses the ModuleId to get the context information.
@@ -136,6 +159,9 @@ var sxc = $2sxc(${moduleId});
 sxc.webApi.delete('${path}')
   .then(data => {
     console.log('Delete completed', data)
-  });`),
+  });`,
+  false,
+  showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
   ];
 }

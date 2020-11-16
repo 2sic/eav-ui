@@ -40,10 +40,18 @@
           in the next tabs.
           Make sure you also read about permissions and HTTP headers.
         </p>
-        <h3>Scenario: {{ data.scenario.name }}</h3>
-        <p class="dialog-description">
-          {{ data.scenario.description }}
-        </p>
+        <h3>Scenarios</h3>
+        <ng-container *ngFor="let scenario of scenarios">
+          <h4>Scenario: {{ scenario.name }}</h4>
+          <p class="dialog-description">
+            {{ scenario.description }}
+          </p>
+          <p class="dialog-description" *ngIf="scenario.notes">
+            <em>
+              {{ scenario.notes }}
+            </em>
+          </p>
+        </ng-container>
       </mat-tab>
 
       <mat-tab>
@@ -196,11 +204,16 @@
 
           <ng-container *ngFor="let code of apiCall.code">
             <h4>{{ code.title }}</h4>
-            <em>{{ code.description }}</em>
-            <pre [ngStyle]="{'word-wrap': code.wrap ? '' : 'pre-wrap'}">{{ code.code }}</pre>
+            <p>{{ code.description }}</p>
+            <pre style="word-wrap: pre-wrap">{{ code.code }}</pre>
+            <p *ngIf="code.warning" class="warning">
+              <mat-icon>warning</mat-icon>
+              {{ code.warning }}
+            </p>
           </ng-container>
           <button *ngIf="apiCall.enableButton" mat-raised-button (click)="callApiGet(apiCall.url)">execute call</button>
-          <a *ngIf="data.scenario.key === 'external'" [href]="apiCall.url" target="_blank">open</a>
+          <!-- TODO: 2DM - NOT READY YET -->
+          <!-- <a *ngIf="data.scenario.key === 'external'" [href]="apiCall.url" target="_blank">open</a> -->
 
         </mat-panel-description>
 
