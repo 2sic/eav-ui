@@ -7,6 +7,7 @@ import { Scenario } from '../scenarios';
 @Component({
   selector: 'app-selector-with-help',
   templateUrl: './selector-with-help.component.html',
+  styleUrls: ['./selector-with-help.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectorWithHelpComponent implements OnInit {

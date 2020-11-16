@@ -7,17 +7,15 @@
       </button>
     </div>
   </div>
-  <mat-dialog-content class="dialog-component-content fancy-scrollbar-light" style="height: 100%">
-    <!-- TODO: SPM - pls help so scrolling works correctly -->
-    <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
-      (valueChange)="changeScenario($event)">
-    </app-selector-with-help>
 
-    <ng-container *ngTemplateOutlet="restTabs"></ng-container>
-  </mat-dialog-content>
+  <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
+    (valueChange)="changeScenario($event)">
+  </app-selector-with-help>
+
+  <ng-container *ngTemplateOutlet="restTabs"></ng-container>
 
   <ng-template #restTabs>
-    <mat-tab-group color="accent">
+    <mat-tab-group dynamicHeight class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar" color="accent">
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" matTooltip="Introduction">
           <mat-icon>emoji_objects</mat-icon>

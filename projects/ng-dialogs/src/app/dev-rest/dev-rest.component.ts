@@ -30,7 +30,7 @@ const pathToContent = 'app/{appname}/content/{typename}';
   preserveWhitespaces: true,
 })
 export class DevRestComponent implements OnInit, OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component dialog-component--no-actions';
+  @HostBinding('className') hostClass = 'dialog-component';
 
   /** List of scenarios */
   scenarios = AllScenarios;

@@ -1,10 +1,12 @@
-<mat-form-field color="accent" style="width: 400px;">
-  <mat-label>{{ label }}</mat-label>
-  <mat-select [value]="value" (selectionChange)="selectionChange($event.value)">
-    <mat-option *ngFor="let item of items" [value]="item.key">{{ item.name }}</mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="selector">
+  <mat-form-field class="selector__dropdown" color="accent">
+    <mat-label>{{ label }}</mat-label>
+    <mat-select [value]="value" (selectionChange)="selectionChange($event.value)">
+      <mat-option *ngFor="let item of items" [value]="item.key">{{ item.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<button mat-icon-button (click)="showHelp()">
-  <mat-icon>help_outline</mat-icon>
-</button>
+  <button mat-icon-button (click)="showHelp()">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+</div>

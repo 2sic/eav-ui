@@ -82,10 +82,6 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   display: flex;
   flex-direction: column;
 
-  &--no-actions {
-    max-height: $max-height;
-  }
-
   @media (max-width: 600px) {
     max-height: $max-height;
   }
