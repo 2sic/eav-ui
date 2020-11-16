@@ -182,9 +182,15 @@ export class DevRestComponent implements OnInit, OnDestroy {
   }
 
   private fetchData() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(this.contentType$);
-    this.appDialogConfigService.getDialogSettings().subscribe(this.dialogSettings$);
-    this.permissionsService.getAll(this.targetType, this.keyType, this.contentTypeStaticName).subscribe(this.permissions$);
+    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
+      this.contentType$.next(contentType);
+    });
+    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      this.dialogSettings$.next(dialogSettings);
+    });
+    this.permissionsService.getAll(this.targetType, this.keyType, this.contentTypeStaticName).subscribe(permissions => {
+      this.permissions$.next(permissions);
+    });
   }
 
   private refreshOnChildClosed() {
