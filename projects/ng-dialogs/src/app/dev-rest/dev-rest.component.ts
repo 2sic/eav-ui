@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { AllScenarios, generateApiCalls, Scenario } from '.';
 import { ContentType } from '../app-administration/models/content-type.model';
@@ -64,7 +64,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   /** App, language, etc. */
   private dialogSettings$: BehaviorSubject<DialogSettings>;
 
-  private permissions$: BehaviorSubject<Permission[]>;
+  private permissions$ = new Subject<Permission[]>(); //: BehaviorSubject<Permission[]>;
 
   /** Currently selected scenario */
   private scenario$: BehaviorSubject<Scenario>;
@@ -95,7 +95,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-    this.permissions$ = new BehaviorSubject<Permission[]>(null);
+    // this.permissions$ = new BehaviorSubject<Permission[]>(null);
     this.scenario$ = new BehaviorSubject<Scenario>(this.scenarios[0]);
     this.modeInternal$ = this.scenario$.pipe(map(scenario => scenario.key === 'internal'));
 
@@ -137,6 +137,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         moduleId: context.moduleId,
         scenario,
         permissions,
+        permissionsHasAnonymous: permissions.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
       })),
     );
 
@@ -163,7 +164,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  // todo: 2dm - probably open a dialog showing the results etc.
   callApiGet(url: string) {
     this.http.get<any>(url).subscribe(res => {
       console.log(`Called ${url} and got this:`, res);

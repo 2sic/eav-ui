@@ -7,4 +7,7 @@ export interface Scenario {
   name: string;
   description: string;
   notes?: string;
+
+  /** Tell the UI to show warning if Anonymous access is not configured */
+  needsAnonymous?: boolean;
 }

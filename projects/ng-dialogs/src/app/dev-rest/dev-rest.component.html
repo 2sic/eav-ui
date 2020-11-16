@@ -61,7 +61,8 @@
           <mat-icon>code</mat-icon>
           <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
         </div>
-        <p *ngIf="data.scenario.useVirtual">
+        <p *ngIf="data.scenario.useVirtual" class="info icon-box">
+          <mat-icon>menu_book</mat-icon>
           Virtual REST URLs are short. They will be resolved internally
           to the full length (based on the dnn-version, current portal, etc.)
           thanks to $2sxc JS API. This happens when you use the
@@ -73,6 +74,17 @@
             dnn-sxc-angular (npm package)
           </a>
           (which also passes url-resolving through $2sxc).
+        </p>
+        <p *ngIf="data.scenario.needsAnonymous && !data.permissionsHasAnonymous" class="warning icon-box">
+          <mat-icon>warning</mat-icon>
+          To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
+          As of now, no such permissions are configured.
+        </p>
+        <p *ngIf="data.scenario.needsAnonymous && data.permissionsHasAnonymous" class="alert icon-box">
+          <mat-icon>warning</mat-icon>
+          It seems that you have some permissions configured for <code>Anonymous</code>.
+          This is correct if you plan on using the REST endpoints from externaly.
+          Please make sure that they are the ones you need, and that you don't accidentally open up too much.
         </p>
         <p>
           The examples below use real values to make it easier to get started.
@@ -105,7 +117,7 @@
             <mat-icon *ngIf="!data.permissions.length">person</mat-icon>
           </button>
         </p>
-        <p class="warning" *ngIf="!data.permissions.length">
+        <p *ngIf="!data.permissions.length" class="warning info-box">
           <mat-icon>warning</mat-icon>
           Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
           endpoints.
