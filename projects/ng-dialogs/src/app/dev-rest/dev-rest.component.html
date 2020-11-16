@@ -98,7 +98,11 @@
           This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions
           configured.
           <button mat-icon-button matTooltip="Open permissions" (click)="openPermissions()">
-            <mat-icon>person</mat-icon>
+            <mat-icon [matBadge]="data.contentType.Permissions.Count" matBadgePosition="after" matBadgeColor="accent"
+              matBadgeSize="small" *ngIf="data.contentType.Permissions.Count">
+              person
+            </mat-icon>
+            <mat-icon *ngIf="!data.contentType.Permissions.Count">person</mat-icon>
           </button>
         </p>
         <p class="warning" *ngIf="data.contentType.Permissions.Count === 0">

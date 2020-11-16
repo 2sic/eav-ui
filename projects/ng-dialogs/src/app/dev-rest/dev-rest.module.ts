@@ -1,6 +1,7 @@
 import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -49,6 +50,7 @@ import { DevRestComponent } from './dev-rest.component';
     MatIconModule,
     MatExpansionModule,
     AgGridModule.withComponents([]),
+    MatBadgeModule,
   ],
   providers: [
     Context,
