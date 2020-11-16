@@ -13,6 +13,9 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { DialogSettings } from '../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { Permission } from '../permissions/models/permission.model';
+import { PermissionsService } from '../permissions/services/permissions.service';
+import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -51,6 +54,8 @@ export class DevRestComponent implements OnInit, OnDestroy {
   /** App, language, etc. */
   private dialogSettings$: BehaviorSubject<DialogSettings>;
 
+  private permissions$: BehaviorSubject<Permission[]>;
+
   /** Currently selected scenario */
   private scenario$: BehaviorSubject<Scenario>;
 
@@ -68,6 +73,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private contentTypesService: ContentTypesService,
     private appDialogConfigService: AppDialogConfigService,
+    private permissionsService: PermissionsService,
     entityService: EntityService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
@@ -76,6 +82,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
+    this.permissions$ = new BehaviorSubject<Permission[]>(null);
     this.scenario$ = new BehaviorSubject<Scenario>(this.scenarios[0]);
     this.modeInternal$ = this.scenario$.pipe(map(scenario => scenario.key === 'internal'));
 
@@ -123,11 +130,17 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(this.contentType$);
     this.appDialogConfigService.getDialogSettings().subscribe(this.dialogSettings$);
+
+    const targetType = eavConstants.metadata.entity.type;
+    const keyType = eavConstants.keyTypes.guid;
+    const key = this.contentTypeStaticName;
+    this.permissionsService.getAll(targetType, keyType, key).subscribe(this.permissions$);
   }
 
   ngOnDestroy() {
     this.contentType$.complete();
     this.dialogSettings$.complete();
+    this.permissions$.complete();
     this.scenario$.complete();
   }
 

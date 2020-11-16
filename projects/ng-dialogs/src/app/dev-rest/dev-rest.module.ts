@@ -14,6 +14,9 @@ import { EavService, EntityService } from 'projects/edit';
 import { HelpPopupComponent, SelectorWithHelpComponent } from '.';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { EntitiesService } from '../content-items/services/entities.service';
+import { MetadataService } from '../permissions/services/metadata.service';
+import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
@@ -49,6 +52,9 @@ import { DevRestComponent } from './dev-rest.component';
     Context,
     ContentTypesService,
     AppDialogConfigService,
+    PermissionsService,
+    MetadataService,
+    EntitiesService,
     EntityService,
     EavService,
   ]
