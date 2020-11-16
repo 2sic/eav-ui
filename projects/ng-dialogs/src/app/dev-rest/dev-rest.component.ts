@@ -100,7 +100,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
       .pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
     // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
-    // const combineForUi2 = combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]);
     this.templateVars$ = combineLatest([
       combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
       combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]),
@@ -112,7 +111,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
         root,
         itemId: item.Id,
         itemGuid: item.Value,
-        // todo: SPM - why can't I get the module id here using dnnContext.moduleId
         apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context.moduleId, root, item.Id),
         folder: encodeURI(diag.Context.App.Folder),
         moduleId: context.moduleId,

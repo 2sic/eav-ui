@@ -24,6 +24,7 @@ export class EntityService {
     return this.http.post<EntityInfo[]>(
       this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'EntityPicker'),
     filter,
+    // TODO: SPM - CHECK
     { params: { contentTypeName, appId: this./*eavService.eavConfig*/context.appId.toString() },
     });
   }
