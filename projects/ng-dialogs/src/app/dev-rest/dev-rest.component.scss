@@ -10,16 +10,18 @@ pre {
   word-break: keep-all;
 }
 
-code.route-in-title {
-  // todo: SPM probably correct this value later on when scrolling is fixed
-  max-width: 50%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 p.warning {
   background-color: lightcoral;
+}
+
+.rest-urls-accordion {
+  display: block;
+  margin: 8px;
+}
+
+.rest-urls-title {
+  display: flex;
+  align-items: center;
 }
 
 .code-example {

@@ -76,7 +76,7 @@
           The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
           the current Module ID <code>{{ data.moduleId }}</code>
           and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
-          The code also looked up an item of this type and will use it's ID <code>{{data.itemId}}</code> in the
+          The code also looked up an item of this type and will use it's ID <code>{{ data.itemId }}</code> in the
           examples.
         </p>
 
@@ -197,19 +197,21 @@
 
   <!-- REST Tab showing the urls and code snippets -->
   <ng-template #restUrls>
-    <mat-accordion multi="true">
+    <mat-accordion multi class="rest-urls-accordion">
       <mat-expansion-panel *ngFor="let apiCall of data.apiCalls">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <code>{{apiCall.verb}}</code>: <code class="route-in-title">{{ apiCall.url }}</code>
-            <span> &nbsp;to {{ apiCall.teaser }} </span>
+            <div class="rest-urls-title">
+              <code>{{ apiCall.verb }}</code>: <code>{{ apiCall.url }}</code>
+              <span>&nbsp;to {{ apiCall.teaser }}</span>
+            </div>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-panel-description style="display: block;">
           <h4>{{ apiCall.instructions }}</h4>
           <p class="dialog-description">
-            HTTP Verb: <code>{{apiCall.verb}}</code> <br>
-            {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute'}} Url: <code>{{ apiCall.url }}</code>
+            HTTP Verb: <code>{{ apiCall.verb }}</code> <br>
+            {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} Url: <code>{{ apiCall.url }}</code>
           </p>
           <p class="dialog-description" *ngIf="apiCall.enableButton">
             <button mat-raised-button (click)="callApiGet(apiCall.url)">Call and Output to Console</button>
