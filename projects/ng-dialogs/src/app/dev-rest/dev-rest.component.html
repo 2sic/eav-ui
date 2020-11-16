@@ -15,13 +15,14 @@
   <ng-container *ngTemplateOutlet="restTabs"></ng-container>
 
   <ng-template #restTabs>
-    <mat-tab-group dynamicHeight class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar" color="accent">
+    <mat-tab-group dynamicHeight color="accent"
+      class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
       <mat-tab>
         <div *matTabLabel class="mat-tab-label-box" matTooltip="Introduction">
           <mat-icon>emoji_objects</mat-icon>
           <span>Introduction</span>
         </div>
-        <p class="dialog-description">
+        <p>
           All data can be used in JavaScript, SPAs or anywhere with the REST API
           (see <a href="https://docs.2sxc.org/specs/web-api/intro.html" target="_blank">docs</a>).
           Use this for things like:
@@ -32,7 +33,7 @@
           <li>Sharing data to other platforms</li>
           <li>Using DNN/2sxc as a headless CMS</li>
         </ul>
-        <p class="dialog-description">
+        <p>
           Just set off HTTP <code>GET</code> requests or similar
           to the endpoint like <code>{{ data.root }}</code>. You can find the full list with example code
           in the next tabs.
@@ -41,10 +42,10 @@
         <h3>Scenarios</h3>
         <ng-container *ngFor="let scenario of scenarios">
           <h4>Scenario: {{ scenario.name }}</h4>
-          <p class="dialog-description">
+          <p>
             {{ scenario.description }}
           </p>
-          <p class="dialog-description" *ngIf="scenario.notes">
+          <p *ngIf="scenario.notes">
             <em>
               {{ scenario.notes }}
             </em>
@@ -58,7 +59,7 @@
           <mat-icon>code</mat-icon>
           <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
         </div>
-        <p class="dialog-description" *ngIf="data.scenario.useVirtual">
+        <p *ngIf="data.scenario.useVirtual">
           Virtual REST URLs are short. They will be resolved internally
           to the full length (based on the dnn-version, current portal, etc.)
           thanks to $2sxc JS API. This happens when you use the
@@ -71,7 +72,7 @@
           </a>
           (which also passes url-resolving through $2sxc).
         </p>
-        <p class="dialog-description">
+        <p>
           The examples below use real values to make it easier to get started.
           The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
           the current Module ID <code>{{ data.moduleId }}</code>
@@ -91,11 +92,11 @@
           <mat-icon *ngIf="data.contentType.Permissions.Count === 0">warning</mat-icon>
         </div>
         <h3>Permissions ({{ data.contentType.Permissions.Count }})</h3>
-        <p class="dialog-description">
+        <p>
           This content-type ({{ data.contentType.Name }}) has {{ data.contentType.Permissions.Count }} permissions
           configured.
         </p>
-        <p class="dialog-description warning" *ngIf="data.contentType.Permissions.Count === 0">
+        <p class="warning" *ngIf="data.contentType.Permissions.Count === 0">
           <mat-icon>warning</mat-icon>
           Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
           endpoints.
@@ -103,13 +104,13 @@
 
 
         <h4>Super-Users (Host) can use all Endpoints</h4>
-        <p class="dialog-description">
+        <p>
           As a super-user you can always access these REST endpoints, so this will make development easy.
           Just remember to change the content-type permissions when you publish your work to public pages.
         </p>
 
         <h4>Set permissions for visitors to use this</h4>
-        <p class="dialog-description">
+        <p>
           To let JavaScript access the REST endpoints for normal users, you must set the permissions of the
           content-type.
           Usually you will just want to set it like <em>if user has view-permissions, let him read this
@@ -119,20 +120,20 @@
         </p>
 
         <h4>Setting permissions for use outside of DNN</h4>
-        <p class="dialog-description">
+        <p>
           When calling API endpoints from a DNN page you will usually use the <code>$2sxc</code> or the DNN
           Services-Framework.
           These automatically add some HTTP-Headers (see tab about HTTP Headers) which let DNN determine that the
           API-Call
           was made on a specific page/module - and DNN uses this to check the permissions.
         </p>
-        <p class="dialog-description">
+        <p>
           IF you are calling the endpoint from outside of DNN then these headers will be missing.
           Because of this, permissions saying "If has VIEW permissions, allow read" will fail - because DNN cannot
           determine
           if the user has view permissions.
         </p>
-        <p class="dialog-description">
+        <p>
           So to enable use from external, the condition must be "If has ANONYMOUS permissions, allow ...".
           Because the ANONYMOUS check passes even if DNN doesn't know what page the module is on.
         </p>
@@ -145,7 +146,7 @@
           <span>HTTP headers and &nbsp;<code>auto</code></span>
         </div>
         <h3>Background</h3>
-        <p class="dialog-description">
+        <p>
           It's important that you know that DNN includes special headers in HTTP requests.
           This is to include context, so it can find what page/module you were on.
           The platform needs this because it usually needs to know things like:
@@ -158,13 +159,13 @@
           </li>
           <li>Does the user have VIEW / EDIT / etc. permissions</li>
         </ul>
-        <p class="dialog-description">
+        <p>
           When accessing an API from external, there is no real <em>context</em> for the call, which is why you have to
           replace
           <code>/auto/</code> in the path with <code>/{{ data.folder }}/</code> instead.
         </p>
         <h3>Common Headers when using the API from JS on a DNN Page</h3>
-        <p class="dialog-description">
+        <p>
           These are the headers which are needed in DNN by default:
         </p>
         <ol>
@@ -175,7 +176,7 @@
             same site. It's only included in POST/PUT/DELETE requests.
           </li>
         </ol>
-        <p class="dialog-description">
+        <p>
           These are the headers which 2sxc sometimes adds:
         </p>
         <ol>
@@ -186,7 +187,7 @@
           </li>
         </ol>
         <h3>Usually this happens automatically</h3>
-        <p class="dialog-description">
+        <p>
           When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>).
         </p>
       </mat-tab>
@@ -209,11 +210,11 @@
         </mat-expansion-panel-header>
         <mat-panel-description style="display: block;">
           <h4>{{ apiCall.instructions }}</h4>
-          <p class="dialog-description">
+          <p>
             HTTP Verb: <code>{{ apiCall.verb }}</code> <br>
             {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} Url: <code>{{ apiCall.url }}</code>
           </p>
-          <p class="dialog-description" *ngIf="apiCall.enableButton">
+          <p *ngIf="apiCall.enableButton">
             <button mat-raised-button (click)="callApiGet(apiCall.url)">Call and Output to Console</button>
             <a *ngIf="!data.scenario.useVirtual && apiCall.browseUrl" [href]="apiCall.browseUrl" target="_blank">
               Open in Browser
