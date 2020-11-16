@@ -1,3 +1,5 @@
+// the first one is needed so <code> coloring works in dynamic injected html (tips etc.)
+:host ::ng-deep code,
 code,
 pre {
   padding-left: 2px;
@@ -18,7 +20,7 @@ p.alert {
   background-color: lightyellow;
 }
 
-p.info {
+p.info, p.tip {
   background-color: rgb(170, 218, 248);
 }
 
