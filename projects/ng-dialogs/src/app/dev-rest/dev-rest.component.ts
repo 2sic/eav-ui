@@ -21,7 +21,9 @@ const pathToContent = 'app/{appname}/content/{typename}';
   selector: 'app-dev-rest',
   templateUrl: './dev-rest.component.html',
   styleUrls: ['./dev-rest.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  // we need preserve whitespace, as many conditional parts are put together, and then spaces are missing between them
+  preserveWhitespaces: true,
 })
 export class DevRestComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component dialog-component--no-actions';
@@ -98,14 +100,10 @@ export class DevRestComponent implements OnInit, OnDestroy {
       .pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
 
     // we need to mix 2 combineLatest, because a combinelatest can only take 6 streams
-    const combineForUi2 = combineLatest([
-      this.root$,
-      this.itemOfThisType$,
-      this.dialogSettings$.pipe(filter(d => !!d)),
-    ]);
+    // const combineForUi2 = combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]);
     this.templateVars$ = combineLatest([
       combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
-      combineForUi2,
+      combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]),
     ]).pipe(
       map(([[contentType, scenario, modeInternal], [root, item, diag]]) => ({
         contentType,
@@ -115,7 +113,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         itemId: item.Id,
         itemGuid: item.Value,
         // todo: SPM - why can't I get the module id here using dnnContext.moduleId
-        apiCalls: generateApiCalls(scenario, context.moduleId, root, item.Id),
+        apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context.moduleId, root, item.Id),
         folder: encodeURI(diag.Context.App.Folder),
         moduleId: context.moduleId,
         scenario,

@@ -1,20 +1,23 @@
+import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { ApiCall, CodeSample, Scenario } from '..';
     // tslint:disable: curly
 
-export function generateApiCalls(scenario: Scenario, moduleId: number, root: string, id: number) {
+export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, moduleId: number, root: string, id: number) {
   const virtual = root[0] !== '/';
   root = root + '/';
   const withId = root + id;
   return [
-    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet(scenario, root, moduleId)),
-    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet(scenario, withId, moduleId)),
+    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet($2sxc, scenario, root, moduleId),
+      $2sxc.http.apiUrl(root)),
+    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet($2sxc, scenario, withId, moduleId),
+      $2sxc.http.apiUrl(withId)),
     new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(scenario, root, moduleId)),
     new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(scenario, withId, moduleId)),
     new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(scenario, withId, moduleId)),
   ];
 }
 
-function snippetsGet(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+function snippetsGet($2sxc: SxcRoot, scenario: Scenario, path: string, moduleId: number): CodeSample[] {
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];
   if (scenario.inSameContext)

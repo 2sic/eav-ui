@@ -9,5 +9,6 @@ export class ApiCall {
     public instructions: string,
     public enableButton: boolean,
     public code: CodeSample[] = [],
+    public browseUrl: string = null,
     ) {}
 }

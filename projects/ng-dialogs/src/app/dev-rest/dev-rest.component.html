@@ -177,17 +177,8 @@
   </ng-template>
 
 
-  <ng-template #external>
-    <mat-tab-group color="accent">
-      <mat-tab label="Full REST URLs">
-        <ng-template matTabContent>
-          <ng-container *ngTemplateOutlet="restUrls"></ng-container>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </ng-template>
 
-
+  <!-- REST Tab showing the urls and code snippets -->
   <ng-template #restUrls>
     <mat-accordion multi="true">
       <mat-expansion-panel *ngFor="let apiCall of data.apiCalls">
@@ -199,8 +190,14 @@
         </mat-expansion-panel-header>
         <mat-panel-description style="display: block;">
           <h4>{{ apiCall.instructions }}</h4>
-          <strong>HTTP Verb: </strong> <code>{{apiCall.verb}}</code> <br>
-          <strong>{{ apiCall.virtual ? 'Virtual' : 'Absolute'}} Url: </strong> <code>{{ apiCall.url }}</code>
+          <p class="dialog-description">
+            HTTP Verb: <code>{{apiCall.verb}}</code> <br>
+            {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute'}} Url: <code>{{ apiCall.url }}</code>
+          </p>
+          <p class="dialog-description" *ngIf="apiCall.enableButton">
+            <button mat-raised-button (click)="callApiGet(apiCall.url)">Call and Output to Console</button>
+            <a *ngIf="!data.scenario.useVirtual && apiCall.browseUrl" [href]="apiCall.browseUrl" target="_blank">Open in Browser</a>
+          </p>
 
           <ng-container *ngFor="let code of apiCall.code">
             <h4>{{ code.title }}</h4>
@@ -211,14 +208,9 @@
               {{ code.warning }}
             </p>
           </ng-container>
-          <button *ngIf="apiCall.enableButton" mat-raised-button (click)="callApiGet(apiCall.url)">execute call</button>
-          <!-- TODO: 2DM - NOT READY YET -->
-          <!-- <a *ngIf="data.scenario.key === 'external'" [href]="apiCall.url" target="_blank">open</a> -->
 
         </mat-panel-description>
-
       </mat-expansion-panel>
-
     </mat-accordion>
   </ng-template>
 
