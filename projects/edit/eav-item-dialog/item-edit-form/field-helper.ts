@@ -46,20 +46,30 @@ export class FieldHelper {
       })
     );
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(this.currentLanguage$)
+      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(currentLanguage => {
+        this.currentLanguage$.next(currentLanguage);
+      })
     );
     this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.formId).subscribe(this.defaultLanguage$)
+      this.languageInstanceService.getDefaultLanguage(this.formId).subscribe(defaultLanguage => {
+        this.defaultLanguage$.next(defaultLanguage);
+      })
     );
     this.subscription.add(
-      this.itemService.selectItem(this.entityGuid).subscribe(this.item$)
+      this.itemService.selectItem(this.entityGuid).subscribe(item => {
+        this.item$.next(item);
+      })
     );
     this.subscription.add(
-      this.itemService.selectItemAttributes(this.entityGuid).subscribe(this.attributes$)
+      this.itemService.selectItemAttributes(this.entityGuid).subscribe(attributes => {
+        this.attributes$.next(attributes);
+      })
     );
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item$.value);
     this.subscription.add(
-      this.contentTypeService.getContentTypeById(contentTypeId).subscribe(this.contentType$)
+      this.contentTypeService.getContentTypeById(contentTypeId).subscribe(contentType => {
+        this.contentType$.next(contentType);
+      })
     );
   }
 

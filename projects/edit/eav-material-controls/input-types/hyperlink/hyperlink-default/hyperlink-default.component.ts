@@ -54,7 +54,9 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     const settingsLogic = new HyperlinkDefaultLogic();
     this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(this.settings$)
+      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+        this.settings$.next(settings);
+      })
     );
     this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);

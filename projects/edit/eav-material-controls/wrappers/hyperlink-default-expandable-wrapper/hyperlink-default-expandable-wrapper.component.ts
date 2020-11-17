@@ -64,7 +64,9 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     const settingsLogic = new HyperlinkDefaultExpandableWrapperLogic();
     this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(this.settings$)
+      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+        this.settings$.next(settings);
+      })
     );
     this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));

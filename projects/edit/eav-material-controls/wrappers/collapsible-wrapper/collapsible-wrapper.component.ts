@@ -39,7 +39,9 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
 
     const settingsLogic = new CollapsibleWrapperLogic();
     this.subscription.add(
-      this.fieldConfig.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(this.settings$)
+      this.fieldConfig.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+        this.settings$.next(settings);
+      })
     );
     this.collapse = this.settings$.value.DefaultCollapsed;
 
