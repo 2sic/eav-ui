@@ -61,7 +61,8 @@
           <mat-icon>code</mat-icon>
           <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
         </div>
-        <p *ngIf="data.scenario.useVirtual">
+        <p *ngIf="data.scenario.useVirtual" class="info icon-box">
+          <mat-icon>menu_book</mat-icon>
           Virtual REST URLs are short. They will be resolved internally
           to the full length (based on the dnn-version, current portal, etc.)
           thanks to $2sxc JS API. This happens when you use the
@@ -73,6 +74,17 @@
             dnn-sxc-angular (npm package)
           </a>
           (which also passes url-resolving through $2sxc).
+        </p>
+        <p *ngIf="data.scenario.needsAnonymous && !data.permissionsHasAnonymous" class="warning icon-box">
+          <mat-icon>warning</mat-icon>
+          To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
+          As of now, no such permissions are configured.
+        </p>
+        <p *ngIf="data.scenario.needsAnonymous && data.permissionsHasAnonymous" class="alert icon-box">
+          <mat-icon>warning</mat-icon>
+          It seems that you have some permissions configured for <code>Anonymous</code>.
+          This is correct if you plan on using the REST endpoints from externaly.
+          Please make sure that they are the ones you need, and that you don't accidentally open up too much.
         </p>
         <p>
           The examples below use real values to make it easier to get started.
@@ -105,7 +117,7 @@
             <mat-icon *ngIf="!data.permissions.length">person</mat-icon>
           </button>
         </p>
-        <p class="warning" *ngIf="!data.permissions.length">
+        <p *ngIf="!data.permissions.length" class="warning info-box">
           <mat-icon>warning</mat-icon>
           Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
           endpoints.
@@ -172,20 +184,18 @@
           <li>Does the user have VIEW / EDIT / etc. permissions</li>
         </ul>
         <p>
-          When accessing an API from external, there is no real <em>context</em> for the call, which is why you have to
-          replace
-          <code>/auto/</code> in the path with <code>/{{ data.folder }}/</code> instead.
+
         </p>
         <h3>Common Headers when using the API from JS on a DNN Page</h3>
         <p>
-          These are the headers which are needed in DNN by default:
+          These are the context-headers which are needed in DNN by default:
         </p>
         <ol>
           <li><code>TabId</code>: this is the page id, a number</li>
           <li><code>ModuleId</code>: this is the module id, a number</li>
           <li>
             <code>RequestVerificationToken</code>: this is a crypto key to prove that the request originated from the
-            same site. It's only included in POST/PUT/DELETE requests.
+            same site. It's only included in POST/PUT/DELETE but not GET requests.
           </li>
         </ol>
         <p>
@@ -202,7 +212,21 @@
         <p>
           When you use an helper object of 2sxc (like <code>$2sxc</code> or <code>dnn-sxc-angular</code>).
         </p>
-      </mat-tab>
+        <h3>Common headers when accessing from external (another website / mobile)</h3>
+        <p>
+          When using an API from another system, there are <em>no additional headers</em>.
+          So the request doesn't have a <em>context</em>, which has the following consequences:
+        </p>
+        <ul>
+          <li>
+            App auto-detection con't work, so you have to replace <code>/auto/</code> in the path with <code>/{{ data.folder }}/</code>
+          </li>
+          <li>
+            DNN can't check if a user has VIEW or other permissions,
+            which is why you either have to use a user-ID or group-ID, or allow <em>Anonymous</em>
+          </li>
+        </ul>
+    </mat-tab>
     </mat-tab-group>
   </ng-template>
 
@@ -243,9 +267,9 @@
                 <mat-icon>copy</mat-icon>
               </button>
             </div>
-            <p *ngIf="code.warning" class="warning">
-              <mat-icon>warning</mat-icon>
-              {{ code.warning }}
+            <p *ngFor="let hint of code.hints" class="icon-box {{ hint.type }}">
+              <mat-icon>{{ hint.icon }}</mat-icon>
+              <span [innerHtml]="hint.message"></span>
             </p>
           </ng-container>
 

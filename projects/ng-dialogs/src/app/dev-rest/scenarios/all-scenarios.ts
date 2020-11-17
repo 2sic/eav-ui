@@ -43,6 +43,7 @@ export const AllScenarios: Array<Scenario> = [
     useVirtual: false,
     inSameSite: false,
     inSameContext: false,
+    needsAnonymous: true,
     name: 'External (other website, mobile device, etc.)',
     description: `External access means that the JS code could be on another page / module in DNN (which is not the same app),
     or it could be coming from a mobile App, or another website altogether.

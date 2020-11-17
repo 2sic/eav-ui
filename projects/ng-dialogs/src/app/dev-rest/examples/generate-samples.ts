@@ -1,6 +1,14 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { ApiCall, CodeSample, Scenario } from '..';
+import { Hint } from './hint';
 // tslint:disable: curly
+
+const hint$2sxc = new Hint('tip', `The <code>$2sxc</code> is a helper JS from 2sxc. It's always included for super-users (hosts).
+ But if you need normal visitors to use the API, you must request it in your Razor using @Edit.Enable(...).
+ <a href="https://docs.2sxc.org/specs/js/2sxc.html" target="_blank">see docs</a>`);
+
+const warningSimpleSampleOnly = new Hint('warning', `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
+but you'll have to compare it with the GET examples to be sure you have the right headers etc. `, '');
 
 export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, moduleId: number, root: string, id: number) {
   const virtual = root[0] !== '/';
@@ -26,7 +34,7 @@ function snippetsGet($2sxc: SxcRoot, scenario: Scenario, path: string, moduleId:
       `
 <button onclick="$2sxc(this).webApi.get('${path}').then(data => console.log(data))">
   get it
-</button>`));
+</button>`, false, [hint$2sxc]));
 
   if (scenario.in2sxc)
     list.push(new CodeSample(`Example with global $2sxc and a Module-Id ${moduleId}`,
@@ -38,7 +46,7 @@ var sxc = $2sxc(${moduleId});
 sxc.webApi.get('${path}')
   .then(data => {
     console.log(data)
-  });`),
+  });`, false, [hint$2sxc]),
       new CodeSample(`Same example as one-liner`,
         'This is the same as above, but as a one-liner so you can run it directly in the F12 console right now.',
         `$2sxc(${moduleId}).webApi.get('${path}').then(data => console.log('just got:', data));`, true));
@@ -50,7 +58,7 @@ sxc.webApi.get('${path}')
 // this will be replaced on the server with the ID
 var moduleId = @Dnn.Module.ModuleID;
 var sxc = $2sxc(moduleId);
-var data = sxc.webApi.get('${path}');`));
+var data = sxc.webApi.get('${path}');`, false, [hint$2sxc]));
 
   // jquery examples, they differ based on the scenario
   const endPointGetter = virtual ? `$2sxc.http.apiUrl('${path}')` : `'${path}'`;
@@ -65,11 +73,12 @@ $.ajax({
   beforeSend: $.dnnSF(${moduleId}).setModuleHeaders
 })}).then(data => {
   console.log('Got this data:', data);
-})`));
+})`, false, []));
     list.push(new CodeSample('Using jQuery as single-liner',
       `The same example as above, just as single-liner so you can test it directly in the F12 console.
       This will only work if you're on a DNN page with this module.`,
-      `$.ajax({url: ${endPointGetter}, beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`));
+      `$.ajax({url: ${endPointGetter}, beforeSend: $.dnnSF(${moduleId}).setModuleHeaders }).then(data => console.log(data))`,
+      false, []));
   } else {
     list.push(new CodeSample('Using jQuery in another Site or External',
       `This example uses jQuery and doesn't use $2sxc or the DNN ServicesFramework,
@@ -81,7 +90,7 @@ $.ajax({
 url:endpoint,
 })}).then(data => {
   console.log('Got this data:', data);
-})`));
+})`, false, []));
 
   }
   // return generated snippets
@@ -114,8 +123,7 @@ sxc.webApi.post('${path}', newThing)
     console.log('Got this ID information: ', data)
   });`,
       false,
-      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
-  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
+      showWarning ? [warningSimpleSampleOnly] : []),
   ];
 }
 
@@ -142,8 +150,7 @@ sxc.webApi.post('${path}', updateProperty1And2)
     console.log('Update completed', data)
   });`,
       false,
-      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
-  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
+      showWarning ? [warningSimpleSampleOnly] : []),
   ];
 }
 
@@ -164,7 +171,6 @@ sxc.webApi.delete('${path}')
     console.log('Delete completed', data)
   });`,
       false,
-      showWarning ? `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
-  but you'll have to compare it with the GET examples to be sure you have the right headers etc. ` : ''),
+      showWarning ? [warningSimpleSampleOnly] : []),
   ];
 }

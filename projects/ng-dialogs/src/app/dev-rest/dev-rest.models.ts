@@ -14,4 +14,5 @@ export interface DevRestTemplateVars {
   moduleId: number;
   scenario: Scenario;
   permissions: Permission[];
+  permissionsHasAnonymous: boolean;
 }

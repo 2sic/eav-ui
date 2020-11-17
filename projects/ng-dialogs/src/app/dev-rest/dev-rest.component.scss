@@ -1,3 +1,5 @@
+// the first one is needed so <code> coloring works in dynamic injected html (tips etc.)
+:host ::ng-deep code,
 code,
 pre {
   padding-left: 2px;
@@ -12,6 +14,23 @@ pre {
 
 p.warning {
   background-color: lightcoral;
+}
+
+p.alert {
+  background-color: lightyellow;
+}
+
+p.info, p.tip {
+  background-color: rgb(170, 218, 248);
+}
+
+p.icon-box {
+  padding: 5px 5px 5px 40px;
+  margin: 5px;
+}
+
+p.icon-box mat-icon {
+  margin-left: -32px;
 }
 
 .rest-urls-accordion {
@@ -37,7 +56,3 @@ p.warning {
     right: 0;
   }
 }
-
-// TODO: SPM
-// Pls help so all P / UL/OL / LI etc. have the right font size etc.
-// using variables, not repeating the definition here
