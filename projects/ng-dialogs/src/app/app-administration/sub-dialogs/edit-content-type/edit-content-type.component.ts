@@ -109,7 +109,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
 
   unlockScope() {
     this.lockScope$.next(!this.lockScope$.value);
-    if (this.lockScope$) {
+    if (this.lockScope$.value) {
       this.contentType$.next({ ...this.contentType$.value, Scope: this.scope });
     }
   }
