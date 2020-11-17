@@ -1,11 +1,14 @@
+import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { TranslateGroupMenuHelpers } from '../../eav-material-controls/localization/translate-group-menu/translate-group-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, EavAttributes, EavDimensions, Item } from '../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../shared/models/eav/link-to-other-language-data';
+import { EavService } from '../../shared/services/eav.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -13,6 +16,7 @@ import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-i
 
 export class FieldHelper {
   slotIsEmpty$ = new BehaviorSubject(false);
+  defaultLanguageMissingValue$ = new BehaviorSubject(false);
   translationState$ = new BehaviorSubject<LinkToOtherLanguageData>({
     formId: null,
     linkType: '',
@@ -36,10 +40,11 @@ export class FieldHelper {
     private languageInstanceService: LanguageInstanceService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
+    private eavService: EavService,
   ) {
     this.subscription.add(
       this.itemService.selectItemHeader(this.entityGuid).pipe(
-        filter(header => !this.isParentGroup && header.Group?.SlotCanBeEmpty),
+        filter(header => !this.isParentGroup && header?.Group?.SlotCanBeEmpty),
       ).subscribe(header => {
         const slotIsEmpty = header.Group.SlotIsEmpty;
         this.slotIsEmpty$.next(slotIsEmpty);
@@ -75,6 +80,7 @@ export class FieldHelper {
 
   destroy(): void {
     this.slotIsEmpty$.complete();
+    this.defaultLanguageMissingValue$.complete();
     this.translationState$.complete();
     this.translationInfoMessage$.complete();
     this.translationInfoMessageLabel$.complete();
@@ -84,6 +90,53 @@ export class FieldHelper {
     this.attributes$.complete();
     this.contentType$.complete();
     this.subscription.unsubscribe();
+  }
+
+  setControlDisable(attributeKey: string, config: FieldConfigSet, form: FormGroup): void {
+    const values = this.attributes$.value[attributeKey];
+    const currentLanguage = this.currentLanguage$.value;
+    const defaultLanguage = this.defaultLanguage$.value;
+    const fieldConfig = config.field as FieldConfigGroup;
+
+    if (fieldConfig.isParentGroup) { return; }
+    // Important! if control already disabled through settings then skip
+    if (config.field.disabled) { return; }
+
+    const control = form.controls[attributeKey];
+    let newDisabled = control.disabled;
+    const defaultLanguageMissingValue = !LocalizationHelper.translationExistsInDefault(values, defaultLanguage);
+
+    if (this.slotIsEmpty$.value) {
+      newDisabled = true;
+    } else if (currentLanguage === defaultLanguage) {
+      newDisabled = false;
+    } else {
+      if (defaultLanguageMissingValue) {
+        newDisabled = true;
+      } else {
+        if (this.isTranslateDisabled(attributeKey)) {
+          newDisabled = true;
+        } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
+          newDisabled = false;
+        } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
+          newDisabled = true;
+        } else {
+          newDisabled = true;
+        }
+      }
+    }
+
+    if (control.disabled !== newDisabled) {
+      if (newDisabled) {
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+      }
+      this.eavService.formDisabledChange$.next({ formId: this.formId, entityGuid: this.entityGuid });
+    }
+    if (this.defaultLanguageMissingValue$.value !== defaultLanguageMissingValue) {
+      this.defaultLanguageMissingValue$.next(defaultLanguageMissingValue);
+    }
   }
 
   readTranslationState(attributeKey: string): void {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
@@ -27,6 +28,7 @@ export class BuildFieldsService {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private contentTypeService: ContentTypeService,
+    private eavService: EavService,
   ) { }
 
   public buildFieldConfigs(
@@ -119,6 +121,7 @@ export class BuildFieldsService {
       this.formId,
       this.languageInstanceService,
       this.contentTypeService,
+      this.eavService,
     );
 
     const fieldConfigSet: FieldConfigSet = {

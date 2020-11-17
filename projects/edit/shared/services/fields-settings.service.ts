@@ -3,6 +3,7 @@ import { ValidatorFn } from '@angular/forms';
 import isEmpty from 'lodash-es/isEmpty';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigAngular, FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
@@ -40,6 +41,7 @@ export class FieldsSettingsService {
     formId: number,
     languageInstanceService: LanguageInstanceService,
     contentTypeService: ContentTypeService,
+    eavService: EavService,
   ): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
@@ -72,6 +74,7 @@ export class FieldsSettingsService {
       languageInstanceService,
       contentTypeService,
       inputTypeService,
+      eavService,
     );
 
     if (isEmptyInputType) {

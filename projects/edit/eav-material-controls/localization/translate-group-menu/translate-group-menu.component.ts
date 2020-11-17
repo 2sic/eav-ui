@@ -9,7 +9,7 @@ import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/mode
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { ContentType, EavAttributes, EavValue, EavValues, Item } from '../../../shared/models/eav';
+import { ContentType, EavAttributes, EavValue, Item } from '../../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
@@ -39,7 +39,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   currentLanguage = '';
   defaultLanguage$: Observable<string>;
   defaultLanguage = '';
-  defaultLanguageMissingValue$ = new BehaviorSubject(false);
+  defaultLanguageMissingValue$: BehaviorSubject<boolean>;
   translationState$: BehaviorSubject<LinkToOtherLanguageData>;
   infoMessage$: BehaviorSubject<string>;
   infoMessageLabel$: BehaviorSubject<string>;
@@ -71,6 +71,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     this.attributes$ = this.itemService.selectItemAttributes(this.config.entity.entityGuid);
+    this.defaultLanguageMissingValue$ = this.config.field.fieldHelper.defaultLanguageMissingValue$;
     this.translationState$ = this.config.field.fieldHelper.translationState$;
     this.infoMessage$ = this.config.field.fieldHelper.translationInfoMessage$;
     this.infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
@@ -91,7 +92,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnDestroy() {
-    this.defaultLanguageMissingValue$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -277,7 +277,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
 
   private refreshControlConfig(attributeKey: string) {
     if (this.fieldConfig.isParentGroup) { return; }
-    this.setControlDisable(this.attributes[attributeKey], attributeKey, this.currentLanguage, this.defaultLanguage);
+    this.config.field.fieldHelper.setControlDisable(attributeKey, this.config, this.group);
     this.config.field.fieldHelper.readTranslationState(attributeKey);
     this.config.field.fieldHelper.setTranslationInfoMessage(attributeKey);
   }
@@ -310,49 +310,6 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
         default:
           break;
       }
-    }
-  }
-
-  /** Determine is control disabled or enabled */
-  private setControlDisable(attributes: EavValues<any>, attributeKey: string, currentLanguage: string, defaultLanguage: string) {
-    if (this.fieldConfig.isParentGroup) { return; }
-    // Important! if control already disabled through settings then skip
-    if (this.config.field.disabled) { return; }
-
-    const control = this.group.controls[attributeKey];
-    let newDisabled = control.disabled;
-    const defaultLanguageMissingValue = !LocalizationHelper.translationExistsInDefault(attributes, defaultLanguage);
-
-    if (this.config.field.fieldHelper.slotIsEmpty$.value) {
-      newDisabled = true;
-    } else if (currentLanguage === defaultLanguage) {
-      newDisabled = false;
-    } else {
-      if (defaultLanguageMissingValue) {
-        newDisabled = true;
-      } else {
-        if (this.config.field.fieldHelper.isTranslateDisabled(attributeKey)) {
-          newDisabled = true;
-        } else if (LocalizationHelper.isEditableTranslationExist(attributes, currentLanguage, defaultLanguage)) {
-          newDisabled = false;
-        } else if (LocalizationHelper.isReadonlyTranslationExist(attributes, currentLanguage)) {
-          newDisabled = true;
-        } else {
-          newDisabled = true;
-        }
-      }
-    }
-
-    if (control.disabled !== newDisabled) {
-      if (newDisabled) {
-        control.disable({ emitEvent: false });
-      } else {
-        control.enable({ emitEvent: false });
-      }
-      this.eavService.formDisabledChange$.next({ formId: this.config.form.formId, entityGuid: this.config.entity.entityGuid });
-    }
-    if (this.defaultLanguageMissingValue$.value !== defaultLanguageMissingValue) {
-      this.defaultLanguageMissingValue$.next(defaultLanguageMissingValue);
     }
   }
 
@@ -400,9 +357,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   private subscribeToEntityHeaderFromStore() {
     this.subscription.add(
       this.config.field.fieldHelper.slotIsEmpty$.subscribe(slotIsEmpty => {
-        this.setControlDisable(
-          this.attributes[this.config.field.name], this.config.field.name, this.currentLanguage, this.defaultLanguage,
-        );
+        this.config.field.fieldHelper.setControlDisable(this.config.field.name, this.config, this.group);
       })
     );
   }
