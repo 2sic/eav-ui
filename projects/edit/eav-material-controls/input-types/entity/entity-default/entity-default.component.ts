@@ -59,7 +59,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => this.settingsLogic.init(settings))).subscribe(this.settings$)
+      this.config.field.settings$.pipe(map(settings => this.settingsLogic.init(settings))).subscribe(settings => {
+        this.settings$.next(settings);
+      })
     );
     this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
       map(([fieldValue, settings, availableEntities]) => {
