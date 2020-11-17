@@ -19,7 +19,7 @@ import { IconOption } from './string-font-icon-picker.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringFontIconPickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   iconOptions$ = new BehaviorSubject<IconOption[]>([]);

@@ -4,7 +4,7 @@ export class WrappersConstants {
   // Default wrappers
   public static readonly HiddenWrapper = 'app-hidden-wrapper';
   public static readonly DropzoneWrapper = 'app-dropzone-wrapper';
-  public static readonly EavLocalizationWrapper = 'app-eav-localization-wrapper';
+  public static readonly LocalizationWrapper = 'app-localization-wrapper';
   public static readonly ExpandableWrapper = 'app-expandable-wrapper';
   public static readonly AdamAttachWrapper = 'app-adam-attach-wrapper';
   // Entity specific

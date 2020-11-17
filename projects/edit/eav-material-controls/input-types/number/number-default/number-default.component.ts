@@ -15,7 +15,7 @@ import { BaseComponent } from '../../base/base.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class NumberDefaultComponent extends BaseComponent<number> implements OnInit, OnDestroy {
   min$: Observable<number>;

@@ -281,16 +281,16 @@ export class TranslateMenuComponent implements OnInit, OnChanges, OnDestroy {
   getTranslationStateClass(linkType: string) {
     switch (linkType) {
       case TranslationLinkConstants.MissingDefaultLangValue:
-        return 'eav-localization-missing-default-lang-value';
+        return 'localization-missing-default-lang-value';
       case TranslationLinkConstants.Translate:
       case TranslationLinkConstants.LinkCopyFrom:
-        return 'eav-localization-translate';
+        return 'localization-translate';
       case TranslationLinkConstants.DontTranslate:
         return '';
       case TranslationLinkConstants.LinkReadOnly:
-        return 'eav-localization-link-read-only';
+        return 'localization-link-read-only';
       case TranslationLinkConstants.LinkReadWrite:
-        return 'eav-localization-link-read-write';
+        return 'localization-link-read-write';
       default:
         return '';
     }

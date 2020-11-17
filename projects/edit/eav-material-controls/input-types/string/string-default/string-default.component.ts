@@ -16,7 +16,7 @@ import { StringDefaultLogic } from './string-default-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   rowCount$: Observable<number>;

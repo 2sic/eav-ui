@@ -15,7 +15,7 @@ import { BooleanDefaultLogic } from './boolean-default-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
 

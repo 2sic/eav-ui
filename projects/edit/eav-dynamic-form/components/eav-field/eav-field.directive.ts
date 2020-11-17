@@ -25,12 +25,12 @@ import { StringTemplatePickerComponent } from '../../../eav-material-controls/in
 import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
 import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
 import { CollapsibleFieldWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { EavLocalizationComponent } from '../../../eav-material-controls/wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { EntityExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { LocalizationWrapperComponent } from '../../../eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 
@@ -44,7 +44,7 @@ export class EavFieldDirective implements OnInit {
     'app-collapsible-field-wrapper': CollapsibleFieldWrapperComponent,
     'app-collapsible-wrapper': CollapsibleWrapperComponent,
     'app-dropzone-wrapper': DropzoneWrapperComponent,
-    'app-eav-localization-wrapper': EavLocalizationComponent,
+    'app-localization-wrapper': LocalizationWrapperComponent,
     'app-entity-expandable-wrapper': EntityExpandableWrapperComponent,
     'app-expandable-wrapper': ExpandableWrapperComponent,
     'app-hidden-wrapper': HiddenWrapperComponent,

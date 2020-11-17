@@ -17,7 +17,7 @@ import { StringUrlPathLogic } from './string-url-path-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringUrlPathComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   private autoGenerateMask: string;

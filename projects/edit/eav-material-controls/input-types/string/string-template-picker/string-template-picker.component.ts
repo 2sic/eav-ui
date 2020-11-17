@@ -17,7 +17,7 @@ import { templateTypes } from './string-template-picker.constants';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateOptions$ = new BehaviorSubject<string[]>([]);

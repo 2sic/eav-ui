@@ -16,7 +16,7 @@ import { CustomJsonEditorLogic } from './custom-json-editor-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   rowCount$: Observable<number>;

@@ -17,7 +17,7 @@ import { DropdownOption } from './string-dropdown.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   enableTextEntry$: Observable<boolean>;

@@ -15,7 +15,7 @@ import { BooleanTristateLogic } from './boolean-tristate-logic';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
 

@@ -18,7 +18,7 @@ import { BaseComponent } from '../../base/base.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+  wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   useTimePicker$: Observable<boolean>;

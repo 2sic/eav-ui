@@ -17,7 +17,7 @@ import { AdamControl } from './hyperlink-library.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
+  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.LocalizationWrapper,
   WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {

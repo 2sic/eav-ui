@@ -90,7 +90,7 @@ export class InputFieldHelper {
       || (inputType === InputTypeConstants.EntityContentBlocks);
 
     if (isEntityType) {
-      wrappers.push(WrappersConstants.EavLocalizationWrapper);
+      wrappers.push(WrappersConstants.LocalizationWrapper);
       const allowMultiValue = settingsTranslated.AllowMultiValue || false;
       if (inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
@@ -103,7 +103,7 @@ export class InputFieldHelper {
     if (isExternal) {
       wrappers.push(
         WrappersConstants.DropzoneWrapper,
-        WrappersConstants.EavLocalizationWrapper,
+        WrappersConstants.LocalizationWrapper,
         WrappersConstants.ExpandableWrapper,
         WrappersConstants.AdamAttachWrapper,
       );

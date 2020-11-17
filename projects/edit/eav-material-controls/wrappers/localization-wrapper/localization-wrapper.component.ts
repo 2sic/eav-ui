@@ -9,12 +9,12 @@ import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
-  selector: 'app-eav-localization-wrapper',
-  templateUrl: './eav-localization-wrapper.component.html',
-  styleUrls: ['./eav-localization-wrapper.component.scss'],
+  selector: 'app-localization-wrapper',
+  templateUrl: './localization-wrapper.component.html',
+  styleUrls: ['./localization-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavLocalizationComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
+export class LocalizationWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;

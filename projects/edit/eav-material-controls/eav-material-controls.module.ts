@@ -70,13 +70,13 @@ import { TranslateMenuComponent } from './localization/translate-menu/translate-
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/localization-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +92,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
-    EavLocalizationComponent,
+    LocalizationWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
     AdamBrowserComponent,
@@ -164,7 +164,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     CollapsibleWrapperComponent,
     DatetimeDefaultComponent,
     AdamAttachWrapperComponent,
-    EavLocalizationComponent,
+    LocalizationWrapperComponent,
     EmptyDefaultComponent,
     EntityDefaultComponent,
     EntityQueryComponent,

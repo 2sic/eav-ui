@@ -5,11 +5,11 @@
   background: $edit-ui-selected-option;
 }
 
-.eav-localization-lock-open {
+.localization-lock-open {
   color: green;
 }
 
-.eav-localization {
+.localization {
   &-missing-default-lang-value {
     color: red;
   }

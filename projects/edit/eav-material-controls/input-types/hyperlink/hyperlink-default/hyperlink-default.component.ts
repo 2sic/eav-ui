@@ -23,7 +23,7 @@ import { Preview } from './hyperlink-default.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
+  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.LocalizationWrapper,
   WrappersConstants.HyperlinkDefaultExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
