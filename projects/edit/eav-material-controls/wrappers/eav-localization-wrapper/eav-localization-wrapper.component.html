@@ -3,8 +3,8 @@
     [ngClass]="{ 'language-wrap__field-short': (currentLanguage$ | async) !== (defaultLanguage$ | async) }">
     <ng-container #fieldComponent></ng-container>
   </div>
-  <app-translate-group-menu class="language-wrap__translate" [ngClass]="{
+  <app-translate-menu class="language-wrap__translate" [ngClass]="{
     'language-wrap__translate--hidden': (currentLanguage$ | async) === (defaultLanguage$ | async)
   }" [config]="config" [group]="group" [toggleTranslateField]="toggleTranslateField$ | async">
-  </app-translate-group-menu>
+  </app-translate-menu>
 </div>

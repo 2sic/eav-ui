@@ -19,12 +19,12 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
 
 @Component({
-  selector: 'app-translate-group-menu',
-  templateUrl: './translate-group-menu.component.html',
-  styleUrls: ['./translate-group-menu.component.scss'],
+  selector: 'app-translate-menu',
+  templateUrl: './translate-menu.component.html',
+  styleUrls: ['./translate-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy {
+export class TranslateMenuComponent implements OnInit, OnChanges, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() private group: FormGroup;
   @Input() toggleTranslateField: boolean;
@@ -377,7 +377,7 @@ export class TranslateGroupMenuComponent implements OnInit, OnChanges, OnDestroy
   /** Subscribe triggered when changing all in menu (forAllFields) */
   private onMenuChange() {
     this.subscription.add(
-      this.languageInstanceService.localizationWrapperMenuChange$.subscribe(s => {
+      this.languageInstanceService.localizationWrapperMenuChange$.subscribe(() => {
         if (this.fieldConfig.isParentGroup) { return; }
         this.refreshControlConfig(this.config.field.name);
       })

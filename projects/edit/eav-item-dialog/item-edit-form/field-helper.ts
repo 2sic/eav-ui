@@ -2,7 +2,7 @@ import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { TranslateGroupMenuHelpers } from '../../eav-material-controls/localization/translate-group-menu/translate-group-menu.helpers';
+import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -220,7 +220,7 @@ export class FieldHelper {
 
       const isShared = dimensions.length > 0;
       if (isShared) {
-        this.translationInfoMessage$.next(TranslateGroupMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
+        this.translationInfoMessage$.next(TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
 
         if (editableTranslationExists) {
           this.translationInfoMessageLabel$.next('LangMenu.In');

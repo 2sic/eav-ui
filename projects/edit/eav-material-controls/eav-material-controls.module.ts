@@ -66,7 +66,7 @@ import { StringTemplatePickerComponent } from './input-types/string/string-templ
 import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
-import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
+import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
 import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
@@ -109,7 +109,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
     FieldHelperTextComponent,
-    TranslateGroupMenuComponent,
+    TranslateMenuComponent,
     LinkToOtherLanguageComponent,
     EntityExpandableWrapperComponent,
     EntityDefaultListComponent,
@@ -197,7 +197,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
   ],
   exports: [
     EavLanguageSwitcherComponent,
-    TranslateGroupMenuComponent,
+    TranslateMenuComponent,
     ChangeAnchorTargetDirective,
   ],
   providers: [

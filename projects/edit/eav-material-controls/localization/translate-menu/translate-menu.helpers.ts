@@ -1,8 +1,8 @@
-export class TranslateGroupMenuHelpers {
+export class TranslateMenuHelpers {
 
   public static calculateSharedInfoMessage(dimensions: string[], currentLanguage: string): string {
-    dimensions = TranslateGroupMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
-    const result = TranslateGroupMenuHelpers.calculateEditAndReadDimensions(dimensions);
+    dimensions = TranslateMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
+    const result = TranslateMenuHelpers.calculateEditAndReadDimensions(dimensions);
     const editableDimensions = result.editableDimensions;
     const readOnlyDimensions = result.readOnlyDimensions;
     let infoMessage = '';
