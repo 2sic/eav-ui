@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import isEqual from 'lodash-es/isEqual';
@@ -24,10 +24,9 @@ import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-
   styleUrls: ['./translate-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TranslateMenuComponent implements OnInit, OnChanges, OnDestroy {
+export class TranslateMenuComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() private group: FormGroup;
-  @Input() toggleTranslateField: boolean;
 
   fieldConfig: FieldConfigGroup;
   disabled$: Observable<boolean>;
@@ -89,17 +88,17 @@ export class TranslateMenuComponent implements OnInit, OnChanges, OnDestroy {
     this.onSlotIsEmptyChanged();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.toggleTranslateField != null && this.currentLanguage$.value !== this.defaultLanguage$.value && this.control.disabled) {
-      this.translateUnlink(this.config.field.name);
-    }
-  }
-
   ngOnDestroy() {
     this.currentLanguage$.complete();
     this.defaultLanguage$.complete();
     this.attributes$.complete();
     this.subscription.unsubscribe();
+  }
+
+  /** Translate when wrapper detects dblclick */
+  dblClickTranslate() {
+    if (this.currentLanguage$.value === this.defaultLanguage$.value || !this.control.disabled) { return; }
+    this.translateUnlink(this.config.field.name);
   }
 
   openLinkToOtherLanguage() {
