@@ -1,0 +1,10 @@
+.selector {
+  width: 400px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+
+  &__dropdown {
+    flex: 1 1 auto;
+  }
+}

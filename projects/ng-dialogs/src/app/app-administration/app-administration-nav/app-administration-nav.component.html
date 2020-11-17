@@ -11,8 +11,9 @@
   <router-outlet></router-outlet>
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-  <mat-tab-group dynamicHeight color="accent" *ngIf="data.dialogSettings && data.tabIndex != null"
-    (selectedTabChange)="changeTab($event)" [selectedIndex]="data.tabIndex">
+  <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent"
+    *ngIf="data.dialogSettings && data.tabIndex != null" (selectedTabChange)="changeTab($event)"
+    [selectedIndex]="data.tabIndex">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" matTooltip="App Info">
         <mat-icon>info</mat-icon>

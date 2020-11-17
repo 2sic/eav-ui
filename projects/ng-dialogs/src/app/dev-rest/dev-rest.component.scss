@@ -1,0 +1,43 @@
+code,
+pre {
+  padding-left: 2px;
+  padding-right: 2px;
+  background-color: #eeeeee;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+p.warning {
+  background-color: lightcoral;
+}
+
+.rest-urls-accordion {
+  display: block;
+  margin: 8px;
+}
+
+.rest-urls-title {
+  display: flex;
+  align-items: center;
+}
+
+.code-example {
+  position: relative;
+
+  &__text {
+    min-height: 40px;
+  }
+
+  &__copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+// TODO: SPM
+// Pls help so all P / UL/OL / LI etc. have the right font size etc.
+// using variables, not repeating the definition here

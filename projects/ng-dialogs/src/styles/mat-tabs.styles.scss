@@ -1,19 +1,33 @@
-.mat-tab-group {
+.mat-tab-group-max-height {
   flex-grow: 1;
+
+  .mat-tab-body-wrapper {
+    flex-grow: 1;
+  }
+
+  .mat-tab-body-wrapper,
+  .mat-tab-body-active,
+  .mat-tab-body-active .mat-tab-body-content {
+    overflow: visible !important;
+  }
+
+  .mat-tab-body-content {
+    @extend .hide-scrollbar;
+  }
 }
 
-.mat-tab-body-wrapper {
-  flex-grow: 1;
+.mat-tab-group-fit-height {
+  overflow: hidden;
+
+  .mat-tab-body-active .mat-tab-body-content {
+    overflow: auto !important;
+  }
 }
 
-.mat-tab-body-wrapper,
-.mat-tab-body-active,
-.mat-tab-body-active .mat-tab-body-content {
-  overflow: visible !important;
-}
-
-.mat-tab-body-content {
-  @extend .hide-scrollbar;
+.mat-tab-group-fancy-scrollbar {
+  .mat-tab-body-content {
+    @extend .fancy-scrollbar-light;
+  }
 }
 
 .mat-tab-label-box {
