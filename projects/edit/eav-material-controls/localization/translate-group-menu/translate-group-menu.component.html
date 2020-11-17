@@ -41,7 +41,7 @@
         <div class="shared-languages mat-caption" [class.shared-languages--disabled]="data.disabled">
           {{ data.infoMessageLabel ? (data.infoMessageLabel | translate:{ languages: data.infoMessage }) : '' }}
         </div>
-        <button mat-icon-button [disabled]="fieldConfig.disableI18n || data.defaultLanguageMissingValue"
+        <button mat-icon-button [disabled]="config.field.disableI18n || data.defaultLanguageMissingValue"
           [matMenuTriggerFor]="rootMenu2">
           <mat-icon class="translate-icon">translate</mat-icon>
         </button>
