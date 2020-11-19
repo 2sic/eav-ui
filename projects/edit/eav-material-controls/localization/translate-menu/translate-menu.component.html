@@ -1,16 +1,7 @@
-<ng-container *ngIf="{
-  currentLanguage: currentLanguage$ | async,
-  defaultLanguage: defaultLanguage$ | async,
-  translationState: translationState$ | async,
-  disabled: disabled$ | async,
-  defaultLanguageMissingValue: defaultLanguageMissingValue$ | async,
-  infoMessage: infoMessage$ | async,
-  infoMessageLabel: infoMessageLabel$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
-    <div fxLayoutAlign="end center" class="shared-languages-container"
-      [ngClass]="getTranslationStateClass(data.translationState.linkType)">
+    <div fxLayoutAlign="end center" class="shared-languages-container" [ngClass]="data.translationStateClass">
       <div class="shared-languages mat-caption" [class.shared-languages--disabled]="data.disabled">
         {{ data.infoMessageLabel ? (data.infoMessageLabel | translate:{ languages: data.infoMessage }) : '' }}
       </div>
