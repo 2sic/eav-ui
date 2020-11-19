@@ -65,6 +65,7 @@ import { StringFontIconPickerComponent } from './input-types/string/string-font-
 import { StringTemplatePickerComponent } from './input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
+import { EntityTranslateMenuComponent } from './localization/entity-translate-menu/entity-translate-menu.component';
 import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
@@ -109,6 +110,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
     FieldHelperTextComponent,
+    EntityTranslateMenuComponent,
     TranslateMenuComponent,
     LinkToOtherLanguageComponent,
     EntityExpandableWrapperComponent,
@@ -197,6 +199,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
   ],
   exports: [
     EavLanguageSwitcherComponent,
+    EntityTranslateMenuComponent,
     TranslateMenuComponent,
     ChangeAnchorTargetDirective,
   ],

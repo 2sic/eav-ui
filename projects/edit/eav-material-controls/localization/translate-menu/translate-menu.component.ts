@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import isEqual from 'lodash-es/isEqual';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
@@ -28,7 +28,6 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() private group: FormGroup;
 
-  fieldConfig: FieldConfigGroup;
   disabled$: Observable<boolean>;
   translationLinkConstants = TranslationLinkConstants;
   currentLanguage$ = new BehaviorSubject<string>(null);
@@ -52,9 +51,8 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.fieldConfig = this.config.field as FieldConfigGroup;
     this.control = this.group.controls[this.config.field.name];
-    this.disabled$ = this.fieldConfig.isParentGroup ? of(false) : this.eavService.formDisabledChange$.pipe(
+    this.disabled$ = this.eavService.formDisabledChange$.pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),
@@ -81,7 +79,8 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.translationState$ = this.config.field.fieldHelper.translationState$;
     this.infoMessage$ = this.config.field.fieldHelper.translationInfoMessage$;
     this.infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
-    this.onMenuChange();
+    this.onCheckField();
+    this.onTranslateMany();
     this.onCurrentLanguageChanged();
     this.onDefaultLanguageChanged();
     this.onFormulaSettingsChanged();
@@ -143,7 +142,10 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       angularConsoleLog(`${this.currentLanguage$.value}: Cant copy value from ${this.defaultLanguage$.value} because that value does not exist.`);
     }
 
-    this.refreshControlConfig(attributeKey);
+    this.languageInstanceService.checkField({
+      entityGuid: this.config.entity.entityGuid,
+      fieldName: this.config.field.name,
+    });
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
@@ -154,34 +156,13 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
 
-    this.refreshControlConfig(attributeKey);
+    this.languageInstanceService.checkField({
+      entityGuid: this.config.entity.entityGuid,
+      fieldName: this.config.field.name,
+    });
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
-  }
-
-  translateAll() {
-    this.config.field.fieldHelper.setTranslationState(TranslationLinkConstants.Translate, '');
-    Object.keys(this.attributes$.value).forEach(attributeKey => {
-      this.translateUnlink(attributeKey);
-    });
-    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
-  }
-
-  dontTranslateAll() {
-    this.config.field.fieldHelper.setTranslationState(TranslationLinkConstants.DontTranslate, '');
-    Object.keys(this.attributes$.value).forEach(attributeKey => {
-      this.linkToDefault(attributeKey);
-    });
-    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
-  }
-
-  copyFromAll(languageKey: string) {
-    this.config.field.fieldHelper.setTranslationState(TranslationLinkConstants.LinkCopyFrom, languageKey);
-    Object.keys(this.attributes$.value).forEach(attributeKey => {
-      this.copyFrom(languageKey, attributeKey);
-    });
-    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   /**
@@ -227,18 +208,13 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       angularConsoleLog(`${this.currentLanguage$.value}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
     }
 
-    this.refreshControlConfig(attributeKey);
+    this.languageInstanceService.checkField({
+      entityGuid: this.config.entity.entityGuid,
+      fieldName: this.config.field.name,
+    });
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
-  }
-
-  linkReadOnlyAll(languageKey: string) {
-    this.config.field.fieldHelper.setTranslationState(TranslationLinkConstants.LinkReadOnly, languageKey);
-    Object.keys(this.attributes$.value).forEach(attributeKey => {
-      this.linkReadOnly(languageKey, attributeKey);
-    });
-    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   linkReadOnly(languageKey: string, attributeKey: string) {
@@ -249,18 +225,14 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.itemService.addItemAttributeDimension(
       this.config.entity.entityGuid, attributeKey, this.currentLanguage$.value, languageKey, this.defaultLanguage$.value, true,
     );
-    this.refreshControlConfig(attributeKey);
+
+    this.languageInstanceService.checkField({
+      entityGuid: this.config.entity.entityGuid,
+      fieldName: this.config.field.name,
+    });
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
-  }
-
-  linkReadWriteAll(languageKey: string) {
-    this.config.field.fieldHelper.setTranslationState(TranslationLinkConstants.LinkReadWrite, languageKey);
-    Object.keys(this.attributes$.value).forEach(attributeKey => {
-      this.linkReadWrite(languageKey, attributeKey);
-    });
-    this.languageInstanceService.triggerLocalizationWrapperMenuChange();
   }
 
   linkReadWrite(languageKey: string, attributeKey: string) {
@@ -271,7 +243,11 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.itemService.addItemAttributeDimension(
       this.config.entity.entityGuid, attributeKey, this.currentLanguage$.value, languageKey, this.defaultLanguage$.value, false,
     );
-    this.refreshControlConfig(attributeKey);
+
+    this.languageInstanceService.checkField({
+      entityGuid: this.config.entity.entityGuid,
+      fieldName: this.config.field.name,
+    });
     // run value formulas when field is translated
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
@@ -296,7 +272,6 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   private refreshControlConfig(attributeKey: string) {
-    if (this.fieldConfig.isParentGroup) { return; }
     this.config.field.fieldHelper.setControlDisable(attributeKey, this.config, this.group);
     this.config.field.fieldHelper.readTranslationState(attributeKey);
     this.config.field.fieldHelper.setTranslationInfoMessage(attributeKey);
@@ -307,25 +282,19 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       // need be sure that we have a language selected when a link option is clicked
       switch (actionResult.linkType) {
         case TranslationLinkConstants.Translate:
-          this.fieldConfig.isParentGroup ? this.translateAll() : this.translateUnlink(this.config.field.name);
+          this.translateUnlink(this.config.field.name);
           break;
         case TranslationLinkConstants.DontTranslate:
-          this.fieldConfig.isParentGroup ? this.dontTranslateAll() : this.linkToDefault(this.config.field.name);
+          this.linkToDefault(this.config.field.name);
           break;
         case TranslationLinkConstants.LinkReadOnly:
-          this.fieldConfig.isParentGroup
-            ? this.linkReadOnlyAll(actionResult.language)
-            : this.linkReadOnly(actionResult.language, this.config.field.name);
+          this.linkReadOnly(actionResult.language, this.config.field.name);
           break;
         case TranslationLinkConstants.LinkReadWrite:
-          this.fieldConfig.isParentGroup
-            ? this.linkReadWriteAll(actionResult.language)
-            : this.linkReadWrite(actionResult.language, this.config.field.name);
+          this.linkReadWrite(actionResult.language, this.config.field.name);
           break;
         case TranslationLinkConstants.LinkCopyFrom:
-          this.fieldConfig.isParentGroup
-            ? this.copyFromAll(actionResult.language)
-            : this.copyFrom(actionResult.language, this.config.field.name);
+          this.copyFrom(actionResult.language, this.config.field.name);
           break;
         default:
           break;
@@ -373,11 +342,28 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** Subscribe triggered when changing all in menu (forAllFields) */
-  private onMenuChange() {
+  private onTranslateMany() {
     this.subscription.add(
-      this.languageInstanceService.localizationWrapperMenuChange$.subscribe(() => {
-        if (this.fieldConfig.isParentGroup) { return; }
+      this.languageInstanceService.getTranslateMany(this.config.form.formId, this.config.entity.entityGuid).subscribe(props => {
+        switch (props.translationLink) {
+          case TranslationLinkConstants.Translate:
+            this.translateUnlink(this.config.field.name);
+            break;
+          case TranslationLinkConstants.DontTranslate:
+            this.linkToDefault(this.config.field.name);
+            break;
+        }
+        this.languageInstanceService.checkField({
+          entityGuid: this.config.entity.entityGuid,
+          fieldName: this.config.field.name,
+        });
+      })
+    );
+  }
+
+  private onCheckField() {
+    this.subscription.add(
+      this.languageInstanceService.getCheckField(this.config.entity.entityGuid, this.config.field.name).subscribe(props => {
         this.refreshControlConfig(this.config.field.name);
       })
     );

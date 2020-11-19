@@ -6,3 +6,5 @@ export class TranslationLinkConstants {
   public static readonly LinkReadWrite = 'linkReadWrite';
   public static readonly LinkCopyFrom = 'linkCopyFrom';
 }
+
+export type TranslationLink = typeof TranslationLinkConstants[keyof typeof TranslationLinkConstants];

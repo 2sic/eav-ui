@@ -1,20 +1,32 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { TranslationLink } from '../../constants/translation-link.constants';
 import { LanguageInstance } from '../../models/eav/language-instance';
+
+export interface TranslateManyProps {
+  formId: number;
+  entityGuid: string;
+  translationLink: TranslationLink;
+}
+
+export interface CheckFieldProps {
+  entityGuid: string;
+  fieldName: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends EntityCollectionServiceBase<LanguageInstance> implements OnDestroy {
-  private localizationWrapperMenuChangeSource = new Subject<string>();
-  localizationWrapperMenuChange$ = this.localizationWrapperMenuChangeSource.asObservable();
+  private translateMany$ = new Subject<TranslateManyProps>();
+  private checkField$ = new Subject<CheckFieldProps>();
 
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('LanguageInstance', serviceElementsFactory);
   }
 
   ngOnDestroy() {
-    this.localizationWrapperMenuChangeSource.complete();
+    this.translateMany$.complete();
   }
 
   /** Add language instance to ngrx-data */
@@ -63,8 +75,23 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
     this.removeOneFromCache(formId);
   }
 
-  /** Trigger info message change on all form controls */
-  triggerLocalizationWrapperMenuChange() {
-    this.localizationWrapperMenuChangeSource.next();
+  /** Translate all fields in entity + change check for the same entity in other forms */
+  translateMany(props: TranslateManyProps) {
+    this.translateMany$.next(props);
+  }
+
+  /** Translate all fields in entity + change check for the same entity in other forms */
+  getTranslateMany(formId: number, entityGuid: string) {
+    return this.translateMany$.pipe(filter(props => props.formId === formId && props.entityGuid === entityGuid));
+  }
+
+  /** Translate all fields in entity + change check for the same entity in other forms */
+  checkField(props: CheckFieldProps) {
+    this.checkField$.next(props);
+  }
+
+  /** Translate all fields in entity + change check for the same entity in other forms */
+  getCheckField(entityGuid: string, fieldName: string) {
+    return this.checkField$.pipe(filter(props => props.entityGuid === entityGuid && props.fieldName === fieldName));
   }
 }
