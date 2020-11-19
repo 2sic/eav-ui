@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
@@ -92,13 +92,17 @@ export class FieldHelper {
     this.subscription.unsubscribe();
   }
 
+  refreshControlConfig(attributeKey: string, config: FieldConfigSet, form: FormGroup) {
+    this.setControlDisable(attributeKey, config, form);
+    this.readTranslationState(attributeKey);
+    this.setTranslationInfoMessage(attributeKey);
+  }
+
   setControlDisable(attributeKey: string, config: FieldConfigSet, form: FormGroup): void {
     const values = this.attributes$.value[attributeKey];
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;
-    const fieldConfig = config.field as FieldConfigGroup;
 
-    if (fieldConfig.isParentGroup) { return; }
     // Important! if control already disabled through settings then skip
     if (config.field.disabled) { return; }
 
@@ -139,7 +143,7 @@ export class FieldHelper {
     }
   }
 
-  readTranslationState(attributeKey: string): void {
+  private readTranslationState(attributeKey: string): void {
     const values = this.attributes$.value[attributeKey];
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;
@@ -193,7 +197,7 @@ export class FieldHelper {
   }
 
   /** Set info message */
-  setTranslationInfoMessage(attributeKey: string) {
+  private setTranslationInfoMessage(attributeKey: string) {
     const values = this.attributes$.value[attributeKey];
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;

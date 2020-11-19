@@ -292,12 +292,6 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  private refreshControlConfig(attributeKey: string) {
-    this.config.field.fieldHelper.setControlDisable(attributeKey, this.config, this.group);
-    this.config.field.fieldHelper.readTranslationState(attributeKey);
-    this.config.field.fieldHelper.setTranslationInfoMessage(attributeKey);
-  }
-
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
     if (!isEqual(this.translationState$.value, actionResult)) {
       // need be sure that we have a language selected when a link option is clicked
@@ -327,7 +321,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.currentLanguage$.subscribe(currentLanguage => {
         this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage$.value, this.defaultLanguage$.value);
-        this.refreshControlConfig(this.config.field.name);
+        this.config.field.fieldHelper.refreshControlConfig(this.config.field.name, this.config, this.group);
         this.formulaInstance.fieldTranslated(this.config.field.name);
       })
     );
@@ -337,7 +331,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.defaultLanguage$.subscribe(defaultLanguage => {
         this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage$.value, this.defaultLanguage$.value);
-        this.refreshControlConfig(this.config.field.name);
+        this.config.field.fieldHelper.refreshControlConfig(this.config.field.name, this.config, this.group);
       })
     );
   }
@@ -350,7 +344,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
         this.fieldsSettingsService.translateSettingsAndValidation(
           this.config, this.currentLanguage$.value, this.defaultLanguage$.value, formulaSettings,
         );
-        this.refreshControlConfig(this.config.field.name);
+        this.config.field.fieldHelper.refreshControlConfig(this.config.field.name, this.config, this.group);
       })
     );
   }
@@ -381,7 +375,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   private onCheckField() {
     this.subscription.add(
       this.languageInstanceService.getCheckField(this.config.entity.entityGuid, this.config.field.name).subscribe(props => {
-        this.refreshControlConfig(this.config.field.name);
+        this.config.field.fieldHelper.refreshControlConfig(this.config.field.name, this.config, this.group);
       })
     );
   }
