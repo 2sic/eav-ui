@@ -1,6 +1,7 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { ApiCall, CodeSample, Scenario } from '..';
-import { Hint } from './hint';
+import { Context } from '../../shared/services/context';
+import { Hint } from '../info-box/hint';
 // tslint:disable: curly
 
 const hint$2sxc = new Hint('tip', `The <code>$2sxc</code> is a helper JS from 2sxc. It's always included for super-users (hosts).
@@ -10,22 +11,27 @@ const hint$2sxc = new Hint('tip', `The <code>$2sxc</code> is a helper JS from 2s
 const warningSimpleSampleOnly = new Hint('warning', `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
 but you'll have to compare it with the GET examples to be sure you have the right headers etc. `, '');
 
-export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, moduleId: number, root: string, id: number) {
-  const virtual = root[0] !== '/';
+export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number) {
+  const virtual = root[0] !== '/' && !root.startsWith('http');
   root = root + '/';
   const withId = root + id;
+  const contextParams = virtual ? `?PageId=${context.tabId}&ModuleId=${context.moduleId}` : '';
+  const directUrl = $2sxc.http.apiUrl(root) + contextParams;
+  const directWId = $2sxc.http.apiUrl(withId) + contextParams;
+
   return [
-    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet($2sxc, scenario, root, moduleId),
-      $2sxc.http.apiUrl(root)),
-    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet($2sxc, scenario, withId, moduleId),
-      $2sxc.http.apiUrl(withId)),
-    new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(scenario, root, moduleId)),
-    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(scenario, withId, moduleId)),
-    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(scenario, withId, moduleId)),
+    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet($2sxc, scenario, root, context),
+      directUrl),
+    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet($2sxc, scenario, withId, context),
+      directWId),
+    new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(scenario, root, context.moduleId)),
+    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(scenario, withId, context.moduleId)),
+    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(scenario, withId, context.moduleId)),
   ];
 }
 
-function snippetsGet($2sxc: SxcRoot, scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+function snippetsGet($2sxc: SxcRoot, scenario: Scenario, path: string, context: Context): CodeSample[] {
+  const moduleId = context.moduleId;
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];
   if (scenario.inSameContext)

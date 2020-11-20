@@ -1,0 +1,21 @@
+
+p.warning {
+  background-color: lightcoral;
+}
+
+p.alert {
+  background-color: lightyellow;
+}
+
+p.info, p.tip {
+  background-color: rgb(170, 218, 248);
+}
+
+p.icon-box {
+  padding: 5px 5px 5px 60px;
+  margin: 5px;
+}
+
+p.icon-box mat-icon {
+  margin-left: -40px;
+}

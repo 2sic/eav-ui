@@ -1,0 +1,42 @@
+<mat-accordion multi class="rest-urls-accordion">
+  <mat-expansion-panel *ngFor="let apiCall of data.apiCalls">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <div class="rest-urls-title">
+          <code>{{ apiCall.verb }}</code>: <code>{{ apiCall.url }}</code>
+          <span>&nbsp;to {{ apiCall.teaser }}</span>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-panel-description style="display: block;">
+      <h4>{{ apiCall.instructions }}</h4>
+      <p>
+        HTTP Verb: <code>{{ apiCall.verb }}</code> <br>
+        {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} Url: <code>{{ apiCall.url }}</code>
+      </p>
+      <p *ngIf="apiCall.enableButton">
+        <button mat-raised-button (click)="callApiGet(apiCall.url)">Call and Output to Console</button>
+        <a *ngIf="apiCall.browseUrl" [href]="apiCall.browseUrl" target="_blank">
+          Open in Browser
+        </a>
+      </p>
+
+      <ng-container *ngFor="let code of apiCall.code">
+        <h4>{{ code.title }}</h4>
+        <p>{{ code.description }}</p>
+        <div class="code-example">
+          <pre class="code-example__text">{{ code.code }}</pre>
+          <button mat-icon-button class="code-example__copy" matTooltip="Copy to clipboard"
+            (click)="copyCode(code.code)">
+            <mat-icon>copy</mat-icon>
+          </button>
+        </div>
+        <p *ngFor="let hint of code.hints" class="icon-box {{ hint.type }}">
+          <mat-icon>{{ hint.icon }}</mat-icon>
+          <span [innerHtml]="hint.message"></span>
+        </p>
+      </ng-container>
+
+    </mat-panel-description>
+  </mat-expansion-panel>
+</mat-accordion>

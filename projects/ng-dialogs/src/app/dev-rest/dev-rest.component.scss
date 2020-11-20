@@ -12,27 +12,6 @@ pre {
   word-break: keep-all;
 }
 
-p.warning {
-  background-color: lightcoral;
-}
-
-p.alert {
-  background-color: lightyellow;
-}
-
-p.info, p.tip {
-  background-color: rgb(170, 218, 248);
-}
-
-p.icon-box {
-  padding: 5px 5px 5px 40px;
-  margin: 5px;
-}
-
-p.icon-box mat-icon {
-  margin-left: -32px;
-}
-
 .rest-urls-accordion {
   display: block;
   margin: 8px;
@@ -56,3 +35,5 @@ p.icon-box mat-icon {
     right: 0;
   }
 }
+
+@import './info-box.scss';

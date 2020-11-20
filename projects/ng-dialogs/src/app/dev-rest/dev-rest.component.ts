@@ -1,9 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
@@ -16,9 +13,7 @@ import { AppDialogConfigService } from '../app-administration/services/app-dialo
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Permission } from '../permissions/models/permission.model';
 import { PermissionsService } from '../permissions/services/permissions.service';
-import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
-import { copyToClipboard } from '../shared/helpers/copy-to-clipboard.helper';
 import { Context } from '../shared/services/context';
 import { DevRestTemplateVars } from './dev-rest.models';
 
@@ -35,20 +30,6 @@ const pathToContent = 'app/{appname}/content/{typename}';
 export class DevRestComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  /** AgGrid modules */
-  modules = AllCommunityModules;
-  /** AgGrid options */
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      { headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline' },
-      { headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline' },
-    ],
-  };
-
   /** List of scenarios */
   scenarios = AllScenarios;
 
@@ -64,7 +45,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   /** App, language, etc. */
   private dialogSettings$: BehaviorSubject<DialogSettings>;
 
-  private permissions$ = new Subject<Permission[]>(); //: BehaviorSubject<Permission[]>;
+  private permissions$ = new Subject<Permission[]>();
 
   /** Currently selected scenario */
   private scenario$: BehaviorSubject<Scenario>;
@@ -82,8 +63,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<DevRestComponent>,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
-    private http: HttpClient,
     private contentTypesService: ContentTypesService,
     private appDialogConfigService: AppDialogConfigService,
     private permissionsService: PermissionsService,
@@ -95,7 +74,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
   ) {
     this.contentType$ = new BehaviorSubject<ContentType>(null);
     this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-    // this.permissions$ = new BehaviorSubject<Permission[]>(null);
     this.scenario$ = new BehaviorSubject<Scenario>(this.scenarios[0]);
     this.modeInternal$ = this.scenario$.pipe(map(scenario => scenario.key === 'internal'));
 
@@ -132,7 +110,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
         root,
         itemId: item.Id,
         itemGuid: item.Value,
-        apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context.moduleId, root, item.Id),
+        apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
         folder: encodeURI(diag.Context.App.Folder),
         moduleId: context.moduleId,
         scenario,
@@ -164,23 +142,6 @@ export class DevRestComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  callApiGet(url: string) {
-    this.http.get<any>(url).subscribe(res => {
-      console.log(`Called ${url} and got this:`, res);
-      this.openSnackBar(`Called ${url}. You can see the full result in the F12 console`, 'API call returned');
-    });
-    this.openSnackBar(`Calling ${url}. You can see the full result in the F12 console`, 'API call sent');
-  }
-
-  openPermissions() {
-    this.router.navigate([`permissions/${this.targetType}/${this.keyType}/${this.contentTypeStaticName}`], { relativeTo: this.route });
-  }
-
-  copyCode(text: string) {
-    copyToClipboard(text);
-    this.openSnackBar('Copied to clipboard');
-  }
-
   private fetchData() {
     this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
       this.contentType$.next(contentType);
@@ -207,9 +168,4 @@ export class DevRestComponent implements OnInit, OnDestroy {
     );
   }
 
-  private openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
-  }
 }
