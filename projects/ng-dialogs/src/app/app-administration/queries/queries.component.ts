@@ -56,6 +56,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onEditQuery: this.editQuery.bind(this),
+          onOpenRestApi: this.openRestApi.bind(this),
           onCloneQuery: this.cloneQuery.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onExportQuery: this.exportQuery.bind(this),
@@ -114,6 +115,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private enablePermissionsGetter() {
     return this.enablePermissions;
+  }
+
+  private openRestApi(query: Query) {
+    this.router.navigate([`restapi/${query.Name}`], { relativeTo: this.route.firstChild });
   }
 
   private openVisualQueryDesigner(params: CellClickedEvent) {

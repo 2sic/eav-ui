@@ -11,8 +11,8 @@ import { QueriesActionsParams } from './queries-actions.models';
 })
 export class QueriesActionsComponent implements ICellRendererAngularComp {
   enablePermissions: boolean;
-  query: Query;
-  private params: QueriesActionsParams;
+  public query: Query;
+  public params: QueriesActionsParams;
 
   constructor() { }
 
@@ -26,23 +26,27 @@ export class QueriesActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  editQuery() {
-    this.params.onEditQuery(this.query);
-  }
+  // editQuery() {
+  //   this.params.onEditQuery(this.query);
+  // }
 
-  openPermissions() {
-    this.params.onOpenPermissions(this.query);
-  }
+  // openRestApi() {
+  //   this.params.onOpenRestApi(this.query);
+  // }
 
-  cloneQuery() {
-    this.params.onCloneQuery(this.query);
-  }
+  // openPermissions() {
+  //   this.params.onOpenPermissions(this.query);
+  // }
 
-  exportQuery() {
-    this.params.onExportQuery(this.query);
-  }
+  // cloneQuery() {
+  //   this.params.onCloneQuery(this.query);
+  // }
 
-  deleteQuery() {
-    this.params.onDelete(this.query);
-  }
+  // exportQuery() {
+  //   this.params.onExportQuery(this.query);
+  // }
+
+  // deleteQuery() {
+  //   this.params.onDelete(this.query);
+  // }
 }

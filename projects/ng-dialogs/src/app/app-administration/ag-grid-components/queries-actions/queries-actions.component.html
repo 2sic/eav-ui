@@ -1,10 +1,10 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple matTooltip="Edit" (click)="editQuery()">
+  <div class="like-button highlight" matRipple matTooltip="Edit" (click)="params.onEditQuery(query)">
     <mat-icon>edit</mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
-    (click)="openPermissions()">
+    (click)="params.onOpenPermissions(query)">
     <mat-icon [matBadge]="query._Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="query._Permissions.Count">
       person
@@ -21,15 +21,19 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="cloneQuery()">
+  <button mat-menu-item (click)="params.onOpenRestApi(query)">
+    <mat-icon>code</mat-icon>
+    <span>REST API</span>
+  </button>
+  <button mat-menu-item (click)="params.onCloneQuery(query)">
     <mat-icon>file_copy</mat-icon>
     <span>Copy</span>
   </button>
-  <button mat-menu-item (click)="exportQuery()">
+  <button mat-menu-item (click)="params.onExportQuery(query)">
     <mat-icon>cloud_download</mat-icon>
     <span>Export</span>
   </button>
-  <button mat-menu-item (click)="deleteQuery()">
+  <button mat-menu-item (click)="params.onDelete(query)">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
   </button>
