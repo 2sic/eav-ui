@@ -12,8 +12,8 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
+import { QueriesActionsParams, QueryActions } from '../ag-grid-components/queries-actions/queries-actions';
 import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
-import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
@@ -54,13 +54,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
       {
         width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
-          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
-          onEditQuery: this.editQuery.bind(this),
-          onOpenRestApi: this.openRestApi.bind(this),
-          onCloneQuery: this.cloneQuery.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onExportQuery: this.exportQuery.bind(this),
-          onDelete: this.deleteQuery.bind(this),
+          getEnablePermissions: this.enablePermissionsGetter.bind(this),
+          do: this.doMenuAction.bind(this),
         } as QueriesActionsParams,
       },
     ],
@@ -98,6 +93,24 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
+  /**
+   * Experiment by 2dm 2020-11-20 - trying to reduce the ceremony around menus
+   * Once this works, we would then remove all the 3-line functions below, as they
+   * would just be added here (if that's the only place they are used)
+   */
+  doMenuAction(action: QueryActions, query: Query) {
+    console.log('2dm query action');
+    switch (action) {
+      case QueryActions.Edit: return this.editQuery(query);
+      case QueryActions.Rest:
+        return this.router.navigate([`restapi/${query.Name}`], { relativeTo: this.route.firstChild });
+      case QueryActions.Clone: return this.cloneQuery(query);
+      case QueryActions.Permissions: return this.openPermissions(query);
+      case QueryActions.Export: return this.exportQuery(query);
+      case QueryActions.Delete: return this.deleteQuery(query);
+    }
+  }
+
   editQuery(query: Query) {
     const form: EditForm = {
       items: [
@@ -115,10 +128,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   private enablePermissionsGetter() {
     return this.enablePermissions;
-  }
-
-  private openRestApi(query: Query) {
-    this.router.navigate([`restapi/${query.Name}`], { relativeTo: this.route.firstChild });
   }
 
   private openVisualQueryDesigner(params: CellClickedEvent) {
