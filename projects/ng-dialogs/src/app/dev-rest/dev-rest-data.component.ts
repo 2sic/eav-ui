@@ -21,8 +21,8 @@ const pathToContent = 'app/{appname}/content/{typename}';
 
 @Component({
   selector: 'app-dev-rest',
-  templateUrl: './dev-rest.component.html',
-  styleUrls: ['./dev-rest.component.scss'],
+  templateUrl: './dev-rest-data.component.html',
+  styleUrls: ['./dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace, as many conditional parts are put together, and then spaces are missing between them
   preserveWhitespaces: true,

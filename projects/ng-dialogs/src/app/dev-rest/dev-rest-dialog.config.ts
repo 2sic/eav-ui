@@ -7,7 +7,7 @@ export const devRestDialog: DialogConfig = {
   panelClass: null,
 
   async getComponent() {
-    const { DevRestComponent } = await import('./dev-rest.component');
+    const { DevRestComponent } = await import('./dev-rest-data.component');
     return DevRestComponent;
   }
 };

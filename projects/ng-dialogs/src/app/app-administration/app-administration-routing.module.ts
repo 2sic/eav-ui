@@ -91,6 +91,10 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
             data: { title: 'Query Permissions' },
           },
+          {
+            path: 'restapi/:queryId',
+            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
+          },
         ],
         data: { title: 'App Queries' },
       },

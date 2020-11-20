@@ -27,7 +27,7 @@ import { DevRestHttpHeadersComponent } from './dev-rest-tab-headers/dev-rest-tab
 import { DevRestTabIntroductionComponent } from './dev-rest-tab-introduction/dev-rest-tab-introduction.component';
 import { DevRestTabPermissionsComponent } from './dev-rest-tab-permissions/dev-rest-tab-permissions.component';
 import { DevRestUrlsAndCodeComponent } from './dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { DevRestComponent } from './dev-rest.component';
+import { DevRestComponent } from './dev-rest-data.component';
 import { InfoBoxComponent } from './info-box/info-box.component';
 
 @NgModule({
