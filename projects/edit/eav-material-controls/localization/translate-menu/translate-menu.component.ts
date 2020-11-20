@@ -17,6 +17,7 @@ import { FormulaInstanceService } from '../../../shared/services/formula-instanc
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
+import { TranslateMenuHelpers } from './translate-menu.helpers';
 import { TranslateMenuTemplateVars } from './translate-menu.models';
 
 @Component({
@@ -91,7 +92,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
           currentLanguage,
           defaultLanguage,
           translationState,
-          translationStateClass: this.getTranslationStateClass(translationState.linkType),
+          translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
           disabled,
           defaultLanguageMissingValue,
           infoMessage,
@@ -118,7 +119,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   /** Translate when wrapper detects dblclick */
   dblClickTranslate() {
     if (this.currentLanguage$.value === this.defaultLanguage$.value || !this.control.disabled) { return; }
-    this.translateUnlink(this.config.field.name);
+    this.translate(this.config.field.name);
   }
 
   openLinkToOtherLanguage() {
@@ -147,7 +148,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     });
   }
 
-  translateUnlink(attributeKey: string) {
+  translate(attributeKey: string) {
     if (this.config.field.fieldHelper.isTranslateDisabled(attributeKey)) { return; }
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
@@ -172,7 +173,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.formulaInstance.runValueFormulas();
   }
 
-  linkToDefault(attributeKey: string) {
+  dontTranslate(attributeKey: string) {
     if (this.config.field.fieldHelper.isTranslateDisabled(attributeKey)) { return; }
 
     this.itemService.removeItemAttributeDimension(this.config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
@@ -274,33 +275,15 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.formulaInstance.runValueFormulas();
   }
 
-  private getTranslationStateClass(linkType: string) {
-    switch (linkType) {
-      case TranslationLinkConstants.MissingDefaultLangValue:
-        return 'localization-missing-default-lang-value';
-      case TranslationLinkConstants.Translate:
-      case TranslationLinkConstants.LinkCopyFrom:
-        return 'localization-translate';
-      case TranslationLinkConstants.DontTranslate:
-        return '';
-      case TranslationLinkConstants.LinkReadOnly:
-        return 'localization-link-read-only';
-      case TranslationLinkConstants.LinkReadWrite:
-        return 'localization-link-read-write';
-      default:
-        return '';
-    }
-  }
-
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
     if (!isEqual(this.translationState$.value, actionResult)) {
       // need be sure that we have a language selected when a link option is clicked
       switch (actionResult.linkType) {
         case TranslationLinkConstants.Translate:
-          this.translateUnlink(this.config.field.name);
+          this.translate(this.config.field.name);
           break;
         case TranslationLinkConstants.DontTranslate:
-          this.linkToDefault(this.config.field.name);
+          this.dontTranslate(this.config.field.name);
           break;
         case TranslationLinkConstants.LinkReadOnly:
           this.linkReadOnly(actionResult.language, this.config.field.name);
@@ -362,10 +345,10 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       this.languageInstanceService.getTranslateMany(this.config.form.formId, this.config.entity.entityGuid).subscribe(props => {
         switch (props.translationLink) {
           case TranslationLinkConstants.Translate:
-            this.translateUnlink(this.config.field.name);
+            this.translate(this.config.field.name);
             break;
           case TranslationLinkConstants.DontTranslate:
-            this.linkToDefault(this.config.field.name);
+            this.dontTranslate(this.config.field.name);
             break;
         }
       })

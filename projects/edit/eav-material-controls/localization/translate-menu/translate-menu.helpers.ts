@@ -1,4 +1,24 @@
+import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+
 export class TranslateMenuHelpers {
+
+  public static getTranslationStateClass(linkType: string) {
+    switch (linkType) {
+      case TranslationLinkConstants.MissingDefaultLangValue:
+        return 'localization-missing-default-lang-value';
+      case TranslationLinkConstants.Translate:
+      case TranslationLinkConstants.LinkCopyFrom:
+        return 'localization-translate';
+      case TranslationLinkConstants.DontTranslate:
+        return '';
+      case TranslationLinkConstants.LinkReadOnly:
+        return 'localization-link-read-only';
+      case TranslationLinkConstants.LinkReadWrite:
+        return 'localization-link-read-write';
+      default:
+        return '';
+    }
+  }
 
   public static calculateSharedInfoMessage(dimensions: string[], currentLanguage: string): string {
     dimensions = TranslateMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
