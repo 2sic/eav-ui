@@ -1,5 +1,4 @@
-<p *ngIf="data.scenario.useVirtual" class="info icon-box">
-  <mat-icon>menu_book</mat-icon>
+<app-info-box type="info" *ngIf="data.scenario.useVirtual">
   Virtual REST URLs are short. They will be resolved internally
   to the full length (based on the dnn-version, current portal, etc.)
   thanks to $2sxc JS API. This happens when you use the
@@ -11,18 +10,19 @@
     dnn-sxc-angular (npm package)
   </a>
   (which also passes url-resolving through $2sxc).
-</p>
-<p *ngIf="data.scenario.needsAnonymous && !data.permissionsHasAnonymous" class="warning icon-box">
-  <mat-icon>warning</mat-icon>
+</app-info-box>
+
+<app-info-box *ngIf="data.scenario.needsAnonymous && !data.permissionsHasAnonymous" type="warning">
   To use the REST API from external, you usually will want to set some permissions for <code>Anonymous</code>.
   As of now, no such permissions are configured.
-</p>
-<p *ngIf="data.scenario.needsAnonymous && data.permissionsHasAnonymous" class="alert icon-box">
-  <mat-icon>warning</mat-icon>
+</app-info-box>
+
+<app-info-box *ngIf="data.scenario.needsAnonymous && data.permissionsHasAnonymous" type="alert">
   It seems that you have some permissions configured for <code>Anonymous</code>.
   This is correct if you plan on using the REST endpoints from externaly.
   Please make sure that they are the ones you need, and that you don't accidentally open up too much.
-</p>
+</app-info-box>
+
 <p>
   The examples below use real values to make it easier to get started.
   The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
