@@ -1,7 +1,7 @@
 <div class="language-wrap">
   <div class="language-wrap__field"
     [class.language-wrap__field-short]="(currentLanguage$ | async) !== (defaultLanguage$ | async)"
-    (dblclick)="dblClickTranslate()">
+    (dblclick)="translate()">
     <ng-container #fieldComponent></ng-container>
   </div>
 

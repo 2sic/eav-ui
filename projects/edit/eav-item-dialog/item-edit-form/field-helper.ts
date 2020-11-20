@@ -1,6 +1,7 @@
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
@@ -9,6 +10,7 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, EavAttributes, EavDimensions, Item } from '../../shared/models/eav';
 import { LinkToOtherLanguageData } from '../../shared/models/eav/link-to-other-language-data';
 import { EavService } from '../../shared/services/eav.service';
+import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -92,13 +94,143 @@ export class FieldHelper {
     this.subscription.unsubscribe();
   }
 
-  refreshControlConfig(attributeKey: string, config: FieldConfigSet, form: FormGroup) {
-    this.setControlDisable(attributeKey, config, form);
+  translate(config: FieldConfigSet, formulaInstance: FormulaInstanceService): void {
+    const attributeKey = config.field.name;
+    if (this.isTranslateDisabled(attributeKey)) { return; }
+
+    this.itemService.removeItemAttributeDimension(config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
+    const defaultValue = LocalizationHelper.getValueTranslation(
+      this.attributes$.value[attributeKey], this.defaultLanguage$.value, this.defaultLanguage$.value,
+    );
+    if (defaultValue) {
+      const fieldType = InputFieldHelper.getFieldType(config, attributeKey);
+      this.itemService.addItemAttributeValue(
+        config.entity.entityGuid, attributeKey, defaultValue.value, this.currentLanguage$.value, false, fieldType,
+      );
+    } else {
+      angularConsoleLog(`${this.currentLanguage$.value}: Cant copy value from ${this.defaultLanguage$.value} because that value does not exist.`);
+    }
+
+    this.languageInstanceService.checkField({
+      entityGuid: config.entity.entityGuid,
+      fieldName: config.field.name,
+    });
+    // run value formulas when field is translated
+    formulaInstance.runSettingsFormulas();
+    formulaInstance.runValueFormulas();
+  }
+
+  dontTranslate(config: FieldConfigSet, formulaInstance: FormulaInstanceService): void {
+    const attributeKey = config.field.name;
+    if (this.isTranslateDisabled(attributeKey)) { return; }
+
+    this.itemService.removeItemAttributeDimension(config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
+
+    this.languageInstanceService.checkField({
+      entityGuid: config.entity.entityGuid,
+      fieldName: config.field.name,
+    });
+    // run value formulas when field is translated
+    formulaInstance.runSettingsFormulas();
+    formulaInstance.runValueFormulas();
+  }
+
+  copyFrom(config: FieldConfigSet, formulaInstance: FormulaInstanceService, copyFromLanguageKey: string): void {
+    const attributeKey = config.field.name;
+    if (this.isTranslateDisabled(attributeKey)) { return; }
+
+    const attributeValueTranslation = LocalizationHelper.getValueTranslation(
+      this.attributes$.value[attributeKey], copyFromLanguageKey, this.defaultLanguage$.value,
+    );
+
+    if (attributeValueTranslation) {
+      const valueAlreadyExists = this.attributes$.value
+        ? LocalizationHelper.isEditableOrReadonlyTranslationExist(
+          this.attributes$.value[attributeKey], this.currentLanguage$.value, this.defaultLanguage$.value,
+        )
+        : false;
+
+      if (valueAlreadyExists) {
+        // Copy attribute value where language is languageKey to value where language is current language
+        this.itemService.updateItemAttributeValue(
+          config.entity.entityGuid,
+          attributeKey,
+          attributeValueTranslation.value,
+          this.currentLanguage$.value,
+          this.defaultLanguage$.value,
+          false,
+        );
+      } else {
+        // Copy attribute value where language is languageKey to new attribute with current language
+        this.itemService.addItemAttributeValue(
+          config.entity.entityGuid,
+          attributeKey,
+          attributeValueTranslation.value,
+          this.currentLanguage$.value,
+          false,
+          config.field.type,
+        );
+      }
+    } else {
+      angularConsoleLog(`${this.currentLanguage$.value}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+    }
+
+    this.languageInstanceService.checkField({
+      entityGuid: config.entity.entityGuid,
+      fieldName: config.field.name,
+    });
+    // run value formulas when field is translated
+    formulaInstance.runSettingsFormulas();
+    formulaInstance.runValueFormulas();
+  }
+
+  linkReadOnly(config: FieldConfigSet, formulaInstance: FormulaInstanceService, linkWithLanguageKey: string): void {
+    const attributeKey = config.field.name;
+    if (this.isTranslateDisabled(attributeKey)) { return; }
+
+    this.setTranslationState(TranslationLinkConstants.LinkReadOnly, linkWithLanguageKey);
+    this.itemService.removeItemAttributeDimension(config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
+    this.itemService.addItemAttributeDimension(
+      config.entity.entityGuid, attributeKey, this.currentLanguage$.value, linkWithLanguageKey, this.defaultLanguage$.value, true,
+    );
+
+    this.languageInstanceService.checkField({
+      entityGuid: config.entity.entityGuid,
+      fieldName: config.field.name,
+    });
+    // run value formulas when field is translated
+    formulaInstance.runSettingsFormulas();
+    formulaInstance.runValueFormulas();
+  }
+
+  linkReadWrite(config: FieldConfigSet, formulaInstance: FormulaInstanceService, linkWithLanguageKey: string) {
+    const attributeKey = config.field.name;
+    if (this.isTranslateDisabled(attributeKey)) { return; }
+
+    this.setTranslationState(TranslationLinkConstants.LinkReadWrite, linkWithLanguageKey);
+    this.itemService.removeItemAttributeDimension(config.entity.entityGuid, attributeKey, this.currentLanguage$.value);
+    this.itemService.addItemAttributeDimension(
+      config.entity.entityGuid, attributeKey, this.currentLanguage$.value, linkWithLanguageKey, this.defaultLanguage$.value, false,
+    );
+
+    this.languageInstanceService.checkField({
+      entityGuid: config.entity.entityGuid,
+      fieldName: config.field.name,
+    });
+    // run value formulas when field is translated
+    formulaInstance.runSettingsFormulas();
+    formulaInstance.runValueFormulas();
+  }
+
+  refreshControlConfig(config: FieldConfigSet, form: FormGroup): void {
+    const attributeKey = config.field.name;
+    this.setControlDisable(config, form);
     this.readTranslationState(attributeKey);
     this.setTranslationInfoMessage(attributeKey);
   }
 
-  setControlDisable(attributeKey: string, config: FieldConfigSet, form: FormGroup): void {
+  setControlDisable(config: FieldConfigSet, form: FormGroup): void {
+    const attributeKey = config.field.name;
     const values = this.attributes$.value[attributeKey];
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;
@@ -197,7 +329,7 @@ export class FieldHelper {
   }
 
   /** Set info message */
-  private setTranslationInfoMessage(attributeKey: string) {
+  private setTranslationInfoMessage(attributeKey: string): void {
     const values = this.attributes$.value[attributeKey];
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;

@@ -12,11 +12,11 @@
     </div>
 
     <mat-menu #menu="matMenu" overlapTrigger="true">
-      <button mat-menu-item (click)="translate(config.field.name)"
+      <button mat-menu-item (click)="translate()"
         [class.menu-item-selected]="data.translationState.linkType === translationLinkConstants.Translate">
         {{ 'LangMenu.Translate' | translate }}
       </button>
-      <button mat-menu-item (click)="dontTranslate(config.field.name)"
+      <button mat-menu-item (click)="dontTranslate()"
         [class.menu-item-selected]="data.translationState.linkType === translationLinkConstants.DontTranslate">
         {{ 'LangMenu.NoTranslate' | translate }}
       </button>

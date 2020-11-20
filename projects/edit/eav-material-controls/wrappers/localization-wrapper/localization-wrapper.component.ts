@@ -21,6 +21,7 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   currentLanguage$ = new BehaviorSubject<string>(null);
   defaultLanguage$ = new BehaviorSubject<string>(null);
 
+  private isDisabled$ = new BehaviorSubject<boolean>(null);
   private isExpanded$ = new BehaviorSubject<boolean>(null);
 
   constructor(
@@ -49,19 +50,26 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
         this.isExpanded$.next(isExpanded);
       })
     );
+    this.subscription.add(
+      this.disabled$.subscribe(disabled => {
+        this.isDisabled$.next(disabled);
+      })
+    );
   }
 
   ngOnDestroy() {
     this.currentLanguage$.complete();
     this.defaultLanguage$.complete();
+    this.isDisabled$.complete();
     this.isExpanded$.complete();
     super.ngOnDestroy();
   }
 
-  dblClickTranslate() {
-    const translateEnabled = !this.isExpanded$.value && this.currentLanguage$.value !== this.defaultLanguage$.value;
-    if (!translateEnabled) { return; }
+  translate() {
+    if (this.currentLanguage$.value === this.defaultLanguage$.value) { return; }
+    if (!this.isDisabled$.value) { return; }
+    if (this.isExpanded$.value) { return; }
 
-    this.translateMenu.dblClickTranslate();
+    this.translateMenu.translate();
   }
 }
