@@ -15,7 +15,7 @@ import { Permission } from '../permissions/models/permission.model';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
-import { DevRestTemplateVars } from './dev-rest.models';
+import { DevRestTemplateVars } from './dev-rest-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
