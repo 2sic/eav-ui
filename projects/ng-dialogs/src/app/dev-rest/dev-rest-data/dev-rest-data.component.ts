@@ -1,10 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, pairwise, share, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, share, switchMap } from 'rxjs/operators';
 import { AllScenarios, generateApiCalls, Scenario } from '..';
 import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -12,6 +12,7 @@ import { PermissionsService } from '../../permissions/services/permissions.servi
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestNavigation } from '../dev-rest-navigation';
+import { fireOnStartAndWhenSubDialogCloses } from '../routing-helpers';
 import { DevRestDataTemplateVars } from './dev-rest-data-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -64,19 +65,10 @@ export class DevRestDataComponent implements OnDestroy {
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
     const dialogSettings$ = appDialogConfigService.getDialogSettings().pipe(share());
 
-    // This observable fires when a sub-dialog was openend and closed again
-    const fireOnStartAndWhenSubDialogCloses = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      startWith(!!this.route.snapshot.firstChild),
-      map(() => !!this.route.snapshot.firstChild),
-      pairwise(),
-      filter(([prevHadChild, newHasChild]) => prevHadChild && !newHasChild),
-      startWith([]), // this ensures it fires once in the beginning
-    );
-
     // Build Permissions Stream
+    // This is triggered on start and everything a sub-dialog closes
     const permissions$ = combineLatest([
-      fireOnStartAndWhenSubDialogCloses,
+      fireOnStartAndWhenSubDialogCloses(this.router, this.route),
       route.paramMap.pipe(map(pm => pm.get(DevRestNavigation.paramTypeName))),
     ]).pipe(
       switchMap(([_, typeName])  => {
