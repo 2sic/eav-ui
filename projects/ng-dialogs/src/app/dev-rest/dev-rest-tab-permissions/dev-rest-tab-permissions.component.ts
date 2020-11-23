@@ -30,13 +30,12 @@ export class DevRestTabPermissionsComponent implements OnInit {
 
   private targetType = eavConstants.metadata.entity.type;
   private keyType = eavConstants.keyTypes.guid;
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-
+  private contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    ) { }
+  ) { }
 
   ngOnInit(): void {
   }

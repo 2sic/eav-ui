@@ -18,10 +18,6 @@ const routes: Routes = [
       },
       { path: 'import', component: DialogEntryComponent, data: { dialog: contentItemImportDialog } },
       {
-        path: 'restapi/:contentTypeStaticName/:itemId',
-        loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
-      },
-      {
         path: ':contentTypeStaticName/import',
         loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
         data: { title: 'Import Items' },

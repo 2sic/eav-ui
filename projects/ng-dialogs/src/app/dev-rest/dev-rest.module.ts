@@ -21,7 +21,9 @@ import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { DevRestComponent } from './dev-rest-data/dev-rest-data.component';
+import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
+import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-query.component';
+import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
 import { DevRestTabExamplesComponent } from './dev-rest-tab-examples/dev-rest-tab-examples.component';
 import { DevRestHttpHeadersComponent } from './dev-rest-tab-headers/dev-rest-tab-headers.component';
@@ -35,18 +37,22 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     InfoBoxComponent,
     DevRestTabExamplesComponent,
     DevRestUrlsAndCodeComponent,
-    DevRestComponent,
+    DevRestDataComponent,
     SelectorWithHelpComponent,
     HelpPopupComponent,
     DevRestHttpHeadersComponent,
     DevRestTabPermissionsComponent,
     DevRestTabIntroductionComponent,
     DevRestTabExamplesComponent,
+    DevRestQueryComponent,
+    DevRestEntryComponent,
   ],
   entryComponents: [
-    DevRestComponent,
+    DevRestDataComponent,
     SelectorWithHelpComponent,
     HelpPopupComponent,
+    DevRestQueryComponent,
+    DevRestEntryComponent,
   ],
   imports: [
     CommonModule,

@@ -20,14 +20,14 @@ import { DevRestTemplateVars } from './dev-rest-template-vars';
 const pathToContent = 'app/{appname}/content/{typename}';
 
 @Component({
-  selector: 'app-dev-rest',
+  selector: 'app-dev-rest-data',
   templateUrl: './dev-rest-data.component.html',
   styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace, as many conditional parts are put together, and then spaces are missing between them
   preserveWhitespaces: true,
 })
-export class DevRestComponent implements OnInit, OnDestroy {
+export class DevRestDataComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   /** List of scenarios */
@@ -37,7 +37,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
 
   private targetType = eavConstants.metadata.entity.type;
   private keyType = eavConstants.keyTypes.guid;
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  private contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
 
   /** Content Type to show REST infos about */
   private contentType$: BehaviorSubject<ContentType>;
@@ -60,7 +60,7 @@ export class DevRestComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   constructor(
-    private dialogRef: MatDialogRef<DevRestComponent>,
+    private dialogRef: MatDialogRef<DevRestDataComponent>,
     private router: Router,
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
