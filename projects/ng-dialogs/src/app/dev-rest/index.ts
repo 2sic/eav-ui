@@ -1,4 +1,6 @@
 
+export * from './dev-rest-navigation';
+
 export * from './scenarios';
 export * from './examples';
 export * from './dev-rest-data/dev-rest-data-template-vars';

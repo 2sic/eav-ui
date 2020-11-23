@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
+import { DevRestNavigation } from '../dev-rest';
+import { PermissionsNavigation } from '../permissions/permissions-navigation';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
@@ -47,10 +49,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
-          {
-            path: 'restapi/:contentTypeStaticName',
-            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
-          },
+          DevRestNavigation.route,
           {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
@@ -66,11 +65,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
             data: { title: 'Import Items' },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'Permission' },
-          },
+          PermissionsNavigation.route,
         ],
         data: { title: 'App Data' },
       },
@@ -86,15 +81,8 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'Query Permissions' },
-          },
-          {
-            path: 'restapi/:queryGuid',
-            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
-          },
+          { ...PermissionsNavigation.route, data: { title: 'Query Permissions' }},
+          DevRestNavigation.route,
         ],
         data: { title: 'App Queries' },
       },
@@ -115,20 +103,13 @@ const appAdministrationRoutes: Routes = [
             matcher: refreshEdit,
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'View Permissions' },
-          },
+          { ...PermissionsNavigation.route, data: { title: 'View Permissions' }},
         ],
         data: { title: 'App Views' },
       },
       {
         path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, children: [
-          {
-            path: 'restapi/:webApiPath',
-            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
-          },
+          DevRestNavigation.route,
         ],
       },
       {
