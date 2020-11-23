@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { DevRestTemplateVars } from '..';
+import { DevRestDataTemplateVars } from '..';
 
 @Component({
-    selector: 'app-dev-rest-tab-examples',
-    templateUrl: './dev-rest-tab-examples.component.html',
-    styleUrls: ['./dev-rest-tab-examples.component.scss']
+  selector: 'app-dev-rest-tab-examples',
+  templateUrl: './dev-rest-tab-examples.component.html',
+  styleUrls: ['./dev-rest-tab-examples.component.scss']
 })
 export class DevRestTabExamplesComponent {
-  @Input() data: DevRestTemplateVars;
-  constructor () {}
+  @Input() data: DevRestDataTemplateVars;
+  constructor() { }
 }

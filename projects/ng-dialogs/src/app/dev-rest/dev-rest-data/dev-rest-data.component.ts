@@ -15,7 +15,7 @@ import { Permission } from '../../permissions/models/permission.model';
 import { PermissionsService } from '../../permissions/services/permissions.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
-import { DevRestTemplateVars } from './dev-rest-template-vars';
+import { DevRestDataTemplateVars } from './dev-rest-data-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
@@ -33,11 +33,7 @@ export class DevRestDataComponent implements OnInit, OnDestroy {
   /** List of scenarios */
   scenarios = AllScenarios;
 
-  templateVars$: Observable<DevRestTemplateVars>;
-
-  private targetType = eavConstants.metadata.entity.type;
-  private keyType = eavConstants.keyTypes.guid;
-  private contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
+  templateVars$: Observable<DevRestDataTemplateVars>;
 
   /** Content Type to show REST infos about */
   private contentType$: BehaviorSubject<ContentType>;
@@ -143,13 +139,18 @@ export class DevRestDataComponent implements OnInit, OnDestroy {
   }
 
   private fetchData() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
+    const contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
+
+    this.contentTypesService.retrieveContentType(contentTypeStaticName).subscribe(contentType => {
       this.contentType$.next(contentType);
     });
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
       this.dialogSettings$.next(dialogSettings);
     });
-    this.permissionsService.getAll(this.targetType, this.keyType, this.contentTypeStaticName).subscribe(permissions => {
+
+    const targetType = eavConstants.metadata.entity.type;
+    const keyType = eavConstants.keyTypes.guid;
+    this.permissionsService.getAll(targetType, keyType, contentTypeStaticName).subscribe(permissions => {
       this.permissions$.next(permissions);
     });
   }

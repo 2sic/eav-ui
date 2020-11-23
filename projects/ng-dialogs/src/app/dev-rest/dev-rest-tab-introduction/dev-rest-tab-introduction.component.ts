@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AllScenarios, DevRestTemplateVars } from '..';
+import { AllScenarios, DevRestDataTemplateVars } from '..';
 
 @Component({
   selector: 'app-dev-rest-tab-introduction',
@@ -8,7 +8,7 @@ import { AllScenarios, DevRestTemplateVars } from '..';
 })
 export class DevRestTabIntroductionComponent implements OnInit {
 
-  @Input() data: DevRestTemplateVars;
+  @Input() data: DevRestDataTemplateVars;
 
   /** List of scenarios */
   scenarios = AllScenarios;

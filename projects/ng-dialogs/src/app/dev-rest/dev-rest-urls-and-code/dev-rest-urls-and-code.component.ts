@@ -1,20 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DevRestTemplateVars } from '..';
+import { DevRestDataTemplateVars } from '..';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 
 @Component({
-    selector: 'app-dev-rest-urls-and-code',
-    templateUrl: './dev-rest-urls-and-code.component.html',
-    styleUrls: ['./dev-rest-urls-and-code.component.scss']
+  selector: 'app-dev-rest-urls-and-code',
+  templateUrl: './dev-rest-urls-and-code.component.html',
+  styleUrls: ['./dev-rest-urls-and-code.component.scss']
 })
 export class DevRestUrlsAndCodeComponent {
-  @Input() data: DevRestTemplateVars;
-  constructor (
+  @Input() data: DevRestDataTemplateVars;
+  constructor(
     private snackBar: MatSnackBar,
     private http: HttpClient,
-  ) {}
+  ) { }
 
   callApiGet(url: string) {
     this.http.get<any>(url).subscribe(res => {

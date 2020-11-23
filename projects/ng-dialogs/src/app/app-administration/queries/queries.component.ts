@@ -98,12 +98,11 @@ export class QueriesComponent implements OnInit, OnDestroy {
    * Once this works, we would then remove all the 3-line functions below, as they
    * would just be added here (if that's the only place they are used)
    */
-  doMenuAction(action: QueryActions, query: Query) {
-    console.log('2dm query action');
+  private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
       case QueryActions.Edit: return this.editQuery(query);
       case QueryActions.Rest:
-        return this.router.navigate([`restapi/${query.Name}/query`], { relativeTo: this.route.firstChild });
+        return this.router.navigate([`restapi/${query.Guid}/query`], { relativeTo: this.route.firstChild });
       case QueryActions.Clone: return this.cloneQuery(query);
       case QueryActions.Permissions: return this.openPermissions(query);
       case QueryActions.Export: return this.exportQuery(query);

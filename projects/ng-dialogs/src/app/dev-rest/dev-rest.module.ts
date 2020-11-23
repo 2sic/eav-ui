@@ -14,6 +14,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EavService, EntityService } from 'projects/edit';
 import { HelpPopupComponent, SelectorWithHelpComponent } from '.';
+import { PipelinesService } from '../app-administration/services';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { EntitiesService } from '../content-items/services/entities.service';
@@ -22,7 +23,7 @@ import { PermissionsService } from '../permissions/services/permissions.service'
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
-import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-query.component';
+import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-entry.component';
 import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
 import { DevRestTabExamplesComponent } from './dev-rest-tab-examples/dev-rest-tab-examples.component';
@@ -80,6 +81,7 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     EntitiesService,
     EntityService,
     EavService,
+    PipelinesService,
   ]
 })
 export class DevRestModule { }

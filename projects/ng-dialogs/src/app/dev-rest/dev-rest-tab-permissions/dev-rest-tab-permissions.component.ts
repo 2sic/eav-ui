@@ -1,7 +1,7 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DevRestTemplateVars } from '..';
+import { DevRestDataTemplateVars } from '..';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 
@@ -12,7 +12,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 })
 export class DevRestTabPermissionsComponent implements OnInit {
 
-  @Input() data: DevRestTemplateVars;
+  @Input() data: DevRestDataTemplateVars;
 
   /** AgGrid modules */
   modules = AllCommunityModules;
