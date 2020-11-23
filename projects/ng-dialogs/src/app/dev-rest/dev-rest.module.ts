@@ -21,13 +21,13 @@ import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { DevRestComponent } from './dev-rest-data/dev-rest-data.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
 import { DevRestTabExamplesComponent } from './dev-rest-tab-examples/dev-rest-tab-examples.component';
 import { DevRestHttpHeadersComponent } from './dev-rest-tab-headers/dev-rest-tab-headers.component';
 import { DevRestTabIntroductionComponent } from './dev-rest-tab-introduction/dev-rest-tab-introduction.component';
 import { DevRestTabPermissionsComponent } from './dev-rest-tab-permissions/dev-rest-tab-permissions.component';
 import { DevRestUrlsAndCodeComponent } from './dev-rest-urls-and-code/dev-rest-urls-and-code.component';
-import { DevRestComponent } from './dev-rest-data.component';
 import { InfoBoxComponent } from './info-box/info-box.component';
 
 @NgModule({

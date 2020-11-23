@@ -6,15 +6,15 @@ import { EntityService } from 'projects/edit';
 import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { AllScenarios, generateApiCalls, Scenario } from '.';
-import { ContentType } from '../app-administration/models/content-type.model';
-import { DialogSettings } from '../app-administration/models/dialog-settings.model';
-import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
-import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { Permission } from '../permissions/models/permission.model';
-import { PermissionsService } from '../permissions/services/permissions.service';
-import { eavConstants } from '../shared/constants/eav.constants';
-import { Context } from '../shared/services/context';
+import { AllScenarios, generateApiCalls, Scenario } from '..';
+import { ContentType } from '../../app-administration/models/content-type.model';
+import { DialogSettings } from '../../app-administration/models/dialog-settings.model';
+import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
+import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { Permission } from '../../permissions/models/permission.model';
+import { PermissionsService } from '../../permissions/services/permissions.service';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { Context } from '../../shared/services/context';
 import { DevRestTemplateVars } from './dev-rest-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -22,7 +22,7 @@ const pathToContent = 'app/{appname}/content/{typename}';
 @Component({
   selector: 'app-dev-rest',
   templateUrl: './dev-rest-data.component.html',
-  styleUrls: ['./dev-rest-all.scss'],
+  styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace, as many conditional parts are put together, and then spaces are missing between them
   preserveWhitespaces: true,
