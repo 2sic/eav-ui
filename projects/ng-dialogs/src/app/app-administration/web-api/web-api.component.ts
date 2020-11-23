@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
+import { DevRestNavigation } from '../../dev-rest/dev-rest-navigation';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -106,7 +107,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(api: WebApi) {
-    this.router.navigate([`restapi/${encodeURIComponent(api.path)}/custom`], { relativeTo: this.route.firstChild });
+    this.router.navigate([DevRestNavigation.goToWebApi(api)], { relativeTo: this.route.firstChild });
   }
 
 }
