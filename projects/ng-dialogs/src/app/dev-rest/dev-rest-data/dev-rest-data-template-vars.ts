@@ -5,7 +5,6 @@ import { Permission } from '../../permissions/models/permission.model';
 export interface DevRestDataTemplateVars {
   contentType: ContentType;
   currentScenario: Scenario;
-  modeInternal: boolean;
   root: string;
   itemId: number;
   itemGuid: string;

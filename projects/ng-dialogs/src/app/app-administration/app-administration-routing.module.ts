@@ -128,11 +128,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'App Permission' },
-          },
+          { ...PermissionsNavigation.route, data: { title: 'App Permissions' }},
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
           { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },

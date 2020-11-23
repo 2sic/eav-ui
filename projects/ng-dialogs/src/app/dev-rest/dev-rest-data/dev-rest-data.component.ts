@@ -1,20 +1,17 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { EntityService } from 'projects/edit';
-import { EntityInfo } from 'projects/edit/shared/models/eav/entity-info';
-import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map, pairwise, share, startWith, switchMap } from 'rxjs/operators';
 import { AllScenarios, generateApiCalls, Scenario } from '..';
-import { ContentType } from '../../app-administration/models/content-type.model';
-import { DialogSettings } from '../../app-administration/models/dialog-settings.model';
 import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { Permission } from '../../permissions/models/permission.model';
 import { PermissionsService } from '../../permissions/services/permissions.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
+import { DevRestNavigation } from '../dev-rest-navigation';
 import { DevRestDataTemplateVars } from './dev-rest-data-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
@@ -24,60 +21,74 @@ const pathToContent = 'app/{appname}/content/{typename}';
   templateUrl: './dev-rest-data.component.html',
   styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // we need preserve whitespace, as many conditional parts are put together, and then spaces are missing between them
+  // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
 })
-export class DevRestDataComponent implements OnInit, OnDestroy {
+export class DevRestDataComponent implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+
+  /** Template variables for the HTML template */
+  templateVars$: Observable<DevRestDataTemplateVars>;
 
   /** List of scenarios */
   scenarios = AllScenarios;
 
-  templateVars$: Observable<DevRestDataTemplateVars>;
-
-  /** Content Type to show REST infos about */
-  private contentType$: BehaviorSubject<ContentType>;
-
-  /** App, language, etc. */
-  private dialogSettings$: BehaviorSubject<DialogSettings>;
-
-  private permissions$ = new Subject<Permission[]>();
-
   /** Currently selected scenario */
-  private scenario$: BehaviorSubject<Scenario>;
+  private scenario$ = new BehaviorSubject<Scenario>(AllScenarios[0]);
 
-  private modeInternal$: Observable<boolean>;
-
-  private itemOfThisType$: Observable<EntityInfo>;
-
-  /** The root path for the current request */
-  private root$: Observable<string>;
-
+  /** Subscription Sink */
   private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<DevRestDataComponent>,
     private router: Router,
     private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
-    private appDialogConfigService: AppDialogConfigService,
-    private permissionsService: PermissionsService,
+    contentTypesService: ContentTypesService,
+    appDialogConfigService: AppDialogConfigService,
+    permissionsService: PermissionsService,
     entityService: EntityService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
     /** dnn-sxc-angular context. Used to resolve urls */
     dnnContext: DnnContext,
   ) {
-    this.contentType$ = new BehaviorSubject<ContentType>(null);
-    this.dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-    this.scenario$ = new BehaviorSubject<Scenario>(this.scenarios[0]);
-    this.modeInternal$ = this.scenario$.pipe(map(scenario => scenario.key === 'internal'));
 
-    this.root$ = combineLatest([this.contentType$, this.scenario$, this.dialogSettings$]).pipe(
+    // Build ContentType Stream
+    const contentType$ = route.paramMap.pipe(
+      map(pm => pm.get(DevRestNavigation.paramTypeName)),
+      switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
+      share()
+    );
+
+    // Build Dialog Settings Stream
+    // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
+    const dialogSettings$ = appDialogConfigService.getDialogSettings().pipe(share());
+
+    // This observable fires when a sub-dialog was openend and closed again
+    const fireOnStartAndWhenSubDialogCloses = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      startWith(!!this.route.snapshot.firstChild),
+      map(() => !!this.route.snapshot.firstChild),
+      pairwise(),
+      filter(([prevHadChild, newHasChild]) => prevHadChild && !newHasChild),
+      startWith([]), // this ensures it fires once in the beginning
+    );
+
+    // Build Permissions Stream
+    const permissions$ = combineLatest([
+      fireOnStartAndWhenSubDialogCloses,
+      route.paramMap.pipe(map(pm => pm.get(DevRestNavigation.paramTypeName))),
+    ]).pipe(
+      switchMap(([_, typeName])  => {
+        // TODO: 2dm - something looks wrong here, we're getting Entity-metadata for content-type!
+        return permissionsService.getAll(eavConstants.metadata.entity.type, eavConstants.keyTypes.guid, typeName);
+      }),
+      share()
+    );
+
+    // Build Root Stream (for the root folder)
+    const root$ = combineLatest([contentType$, this.scenario$, dialogSettings$]).pipe(
       map(([contentType, scenario, dialogSettings]) => {
-        if (contentType == null || dialogSettings == null) { return ''; }
-
-        // const internal = scenario === AllScenarios[0];
         const resolved = pathToContent
           .replace('{typename}', contentType.Name)
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder));
@@ -89,20 +100,22 @@ export class DevRestDataComponent implements OnInit, OnDestroy {
     );
 
     // Get an item of this type for building urls
-    this.itemOfThisType$ = entityService.reactiveEntities(
-      this.contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: '' })))
-    ).pipe(map(list => list.length ? list[0] : null), filter(i => !!i));
+    const itemOfThisType$ = entityService.reactiveEntities(
+      contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: '' })))
+    ).pipe(
+      map(list => list.length ? list[0] : null),
+      filter(i => !!i)
+    );
 
-    // we need to mix 2 combineLatest, because a combineLatest can only take 6 streams
+    // Prepare everything for use in the template
+    // Note that we need to mix multiple combineLatest, because a combineLatest can only take 6 streams
     this.templateVars$ = combineLatest([
-      combineLatest([this.contentType$, this.scenario$, this.modeInternal$]),
-      combineLatest([this.root$, this.itemOfThisType$, this.dialogSettings$.pipe(filter(d => !!d))]),
-      combineLatest([this.permissions$]),
+      combineLatest([contentType$, this.scenario$, permissions$]),
+      combineLatest([root$, itemOfThisType$, dialogSettings$]),
     ]).pipe(
-      map(([[contentType, scenario, modeInternal], [root, item, diag], [permissions]]) => ({
+      map(([[contentType, scenario, permissions], [root, item, diag]]) => ({
         contentType,
         currentScenario: scenario,
-        modeInternal,
         root,
         itemId: item.Id,
         itemGuid: item.Value,
@@ -117,15 +130,7 @@ export class DevRestDataComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-    this.fetchData();
-    this.refreshOnChildClosed();
-  }
-
   ngOnDestroy() {
-    this.contentType$.complete();
-    this.dialogSettings$.complete();
-    this.permissions$.complete();
     this.scenario$.complete();
     this.subscription.unsubscribe();
   }
@@ -136,37 +141,6 @@ export class DevRestDataComponent implements OnInit, OnDestroy {
 
   closeDialog() {
     this.dialogRef.close();
-  }
-
-  private fetchData() {
-    const contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
-
-    this.contentTypesService.retrieveContentType(contentTypeStaticName).subscribe(contentType => {
-      this.contentType$.next(contentType);
-    });
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
-      this.dialogSettings$.next(dialogSettings);
-    });
-
-    const targetType = eavConstants.metadata.entity.type;
-    const keyType = eavConstants.keyTypes.guid;
-    this.permissionsService.getAll(targetType, keyType, contentTypeStaticName).subscribe(permissions => {
-      this.permissions$.next(permissions);
-    });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.fetchData();
-      })
-    );
   }
 
 }
