@@ -22,6 +22,7 @@ import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
 import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-entry.component';
 import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
@@ -47,6 +48,7 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     DevRestTabExamplesComponent,
     DevRestQueryComponent,
     DevRestEntryComponent,
+    DevRestCustomComponent,
   ],
   entryComponents: [
     DevRestDataComponent,
@@ -54,6 +56,7 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     HelpPopupComponent,
     DevRestQueryComponent,
     DevRestEntryComponent,
+    DevRestCustomComponent,
   ],
   imports: [
     CommonModule,

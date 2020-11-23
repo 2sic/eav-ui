@@ -123,7 +123,14 @@ const appAdministrationRoutes: Routes = [
         ],
         data: { title: 'App Views' },
       },
-      { path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, },
+      {
+        path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, children: [
+          {
+            path: 'restapi/:webApiPath',
+            loadChildren: () => import('../dev-rest/dev-rest.module').then(m => m.DevRestModule)
+          },
+        ],
+      },
       {
         path: 'app', component: EmptyRouteComponent, children: [
           {

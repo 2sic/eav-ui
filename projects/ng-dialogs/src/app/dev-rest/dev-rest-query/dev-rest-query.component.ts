@@ -33,10 +33,7 @@ export class DevRestQueryComponent implements OnInit, OnDestroy {
     private permissionsService: PermissionsService,
   ) {
     this.templateVars$ = combineLatest([this.query$, this.permissions$]).pipe(
-      map(([query, permissions]) => ({
-        query,
-        permissions,
-      })),
+      map(([query, permissions]) => ({ query, permissions })),
     );
   }
 

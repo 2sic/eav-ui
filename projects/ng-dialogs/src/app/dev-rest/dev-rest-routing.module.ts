@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
+import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
 import { devRestDialog } from './dev-rest-dialog.config';
 import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
@@ -26,6 +27,7 @@ const routes: Routes = [
           },
         ]
       },
+      { path: 'custom', component: DevRestCustomComponent },
     ]
   },
 ];

@@ -1,6 +1,7 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -37,10 +38,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
         cellRendererParams: {
           enableCodeGetter: this.enableCodeGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
+          onOpenRestApi: this.openRestApi.bind(this),
         } as WebApiActionsParams,
       },
     ],
@@ -51,6 +53,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
     private sanitizeService: SanitizeService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -88,17 +92,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private fetchWebApis() {
-    this.webApisService.getAll().subscribe(paths => {
-      const webApis: WebApi[] = paths.map(path => {
-        const splitIndex = path.lastIndexOf('/');
-        const fileExtIndex = path.lastIndexOf('.');
-        const folder = path.substring(0, splitIndex);
-        const name = path.substring(splitIndex + 1, fileExtIndex);
-        return {
-          folder,
-          name,
-        };
-      });
+    this.webApisService.getAll().subscribe(webApis => {
       this.webApis$.next(webApis);
     });
   }
@@ -108,7 +102,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private openCode(api: WebApi) {
-    this.dialogService.openCodeFile(`${api.folder}/${api.name}.cs`);
+    this.dialogService.openCodeFile(api.path);
+  }
+
+  private openRestApi(api: WebApi) {
+    this.router.navigate([`restapi/${encodeURIComponent(api.path)}/custom`], { relativeTo: this.route.firstChild });
   }
 
 }
