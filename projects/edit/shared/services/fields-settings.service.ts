@@ -67,6 +67,7 @@ export class FieldsSettingsService {
     const wrappers = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
     const fieldHelper = new FieldHelper(
+      name,
       item.entity.guid,
       formId,
       isParentGroup,

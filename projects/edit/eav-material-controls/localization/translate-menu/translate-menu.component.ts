@@ -95,27 +95,23 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       ),
     );
 
-    this.onCheckField();
-    this.onTranslateMany();
-    this.onCurrentLanguageChanged();
-    this.onDefaultLanguageChanged();
-    this.onFormulaSettingsChanged();
-    this.onSlotIsEmptyChanged();
+    this.config.field.fieldHelper.startTranslations(this.config, this.group, this.formulaInstance, this.fieldsSettingsService);
   }
 
   ngOnDestroy() {
     this.currentLanguage$.complete();
     this.defaultLanguage$.complete();
     this.attributes$.complete();
+    this.config.field.fieldHelper.stopTranslations();
     this.subscription.unsubscribe();
   }
 
   translate() {
-    this.config.field.fieldHelper.translate(this.config, this.formulaInstance);
+    this.config.field.fieldHelper.translate(this.formulaInstance);
   }
 
   dontTranslate() {
-    this.config.field.fieldHelper.dontTranslate(this.config, this.formulaInstance);
+    this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
   }
 
   openLinkToOtherLanguage() {
@@ -145,90 +141,27 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   private triggerTranslation(actionResult: LinkToOtherLanguageData) {
-    if (!isEqual(this.translationState$.value, actionResult)) {
-      // need be sure that we have a language selected when a link option is clicked
-      switch (actionResult.linkType) {
-        case TranslationLinkConstants.Translate:
-          this.config.field.fieldHelper.translate(this.config, this.formulaInstance);
-          break;
-        case TranslationLinkConstants.DontTranslate:
-          this.config.field.fieldHelper.dontTranslate(this.config, this.formulaInstance);
-          break;
-        case TranslationLinkConstants.LinkReadOnly:
-          this.config.field.fieldHelper.linkReadOnly(this.config, this.formulaInstance, actionResult.language);
-          break;
-        case TranslationLinkConstants.LinkReadWrite:
-          this.config.field.fieldHelper.linkReadWrite(this.config, this.formulaInstance, actionResult.language);
-          break;
-        case TranslationLinkConstants.LinkCopyFrom:
-          this.config.field.fieldHelper.copyFrom(this.config, this.formulaInstance, actionResult.language);
-          break;
-        default:
-          break;
-      }
+    if (isEqual(this.translationState$.value, actionResult)) { return; }
+
+    // need be sure that we have a language selected when a link option is clicked
+    switch (actionResult.linkType) {
+      case TranslationLinkConstants.Translate:
+        this.config.field.fieldHelper.translate(this.formulaInstance);
+        break;
+      case TranslationLinkConstants.DontTranslate:
+        this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
+        break;
+      case TranslationLinkConstants.LinkReadOnly:
+        this.config.field.fieldHelper.linkReadOnly(this.formulaInstance, actionResult.language);
+        break;
+      case TranslationLinkConstants.LinkReadWrite:
+        this.config.field.fieldHelper.linkReadWrite(this.formulaInstance, actionResult.language);
+        break;
+      case TranslationLinkConstants.LinkCopyFrom:
+        this.config.field.fieldHelper.copyFrom(this.formulaInstance, actionResult.language);
+        break;
+      default:
+        break;
     }
-  }
-
-  private onCurrentLanguageChanged() {
-    this.subscription.add(
-      this.currentLanguage$.subscribe(currentLanguage => {
-        this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage$.value, this.defaultLanguage$.value);
-        this.config.field.fieldHelper.refreshControlConfig(this.config, this.group);
-        this.formulaInstance.fieldTranslated(this.config.field.name);
-      })
-    );
-  }
-
-  private onDefaultLanguageChanged() {
-    this.subscription.add(
-      this.defaultLanguage$.subscribe(defaultLanguage => {
-        this.fieldsSettingsService.translateSettingsAndValidation(this.config, this.currentLanguage$.value, this.defaultLanguage$.value);
-        this.config.field.fieldHelper.refreshControlConfig(this.config, this.group);
-      })
-    );
-  }
-
-  private onFormulaSettingsChanged() {
-    this.subscription.add(
-      this.formulaInstance.getSettings(this.config.field.name).pipe(
-        filter(formulaSettings => formulaSettings != null),
-      ).subscribe(formulaSettings => {
-        this.fieldsSettingsService.translateSettingsAndValidation(
-          this.config, this.currentLanguage$.value, this.defaultLanguage$.value, formulaSettings,
-        );
-        this.config.field.fieldHelper.refreshControlConfig(this.config, this.group);
-      })
-    );
-  }
-
-  private onSlotIsEmptyChanged() {
-    this.subscription.add(
-      this.config.field.fieldHelper.slotIsEmpty$.subscribe(slotIsEmpty => {
-        this.config.field.fieldHelper.setControlDisable(this.config, this.group);
-      })
-    );
-  }
-
-  private onTranslateMany() {
-    this.subscription.add(
-      this.languageInstanceService.getTranslateMany(this.config.form.formId, this.config.entity.entityGuid).subscribe(props => {
-        switch (props.translationLink) {
-          case TranslationLinkConstants.Translate:
-            this.config.field.fieldHelper.translate(this.config, this.formulaInstance);
-            break;
-          case TranslationLinkConstants.DontTranslate:
-            this.config.field.fieldHelper.dontTranslate(this.config, this.formulaInstance);
-            break;
-        }
-      })
-    );
-  }
-
-  private onCheckField() {
-    this.subscription.add(
-      this.languageInstanceService.getCheckField(this.config.entity.entityGuid, this.config.field.name).subscribe(props => {
-        this.config.field.fieldHelper.refreshControlConfig(this.config, this.group);
-      })
-    );
   }
 }
