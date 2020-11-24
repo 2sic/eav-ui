@@ -3,7 +3,7 @@ import { ContentType, Query, WebApi } from '../app-administration/models';
 
 const base = 'restapi';
 
-export const DevRestNavigation = {
+export const GoToDevRest = {
   routeData: 'data',
   paramTypeName: 'contentTypeStaticName',
   paramQuery: 'queryGuid',

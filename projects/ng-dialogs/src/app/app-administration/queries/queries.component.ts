@@ -5,7 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentExportService } from '../../content-export/services/content-export.service';
-import { DevRestNavigation } from '../../dev-rest/dev-rest-navigation';
+import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -104,7 +104,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     switch (action) {
       case QueryActions.Edit: return this.editQuery(query);
       case QueryActions.Rest:
-        return this.router.navigate([DevRestNavigation.goToQuery(query)], { relativeTo: this.route.firstChild });
+        return this.router.navigate([GoToDevRest.goToQuery(query)], { relativeTo: this.route.firstChild });
       case QueryActions.Clone: return this.cloneQuery(query);
       case QueryActions.Permissions: return this.openPermissions(query);
       case QueryActions.Export: return this.exportQuery(query);

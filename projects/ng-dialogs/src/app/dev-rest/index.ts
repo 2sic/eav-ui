@@ -1,5 +1,5 @@
 
-export * from './dev-rest-navigation';
+export * from './go-to-dev-rest';
 
 export * from './scenarios';
 export * from './examples';

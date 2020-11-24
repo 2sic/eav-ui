@@ -7,7 +7,7 @@ import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
-import { DevRestNavigation } from '../../dev-rest/dev-rest-navigation';
+import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -248,7 +248,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(contentType: ContentType) {
-    this.router.navigate([DevRestNavigation.goToData(contentType)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToDevRest.goToData(contentType)], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {

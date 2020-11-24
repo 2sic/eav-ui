@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, share, switchMap } from 'rxjs/operators';
-import { DevRestNavigation, fireOnStartAndWhenSubDialogCloses } from '..';
+import { GoToDevRest, fireOnStartAndWhenSubDialogCloses } from '..';
 import { PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions/services/permissions.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -32,7 +32,7 @@ export class DevRestQueryComponent implements OnDestroy {
 
     // Build Query Stream
     const query$ = combineLatest([
-      route.paramMap.pipe(map(pm => pm.get(DevRestNavigation.paramQuery))),
+      route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
       pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
     ]).pipe(
       map(([queryGuid, all]) => all.find(q => q.Guid === queryGuid)),
@@ -43,7 +43,7 @@ export class DevRestQueryComponent implements OnDestroy {
     // This is triggered on start and everything a sub-dialog closes
     const permissions$ = combineLatest([
       fireOnStartAndWhenSubDialogCloses(this.router, this.route),
-      route.paramMap.pipe(map(pm => pm.get(DevRestNavigation.paramQuery))),
+      route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
     ]).pipe(
       switchMap(([_, queryName])  => {
         return permissionsService.getAll(eavConstants.metadata.entity.type, eavConstants.keyTypes.guid, queryName);

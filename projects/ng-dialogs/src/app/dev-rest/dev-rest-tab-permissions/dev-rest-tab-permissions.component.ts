@@ -1,7 +1,7 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DevRestDataTemplateVars, DevRestNavigation } from '..';
+import { DevRestDataTemplateVars, GoToDevRest } from '..';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
@@ -37,7 +37,7 @@ export class DevRestTabPermissionsComponent implements OnInit {
   }
 
   openPermissions() {
-    const contentTypeStaticName = this.route.snapshot.paramMap.get(DevRestNavigation.paramTypeName);
+    const contentTypeStaticName = this.route.snapshot.paramMap.get(GoToDevRest.paramTypeName);
     this.router.navigate([GoToPermissions.goContentType(contentTypeStaticName)], { relativeTo: this.route });
   }
 }

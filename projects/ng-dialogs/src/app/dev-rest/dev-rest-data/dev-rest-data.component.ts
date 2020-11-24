@@ -11,7 +11,7 @@ import { ContentTypesService } from '../../app-administration/services/content-t
 import { PermissionsService } from '../../permissions/services/permissions.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
-import { DevRestNavigation } from '../dev-rest-navigation';
+import { GoToDevRest } from '../go-to-dev-rest';
 import { fireOnStartAndWhenSubDialogCloses } from '../routing-helpers';
 import { DevRestDataTemplateVars } from './dev-rest-data-template-vars';
 
@@ -56,7 +56,7 @@ export class DevRestDataComponent implements OnDestroy {
 
     // Build ContentType Stream
     const contentType$ = route.paramMap.pipe(
-      map(pm => pm.get(DevRestNavigation.paramTypeName)),
+      map(pm => pm.get(GoToDevRest.paramTypeName)),
       switchMap(ctName => contentTypesService.retrieveContentType(ctName)),
       share()
     );
@@ -69,7 +69,7 @@ export class DevRestDataComponent implements OnDestroy {
     // This is triggered on start and everything a sub-dialog closes
     const permissions$ = combineLatest([
       fireOnStartAndWhenSubDialogCloses(this.router, this.route),
-      route.paramMap.pipe(map(pm => pm.get(DevRestNavigation.paramTypeName))),
+      route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramTypeName))),
     ]).pipe(
       switchMap(([_, typeName])  => {
         // TODO: 2dm - something looks wrong here, we're getting Entity-metadata for content-type!

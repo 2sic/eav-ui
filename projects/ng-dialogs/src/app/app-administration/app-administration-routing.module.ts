@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
-import { DevRestNavigation } from '../dev-rest';
+import { GoToDevRest } from '../dev-rest';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
@@ -49,7 +49,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
-          DevRestNavigation.route,
+          GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
@@ -82,7 +82,7 @@ const appAdministrationRoutes: Routes = [
             data: { title: 'Edit Query Name and Description', history: false },
           },
           { ...GoToPermissions.route, data: { title: 'Query Permissions' }},
-          DevRestNavigation.route,
+          GoToDevRest.route,
         ],
         data: { title: 'App Queries' },
       },
@@ -109,7 +109,7 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, children: [
-          DevRestNavigation.route,
+          GoToDevRest.route,
         ],
       },
       {

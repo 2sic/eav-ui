@@ -5,24 +5,24 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
 import { devRestDialog } from './dev-rest-dialog.config';
-import { DevRestNavigation } from './dev-rest-navigation';
 import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
+import { GoToDevRest } from './go-to-dev-rest';
 
 const routes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: devRestDialog, title: 'REST API' }, children: [
       // New: Moved full responbility of sub-routes to here (2dm 2020-11-23)
       {
-        path: `data/:${DevRestNavigation.paramTypeName}`, component: DevRestDataComponent, children: [
+        path: `data/:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent, children: [
           GoToPermissions.route,
         ]
       },
       {
-        path: `query/:${DevRestNavigation.paramQuery}`, component: DevRestQueryComponent, children: [
+        path: `query/:${GoToDevRest.paramQuery}`, component: DevRestQueryComponent, children: [
           GoToPermissions.route,
         ]
       },
-      { path: `custom/:${DevRestNavigation.paramApiPath}`, component: DevRestCustomComponent },
+      { path: `custom/:${GoToDevRest.paramApiPath}`, component: DevRestCustomComponent },
     ]
   },
 ];
