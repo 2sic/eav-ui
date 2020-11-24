@@ -9,6 +9,7 @@ import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operator
 import { fieldNameError, fieldNamePattern } from '../app-administration/constants/field-name.patterns';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { GoToPermissions } from '../permissions/go-to-permissions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -275,10 +276,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(field: Field) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.attribute.type}/${eavConstants.keyTypes.number}/${field.Id}`],
-      { relativeTo: this.route }
-    );
+    this.router.navigate([GoToPermissions.goAttribute(field.Id)], { relativeTo: this.route });
   }
 
   private refreshOnChildClosed() {

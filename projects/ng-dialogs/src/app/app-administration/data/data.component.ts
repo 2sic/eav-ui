@@ -8,6 +8,7 @@ import { GlobalConfigService } from '../../../../../edit/shared/services/global-
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { DevRestNavigation } from '../../dev-rest/dev-rest-navigation';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -264,10 +265,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${contentType.StaticName}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goEntity(contentType.StaticName)], { relativeTo: this.route.firstChild });
   }
 
   private deleteContentType(contentType: ContentType) {

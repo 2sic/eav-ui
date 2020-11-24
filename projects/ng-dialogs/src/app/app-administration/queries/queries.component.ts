@@ -6,6 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { DevRestNavigation } from '../../dev-rest/dev-rest-navigation';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -144,10 +145,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${query.Guid}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goEntity(query.Guid)], { relativeTo: this.route.firstChild });
   }
 
   private exportQuery(query: Query) {

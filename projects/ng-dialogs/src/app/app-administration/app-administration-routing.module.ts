@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
 import { DevRestNavigation } from '../dev-rest';
-import { PermissionsNavigation } from '../permissions/permissions-navigation';
+import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
@@ -65,7 +65,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
             data: { title: 'Import Items' },
           },
-          PermissionsNavigation.route,
+          GoToPermissions.route,
         ],
         data: { title: 'App Data' },
       },
@@ -81,7 +81,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
-          { ...PermissionsNavigation.route, data: { title: 'Query Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'Query Permissions' }},
           DevRestNavigation.route,
         ],
         data: { title: 'App Queries' },
@@ -103,7 +103,7 @@ const appAdministrationRoutes: Routes = [
             matcher: refreshEdit,
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
-          { ...PermissionsNavigation.route, data: { title: 'View Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'View Permissions' }},
         ],
         data: { title: 'App Views' },
       },
@@ -128,7 +128,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
-          { ...PermissionsNavigation.route, data: { title: 'App Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'App Permissions' }},
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
           { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },

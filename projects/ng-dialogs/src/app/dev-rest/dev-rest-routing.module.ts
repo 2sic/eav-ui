@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PermissionsNavigation } from '../permissions/permissions-navigation';
+import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
@@ -14,12 +14,12 @@ const routes: Routes = [
       // New: Moved full responbility of sub-routes to here (2dm 2020-11-23)
       {
         path: `data/:${DevRestNavigation.paramTypeName}`, component: DevRestDataComponent, children: [
-          PermissionsNavigation.route,
+          GoToPermissions.route,
         ]
       },
       {
         path: `query/:${DevRestNavigation.paramQuery}`, component: DevRestQueryComponent, children: [
-          PermissionsNavigation.route,
+          GoToPermissions.route,
         ]
       },
       { path: `custom/:${DevRestNavigation.paramApiPath}`, component: DevRestCustomComponent },
