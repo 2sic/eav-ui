@@ -1,4 +1,5 @@
-<mat-card class="mat-card-group-child shadow-bottom-z-1" [class.force-hide]="(visibleInEditUI$ | async) === false">
+<mat-card class="mat-card-group-child shadow-bottom-z-1"
+  [ngClass]="{ 'force-hide': (visibleInEditUI$ | async) === false }">
   <div fxLayout="row" fxLayoutAlign="start center" class="mat-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="mat-card-title-group mat-body-1">
