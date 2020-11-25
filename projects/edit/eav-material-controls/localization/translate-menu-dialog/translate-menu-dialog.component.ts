@@ -5,28 +5,28 @@ import { map } from 'rxjs/operators';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { Language } from '../../../shared/models/eav';
-import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { I18nKeyConstants } from './link-to-other-language.constants';
-import { findI18nKey, findTranslationLink } from './link-to-other-language.helpers';
+import { I18nKeyConstants } from './translate-menu-dialog.constants';
+import { findI18nKey, findTranslationLink } from './translate-menu-dialog.helpers';
+import { TranslateMenuDialogData } from './translate-menu-dialog.models';
 
 @Component({
-  selector: 'app-link-to-other-language',
-  templateUrl: './link-to-other-language.component.html',
-  styleUrls: ['./link-to-other-language.component.scss'],
+  selector: 'app-translate-menu-dialog',
+  templateUrl: './translate-menu-dialog.component.html',
+  styleUrls: ['./translate-menu-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
+export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   languages$: Observable<Language[]>;
-  selected$: BehaviorSubject<LinkToOtherLanguageData>;
+  selected$: BehaviorSubject<TranslateMenuDialogData>;
   showLanguages$: BehaviorSubject<boolean>;
   i18nRoot$: BehaviorSubject<string>;
   TranslationLinks = TranslationLinkConstants;
   I18nKeys = I18nKeyConstants;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public dialogData: LinkToOtherLanguageData,
+    @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
   ) {
@@ -54,7 +54,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
 
   select(i18nKey: string) {
     const showLanguages = (i18nKey !== I18nKeyConstants.FromPrimary && i18nKey !== I18nKeyConstants.NoTranslate);
-    const newSelected: LinkToOtherLanguageData = { ...this.selected$.value };
+    const newSelected: TranslateMenuDialogData = { ...this.selected$.value };
 
     if (!showLanguages) { newSelected.language = ''; }
     newSelected.linkType = findTranslationLink(i18nKey);
@@ -68,7 +68,7 @@ export class LinkToOtherLanguageComponent implements OnInit, OnDestroy {
     this.selected$.next({ ...this.selected$.value, language });
   }
 
-  isOkDisabled(selected: LinkToOtherLanguageData) {
+  isOkDisabled(selected: TranslateMenuDialogData) {
     const disabled = selected.language === ''
       && selected.linkType !== TranslationLinkConstants.Translate
       && selected.linkType !== TranslationLinkConstants.DontTranslate;

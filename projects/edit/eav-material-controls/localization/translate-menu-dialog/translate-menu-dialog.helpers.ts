@@ -1,5 +1,5 @@
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
-import { I18nKeyConstants } from './link-to-other-language.constants';
+import { I18nKeyConstants } from './translate-menu-dialog.constants';
 
 export function findI18nKey(translationLink: string) {
   switch (translationLink) {

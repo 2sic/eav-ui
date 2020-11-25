@@ -36,9 +36,11 @@
 
       <mat-icon matListIcon color="accent">{{ icon }}</mat-icon>
       <div matLine class="mat-list-item__title">
-        {{ ('LangMenu.Dialog.' + i18nKey + '.Title') | translate : { primary: dialogData.defaultLanguage } }}</div>
+        {{ ('LangMenu.Dialog.' + i18nKey + '.Title') | translate : { primary: dialogData.defaultLanguage } }}
+      </div>
       <div matLine class="mat-list-item__body">
-        {{ ('LangMenu.Dialog.' + i18nKey + '.Body') | translate : { primary: dialogData.defaultLanguage } }}</div>
+        {{ ('LangMenu.Dialog.' + i18nKey + '.Body') | translate : { primary: dialogData.defaultLanguage } }}
+      </div>
     </mat-list-item>
   </ng-template>
 
@@ -65,7 +67,8 @@
   </div>
 
   <mat-dialog-actions fxLayoutAlign="end center">
-    <button mat-button color="accent" [disabled]="isOkDisabled(data.selected)"
-      [mat-dialog-close]="data.selected">OK</button>
+    <button mat-button color="accent" [disabled]="isOkDisabled(data.selected)" [mat-dialog-close]="data.selected">
+      OK
+    </button>
   </mat-dialog-actions>
 </mat-card>

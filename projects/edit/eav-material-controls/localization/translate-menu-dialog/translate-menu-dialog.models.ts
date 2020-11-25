@@ -1,6 +1,6 @@
-import { EavAttributes } from './eav-attributes';
+import { EavAttributes } from '../../../shared/models/eav';
 
-export interface LinkToOtherLanguageData {
+export interface TranslateMenuDialogData {
   formId: number;
   linkType: string;
   language: string;

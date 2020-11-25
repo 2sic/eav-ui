@@ -7,13 +7,13 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { EavAttributes } from '../../../shared/models/eav';
-import { LinkToOtherLanguageData } from '../../../shared/models/eav/link-to-other-language-data';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { LinkToOtherLanguageComponent } from '../link-to-other-language/link-to-other-language.component';
+import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
+import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
 import { TranslateMenuTemplateVars } from './translate-menu.models';
 
@@ -30,7 +30,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   translationLinkConstants = TranslationLinkConstants;
   templateVars$: Observable<TranslateMenuTemplateVars>;
 
-  private translationState$: BehaviorSubject<LinkToOtherLanguageData>;
+  private translationState$: BehaviorSubject<TranslateMenuDialogData>;
 
   constructor(
     private dialog: MatDialog,
@@ -99,8 +99,8 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
   }
 
-  openLinkToOtherLanguage(defaultLanguage: string, attributes: EavAttributes) {
-    const dialogData: LinkToOtherLanguageData = {
+  openTranslateMenuDialog(defaultLanguage: string, attributes: EavAttributes) {
+    const dialogData: TranslateMenuDialogData = {
       formId: this.config.form.formId,
       linkType: this.translationState$.value.linkType,
       language: this.translationState$.value.language,
@@ -108,7 +108,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       attributes,
       attributeKey: this.config.field.name,
     };
-    const dialogRef = this.dialog.open(LinkToOtherLanguageComponent, {
+    const dialogRef = this.dialog.open(TranslateMenuDialogComponent, {
       panelClass: 'c-link-to-other-language',
       autoFocus: false,
       width: '350px',
@@ -120,13 +120,13 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       if (!CTRL_S) { return; }
       e.preventDefault();
     });
-    dialogRef.afterClosed().subscribe((actionResult: LinkToOtherLanguageData) => {
+    dialogRef.afterClosed().subscribe((actionResult: TranslateMenuDialogData) => {
       if (!actionResult) { return; }
       this.triggerTranslation(actionResult);
     });
   }
 
-  private triggerTranslation(actionResult: LinkToOtherLanguageData) {
+  private triggerTranslation(actionResult: TranslateMenuDialogData) {
     if (isEqual(this.translationState$.value, actionResult)) { return; }
 
     // need be sure that we have a language selected when a link option is clicked

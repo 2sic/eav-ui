@@ -3,12 +3,12 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { TranslateMenuDialogData } from '../../eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { ContentType, EavAttributes, EavDimensions, Item } from '../../shared/models/eav';
-import { LinkToOtherLanguageData } from '../../shared/models/eav/link-to-other-language-data';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
@@ -19,7 +19,7 @@ import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-i
 
 export class FieldHelper {
   defaultLanguageMissingValue$ = new BehaviorSubject(false);
-  translationState$ = new BehaviorSubject<LinkToOtherLanguageData>({
+  translationState$ = new BehaviorSubject<TranslateMenuDialogData>({
     formId: null,
     linkType: '',
     language: '',
@@ -352,7 +352,7 @@ export class FieldHelper {
   }
 
   private setTranslationState(linkType: string, language: string): void {
-    const newTranslationState: LinkToOtherLanguageData = { ...this.translationState$.value, linkType, language };
+    const newTranslationState: TranslateMenuDialogData = { ...this.translationState$.value, linkType, language };
     this.translationState$.next(newTranslationState);
   }
 

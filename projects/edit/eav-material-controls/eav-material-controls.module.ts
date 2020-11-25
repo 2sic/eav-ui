@@ -66,7 +66,7 @@ import { StringTemplatePickerComponent } from './input-types/string/string-templ
 import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
 import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { EntityTranslateMenuComponent } from './localization/entity-translate-menu/entity-translate-menu.component';
-import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
+import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
@@ -112,7 +112,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     FieldHelperTextComponent,
     EntityTranslateMenuComponent,
     TranslateMenuComponent,
-    LinkToOtherLanguageComponent,
+    TranslateMenuDialogComponent,
     EntityExpandableWrapperComponent,
     EntityDefaultListComponent,
     EntityDefaultSearchComponent,
@@ -186,7 +186,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     StringFontIconPickerComponent,
     StringUrlPathComponent,
     StringTemplatePickerComponent,
-    LinkToOtherLanguageComponent,
+    TranslateMenuDialogComponent,
     HyperlinkDefaultExpandableWrapperComponent,
     DropzoneWrapperComponent,
     HyperlinkLibraryExpandableWrapperComponent,

@@ -20,7 +20,7 @@
         [class.menu-item-selected]="data.translationState.linkType === translationLinkConstants.DontTranslate">
         {{ 'LangMenu.NoTranslate' | translate }}
       </button>
-      <button mat-menu-item (click)="openLinkToOtherLanguage(data.defaultLanguage, data.attributes)"
+      <button mat-menu-item (click)="openTranslateMenuDialog(data.defaultLanguage, data.attributes)"
         [class.menu-item-selected]="data.translationState.language !== ''">
         {{ 'LangMenu.Link' | translate }}
       </button>
