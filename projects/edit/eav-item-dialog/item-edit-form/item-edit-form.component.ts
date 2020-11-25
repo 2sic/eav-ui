@@ -156,7 +156,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     for (const config of fieldConfigs) {
       config.field.focused$?.complete();
       config.field.settings$.complete();
-      config.field.fieldHelper.destroy();
+      config.field.fieldHelper?.destroy();
 
       const group = (config.field as FieldConfigGroup).fieldGroup;
       if (!group) { return; }

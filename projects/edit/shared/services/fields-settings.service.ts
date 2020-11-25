@@ -92,7 +92,6 @@ export class FieldsSettingsService {
         label,
         inputType: calculatedInputType.inputType,
         settings$: new BehaviorSubject(settingsTranslated),
-        fieldHelper,
       } as FieldConfigGroup;
     } else {
       const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);

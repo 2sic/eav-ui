@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import isEqual from 'lodash-es/isEqual';
@@ -7,7 +7,6 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { EavService } from '../../../shared/services/eav.service';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -21,7 +20,7 @@ import { TranslateMenuTemplateVars, TranslationState } from './translate-menu.mo
   styleUrls: ['./translate-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TranslateMenuComponent implements OnInit, OnDestroy {
+export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() private group: FormGroup;
 
@@ -36,7 +35,6 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
     private formulaInstance: FormulaInstanceService,
-    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit(): void {
@@ -78,12 +76,6 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
         }
       ),
     );
-
-    this.config.field.fieldHelper.startTranslations(this.config, this.group, this.formulaInstance, this.fieldsSettingsService);
-  }
-
-  ngOnDestroy(): void {
-    this.config.field.fieldHelper.stopTranslations();
   }
 
   translate(): void {

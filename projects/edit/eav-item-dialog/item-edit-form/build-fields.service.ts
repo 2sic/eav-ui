@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
@@ -7,6 +8,7 @@ import { ContentType, EavAttributes, Item } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
 import { CalculatedInputType } from '../../shared/models/input-field-models';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
+import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -132,7 +134,7 @@ export class BuildFieldsService {
     return fieldConfigSet;
   }
 
-  private calculateFieldPositionInGroup(fieldConfig: FieldConfigGroup) {
+  private calculateFieldPositionInGroup(fieldConfig: FieldConfigGroup): void {
     if (!fieldConfig.fieldGroup) { return; }
 
     const childFieldsCount = fieldConfig.fieldGroup.length;
@@ -146,5 +148,32 @@ export class BuildFieldsService {
     fieldConfig.fieldGroup.forEach(childFieldConfig => {
       this.calculateFieldPositionInGroup(childFieldConfig.field as FieldConfigGroup);
     });
+  }
+
+  public startTranslations(
+    fieldConfigs: FieldConfigSet[],
+    form: FormGroup,
+    formulaInstance: FormulaInstanceService,
+    fieldsSettingsService: FieldsSettingsService,
+  ): void {
+    for (const config of fieldConfigs) {
+      const field = config.field as FieldConfigGroup;
+      if (field.fieldGroup) {
+        this.startTranslations(field.fieldGroup, form, formulaInstance, fieldsSettingsService);
+      } else {
+        config.field.fieldHelper?.startTranslations(config, form, formulaInstance, fieldsSettingsService);
+      }
+    }
+  }
+
+  public stopTranslations(fieldConfigs: FieldConfigSet[]): void {
+    for (const config of fieldConfigs) {
+      const field = config.field as FieldConfigGroup;
+      if (field.fieldGroup) {
+        this.stopTranslations(field.fieldGroup);
+      } else {
+        config.field.fieldHelper?.stopTranslations();
+      }
+    }
   }
 }

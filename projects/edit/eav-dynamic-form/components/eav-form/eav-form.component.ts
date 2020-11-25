@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
@@ -31,6 +33,8 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private formBuilder: FormBuilder,
     private formulaInstance: FormulaInstanceService,
     private languageInstanceService: LanguageInstanceService,
+    private fieldsSettingsService: FieldsSettingsService,
+    private buildFieldsService: BuildFieldsService,
   ) { }
 
   ngOnInit() {
@@ -39,6 +43,8 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.buildFieldsService.startTranslations(this.fieldConfigs, this.form, this.formulaInstance, this.fieldsSettingsService);
+
     // run formulas when form is created
     this.formulaInstance.runSettingsFormulas();
     this.formulaInstance.runValueFormulas();
@@ -58,6 +64,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.buildFieldsService.stopTranslations(this.fieldConfigs);
     this.subscription.unsubscribe();
   }
 
