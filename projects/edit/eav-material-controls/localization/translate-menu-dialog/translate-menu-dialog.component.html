@@ -1,12 +1,7 @@
-<mat-card class="link-other-lang-container u-hide-scrollbar" *ngIf="{
-  languages: languages$ | async,
-  selected: selected$ | async,
-  showLanguages: showLanguages$ | async,
-  i18nRoot: i18nRoot$ | async
-} as data">
+<mat-card class="translate-menu-dialog-card u-hide-scrollbar" *ngIf="templateVars$ | async as data">
   <div class="mat-card__header">
     <div class="mat-card__title">
-      {{ 'LangMenu.Dialog.Title' | translate: { name: dialogData.attributeKey } }}
+      {{ 'LangMenu.Dialog.Title' | translate: { name: dialogData.config.field.name } }}
     </div>
     <div class="mat-card__description">
       {{ 'LangMenu.Dialog.Intro' | translate }}
@@ -15,36 +10,37 @@
 
   <mat-nav-list toggle>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.DontTranslate, icon: 'lock', i18nKey: I18nKeys.NoTranslate }">
+      *ngTemplateOutlet="item;context:{ link: translationLinks.DontTranslate, icon: 'lock', i18nKey: i18nKeys.NoTranslate }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.Translate, icon: 'lock_open', i18nKey: I18nKeys.FromPrimary }">
+      *ngTemplateOutlet="item;context:{ link: translationLinks.Translate, icon: 'lock_open', i18nKey: i18nKeys.FromPrimary }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkCopyFrom, icon: 'translate', i18nKey: I18nKeys.FromOther }">
+      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkCopyFrom, icon: 'translate', i18nKey: i18nKeys.FromOther }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkReadOnly, icon: 'link', i18nKey: I18nKeys.LinkReadOnly }">
+      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkReadOnly, icon: 'link', i18nKey: i18nKeys.LinkReadOnly }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkReadWrite, icon: 'share', i18nKey: I18nKeys.LinkShared }">
+      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkReadWrite, icon: 'share', i18nKey: i18nKeys.LinkShared }">
     </ng-container>
   </mat-nav-list>
 
   <ng-template #item let-icon="icon" let-link='link' let-i18nKey="i18nKey">
-    <mat-list-item [ngClass]="{ 'mat-list-item-focus': data.selected.linkType === link }" (click)="select(i18nKey)">
+    <mat-list-item [ngClass]="{ 'mat-list-item-focus': data.translationState.linkType === link }"
+      (click)="setLinkType(link)">
 
       <mat-icon matListIcon color="accent">{{ icon }}</mat-icon>
       <div matLine class="mat-list-item__title">
-        {{ ('LangMenu.Dialog.' + i18nKey + '.Title') | translate : { primary: dialogData.defaultLanguage } }}
+        {{ ('LangMenu.Dialog.' + i18nKey + '.Title') | translate : { primary: data.defaultLanguage } }}
       </div>
       <div matLine class="mat-list-item__body">
-        {{ ('LangMenu.Dialog.' + i18nKey + '.Body') | translate : { primary: dialogData.defaultLanguage } }}
+        {{ ('LangMenu.Dialog.' + i18nKey + '.Body') | translate : { primary: data.defaultLanguage } }}
       </div>
     </mat-list-item>
   </ng-template>
 
-  <div *ngIf="data.showLanguages">
+  <div *ngIf="data.showLanguageSelection">
     <div class="mat-card__header">
       <div class="mat-card__title">
         {{ (data.i18nRoot + '.Subtitle') | translate }}
@@ -55,10 +51,10 @@
     </div>
 
     <mat-action-list>
-      <button mat-list-item *ngFor="let language of data.languages" (click)="selectLanguage(language.key)"
-        [disabled]="isLanguageDisabled(language.key)" [ngClass]="{
-        'mat-list-item-focus': data.selected.language === language.key,
-        'mat-list-item--disabled': isLanguageDisabled(language.key)
+      <button mat-list-item *ngFor="let language of data.languages" (click)="setLanguage(language.key)"
+        [disabled]="language.disabled" [ngClass]="{
+        'mat-list-item-focus': data.translationState.language === language.key,
+        'mat-list-item--disabled': language.disabled
       }">
         <mat-icon matListIcon color="accent">language</mat-icon>
         {{ language.key }}
@@ -67,7 +63,7 @@
   </div>
 
   <mat-dialog-actions fxLayoutAlign="end center">
-    <button mat-button color="accent" [disabled]="isOkDisabled(data.selected)" [mat-dialog-close]="data.selected">
+    <button mat-button color="accent" [disabled]="data.submitDisabled" [mat-dialog-close]="data.translationState">
       OK
     </button>
   </mat-dialog-actions>

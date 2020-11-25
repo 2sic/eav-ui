@@ -1,9 +1,9 @@
 export class Language {
-    key: string;
-    name: string;
+  key: string;
+  name: string;
 
-    constructor(key: string, name: string) {
-        this.key = key;
-        this.name = name;
-    }
+  constructor(key: string, name: string) {
+    this.key = key;
+    this.name = name;
+  }
 }

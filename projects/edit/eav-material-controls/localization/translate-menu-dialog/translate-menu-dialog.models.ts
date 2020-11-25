@@ -1,10 +1,20 @@
-import { EavAttributes } from '../../../shared/models/eav';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { TranslationState } from '../translate-menu/translate-menu.models';
 
 export interface TranslateMenuDialogData {
-  formId: number;
-  linkType: string;
-  language: string;
-  defaultLanguage?: string;
-  attributes?: EavAttributes;
-  attributeKey?: string;
+  config: FieldConfigSet;
+}
+
+export interface TranslateMenuDialogTemplateLanguage {
+  key: string;
+  disabled: boolean;
+}
+
+export interface TranslateMenuDialogTemplateVars {
+  defaultLanguage: string;
+  languages: TranslateMenuDialogTemplateLanguage[];
+  translationState: TranslationState;
+  showLanguageSelection: boolean;
+  i18nRoot: string;
+  submitDisabled: boolean;
 }

@@ -1,11 +1,12 @@
-import { EavAttributes } from '../../../shared/models/eav';
-import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
+export interface TranslationState {
+  linkType: string;
+  language: string;
+}
 
 export interface TranslateMenuTemplateVars {
   currentLanguage: string;
   defaultLanguage: string;
-  attributes: EavAttributes;
-  translationState: TranslateMenuDialogData;
+  translationState: TranslationState;
   translationStateClass: string;
   disabled: boolean;
   defaultLanguageMissingValue: boolean;

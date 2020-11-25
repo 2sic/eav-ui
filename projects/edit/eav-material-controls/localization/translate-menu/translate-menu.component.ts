@@ -6,16 +6,14 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
-import { EavAttributes } from '../../../shared/models/eav';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
-import { TranslateMenuTemplateVars } from './translate-menu.models';
+import { TranslateMenuTemplateVars, TranslationState } from './translate-menu.models';
 
 @Component({
   selector: 'app-translate-menu',
@@ -30,28 +28,26 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   translationLinkConstants = TranslationLinkConstants;
   templateVars$: Observable<TranslateMenuTemplateVars>;
 
-  private translationState$: BehaviorSubject<TranslateMenuDialogData>;
+  private translationState$: BehaviorSubject<TranslationState>;
 
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
-    private itemService: ItemService,
     private eavService: EavService,
     private formulaInstance: FormulaInstanceService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    const attributes$ = this.itemService.selectItemAttributes(this.config.entity.entityGuid);
     this.translationState$ = this.config.field.fieldHelper.translationState$;
 
     const control = this.group.controls[this.config.field.name];
     const disabled$ = this.eavService.formDisabledChange$.pipe(
       filter(formSet => formSet.formId === this.config.form.formId && formSet.entityGuid === this.config.entity.entityGuid),
-      map(formSet => control.disabled),
+      map(() => control.disabled),
       startWith(control.disabled),
       distinctUntilChanged(),
     );
@@ -60,18 +56,17 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     const infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
 
     this.templateVars$ = combineLatest([
-      combineLatest([currentLanguage$, defaultLanguage$, attributes$, this.translationState$]),
+      combineLatest([currentLanguage$, defaultLanguage$, this.translationState$]),
       combineLatest([disabled$, defaultLanguageMissingValue$, infoMessage$, infoMessageLabel$]),
     ]).pipe(
       map(
         ([
-          [currentLanguage, defaultLanguage, attributes, translationState],
+          [currentLanguage, defaultLanguage, translationState],
           [disabled, defaultLanguageMissingValue, infoMessage, infoMessageLabel],
         ]) => {
           const templateVars: TranslateMenuTemplateVars = {
             currentLanguage,
             defaultLanguage,
-            attributes,
             translationState,
             translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
             disabled,
@@ -87,29 +82,24 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.config.field.fieldHelper.startTranslations(this.config, this.group, this.formulaInstance, this.fieldsSettingsService);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.config.field.fieldHelper.stopTranslations();
   }
 
-  translate() {
+  translate(): void {
     this.config.field.fieldHelper.translate(this.formulaInstance);
   }
 
-  dontTranslate() {
+  dontTranslate(): void {
     this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
   }
 
-  openTranslateMenuDialog(defaultLanguage: string, attributes: EavAttributes) {
+  openTranslateMenuDialog(): void {
     const dialogData: TranslateMenuDialogData = {
-      formId: this.config.form.formId,
-      linkType: this.translationState$.value.linkType,
-      language: this.translationState$.value.language,
-      defaultLanguage,
-      attributes,
-      attributeKey: this.config.field.name,
+      config: this.config,
     };
     const dialogRef = this.dialog.open(TranslateMenuDialogComponent, {
-      panelClass: 'c-link-to-other-language',
+      panelClass: 'translate-menu-dialog',
       autoFocus: false,
       width: '350px',
       viewContainerRef: this.viewContainerRef,
@@ -120,17 +110,16 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
       if (!CTRL_S) { return; }
       e.preventDefault();
     });
-    dialogRef.afterClosed().subscribe((actionResult: TranslateMenuDialogData) => {
-      if (!actionResult) { return; }
-      this.triggerTranslation(actionResult);
+    dialogRef.afterClosed().subscribe((newTranslationState: TranslationState) => {
+      this.setTranslationState(newTranslationState);
     });
   }
 
-  private triggerTranslation(actionResult: TranslateMenuDialogData) {
-    if (isEqual(this.translationState$.value, actionResult)) { return; }
+  private setTranslationState(newTranslationState: TranslationState): void {
+    if (!newTranslationState) { return; }
+    if (isEqual(this.translationState$.value, newTranslationState)) { return; }
 
-    // need be sure that we have a language selected when a link option is clicked
-    switch (actionResult.linkType) {
+    switch (newTranslationState.linkType) {
       case TranslationLinkConstants.Translate:
         this.config.field.fieldHelper.translate(this.formulaInstance);
         break;
@@ -138,13 +127,13 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
         this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
         break;
       case TranslationLinkConstants.LinkReadOnly:
-        this.config.field.fieldHelper.linkReadOnly(this.formulaInstance, actionResult.language);
+        this.config.field.fieldHelper.linkReadOnly(this.formulaInstance, newTranslationState.language);
         break;
       case TranslationLinkConstants.LinkReadWrite:
-        this.config.field.fieldHelper.linkReadWrite(this.formulaInstance, actionResult.language);
+        this.config.field.fieldHelper.linkReadWrite(this.formulaInstance, newTranslationState.language);
         break;
       case TranslationLinkConstants.LinkCopyFrom:
-        this.config.field.fieldHelper.copyFrom(this.formulaInstance, actionResult.language);
+        this.config.field.fieldHelper.copyFrom(this.formulaInstance, newTranslationState.language);
         break;
       default:
         break;
