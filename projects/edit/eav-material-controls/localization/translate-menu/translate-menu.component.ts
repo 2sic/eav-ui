@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import isEqual from 'lodash-es/isEqual';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
@@ -30,14 +30,11 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   translationLinkConstants = TranslationLinkConstants;
   templateVars$: Observable<TranslateMenuTemplateVars>;
 
-  private currentLanguage$ = new BehaviorSubject<string>(null);
-  private defaultLanguage$ = new BehaviorSubject<string>(null);
-  private attributes$ = new BehaviorSubject<EavAttributes>(null);
   private translationState$: BehaviorSubject<LinkToOtherLanguageData>;
-  private subscription = new Subscription();
 
   constructor(
     private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: EavService,
@@ -46,21 +43,9 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.config.form.formId).subscribe(currentLanguage => {
-        this.currentLanguage$.next(currentLanguage);
-      })
-    );
-    this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.config.form.formId).subscribe(defaultLanguage => {
-        this.defaultLanguage$.next(defaultLanguage);
-      })
-    );
-    this.subscription.add(
-      this.itemService.selectItemAttributes(this.config.entity.entityGuid).subscribe(attributes => {
-        this.attributes$.next(attributes);
-      })
-    );
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
+    const attributes$ = this.itemService.selectItemAttributes(this.config.entity.entityGuid);
     this.translationState$ = this.config.field.fieldHelper.translationState$;
 
     const control = this.group.controls[this.config.field.name];
@@ -75,23 +60,27 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     const infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.currentLanguage$, this.defaultLanguage$, this.translationState$]),
+      combineLatest([currentLanguage$, defaultLanguage$, attributes$, this.translationState$]),
       combineLatest([disabled$, defaultLanguageMissingValue$, infoMessage$, infoMessageLabel$]),
     ]).pipe(
       map(
         ([
-          [currentLanguage, defaultLanguage, translationState],
+          [currentLanguage, defaultLanguage, attributes, translationState],
           [disabled, defaultLanguageMissingValue, infoMessage, infoMessageLabel],
-        ]) => ({
-          currentLanguage,
-          defaultLanguage,
-          translationState,
-          translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
-          disabled,
-          defaultLanguageMissingValue,
-          infoMessage,
-          infoMessageLabel,
-        })
+        ]) => {
+          const templateVars: TranslateMenuTemplateVars = {
+            currentLanguage,
+            defaultLanguage,
+            attributes,
+            translationState,
+            translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
+            disabled,
+            defaultLanguageMissingValue,
+            infoMessage,
+            infoMessageLabel,
+          };
+          return templateVars;
+        }
       ),
     );
 
@@ -99,11 +88,7 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.currentLanguage$.complete();
-    this.defaultLanguage$.complete();
-    this.attributes$.complete();
     this.config.field.fieldHelper.stopTranslations();
-    this.subscription.unsubscribe();
   }
 
   translate() {
@@ -114,19 +99,20 @@ export class TranslateMenuComponent implements OnInit, OnDestroy {
     this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
   }
 
-  openLinkToOtherLanguage() {
+  openLinkToOtherLanguage(defaultLanguage: string, attributes: EavAttributes) {
     const dialogData: LinkToOtherLanguageData = {
       formId: this.config.form.formId,
       linkType: this.translationState$.value.linkType,
       language: this.translationState$.value.language,
-      defaultLanguage: this.defaultLanguage$.value,
-      attributes: this.attributes$.value,
+      defaultLanguage,
+      attributes,
       attributeKey: this.config.field.name,
     };
     const dialogRef = this.dialog.open(LinkToOtherLanguageComponent, {
       panelClass: 'c-link-to-other-language',
       autoFocus: false,
       width: '350px',
+      viewContainerRef: this.viewContainerRef,
       data: dialogData,
     });
     dialogRef.keydownEvents().subscribe(e => {
