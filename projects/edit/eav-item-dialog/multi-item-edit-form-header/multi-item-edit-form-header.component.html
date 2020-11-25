@@ -7,9 +7,9 @@
   <div *ngIf="isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
 
   <div class="header__langs">
-    <app-eav-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId"
+    <app-language-switcher *ngIf="hasLanguages$ | async" [formId]="formId"
       [disabled]="!formsAreValid && !allControlsAreDisabled">
-    </app-eav-language-switcher>
+    </app-language-switcher>
   </div>
 
   <button mat-button class="header__publish-button" (click)="openSaveStatusDialog()"

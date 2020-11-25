@@ -1,11 +1,11 @@
-import { Language } from '../../../../shared/models/eav';
+import { Language } from '../../../shared/models/eav';
 
 export interface LanguageButton extends Language {
   buttonText: string;
 }
 
 /** Calculates properties of language buttons, e.g. name to be desplayed */
-export function calculateLanguageButtons(languages: Language[]): LanguageButton[] {
+export function getLanguageButtons(languages: Language[]): LanguageButton[] {
   const languageButtons: LanguageButton[] = [];
   const regionlessNamesCount: { [key: string]: number } = {};
 
@@ -36,5 +36,5 @@ export function calculateLanguageButtons(languages: Language[]): LanguageButton[
 
 /** Returns name without region, e.g. ENGLISH from English (United Stated) */
 function removeRegionName(languageName: string): string {
-  return languageName.substring(0, languageName.indexOf('(') > 0 ? languageName.indexOf('(') - 1 : 100).toLocaleUpperCase();
+  return languageName.substring(0, languageName.includes('(') ? languageName.indexOf('(') - 1 : 100).toLocaleUpperCase();
 }

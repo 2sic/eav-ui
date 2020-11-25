@@ -64,8 +64,8 @@ import { StringDropdownComponent } from './input-types/string/string-dropdown/st
 import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { StringTemplatePickerComponent } from './input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
-import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
 import { EntityTranslateMenuComponent } from './localization/entity-translate-menu/entity-translate-menu.component';
+import { LanguageSwitcherComponent } from './localization/language-switcher/language-switcher.component';
 import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
@@ -100,7 +100,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     AdamHintComponent,
     AdamAttachWrapperComponent,
     HyperlinkLibraryComponent,
-    EavLanguageSwitcherComponent,
+    LanguageSwitcherComponent,
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
@@ -198,7 +198,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     CustomJsonEditorComponent,
   ],
   exports: [
-    EavLanguageSwitcherComponent,
+    LanguageSwitcherComponent,
     EntityTranslateMenuComponent,
     TranslateMenuComponent,
     ChangeAnchorTargetDirective,

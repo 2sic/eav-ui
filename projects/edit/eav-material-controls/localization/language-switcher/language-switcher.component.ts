@@ -4,18 +4,18 @@ import { map } from 'rxjs/operators';
 import { Language } from '../../../shared/models/eav';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { CenterSelectedHelper } from './eav-language-switcher-services/center-selected-helper';
-import { calculateLanguageButtons, LanguageButton } from './eav-language-switcher-services/eav-language-switcher.helpers';
-import { MouseScrollHelper } from './eav-language-switcher-services/mouse-scroll-helper';
-import { ShowShadowsHelper } from './eav-language-switcher-services/show-shadows-helper';
+import { CenterSelectedHelper } from './center-selected.helper';
+import { getLanguageButtons, LanguageButton } from './language-switcher.helpers';
+import { MouseScrollHelper } from './mouse-scroll.helper';
+import { ShowShadowsHelper } from './show-shadows.helper';
 
 @Component({
-  selector: 'app-eav-language-switcher',
-  templateUrl: './eav-language-switcher.component.html',
-  styleUrls: ['./eav-language-switcher.component.scss'],
+  selector: 'app-language-switcher',
+  templateUrl: './language-switcher.component.html',
+  styleUrls: ['./language-switcher.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollable') private headerRef: ElementRef;
   @ViewChild('leftShadow') private leftShadowRef: ElementRef;
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
@@ -25,9 +25,9 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   languageButtons$: Observable<LanguageButton[]>;
   currentLanguage$: Observable<string>;
 
-  private centerSelectedService: CenterSelectedHelper;
+  private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
-  private showShadowsService: ShowShadowsHelper;
+  private showShadowsHelper: ShowShadowsHelper;
 
   constructor(
     private languageService: LanguageService,
@@ -36,32 +36,32 @@ export class EavLanguageSwitcherComponent implements OnInit, AfterViewInit, OnDe
   ) { }
 
   ngOnInit() {
-    this.languageButtons$ = this.languageService.entities$.pipe(map(langs => calculateLanguageButtons(langs)));
+    this.languageButtons$ = this.languageService.entities$.pipe(map(langs => getLanguageButtons(langs)));
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.formId);
   }
 
   ngAfterViewInit() {
-    this.showShadowsService = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
+    this.showShadowsHelper = new ShowShadowsHelper(this.ngZone, this.headerRef.nativeElement,
       this.leftShadowRef.nativeElement, this.rightShadowRef.nativeElement);
     this.mouseScrollHelper = new MouseScrollHelper(this.ngZone, this.headerRef.nativeElement, this.areButtonsDisabled.bind(this));
-    this.centerSelectedService = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
+    this.centerSelectedHelper = new CenterSelectedHelper(this.ngZone, this.headerRef.nativeElement);
   }
 
   ngOnDestroy() {
-    this.centerSelectedService.destroy();
+    this.centerSelectedHelper.destroy();
     this.mouseScrollHelper.destroy();
-    this.showShadowsService.destroy();
+    this.showShadowsHelper.destroy();
   }
 
   lngButtonMouseDown(event: MouseEvent) {
-    this.centerSelectedService.lngButtonDown(event);
+    this.centerSelectedHelper.lngButtonDown(event);
   }
 
   lngButtonClick(event: MouseEvent, language: Language) {
     if (this.disabled) { return; }
-    this.centerSelectedService.lngButtonClick(event);
+    this.centerSelectedHelper.lngButtonClick(event);
 
-    if (!this.centerSelectedService.stopClickIfMouseMoved()) {
+    if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
       this.languageInstanceService.updateCurrentLanguage(this.formId, language.key);
     }
   }

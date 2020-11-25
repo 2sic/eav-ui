@@ -32,6 +32,7 @@
   overflow: hidden;
   scroll-behavior: smooth;
   height: 100%;
+  touch-action: none;
 }
 
 .lang-switch {
