@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -15,7 +16,6 @@ import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './tran
   selector: 'app-translate-menu-dialog',
   templateUrl: './translate-menu-dialog.component.html',
   styleUrls: ['./translate-menu-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   translationLinks = TranslationLinkConstants;
@@ -26,13 +26,21 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   private noLanguageRequired = [TranslationLinkConstants.Translate, TranslationLinkConstants.DontTranslate];
 
   constructor(
+    private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-  ) { }
+    private formulaInstance: FormulaInstanceService,
+  ) {
+    this.dialogRef.keydownEvents().subscribe(event => {
+      const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
+      if (!CTRL_S) { return; }
+      event.preventDefault();
+    });
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.dialogData.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.dialogData.config.form.formId);
     const attributes$ = this.itemService.selectItemAttributes(this.dialogData.config.entity.entityGuid);
@@ -58,11 +66,11 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.translationState$.complete();
   }
 
-  setLinkType(linkType: string) {
+  setLinkType(linkType: string): void {
     const newTranslationState: TranslationState = {
       linkType,
       language: this.noLanguageRequired.includes(linkType) ? '' : this.translationState$.value.language,
@@ -70,7 +78,43 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$.next(newTranslationState);
   }
 
-  setLanguage(language: string) {
+  setLanguage(language: string): void {
     this.translationState$.next({ ...this.translationState$.value, language });
+  }
+
+  save(): void {
+    const newState = this.translationState$.value;
+    const oldState = this.dialogData.config.field.fieldHelper.translationState$.value;
+
+    const isEqual = oldState.linkType === newState.linkType && oldState.language === newState.language;
+    if (isEqual) {
+      this.closeDialog();
+      return;
+    }
+
+    switch (newState.linkType) {
+      case TranslationLinkConstants.Translate:
+        this.dialogData.config.field.fieldHelper.translate(this.formulaInstance);
+        break;
+      case TranslationLinkConstants.DontTranslate:
+        this.dialogData.config.field.fieldHelper.dontTranslate(this.formulaInstance);
+        break;
+      case TranslationLinkConstants.LinkReadOnly:
+        this.dialogData.config.field.fieldHelper.linkReadOnly(this.formulaInstance, newState.language);
+        break;
+      case TranslationLinkConstants.LinkReadWrite:
+        this.dialogData.config.field.fieldHelper.linkReadWrite(this.formulaInstance, newState.language);
+        break;
+      case TranslationLinkConstants.LinkCopyFrom:
+        this.dialogData.config.field.fieldHelper.copyFrom(this.formulaInstance, newState.language);
+        break;
+      default:
+        break;
+    }
+    this.closeDialog();
+  }
+
+  private closeDialog() {
+    this.dialogRef.close();
   }
 }

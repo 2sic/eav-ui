@@ -63,8 +63,6 @@
   </div>
 
   <mat-dialog-actions fxLayoutAlign="end center">
-    <button mat-button color="accent" [disabled]="data.submitDisabled" [mat-dialog-close]="data.translationState">
-      OK
-    </button>
+    <button mat-button color="accent" [disabled]="data.submitDisabled" (click)="save()">OK</button>
   </mat-dialog-actions>
 </mat-card>

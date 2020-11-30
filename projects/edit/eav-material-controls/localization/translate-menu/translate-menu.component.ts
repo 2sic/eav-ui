@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import isEqual from 'lodash-es/isEqual';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
@@ -12,13 +11,12 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data/languag
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
-import { TranslateMenuTemplateVars, TranslationState } from './translate-menu.models';
+import { TranslateMenuTemplateVars } from './translate-menu.models';
 
 @Component({
   selector: 'app-translate-menu',
   templateUrl: './translate-menu.component.html',
   styleUrls: ['./translate-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
@@ -26,8 +24,6 @@ export class TranslateMenuComponent implements OnInit {
 
   translationLinkConstants = TranslationLinkConstants;
   templateVars$: Observable<TranslateMenuTemplateVars>;
-
-  private translationState$: BehaviorSubject<TranslationState>;
 
   constructor(
     private dialog: MatDialog,
@@ -40,7 +36,7 @@ export class TranslateMenuComponent implements OnInit {
   ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    this.translationState$ = this.config.field.fieldHelper.translationState$;
+    const translationState$ = this.config.field.fieldHelper.translationState$;
 
     const control = this.group.controls[this.config.field.name];
     const disabled$ = this.eavService.formDisabledChange$.pipe(
@@ -54,7 +50,7 @@ export class TranslateMenuComponent implements OnInit {
     const infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
 
     this.templateVars$ = combineLatest([
-      combineLatest([currentLanguage$, defaultLanguage$, this.translationState$]),
+      combineLatest([currentLanguage$, defaultLanguage$, translationState$]),
       combineLatest([disabled$, defaultLanguageMissingValue$, infoMessage$, infoMessageLabel$]),
     ]).pipe(
       map(
@@ -90,45 +86,12 @@ export class TranslateMenuComponent implements OnInit {
     const dialogData: TranslateMenuDialogData = {
       config: this.config,
     };
-    const dialogRef = this.dialog.open(TranslateMenuDialogComponent, {
+    this.dialog.open(TranslateMenuDialogComponent, {
       panelClass: 'translate-menu-dialog',
       autoFocus: false,
       width: '350px',
       viewContainerRef: this.viewContainerRef,
       data: dialogData,
     });
-    dialogRef.keydownEvents().subscribe(e => {
-      const CTRL_S = e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey);
-      if (!CTRL_S) { return; }
-      e.preventDefault();
-    });
-    dialogRef.afterClosed().subscribe((newTranslationState: TranslationState) => {
-      this.setTranslationState(newTranslationState);
-    });
-  }
-
-  private setTranslationState(newTranslationState: TranslationState): void {
-    if (!newTranslationState) { return; }
-    if (isEqual(this.translationState$.value, newTranslationState)) { return; }
-
-    switch (newTranslationState.linkType) {
-      case TranslationLinkConstants.Translate:
-        this.config.field.fieldHelper.translate(this.formulaInstance);
-        break;
-      case TranslationLinkConstants.DontTranslate:
-        this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
-        break;
-      case TranslationLinkConstants.LinkReadOnly:
-        this.config.field.fieldHelper.linkReadOnly(this.formulaInstance, newTranslationState.language);
-        break;
-      case TranslationLinkConstants.LinkReadWrite:
-        this.config.field.fieldHelper.linkReadWrite(this.formulaInstance, newTranslationState.language);
-        break;
-      case TranslationLinkConstants.LinkCopyFrom:
-        this.config.field.fieldHelper.copyFrom(this.formulaInstance, newTranslationState.language);
-        break;
-      default:
-        break;
-    }
   }
 }
